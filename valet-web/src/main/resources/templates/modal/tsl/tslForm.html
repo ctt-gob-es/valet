@@ -1,0 +1,92 @@
+<form name="altEditor-form" role="form" id="tslForm"
+	th:object="${tslform}" th:action="@{/savetsl}" method="post"
+	enctype="multipart/form-data">
+
+	<input type='hidden' class='primarykey' id="idTslValet"
+		th:field="*{idTslValet}">
+
+
+	<div class="form-group col-md-8">
+		<label for="idSpecification" th:text="#{form.newTsl.specification}"></label>
+		
+			<select id="idSpecification" class="form-control"
+				th:field="*{specification}" required>
+				<option selected="selected" value="-1"
+					th:text="#{form.newTsl.specification.select}"></option>
+				<option th:each="ts: ${listSpecifications}" th:value="${ts}"
+					th:text="${ts}"></option>
+
+
+			</select>
+		
+		<div style="clear: both;"></div>
+	</div>
+
+	<div class="form-group col-md-8">
+		<label for="idVersion" th:text="#{form.newTsl.version}"></label>
+	
+			<select id=idVersion class="form-control" th:field="*{version}"
+				required>
+				<option selected="selected" value="-1"
+					th:text="#{form.newTsl.version.select}"></option>
+				<option th:each="ts: ${versions}" th:value="${ts}" th:text="#{ts}">
+			</select>
+		
+	</div>
+	<div class="form-group col-md-12">
+		<label for="idUrlTSL" th:text="#{form.newTsl.urlTSL}"></label> 
+		<input type="text" id="idUrlTSL" class="form-control" th:field="*{urlTsl}"></input>
+
+	</div>
+
+	<div class="form-group col-md-12">
+		<label for="file" th:text="#{form.newTsl.fileTSL}"></label>
+		<div id="customFile" class="form-group col-md-8">
+			<input type="file" class="custom-file-input" id="file"
+				th:field="*{file}" aria-describedby="fileHelp"> <label
+				class="custom-file-label" for="file"
+				th:text="#{form.newTsl.fileTSL.input}"></label>
+		</div>
+
+		<div style="clear: both;"></div>
+	</div>
+</form>
+<script th:inline="javascript">
+	$(document).ready(
+			function() {
+				
+				var loadVersions = /*[[@{/loadversions}]]*/;
+				
+				var selectVersionTypeText = /*[[#{form.newTsl.version.select}]]*/;
+				$("#file").change(
+						function() {
+							var fieldVal = $(this).val();
+
+							// Change the node's value by removing the fake path (Chrome)
+							fieldVal = fieldVal.replace("C:\\fakepath\\", "");
+							if (fieldVal != undefined || fieldVal != "") {
+								$(this).next(".custom-file-label").attr(
+										'data-content', fieldVal);
+								$(this).next(".custom-file-label").text(
+										fieldVal);
+							}
+
+						});
+				
+				$("#idSpecification").change(function(){
+				    $.getJSON(loadVersions, {
+				    	specification : $(this).val()
+		            }, function(data) {
+		                var html = '<option value="">' + selectVersionTypeText + '</option>';
+		                var len = data.length;
+		                for ( var i = 0; i < len; i++) {
+		                    html += '<option value="' + data[i] + '">'
+		                            + data[i] + '</option>';
+		                }
+		               
+		                $('#idVersion').html(html);
+		            });
+				});
+				
+			});
+</script>

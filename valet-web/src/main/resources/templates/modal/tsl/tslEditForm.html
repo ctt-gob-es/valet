@@ -1,0 +1,203 @@
+<form name="altEditor-form" role="form" id="tslFormEdit"
+	th:object="${tslform}" th:action="@{/updatetsl}" method="post"
+	enctype="multipart/form-data">
+
+
+	<input type='hidden' class='primarykey' id="idTslValet"
+		th:field="*{idTslValet}">
+	<div class="form-row">
+		<div class="form-group col-md-6">
+
+			<label for="countryId" class="col-form-label"
+				th:text="#{form.editTsl.country}"></label> <input type="text"
+				id="countryId" th:field="*{countryName}" style="overflow: hidden"
+				readonly class="form-control" />
+
+			<div style="clear: both;" />
+		</div>
+		<div class="form-group col-md-6">
+
+			<label for="sequenceNumberId" class="col-form-label"
+				th:text="#{form.editTsl.sequenceNumber}"></label> <input type="text"
+				id="sequenceNumberId" th:field="*{sequenceNumber}"
+				style="overflow: hidden" readonly class="form-control" />
+
+			<div style="clear: both;" />
+		</div>
+
+	</div>
+	<div class="form-group">
+
+		<label for="nameTslId" class="col-form-label"
+			th:text="#{form.editTsl.tslName}"></label> <input type="text"
+			id="nameTslId" th:field="*{tslName}" style="overflow: hidden"
+			readonly class="form-control" />
+
+		<div style="clear: both;" />
+	</div>
+
+
+	<div class="form-group">
+
+		<label for="tslResponsibleId" class="col-form-label"
+			th:text="#{form.editTsl.responsible}"></label> <input type="text"
+			id="tslResponsibleId" th:field="*{tslResponsible}"
+			style="overflow: hidden" readonly class="form-control" />
+
+		<div style="clear: both;" />
+	</div>
+	<div class="form-row">
+		<div class="form-group col-md-6">
+			<label for="issueDateId" class="col-form-label"
+				th:text="#{form.editTsl.issueDate}"></label> <input type="text"
+				id="issueDateId" th:field="*{issueDate}" style="overflow: hidden"
+				readonly class="form-control" />
+
+			<div style="clear: both;" />
+		</div>
+		<div class="form-group col-md-6">
+			<label for="expirationDateId" class="col-form-label"
+				th:text="#{form.editTsl.expirationDate}"></label> <input type="text"
+				id="expirationDateId" th:field="*{expirationDate}"
+				style="overflow: hidden" readonly class="form-control" />
+
+			<div style="clear: both;" />
+		</div>
+	</div>
+	<div class="form-group">
+
+		<label for="urlTslId" class="col-form-label"
+			th:text="#{form.editTsl.urlTSL}"></label> <input type="text"
+			id="urlTslId" th:field="*{urlTsl}" style="overflow: hidden"
+			class="form-control" />
+
+		<div style="clear: both;" />
+	</div>
+
+	<!-- Implementación TSL -->
+
+	<div class="form-group">
+		<p class="col-form-label" th:text="#{form.editTsl.implementation}">
+		</p>
+	</div>
+	<div class="form-row">
+		<div class="form-group col-md-6">
+			<button type="button" id="updateTslBtn" class="btn btn-primary"
+				th:text="#{form.editTsl.btn.updateTsl}" onclick="updateFormTsl();"></button>
+
+		</div>
+
+		<div class="form-group col-md-6">
+			<a th:href="@{/download(id=${tslform.idTslValet})}"
+				class="btn btn-primary"><span
+				th:text="#{form.editTsl.btn.downloadXml}"></span></a>
+			<div style="clear: both;" />
+		</div>
+	</div>
+
+	<div id="updateTslDiv" class="form-group col-md-12"
+		style="display: none;">
+		<label for="file" th:text="#{form.newTsl.fileTSL}"></label>
+		<div id="customFile" class="form-group col-md-8">
+			<input type="file" class="custom-file-input" id="file"
+				th:field="*{file}" aria-describedby="fileHelp"> <label
+				class="custom-file-label" for="file"
+				th:text="#{form.newTsl.fileTSL.input}"></label>
+		</div>
+		<button type="button" id="closeUpdateTslBtn" class="btn btn-primary"
+				th:text="Cerrar" onclick="closeUpdateTsl();"></button>
+
+		<div style="clear: both;"></div>
+	</div>
+
+	<!-- Documento Legible -->
+	<div class="form-group">
+		<p class="col-form-label" th:text="#{form.editTsl.legibleDocument}"></p>
+	</div>
+
+	<!-- <div th:if="${isLegible} == false"
+			th:text="#{form.editTsl.noDocLegible}" class="col-form-label">
+		</div>
+		<div th:if="${isLegible} == true" th:text="#{form.editTsl.docLegible}"
+			class="col-form-label"></div> -->
+	<div class="form-row">
+		<div class="form-group col-md-6">
+			<button type="button" id="updateDocBtn" class="btn btn-primary"
+				th:text="#{form.editTsl.btn.uploadDoc}" onclick="updateLegibleDoc();"></button>
+
+		</div>
+		<div class="form-group col-md-6">
+			<a th:href="@{/downloadDocument(id=${tslform.idTslValet})}"
+				class="btn btn-primary"><span
+				th:text="#{form.editTsl.btn.downloadLeg}"></span></a>
+			<div style="clear: both;" />
+		</div>
+	</div>
+	<div id="updateLegibleDocDiv" class="form-group col-md-12"
+		style="display: none;">
+			<div id="customFileUpdTsl" class="form-group col-md-8">
+				<input type="file" class="custom-file-input" id="fileDoc"
+					th:field="*{fileDocument}" aria-describedby="fileHelp" di> <label
+					class="custom-file-label" for="fileDoc"
+					th:text="#{form.editTsl.fileDocLegible.input}"></label>
+			</div>
+		<button type="button" id="closeUpdateDocBtn" class="btn btn-primary"
+				th:text="Cerrar" onclick="closeUpdateLegDoc();"></button>
+		
+		</div>
+</form>
+<script th:inline="javascript">
+function updateFormTsl() {
+	$("#updateTslDiv").show();
+}
+
+function updateLegibleDoc() {
+	$("#updateLegibleDocDiv").show()
+}
+
+function closeUpdateTsl() {
+	$("#updateTslDiv").hide();
+}
+
+function closeUpdateLegDoc() {
+	$("#updateLegibleDocDiv").hide();
+}
+
+$(document).ready(
+		function() {
+	var actionDownload = /*[[@{/download}]]*/;
+	var templateUpdateTsl = /*[[@{/updatetsl}]]*/;
+	
+
+
+$("#file").change(
+		function() {
+			var fieldVal = $(this).val();
+debugger;
+			// Change the node's value by removing the fake path (Chrome)
+			fieldVal = fieldVal.replace("C:\\fakepath\\", "");
+			if (fieldVal != undefined || fieldVal != "") {
+				$(this).next(".custom-file-label").attr(
+						'data-content', fieldVal);
+				$(this).next(".custom-file-label").text(
+						fieldVal);
+			}
+
+		});
+$("#fileDoc").change(
+		function() {
+			var fieldVal = $(this).val();
+
+			// Change the node's value by removing the fake path (Chrome)
+			fieldVal = fieldVal.replace("C:\\fakepath\\", "");
+			if (fieldVal != undefined || fieldVal != "") {
+				$(this).next(".custom-file-label").attr(
+						'data-content', fieldVal);
+				$(this).next(".custom-file-label").text(
+						fieldVal);
+			}
+
+		});
+
+		});
+</script>
