@@ -36,6 +36,7 @@
 		<module>valet-persistence</module>
 		<module>valet-web</module>
 		<module>valet-core</module>
+		<module>valet-rest</module>
 	</modules>
 
 	<dependencyManagement>
@@ -59,6 +60,11 @@
 			<dependency>
 				<groupId>es.gob.valet</groupId>
 				<artifactId>valet-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>es.gob.valet</groupId>
+				<artifactId>valet-rest</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- Módulos de vaLET -->

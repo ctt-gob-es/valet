@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>es.gob.valet</groupId>
+		<artifactId>valet-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>valet-rest</artifactId>
+	<packaging>war</packaging>
+	<name>valet-rest</name>
+	<dependencies>
+		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-i18n</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-commons-util</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>3.6.0.Final</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jackson-provider -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>3.6.1.Final</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>valet-rest</finalName>
+	</build>
+</project>
