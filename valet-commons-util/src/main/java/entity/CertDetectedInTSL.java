@@ -159,10 +159,10 @@ public class CertDetectedInTSL implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #tslRevocStatus}.
-	 * @param tslRevocStatus The value for the attribute {@link #tslRevocStatus}.
+	 * @param tslRevocStatusParam The value for the attribute {@link #tslRevocStatus}.
 	 */
-	public void setTslRevocStatus(final TslRevocationStatus tslRevocStatus) {
-		this.tslRevocStatus = tslRevocStatus;
+	public void setTslRevocStatus(final TslRevocationStatus tslRevocStatusParam) {
+		this.tslRevocStatus = tslRevocStatusParam;
 	}
 
 }

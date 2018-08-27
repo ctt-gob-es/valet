@@ -178,7 +178,7 @@ public class TslRevocationStatus implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #tspServiceName}.
-	 * @param tspServiceNameParam The value for the attribute {@link #tspServiceName}.
+	 * @param tspServiceNameP The value for the attribute {@link #tspServiceName}.
 	 */
 	public final void setTspServiceName(final String tspServiceNameP) {
 		this.tspServiceName = tspServiceNameP;
@@ -194,7 +194,7 @@ public class TslRevocationStatus implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #tspServiceType}.
-	 * @param tspServiceTypeParam The value for the attribute {@link #tspServiceType}.
+	 * @param tspServiceTypeP The value for the attribute {@link #tspServiceType}.
 	 */
 	public final void setTspServiceType(final String tspServiceTypeP) {
 		this.tspServiceType = tspServiceTypeP;

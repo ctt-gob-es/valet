@@ -79,7 +79,7 @@ public class TslInformation implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #countryRegion}.
-	 * @param countryRegionParam The value for the attribute {@link #countryRegion}.
+	 * @param countryRegionP The value for the attribute {@link #countryRegion}.
 	 */
 	public void setCountryRegion(final String countryRegionP) {
 		this.countryRegion = countryRegionP;
@@ -95,7 +95,7 @@ public class TslInformation implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #sequenceNumber}.
-	 * @param sequenceNumberParam The value for the attribute {@link #sequenceNumber}.
+	 * @param sequenceNumberP The value for the attribute {@link #sequenceNumber}.
 	 */
 	public void setSequenceNumber(final Integer sequenceNumberP) {
 		this.sequenceNumber = sequenceNumberP;
