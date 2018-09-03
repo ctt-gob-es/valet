@@ -39,10 +39,15 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
-import es.gob.valet.persistence.configuration.model.entity.TSLValet;
-import es.gob.valet.service.ICTSLImplService;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
+import es.gob.valet.persistence.configuration.model.entity.TslValet;
+import es.gob.valet.service.ICTslImplService;
+import es.gob.valet.service.ITslCountryRegionMappingService;
+import es.gob.valet.service.ITslCountryRegionService;
 import es.gob.valet.service.ITslValetService;
 
 /** 
@@ -63,9 +68,19 @@ public class TslController {
 	 * Attribute that represents the service object for acceding the repository. 
 	 */
 	@Autowired
-	private ICTSLImplService cTSLImplService;
+	private ICTslImplService cTSLImplService;
 	
-	private static final String CONTENT_TYPE_XML = "application/xml";
+	/**
+	 * Attribute that represents the service object for acceding the repository. 
+	 */
+	@Autowired
+	private ITslCountryRegionService tslCountryRegionService;
+	
+	/**
+	 * Attribute that represents the service object for acceding the repository. 
+	 */
+	@Autowired
+	private ITslCountryRegionMappingService tslCountryRegionMappingService;
 
 	/**
 	 * Attribute that represents the service object for acceding the repository
@@ -80,8 +95,10 @@ public class TslController {
 	@RequestMapping(value = "tsladmin", method = RequestMethod.GET)
 	public String tslAdmin(Model model) {
 		return "fragments/tsladmin.html";
-
 	}
+	
+	
+
 
 	/**
 	 * Method that maps the add TSL web request to the controller and sets the
@@ -113,10 +130,12 @@ public class TslController {
 	 */
 	@RequestMapping(value = "edittsl", method = RequestMethod.POST)
 	public String editTsl(@RequestParam("id") Long idTslValet, Model model) {
-		TSLValet tslValet = tslService.getTslValetById(idTslValet);
+		TslValet tslValet = tslService.getTslValetById(idTslValet);
 		TslForm tslForm = new TslForm();
 		tslForm.setIdTslValet(idTslValet);
 		tslForm.setCountryName(tslValet.getCountry().getCountryRegionName());
+		tslForm.setCountry(tslValet.getCountry().getIdTslCountryRegion());
+		tslForm.setAlias(tslValet.getAlias());
 		tslForm.setTslName("prueba nombre tsl");
 		tslForm.setTslResponsible("prueba nombre responsable");
 		
@@ -135,12 +154,50 @@ public class TslController {
 		tslForm.setUrlTsl(tslValet.getUriTslLocation());
 		
 		
-		
+		tslForm.setSequenceNumber(tslValet.getSequenceNumber());
 		model.addAttribute("isLegible", tslForm.getIsLegible());
 		model.addAttribute("tslform", tslForm);
 		return "modal/tsl/tslEditForm";
 	}
 
 	
+	@RequestMapping(value = "/updateimpl", method = RequestMethod.POST)
+	public String updateImplementationFile(@RequestParam("id") Long idTsl,  Model model){
+			TslForm tslForm = new TslForm();
+			tslForm.setIdTslValet(idTsl);
+			model.addAttribute("tslform", tslForm);
+			return "modal/tsl/tslUpdateImplForm";
+	}
+	
+	
+	/**
+	 * Method that loads a datatable with the mappings for the TSL of the indicated country 
+	 * 
+	 * @param idCountryRegion Country idientifier.
+	 * @param model Holder object for model attributes.
+	 * @return String that represents the name of the view to forward.
+	 */
+	@RequestMapping(value = "/loadmappingdatatable", method = RequestMethod.GET)
+	public String loadMappingDataTable(@RequestParam("idTslCountryRegion") Long idCountryRegion, Model model){
+			MappingTslForm mappingTslForm = new MappingTslForm();
+			MappingTslForm mappingTslEditForm = new MappingTslForm();
+			mappingTslForm.setIdTslCountryRegion(idCountryRegion);
+			mappingTslForm.setNameCountryRegion(tslCountryRegionService.getNameCountryRegionById(idCountryRegion));
+			model.addAttribute("mappingtslform", mappingTslForm);
+			model.addAttribute("mappingedittslform", mappingTslEditForm);
+			return "fragments/tslmapping.html";
+	}
+	
+	
+
+//	@RequestMapping(value = "addmappingtsl")
+//	public String addMappingTsl(Model model) throws IOException {
+//	
+//		MappingTslForm mappingTslForm = new MappingTslForm();
+//	//	mappingTslForm.setIdTslValet(idTslValet);
+//		//mappingTslForm.setIdTslCountryRegion(idTslCountryRegion);
+//		model.addAttribute("mappingtslform",mappingTslForm);
+//		return "modal/tsl/mappingTslForm";
+//	}
 
 }

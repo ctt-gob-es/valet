@@ -34,9 +34,9 @@ import java.util.TreeSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.gob.valet.persistence.configuration.model.entity.CTSLImpl;
-import es.gob.valet.persistence.configuration.model.repository.CTSLImplRepository;
-import es.gob.valet.service.ICTSLImplService;
+import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
+import es.gob.valet.persistence.configuration.model.repository.CTslImplRepository;
+import es.gob.valet.service.ICTslImplService;
 
 /** 
  * <p>Class .</p>
@@ -44,19 +44,19 @@ import es.gob.valet.service.ICTSLImplService;
  * @version 1.0, 17 jul. 2018.
  */
 @Service
-public class CTSLImplService implements ICTSLImplService {
+public class CTslImplService implements ICTslImplService {
 
 	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
 	 */
 	@Autowired
-	private CTSLImplRepository repository;
+	private CTslImplRepository repository;
 
-	public Iterable<CTSLImpl> getAllCTSLImpl() {
+	public Iterable<CTslImpl> getAllCTSLImpl() {
 		return repository.findAll();
 	}
 
-	public CTSLImpl getCTSLImpById(Long id) {
+	public CTslImpl getCTSLImpById(Long id) {
 		return repository.findByIdCTSLImpl(id);
 	}
 
@@ -71,10 +71,10 @@ public class CTSLImplService implements ICTSLImplService {
 	 */
 	public Map<String, Set<String>> getsTSLRelationSpecificatioAndVersion() {
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
-		List<CTSLImpl> listCTSLImpl = repository.findAll();
+		List<CTslImpl> listCTSLImpl = repository.findAll();
 
 		if (listCTSLImpl != null && !listCTSLImpl.isEmpty()) {
-			for (CTSLImpl cTSL: listCTSLImpl) {
+			for (CTslImpl cTSL: listCTSLImpl) {
 				// se obtiene el listado de versiones almacenado para la
 				// especificación actual
 				Set<String> versions = result.get(cTSL.getSpecification());
@@ -91,11 +91,11 @@ public class CTSLImplService implements ICTSLImplService {
 		return result;
 	}
 
-	public CTSLImpl getCTSLImplBySpecificationVersion(String specification, String version) {
-		CTSLImpl result = null;
-		List<CTSLImpl> listCTSLImpl = repository.findAll();
+	public CTslImpl getCTSLImplBySpecificationVersion(String specification, String version) {
+		CTslImpl result = null;
+		List<CTslImpl> listCTSLImpl = repository.findAll();
 		if (listCTSLImpl != null && !listCTSLImpl.isEmpty()) {
-			for (CTSLImpl cTSL: listCTSLImpl) {
+			for (CTslImpl cTSL: listCTSLImpl) {
 				if(cTSL.getSpecification().equals(specification)){
 					if(cTSL.getVersion().equals(version)){
 						result = cTSL;

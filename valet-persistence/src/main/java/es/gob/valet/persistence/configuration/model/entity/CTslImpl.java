@@ -47,7 +47,7 @@ import es.gob.valet.commons.utilidades.NumberConstants;
  */
 @Entity
 @Table(name = "C_TSL_IMPL")
-public class CTSLImpl implements Serializable {
+public class CTslImpl implements Serializable {
 
 	/**
 	 * Attribute that represents the serial version UID. 

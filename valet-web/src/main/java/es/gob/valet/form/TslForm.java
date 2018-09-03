@@ -28,6 +28,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import es.gob.valet.rest.exception.CheckItFirst;
 
 /** 
@@ -98,6 +100,9 @@ public class TslForm {
 	 * Attribute that indicates if 
 	 */
 	private Boolean isLegible;
+	private String alias;
+	
+	private String error;
 	
 	
 
@@ -105,13 +110,14 @@ public class TslForm {
 	 * Attribute that represents the uploaded file.
 	 */
 	@NotNull(groups = CheckItFirst.class, message = "{form.valid.tsl.file.notempty}")
-	private MultipartFile file;
+	private MultipartFile implTslFile;
 	
 	
 	/**
 	 * Attribute that represents uploaded file corresponding to the readable TSL document.
 	 */
 	private MultipartFile fileDocument;
+
 
 	/**
 	 * Gets the value of the attribute {@link #idTslValet}.
@@ -177,23 +183,25 @@ public class TslForm {
 		this.urlTsl = urlTsl;
 	}
 
+	
+	
 	/**
-	 * Gets the value of the attribute {@link #file}.
-	 * @return the value of the attribute {@link #file}.
+	 * Gets the value of the attribute {@link #implTslFile}.
+	 * @return the value of the attribute {@link #implTslFile}.
 	 */
-	public MultipartFile getFile() {
-		return file;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #file}.
-	 * @param file The value for the attribute {@link #file}.
-	 */
-	public void setFile(MultipartFile file) {
-		this.file = file;
+	public MultipartFile getImplTslFile() {
+		return implTslFile;
 	}
 
 	
+	/**
+	 * Sets the value of the attribute {@link #implTslFile}.
+	 * @param implTslFile The value for the attribute {@link #implTslFile}.
+	 */
+	public void setImplTslFile(MultipartFile implTslFile) {
+		this.implTslFile = implTslFile;
+	}
+
 	/**
 	 * Gets the value of the attribute {@link #country}.
 	 * @return the value of the attribute {@link #country}.
@@ -216,6 +224,7 @@ public class TslForm {
 	 * Gets the value of the attribute {@link #sequenceNumber}.
 	 * @return the value of the attribute {@link #sequenceNumber}.
 	 */
+	@JsonView(View.class)
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}
@@ -234,6 +243,7 @@ public class TslForm {
 	 * Gets the value of the attribute {@link #tslName}.
 	 * @return the value of the attribute {@link #tslName}.
 	 */
+	@JsonView(View.class)
 	public String getTslName() {
 		return tslName;
 	}
@@ -252,6 +262,7 @@ public class TslForm {
 	 * Gets the value of the attribute {@link #tslResponsible}.
 	 * @return the value of the attribute {@link #tslResponsible}.
 	 */
+	@JsonView(View.class)
 	public String getTslResponsible() {
 		return tslResponsible;
 	}
@@ -272,6 +283,7 @@ public class TslForm {
 	 * Gets the value of the attribute {@link #countryName}.
 	 * @return the value of the attribute {@link #countryName}.
 	 */
+	@JsonView(View.class)
 	public String getCountryName() {
 		return countryName;
 	}
@@ -290,6 +302,7 @@ public class TslForm {
 	 * Gets the value of the attribute {@link #issueDate}.
 	 * @return the value of the attribute {@link #issueDate}.
 	 */
+	@JsonView(View.class)
 	public String getIssueDate() {
 		return issueDate;
 	}
@@ -308,6 +321,7 @@ public class TslForm {
 	 * Gets the value of the attribute {@link #expirationDate}.
 	 * @return the value of the attribute {@link #expirationDate}.
 	 */
+	@JsonView(View.class)
 	public String getExpirationDate() {
 		return expirationDate;
 	}
@@ -325,6 +339,7 @@ public class TslForm {
 	 * Gets the value of the attribute {@link #isLegible}.
 	 * @return the value of the attribute {@link #isLegible}.
 	 */
+	@JsonView(View.class)
 	public Boolean getIsLegible() {
 		return isLegible;
 	}
@@ -337,10 +352,30 @@ public class TslForm {
 		this.isLegible = isLegible;
 	}
 
+	
+	/**
+	 * Gets the value of the attribute {@link #alias}.
+	 * @return the value of the attribute {@link #alias}.
+	 */
+	@JsonView(View.class)
+	public String getAlias() {
+		return alias;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #alias}.
+	 * @param alias The value for the attribute {@link #alias}.
+	 */
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+
 	/**
 	 * Gets the value of the attribute {@link #fileDocument}.
 	 * @return the value of the attribute {@link #fileDocument}.
 	 */
+	@JsonView(View.class)
 	public MultipartFile getFileDocument() {
 		return fileDocument;
 	}
@@ -354,6 +389,29 @@ public class TslForm {
 	}
 
 	
+
 	
+	/**
+	 * Gets the value of the attribute {@link #error}.
+	 * @return the value of the attribute {@link #error}.
+	 */
+	@JsonView(View.class)
+	public String getError() {
+		return error;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #error}.
+	 * @param error The value for the attribute {@link #error}.
+	 */
+	public void setError(String error) {
+		this.error = error;
+	}
+
+
+
+	public interface View {
+	}	
 
 }

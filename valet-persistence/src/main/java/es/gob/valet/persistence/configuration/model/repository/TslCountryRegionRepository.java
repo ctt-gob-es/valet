@@ -25,19 +25,21 @@
 package es.gob.valet.persistence.configuration.model.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import es.gob.valet.persistence.configuration.model.entity.TSLCountryRegion;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 
 /** 
  * <p>Interface that provides CRUD functionality for the TslCountryRegion entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 23 jul. 2018.
  */
-public interface TslCountryRegionRepository extends JpaRepository<TSLCountryRegion, Long> {
+@Repository
+public interface TslCountryRegionRepository extends JpaRepository<TslCountryRegion, Long> {
 	/**
 	  * Method that obtains from the persistence a country identified by its primary key. 
 	 * @param id String that represents the primary key of the country in the persistence.
 	 * @return Object that represents a country from the persistence. 
 	 */
-	TSLCountryRegion findByIdTSLCountryRegion(Long id);
+	TslCountryRegion findByIdTslCountryRegion(Long id);
 }

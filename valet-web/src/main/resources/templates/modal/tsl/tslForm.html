@@ -1,53 +1,56 @@
 <form name="altEditor-form" role="form" id="tslForm"
 	th:object="${tslform}" th:action="@{/savetsl}" method="post"
-	enctype="multipart/form-data">
-
+	enctype="multipart/form-data" class="form-horizontal">
+	<div id="errorAddTsl" role="alert"></div>
 	<input type='hidden' class='primarykey' id="idTslValet"
 		th:field="*{idTslValet}">
 
 
 	<div class="form-group col-md-8">
 		<label for="idSpecification" th:text="#{form.newTsl.specification}"></label>
+		 <span id="specification_span"
+			class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span> 
+		<select id="idSpecification" class="form-control"
+			th:field="*{specification}" required onchange="cleanSpan('specification_span');">
+			<option selected="selected" value="-1"
+				th:text="#{form.newTsl.specification.select}"></option>
+			<option th:each="ts: ${listSpecifications}" th:value="${ts}"
+				th:text="${ts}"></option>
+		</select>
 		
-			<select id="idSpecification" class="form-control"
-				th:field="*{specification}" required>
-				<option selected="selected" value="-1"
-					th:text="#{form.newTsl.specification.select}"></option>
-				<option th:each="ts: ${listSpecifications}" th:value="${ts}"
-					th:text="${ts}"></option>
 
-
-			</select>
-		
 		<div style="clear: both;"></div>
 	</div>
 
 	<div class="form-group col-md-8">
-		<label for="idVersion" th:text="#{form.newTsl.version}"></label>
-	
-			<select id=idVersion class="form-control" th:field="*{version}"
-				required>
-				<option selected="selected" value="-1"
-					th:text="#{form.newTsl.version.select}"></option>
-				<option th:each="ts: ${versions}" th:value="${ts}" th:text="#{ts}">
-			</select>
+		<label for="idVersion" th:text="#{form.newTsl.version}"></label>  <span
+			id="version_span"
+			class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span> 
+		<select id="idVersion" class="form-control" th:field="*{version}"
+			required onchange="cleanSpan('version_span');">
+			<option selected="selected" value="-1"
+				th:text="#{form.newTsl.version.select}"></option>
+			<option th:each="ts: ${versions}" th:value="${ts}" th:text="#{ts}">
+		</select>
 		
+
 	</div>
 	<div class="form-group col-md-12">
-		<label for="idUrlTSL" th:text="#{form.newTsl.urlTSL}"></label> 
-		<input type="text" id="idUrlTSL" class="form-control" th:field="*{urlTsl}"></input>
+		<label for="idUrlTSL" th:text="#{form.newTsl.urlTSL}"></label> <input
+			type="text" id="idUrlTSL" class="form-control" th:field="*{urlTsl}"></input>
 
 	</div>
 
 	<div class="form-group col-md-12">
-		<label for="file" th:text="#{form.newTsl.fileTSL}"></label>
+		<label for="fileId" th:text="#{form.newTsl.fileTSL}"></label>  <span
+			id="implTslFile_span"
+			class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span> 
 		<div id="customFile" class="form-group col-md-8">
-			<input type="file" class="custom-file-input" id="file"
-				th:field="*{file}" aria-describedby="fileHelp"> <label
-				class="custom-file-label" for="file"
+			<input type="file" class="custom-file-input" id="fileId"
+				th:field="*{implTslFile}" aria-describedby="fileHelp" onchange="cleanSpan('implTslFile_span');"> <label
+				class="custom-file-label" for="fileId"
 				th:text="#{form.newTsl.fileTSL.input}"></label>
 		</div>
-
 		<div style="clear: both;"></div>
 	</div>
 </form>
@@ -58,7 +61,7 @@
 				var loadVersions = /*[[@{/loadversions}]]*/;
 				
 				var selectVersionTypeText = /*[[#{form.newTsl.version.select}]]*/;
-				$("#file").change(
+				$("#fileId").change(
 						function() {
 							var fieldVal = $(this).val();
 
@@ -87,6 +90,14 @@
 		                $('#idVersion').html(html);
 		            });
 				});
-				
+
+$("#fileId").change(function(){
+				//se borra mensaje de validación
+			$("#errorAddTsl").removeClass('alert alert-danger');
+								$('#errorAddTsl').html('');
+				});
+			
 			});
+			
+
 </script>

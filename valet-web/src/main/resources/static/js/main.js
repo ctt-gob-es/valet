@@ -316,3 +316,11 @@ function closeButton(btnId){
 	$('#' + btnId).modal('hide');
 	$('#' + btnId).remove();
 }
+
+
+function cleanSpan(obj){
+$("#"+ obj).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
+var msg = '';
+$("#"+ obj).html(msg);
+
+}

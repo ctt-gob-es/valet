@@ -15,26 +15,37 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.CTSLImplRepository.java.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.TslCountryRegionMappingRepository.java.</p>
  * <b>Description:</b><p> .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>17 jul. 2018.</p>
+ * <b>Date:</b><p>8 ago. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 17 jul. 2018.
+ * @version 1.0, 8 ago. 2018.
  */
 package es.gob.valet.persistence.configuration.model.repository;
+
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import es.gob.valet.persistence.configuration.model.entity.CTSLImpl;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
+import es.gob.valet.persistence.configuration.model.entity.TslValet;
+
 
 /** 
- * <p>Interface that provides CRUD functionality for the CTSLImpl entity.</p>
+ * <p>Interface that provides CRUD functionality for the TslCountryRegionMapping entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17 jul. 2018.
+ * @version 1.0, 8 ago. 2018.
  */
 @Repository
-public interface CTSLImplRepository  extends JpaRepository<CTSLImpl, Long> {
- CTSLImpl findByIdCTSLImpl(Long id);
+public interface TslCountryRegionMappingRepository extends JpaRepository<TslCountryRegionMapping, Long> {
+	/**
+	  * Method that obtains from the persistence a TslCountryRegionMapping identified by its primary key. 
+	 * @param id String that represents the primary key of the TslCountryRegionMapping in the persistence.
+	 * @return Object that represents a TSL from the persistence. 
+	 */
+	TslCountryRegionMapping findByIdTslCountryRegionMapping(Long id);
+	
+	
 }

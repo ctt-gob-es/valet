@@ -42,13 +42,24 @@ public interface LogMessages {
 	 * Message key declared in the 'webvalet.properties' file. 
 	 */			
 	String ERROR_NOT_BLANK_SPECIFICATION = "errorNotBlankSpecification";
-
 	
+	String ERROR_NOT_BLANK_IDENTIFICATOR ="errorNotBlankIdentificator";
+	String ERROR_NOT_BLANK_VALUE ="errorNotBlankValue";
+	String ERROR_EXISTS_TSL_COUNTRY = "errorExistsTslCountry";
 	/**
 	 * Message key declared in the 'webvalet.properties' file. 
 	 */			
 	String ERROR_NOT_BLANK_VERSION = "errorNotBlankVersion";
+	String ERROR_ADD_TSL = "errorAddingTsl";
 	
+	String INFO_NOT_UPDATE_FILE_IMPL_TSL = "infoNotUpdateFileTsl";
+	String ERROR_IDENTIFICATOR_DUPLICATE = "errorIdentificatorDuplicate";
+	String ERROR_EDIT_MAPPING ="errorEditMapping";
+	String ERROR_UPDATE_TSL="errorUpdateTsl";
+	String ERROR_COUNTRY_INVALID="errorCountryInvalid";	
+	String ERROR_SAVE_TSL = "errorSaveTsl";
+	String ERROR_SAVE_TSL_WEB = "errorSaveTslWeb";
+	String ERROR_EDIT_TSL = "errorEditTsl";
+	String ERROR_EDIT_TSL_WEB = "errorEditTslWeb";
 	
-	String MESSAGE_ERROR_VERSION ="messageErrorVersion";
 }

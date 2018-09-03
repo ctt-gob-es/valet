@@ -96,35 +96,5 @@ public class UtilsResources {
 		}
 		return EMPTY_STRING;
 	}
-	
-	/**
-	 * Method to convert an array of bytes into a File.
-	 * 
-	 * @param file File that will be created.
-	 * @param bytes Array of bytes with the contents of the file.
-	 * @throws IOException If the method fails.
-	 */
-	 public static void writeBytesToFile(File file, byte[] bytes) throws IOException {
-	      BufferedOutputStream bos = null;
-	      
-	    try {
-	      FileOutputStream fos = new FileOutputStream(file);
-	      bos = new BufferedOutputStream(fos); 
-	      bos.write(bytes);
-	    }finally {
-	      if(bos != null) {
-	        try  {
-	          //flush and close the BufferedOutputStream
-	          bos.flush();
-	          bos.close();
-	        } catch(Exception e){}
-	      }
-	    }
-	    
-	    
-	    /*
-	     *     OutputStream out = new FileOutputStream(file);
-	    	out.write(bytes);
-	    	out.close();*/
-	 }
+
 }

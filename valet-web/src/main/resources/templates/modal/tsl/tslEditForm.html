@@ -1,167 +1,255 @@
 <form name="altEditor-form" role="form" id="tslFormEdit"
 	th:object="${tslform}" th:action="@{/updatetsl}" method="post"
 	enctype="multipart/form-data">
+	<h6 class="c-grey-900">Datos TSL</h6>
+	<div class="mT-20">
+	<div id="errorUpdateTsl" role="alert"></div>
+		<input type='hidden' class='primarykey' id="idTslValet"
+			th:field="*{idTslValet}"> <input type='hidden'
+			id="idCountryRegion" th:field="*{country}"> <input
+			type='hidden' id="idAlias" th:field="*{alias}">
+		<div class="form-row">
+			<div class="form-group col-md-6">
+				<label for="countryId" class="col-form-label"
+					th:text="#{form.editTsl.country}"></label> <input type="text"
+					id="countryId" th:field="*{countryName}" style="overflow: hidden"
+					readonly class="form-control" />
 
+			</div>
+			<div class="form-group col-md-6">
+				<label for="sequenceNumberId" class="col-form-label"
+					th:text="#{form.editTsl.sequenceNumber}"></label> <input
+					type="text" id="sequenceNumberId" th:field="*{sequenceNumber}"
+					style="overflow: hidden" readonly class="form-control" />
 
-	<input type='hidden' class='primarykey' id="idTslValet"
-		th:field="*{idTslValet}">
-	<div class="form-row">
-		<div class="form-group col-md-6">
-
-			<label for="countryId" class="col-form-label"
-				th:text="#{form.editTsl.country}"></label> <input type="text"
-				id="countryId" th:field="*{countryName}" style="overflow: hidden"
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="nameTslId" class="col-form-label"
+				th:text="#{form.editTsl.tslName}"></label> <input type="text"
+				id="nameTslId" th:field="*{tslName}" style="overflow: hidden"
 				readonly class="form-control" />
-
-			<div style="clear: both;" />
 		</div>
-		<div class="form-group col-md-6">
-
-			<label for="sequenceNumberId" class="col-form-label"
-				th:text="#{form.editTsl.sequenceNumber}"></label> <input type="text"
-				id="sequenceNumberId" th:field="*{sequenceNumber}"
+		<div class="form-group">
+			<label for="tslResponsibleId" class="col-form-label"
+				th:text="#{form.editTsl.responsible}"></label> <input type="text"
+				id="tslResponsibleId" th:field="*{tslResponsible}"
 				style="overflow: hidden" readonly class="form-control" />
-
-			<div style="clear: both;" />
+		</div>
+		<div class="form-row">
+			<div class="form-group col-md-6">
+				<label for="issueDateId" class="col-form-label"
+					th:text="#{form.editTsl.issueDate}"></label> <input type="text"
+					id="issueDateId" th:field="*{issueDate}" style="overflow: hidden"
+					readonly class="form-control" />
+			</div>
+			<div class="form-group col-md-6">
+				<label for="expirationDateId" class="col-form-label"
+					th:text="#{form.editTsl.expirationDate}"></label> <input
+					type="text" id="expirationDateId" th:field="*{expirationDate}"
+					style="overflow: hidden" readonly class="form-control" />
+			</div>
 		</div>
 
-	</div>
-	<div class="form-group">
+		<div class="form-group">
 
-		<label for="nameTslId" class="col-form-label"
-			th:text="#{form.editTsl.tslName}"></label> <input type="text"
-			id="nameTslId" th:field="*{tslName}" style="overflow: hidden"
-			readonly class="form-control" />
-
-		<div style="clear: both;" />
-	</div>
-
-
-	<div class="form-group">
-
-		<label for="tslResponsibleId" class="col-form-label"
-			th:text="#{form.editTsl.responsible}"></label> <input type="text"
-			id="tslResponsibleId" th:field="*{tslResponsible}"
-			style="overflow: hidden" readonly class="form-control" />
-
-		<div style="clear: both;" />
-	</div>
-	<div class="form-row">
-		<div class="form-group col-md-6">
-			<label for="issueDateId" class="col-form-label"
-				th:text="#{form.editTsl.issueDate}"></label> <input type="text"
-				id="issueDateId" th:field="*{issueDate}" style="overflow: hidden"
-				readonly class="form-control" />
-
-			<div style="clear: both;" />
-		</div>
-		<div class="form-group col-md-6">
-			<label for="expirationDateId" class="col-form-label"
-				th:text="#{form.editTsl.expirationDate}"></label> <input type="text"
-				id="expirationDateId" th:field="*{expirationDate}"
-				style="overflow: hidden" readonly class="form-control" />
-
-			<div style="clear: both;" />
+			<label for="urlTslId" class="col-form-label"
+				th:text="#{form.editTsl.urlTSL}"></label> <input type="text"
+				id="urlTslId" th:field="*{urlTsl}" style="overflow: hidden"
+				class="form-control" />
 		</div>
 	</div>
-	<div class="form-group">
-
-		<label for="urlTslId" class="col-form-label"
-			th:text="#{form.editTsl.urlTSL}"></label> <input type="text"
-			id="urlTslId" th:field="*{urlTsl}" style="overflow: hidden"
-			class="form-control" />
-
-		<div style="clear: both;" />
-	</div>
-
 	<!-- Implementación TSL -->
+	<div class="mT-20">
+		<div class="bgc-white p-20 bd">
+			<h6 class="c-grey-900" th:text="#{form.editTsl.implementation}"></h6>
+			<div class="mT-5">
+				<div class="form-row">
+					<div th:text="${tslform.alias}+ #{form.editTsl.extensionTsl}"
+						class="col-form-label"></div>
+				</div>
+				<div class="text-right  mrg-top-30">
 
-	<div class="form-group">
-		<p class="col-form-label" th:text="#{form.editTsl.implementation}">
-		</p>
-	</div>
-	<div class="form-row">
-		<div class="form-group col-md-6">
-			<button type="button" id="updateTslBtn" class="btn btn-primary"
-				th:text="#{form.editTsl.btn.updateTsl}" onclick="updateFormTsl();"></button>
+					<a th:href="@{/download(id=${tslform.idTslValet})}"> <img
+						id="downFileId" th:src="@{images/download-file.png}"
+						alt="Descargar Implementación TSL"
+						title="Descargar Implementación TSL"></img></a> <a id="updateTslBtn"
+						onclick="updateFormTsl();"> <img id="downFileId"
+						th:src="@{images/update_file2.png}"
+						alt="Actualizar implementación TSL"
+						title="Actualizar implementación TSL"></img></a>
 
+				</div>
+
+				<!-- formulario para subir nueva implementación TSL -->
+				<div id="updateTslDiv" style="display: none;">
+					<span id="implTslFile_span"
+						class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+					<div class="mT-10">
+						<label for="fileId" th:text="#{form.editTsl.updateTsl}"></label>
+						<div id="customFile" class="form-group col-md-12">
+							<input type="file" class="custom-file-input" id="fileId"
+								th:field="*{implTslFile}" aria-describedby="fileHelp"
+								onchange="cleanSpan('implTslFile_span');"> <label
+								class="custom-file-label" for="fileId"></label>
+						</div>
+						<div class="gap-10 peers">
+							<div class="peer">
+								<button type="button" id="refreshTsl"
+									class="btn cur-p btn-outline-primary" th:text="Actualizar"
+									onclick="updateImplFile();"></button>
+							</div>
+							<div class="peer">
+								<button type="button" id="closeUpdateTslBtn"
+									class="btn cur-p btn-outline-primary" th:text="Cancelar"
+									onclick="closeUpdateTsl();"></button>
+							</div>
+						</div>
+					</div>
+
+
+				</div>	<!-- end updateTslDiv form subir implTSL -->
+			</div>
 		</div>
-
-		<div class="form-group col-md-6">
-			<a th:href="@{/download(id=${tslform.idTslValet})}"
-				class="btn btn-primary"><span
-				th:text="#{form.editTsl.btn.downloadXml}"></span></a>
-			<div style="clear: both;" />
-		</div>
-	</div>
-
-	<div id="updateTslDiv" class="form-group col-md-12"
-		style="display: none;">
-		<label for="file" th:text="#{form.newTsl.fileTSL}"></label>
-		<div id="customFile" class="form-group col-md-8">
-			<input type="file" class="custom-file-input" id="file"
-				th:field="*{file}" aria-describedby="fileHelp"> <label
-				class="custom-file-label" for="file"
-				th:text="#{form.newTsl.fileTSL.input}"></label>
-		</div>
-		<button type="button" id="closeUpdateTslBtn" class="btn btn-primary"
-				th:text="Cerrar" onclick="closeUpdateTsl();"></button>
-
-		<div style="clear: both;"></div>
 	</div>
 
 	<!-- Documento Legible -->
-	<div class="form-group">
-		<p class="col-form-label" th:text="#{form.editTsl.legibleDocument}"></p>
-	</div>
+	<div class="mT-20">
+		<div class="bgc-white p-20 bd">
+			<h6 class="c-grey-900" th:text="#{form.editTsl.legibleDocument}"></h6>
+			<div class="mT-5">
+				<div class="form-row">
+					<div th:if="${isLegible} == false"
+						th:text="#{form.editTsl.noDocLegible}" class="col-form-label"></div>
+					<div th:if="${isLegible} == true"
+						th:text="#{form.editTsl.docLegible}" class="col-form-label"></div>
+				</div>
 
-	<!-- <div th:if="${isLegible} == false"
-			th:text="#{form.editTsl.noDocLegible}" class="col-form-label">
-		</div>
-		<div th:if="${isLegible} == true" th:text="#{form.editTsl.docLegible}"
-			class="col-form-label"></div> -->
-	<div class="form-row">
-		<div class="form-group col-md-6">
-			<button type="button" id="updateDocBtn" class="btn btn-primary"
-				th:text="#{form.editTsl.btn.uploadDoc}" onclick="updateLegibleDoc();"></button>
+				<div class="text-right mrg-top-30">
 
-		</div>
-		<div class="form-group col-md-6">
-			<a th:href="@{/downloadDocument(id=${tslform.idTslValet})}"
-				class="btn btn-primary"><span
-				th:text="#{form.editTsl.btn.downloadLeg}"></span></a>
-			<div style="clear: both;" />
-		</div>
-	</div>
-	<div id="updateLegibleDocDiv" class="form-group col-md-12"
-		style="display: none;">
-			<div id="customFileUpdTsl" class="form-group col-md-8">
-				<input type="file" class="custom-file-input" id="fileDoc"
-					th:field="*{fileDocument}" aria-describedby="fileHelp" di> <label
-					class="custom-file-label" for="fileDoc"
-					th:text="#{form.editTsl.fileDocLegible.input}"></label>
+					<a th:if="${isLegible} == true"
+						th:href="@{/downloadDocument(id=${tslform.idTslValet})}"> <img
+						id="downloadDocLeg" th:src="@{images/download-file.png}"
+						alt="Descargar Documento Legible"
+						title="Descargar Documento Legible"></img>
+					</a> <a id="updateDocBtn" onclick="updateLegibleDoc();"> <img
+						id="downloadDocLeg" th:src="@{images/upload-file-green.png}"
+						alt="Subir documento legible" title="Subir documento legible"></img>
+					</a>
+
+				</div>
+
+				<!-- Formulario para subir documento legible -->
+				<div id="updateLegibleDocDiv" style="display: none;">
+					<div class="mT-10">
+						<label for="fileDoc" th:text="#{form.editTsl.updateDocLeg}"></label>
+						<div id="customFileUpdTsl" class="form-group col-md-12">
+							<input type="file" class="custom-file-input" id="fileDoc"
+								th:field="*{fileDocument}" aria-describedby="fileHelp">
+							<label class="custom-file-label" for="fileDoc"></label>
+						</div>
+						<div class="gap-10 peers">
+							<div class="peer">
+								<button type="button" id="closeUpdateDocBtn"
+									class="btn cur-p btn-outline-primary" th:text="Cancelar"
+									onclick="closeUpdateLegDoc();"></button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end updateLegibleDocDiv -->
 			</div>
-		<button type="button" id="closeUpdateDocBtn" class="btn btn-primary"
-				th:text="Cerrar" onclick="closeUpdateLegDoc();"></button>
-		
 		</div>
+		<!-- end bgc_white -->
+	</div>
+	<!-- end mt-20 doc legible -->
+	</div>
 </form>
+
+
 <script th:inline="javascript">
+
+//muestra formulario actualizar TSL
 function updateFormTsl() {
+	$("#updateTslBtn").hide();
 	$("#updateTslDiv").show();
 }
 
+
+//muestra formulario de añadir Doc Legible.
 function updateLegibleDoc() {
 	$("#updateLegibleDocDiv").show()
 }
 
-function closeUpdateTsl() {
+
+//oculta formulario de actualizar TSL
+function closeUpdateTsl() {	
+	//se limpia posibles mensajes error de span
+	cleanSpan('implTslFile_span');
+	// limpia valores del formulario
+	$('#fileId').val("");
+	$('#fileId').next(".custom-file-label").attr('data-content', '');
+	$('#fileId').next(".custom-file-label").text('');
 	$("#updateTslDiv").hide();
+	$("#updateTslBtn").show();
 }
 
+
+//oculta formulario de subir documento legible
 function closeUpdateLegDoc() {
 	$("#updateLegibleDocDiv").hide();
 }
+
+//actualiza el formulario de edición de TSL
+function updateImplFile() {
+	var updateImplFile =  /*[[@{/updateimplfile}]]*/;
+	var idTsl = idTslValet;
+	var formDataEdit = new FormData(document.forms["tslFormEdit"]);
+	$.ajax(updateImplFile, {
+		data :formDataEdit,
+		contentType: false,
+		processData : false,
+        type:'POST',
+        success: function(data){
+    		// Se oculta la capa 'cargando...'
+    		hide();
+			var errores = JSON.parse(data.error);
+						 if (data.error != null){
+						  jQuery.each(errores, function(i, val) {
+						  	$('#tslFormEdit *').filter('span').each(function(){
+
+									if (i == $(this).attr('id')){
+										$("#" + i).text(val);
+										$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
+									}
+								});
+								})
+						 } else{
+	
+						 closeUpdateTsl();
+    		$('#sequenceNumberId').val(data.sequenceNumber);
+    		$('#nameTslId').val(data.tslName);
+    		$('#tslResponsibleId').val(data.tslResponsible);
+    		$('#issueDateId').val(data.issueDate);
+    		$('#expirationDateId').val(data.expirationDate);}
+    		
+            		                    
+        },
+        error:function(data){
+        	// Se oculta la capa 'cargando...'
+        	hide();
+        	// Se eliminan los posibles errores anteriores...
+        	cleanValidationResult('tslFormEdit');
+        	// Se obtiene el JSON de los campos con errores de validación
+        	// y se modifican los estilos/aÃ±aden mensajes
+        	var validation = $(data)["0"].responseJSON;
+        	drawValidationResult(validation.fieldErrors);
+      
+        }
+    });
+
+}
+
 
 $(document).ready(
 		function() {
@@ -170,10 +258,9 @@ $(document).ready(
 	
 
 
-$("#file").change(
+$("#fileId").change(
 		function() {
 			var fieldVal = $(this).val();
-debugger;
 			// Change the node's value by removing the fake path (Chrome)
 			fieldVal = fieldVal.replace("C:\\fakepath\\", "");
 			if (fieldVal != undefined || fieldVal != "") {
@@ -200,4 +287,6 @@ $("#fileDoc").change(
 		});
 
 		});
+
+
 </script>

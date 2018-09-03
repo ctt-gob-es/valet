@@ -15,33 +15,49 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.service.ITslCountryRegionService.java.</p>
+ * <b>File:</b><p>es.gob.valet.service.ITslCountryRegionMappingService.java.</p>
  * <b>Description:</b><p> .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>23 jul. 2018.</p>
+ * <b>Date:</b><p>8 ago. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 23 jul. 2018.
+ * @version 1.0, 8 ago. 2018.
  */
 package es.gob.valet.service;
 
 import java.util.List;
 
-import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
+import es.gob.valet.persistence.configuration.model.entity.TslValet;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 23 jul. 2018.
+ * @version 1.0, 8 ago. 2018.
  */
-public interface ITslCountryRegionService {
+public interface ITslCountryRegionMappingService {
 
 	/**
-	 * Method that obtains the country by the identifier.
+	 * Method that obtains a TslCountryRegionMapping by its identifier.
+	 * @param idTslCountryRegionMapping The TslCountryRegionMapping identifier.
+	 * @return {@link TslCountryRegionMapping}
 	 */
-	TslCountryRegion getTslCountryRegionById(Long idCountry);
+	TslCountryRegionMapping getTslCountryRegionMappingById(Long idTslCountryRegionMapping);
 
-	String getNameCountryRegionById(Long idCountry);
+	// DataTablesOutput<TslCountryRegionMapping> findAllMapping(DataTablesInput
+	// input, Long idCountryRegion);
+	// DataTablesOutput<TslCountryRegionMapping> findAllMapping(DataTablesInput
+	// input, Long idCountryRegion);
+	List<TslCountryRegionMapping> getAllMappingByIdCountry(Long idCRM);
 
+	DataTablesOutput<TslCountryRegionMapping> findAll(DataTablesInput input);
+
+	TslCountryRegionMapping save(TslCountryRegionMapping tslCRMParam);
 	
+
+	void deleteTslCountryRegionMapping(Long idTslCountryRegionMapping);
+	void deleteTslCountryRegionMappingByInBatch(List<TslCountryRegionMapping> listMapping);
+	boolean existIdentificator(String identificator, Long idCRM);
 }

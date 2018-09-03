@@ -32,7 +32,8 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 
-import es.gob.valet.persistence.configuration.model.entity.TSLValet;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
+import es.gob.valet.persistence.configuration.model.entity.TslValet;
 import es.gob.valet.persistence.configuration.model.repository.TslValetRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.TslValetDataTablesRepository;
 import es.gob.valet.service.ITslValetService;
@@ -62,7 +63,7 @@ public class TslValetService implements ITslValetService {
 	
 	
 	@Override
-	public DataTablesOutput<TSLValet> findAllTsl(DataTablesInput input) {
+	public DataTablesOutput<TslValet> findAllTsl(DataTablesInput input) {
 		
 		
 		return dtRepository.findAll(input);
@@ -70,16 +71,27 @@ public class TslValetService implements ITslValetService {
 	}
 
 	@Override
-	public TSLValet getTslValetById(Long tslId) {
+	public TslValet getTslValetById(Long tslId) {
 		return repository.findByIdTslValet(tslId);
 	}
 
 	
-	public Iterable<TSLValet> getAllTSL(){
+	public Iterable<TslValet> getAllTSL(){
 		return repository.findAll();
 	}
 	
-	public TSLValet saveTSL( TSLValet tslParam){
+	public TslValet saveTSL( TslValet tslParam){
 		return repository.save(tslParam);
+	}
+	
+
+	@Override
+	public void deleteTslValet(Long idTslValet) {
+		repository.deleteById(idTslValet);	
+		
+	}
+	
+	public TslValet findByCountry(TslCountryRegion tslCountryRegion){
+		return repository.findByCountry(tslCountryRegion);
 	}
 }

@@ -15,7 +15,7 @@ import es.gob.valet.commons.utilidades.NumberConstants;
 
 @Entity
 @Table(name = "TSL_COUNTRY_REGION")
-public class TSLCountryRegion implements Serializable {
+public class TslCountryRegion implements Serializable {
 
 	/**
 	 * Attribute that represents the serial version UID. 
@@ -24,7 +24,7 @@ public class TSLCountryRegion implements Serializable {
 	/**
 	 * Attribute that represents the object ID.
 	 */
-	private Long idTSLCountryRegion;
+	private Long idTslCountryRegion;
 	
 	
 	/**
@@ -41,23 +41,23 @@ public class TSLCountryRegion implements Serializable {
 
 	
 	/**
-	 * Gets the value of the attribute {@link #idTSLCountryRegion}.
-	 * @return the value of the attribute {@link #idTSLCountryRegion}.
+	 * Gets the value of the attribute {@link #idTslCountryRegion}.
+	 * @return the value of the attribute {@link #idTslCountryRegion}.
 	 */
 	@Id
 	@Column(name = "ID_COUNTRY_REGION", unique = true, nullable = false, precision = NumberConstants.NUM19)
 	@JsonView(DataTablesOutput.View.class)
-	public Long getIdTSLCountryRegion() {
+	public Long getIdTslCountryRegion() {
 		
-		return idTSLCountryRegion;
+		return idTslCountryRegion;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #idTSLCountryRegion}.
-	 * @param idTSLCountryRegionParam The value for the attribute {@link #idTSLCountryRegion}.
+	 * Sets the value of the attribute {@link #idTslCountryRegion}.
+	 * @param idTslCountryRegionParam The value for the attribute {@link #idTslCountryRegion}.
 	 */
-	public void setIdTSLCountryRegion(Long idTSLCountryRegionParam) {
-		this.idTSLCountryRegion = idTSLCountryRegionParam;
+	public void setIdTslCountryRegion(Long idTslCountryRegionParam) {
+		this.idTslCountryRegion = idTslCountryRegionParam;
 	}
 
 	/**

@@ -15,44 +15,26 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.service.impl.TslCountryRegionService.java.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.datatable.TslCountryRegionMappingDataTablesRespository.java.</p>
  * <b>Description:</b><p> .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>23 jul. 2018.</p>
+ * <b>Date:</b><p>8 ago. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 23 jul. 2018.
+ * @version 1.0, 8 ago. 2018.
  */
-package es.gob.valet.service.impl;
+package es.gob.valet.persistence.configuration.model.repository.datatable;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 
-import es.gob.valet.persistence.configuration.model.entity.TSLCountryRegion;
-import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
-import es.gob.valet.service.ITslCountryRegionService;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 
 
 /** 
- * <p>Class .</p>
+ * <p>Interface that provides CRUD functionality for the TslCountryRegionMapping entity and DataTables.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 23 jul. 2018.
+ * @version 1.0, 8 ago. 2018.
  */
-@Service
-public class TSLCountryRegionService implements ITslCountryRegionService {
-
-	/**
-	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
-	 */
-	@Autowired
-	private TslCountryRegionRepository repository;
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ITslCountryRegionService#getTSLCountryRegionById()
-	 */
-	@Override
-	public TSLCountryRegion getTSLCountryRegionById(Long idCountry) {
-		
-		return repository.findByIdTSLCountryRegion(idCountry);
-	}
+public interface TslCountryRegionMappingDataTablesRespository extends DataTablesRepository<TslCountryRegionMapping, Long> {
 
 }

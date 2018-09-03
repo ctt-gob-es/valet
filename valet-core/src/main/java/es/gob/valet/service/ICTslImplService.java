@@ -15,25 +15,36 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.datatable.TslValetDataTablesRepository.java.</p>
+ * <b>File:</b><p>es.gob.valet.service.ICTSLImplService.java.</p>
  * <b>Description:</b><p> .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17 jul. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 17 jul. 2018.
  */
-package es.gob.valet.persistence.configuration.model.repository.datatable;
+package es.gob.valet.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
-
-import es.gob.valet.persistence.configuration.model.entity.TslValet;
+import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 
 /** 
- * <p>Interface that provides CRUD functionality for the TslValet entity and DataTables.</p>
+ * <p>Interface that provides communication with the operations of the persistence layer.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 17 jul. 2018.
  */
-public interface TslValetDataTablesRepository extends DataTablesRepository<TslValet, Long> {
+public interface ICTslImplService {
+	/**
+	 * Method that obtains list of available specifications.
+	 */
+
+	Iterable<CTslImpl> getAllCTSLImpl();
+	Map<String, Set<String>> getsTSLRelationSpecificatioAndVersion();
+	CTslImpl getCTSLImpById(Long id);
+	List<String> getAllSpecifications();
+	CTslImpl getCTSLImplBySpecificationVersion(String specification, String version);
+	
 
 }

@@ -54,7 +54,7 @@ import es.gob.valet.commons.utilidades.NumberConstants;
  */
 @Entity
 @Table(name = "TSL_VALET")
-public class TSLValet implements Serializable {
+public class TslValet implements Serializable {
 
 	/**
 	 * Attribute that represents the serial version UID. 
@@ -103,12 +103,12 @@ public class TSLValet implements Serializable {
 	/**
 	 * Attribute that represents the ETSI TS specification and version of this TSL.
 	 */
-	private CTSLImpl tslImpl;
+	private CTslImpl tslImpl;
 
 	/**
 	 * Attribute that represents the country/region for this TSL.
 	 */
-	private TSLCountryRegion country;
+	private TslCountryRegion country;
 
 	/**
 	 * Attribute that represents if a new TSL are avaliable.
@@ -119,6 +119,11 @@ public class TSLValet implements Serializable {
 	 * Attribute that represents the last new TSL avaliable are find.
 	 */
 	private Date lastNewTSAvaliableFind;
+	
+	/**
+	 * Attribute that represents the alias for new TSL.
+	 */
+	private String alias;
 
 	/**
 	 * Gets the value of the attribute {@link #idTslValet}.
@@ -278,7 +283,7 @@ public class TSLValet implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_TSL_IMPL", nullable = false)
 	@JsonView(DataTablesOutput.View.class)
-	public CTSLImpl getTslImpl() {
+	public CTslImpl getTslImpl() {
 		return tslImpl;
 	}
 
@@ -286,7 +291,7 @@ public class TSLValet implements Serializable {
 	 * Sets the value of the attribute {@link #tslImpl}.
 	 * @param tslImplParam The value for the attribute {@link #tslImpl}.
 	 */
-	public void setTslImpl(CTSLImpl tslImplParam) {
+	public void setTslImpl(CTslImpl tslImplParam) {
 		this.tslImpl = tslImplParam;
 	}
 
@@ -297,7 +302,7 @@ public class TSLValet implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_COUNTRY_REGION")
 	@JsonView(DataTablesOutput.View.class)
-	public TSLCountryRegion getCountry() {
+	public TslCountryRegion getCountry() {
 		return country;
 	}
 
@@ -305,7 +310,7 @@ public class TSLValet implements Serializable {
 	 * Sets the value of the attribute {@link #country}.
 	 * @param country The value for the attribute {@link #country}.
 	 */
-	public void setCountry(TSLCountryRegion country) {
+	public void setCountry(TslCountryRegion country) {
 		this.country = country;
 	}
 
@@ -348,6 +353,25 @@ public class TSLValet implements Serializable {
 
 	public void setLastNewTSAvaliableFind(Date lastNewTSAvaliableFindParam) {
 		this.lastNewTSAvaliableFind = lastNewTSAvaliableFindParam;
+	}
+
+	
+	/**
+	 * Gets the value of the attribute {@link #alias}.
+	 * @return the value of the attribute {@link #alias}.
+	 */
+	@Column(name = "ALIAS", unique = true, nullable = false, length = NumberConstants.NUM128)
+	public String getAlias() {
+		return alias;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #alias}.
+	 * @param alias The value for the attribute {@link #alias}.
+	 */
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 
 }

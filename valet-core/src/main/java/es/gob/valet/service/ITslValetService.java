@@ -27,7 +27,8 @@ package es.gob.valet.service;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
-import es.gob.valet.persistence.configuration.model.entity.TSLValet;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
+import es.gob.valet.persistence.configuration.model.entity.TslValet;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer.</p>
@@ -41,20 +42,23 @@ public interface ITslValetService {
 	 * @param input DataTableInput with filtering, paging and sorting configuration.
 	 * @return A set of DataTable rows that matches the query.
 	 */
-	DataTablesOutput<TSLValet> findAllTsl(DataTablesInput input);
+	DataTablesOutput<TslValet> findAllTsl(DataTablesInput input);
 
 	
 	
 	/**
 	 * Method that obtains a TSL by its identifier.
 	 * @param tslId The TSL identifier.
-	 * @return {@link TSLValet}
+	 * @return {@link TslValet}
 	 */
-	TSLValet getTslValetById(Long tslId);
+	TslValet getTslValetById(Long tslId);
 	
-	Iterable<TSLValet> getAllTSL();
+	Iterable<TslValet> getAllTSL();
 	
-	TSLValet saveTSL( TSLValet tslParam);
+	TslValet saveTSL( TslValet tslParam);
+	
+	 void deleteTslValet(Long idTslValet);
+	 TslValet findByCountry(TslCountryRegion tslCountryRegion);
 	
 	
 }
