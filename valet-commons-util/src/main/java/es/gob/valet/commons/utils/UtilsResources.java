@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,20 +14,17 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
- * <b>File:</b><p>es.gob.valet.commons.utilidades.UtilsResources.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>1 ago. 2018.</p>
+/**
+ * <b>File:</b><p>es.gob.valet.commons.utils.UtilsResources.java.</p>
+ * <b>Description:</b><p>Class that provides functionality to control resources.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>01/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 1 ago. 2018.
+ * @version 1.1, 10/09/2018.
  */
-package es.gob.valet.commons.utilidades;
+package es.gob.valet.commons.utils;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -36,37 +33,40 @@ import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 
-/** 
- * <p>Class .</p>
+/**
+ * <p>Class that provides functionality to control resources.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 1 ago. 2018.
+ * @version 1.1, 10/09/2018.
  */
 public class UtilsResources {
+
 	/**
 	 * Constant attribute that represents the token 'text/plain'.
 	 */
 	private static final String TOKEN_TEXT_PLAIN = "text/plain";
-	
+
 	/**
-	 * Constant attribute that represents an empty string.
+	 * Tries to get the MIME type of the input data.
+	 * @param data Byte array to analyze.
+	 * @return String representation of the MIME type of the input data. If there is some error,
+	 * then {@value #TOKEN_TEXT_PLAIN} is returned.
 	 */
-	private static final String EMPTY_STRING="";
-	
 	public static String getMimeType(byte[ ] data) {
 		Tika t = new Tika();
 		InputStream is = new ByteArrayInputStream(data);
 		try {
 			return t.detect(is);
 		} catch (IOException e) {
-			//LOGGER.error(Language.getFormatResCoreGeneral(LOG02, new Object[ ] { }), e);
-			
-			
+			// TODO
+			// LOGGER.error(Language.getFormatResCoreGeneral(LOG02, new Object[
+			// ] { }), e);
+
 		} finally {
 			safeCloseInputStream(is);
 		}
 		return TOKEN_TEXT_PLAIN;
 	}
-	
+
 	/**
 	 * Method that handles the closing of a {@link InputStream} resource.
 	 * @param is Parameter that represents a {@link InputStream} resource.
@@ -76,13 +76,15 @@ public class UtilsResources {
 			try {
 				is.close();
 			} catch (IOException e) {
-				//LOGGER.error(Language.getFormatResCoreGeneral(LOG01, new Object[ ] { is.getClass().getName(), e.getMessage() }));
+				// TODO
+				// LOGGER.error(Language.getFormatResCoreGeneral(LOG01, new
+				// Object[ ] { is.getClass().getName(), e.getMessage() }));
 			}
 		}
 	}
+
 	/**
 	 * Autodetects extension given a mime type.
-	 * 
 	 * @param mimeType Mime Type to autodetect its extension.
 	 * @return Extension associated to given mime type.
 	 */
@@ -92,9 +94,25 @@ public class UtilsResources {
 			m = MimeTypes.getDefaultMimeTypes().forName(mimeType);
 			return m.getExtension();
 		} catch (MimeTypeException e) {
-			//LOGGER.error(Language.getFormatResCoreGeneral(LOG03, new Object[ ] { }), e);
+			// TODO
+			// LOGGER.error(Language.getFormatResCoreGeneral(LOG03, new Object[
+			// ] { }), e);
 		}
-		return EMPTY_STRING;
+		return UtilsStringChar.EMPTY_STRING;
+	}
+
+	/**
+	 * To free resources, this method sets the length of the input {@link StringBuilder} to
+	 * zero and then trim it.
+	 * @param sb String builder to clean. If it is <code>null</code>, this method do nothing.
+	 */
+	public static void cleanStringBuilder(StringBuilder sb) {
+
+		if (sb != null) {
+			sb.setLength(0);
+			sb.trimToSize();
+		}
+
 	}
 
 }

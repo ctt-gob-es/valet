@@ -28,6 +28,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.constrains.FieldMatch;
 import es.gob.valet.rest.exception.CheckItFirst;
 import es.gob.valet.rest.exception.ThenCheckIt;
@@ -50,21 +51,21 @@ public class UserForm {
 	 */
 	@NotBlank(groups=CheckItFirst.class, message="{form.valid.user.name.notempty}")
     @Size(min=1, max=15, groups=ThenCheckIt.class)
-    private String name = "";
+    private String name = UtilsStringChar.EMPTY_STRING;
 
 	/**
 	 * Attribute that represents the value of the input surnames of the user in the form. 
 	 */
 	@NotBlank(groups=CheckItFirst.class, message="{form.valid.user.surnames.notempty}")
     @Size(min=1, max=30, groups=ThenCheckIt.class)
-    private String surnames = "";
+    private String surnames = UtilsStringChar.EMPTY_STRING;
 	
 	/**
 	 * Attribute that represents the value of the input username of the user in the form. 
 	 */
 	@NotBlank(groups=CheckItFirst.class, message="{form.valid.user.login.notempty}")
     @Size(min=5, max=30, groups=ThenCheckIt.class)
-    private String login = "";
+    private String login = UtilsStringChar.EMPTY_STRING;
 
 	/**
 	 * Attribute that represents the value of the input password of the user in the form. 
@@ -72,21 +73,21 @@ public class UserForm {
 	@NotBlank(groups=CheckItFirst.class, message="{form.valid.user.password.notempty}")
     @Size(min=7, max=30, groups=ThenCheckIt.class)
 	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message="{form.valid.user.password.noPattern}", groups=ThenCheckIt.class)
-    private String password = "";
+    private String password = UtilsStringChar.EMPTY_STRING;
 	
 	/**
 	 * Attribute that represents the value of the input password of the user in the form. 
 	 */
 	@NotBlank(groups=CheckItFirst.class, message="{form.valid.user.confirmPassword.notempty}")
     @Size(min=7, max=30, groups=ThenCheckIt.class)
-    private String confirmPassword = "";
+    private String confirmPassword = UtilsStringChar.EMPTY_STRING;
 		
 	/**
 	 * Attribute that represents the value of the input email of the user in the form. 
 	 */
 	@NotBlank(groups=CheckItFirst.class, message="{form.valid.user.email.notempty}")
     @Size(min=3, max=254, groups=ThenCheckIt.class)
-    private String email = "";
+    private String email = UtilsStringChar.EMPTY_STRING;
 			
 	/**
 	 * Gets the value of the attribute {@link #idUserValet}.

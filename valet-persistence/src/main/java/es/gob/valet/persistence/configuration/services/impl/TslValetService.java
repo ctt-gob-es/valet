@@ -22,7 +22,7 @@
  * @author Gobierno de España.
  * @version 1.0, 26 jun. 2018.
  */
-package es.gob.valet.service.impl;
+package es.gob.valet.persistence.configuration.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslValet;
 import es.gob.valet.persistence.configuration.model.repository.TslValetRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.TslValetDataTablesRepository;
-import es.gob.valet.service.ITslValetService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
 
 
 /** 

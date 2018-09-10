@@ -22,7 +22,7 @@
  * @author Gobierno de España.
  * @version 1.0, 8 ago. 2018.
  */
-package es.gob.valet.service.impl;
+package es.gob.valet.persistence.configuration.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionMappingRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.TslCountryRegionMappingDataTablesRespository;
-import es.gob.valet.service.ITslCountryRegionMappingService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 
 /** 
  * <p>Class .</p>
@@ -56,7 +56,7 @@ public class TslCountryRegionMappingService implements ITslCountryRegionMappingS
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ITslCountryRegionMappingService#getTslValetById(java.lang.Long)
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService#getTslValetById(java.lang.Long)
 	 */
 	@Override
 	public TslCountryRegionMapping getTslCountryRegionMappingById(Long idTslCountryRegionMapping) {

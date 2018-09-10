@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,28 +14,28 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
- * <b>File:</b><p>entity.TslInformation.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>7 ago. 2018.</p>
+/**
+ * <b>File:</b><p>es.gob.valet.rest.elements.TslInformation.java.</p>
+ * <b>Description:</b><p>Class that represents structure of a TSL information request.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 7 ago. 2018.
+ * @version 1.1, 10/09/2018.
  */
-package entity;
+package es.gob.valet.rest.elements;
 
 import java.io.Serializable;
 import java.util.Date;
 
-/** 
+/**
  * <p>Class that represents structure of a TSL information request.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
- * @version 1.0, 7/8/2018.
+ * @version 1.1, 10/09/2018.
  */
 public class TslInformation implements Serializable {
 
 	/**
-	 * Attribute that represents . 
+	 * Constant attribute that represents the serial version UID.
 	 */
 	private static final long serialVersionUID = 2705319222271442661L;
 

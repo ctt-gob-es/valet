@@ -59,8 +59,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import es.gob.valet.commons.utilidades.GeneralConstants;
-import es.gob.valet.commons.utilidades.UtilsResources;
+import es.gob.valet.commons.utils.GeneralConstants;
+import es.gob.valet.commons.utils.UtilsResources;
+import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.LanguageWeb;
@@ -69,10 +70,10 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslValet;
-import es.gob.valet.service.ICTslImplService;
-import es.gob.valet.service.ITslCountryRegionMappingService;
-import es.gob.valet.service.ITslCountryRegionService;
-import es.gob.valet.service.ITslValetService;
+import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
 
 /** 
  * <p>Class that manages the REST request related to the TSLs administration.</p>
@@ -194,7 +195,7 @@ public class TslRestController {
 				error = true;
 			}
 
-			if (version == null || version.equals("") || version.equals(String.valueOf(-1))) {
+			if (UtilsStringChar.isNullOrEmpty(version) || version.equals(String.valueOf(-1))) {
 				LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_VERSION));
 				json.put(FIELD_VERSION + "_span", LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_VERSION));
 				error = true;
@@ -418,7 +419,7 @@ public class TslRestController {
 			String mimeType = UtilsResources.getMimeType(implTsl);
 			String extension = UtilsResources.getExtension(mimeType);
 			if (extension == null) {
-				extension = "";
+				extension = UtilsStringChar.EMPTY_STRING;
 			}
 
 			InputStream in = new ByteArrayInputStream(implTsl);
@@ -439,7 +440,7 @@ public class TslRestController {
 			String mimeType = UtilsResources.getMimeType(legibleDoc);
 			String extension = UtilsResources.getExtension(mimeType);
 			if (extension == null) {
-				extension = "";
+				extension = UtilsStringChar.EMPTY_STRING;
 			}
 			InputStream in = new ByteArrayInputStream(legibleDoc);
 			response.setContentType(mimeType);

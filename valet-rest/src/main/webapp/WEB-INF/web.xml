@@ -34,7 +34,7 @@
 		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
 		<init-param>
 			<param-name>javax.ws.rs.Application</param-name>
-			<param-value>es.gob.valet.rest.TslRestServiceApplication</param-value>
+			<param-value>es.gob.valet.rest.services.TslRestServiceApplication</param-value>
 		</init-param>
 		<init-param>
 			<param-name>resteasy.servlet.mapping.prefix</param-name>

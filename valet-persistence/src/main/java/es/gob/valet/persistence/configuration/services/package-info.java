@@ -1,4 +1,4 @@
-/*
+/* 
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -15,6 +15,6 @@
  ******************************************************************************/
 
 /**
- * Package for structures representation.
+ * Package that contains classes that provides communication with the operations of the persistence layer.
  */
-package entity;
+package es.gob.valet.persistence.configuration.services;

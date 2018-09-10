@@ -22,7 +22,7 @@
  * @author Gobierno de España.
  * @version 1.0, 15 jun. 2018.
  */
-package es.gob.valet.service;
+package es.gob.valet.persistence.configuration.services.ifaces;
 
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;

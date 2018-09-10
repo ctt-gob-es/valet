@@ -15,36 +15,33 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.service.ICTSLImplService.java.</p>
+ * <b>File:</b><p>es.gob.valet.service.ITslCountryRegionService.java.</p>
  * <b>Description:</b><p> .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>17 jul. 2018.</p>
+ * <b>Date:</b><p>23 jul. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 17 jul. 2018.
+ * @version 1.0, 23 jul. 2018.
  */
-package es.gob.valet.service;
+package es.gob.valet.persistence.configuration.services.ifaces;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17 jul. 2018.
+ * @version 1.0, 23 jul. 2018.
  */
-public interface ICTslImplService {
+public interface ITslCountryRegionService {
+
 	/**
-	 * Method that obtains list of available specifications.
+	 * Method that obtains the country by the identifier.
 	 */
+	TslCountryRegion getTslCountryRegionById(Long idCountry);
 
-	Iterable<CTslImpl> getAllCTSLImpl();
-	Map<String, Set<String>> getsTSLRelationSpecificatioAndVersion();
-	CTslImpl getCTSLImpById(Long id);
-	List<String> getAllSpecifications();
-	CTslImpl getCTSLImplBySpecificationVersion(String specification, String version);
+	String getNameCountryRegionById(Long idCountry);
+
 	
-
 }

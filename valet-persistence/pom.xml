@@ -6,9 +6,10 @@
 	<parent>
 		<groupId>es.gob.valet</groupId>
 		<artifactId>valet-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 	<artifactId>valet-persistence</artifactId>
+	<version>${valet.version.persistence}</version>
 	<name>valet-persistence</name>
 	<packaging>jar</packaging>
 	<properties>

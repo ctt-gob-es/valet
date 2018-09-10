@@ -5,9 +5,10 @@
   <parent>
     <groupId>es.gob.valet</groupId>
     <artifactId>valet-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
   <artifactId>valet-i18n</artifactId>
+  <version>${valet.version.i18n}</version>
   <name>valet-i18n</name>
    <packaging>jar</packaging>
   <properties>

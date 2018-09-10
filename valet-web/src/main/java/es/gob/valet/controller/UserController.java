@@ -35,7 +35,7 @@ import es.gob.valet.form.UserForm;
 import es.gob.valet.form.UserFormEdit;
 import es.gob.valet.form.UserFormPassword;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
-import es.gob.valet.service.IUserValetService;
+import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 
 /** 
  * <p>Class that manages the requests related to the Users administration.</p>

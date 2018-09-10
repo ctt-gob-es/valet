@@ -15,33 +15,49 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.service.ITslCountryRegionService.java.</p>
+ * <b>File:</b><p>es.gob.valet.service.impl.TslCountryRegionService.java.</p>
  * <b>Description:</b><p> .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23 jul. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 23 jul. 2018.
  */
-package es.gob.valet.service;
+package es.gob.valet.persistence.configuration.services.impl;
 
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
-import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
+import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
+
 
 /** 
- * <p>Interface that provides communication with the operations of the persistence layer.</p>
+ * <p>Class .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 23 jul. 2018.
  */
-public interface ITslCountryRegionService {
+@Service
+public class TslCountryRegionService implements ITslCountryRegionService {
 
 	/**
-	 * Method that obtains the country by the identifier.
+	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
 	 */
-	TslCountryRegion getTslCountryRegionById(Long idCountry);
-
-	String getNameCountryRegionById(Long idCountry);
-
+	@Autowired
+	private TslCountryRegionRepository repository;
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getTslCountryRegionById()
+	 */
+	@Override
+	public TslCountryRegion getTslCountryRegionById(Long idCountry) {
+		
+		return repository.findByIdTslCountryRegion(idCountry);
+	}
 	
+	public String getNameCountryRegionById(Long idCountry){
+		TslCountryRegion tslCountryRegion = getTslCountryRegionById(idCountry);
+		return tslCountryRegion.getCountryRegionName();
+	}
+
 }

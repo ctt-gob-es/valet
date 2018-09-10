@@ -1,10 +1,33 @@
-package es.gob.valet.commons.utilidades;
+/*
+/*******************************************************************************
+ * Copyright (C) 2018 MINHAFP, Gobierno de España
+ * This program is licensed and may be used, modified and redistributed under the  terms
+ * of the European Public License (EUPL), either version 1.1 or (at your option)
+ * any later version as soon as they are approved by the European Commission.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and
+ * more details.
+ * You should have received a copy of the EUPL1.1 license
+ * along with this program; if not, you may find it at
+ * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ ******************************************************************************/
 
 /**
- * 
+ * <b>File:</b><p>es.gob.valet.commons.utils.NumberConstants.java.</p>
+ * <b>Description:</b><p>Interface that defines numeric constants for generalized usage.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>22/06/2018.</p>
+ * @author Gobierno de España.
+ * @version 1.0, 22/06/2018.
+ */
+package es.gob.valet.commons.utils;
+
+/**
  * <p>Interface that defines numeric constants for generalized usage.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 22 jun. 2018.
+ * @version 1.0, 22/06/2018.
  */
 public interface NumberConstants {
 
@@ -27,7 +50,7 @@ public interface NumberConstants {
 	 * Constant attribute that represents the number -1 (type long).
 	 */
 	long NUM_NEG_1_LONG = -1l;
-	
+
 	/**
 	 * Constant attribute that represents the number 0.
 	 */
@@ -432,7 +455,7 @@ public interface NumberConstants {
 	 * Constant attribute that represents the number 80.
 	 */
 	int NUM80 = 80;
-	
+
 	/**
 	 * Constant attribute that represents the number 90.
 	 */
@@ -799,5 +822,3 @@ public interface NumberConstants {
 	int NUM0X10 = 0x10;
 
 }
-
-

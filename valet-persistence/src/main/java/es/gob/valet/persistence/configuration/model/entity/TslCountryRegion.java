@@ -11,7 +11,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import es.gob.valet.commons.utilidades.NumberConstants;
+import es.gob.valet.commons.utils.NumberConstants;
 
 @Entity
 @Table(name = "TSL_COUNTRY_REGION")

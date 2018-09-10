@@ -22,7 +22,7 @@
  * @author Gobierno de España.
  * @version 1.0, 17 jul. 2018.
  */
-package es.gob.valet.service.impl;
+package es.gob.valet.persistence.configuration.services.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
 
 import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.repository.CTslImplRepository;
-import es.gob.valet.service.ICTslImplService;
+import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 
 /** 
  * <p>Class .</p>

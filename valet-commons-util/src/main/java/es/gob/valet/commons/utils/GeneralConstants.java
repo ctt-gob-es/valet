@@ -15,6 +15,25 @@
  ******************************************************************************/
 
 /**
- * Package for structures representation.
+ * <b>File:</b><p>es.gob.valet.commons.utils.GeneralConstants.java.</p>
+ * <b>Description:</b><p>Interface that contains general constants.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>17/07/2018.</p>
+ * @author Gobierno de España.
+ * @version 1.0, 17/07/2018.
  */
-package entity;
+package es.gob.valet.commons.utils;
+
+/**
+ * <p>Interface that contains general constants.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * @version 1.0, 17/07/2018.
+ */
+public interface GeneralConstants {
+
+	/**
+	 * Constant attribute that represents the vaLET Logger name.
+	 */
+	public static final String LOGGER_NAME_VALET_LOG = "vaLET";
+
+}

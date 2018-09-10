@@ -41,7 +41,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import es.gob.valet.commons.utilidades.NumberConstants;
+import es.gob.valet.commons.utils.NumberConstants;
 
 /** 
  * <p>Class that represents the representation of the <i>TSL_COUNTRY_REGION_MAPPING</i> database table as a Plain Old Java Object</p>

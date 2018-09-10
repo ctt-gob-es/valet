@@ -49,13 +49,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import es.gob.valet.commons.utilidades.NumberConstants;
+import es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.UserForm;
 import es.gob.valet.form.UserFormEdit;
 import es.gob.valet.form.UserFormPassword;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
+import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 import es.gob.valet.rest.exception.OrderedValidation;
-import es.gob.valet.service.IUserValetService;
 
 /** 
  * <p>Class that manages the REST requests related to the Users administration and
@@ -139,7 +140,7 @@ public class UserRestController {
 				} else {
 					userValet = new UserValet();
 				}
-				if (!"".equals(userForm.getPassword())) {
+				if (!UtilsStringChar.isNullOrEmpty(userForm.getPassword())) {
 					String pwd = userForm.getPassword();
 					BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
 					String hashPwd = bc.encode(pwd);
@@ -238,7 +239,7 @@ public class UserRestController {
 	@RequestMapping(value = "/saveuserpassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String savePassword(@Validated(OrderedValidation.class) @RequestBody UserFormPassword userFormPassword,
 			BindingResult bindingResult) {
-		String result = "";
+		String result = UtilsStringChar.EMPTY_STRING;
 		UserValet userValet = userService.getUserValetById(userFormPassword.getIdUserValetPass());
 
 		if (bindingResult.hasErrors()) {
@@ -276,7 +277,7 @@ public class UserRestController {
 	public String saveEditMenu(@Validated(OrderedValidation.class) @RequestBody UserFormEdit userForm,
 			BindingResult bindingResult) {
 		UserValet userValet = null;
-		String result = "";
+		String result = UtilsStringChar.EMPTY_STRING;;
 
 		if (bindingResult.hasErrors()) {
 			JSONObject json = new JSONObject();

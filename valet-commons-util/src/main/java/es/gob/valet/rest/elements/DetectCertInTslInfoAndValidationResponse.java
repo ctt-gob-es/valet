@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,29 +14,29 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
- * <b>File:</b><p>entity.GetTslInformationResponse.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>7 ago. 2018.</p>
+/**
+ * <b>File:</b><p>es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse.java.</p>
+ * <b>Description:</b><p>Class that represents structure of detected certificate in TSL and validation.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 7 ago. 2018.
+ * @version 1.1, 10/09/2018.
  */
-package entity;
+package es.gob.valet.rest.elements;
 
 import java.io.Serializable;
 
-/** 
- * <p>Class that represents structure of TSL information.</p>
+/**
+ * <p>Class that represents structure of detected certificate in TSL and validation.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
- * @version 1.0, 7/8/2018.
+ * @version 1.1, 10/09/2018.
  */
-public class GetTslInformationResponse implements Serializable {
+public class DetectCertInTslInfoAndValidationResponse implements Serializable {
 
 	/**
-	 * Attribute that represents . 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = -9182794714173356287L;
+	private static final long serialVersionUID = -716849919818272751L;
 
 	/**
 	 * Attribute that represents the status.
@@ -51,7 +51,7 @@ public class GetTslInformationResponse implements Serializable {
 	/**
 	 * Attribute that represents the result.
 	 */
-	private TslInformation tslInformation;
+	private ResultTslInfVal resultTslInfVal;
 
 	/**
 	 * Gets the value of the attribute {@link #status}.
@@ -86,19 +86,19 @@ public class GetTslInformationResponse implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #tslInformation}.
-	 * @return the value of the attribute {@link #tslInformation}.
+	 * Gets the value of the attribute {@link #resultTslInfVal}.
+	 * @return the value of the attribute {@link #resultTslInfVal}.
 	 */
-	public TslInformation getTslInformation() {
-		return tslInformation;
+	public ResultTslInfVal getResultTslInfVal() {
+		return resultTslInfVal;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #tslInformation}.
-	 * @param tslInformationP The value for the attribute {@link #tslInformation}.
+	 * Sets the value of the attribute {@link #resultTslInfVal}.
+	 * @param resultTslInfValP The value for the attribute {@link #resultTslInfVal}.
 	 */
-	public void setTslInformation(final TslInformation tslInformationP) {
-		this.tslInformation = tslInformationP;
+	public void setResultTslInfVal(final ResultTslInfVal resultTslInfValP) {
+		this.resultTslInfVal = resultTslInfValP;
 	}
 
 }

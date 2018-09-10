@@ -15,6 +15,6 @@
  ******************************************************************************/
 
 /**
- * Package for structures representation.
+ * Package that defines the utilities classes.
  */
-package entity;
+package es.gob.valet.commons.utils;

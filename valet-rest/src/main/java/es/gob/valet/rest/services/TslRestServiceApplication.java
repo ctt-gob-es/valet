@@ -15,50 +15,61 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.service.ITslService.java.</p>
+ * <b>File:</b><p>es.gob.valet.rest.TslRestServiceApplication.java.</p>
  * <b>Description:</b><p> .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>25 jun. 2018.</p>
+ * <b>Date:</b><p>7 ago. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25 jun. 2018.
+ * @version 1.0, 7 ago. 2018.
  */
-package es.gob.valet.service;
+package es.gob.valet.rest.services;
 
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import java.util.HashSet;
+import java.util.Set;
 
-import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
-import es.gob.valet.persistence.configuration.model.entity.TslValet;
+import javax.ws.rs.core.Application;
 
 /** 
- * <p>Interface that provides communication with the operations of the persistence layer.</p>
+ * <p>Class needed for restful ws server.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25 jun. 2018.
+ * @version 1.0, 7/8/2018.
  */
-public interface ITslValetService {
-	
-	/**
-	 * Method that returns a list of TSLs to be showed in DataTable
-	 * @param input DataTableInput with filtering, paging and sorting configuration.
-	 * @return A set of DataTable rows that matches the query.
-	 */
-	DataTablesOutput<TslValet> findAllTsl(DataTablesInput input);
+public class TslRestServiceApplication extends Application {
 
-	
-	
 	/**
-	 * Method that obtains a TSL by its identifier.
-	 * @param tslId The TSL identifier.
-	 * @return {@link TslValet}
+	 * Attribute that represents singletons objects. 
 	 */
-	TslValet getTslValetById(Long tslId);
-	
-	Iterable<TslValet> getAllTSL();
-	
-	TslValet saveTSL( TslValet tslParam);
-	
-	 void deleteTslValet(Long idTslValet);
-	 TslValet findByCountry(TslCountryRegion tslCountryRegion);
-	
-	
+	private final Set<Object> singletons = new HashSet<Object>();
+
+	/**
+	 * Constructor method for the class TslRestServiceApplication.java. 
+	 */
+	public TslRestServiceApplication() {
+		singletons.add(new TslRestService());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see javax.ws.rs.core.Application#getSingletons()
+	 */
+	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
+	// because Restful needs not final access methods.
+	@Override
+	public Set<Object> getSingletons() {
+		// CHECKSTYLE:ON
+		return singletons;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see javax.ws.rs.core.Application#getClasses()
+	 */
+	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
+	// because Restful needs not final access methods.
+	@Override
+	public Set<Class<?>> getClasses() {
+		// CHECKSTYLE:ON
+		return null;
+	}
+
 }

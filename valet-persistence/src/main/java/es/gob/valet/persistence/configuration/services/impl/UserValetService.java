@@ -22,7 +22,7 @@
  * @author Gobierno de España.
  * @version 1.0, 15 jun. 2018.
  */
-package es.gob.valet.service.impl;
+package es.gob.valet.persistence.configuration.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
 import es.gob.valet.persistence.configuration.model.repository.UserValetRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.UserValetDataTablesRepository;
-import es.gob.valet.service.IUserValetService;
+import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 
 /** 
  * <p>Class that implements the communication with the operations of the persistence layer.</p>
@@ -57,7 +57,7 @@ private UserValetDataTablesRepository dtRepository;
 
 /**
  * {@inheritDoc}
- * @see es.gob.valet.service.IUserValetService#getUserValetById(java.lang.Long)
+ * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getUserValetById(java.lang.Long)
  */
 @Override
 public UserValet getUserValetById(Long userId) {
@@ -66,7 +66,7 @@ public UserValet getUserValetById(Long userId) {
 
 /**
  * {@inheritDoc}
- * @see es.gob.valet.service.IUserValetService#saveUserValet(es.gob.valet.persistence.configuration.model.entity.UserValet)
+ * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#saveUserValet(es.gob.valet.persistence.configuration.model.entity.UserValet)
  */
 @Override
 public UserValet saveUserValet(UserValet user) {
@@ -76,7 +76,7 @@ public UserValet saveUserValet(UserValet user) {
 
 /**
  * {@inheritDoc}
- * @see es.gob.valet.service.IUserValetService#deleteUserValet(java.lang.Long)
+ * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#deleteUserValet(java.lang.Long)
  */
 @Override
 public void deleteUserValet(Long userId) {
@@ -86,7 +86,7 @@ public void deleteUserValet(Long userId) {
 
 /**
  * {@inheritDoc}
- * @see es.gob.valet.service.IUserValetService#getAllUserValet()
+ * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getAllUserValet()
  */
 @Override
 public Iterable<UserValet> getAllUserValet() {
@@ -95,7 +95,7 @@ public Iterable<UserValet> getAllUserValet() {
 
 /**
  * {@inheritDoc}
- * @see es.gob.valet.service.IUserValetService#getUserValetByLogin(java.lang.String)
+ * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getUserValetByLogin(java.lang.String)
  */
 @Override
 public UserValet getUserValetByLogin(String login) {
@@ -104,7 +104,7 @@ public UserValet getUserValetByLogin(String login) {
 
 /**
  * {@inheritDoc}
- * @see es.gob.valet.service.IUserValetService#findAll(org.springframework.data.jpa.datatables.mapping.DataTablesInput)
+ * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#findAll(org.springframework.data.jpa.datatables.mapping.DataTablesInput)
  */
 @Override
 public DataTablesOutput<UserValet> findAll(DataTablesInput input) {

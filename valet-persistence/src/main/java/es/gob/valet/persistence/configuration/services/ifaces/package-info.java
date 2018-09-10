@@ -1,4 +1,4 @@
-/*
+/* 
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,7 +14,7 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/**
- * Package for structures representation.
+/** 
+ * Package that defines all the interfaces used in the configuration persistence services.
  */
-package entity;
+package es.gob.valet.persistence.configuration.services.ifaces;

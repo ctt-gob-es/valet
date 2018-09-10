@@ -15,49 +15,50 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.service.impl.TslCountryRegionService.java.</p>
+ * <b>File:</b><p>es.gob.valet.service.ITslService.java.</p>
  * <b>Description:</b><p> .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>23 jul. 2018.</p>
+ * <b>Date:</b><p>25 jun. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 23 jul. 2018.
+ * @version 1.0, 25 jun. 2018.
  */
-package es.gob.valet.service.impl;
+package es.gob.valet.persistence.configuration.services.ifaces;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
-import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
-import es.gob.valet.service.ITslCountryRegionService;
-
+import es.gob.valet.persistence.configuration.model.entity.TslValet;
 
 /** 
- * <p>Class .</p>
+ * <p>Interface that provides communication with the operations of the persistence layer.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 23 jul. 2018.
+ * @version 1.0, 25 jun. 2018.
  */
-@Service
-public class TslCountryRegionService implements ITslCountryRegionService {
-
-	/**
-	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
-	 */
-	@Autowired
-	private TslCountryRegionRepository repository;
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ITslCountryRegionService#getTslCountryRegionById()
-	 */
-	@Override
-	public TslCountryRegion getTslCountryRegionById(Long idCountry) {
-		
-		return repository.findByIdTslCountryRegion(idCountry);
-	}
+public interface ITslValetService {
 	
-	public String getNameCountryRegionById(Long idCountry){
-		TslCountryRegion tslCountryRegion = getTslCountryRegionById(idCountry);
-		return tslCountryRegion.getCountryRegionName();
-	}
+	/**
+	 * Method that returns a list of TSLs to be showed in DataTable
+	 * @param input DataTableInput with filtering, paging and sorting configuration.
+	 * @return A set of DataTable rows that matches the query.
+	 */
+	DataTablesOutput<TslValet> findAllTsl(DataTablesInput input);
 
+	
+	
+	/**
+	 * Method that obtains a TSL by its identifier.
+	 * @param tslId The TSL identifier.
+	 * @return {@link TslValet}
+	 */
+	TslValet getTslValetById(Long tslId);
+	
+	Iterable<TslValet> getAllTSL();
+	
+	TslValet saveTSL( TslValet tslParam);
+	
+	 void deleteTslValet(Long idTslValet);
+	 TslValet findByCountry(TslCountryRegion tslCountryRegion);
+	
+	
 }

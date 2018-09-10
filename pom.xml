@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>es.gob.valet</groupId>
 	<artifactId>valet-parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<name>valet-parent</name>
 	<description>vaLET parent project</description>
@@ -18,6 +18,7 @@
 		<built.by>@Firma Team</built.by>
 		<valet.version>${project.version}</valet.version>
 		<valet.project.name>vaLET</valet.project.name>
+		<java.1.8.home>C:\Program Files\Java\jdk1.8.0_131</java.1.8.home>
 		<java.1.8.version>1.8.0_131</java.1.8.version>
 		<!-- Para la correcta ejecución maven, establecer la variable java.1.8.home hacia la ruta absoluta de donde se disponga la jdk -->
 		<java.home>${java.1.8.home}</java.home>
@@ -28,14 +29,22 @@
 		<spring.rest.version>2.0.1.RELEASE</spring.rest.version>
 		<hibernate.version>5.2.13.Final</hibernate.version>
 		<plugin.javadoc.skip>true</plugin.javadoc.skip>
+		
+		<valet.version.commons-util>1.0.0</valet.version.commons-util>
+		<valet.version.i18n>1.0.0</valet.version.i18n>
+		<valet.version.persistence>1.0.0</valet.version.persistence>
+		<valet.version.core>1.0.0</valet.version.core>
+		<valet.version.web>1.0.0</valet.version.web>
+		<valet.version.rest>1.0.0</valet.version.rest>
+		
 	</properties>
 
 	<modules>
 		<module>valet-commons-util</module>
 		<module>valet-i18n</module>
 		<module>valet-persistence</module>
-		<module>valet-web</module>
 		<module>valet-core</module>
+		<module>valet-web</module>
 		<module>valet-rest</module>
 	</modules>
 
@@ -147,8 +156,8 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
+
 	<build>
 		<!-- Definición de los plugins genéricos -->
 		<plugins>

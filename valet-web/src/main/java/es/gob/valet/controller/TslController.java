@@ -45,10 +45,10 @@ import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslValet;
-import es.gob.valet.service.ICTslImplService;
-import es.gob.valet.service.ITslCountryRegionMappingService;
-import es.gob.valet.service.ITslCountryRegionService;
-import es.gob.valet.service.ITslValetService;
+import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
 
 /** 
  * <p>Class that manages the requests related to the TSLs administration.</p>

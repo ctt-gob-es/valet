@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,25 +14,7 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
- * <b>File:</b><p>es.gob.valet.commons.utilidades.GeneralConstants.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>17 jul. 2018.</p>
- * @author Gobierno de España.
- * @version 1.0, 17 jul. 2018.
+/**
+ * Package that defines the element classes for the rest services.
  */
-package es.gob.valet.commons.utilidades;
-
-
-/** 
- * <p>Interface that contains general constants .</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17 jul. 2018.
- */
-public interface GeneralConstants {
-	/**
-	 * Constant attribute that represents the vaLET Logger name.
-	 */
-	public static final String LOGGER_NAME_VALET_LOG = "vaLET";
-}
+package es.gob.valet.rest.elements;

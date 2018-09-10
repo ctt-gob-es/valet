@@ -22,7 +22,7 @@
  * @author Gobierno de España.
  * @version 1.0, 8 ago. 2018.
  */
-package es.gob.valet.service;
+package es.gob.valet.persistence.configuration.services.ifaces;
 
 import java.util.List;
 
