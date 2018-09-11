@@ -24,13 +24,12 @@
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
-import java.util.List;
-
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
-import es.gob.valet.persistence.configuration.model.entity.TslValet;
 
 
 /** 
@@ -39,6 +38,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslValet;
  * @version 1.0, 8 ago. 2018.
  */
 @Repository
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public interface TslCountryRegionMappingRepository extends JpaRepository<TslCountryRegionMapping, Long> {
 	/**
 	  * Method that obtains from the persistence a TslCountryRegionMapping identified by its primary key. 
@@ -46,6 +46,5 @@ public interface TslCountryRegionMappingRepository extends JpaRepository<TslCoun
 	 * @return Object that represents a TSL from the persistence. 
 	 */
 	TslCountryRegionMapping findByIdTslCountryRegionMapping(Long id);
-	
 	
 }

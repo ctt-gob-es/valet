@@ -24,6 +24,8 @@
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -35,9 +37,11 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
  * @version 1.0, 23 jul. 2018.
  */
 @Repository
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public interface TslCountryRegionRepository extends JpaRepository<TslCountryRegion, Long> {
+
 	/**
-	  * Method that obtains from the persistence a country identified by its primary key. 
+	 * Method that obtains from the persistence a country identified by its primary key. 
 	 * @param id String that represents the primary key of the country in the persistence.
 	 * @return Object that represents a country from the persistence. 
 	 */

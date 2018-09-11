@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
  * @version 1.0, 26 jun. 2018.
  */
 @Service
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class TslValetService implements ITslValetService {
 
 	

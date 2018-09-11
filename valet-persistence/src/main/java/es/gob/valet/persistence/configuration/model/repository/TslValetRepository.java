@@ -1,5 +1,7 @@
 package es.gob.valet.persistence.configuration.model.repository;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslValet;
  * @version 1.0, 26 jun. 2018.
  */
 @Repository
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public interface TslValetRepository  extends JpaRepository<TslValet, Long> {
 	/**
 	  * Method that obtains from the persistence a TSL identified by its primary key. 
