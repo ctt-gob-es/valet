@@ -64,8 +64,8 @@ import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
-import es.gob.valet.i18n.LanguageWeb;
-import es.gob.valet.i18n.LogMessages;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.ILogMessages;
 import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
@@ -180,8 +180,8 @@ public class TslRestController {
 		try {
 			// comprobamos que se han indicado todos los campos obligatorios
 			if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
-				LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
-				json.put(FIELD_IMPL_TSL_FILE + "_span", LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
+				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
+				json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
 				error = true;
 
 			} else {
@@ -190,14 +190,14 @@ public class TslRestController {
 			}
 
 			if (specification == null || specification.equals(String.valueOf(-1))) {
-				LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_SPECIFICATION));
-				json.put(FIELD_SPECIFICATION + "_span", LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_SPECIFICATION));
+				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_SPECIFICATION));
+				json.put(FIELD_SPECIFICATION + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_SPECIFICATION));
 				error = true;
 			}
 
 			if (UtilsStringChar.isNullOrEmpty(version) || version.equals(String.valueOf(-1))) {
-				LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_VERSION));
-				json.put(FIELD_VERSION + "_span", LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_VERSION));
+				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VERSION));
+				json.put(FIELD_VERSION + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VERSION));
 				error = true;
 			}
 
@@ -243,8 +243,8 @@ public class TslRestController {
 
 				// se comprueba si ya existe una TSL del mismo país
 				if (tslValetService.findByCountry(country) != null) {
-					LOGGER.error(LanguageWeb.getFormatResWebValet(LogMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
-					json.put(INFO_EXIST_TSL, LanguageWeb.getFormatResWebValet(LogMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
+					LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
+					json.put(INFO_EXIST_TSL, Language.getFormatResWebValet(ILogMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
 
 					listTSL = StreamSupport.stream(tslValetService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 					dtOutput.setError(json.toString());
@@ -297,8 +297,8 @@ public class TslRestController {
 			}
 
 		} catch (Exception e) {
-			LOGGER.error(LanguageWeb.getFormatResWebValet(LogMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
-			json.put(KEY_JS_ERROR_SAVE_TSL, LanguageWeb.getResWebValet(LogMessages.ERROR_SAVE_TSL_WEB));
+			LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebValet(ILogMessages.ERROR_SAVE_TSL_WEB));
 			listTSL = StreamSupport.stream(tslValetService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 		}
@@ -336,9 +336,9 @@ public class TslRestController {
 			if (idTSL != null) {
 				tsl = tslValetService.getTslValetById(idTSL);
 			} else {
-				LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_UPDATE_TSL));
+				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_UPDATE_TSL));
 				error = true;
-				json.put(KEY_JS_ERROR_UPDATE_TSL, LanguageWeb.getResWebValet(LogMessages.ERROR_UPDATE_TSL));
+				json.put(KEY_JS_ERROR_UPDATE_TSL, Language.getResWebValet(ILogMessages.ERROR_UPDATE_TSL));
 
 			}
 
@@ -400,8 +400,8 @@ public class TslRestController {
 			}
 
 		} catch (Exception e) {
-			LOGGER.error(LanguageWeb.getFormatResWebValet(LogMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
-			json.put(KEY_JS_ERROR_SAVE_TSL, LanguageWeb.getResWebValet(LogMessages.ERROR_EDIT_TSL_WEB));
+			LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebValet(ILogMessages.ERROR_EDIT_TSL_WEB));
 			listTSL = StreamSupport.stream(tslValetService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 
@@ -495,7 +495,7 @@ public class TslRestController {
 			if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
 
 			// se muestra mensaje indicando que no se ha actualizado
-			LOGGER.info(LanguageWeb.getResWebValet(LogMessages.INFO_NOT_UPDATE_FILE_IMPL_TSL));
+			LOGGER.info(Language.getResWebValet(ILogMessages.INFO_NOT_UPDATE_FILE_IMPL_TSL));
 			//json.put(FIELD_IMPL_TSL_FILE + "_span", LanguageWeb.getResWebValet(LogMessages.INFO_NOT_UPDATE_FILE_IMPL_TSL));
 			//se mantiene el que tenía la tsl
 		
@@ -547,8 +547,8 @@ public class TslRestController {
 				// otro país.
 				// se muestra mensaje indicando que no se ha actualizado
 				error = true;
-				LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_COUNTRY_INVALID));
-				json.put(FIELD_IMPL_TSL_FILE + "_span", LanguageWeb.getResWebValet(LogMessages.ERROR_COUNTRY_INVALID));
+				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_COUNTRY_INVALID));
+				json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebValet(ILogMessages.ERROR_COUNTRY_INVALID));
 			}
 			if (error) {
 				tslForm.setError(json.toString());
@@ -593,20 +593,20 @@ public class TslRestController {
 		// Long idCountryRegionMapping =
 		// mappingTslForm.getIdTslCountryRegionMapping();
 		if (mappingIdentificator == null || mappingIdentificator.isEmpty() || mappingIdentificator.length() != mappingIdentificator.trim().length()) {
-			LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
-			json.put(FIELD_MAPPING_ID + "_span", LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
+			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
+			json.put(FIELD_MAPPING_ID + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
 			error = true;
 		}
 		if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
-			LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_VALUE));
-			json.put(FIELD_MAPPING_VALUE + "_span", LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_VALUE));
+			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VALUE));
+			json.put(FIELD_MAPPING_VALUE + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VALUE));
 			error = true;
 		}
 
 		// se comprueba si existe un identificador igual
 		if (tslCountryRegionMappingService.existIdentificator(mappingIdentificator, idTslCountryRegion)) {
-			LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_VALUE));
-			json.put(KEY_JS_INFO_EXIST_IDENTIFICATOR, LanguageWeb.getResWebValet(LogMessages.ERROR_IDENTIFICATOR_DUPLICATE));
+			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VALUE));
+			json.put(KEY_JS_INFO_EXIST_IDENTIFICATOR, Language.getResWebValet(ILogMessages.ERROR_IDENTIFICATOR_DUPLICATE));
 			error = true;
 		}
 
@@ -647,20 +647,20 @@ public class TslRestController {
 		TslCountryRegionMapping tslCountryRegionMapping = null;
 
 		if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
-			LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_VALUE));
-			json.put(FIELD_MAPPING_VALUE + "_spanEdit", LanguageWeb.getResWebValet(LogMessages.ERROR_NOT_BLANK_VALUE));
+			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VALUE));
+			json.put(FIELD_MAPPING_VALUE + "_spanEdit", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VALUE));
 			error = true;
 		}
 
 		if (idTslCountryRegionMapping == null) {
 			error = true;
-			LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_EDIT_MAPPING));
+			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_EDIT_MAPPING));
 		}
 		// se obtiene el campo
 		tslCountryRegionMapping = tslCountryRegionMappingService.getTslCountryRegionMappingById(idTslCountryRegionMapping);
 		if (tslCountryRegionMapping == null) {
 			error = true;
-			LOGGER.error(LanguageWeb.getResWebValet(LogMessages.ERROR_EDIT_MAPPING));
+			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_EDIT_MAPPING));
 		}
 
 		if (!error) {

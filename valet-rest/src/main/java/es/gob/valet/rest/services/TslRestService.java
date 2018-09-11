@@ -38,15 +38,14 @@ import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.i18n.LanguageRest;
+import es.gob.valet.i18n.ILogMessages;
+import es.gob.valet.i18n.Language;
 import es.gob.valet.rest.elements.CertDetectedInTSL;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.GetTslInformationResponse;
 import es.gob.valet.rest.elements.ResultTslInfVal;
 import es.gob.valet.rest.elements.TslInformation;
 import es.gob.valet.rest.elements.TslRevocationStatus;
-import es.gob.valet.rest.services.ITslRestService;
-import es.gob.valet.rest.util.IRestLogConstants;
 
 /**
  * <p>Class that represents the statistics restful service.</p>
@@ -74,7 +73,7 @@ public class TslRestService implements ITslRestService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(CERTIFICATE) final String certificate, @FormParam(DETECTION_DATE) final Date detectionDate, @FormParam(GET_INFO) final Boolean getInfo, @FormParam(CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(RETURN_REV_EVID) final Boolean returnRevoEvid) {
 		// CHECKSTYLE:ON
-		LOGGER.info(LanguageRest.getFormatResRestValet(IRestLogConstants.REST_LOG001, new Object[ ] { application, delegatedApp, tslLocation, certificate, detectionDate, getInfo, checkRevStatus, returnRevoEvid }));
+		LOGGER.info(Language.getFormatResRestValet(ILogMessages.REST_LOG001, new Object[ ] { application, delegatedApp, tslLocation, certificate, detectionDate, getInfo, checkRevStatus, returnRevoEvid }));
 		Boolean allIsOk = Boolean.TRUE;
 
 		DetectCertInTslInfoAndValidationResponse result = new DetectCertInTslInfoAndValidationResponse();
@@ -93,9 +92,9 @@ public class TslRestService implements ITslRestService {
 		// 'checkRevocationStatus' is true
 		if (allIsOk && returnRevoEvid && !checkRevStatus) {
 			allIsOk = Boolean.FALSE;
-			LOGGER.error(LanguageRest.getFormatResRestValet(IRestLogConstants.REST_LOG004));
+			LOGGER.error(Language.getFormatResRestValet(ILogMessages.REST_LOG004));
 			result.setStatus(0);
-			result.setDescription(LanguageRest.getFormatResRestValet(IRestLogConstants.REST_LOG004));
+			result.setDescription(Language.getFormatResRestValet(ILogMessages.REST_LOG004));
 		}
 
 		// If all is OK, we can continue
@@ -185,7 +184,7 @@ public class TslRestService implements ITslRestService {
 	private String checkParamsDetectCertInTslInfoAndValidationResponse(final String application, final String certificate, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevoEvid) {
 
 		StringBuffer result = new StringBuffer();
-		result.append(LanguageRest.getFormatResRestValet(IRestLogConstants.REST_LOG003, new Object[ ] { "detectCertInTslInfoAndValidation" }));
+		result.append(Language.getFormatResRestValet(ILogMessages.REST_LOG003, new Object[ ] { "detectCertInTslInfoAndValidation" }));
 		Boolean checkError = Boolean.FALSE;
 
 		// Check received parameters
@@ -234,14 +233,14 @@ public class TslRestService implements ITslRestService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public GetTslInformationResponse getTslInformation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(COUNTRY_REGION) final String countryRegion, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(GET_TSL_XML_DATA) final Boolean getTslXmlData) {
 		// CHECKSTYLE:ON
-		LOGGER.info(LanguageRest.getFormatResRestValet(IRestLogConstants.REST_LOG002, new Object[ ] { application, delegatedApp, countryRegion, tslLocation, getTslXmlData }));
+		LOGGER.info(Language.getFormatResRestValet(ILogMessages.REST_LOG002, new Object[ ] { application, delegatedApp, countryRegion, tslLocation, getTslXmlData }));
 		Boolean allIsOk = Boolean.TRUE;
 
 		GetTslInformationResponse result = new GetTslInformationResponse();
 
 		// Check required parameters
 		String resultCheckParams = checkParamsGetTslInformation(application, getTslXmlData);
-		if (UtilsStringChar.isNullOrEmpty(resultCheckParams)) {
+		if (!UtilsStringChar.isNullOrEmpty(resultCheckParams)) {
 			allIsOk = Boolean.FALSE;
 			LOGGER.error(resultCheckParams);
 			result.setStatus(0);
@@ -253,9 +252,9 @@ public class TslRestService implements ITslRestService {
 		// but not both
 		if (allIsOk && countryRegion != null && tslLocation != null) {
 			allIsOk = Boolean.FALSE;
-			LOGGER.error(LanguageRest.getFormatResRestValet(IRestLogConstants.REST_LOG004));
+			LOGGER.error(Language.getFormatResRestValet(ILogMessages.REST_LOG004));
 			result.setStatus(0);
-			result.setDescription(LanguageRest.getFormatResRestValet(IRestLogConstants.REST_LOG004));
+			result.setDescription(Language.getFormatResRestValet(ILogMessages.REST_LOG004));
 		}
 
 		// If all is OK, we can continue
@@ -300,7 +299,7 @@ public class TslRestService implements ITslRestService {
 	private String checkParamsGetTslInformation(final String application, final Boolean getTslXmlData) {
 
 		StringBuffer result = new StringBuffer();
-		result.append(LanguageRest.getFormatResRestValet(IRestLogConstants.REST_LOG003, new Object[ ] { "getTslInformation" }));
+		result.append(Language.getFormatResRestValet(ILogMessages.REST_LOG003, new Object[ ] { "getTslInformation" }));
 		Boolean checkError = Boolean.FALSE;
 
 		// Check received parameters

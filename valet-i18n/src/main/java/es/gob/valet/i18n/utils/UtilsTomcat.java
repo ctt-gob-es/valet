@@ -15,44 +15,51 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.rest.util.IRestLogConstants.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>File:</b><p>es.gob.valet.i18n.utils.TomcatUtils.java.</p>
+ * <b>Description:</b><p> Class with tomcat utilities.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>7 ago. 2018.</p>
+ * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 7 ago. 2018.
+ * @version 1.0, 11/09/2018.
  */
-package es.gob.valet.rest.util;
+package es.gob.valet.i18n.utils;
+
+import java.io.File;
 
 /** 
- * <p>Strings constants .</p>
+ * <p>Class with tomcat utilities.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 7/8/2018.
+ * @version 1.0, 11/09/2018.
  */
-public interface IRestLogConstants {
+public final class UtilsTomcat {
 
 	/**
-	 * Constant attribute that represents the name of the property <code>REST001</code> belonging to the
-	 * file rest_serv_xx_YY.properties.
+	 * Constant attribute that represents the name of messages directory inside configuration directory.
 	 */
-	String REST_LOG001 = "REST001";
+	private static final String TOMCAT_CONF_DIR = "tomcat.config.path";
 
 	/**
-	 * Constant attribute that represents the name of the property <code>REST002</code> belonging to the
-	 * file rest_serv_xx_YY.properties.
+	 * Constructor method for the class UtilsTomcat.java.
 	 */
-	String REST_LOG002 = "REST002";
+	private UtilsTomcat() {
+	}
 
 	/**
-	 * Constant attribute that represents the name of the property <code>REST003</code> belonging to the
-	 * file rest_serv_xx_YY.properties.
+	 * Method that returns the value of the system property jboss.server.config.dir.
+	 * @return Value of the system property jboss.server.config.dir. Null if not exist.
 	 */
-	String REST_LOG003 = "REST003";
+	public static String getTomcatConfigDir() {
+		return System.getProperty(TOMCAT_CONF_DIR);
+	}
 
 	/**
-	 * Constant attribute that represents the name of the property <code>REST004</code> belonging to the
-	 * file rest_serv_xx_YY.properties.
+	 * Auxiliar method to create an absolute path to a file.
+	 * @param pathDir Directory absolute path that contains the file.
+	 * @param filename Name of the file.
+	 * @return Absolute path of the file.
 	 */
-	String REST_LOG004 = "REST004";
+	public static String createAbsolutePath(final String pathDir, final String filename) {
+		return pathDir + File.separator + filename;
+	}
 
 }
