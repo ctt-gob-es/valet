@@ -12,154 +12,118 @@
 	<description>vaLET parent project</description>
 
 	<properties>
+
+		<!-- Propiedades relativas a la definición y configuración del proyecto. -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.jdk>1.8</project.build.jdk>
 		<built.by>@Firma Team</built.by>
 		<valet.version>${project.version}</valet.version>
-		<valet.project.name>vaLET</valet.project.name>
+		<valet.project.name>valET</valet.project.name>
+		
+		<!-- Propiedades relativas a la configuración Java. -->
 		<java.1.8.home>C:\Program Files\Java\jdk1.8.0_131</java.1.8.home>
 		<java.1.8.version>1.8.0_131</java.1.8.version>
 		<!-- Para la correcta ejecución maven, establecer la variable java.1.8.home hacia la ruta absoluta de donde se disponga la jdk -->
 		<java.home>${java.1.8.home}</java.home>
 		<java.version>${java.1.8.version}</java.version>
-		<spring.version>2.0.0.RELEASE</spring.version>
-		<!-- Actualizados spring-data y spring-rest para evitar vulnerabilidad cve-2018-1273 -->
-		<spring.data.version>2.0.1.RELEASE</spring.data.version>
-		<spring.rest.version>2.0.1.RELEASE</spring.rest.version>
-		<hibernate.version>5.2.13.Final</hibernate.version>
-		<plugin.javadoc.skip>true</plugin.javadoc.skip>
 		
+		<!-- Versionado de módulos propios de valET. -->
 		<valet.version.commons-util>1.0.0</valet.version.commons-util>
 		<valet.version.i18n>1.0.0</valet.version.i18n>
 		<valet.version.persistence>1.0.0</valet.version.persistence>
 		<valet.version.core>1.0.0</valet.version.core>
 		<valet.version.web>1.0.0</valet.version.web>
 		<valet.version.rest>1.0.0</valet.version.rest>
+		<valet.version.cache>1.0.0</valet.version.cache>
+		
+		<!-- Versionado de otras dependencias. -->
+		<spring.version>2.0.0.RELEASE</spring.version>
+		<!-- Actualizados spring-data y spring-rest para evitar vulnerabilidad cve-2018-1273 -->
+		<spring.data.version>2.0.1.RELEASE</spring.data.version>
+		<spring.rest.version>2.0.1.RELEASE</spring.rest.version>
+		<hibernate.version>5.2.13.Final</hibernate.version>
 		
 	</properties>
 
+	<!-- Listado de módulos dependientes del parent. -->
 	<modules>
-		<module>valet-commons-util</module>
 		<module>valet-i18n</module>
+		<module>valet-commons-util</module>
+		<module>valet-cache</module>
 		<module>valet-persistence</module>
 		<module>valet-core</module>
 		<module>valet-web</module>
 		<module>valet-rest</module>
 	</modules>
+	
+	<!-- Definición de perfiles de construcción maven. -->
+	<profiles>
 
-	<dependencyManagement>
-		<dependencies>
-			<!-- Módulos de vaLET -->
-			<dependency>
-				<groupId>es.gob.valet</groupId>
-				<artifactId>valet-commons-util</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>es.gob.valet</groupId>
-				<artifactId>valet-i18n</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>es.gob.valet</groupId>
-				<artifactId>valet-persistence</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>es.gob.valet</groupId>
-				<artifactId>valet-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>es.gob.valet</groupId>
-				<artifactId>valet-rest</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<!-- Módulos de vaLET -->
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.5</version>
-			</dependency>
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.16</version>
-			</dependency>
-			<!-- Spring Boot 2 -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-web</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-data-jpa</artifactId>
-				<version>${spring.data.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-security</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-thymeleaf</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-data-rest</artifactId>
-				<version>${spring.rest.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-validation</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.thymeleaf.extras</groupId>
-				<artifactId>thymeleaf-extras-springsecurity4</artifactId>
-				<version>3.0.2.RELEASE</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-tomcat</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<!-- Spring Boot 2 -->
-			<!-- Hibernate 5 -->
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-infinispan</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-			<!-- Hibernate 5 -->
-		</dependencies>
-	</dependencyManagement>
+		<!-- Perfil para desarrollo. -->
+		<!-- Este perfil compila con opción debug y no genera ni el javadoc ni los fuentes. -->
+		<!-- No se ejecutan los tests. -->
+		<profile>
+			<id>develop-Oracle</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<plugin.javadoc.skip>true</plugin.javadoc.skip>
+				<plugin.source.skip>true</plugin.source.skip>
+				<maven.compiler.debug>true</maven.compiler.debug>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
+		
+		<!-- Perfil para producción. -->
+		<!-- Este perfil compila SIN opción debug y genera el javadoc y los fuentes. -->
+		<!-- Se ejecutan los tests. -->
+		<profile>
+			<id>production</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<plugin.javadoc.skip>false</plugin.javadoc.skip>
+				<plugin.source.skip>false</plugin.source.skip>
+				<maven.compiler.debug>false</maven.compiler.debug>
+				<maven.test.skip>false</maven.test.skip>
+			</properties>
+		</profile>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	</profiles>
+
+	<!-- Información de los desarrolladores de la versión. -->
+	<developers>
+		<developer>
+			<id>SMP</id>
+			<name>Susana Mesa Pérez</name>
+			<email>susana.mesa@ricoh.es</email>
+			<organization>RICOH IT Services</organization>
+		</developer>
+		<developer>
+			<id>FSM</id>
+			<name>Francesc Sola Martínez</name>
+			<email>Francesc.Sola@ricoh.es</email>
+			<organization>RICOH IT Services</organization>
+		</developer>
+		<developer>
+			<id>JAGG</id>
+			<name>Jose Antonio García García</name>
+			<email>jose.antonio.garcia@ricoh.es</email>
+			<organization>RICOH IT Services</organization>
+		</developer>
+	</developers>
+
+	<!-- Información de la organización. -->
+	<organization>
+		<name>RICOH IT Services</name>
+		<url>http://www.ricoh.es</url>
+	</organization>
 
 	<build>
-		<!-- Definición de los plugins genéricos -->
+		<!-- Definición de los plugins genéricos. -->
 		<plugins>
 			<!-- Plugin para generar la fecha de empaquetado que se incluirá en el 
 				manifest. -->
@@ -180,6 +144,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Plugin de compilación java. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -200,7 +165,7 @@
 					</compilerArgs>
 				</configuration>
 			</plugin>
-			<!-- Plugin para generar las fuentes -->
+			<!-- Plugin para generar los fuentes. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -217,7 +182,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Plugin para generar el javadoc -->
+			<!-- Plugin para generar el javadoc. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -234,6 +199,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Plugin de generación del site. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
@@ -280,6 +246,177 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<!-- Definición de versiones concretas de dependencias que podrán ser usadas en los distintos módulos
+	sin necesidad de especificar en estos la versión. -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- Módulos de vaLET -->
+			<dependency>
+				<groupId>es.gob.valet</groupId>
+				<artifactId>valet-i18n</artifactId>
+				<version>${valet.version.i18n}</version>
+			</dependency>
+			<dependency>
+				<groupId>es.gob.valet</groupId>
+				<artifactId>valet-commons-util</artifactId>
+				<version>${valet.version.commons-util}</version>
+			</dependency>
+			<dependency>
+				<groupId>es.gob.valet</groupId>
+				<artifactId>valet-cache</artifactId>
+				<version>${valet.version.cache}</version>
+			</dependency>
+			<dependency>
+				<groupId>es.gob.valet</groupId>
+				<artifactId>valet-persistence</artifactId>
+				<version>${valet.version.persistence}</version>
+			</dependency>
+			<dependency>
+				<groupId>es.gob.valet</groupId>
+				<artifactId>valet-core</artifactId>
+				<version>${valet.version.core}</version>
+			</dependency>
+<!-- 			<dependency> -->
+<!-- 				<groupId>es.gob.valet</groupId> -->
+<!-- 				<artifactId>valet-rest</artifactId> -->
+<!-- 				<version>${valet.version.rest}</version> -->
+<!-- 			</dependency> -->
+			<!-- Módulos de vaLET -->
+<!-- 			<dependency> -->
+<!-- 				<groupId>javax.servlet</groupId> -->
+<!-- 				<artifactId>servlet-api</artifactId> -->
+<!-- 				<version>2.5</version> -->
+<!-- 			</dependency> -->
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.16</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.11</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tika</groupId>
+				<artifactId>tika-core</artifactId>
+				<version>1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk16</artifactId>
+				<version>1.46</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.spec.javax.ws.rs</groupId>
+				<artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+				<version>1.0.0.Final</version>
+			</dependency>
+			<dependency>
+				<groupId>org.modelmapper</groupId>
+				<artifactId>modelmapper</artifactId>
+				<version>1.1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-jaxrs</artifactId>
+				<version>3.6.0.Final</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-jackson-provider</artifactId>
+				<version>3.6.1.Final</version>
+			</dependency>
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>20180130</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>1.9.3</version>
+			</dependency>
+			<!-- Spring Boot 2 -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-jpa</artifactId>
+				<version>${spring.data.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-security</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-thymeleaf</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-rest</artifactId>
+				<version>${spring.rest.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-validation</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.thymeleaf.extras</groupId>
+				<artifactId>thymeleaf-extras-springsecurity4</artifactId>
+				<version>3.0.2.RELEASE</version>
+			</dependency>
+<!-- 			<dependency> -->
+<!-- 				<groupId>org.springframework.boot</groupId> -->
+<!-- 				<artifactId>spring-boot-starter-tomcat</artifactId> -->
+<!-- 				<version>${spring.version}</version> -->
+<!-- 			</dependency> -->
+			<!-- Spring Boot 2 -->
+			<dependency>
+				<groupId>com.github.darrachequesne</groupId>
+				<artifactId>spring-data-jpa-datatables</artifactId>
+				<version>5.0.0</version>
+			</dependency>
+			
+			<!-- Hibernate 5 -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-infinispan</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<!-- Hibernate 5 -->
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- Dependencias que se incluirán en todos los módulos. -->
+	<dependencies>
+<!-- 		<dependency> -->
+<!-- 			<groupId>junit</groupId> -->
+<!-- 			<artifactId>junit</artifactId> -->
+<!-- 			<version>3.8.1</version> -->
+<!-- 			<scope>test</scope> -->
+<!-- 		</dependency> -->
+	</dependencies>
+
+
 	<!-- **************************************************************** -->
 	<!-- CONFIGURACIÓN REPOSITORIOS MAVEN: JBOSS Y MAVEN CENTRAL -->
 	<repositories>
@@ -342,4 +479,5 @@
 		<name>plugins-snapshot</name> <url>https://artefactos.scae.redsara.es/artifactory/plugins-snapshot</url> 
 		</pluginRepository> </pluginRepositories> -->
 	<!-- **************************************************************** -->
+
 </project>

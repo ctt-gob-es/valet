@@ -1,41 +1,80 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>es.gob.valet</groupId>
 		<artifactId>valet-parent</artifactId>
 		<version>1.0.0</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>valet-rest</artifactId>
 	<version>${valet.version.rest}</version>
-	<packaging>war</packaging>
 	<name>valet-rest</name>
+	<description>valET rest module.</description>
+	<packaging>war</packaging>
+
+	<properties>
+	</properties>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>../resources/license</directory>
+				<includes>
+					<include>LICENSE.txt</include>
+				</includes>
+				<targetPath>${basedir}/target/valet-rest/META-INF</targetPath>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Built-By>${built.by}</Built-By>
+							<Built-Time>${timestamp}</Built-Time>
+							<Vendor>${project.organization.name}</Vendor>
+							<Project-Name>${valet.project.name}</Project-Name>
+							<Valet-Version>${valet.version}</Valet-Version>
+							<Artifact-Version>${project.version}</Artifact-Version>
+						</manifestEntries>
+					</archive>
+					<finalName>${project.artifactId}</finalName>
+				</configuration>
+			</plugin>
+		</plugins>
+		<finalName>valet-rest</finalName>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>es.gob.valet</groupId>
 			<artifactId>valet-i18n</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>es.gob.valet</groupId>
 			<artifactId>valet-commons-util</artifactId>
+			<scope>compile</scope>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
-			<version>3.6.0.Final</version>
+			<scope>compile</scope>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jackson-provider -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson-provider</artifactId>
-			<version>3.6.1.Final</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
-	<build>
-		<finalName>valet-rest</finalName>
-	</build>
+
 </project>

@@ -7,44 +7,21 @@
 		<groupId>es.gob.valet</groupId>
 		<artifactId>valet-parent</artifactId>
 		<version>1.0.0</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>valet-persistence</artifactId>
 	<version>${valet.version.persistence}</version>
 	<name>valet-persistence</name>
+	<description>valET persistence module.</description>
 	<packaging>jar</packaging>
+
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>es.gob.valet</groupId>
-			<artifactId>valet-commons-util</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>es.gob.valet</groupId>
-			<artifactId>valet-i18n</artifactId>
-		</dependency>
-		<!-- Licencia Apache 2.0 -->
-		<dependency>
-			<groupId>com.github.darrachequesne</groupId>
-			<artifactId>spring-data-jpa-datatables</artifactId>
-			<version>5.0.0</version>
-		</dependency>
-	</dependencies>
+
 	<build>
 		<resources>
 			<resource>
-				<directory>../</directory>
+				<directory>../resources/license</directory>
 				<includes>
 					<include>LICENSE.txt</include>
 				</includes>
@@ -55,8 +32,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<!-- Plugin para generar el jar referente a la parte de persistencia en 
-				base de datos. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -77,4 +52,33 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-i18n</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-commons-util</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-cache</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.darrachequesne</groupId>
+			<artifactId>spring-data-jpa-datatables</artifactId>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
 </project>

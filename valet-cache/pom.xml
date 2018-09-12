@@ -9,12 +9,12 @@
 		<version>1.0.0</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>valet-commons-util</artifactId>
-	<version>${valet.version.commons-util}</version>
-	<name>valet-commons-util</name>
-	<description>valET utilities module.</description>
+	<artifactId>valet-cache</artifactId>
+	<version>${valet.version.cache}</version>
+	<name>valet-cache</name>
+	<description>Módulo relativo a la caché del aplicativo.</description>
 	<packaging>jar</packaging>
-
+	
 	<properties>
 	</properties>
 
@@ -32,8 +32,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<!-- Plugin para generar el jar referente a la parte de persistencia en 
-				base de datos. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -46,7 +44,6 @@
 							<Vendor>${project.organization.name}</Vendor>
 							<Project-Name>${valet.project.name}</Project-Name>
 							<Valet-Version>${valet.version}</Valet-Version>
-							<Artifact-Name>${project.artifactId}</Artifact-Name>
 							<Artifact-Version>${project.version}</Artifact-Version>
 						</manifestEntries>
 					</archive>
@@ -57,31 +54,6 @@
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-core</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk16</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.spec.javax.ws.rs</groupId>
-			<artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-			<scope>compile</scope>
-		</dependency>
 	</dependencies>
-
+	
 </project>

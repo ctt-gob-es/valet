@@ -1,77 +1,121 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>es.gob.valet</groupId>
-    <artifactId>valet-parent</artifactId>
-    <version>1.0.0</version>
-  </parent>
-  <artifactId>valet-web</artifactId>
-  <version>${valet.version.web}</version>
-  <packaging>war</packaging>
-  <name>valet-web</name>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>es.gob.valet</groupId>
+		<artifactId>valet-parent</artifactId>
+		<version>1.0.0</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>valet-web</artifactId>
+	<version>${valet.version.web}</version>
+	<name>valet-web</name>
+	<description>valET webAdmin module.</description>
+	<packaging>war</packaging>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>../resources/license</directory>
+				<includes>
+					<include>LICENSE.txt</include>
+				</includes>
+				<targetPath>${basedir}/target/valet-web/META-INF</targetPath>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Built-By>${built.by}</Built-By>
+							<Built-Time>${timestamp}</Built-Time>
+							<Vendor>${project.organization.name}</Vendor>
+							<Project-Name>${valet.project.name}</Project-Name>
+							<Valet-Version>${valet.version}</Valet-Version>
+							<Artifact-Version>${project.version}</Artifact-Version>
+						</manifestEntries>
+					</archive>
+					<finalName>${project.artifactId}</finalName>
+				</configuration>
+			</plugin>
+		</plugins>
+		<finalName>valet-web</finalName>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-i18n</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>es.gob.valet</groupId>
 			<artifactId>valet-core</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>es.gob.valet</groupId>
-			<artifactId>valet-i18n</artifactId>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
+			<scope>compile</scope>
 		</dependency>
+	
 		<!-- marked the embedded servlet container as provided -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.springframework.boot</groupId> -->
+<!-- 			<artifactId>spring-boot-starter-tomcat</artifactId> -->
+<!-- 			<scope>provided</scope> -->
+<!-- 		</dependency> -->
+	
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.json</groupId>
-		    <artifactId>json</artifactId>
-		    <version>20180130</version>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<scope>compile</scope>
 		</dependency>
-		<dependency>
-		    <groupId>commons-beanutils</groupId>
-		    <artifactId>commons-beanutils</artifactId>
-		    <version>1.9.3</version>
-		</dependency>
-  </dependencies>
-  	<build>
-		<finalName>valet-web</finalName>
-	</build>
+	</dependencies>
+
 </project>

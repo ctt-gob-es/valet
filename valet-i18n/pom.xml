@@ -1,37 +1,27 @@
 <?xml version="1.0"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>es.gob.valet</groupId>
 		<artifactId>valet-parent</artifactId>
 		<version>1.0.0</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>valet-i18n</artifactId>
 	<version>${valet.version.i18n}</version>
 	<name>valet-i18n</name>
+	<description>valET Internationalitation module.</description>
 	<packaging>jar</packaging>
+
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
-		</dependency>
-	</dependencies>
+
 	<build>
 		<resources>
 			<resource>
-				<directory>../</directory>
+				<directory>../resources/license</directory>
 				<includes>
 					<include>LICENSE.txt</include>
 				</includes>
@@ -42,8 +32,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<!-- Plugin para generar el jar referente a la parte de persistencia en 
-				base de datos. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -56,6 +44,7 @@
 							<Vendor>${project.organization.name}</Vendor>
 							<Project-Name>${valet.project.name}</Project-Name>
 							<Valet-Version>${valet.version}</Valet-Version>
+							<Artifact-Name>${project.artifactId}</Artifact-Name>
 							<Artifact-Version>${project.version}</Artifact-Version>
 						</manifestEntries>
 					</archive>
@@ -64,4 +53,13 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
 </project>
