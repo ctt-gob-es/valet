@@ -38,13 +38,13 @@
 		</init-param>
 		<init-param>
 			<param-name>resteasy.servlet.mapping.prefix</param-name>
-			<param-value>/rs/</param-value>
+			<param-value>/rest</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RestEasyServletAdaptor</servlet-name>
-		<url-pattern>/rs/*</url-pattern>
+		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 
 	<session-config>
