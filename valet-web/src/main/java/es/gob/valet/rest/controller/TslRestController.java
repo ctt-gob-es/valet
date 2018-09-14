@@ -90,34 +90,96 @@ public class TslRestController {
 
 	/**
 	 * Attribute that represents the service object for accessing the
-	 * repository.
+	 * TslValetRepository.
 	 */
 	@Autowired
 	private ITslValetService tslValetService;
 
+	/**
+	 * Attribute that represents the service object for accessing the
+	 * CTslImplRepository.
+	 */
 	@Autowired
 	private ICTslImplService cTSLImplService;
 
+	/**
+	 * Attribute that represents the service object for accessing the
+	 * TslcountryRegionRepository.
+	 */
 	@Autowired
 	private ITslCountryRegionService tslCountryRegionService;
 
+	/**
+	 * Attribute that represents the service object for accessing the
+	 * TslCountryRegionMappingRespository.
+	 */
 	@Autowired
 	private ITslCountryRegionMappingService tslCountryRegionMappingService;
 
+	/**
+	 * Constant that represents the parameter 'implTslFile'.
+	 */
 	private static final String FIELD_IMPL_TSL_FILE = "implTslFile";
+
+	/**
+	 * Constant that represents the parameter 'idTslValet'.
+	 */
 	private static final String FIELD_ID_TSL = "idTslValet";
+	/**
+	 * Constant that represents the parameter 'idTslCountryRegionMapping'.
+	 */
+	private static final String FIELD_ID_COUNTRY_REGION_MAPPING = "idTslCountryRegionMapping";
+	/**
+	 * Constant that represents the parameter 'country'.
+	 */
 	private static final String FIELD_COUNTRY = "country";
+/**
+	 * Constant that represents the parameter 'urlTsl'.
+	 */
 	private static final String FIELD_URL = "urlTsl";
+	/**
+	 * Constant that represents the parameter 'fileDocument'.
+	 */
 	private static final String FIELD_FILE_DOC = "fileDocument";
+/**
+	 * Constant that represents the parameter 'specification'.
+	 */
 	private static final String FIELD_SPECIFICATION = "specification";
+	/**
+	 * Constant that represents the parameter 'version'.
+	 */
 	private static final String FIELD_VERSION = "version";
+	/**
+	 * Constant that represents the extension PDF.
+	 */
 	private static final String EXTENSION_PDF = ".pdf";
+	/**
+	 * Constant that represents the extension XML.
+	 */
 	private static final String EXTENSION_XML = ".xml";
+	/**
+	 * Constant that represents the parameter 'existTsl'.
+	 */
 	private static final String INFO_EXIST_TSL = "existTsl";
+	/**
+	 * Constant that represents the parameter 'mappingIdentificator'.
+	 */
 	private static final String FIELD_MAPPING_ID = "mappingIdentificator";
+/**
+	 * Constant that represents the parameter 'mappingValue'.
+	 */
 	private static final String FIELD_MAPPING_VALUE = "mappingValue";
+	/**
+	 * Constant that represents the key Json 'existIdentificator'.
+	 */
 	private static final String KEY_JS_INFO_EXIST_IDENTIFICATOR = "existIdentificator";
+	/**
+	 * Constant that represents the key Json 'errorUpdateTsl'.
+	 */
 	private static final String KEY_JS_ERROR_UPDATE_TSL = "errorUpdateTsl";
+/**
+	 * Constant that represents the key Json 'errorSaveTsl'.
+	 */
 	private static final String KEY_JS_ERROR_SAVE_TSL = "errorSaveTsl";
 
 	/**
@@ -131,7 +193,7 @@ public class TslRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/tsldatatable", method = RequestMethod.GET)
 	public DataTablesOutput<TslValet> loadTslDataTable(@Valid DataTablesInput input) {
-		return (DataTablesOutput<TslValet>) tslValetService.findAllTsl(input);
+		return (DataTablesOutput<TslValet>) tslValetService.getAllTsl(input);
 
 	}
 
@@ -152,17 +214,16 @@ public class TslRestController {
 		return versions;
 
 	}
-
 	/**
-	 * Method that add a new TSL.
+	 * Method that adds a new TSL.
 	 * 
-	 * @param idTSL Identifier TSL
-	 * @param file 
-	 * @param specification
-	 * @param url
-	 * @param version
-	 * @return
-	 * @throws IOException
+	 * @param idTSL Parameter that represents the identifier TSL.
+	 * @param implTslFile Parameter that represents the file with the implementation of the TSL.
+	 * @param specification  Parameter that represents the ETSI TS number specification for TSL.
+	 * @param url Parameter that represents the URI where this TSL is officially located.
+	 * @param version Parameter that represents the ETSI TS specification version.
+	 * @return {@link DataTablesOutput<TslValet>}
+	 * @throws IOException If the method fails.
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
@@ -242,7 +303,7 @@ public class TslRestController {
 				tslValet.setResponsible("responsable TSL France");
 
 				// se comprueba si ya existe una TSL del mismo país
-				if (tslValetService.findByCountry(country) != null) {
+			if (tslValetService.getTslByCountryRegion(country) != null) {
 					LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
 					json.put(INFO_EXIST_TSL, Language.getFormatResWebValet(ILogMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
 
@@ -306,16 +367,15 @@ public class TslRestController {
 		return dtOutput;
 	}
 
+	
 	/**
-	 * 
-	 * 
-	 * @param idTSL
-	 * @param file
-	 * @param specification
-	 * @param url
-	 * @param version
-	 * @return
-	 * @throws IOException
+	 * Method that updates a TSL.
+	 * @param idTSL Parameter that represents the identifier TSL.
+	 * @param url Parameter that represents the URI where this TSL is officially located.
+	 * @param implTslFile  Parameter that represents the file with the implementation of the TSL.
+	 * @param fileDocument Parameter that represents the file with the legible document associated to TSL.
+	 * @return {@link DataTablesOutput<TslValet>}
+	 * @throws IOException If the method fails.
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
@@ -345,7 +405,7 @@ public class TslRestController {
 			if (!error) {
 				// comprobamos si se ha añadido una nueva implementación
 		
-					if (implTslFile != null && implTslFile.getSize() > 0 && implTslFile.getBytes()!= null && implTslFile.getBytes().length > 0) {
+						if (implTslFile != null && implTslFile.getSize() > 0 && implTslFile.getBytes() != null && implTslFile.getBytes().length > 0) {
 					// se ha añadido nueva implementación, se actualiza.
 					fileImplementationTsl = implTslFile.getBytes();
 					tsl.setXmlDocument(fileImplementationTsl);
@@ -410,6 +470,13 @@ public class TslRestController {
 		return dtOutput;
 	}
 
+	/**
+	 * Method that download the XML document with the implementation of the TSL.
+	 * 
+	 * @param response Parameter that represents the response with information about file to download.
+	 * @param idTsl Parameter that represents the identifier TSL.
+	 * @throws IOException If the method fails.
+	 */
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
 	public @ResponseBody void downloadTsl(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
 		TslValet tsl = tslValetService.getTslValetById(idTsl);
@@ -430,6 +497,14 @@ public class TslRestController {
 		}
 	}
 
+	
+	/**
+	 * Method that downloads the legible document that describes the TSL.
+	 * 
+	 * @param response  Parameter that represents the response with information about file to download.
+	 * @param idTsl Parameter that represents the identifier TSL.
+	 * @throws IOException If the method fails.
+	 */
 	@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)
 	public @ResponseBody void downloadDocument(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
 
@@ -451,12 +526,14 @@ public class TslRestController {
 	}
 
 	/**
-	 * 
+	 * Method that loads the mapping by ID of TslCountryRegionMapping.
+	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.
+	 * @return MappingTslForm object with the information of the obtained mapping values.
 	 */
 	@JsonView(MappingTslForm.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/loadmappingbyid", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public MappingTslForm loadMappingById(@RequestParam("idTslCountryRegionMapping") Long idTslCountryRegionMapping) {
+	public MappingTslForm loadMappingById(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping) {
 		TslCountryRegionMapping tslCRM = tslCountryRegionMappingService.getTslCountryRegionMappingById(idTslCountryRegionMapping);
 		MappingTslForm mappingTslForm = new MappingTslForm();
 		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
@@ -467,20 +544,27 @@ public class TslRestController {
 	}
 
 	/**
-	 * 
+	 * Method that loads the necessary information to show the confirmation modal to remove a selected mapping.
+	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.
+	 * @param rowIndexMapping Parameter that represents the index of the row of the selected mapping.
+	 * @return MappingTslForm object with the necessary information to remove a mapping.
 	 */
 	@JsonView(MappingTslForm.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/loadconfirmdelete", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public MappingTslForm loadConfirmDeleteMapping(@RequestParam("idTslCountryRegionMapping") Long idTslCountryRegionMapping, @RequestParam("rowindex") String rowIndexMapping) {
+	public MappingTslForm loadConfirmDeleteMapping(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam("rowindex") String rowIndexMapping) {
 		MappingTslForm mappingTslForm = new MappingTslForm();
 		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
 		mappingTslForm.setRowIndexMapping(rowIndexMapping);
 		return mappingTslForm;
 	}
-
-	/**
+/**
 	 * Method that refreshes the screen of editing TSL without getting to persist.
+	 * @param idTSL Parameter that represents the identifier TSL.
+	 * @param idCountryRegion Parameter that represents a country identifier.
+	 * @param implTslFile Parameter that represents the file with the implementation of the TSL.
+	 * @return TslForm object with the updated data of the form.						
+	 * @throws IOException If the method fails.
 	 */
 	@JsonView(TslForm.View.class)
 	@ResponseStatus(HttpStatus.OK)
@@ -492,13 +576,13 @@ public class TslRestController {
 		boolean error = false;
 		// se comprueba si se ha actualizado la implementación de TSL, si es así
 		// se obtiene los nuevos datos
-			if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
+	if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
 
 			// se muestra mensaje indicando que no se ha actualizado
 			LOGGER.info(Language.getResWebValet(ILogMessages.INFO_NOT_UPDATE_FILE_IMPL_TSL));
-			//json.put(FIELD_IMPL_TSL_FILE + "_span", LanguageWeb.getResWebValet(LogMessages.INFO_NOT_UPDATE_FILE_IMPL_TSL));
-			//se mantiene el que tenía la tsl
-		
+		// json.put(FIELD_IMPL_TSL_FILE + "_span",
+			// LanguageWeb.getResWebValet(LogMessages.INFO_NOT_UPDATE_FILE_IMPL_TSL));
+			// se mantiene el que tenía la tsl
 		} else {
 
 			fileBytes = implTslFile.getBytes();
@@ -557,16 +641,20 @@ public class TslRestController {
 
 		return tslForm;
 	}
-
+	/**
+	 * Method to load the datatable with all the mappings corresponding to the selected TSL 
+	 * @param idCountryRegion Parameter that represents a country/region identifier.
+	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
+	 */
 	@RequestMapping(path = "/loadmapping", method = RequestMethod.GET)
 	@JsonView(DataTablesOutput.View.class)
-	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> loadMapping(@RequestParam("id") Long idCountry) {
+		public @ResponseBody DataTablesOutput<TslCountryRegionMapping> loadMapping(@RequestParam("id") Long idCountryRegion) {
 		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<TslCountryRegionMapping>();
 		List<TslCountryRegionMapping> listMapping = new ArrayList<TslCountryRegionMapping>();
 
-		if (idCountry != null) {
+		if (idCountryRegion != null) {
 			// obtenemos todos los mapeos de ese pais
-			listMapping = tslCountryRegionMappingService.getAllMappingByIdCountry(idCountry);
+			listMapping = tslCountryRegionMappingService.getAllMappingByIdCountry(idCountryRegion);
 			dtOutput.setData(listMapping);
 		}
 
@@ -574,6 +662,14 @@ public class TslRestController {
 		return dtOutput;
 	}
 
+/**
+	 * 
+	 * @param idTslCountryRegionParameter Parameter that represents a country/region identifier.
+	 * @param mappingIdentificator Parameter that represents the identificator for the logical mapping.
+	 * @param mappingValue Parameter that represents the value for the mapping. 
+	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
+	 * @throws IOException If the method fails.
+	 */
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/savemappingtsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -633,10 +729,18 @@ public class TslRestController {
 		return dtOutput;
 	}
 
+	/**
+	 * Method to modify the value of an identifier
+	 * @param idTslCountryRegionMapping  Parameter that represents the ID of the mapping.
+	 * @param idTslCountryRegion  Parameter that represents the ID of the country/region.
+	 * @param mappingValue Parameter that represents the new value for the mapping.
+	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
+	 * @throws IOException If the method fails.
+	 */
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/modifymappingtsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> modifyMappingTsl(@RequestParam("idTslCountryRegionMapping") Long idTslCountryRegionMapping, @RequestParam("idTslCountryRegion") Long idTslCountryRegion, @RequestParam("mappingValue") String mappingValue) throws IOException {
+	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> modifyMappingTsl(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam("idTslCountryRegion") Long idTslCountryRegion, @RequestParam("mappingValue") String mappingValue) throws IOException {
 
 		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<>();
 
@@ -682,10 +786,16 @@ public class TslRestController {
 		return dtOutput;
 	}
 
+	/**
+	 * Method to remove a mappings.
+	 * @param idTslCountryRegionMapping Parameter that represents ID of mapping to delete.
+	 * @param index Parameter that represents the index of the row of the selected mapping.
+	 * @return String that represents the index of the deleted row.
+	 */
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(path = "/deletemappingbyid", method = RequestMethod.POST)
-	public String deleteMappingById(@RequestParam("idTslCountryRegionMapping") Long idTslCountryRegionMapping, @RequestParam("rowIndexMapping") String index) {
+	public String deleteMappingById(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam("rowIndexMapping") String index) {
 
 		try {
 			tslCountryRegionMappingService.deleteTslCountryRegionMapping(idTslCountryRegionMapping);
@@ -695,15 +805,14 @@ public class TslRestController {
 		return index;
 	}
 
-	/**
-	 * Method that maps the delete user request from datatable to the controller
-	 * and performs the delete of the user identified by its id.
+/**
+	 * Method that assigns the removal request of the datatable TSL to the controller and performs the elimination of the TSL identified by its id.
 	 * 
-	 * @param userId
-	 *            Identifier of the user to be deleted.
+	 * @param idTslValet
+	 *            Identifier of the TSL to be deleted.
 	 * @param index
 	 *            Row index of the datatable.
-	 * @return String that represents the name of the view to redirect.
+	 * @return String that represents the index of the deleted row.
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/deletetsl", method = RequestMethod.POST)

@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.service.impl.TslCountryRegionService.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p> Class that implements the communication with the operations of the persistence layer for TslCountryRegion.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23 jul. 2018.</p>
  * @author Gobierno de España.
@@ -35,7 +35,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionS
 
 
 /** 
- * <p>Class .</p>
+ * <p>Class that implements the communication with the operations of the persistence layer for TslCountryRegion.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 23 jul. 2018.
  */
@@ -58,6 +58,10 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 		return repository.findByIdTslCountryRegion(idCountry);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getNameCountryRegionById(java.lang.Long)
+	 */
 	public String getNameCountryRegionById(Long idCountry){
 		TslCountryRegion tslCountryRegion = getTslCountryRegionById(idCountry);
 		return tslCountryRegion.getCountryRegionName();

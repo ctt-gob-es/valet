@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.rest.controller.OrderedValidation.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p> Interface to indicate the order the validations.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20 jun. 2018.</p>
  * @author Gobierno de España.
@@ -27,9 +27,9 @@ package es.gob.valet.rest.exception;
 import javax.validation.GroupSequence;
 
 /** 
- * <p>Class .</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 20 jun. 2018.
+ * <p>Interface to indicate the order of the validations</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * @version 1.0, 13 sept. 2018.
  */
 @GroupSequence({CheckItFirst.class, ThenCheckIt.class})
 public interface OrderedValidation {

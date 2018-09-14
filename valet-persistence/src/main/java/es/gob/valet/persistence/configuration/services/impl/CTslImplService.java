@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.service.impl.CTSLImplServiceImpl.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that implements the communication with the operations of the persistence layer for CTslImpl.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17 jul. 2018.</p>
  * @author Gobierno de España.
@@ -41,7 +41,7 @@ import es.gob.valet.persistence.configuration.model.repository.CTslImplRepositor
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 
 /** 
- * <p>Class .</p>
+ * <p>Class that implements the communication with the operations of the persistence layer for CTslImpl.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 17 jul. 2018.
  */
@@ -55,14 +55,26 @@ public class CTslImplService implements ICTslImplService {
 	@Autowired
 	private CTslImplRepository repository;
 
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService#getAllCTSLImpl()
+	 */
 	public Iterable<CTslImpl> getAllCTSLImpl() {
 		return repository.findAll();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService#getCTSLImpById(java.lang.Long)
+	 */
 	public CTslImpl getCTSLImpById(Long id) {
 		return repository.findByIdCTSLImpl(id);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService#getAllSpecifications()
+	 */
 	public List<String> getAllSpecifications() {
 		List<String> listSpecifications = new ArrayList<String>();
 		Map<String, Set<String>> mapSpecVer = getsTSLRelationSpecificatioAndVersion();
@@ -71,6 +83,8 @@ public class CTslImplService implements ICTslImplService {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService#getsTSLRelationSpecificatioAndVersion()
 	 */
 	public Map<String, Set<String>> getsTSLRelationSpecificatioAndVersion() {
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
@@ -85,7 +99,7 @@ public class CTslImplService implements ICTslImplService {
 				if (versions == null) {
 					versions = new TreeSet<String>();
 				}
-				// añadimos la versón
+				// añadimos la versión
 				versions.add(cTSL.getVersion());
 				result.put(cTSL.getSpecification(), versions);
 			}
@@ -94,6 +108,10 @@ public class CTslImplService implements ICTslImplService {
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService#getCTSLImplBySpecificationVersion(java.lang.String, java.lang.String)
+	 */
 	public CTslImpl getCTSLImplBySpecificationVersion(String specification, String version) {
 		CTslImpl result = null;
 		List<CTslImpl> listCTSLImpl = repository.findAll();

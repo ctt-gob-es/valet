@@ -16,31 +16,39 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.service.ITslCountryRegionService.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegion entity.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23 jul. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 23 jul. 2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
-import java.util.List;
+
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
-import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Project:</b><p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegion entity.</p>
  * @version 1.0, 23 jul. 2018.
  */
 public interface ITslCountryRegionService {
 
 	/**
-	 * Method that obtains the country by the identifier.
+	 *  Method that obtains the country by the identifier.
+	 * 
+	 * @param idCountry Parameter that represents identifier of Country/Region.
+	 * @return
 	 */
 	TslCountryRegion getTslCountryRegionById(Long idCountry);
 
+	/**
+	 * Method that obtains the name of the country/region.
+	 * 
+	 * @param idCountry Parameter that represents identifier of Country/Region.
+	 * @return Name of country/region.
+	 */
 	String getNameCountryRegionById(Long idCountry);
 
 	

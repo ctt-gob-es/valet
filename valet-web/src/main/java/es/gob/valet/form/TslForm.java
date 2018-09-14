@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.form.TslForm.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p> Class that represents the backing form for adding/editing a TSL.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>28 jun. 2018.</p>
  * @author Gobierno de España.
@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import es.gob.valet.rest.exception.CheckItFirst;
 
 /** 
- * <p>Class that represents the baking form for adding/editing a TSL.</p>
+ * <p>Class that represents the backing form for adding/editing a TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 28 jun. 2018.
  */
@@ -411,6 +411,12 @@ public class TslForm {
 
 
 
+/**
+ * 
+ * <p>Class .</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * @version 1.0, 12 sept. 2018.
+ */
 	public interface View {
 	}	
 

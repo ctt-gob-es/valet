@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.TslValet.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that maps the <i>TSL_VALET</i> database table as a Plain Old Java Object.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25 jun. 2018.</p>
  * @author Gobierno de España.

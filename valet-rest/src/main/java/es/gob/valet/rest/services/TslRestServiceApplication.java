@@ -27,6 +27,7 @@ package es.gob.valet.rest.services;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 /** 
@@ -34,6 +35,7 @@ import javax.ws.rs.core.Application;
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 7/8/2018.
  */
+@ApplicationPath("/rest")
 public class TslRestServiceApplication extends Application {
 
 	/**
@@ -58,18 +60,6 @@ public class TslRestServiceApplication extends Application {
 	public Set<Object> getSingletons() {
 		// CHECKSTYLE:ON
 		return singletons;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see javax.ws.rs.core.Application#getClasses()
-	 */
-	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
-	// because Restful needs not final access methods.
-	@Override
-	public Set<Class<?>> getClasses() {
-		// CHECKSTYLE:ON
-		return null;
 	}
 
 }

@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.controller.TslController.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p> Class that manages the requests related to the TSLs administration.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25 jun. 2018.</p>
  * @author Gobierno de España.
@@ -30,42 +30,36 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
-import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslValet;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
-import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
 
 /** 
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25 jun. 2018.
+ *  @version 1.1, 12 sep. 2018.
  */
 @Controller
 public class TslController {
 
 	/**
-	 * Attribute that represents the service object for acceding the repository.
+	 * Attribute that represents the service object for acceding to TslValetRepository.
 	 */
 	@Autowired
 	private ITslValetService tslService;
 
 	/**
-	 * Attribute that represents the service object for acceding the repository. 
+	 * Attribute that represents the service object for acceding to CTslImplRepository.
 	 */
 	@Autowired
 	private ICTslImplService cTSLImplService;
@@ -75,12 +69,6 @@ public class TslController {
 	 */
 	@Autowired
 	private ITslCountryRegionService tslCountryRegionService;
-	
-	/**
-	 * Attribute that represents the service object for acceding the repository. 
-	 */
-	@Autowired
-	private ITslCountryRegionMappingService tslCountryRegionMappingService;
 
 	/**
 	 * Attribute that represents the service object for acceding the repository
@@ -161,20 +149,11 @@ public class TslController {
 	}
 
 	
-	@RequestMapping(value = "/updateimpl", method = RequestMethod.POST)
-	public String updateImplementationFile(@RequestParam("id") Long idTsl,  Model model){
-			TslForm tslForm = new TslForm();
-			tslForm.setIdTslValet(idTsl);
-			model.addAttribute("tslform", tslForm);
-			return "modal/tsl/tslUpdateImplForm";
-	}
-	
-	
 	/**
 	 * Method that loads a datatable with the mappings for the TSL of the indicated country 
 	 * 
-	 * @param idCountryRegion Country idientifier.
-	 * @param model Holder object for model attributes.
+ 	* @param idCountryRegion Parameter that represents a country identifier.
+	 * @param model Parameter that represents holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "/loadmappingdatatable", method = RequestMethod.GET)
@@ -187,17 +166,5 @@ public class TslController {
 			model.addAttribute("mappingedittslform", mappingTslEditForm);
 			return "fragments/tslmapping.html";
 	}
-	
-	
-
-//	@RequestMapping(value = "addmappingtsl")
-//	public String addMappingTsl(Model model) throws IOException {
-//	
-//		MappingTslForm mappingTslForm = new MappingTslForm();
-//	//	mappingTslForm.setIdTslValet(idTslValet);
-//		//mappingTslForm.setIdTslCountryRegion(idTslCountryRegion);
-//		model.addAttribute("mappingtslform",mappingTslForm);
-//		return "modal/tsl/mappingTslForm";
-//	}
 
 }

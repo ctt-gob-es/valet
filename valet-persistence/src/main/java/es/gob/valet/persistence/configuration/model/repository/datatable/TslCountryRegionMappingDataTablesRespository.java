@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.datatable.TslCountryRegionMappingDataTablesRespository.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Interface that provides CRUD functionality for the TslCountryRegionMapping entity and DataTables.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>8 ago. 2018.</p>
  * @author Gobierno de España.
@@ -24,7 +24,6 @@
  */
 package es.gob.valet.persistence.configuration.model.repository.datatable;
 
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;

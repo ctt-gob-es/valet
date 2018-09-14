@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.exception.ThenCheckIt.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Interface to specify the order of validation.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19 jun. 2018.</p>
  * @author Gobierno de España.
@@ -26,7 +26,7 @@ package es.gob.valet.rest.exception;
 
 
 /** 
- * <p>Class .</p>
+ * <p>Interface to specify the order of validation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 19 jun. 2018.
  */

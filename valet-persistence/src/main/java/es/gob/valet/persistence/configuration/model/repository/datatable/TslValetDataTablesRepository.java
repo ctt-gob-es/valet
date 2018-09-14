@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.datatable.TslValetDataTablesRepository.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Interface that provides CRUD functionality for the TslValet entity and DataTables.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17 jul. 2018.</p>
  * @author Gobierno de España.

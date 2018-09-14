@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.UserValet.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p> Class that maps the <i>USER_VALET</i> database table as a Plain Old Java Object.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>13 jun. 2018.</p>
  * @author Gobierno de España.
@@ -184,6 +184,7 @@ public class UserValet implements Serializable {
 	@Column(name = "LOGIN", nullable = false, length = NumberConstants.NUM100, unique = true)
 	@JsonView(DataTablesOutput.View.class)
 	public String getLogin() {
+		// CHECKSTYLE:ON
 		return login;
 	}
 
@@ -194,6 +195,7 @@ public class UserValet implements Serializable {
 	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
 	// because Hibernate JPA needs not final access methods.
 	public void setLogin(String loginParam) {
+		// CHECKSTYLE:ON
 		this.login = loginParam;
 	}
 

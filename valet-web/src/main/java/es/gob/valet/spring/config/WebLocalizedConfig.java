@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.spring.config.WebLocalizedConfig.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that enables and configures localization form the Valet application.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>13 jun. 2018.</p>
  * @author Gobierno de España.

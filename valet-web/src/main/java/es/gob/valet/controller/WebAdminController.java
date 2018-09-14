@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.controller.WebAdminController.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that manages the requests related to the home page from vaLET.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15 jun. 2018.</p>
  * @author Gobierno de España.
@@ -29,7 +29,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /** 
- * <p>.</p>
+* <p>Class that manages the requests related to the home page from vaLET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 15 jun. 2018.
  */

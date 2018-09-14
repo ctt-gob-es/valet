@@ -15,8 +15,7 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.service.impl.UserValetService.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>File:</b><p>es.gob.valet.service.impl.UserValetService.java.</p> * <b>Description:</b><p>Class that implements the communication with the operations of the persistence layer.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15 jun. 2018.</p>
  * @author Gobierno de España.
@@ -110,7 +109,7 @@ public UserValet getUserValetByLogin(String login) {
  * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#findAll(org.springframework.data.jpa.datatables.mapping.DataTablesInput)
  */
 @Override
-public DataTablesOutput<UserValet> findAll(DataTablesInput input) {
+public DataTablesOutput<UserValet> getAllUser(DataTablesInput input) {
 	
 	return dtRepository.findAll(input);
 }

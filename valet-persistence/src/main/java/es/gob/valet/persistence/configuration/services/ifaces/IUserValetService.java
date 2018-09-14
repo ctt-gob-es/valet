@@ -73,5 +73,5 @@ public interface IUserValetService {
 	 * @param input the {@link DataTablesInput} mapped from the Ajax request.
 	 * @return {@link DataTablesOutput}
 	 */
-	DataTablesOutput<UserValet> findAll(DataTablesInput input);
+	DataTablesOutput<UserValet> getAllUser(DataTablesInput input);
 }

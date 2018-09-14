@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.controller.UserController.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that manages the requests related to the Users administration.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15 jun. 2018.</p>
  * @author Gobierno de España.

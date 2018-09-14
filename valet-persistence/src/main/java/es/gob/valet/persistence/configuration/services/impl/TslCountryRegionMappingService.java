@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.service.impl.TslCountryRegionMappingService.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that implements the communication with the operations of the persistence layer for TslCountryRegionMapping .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>8 ago. 2018.</p>
  * @author Gobierno de España.
@@ -40,7 +40,7 @@ import es.gob.valet.persistence.configuration.model.repository.datatable.TslCoun
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 
 /** 
- * <p>Class .</p>
+ * <p>Class that implements the communication with the operations of the persistence layer for TslCountryRegionMapping.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 8 ago. 2018.
  */
@@ -54,6 +54,9 @@ public class TslCountryRegionMappingService implements ITslCountryRegionMappingS
 	@Autowired
 	private TslCountryRegionMappingRepository repository;
 
+	/**
+	 * Attribute that represnts the injected interface that provides 
+	 */
 	@Autowired
 	private TslCountryRegionMappingDataTablesRespository dtRepository;
 
@@ -66,11 +69,15 @@ public class TslCountryRegionMappingService implements ITslCountryRegionMappingS
 		return repository.findByIdTslCountryRegionMapping(idTslCountryRegionMapping);
 	}
 
-	public List<TslCountryRegionMapping> getAllMappingByIdCountry(Long idCRM) {
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService#getAllMappingByIdCountry(java.lang.Long)
+	 */
+	public List<TslCountryRegionMapping> getAllMappingByIdCountry(Long idTslCountryRegion) {
 		List<TslCountryRegionMapping> listMapping = new ArrayList<TslCountryRegionMapping>();
 		List<TslCountryRegionMapping> listAllMapping = repository.findAll();
 		for (TslCountryRegionMapping tslcrm: listAllMapping) {
-			if (tslcrm.getTslCountryRegion().getIdTslCountryRegion().equals(idCRM)) {
+			if (tslcrm.getTslCountryRegion().getIdTslCountryRegion().equals(idTslCountryRegion)) {
 				listMapping.add(tslcrm);
 			}
 		}
@@ -89,24 +96,47 @@ public class TslCountryRegionMappingService implements ITslCountryRegionMappingS
 		return existId;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService#findAll(org.springframework.data.jpa.datatables.mapping.DataTablesInput)
+	 */
 	public DataTablesOutput<TslCountryRegionMapping> findAll(DataTablesInput input) {
 		return dtRepository.findAll(input);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService#save(es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping)
+	 */
 	public TslCountryRegionMapping save(TslCountryRegionMapping tslCRMParam) {
 		return repository.save(tslCRMParam);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService#deleteTslCountryRegionMapping(java.lang.Long)
+	 */
 	public void deleteTslCountryRegionMapping(Long idTslCountryRegionMapping) {
 		repository.deleteById(idTslCountryRegionMapping);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService#deleteTslCountryRegionMappingByInBatch(java.util.List)
+	 */
 	public void deleteTslCountryRegionMappingByInBatch(List<TslCountryRegionMapping> listMapping) {
 		repository.deleteInBatch(listMapping);
 	}
 
-	private List<String> getIdentificatorsByIdCountry(Long idCRM) {
-		List<TslCountryRegionMapping> lcrm = getAllMappingByIdCountry(idCRM);
+	
+	/**
+	 * Method that returns the list of identifiers of the mappings of a country.
+	 * 
+	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.  
+	 * @return List of identifiers of the mappings.
+	 */
+	private List<String> getIdentificatorsByIdCountry(Long idTslCountryRegion) {
+		List<TslCountryRegionMapping> lcrm = getAllMappingByIdCountry(idTslCountryRegion);
 		List<String> listIdent = new ArrayList<String>();
 		for (TslCountryRegionMapping tslcrm: lcrm) {
 			listIdent.add(tslcrm.getMappingIdentificator());

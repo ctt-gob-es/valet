@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.service.ITslCountryRegionMappingService.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegionMapping entity .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>8 ago. 2018.</p>
  * @author Gobierno de España.
@@ -33,7 +33,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 import es.gob.valet.persistence.configuration.model.entity.TslValet;
 
 /** 
- * <p>Interface that provides communication with the operations of the persistence layer.</p>
+ * <p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegionMapping entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 8 ago. 2018.
  */
@@ -46,18 +46,43 @@ public interface ITslCountryRegionMappingService {
 	 */
 	TslCountryRegionMapping getTslCountryRegionMappingById(Long idTslCountryRegionMapping);
 
-	// DataTablesOutput<TslCountryRegionMapping> findAllMapping(DataTablesInput
-	// input, Long idCountryRegion);
-	// DataTablesOutput<TslCountryRegionMapping> findAllMapping(DataTablesInput
-	// input, Long idCountryRegion);
+	/**
+	 * Method that gets all the mappings for a specified Country/Region.
+	 * @param idCRM Long that represents CountryRegion identifier.
+	 * @return List of TslContryRegionMapping by country 
+	 */
 	List<TslCountryRegionMapping> getAllMappingByIdCountry(Long idCRM);
 
-	DataTablesOutput<TslCountryRegionMapping> findAll(DataTablesInput input);
 
+	/**
+	 * Method that returns a list with all the TslCountryRegionMapping objects to be showed in Datatable.
+	 * @param input DataTableInput with filtering, paging and sorting configuration.
+	 * @return A set of DataTable rows that matches the query.
+	 */
+	DataTablesOutput<TslCountryRegionMapping> findAll(DataTablesInput input);
+	/**
+	 * Method that stores a new Mapping for a Country/Region representation for TSL.
+	 * @param tslCountryRegionMapping Parameter that represents the new mapping for the Country/Region.
+	 * @return {@link TslCountryRegionMapping} TslCountryRegionMapping stored.
+	 */
 	TslCountryRegionMapping save(TslCountryRegionMapping tslCRMParam);
 	
-
+	/**
+	 * Method that removes a country/region Mapping. 
+	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.
+	 */
 	void deleteTslCountryRegionMapping(Long idTslCountryRegionMapping);
+
+	/**
+	 * Method that removes a list of country/region mappings.
+	 * @param listMapping Parameter that represents a list of country/region mappings to remove.
+	 */
 	void deleteTslCountryRegionMappingByInBatch(List<TslCountryRegionMapping> listMapping);
+	/**
+	 * Method that checks if there is an identificator in the list of mappings belonging to a specified country.
+	 * @param identificator Parameter that represents the identifier to be checked.
+	 * @param idTslCountryRegion Parameter that represents the country/region of TSL.
+	 * @return true, if it exists.
+	 */
 	boolean existIdentificator(String identificator, Long idCRM);
 }

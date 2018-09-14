@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.ICTSLImplService.java.</p>
  * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer
- * in relation of the TSL.</p>
+ * in relation of the CTslImpl entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
@@ -33,7 +33,7 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer
- * in relation of the TSL.</p>
+ * in relation of the CTslImpl entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.1, 10/09/2018.
  */

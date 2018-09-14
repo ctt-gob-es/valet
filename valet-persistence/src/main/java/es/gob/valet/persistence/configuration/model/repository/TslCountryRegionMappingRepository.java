@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.TslCountryRegionMappingRepository.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Interface that provides CRUD functionality for the TslCountryRegionMapping entity.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>8 ago. 2018.</p>
  * @author Gobierno de España.
@@ -28,7 +28,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 
 

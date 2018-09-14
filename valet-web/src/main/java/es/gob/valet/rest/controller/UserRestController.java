@@ -69,7 +69,7 @@ public class UserRestController {
 	
 	/**
 	 * Attribute that represents the service object for accessing the
-	 * repository.
+	 * UserValetRespository.
 	 */
 	@Autowired
 	private IUserValetService userService;
@@ -85,7 +85,7 @@ public class UserRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/usersdatatable", method = RequestMethod.GET)
 	public DataTablesOutput<UserValet> users(@Valid DataTablesInput input) {
-		return (DataTablesOutput<UserValet>) userService.findAll(input);
+		return (DataTablesOutput<UserValet>) userService.getAllUser(input);
 
 	}
 
@@ -177,9 +177,9 @@ public class UserRestController {
 	 * Method that maps the save user web request to the controller and saves it
 	 * in the persistence.
 	 * 
-	 * @param userForm
-	 * @param bindingResult
-	 * @return
+	 * @param userForm Object that represents the backing user form.
+	 * @param bindingResult  Object that represents the form validation result.
+	 * @return  {@link DataTablesOutput<UserValet>}
 	 */
 	@RequestMapping(value = "/saveuseredit", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@JsonView(DataTablesOutput.View.class)
@@ -230,11 +230,11 @@ public class UserRestController {
 	}
 
 	/**
+	 * Method that changes the password.
 	 * 
-	 * 
-	 * @param userFormPassword
-	 * @param bindingResult
-	 * @return
+	 * @param userFormPassword Object that represents the backup form fot the user's password modification.
+	 * @param bindingResult Object that represents the form validation result.
+	 * @return String result
 	 */
 	@RequestMapping(value = "/saveuserpassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String savePassword(@Validated(OrderedValidation.class) @RequestBody UserFormPassword userFormPassword,
@@ -273,6 +273,14 @@ public class UserRestController {
 		return result;
 	}
 
+
+	
+	/**
+	 * Method that edits the user.
+	 * @param userForm Object that represents the backing user form.
+	 * @param bindingResult  Object that represents the form validation result.
+	 * @return String result.
+	 */
 	@RequestMapping(value = "/menueditsave", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String saveEditMenu(@Validated(OrderedValidation.class) @RequestBody UserFormEdit userForm,
 			BindingResult bindingResult) {

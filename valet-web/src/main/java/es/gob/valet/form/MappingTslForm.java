@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.form.MappingForm.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that represents the backing form for adding/editing the mapping values for a TSL.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12 ago. 2018.</p>
  * @author Gobierno de España.
@@ -29,16 +29,37 @@ import com.fasterxml.jackson.annotation.JsonView;
 import es.gob.valet.form.TslForm.View;
 
 /** 
- * <p>Class .</p>
+* <p>Class that represents the backing form for adding/editing the mapping values for a TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 12 ago. 2018.
  */
 public class MappingTslForm {
+	/**
+	 *  Attribute that represents the ID of the country/region for this TSL.
+	 */
 	private Long idTslCountryRegion;
+
+	/**
+	 *  Attribute that represents the ID of the TslCountryRegionMapping.
+	 */	
 	private Long idTslCountryRegionMapping;
+	/**
+	 * Attribute that represents the name of the country or region.
+	 */
 	private String nameCountryRegion;
+	
+	/**
+	 * Attribute that represents the identificator for the logical mapping.
+	 */
 	private String mappingIdentificator;
+	
+	/**
+	 * Attribute that represents the value for the mapping. 
+	 */
 	private String mappingValue;
+	/**
+	 * Attribute that represents index of the row of the selected mapping.
+	 */
 	private String rowIndexMapping;
 	/**
 	 * Gets the value of the attribute {@link #idTslCountryRegion}.
@@ -146,6 +167,12 @@ public class MappingTslForm {
 		this.rowIndexMapping = rowIndexMapping;
 	}
 
+	/**
+	 * 
+	 * <p>Class.</p>
+	 * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+	 * @version 1.0, 12 sept. 2018.
+	 */
 	public interface View {
 	}	
 

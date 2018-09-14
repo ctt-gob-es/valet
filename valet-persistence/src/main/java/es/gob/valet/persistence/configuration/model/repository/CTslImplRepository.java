@@ -16,7 +16,7 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.CTSLImplRepository.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Interface that provides CRUD functionality for the CTSLImpl entity .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17 jul. 2018.</p>
  * @author Gobierno de España.
@@ -39,5 +39,11 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public interface CTslImplRepository  extends JpaRepository<CTslImpl, Long> {
+	
+	/**
+	 * Method that obtains from the persistence a CTslImpl object by its primary key.
+	 * @param id Long that represents the primary key of the CTslImpl object.
+	 * @return Object that represents a CTslImpl
+	 */
  CTslImpl findByIdCTSLImpl(Long id);
 }
