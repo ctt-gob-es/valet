@@ -15,6 +15,6 @@
  ******************************************************************************/
 
 /**
- * Package for structures representation.
+ * Package that includes the interfaces with the token constants for the messages.
  */
-package entity;
+package es.gob.valet.i18n.messages;

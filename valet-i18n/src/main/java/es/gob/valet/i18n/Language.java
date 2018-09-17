@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.i18n.Language.java.</p>
  * <b>Description:</b><p> Class that manages the access to the properties files used for generation messages in the plataform.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 15/06/2018.
+ * @version 1.1, 17/09/2018.
  */
 package es.gob.valet.i18n;
 
@@ -39,10 +39,9 @@ import org.apache.log4j.Logger;
 import es.gob.valet.i18n.utils.UtilsTomcat;
 
 /**
- * 
  * <p>Class that manages the access to the properties files used for generation messages in the plataform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 22/06/2018.
+ * @version 1.1, 17/09/2018.
  */
 public final class Language {
 
@@ -52,14 +51,19 @@ public final class Language {
 	private static final Logger LOGGER = Logger.getLogger(Language.class);
 
 	/**
-	 * Attribute that represents the list of messages.
+	 * Attribute that represents the resource boundle with the messages for the web module.
 	 */
 	private static ResourceBundle webvalet;
 
 	/**
-	 * Attribute that represents the list of messages.
+	 * Attribute that represents the resource boundle with the messages for the rest module.
 	 */
 	private static ResourceBundle restvalet;
+
+	/**
+	 * Attribute that represents the resource boundle with the messages for the commons-util module.
+	 */
+	private static ResourceBundle commonsutilvalet;
 
 	/**
 	 * Attribute that represents the locale specified in the configuration.
@@ -87,19 +91,25 @@ public final class Language {
 	private static final String LANGUAGE_KEY = "LANGUAGE";
 
 	/**
-	 * Attribute that represents the location of file that contains the messages of system. 
+	 * Attribute that represents the location of the file that contains the messages for the web module.
 	 */
 	private static final String CONTENT_WEB_PATH = "valet-web.webvalet";
 
 	/**
-	 * Attribute that represents the location of file that contains the messages of system. 
+	 * Attribute that represents the location of the file that contains the messages for the rest module.
 	 */
 	private static final String CONTENT_REST_PATH = "valet-rest.restvalet";
+
+	/**
+	 * Attribute that represents the location of the file that contains the messages for the commons-utils module.
+	 */
+	private static final String CONTENT_COMMONS_UTIL_PATH = "valet-commons-util.commonsutilvalet";
 
 	/**
 	 * Constructor method for the class Language.java.
 	 */
 	private Language() {
+		super();
 	}
 
 	static {
@@ -183,10 +193,12 @@ public final class Language {
 
 		restvalet = ResourceBundle.getBundle(CONTENT_REST_PATH, currentLocale, urlClassLoaderMsg);
 
+		commonsutilvalet = ResourceBundle.getBundle(CONTENT_COMMONS_UTIL_PATH, currentLocale, urlClassLoaderMsg);
+
 	}
 
 	/**
-	 * Gets the message with the key and values indicated as input parameters.
+	 * Gets the message (web module) with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @param values Values for insert in the message.
 	 * @return String with the message well-formed.
@@ -196,7 +208,7 @@ public final class Language {
 	}
 
 	/**
-	 * Gets the message with the key indicated as input parameters.
+	 * Gets the message (web module) with the key indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @return String with the message.
 	 */
@@ -205,7 +217,7 @@ public final class Language {
 	}
 
 	/**
-	 * Gets the message with the key and values indicated as input parameters.
+	 * Gets the message (rest module) with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @param values Values for insert in the message.
 	 * @return String with the message well-formed.
@@ -215,11 +227,31 @@ public final class Language {
 	}
 
 	/**
-	 * Gets the message with the key indicated as input parameters.
+	 * Gets the message (rest module) with the key indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @return String with the message.
 	 */
 	public static String getResRestValet(final String key) {
 		return restvalet.getString(key);
 	}
+
+	/**
+	 * Gets the message (commons-util module) with the key and values indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @param values Values for insert in the message.
+	 * @return String with the message well-formed.
+	 */
+	public static String getFormatResCommonsUtilValet(final String key, final Object... values) {
+		return new MessageFormat(commonsutilvalet.getString(key), currentLocale).format(values);
+	}
+
+	/**
+	 * Gets the message (commons-util module) with the key indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @return String with the message.
+	 */
+	public static String getResCommonsUtilValet(final String key) {
+		return commonsutilvalet.getString(key);
+	}
+
 }
