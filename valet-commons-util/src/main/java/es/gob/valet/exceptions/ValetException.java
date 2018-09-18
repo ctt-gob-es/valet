@@ -35,7 +35,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilMessages;
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 18/09/2018.
  */
-public class ValetException extends Exception implements IExcepcion {
+public class ValetException extends Exception implements IException {
 
 	/**
 	 * Constant  ttribute that represents the serial version UID.

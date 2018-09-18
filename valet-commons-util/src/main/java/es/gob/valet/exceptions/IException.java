@@ -15,7 +15,7 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.exceptions.IExcepcion.java.</p>
+ * <b>File:</b><p>es.gob.valet.exceptions.IException.java.</p>
  * <b>Description:</b><p>Interface defining constants codes accepted for
  * the exceptions on the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
@@ -31,7 +31,7 @@ package es.gob.valet.exceptions;
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 18/09/2018.
  */
-public interface IExcepcion {
+public interface IException {
 
 	//	/** Constant attribute that represents the error code: Unexpected Error. */
 	//	String COD_000 = "COD_000";
