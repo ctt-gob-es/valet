@@ -19,9 +19,9 @@
  * <b>Description:</b><p>Interface that defines all the token constants for the messages
  * in the commons-util module of valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>17/09/2018.</p>
+ * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 17/09/2018.
+ * @version 1.0, 18/09/2018.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,14 +29,32 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the commons-util module of valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 17/09/2018.
+ * @version 1.0, 18/09/2018.
  */
 public interface ICommonsUtilMessages {
-	
+
 	/**
 	 * Constant attribute that represents the property key <code>EXCEPTION000</code> belonging to the
 	 * file messages/valet-commons-util/commonsutilvalet.properties.
 	 */
 	String EXCEPTION_000 = "EXCEPTION000";
+
+	/**
+	 * Constant attribute that represents the property key <code>EXCEPTION001</code> belonging to the
+	 * file messages/valet-commons-util/commonsutilvalet.properties.
+	 */
+	String EXCEPTION_001 = "EXCEPTION001";
+
+	/**
+	 * Constant attribute that represents the property key <code>EXCEPTION002</code> belonging to the
+	 * file messages/valet-commons-util/commonsutilvalet.properties.
+	 */
+	String EXCEPTION_002 = "EXCEPTION002";
+
+	/**
+	 * Constant attribute that represents the property key <code>EXCEPTION003</code> belonging to the
+	 * file messages/valet-commons-util/commonsutilvalet.properties.
+	 */
+	String EXCEPTION_003 = "EXCEPTION003";
 
 }
