@@ -68,7 +68,7 @@
 		</dependency>
 		<dependency>
 			<groupId>es.gob.valet</groupId>
-			<artifactId>valet-commons-util</artifactId>
+			<artifactId>valet-commons-util-i18n</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

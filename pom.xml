@@ -30,6 +30,7 @@
 		
 		<!-- Versionado de módulos propios de valET. -->
 		<valet.version.commons-util>1.0.0</valet.version.commons-util>
+		<valet.version.commons-util-i18n>1.0.0</valet.version.commons-util-i18n>
 		<valet.version.i18n>1.0.0</valet.version.i18n>
 		<valet.version.persistence>1.0.0</valet.version.persistence>
 		<valet.version.core>1.0.0</valet.version.core>
@@ -57,6 +58,7 @@
 		<module>valet-web</module>
 		<module>valet-rest</module>
 		<module>valet-quartz</module>
+		<module>valet-commons-util-i18n</module>
 	</modules>
 	
 	<!-- Definición de perfiles de construcción maven. -->
@@ -263,6 +265,11 @@
 				<groupId>es.gob.valet</groupId>
 				<artifactId>valet-commons-util</artifactId>
 				<version>${valet.version.commons-util}</version>
+			</dependency>
+			<dependency>
+				<groupId>es.gob.valet</groupId>
+				<artifactId>valet-commons-util-i18n</artifactId>
+				<version>${valet.version.commons-util-i18n}</version>
 			</dependency>
 			<dependency>
 				<groupId>es.gob.valet</groupId>

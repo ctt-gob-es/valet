@@ -18,10 +18,10 @@
  * <b>File:</b><p>es.gob.valet.commons.utils.StaticValetConfig.java.</p>
  * <b>Description:</b><p> Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>18/09/2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.0, 20/09/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -32,13 +32,14 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IQuartzMessages;
 import es.gob.valet.i18n.utils.UtilsTomcat;
 
 /** 
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.0, 20/09/2018.
  */
 public final class StaticValetConfig {
 
@@ -94,13 +95,13 @@ public final class StaticValetConfig {
 				staticProperties = new Properties();
 				FileInputStream configStream = null;
 				try {
-					LOGGER.info(Language.getFormatResQuartzValet("log2", new Object[ ] { STATIC_VALET_FILENAME }));
-					configStream = new FileInputStream(UtilsTomcat.createAbsolutePath(UtilsTomcat.getTomcatConfigDir(), STATIC_VALET_FILENAME)); 
+					LOGGER.info(Language.getFormatResQuartzValet(IQuartzMessages.LOG2, new Object[ ] { STATIC_VALET_FILENAME }));
+					configStream = new FileInputStream(UtilsTomcat.createAbsolutePath(UtilsTomcat.getTomcatConfigDir(), STATIC_VALET_FILENAME));
 					staticProperties.load(configStream);
-					LOGGER.info(Language.getFormatResQuartzValet("log2b", new Object[ ] { staticProperties }));
+					LOGGER.info(Language.getFormatResQuartzValet(IQuartzMessages.LOG2, new Object[ ] { staticProperties }));
 					result = true;
 				} catch (IOException e) {
-					LOGGER.error(Language.getFormatResQuartzValet("log3", new String[ ] { STATIC_VALET_FILENAME, e.getMessage() }), e);
+					LOGGER.error(Language.getFormatResQuartzValet(IQuartzMessages.LOG3, new String[ ] { STATIC_VALET_FILENAME, e.getMessage() }), e);
 				} finally {
 					UtilsResources.safeCloseInputStream(configStream);
 				}

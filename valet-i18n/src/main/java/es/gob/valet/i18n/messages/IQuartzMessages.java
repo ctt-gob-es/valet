@@ -34,6 +34,24 @@ package es.gob.valet.i18n.messages;
 public interface IQuartzMessages {
 
 	/**
+	 * Constant attribute that represents the property key <code>log2</code> belonging to the
+	 * file messages/valet-quartz/quartzvalet.properties.
+	 */
+	String LOG2 = "log2";
+
+	/**
+	 * Constant attribute that represents the property key <code>log2</code> belonging to the
+	 * file messages/valet-quartz/quartzvalet.properties.
+	 */
+	String LOG2B = "log2b";
+
+	/**
+	 * Constant attribute that represents the property key <code>log2</code> belonging to the
+	 * file messages/valet-quartz/quartzvalet.properties.
+	 */
+	String LOG3 = "log3";
+
+	/**
 	 * Constant attribute that represents the property key <code>logMQ00</code> belonging to the
 	 * file messages/valet-quartz/quartzvalet.properties.
 	 */
