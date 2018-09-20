@@ -66,6 +66,11 @@ public final class Language {
 	private static ResourceBundle commonsutilvalet;
 
 	/**
+	 * Attribute that represents the list of messages.
+	 */
+	private static ResourceBundle quartzvalet;
+
+	/**
 	 * Attribute that represents the locale specified in the configuration.
 	 */
 	private static Locale currentLocale;
@@ -104,6 +109,11 @@ public final class Language {
 	 * Attribute that represents the location of the file that contains the messages for the commons-utils module.
 	 */
 	private static final String CONTENT_COMMONS_UTIL_PATH = "valet-commons-util.commonsutilvalet";
+
+	/**
+	 * Attribute that represents the location of file that contains the messages quartz tool. 
+	 */
+	private static final String CONTENT_QUARTZ_PATH = "valet-quartz.quartzvalet";
 
 	/**
 	 * Constructor method for the class Language.java.
@@ -195,6 +205,8 @@ public final class Language {
 
 		commonsutilvalet = ResourceBundle.getBundle(CONTENT_COMMONS_UTIL_PATH, currentLocale, urlClassLoaderMsg);
 
+		quartzvalet = ResourceBundle.getBundle(CONTENT_QUARTZ_PATH, currentLocale, urlClassLoaderMsg);
+
 	}
 
 	/**
@@ -252,6 +264,25 @@ public final class Language {
 	 */
 	public static String getResCommonsUtilValet(final String key) {
 		return commonsutilvalet.getString(key);
+	}
+
+	/**
+	 * Gets the message with the key and values indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @param values Values for insert in the message.
+	 * @return String with the message well-formed.
+	 */
+	public static String getFormatResQuartzValet(final String key, final Object... values) {
+		return new MessageFormat(quartzvalet.getString(key), currentLocale).format(values);
+	}
+
+	/**
+	 * Gets the message with the key indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @return String with the message.
+	 */
+	public static String getResQuartzValet(final String key) {
+		return quartzvalet.getString(key);
 	}
 
 }

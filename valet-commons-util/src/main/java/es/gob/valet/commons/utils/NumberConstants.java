@@ -57,7 +57,12 @@ public interface NumberConstants {
 	int NUM0 = 0;
 
 	/**
-	 * Constant attribute that represents the number 3.
+	 * Constant attribute that represents the number 1.
+	 */
+	int NUM1 = 1;
+	
+	/**
+	 * Constant attribute that represents the number 2.
 	 */
 	int NUM2 = 2;
 

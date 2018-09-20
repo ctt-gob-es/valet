@@ -122,6 +122,18 @@ public interface ILogMessages {
 	String ERROR_EDIT_TSL_WEB = "errorEditTslWeb";
 
 	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.initMsg</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_INIT_MSG = "task.findNewTslRev.initMsg";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.endMsg</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_END_MSG = "task.findNewTslRev.endMsg";
+
+	/**
 	 * Constant attribute that represents the name of the property <code>REST001</code> belonging to the
 	 * file restvalet.properties.
 	 */

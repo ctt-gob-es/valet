@@ -257,13 +257,13 @@ public interface IException {
 	//
 	//	/** Constant attribute that represents the error code: Error in the Signing Policies TreeCache. */
 	//	String COD_181 = "COD_181";
-	//
-	//	/** Constant attribute that represents the error code: Error managing an Afirma Scheduler. */
-	//	String COD_184 = "COD_184";
-	//
-	//	/** Constant attribute that represents the error code: Error managing an Afirma Task. */
-	//	String COD_185 = "COD_185";
-	//
+	
+		/** Constant attribute that represents the error code: Error managing an valET Scheduler. */
+		String COD_184 = "COD_184";
+	
+		/** Constant attribute that represents the error code: Error managing an valET Task. */
+		String COD_185 = "COD_185";
+	
 	//	/** Constant attribute that represents the error code: Error managing an Afirma configuration object. */
 	//	String COD_186 = "COD_186";
 
