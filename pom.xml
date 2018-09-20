@@ -36,6 +36,7 @@
 		<valet.version.core>1.0.0</valet.version.core>
 		<valet.version.web>1.0.0</valet.version.web>
 		<valet.version.rest>1.0.0</valet.version.rest>
+		<valet.version.rest-client>1.0.0</valet.version.rest-client>
 		<valet.version.cache>1.0.0</valet.version.cache>
 		<valet.version.quartz>1.0.0</valet.version.quartz>
 		
@@ -59,6 +60,7 @@
 		<module>valet-rest</module>
 		<module>valet-quartz</module>
 		<module>valet-commons-util-i18n</module>
+		<module>valet-rest-client</module>
 	</modules>
 	
 	<!-- Definición de perfiles de construcción maven. -->
@@ -336,6 +338,11 @@
 				<groupId>org.modelmapper</groupId>
 				<artifactId>modelmapper</artifactId>
 				<version>1.1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-client</artifactId>
+				<version>3.0.19.Final</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
