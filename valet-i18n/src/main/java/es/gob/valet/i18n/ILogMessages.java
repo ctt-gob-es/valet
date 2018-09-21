@@ -157,4 +157,16 @@ public interface ILogMessages {
 	 */
 	String REST_LOG004 = "REST004";
 
+	/**
+	 * Constant attribute that represents the name of the property <code>REST005</code> belonging to the
+	 * file restvalet.properties.
+	 */
+	String REST_LOG005 = "REST005";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>REST006</code> belonging to the
+	 * file restvalet.properties.
+	 */
+	String REST_LOG006 = "REST006";
+
 }

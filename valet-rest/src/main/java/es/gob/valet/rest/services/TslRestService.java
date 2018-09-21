@@ -24,6 +24,7 @@
  */
 package es.gob.valet.rest.services;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +38,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 
+import es.gob.valet.commons.utils.UtilsFecha;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.i18n.ILogMessages;
 import es.gob.valet.i18n.Language;
@@ -62,7 +64,7 @@ public class TslRestService implements ITslRestService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.rest.services.ITslRestService#detectCertInTslInfoAndValidation(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean)
+	 * @see es.gob.valet.rest.services.ITslRestService#detectCertInTslInfoAndValidation(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.String, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean)
 	 */
 	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
 	// because Restful needs not final access methods.
@@ -71,7 +73,7 @@ public class TslRestService implements ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(CERTIFICATE) final String certificate, @FormParam(DETECTION_DATE) final Date detectionDate, @FormParam(GET_INFO) final Boolean getInfo, @FormParam(CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(RETURN_REV_EVID) final Boolean returnRevoEvid) {
+	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(CERTIFICATE) final String certificate, @FormParam(DETECTION_DATE) final String detectionDate, @FormParam(GET_INFO) final Boolean getInfo, @FormParam(CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(RETURN_REV_EVID) final Boolean returnRevoEvid) {
 		// CHECKSTYLE:ON
 		LOGGER.info(Language.getFormatResRestValet(ILogMessages.REST_LOG001, new Object[ ] { application, delegatedApp, tslLocation, certificate, detectionDate, getInfo, checkRevStatus, returnRevoEvid }));
 		Boolean allIsOk = Boolean.TRUE;
@@ -97,9 +99,22 @@ public class TslRestService implements ITslRestService {
 			result.setDescription(Language.getFormatResRestValet(ILogMessages.REST_LOG004));
 		}
 
+		// Check if date format received is valid.
+		Date detectionDateAux = null;
+		if (!UtilsStringChar.isNullOrEmpty(detectionDate)) {
+			try {
+				detectionDateAux = UtilsFecha.convierteFecha(detectionDate, UtilsFecha.FORMATO_FECHA_ESTANDAR);
+			} catch (ParseException e) {
+				allIsOk = Boolean.FALSE;
+				LOGGER.error(Language.getFormatResRestValet(ILogMessages.REST_LOG006, new Object[ ] { "detectionDate" }));
+				result.setStatus(0);
+				result.setDescription(Language.getFormatResRestValet(ILogMessages.REST_LOG006, new Object[ ] { "detectionDate" }));
+			}
+		}
+
 		// If all is OK, we can continue
 		if (allIsOk) {
-			Date detectionDateAux = detectionDate;
+
 			if (detectionDateAux == null) {
 				detectionDateAux = new Date();
 			}
@@ -252,9 +267,9 @@ public class TslRestService implements ITslRestService {
 		// but not both
 		if (allIsOk && countryRegion != null && tslLocation != null) {
 			allIsOk = Boolean.FALSE;
-			LOGGER.error(Language.getFormatResRestValet(ILogMessages.REST_LOG004));
+			LOGGER.error(Language.getFormatResRestValet(ILogMessages.REST_LOG005));
 			result.setStatus(0);
-			result.setDescription(Language.getFormatResRestValet(ILogMessages.REST_LOG004));
+			result.setDescription(Language.getFormatResRestValet(ILogMessages.REST_LOG005));
 		}
 
 		// If all is OK, we can continue

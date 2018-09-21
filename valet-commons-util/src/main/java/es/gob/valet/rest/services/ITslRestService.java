@@ -24,8 +24,6 @@
  */
 package es.gob.valet.rest.services;
 
-import java.util.Date;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -99,7 +97,7 @@ public interface ITslRestService {
 	 * @param delegatedApp Delegated application
 	 * @param tslLocation TSL location
 	 * @param certificate Certificate to detect (byte[] in Base64 encoded)
-	 * @param detectionDate Detection date
+	 * @param detectionDate Detection date. Format: {@code dd/MM/yyyy HH:mm:ss}
 	 * @param getInfo Get certificate info in response
 	 * @param checkRevStatus Check revocation status
 	 * @param returnRevoEvid Get revocation evidence (only if {@code checkRevocationStatus} is true)
@@ -109,7 +107,7 @@ public interface ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(CERTIFICATE) final String certificate, @FormParam(DETECTION_DATE) final Date detectionDate, @FormParam(GET_INFO) final Boolean getInfo, @FormParam(CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(RETURN_REV_EVID) final Boolean returnRevoEvid);
+	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(CERTIFICATE) final String certificate, @FormParam(DETECTION_DATE) final String detectionDate, @FormParam(GET_INFO) final Boolean getInfo, @FormParam(CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(RETURN_REV_EVID) final Boolean returnRevoEvid);
 
 	/**
 	 * Method that returns the TSL information.
