@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 25/09/2018.
+ * @version 1.3, 25/09/2018.
  */
 package es.gob.valet.i18n;
 
@@ -41,7 +41,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
 /**
  * <p>Class that manages the access to the properties files used for generation messages in the plataform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 25/09/2018.
+ * @version 1.3, 25/09/2018.
  */
 public final class Language {
 
@@ -66,14 +66,19 @@ public final class Language {
 	private static ResourceBundle commonsutilvalet;
 
 	/**
-	 * Attribute that represents the list of messages.
+	 * Attribute that represents the resource boundle with the messages for the quartz module.
 	 */
 	private static ResourceBundle quartzvalet;
 
 	/**
-	 * Attribute that represents the list of messages.
+	 * Attribute that represents the resource boundle with the messages for the cache module.
 	 */
 	private static ResourceBundle cachevalet;
+
+	/**
+	 * Attribute that represents the resource boundle with the messages for the core module.
+	 */
+	private static ResourceBundle corevalet;
 
 	/**
 	 * Attribute that represents the locale specified in the configuration.
@@ -116,14 +121,19 @@ public final class Language {
 	private static final String CONTENT_COMMONS_UTIL_PATH = "valet-commons-util.commonsutilvalet";
 
 	/**
-	 * Attribute that represents the location of file that contains the messages quartz tool.
+	 * Attribute that represents the location of file that contains the messages quartz module.
 	 */
 	private static final String CONTENT_QUARTZ_PATH = "valet-quartz.quartzvalet";
 
 	/**
-	 * Attribute that represents the location of file that contains the messages quartz tool.
+	 * Attribute that represents the location of file that contains the messages cache module.
 	 */
 	private static final String CONTENT_CACHE_PATH = "valet-cache.cachevalet";
+
+	/**
+	 * Attribute that represents the location of file that contains the messages core module.
+	 */
+	private static final String CONTENT_CORE_PATH = "valet-core.corevalet";
 
 	/**
 	 * Constructor method for the class Language.java.
@@ -219,6 +229,8 @@ public final class Language {
 
 		cachevalet = ResourceBundle.getBundle(CONTENT_CACHE_PATH, currentLocale, urlClassLoaderMsg);
 
+		corevalet = ResourceBundle.getBundle(CONTENT_CORE_PATH, currentLocale, urlClassLoaderMsg);
+
 	}
 
 	/**
@@ -279,7 +291,7 @@ public final class Language {
 	}
 
 	/**
-	 * Gets the message with the key and values indicated as input parameters.
+	 * Gets the message (quartz module) with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @param values Values for insert in the message.
 	 * @return String with the message well-formed.
@@ -289,7 +301,7 @@ public final class Language {
 	}
 
 	/**
-	 * Gets the message with the key indicated as input parameters.
+	 * Gets the message (quartz module) with the key indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @return String with the message.
 	 */
@@ -298,7 +310,7 @@ public final class Language {
 	}
 
 	/**
-	 * Gets the message with the key and values indicated as input parameters.
+	 * Gets the message (cache module) with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @param values Values for insert in the message.
 	 * @return String with the message well-formed.
@@ -308,12 +320,31 @@ public final class Language {
 	}
 
 	/**
-	 * Gets the message with the key indicated as input parameters.
+	 * Gets the message (cache module) with the key indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @return String with the message.
 	 */
 	public static String getResCacheValet(final String key) {
 		return cachevalet.getString(key);
+	}
+
+	/**
+	 * Gets the message (core module) with the key and values indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @param values Values for insert in the message.
+	 * @return String with the message well-formed.
+	 */
+	public static String getFormatResCoreValet(final String key, final Object... values) {
+		return new MessageFormat(corevalet.getString(key), currentLocale).format(values);
+	}
+
+	/**
+	 * Gets the message (core module) with the key indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @return String with the message.
+	 */
+	public static String getResCoreValet(final String key) {
+		return corevalet.getString(key);
 	}
 
 }

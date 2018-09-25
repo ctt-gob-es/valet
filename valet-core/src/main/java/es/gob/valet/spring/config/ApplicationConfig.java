@@ -20,7 +20,7 @@
  * <b>Project:</b><p></p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 11/09/2018.
+ * @version 1.2, 25/09/2018.
  */
 package es.gob.valet.spring.config;
 
@@ -28,6 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -36,24 +37,34 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import es.gob.valet.cache.FactoryCacheValet;
+import es.gob.valet.cache.exceptions.CacheValetException;
+import es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.ICoreMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 11/09/2018.
+ * @version 1.2, 25/09/2018.
  */
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan("es.gob.valet")
 @EntityScan("es.gob.valet.persistence.configuration.model.entity")
-@EnableJpaRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class, basePackages = "es.gob.valet.persistence.configuration.model.repository" )
+@EnableJpaRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class, basePackages = "es.gob.valet.persistence.configuration.model.repository")
 public class ApplicationConfig {
+
+	/**
+	 * Constant attribute that represents the log4j property that determines the path to the log4j configuration file.
+	 */
+	private static final String LOG4J_PROPERTY = "log4j.configuration";
 
 	/**
 	 * Attribute that represents the logger of this class.
 	 */
-	private Logger logger = Logger.getLogger(ApplicationConfig.class);
+	private static Logger logger = Logger.getLogger(ApplicationConfig.class);
 
 	/**
 	 * Attribute that forces the initialization of the manager for the persistence services.
@@ -68,8 +79,36 @@ public class ApplicationConfig {
 	@PostConstruct
 	public void init() {
 
-		// TODO
-		// Añadir los elementos que haga falta inicializar al realizar el boot de la aplicación.
+		try {
+			initializePlatform();
+			logger.info(Language.getResCoreValet(ICoreMessages.INITIALIZATION_001));
+		} catch (Exception e) {
+			logger.error(Language.getResCoreValet(ICoreMessages.INITIALIZATION_002), e);
+		}
+
+	}
+
+	/**
+	 * Method that initialize all the functions of the platform.
+	 */
+	private void initializePlatform() {
+
+		// Se indica que el fichero de configuración de log4j se recargue cada
+		// cierto periodo de tiempo (10 segundos).
+		DOMConfigurator.configureAndWatch(System.getProperty(LOG4J_PROPERTY), NumberConstants.NUM10000);
+		// Despues de iniciar la configuración de log4j, iniciamos el logger.
+		logger = Logger.getLogger(ApplicationConfig.class);
+
+		logger.info(Language.getResCoreValet(ICoreMessages.INITIALIZATION_000));
+
+		// Se inicializa la caché.
+		try {
+			FactoryCacheValet.getCacheAfirmaInstance();
+		} catch (CacheValetException e) {
+			logger.warn(Language.getResCoreValet(ICoreMessages.INITIALIZATION_003), e);
+			// TODO Aquí hay que enviar una alarma por no poder iniciar la
+			// caché.
+		}
 
 	}
 
