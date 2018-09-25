@@ -32,7 +32,7 @@ import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
 
-import es.gob.valet.exceptions.IException;
+import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IQuartzMessages;
 import es.gob.valet.quartz.job.AbstractValetTaskQuartzJob;
@@ -100,7 +100,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 					result = addOrReplaceJobTrigger(nextExecutionDate, periodInMillis, numberOfReps, taskNameParam, planner.getIdentifier(), taskClass, jobDataMap);
 				} catch (SchedulerException e) {
 					String errorMsg = Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ02, new Object[ ] { taskNameParam, getSchedulerGroup() });
-					throw new ValetSchedulerException(IException.COD_184, errorMsg, e);
+					throw new ValetSchedulerException(IValetException.COD_184, errorMsg, e);
 				}
 
 			}
@@ -123,7 +123,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 			return removeJob(taskName);
 		} catch (SchedulerException e) {
 			String errorMsg = Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ03, new Object[ ] { taskName, getSchedulerGroup() });
-			throw new ValetSchedulerException(IException.COD_184, errorMsg, e);
+			throw new ValetSchedulerException(IValetException.COD_184, errorMsg, e);
 		}
 
 	}
@@ -141,7 +141,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 			return removeTrigger(taskName, plannerId);
 		} catch (SchedulerException e) {
 			String errorMsg = Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ04, new Object[ ] { taskName, getSchedulerGroup() });
-			throw new ValetSchedulerException(IException.COD_184, errorMsg, e);
+			throw new ValetSchedulerException(IValetException.COD_184, errorMsg, e);
 		}
 
 	}
@@ -199,7 +199,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 			return checkIfExistJob(taskName);
 		} catch (SchedulerException e) {
 			String errorMsg = Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ05, new Object[ ] { taskName, getSchedulerGroup() });
-			throw new ValetSchedulerException(IException.COD_185, errorMsg, e);
+			throw new ValetSchedulerException(IValetException.COD_185, errorMsg, e);
 		}
 
 	}

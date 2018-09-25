@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,14 +14,14 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.commons.utils.StaticValetConfig.java.</p>
  * <b>Description:</b><p> Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 20/09/2018.
+ * @version 1.1, 25/09/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -35,11 +35,11 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IQuartzMessages;
 import es.gob.valet.i18n.utils.UtilsTomcat;
 
-/** 
+/**
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 20/09/2018.
+ * @version 1.1, 25/09/2018.
  */
 public final class StaticValetConfig {
 
@@ -59,9 +59,10 @@ public final class StaticValetConfig {
 	public static final String STATIC_VALET_FILENAME = "staticValetConfig.properties";
 
 	/**
-	 * Constant attribute that represents name for property <code>quartz.instance.id.scheduler</code>.
+	 * Constant attribute that represents the key for the property that indicates the implementation
+	 * to use for the cache.
 	 */
-	public static final String QUARTZ_INSTANCE_ID_SCHEDULER = "quartz.instance.id.scheduler";
+	public static final String CACHE_IMPLEMENTATION = "cache.implementation";
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.
@@ -101,7 +102,7 @@ public final class StaticValetConfig {
 					LOGGER.info(Language.getFormatResQuartzValet(IQuartzMessages.LOG2, new Object[ ] { staticProperties }));
 					result = true;
 				} catch (IOException e) {
-					LOGGER.error(Language.getFormatResQuartzValet(IQuartzMessages.LOG3, new String[ ] { STATIC_VALET_FILENAME, e.getMessage() }), e);
+					LOGGER.error(Language.getFormatResQuartzValet(IQuartzMessages.LOG3, new Object[ ] { STATIC_VALET_FILENAME, e.getMessage() }), e);
 				} finally {
 					UtilsResources.safeCloseInputStream(configStream);
 				}

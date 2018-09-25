@@ -24,7 +24,7 @@
  */
 package es.gob.valet.quartz.job;
 
-import es.gob.valet.exceptions.IException;
+import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.exceptions.ValetException;
 
 /** 
@@ -48,7 +48,7 @@ public class TaskValetException extends ValetException {
 
 	/**
 	 * Constructor method for the class TaskValetException.java.
-	 * @param errorCode Error code for the exception. It can be obtained from {@link IException}.
+	 * @param errorCode Error code for the exception. It can be obtained from {@link IValetException}.
 	 * @param description Description of the exception.
 	 */
 	public TaskValetException(final String errorCode, final String description) {
@@ -57,7 +57,7 @@ public class TaskValetException extends ValetException {
 
 	/**
 	 * Constructor method for the class TaskValetException.java.
-	 * @param errorCode Error code for the exception. It can be obtained from {@link IException}.
+	 * @param errorCode Error code for the exception. It can be obtained from {@link IValetException}.
 	 * @param description Description of the exception.
 	 * @param excep Exception object that causes the error.
 	 */

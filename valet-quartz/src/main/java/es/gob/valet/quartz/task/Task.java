@@ -24,7 +24,7 @@
  */
 package es.gob.valet.quartz.task;
 
-import es.gob.valet.exceptions.IException;
+import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.quartz.job.AbstractValetTaskQuartzJob;
 import es.gob.valet.quartz.job.TaskValetException;
 
@@ -48,7 +48,7 @@ public abstract class Task extends AbstractValetTaskQuartzJob {
 		try {
 			doActionOfTheTask();
 		} catch (Exception e) {
-			throw new TaskValetException(IException.COD_185, e.getMessage(), e);
+			throw new TaskValetException(IValetException.COD_185, e.getMessage(), e);
 		}
 
 		endMessage();

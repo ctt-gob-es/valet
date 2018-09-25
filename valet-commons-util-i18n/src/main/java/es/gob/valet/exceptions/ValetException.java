@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.exceptions.ValetException.java.</p>
  * <b>Description:</b><p> Class for encapsulate exceptions thrown by the platform.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 20/09/2018.
+ * @version 1.1, 25/09/2018.
  */
 package es.gob.valet.exceptions;
 
@@ -30,12 +30,12 @@ import es.gob.valet.commons.utils.UtilsXML;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICommonsUtilMessages;
 
-/** 
+/**
  * <p>Class for encapsulate exceptions thrown by the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 20/09/2018.
+ * @version 1.1, 25/09/2018.
  */
-public class ValetException extends Exception implements IException {
+public class ValetException extends Exception implements IValetException {
 
 	/**
 	 * Constant  ttribute that represents the serial version UID.
@@ -63,7 +63,7 @@ public class ValetException extends Exception implements IException {
 	private Exception exception = null;
 
 	/**
-	 * Constructor method for the class Excepcion.java.
+	 * Constructor method for the class ValetException.java.
 	 */
 	public ValetException() {
 		super();
