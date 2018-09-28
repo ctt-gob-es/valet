@@ -25,7 +25,6 @@
  */
 package es.gob.valet.exceptions;
 
-
 /** 
  * <p>Interface defining constants codes accepted for
  * the exceptions on the platform.</p>
@@ -286,4 +285,24 @@ public interface IValetException {
 	//	/** Constant attribute that represents the error code: Error with a SSL+SNI connection. */
 	//	String COD_192 = "COD_192";
 
+	/** Constant attribute that represents the error code: Unknown host. */
+	String COD_193 = "COD_193";
+	
+	/** Constant attribute that represents the error code: Network connection timeout. */
+	String COD_194 = "COD_194";
+	
+	/** Constant attribute that represents the error code: Connection refused. */
+	String COD_195 = "COD_195";
+	
+	/** Constant attribute that represents the error code: Connection no available.	*/
+	String COD_196 = "COD_196";
+	
+	/** Constant attribute that represents the error code: Not found. */
+	String COD_197 = "COD_197";
+	
+	/** Constant attribute that represents the error code: Generic error. */
+	String COD_198 = "COD_198";
+
+	
+	
 }

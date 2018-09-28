@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -40,6 +39,7 @@ import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.UtilsFecha;
 import es.gob.valet.commons.utils.UtilsStringChar;
+import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.i18n.ILogMessages;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.rest.elements.CertDetectedInTSL;
@@ -64,7 +64,7 @@ public class TslRestService implements ITslRestService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.rest.services.ITslRestService#detectCertInTslInfoAndValidation(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.String, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean)
+	 * @see es.gob.valet.rest.services.ITslRestService#detectCertInTslInfoAndValidation(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean)
 	 */
 	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
 	// because Restful needs not final access methods.
@@ -73,7 +73,7 @@ public class TslRestService implements ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(CERTIFICATE) final String certificate, @FormParam(DETECTION_DATE) final String detectionDate, @FormParam(GET_INFO) final Boolean getInfo, @FormParam(CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(RETURN_REV_EVID) final Boolean returnRevoEvid) {
+	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(String application, String delegatedApp, String tslLocation, String certificate, String detectionDate, Boolean getInfo, Boolean checkRevStatus, Boolean returnRevoEvid) throws ValetRestException {
 		// CHECKSTYLE:ON
 		LOGGER.info(Language.getFormatResRestValet(ILogMessages.REST_LOG001, new Object[ ] { application, delegatedApp, tslLocation, certificate, detectionDate, getInfo, checkRevStatus, returnRevoEvid }));
 		Boolean allIsOk = Boolean.TRUE;
@@ -246,7 +246,7 @@ public class TslRestService implements ITslRestService {
 	@Path("/getTslInformation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public GetTslInformationResponse getTslInformation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(COUNTRY_REGION) final String countryRegion, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(GET_TSL_XML_DATA) final Boolean getTslXmlData) {
+	public GetTslInformationResponse getTslInformation(String application, String delegatedApp, String countryRegion, String tslLocation, Boolean getTslXmlData) throws ValetRestException {
 		// CHECKSTYLE:ON
 		LOGGER.info(Language.getFormatResRestValet(ILogMessages.REST_LOG002, new Object[ ] { application, delegatedApp, countryRegion, tslLocation, getTslXmlData }));
 		Boolean allIsOk = Boolean.TRUE;
