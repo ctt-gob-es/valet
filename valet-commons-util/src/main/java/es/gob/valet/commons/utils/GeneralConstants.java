@@ -34,6 +34,6 @@ public interface GeneralConstants {
 	/**
 	 * Constant attribute that represents the vaLET Logger name.
 	 */
-	public static final String LOGGER_NAME_VALET_LOG = "vaLET";
+	String LOGGER_NAME_VALET_LOG = "vaLET";
 
 }

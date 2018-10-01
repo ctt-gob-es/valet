@@ -50,17 +50,17 @@ public class ValetException extends Exception implements IValetException {
 	/**
 	 * Attribute that represents the error code.
 	 */
-	private String errorCode = null;
+	private String errorCode;
 
 	/**
 	 * Attribute that represents a description associated to the error.
 	 */
-	private String errorDesc = null;
+	private String errorDesc;
 
 	/**
 	 * Attribute that represents a java exception associated to the error. It is optional.
 	 */
-	private Exception exception = null;
+	private Exception exception;
 
 	/**
 	 * Constructor method for the class ValetException.java.
@@ -74,7 +74,7 @@ public class ValetException extends Exception implements IValetException {
 	 * @param errorCodeParam Error code.
 	 * @param errorDescParam Description for the error.
 	 */
-	public ValetException(String errorCodeParam, String errorDescParam) {
+	public ValetException(final String errorCodeParam, final String errorDescParam) {
 		super(Language.getFormatResCommonsUtilValet(ICommonsUtilMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
 		errorCode = errorCodeParam;
 		errorDesc = errorDescParam;
@@ -87,7 +87,7 @@ public class ValetException extends Exception implements IValetException {
 	 * @param errorDescParam Description for the error.
 	 * @param exceptionParam Exception that causes the error.
 	 */
-	public ValetException(String errorCodeParam, String errorDescParam, Exception exceptionParam) {
+	public ValetException(final String errorCodeParam, final String errorDescParam, final Exception exceptionParam) {
 		super(Language.getFormatResCommonsUtilValet(ICommonsUtilMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
 		errorCode = errorCodeParam;
 		errorDesc = errorDescParam;
@@ -107,7 +107,7 @@ public class ValetException extends Exception implements IValetException {
 	 * Sets the value of the attribute {@link #errorCode}.
 	 * @param errorCodePAram The value for the attribute {@link #errorCode}.
 	 */
-	public final void setErrorCode(String errorCodePAram) {
+	public final void setErrorCode(final String errorCodePAram) {
 		errorCode = errorCodePAram;
 	}
 
@@ -123,7 +123,7 @@ public class ValetException extends Exception implements IValetException {
 	 * Sets the value of the attribute {@link #errorDesc}.
 	 * @param errorDescParam The value for the attribute {@link #errorDesc}.
 	 */
-	public final void setErrorDescription(String errorDescParam) {
+	public final void setErrorDescription(final String errorDescParam) {
 		errorDesc = UtilsXML.escapeXml10(errorDescParam);
 	}
 
@@ -139,7 +139,7 @@ public class ValetException extends Exception implements IValetException {
 	 * Sets the value of the attribute {@link #exception}.
 	 * @param exceptionParam The value for the attribute {@link #exception}.
 	 */
-	public final void setException(Exception exceptionParam) {
+	public final void setException(final Exception exceptionParam) {
 		exception = exceptionParam;
 	}
 

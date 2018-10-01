@@ -49,17 +49,17 @@ public class ValetRestHostNotFoundException extends ValetRestException {
 	/**
 	 * Attribute that represents the error code.
 	 */
-	private String errorCode = null;
+	private String errorCode;
 
 	/**
 	 * Attribute that represents a description associated to the error.
 	 */
-	private String errorDesc = null;
+	private String errorDesc;
 
 	/**
 	 * Attribute that represents a java exception associated to the error. It is optional.
 	 */
-	private Exception exception = null;
+	private Exception exception;
 
 	/**
 	 * Constructor method for the class ValetRestHostNotFoundException.java.
@@ -73,7 +73,7 @@ public class ValetRestHostNotFoundException extends ValetRestException {
 	 * @param errorCodeParam Error code.
 	 * @param errorDescParam Description for the error.
 	 */
-	public ValetRestHostNotFoundException(String errorCodeParam, String errorDescParam) {
+	public ValetRestHostNotFoundException(final String errorCodeParam, final String errorDescParam) {
 		super(errorDescParam);
 		errorCode = errorCodeParam;
 		errorDesc = errorDescParam;
@@ -86,7 +86,7 @@ public class ValetRestHostNotFoundException extends ValetRestException {
 	 * @param errorDescParam Description for the error.
 	 * @param exceptionParam Exception that causes the error.
 	 */
-	public ValetRestHostNotFoundException(String errorCodeParam, String errorDescParam, Exception exceptionParam) {
+	public ValetRestHostNotFoundException(final String errorCodeParam, final String errorDescParam, final Exception exceptionParam) {
 		super(errorDescParam);
 		errorCode = errorCodeParam;
 		errorDesc = errorDescParam;
@@ -106,7 +106,7 @@ public class ValetRestHostNotFoundException extends ValetRestException {
 	 * Sets the value of the attribute {@link #errorCode}.
 	 * @param errorCodePAram The value for the attribute {@link #errorCode}.
 	 */
-	public final void setErrorCode(String errorCodePAram) {
+	public final void setErrorCode(final String errorCodePAram) {
 		errorCode = errorCodePAram;
 	}
 
@@ -122,7 +122,7 @@ public class ValetRestHostNotFoundException extends ValetRestException {
 	 * Sets the value of the attribute {@link #errorDesc}.
 	 * @param errorDescParam The value for the attribute {@link #errorDesc}.
 	 */
-	public final void setErrorDescription(String errorDescParam) {
+	public final void setErrorDescription(final String errorDescParam) {
 		errorDesc = UtilsXML.escapeXml10(errorDescParam);
 	}
 
@@ -138,7 +138,7 @@ public class ValetRestHostNotFoundException extends ValetRestException {
 	 * Sets the value of the attribute {@link #exception}.
 	 * @param exceptionParam The value for the attribute {@link #exception}.
 	 */
-	public final void setException(Exception exceptionParam) {
+	public final void setException(final Exception exceptionParam) {
 		exception = exceptionParam;
 	}
 
@@ -152,7 +152,7 @@ public class ValetRestHostNotFoundException extends ValetRestException {
 		if (exception == null) {
 			return "EXCEPTION_CODE: [" + errorCode + "]; DESCRIPTION: [" + errorDesc + "]";
 		} else {
-			return "EXCEPTION_CODE: [" + errorCode + "]; DESCRIPTION: [" + errorDesc + "]; CAUSE: " + exception.toString() + "";
+			return "EXCEPTION_CODE: [" + errorCode + "]; DESCRIPTION: [" + errorDesc + "]; CAUSE: " + exception.toString();
 		}
 
 	}

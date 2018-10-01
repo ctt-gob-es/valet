@@ -118,7 +118,7 @@ public final class StaticValetConfig {
 	 * @param propertyName name of valET property.
 	 * @return the value of property given.
 	 */
-	public static String getProperty(String propertyName) {
+	public static String getProperty(final String propertyName) {
 		return (String) getProperties().get(propertyName);
 	}
 
@@ -127,7 +127,7 @@ public final class StaticValetConfig {
 	 * @param prefix word placed in the beginning of the key name of property.
 	 * @return a collection of static properties.
 	 */
-	public static Properties getProperties(String prefix) {
+	public static Properties getProperties(final String prefix) {
 		Properties result = new Properties();
 		if (prefix != null) {
 			for (Object key: getProperties().keySet()) {

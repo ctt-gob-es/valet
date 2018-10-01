@@ -109,7 +109,7 @@ public interface ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(CERTIFICATE) final String certificate, @FormParam(DETECTION_DATE) final String detectionDate, @FormParam(GET_INFO) final Boolean getInfo, @FormParam(CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(RETURN_REV_EVID) final Boolean returnRevoEvid) throws ValetRestException;
+	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(APPLICATION) String application, @FormParam(DELEGATED_APP) String delegatedApp, @FormParam(TSL_LOCATION) String tslLocation, @FormParam(CERTIFICATE) String certificate, @FormParam(DETECTION_DATE) String detectionDate, @FormParam(GET_INFO) Boolean getInfo, @FormParam(CHECK_REV_STATUS) Boolean checkRevStatus, @FormParam(RETURN_REV_EVID) Boolean returnRevoEvid) throws ValetRestException;
 
 	/**
 	 * Method that returns the TSL information.
@@ -125,6 +125,6 @@ public interface ITslRestService {
 	@Path("/getTslInformation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	GetTslInformationResponse getTslInformation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(COUNTRY_REGION) final String countryRegion, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(GET_TSL_XML_DATA) final Boolean getTslXmlData) throws ValetRestException;
+	GetTslInformationResponse getTslInformation(@FormParam(APPLICATION) String application, @FormParam(DELEGATED_APP) String delegatedApp, @FormParam(COUNTRY_REGION) String countryRegion, @FormParam(TSL_LOCATION) String tslLocation, @FormParam(GET_TSL_XML_DATA) Boolean getTslXmlData) throws ValetRestException;
 
 }
