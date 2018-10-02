@@ -1,70 +1,83 @@
-      <div class="sidebar">
-        <div class="sidebar-inner">
-          <!-- ### $Sidebar Header ### -->
-          <div class="sidebar-logo">
-            <div class="peers ai-c fxw-nw">
-              <div class="peer peer-greed">
-                <a class="sidebar-link td-n" th:href="@{/inicio}">
-                  <div class="peers ai-c fxw-nw">
-                    <div class="peer">
-                      <div class="logo">
-                        <img th:src="@{images/chart_logo.png}"
-						alt="vaLET Logo" />
-                      </div>
-                    </div>
-                    <div class="peer peer-greed">
-                      <h5 class="lh-1 mB-0 logo-text" th:text="#{valet.title}"></h5>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="peer">
-                <div class="mobile-toggle sidebar-toggle">
-                  <a href="" class="td-n">
-                    <i class="ti-arrow-circle-left"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- ### $Sidebar Menu ### -->
-          <form id="formMenu" class="form-sidebar"> 
-      	   	<ul class="sidebar-menu scrollable pos-r">
-	            <li class="nav-item mT-30 active">
-	              <a class="sidebar-link" th:href="@{/inicio}">
-	                <span class="icon-holder">
-	                  <i class="c-blue-500 ti-home"></i>
-	                </span>
-	                <span class="title" th:text="#{menu.inicio}"></span>
-	              </a>
-	            </li>
-	            <li class="nav-item">
-	              <a id="aUserAdmin" class='sidebar-link' href="#">
-	                <span class="icon-holder">
-	                  <i class="c-brown-500 ti-user"></i>
-	                </span>
-	                <span class="title" th:text="#{menu.admin.user}"></span>
-	                 <script th:inline="javascript">
+<div class="sidebar">
+	<div class="sidebar-inner">
+		<!-- ### $Sidebar Header ### -->
+		<div class="sidebar-logo">
+			<div class="peers ai-c fxw-nw">
+				<div class="peer peer-greed">
+					<a class="sidebar-link td-n" th:href="@{/inicio}">
+						<div class="peers ai-c fxw-nw">
+							<div class="peer">
+								<div class="logo">
+									<img th:src="@{images/chart_logo.png}" alt="valET Logo" />
+								</div>
+							</div>
+							<div class="peer peer-greed">
+								<h5 class="lh-1 mB-0 logo-text" th:text="#{valet.title}"></h5>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="peer">
+					<div class="mobile-toggle sidebar-toggle">
+						<a href="" class="td-n"> <i class="ti-arrow-circle-left"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- ### $Sidebar Menu ### -->
+		<form id="formMenu" class="form-sidebar">
+			<ul class="sidebar-menu scrollable pos-r">
+				<li class="nav-item mT-30 active"><a class="sidebar-link"
+					th:href="@{/inicio}"> <span class="icon-holder"> <i
+							class="c-blue-500 ti-home"></i>
+					</span> <span class="title" th:text="#{menu.inicio}"></span>
+				</a></li>
+				<li class="nav-item"><a id="aUserAdmin" class='sidebar-link'
+					href="#"> <span class="icon-holder"> <i
+							class="c-brown-500 ti-user"></i>
+					</span> <span class="title" th:text="#{menu.admin.user}"></span> <script
+							th:inline="javascript">
 	                 	var actionUser = /*[[@{/useradmin}]]*/;
 	                 	$('#aUserAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionUser, 'optionReplacement', 'GET', null, true); return false;});
 	                </script>
-	              </a>
-	            </li>
-	            <li class="nav-item">
-	              <a id="aTslAdmin" class='sidebar-link' href="#">
-	                <span class="icon-holder">
-	                  <i class="c-green-500 ti-panel"></i>
-	                </span>
-	                <span class="title" th:text="#{menu.admin.tsl}"></span>
-	                 <script th:inline="javascript">
+				</a></li>
+				<li class="nav-item"><a id="aTslAdmin" class='sidebar-link'
+					href="#"> <span class="icon-holder"> <i
+							class="c-green-500 ti-panel"></i>
+					</span> <span class="title" th:text="#{menu.admin.tsl}"></span> <script
+							th:inline="javascript">
 	                 	var actionTsl = /*[[@{/tsladmin}]]*/;
 	                 	$('#aTslAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionTsl, 'optionReplacement', 'GET', null, true); return false;});
 	                </script>
-	              </a>
-	            </li>
-	           
-	          </ul>
-          </form>
-        </div>
-      </div>
+				</a></li>
+				<li class="nav-item dropdown"><a id="aKeystoreAdmin"
+					class='sidebar-link' href="#"> <span class="icon-holder">
+							<i class="c-red-500 ti-key"></i>
+					</span> <span class="title" th:text="#{menu.admin.keystore}"></span>
+				</a>
+					<ul class="dropdown-menu">
+						<li class="nav-item" th:each="keystore:${listkeystore}"><a
+							class="nav-link c-grey-800 cH-blue-500 active"
+							th:id="'aKeystore' + ${keystore.idKeystore}" href="#"
+							th:onclick="|loadCertificatesDatatable('${keystore.idKeystore}')|">
+								<span class="icon-holder"> <i class="c-red-300 ti-key"></i>
+							</span> <span class="title" th:text="${keystore.name}" />
+						</a></li>
+					</ul></li>
+
+			</ul>
+		</form>
+	</div>
+</div>
+<script th:inline="javascript">
+function loadCertificatesDatatable(idKeystore) {
+var idKeystore = idKeystore;
+var loadCertificatesDt =/*[[@{/loadcertificatesdatatable?idKeystore=}]]*/;
+var loadCertificateKeystore= loadCertificatesDt+idKeystore;
+loadIntoAjax('formMenu', loadCertificateKeystore, 'optionReplacement', 'GET', null, true);
+
+}
+</script>

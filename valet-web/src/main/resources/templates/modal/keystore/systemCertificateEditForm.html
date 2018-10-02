@@ -1,0 +1,142 @@
+<!-- Modal para editar certificado -->
+<div class="modal fade" tabindex="-1" role="dialog"
+	id="modalEditCertificate">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.editCertificate.title}"></h4>
+				<button type="button" class="close"
+					onclick="closeModalButton('modalEditCertificate', 'systemCertificateEditForm')"
+					aria-label="Cerrar">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form name="altEditor-form" role="form"
+				id="systemCertificateEditForm" th:object="${editcertificateform}"
+				th:action="@{/updatesystemcertificate}" method="post"
+				enctype="multipart/form-data">
+				<div class="modal-body">
+					<div class="mT-20">
+						<div id="errorUpdateCertificate" role="alert"></div>
+						<input type='hidden' class='primarykey' id="idSystemCertificate"
+							th:field="*{idSystemCertificate}"> <input type='hidden'
+							class='primarykey' id="idKeystore" th:field="*{idKeystore}">
+						<div class="form-group col-md-12">
+							<label for="aliasId" th:text="#{form.editCertificate.alias}"></label>
+							<span id="alias_span"
+								class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+							<input type="text" id="aliasId" class="form-control"
+								style="overflow: hidden" th:field="*{alias}" required
+								pattern=".{3,15}"></input>
+							<div id="invalid-alias" class="invalid-feedback"></div>
+							<div style="clear: both;"></div>
+						</div>
+						<div class="form-group col-md-12">
+							<label for="subjectId" th:text="#{form.editCertificate.subject}"></label>
+							<input type="text" id="subjectId" class="form-control"
+								th:field="*{subject}" readonly></input>
+							<div style="clear: both;"></div>
+						</div>
+						<div class="form-group col-md-12">
+							<label for="issuerId" th:text="#{form.editCertificate.issuer}"></label>
+							<input type="text" id="issuerId" class="form-control"
+								th:field="*{issuer}" readonly></input>
+							<div style="clear: both;"></div>
+						</div>
+						<div class="valet-form-row">
+							<div class="form-group col-md-6">
+								<label for="validFromId" class="col-form-label"
+									th:text="#{form.editCertificate.valid.from}"></label> <input type="text"
+									id="validFromId" th:field="*{validFrom}"
+									style="overflow: hidden" readonly class="form-control" />
+							</div>
+							<div class="form-group col-md-6">
+								<label for="validToId" class="col-form-label"
+									th:text="#{form.editCertificate.valid.to}"></label> <input
+									type="text" id="validToId" th:field="*{validTo}"
+									style="overflow: hidden" readonly class="form-control" />
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</form>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default"
+					onclick="closeModalButton('modalEditCertificate', 'systemCertificateEditForm')">Cerrar</button>
+
+				<button type="button" id="idEditCertificateBtn"
+					class="btn btn-primary" th:text="Guardar"
+					onclick="updateSystemCertificate();"></button>
+			</div>
+
+		</div>
+
+	</div>
+</div>
+<script th:inline="javascript">
+//método para editar mapeo
+function updateSystemCertificate() {
+	var actionSaveSystemCertificate = /*[[@{/updatesystemcertificate}]]*/;
+	var formData = new FormData(document.forms["systemCertificateEditForm"]);
+	var tbl = $('#certificatesTable').DataTable();
+ 	
+	$.ajax(actionSaveSystemCertificate, {
+		data :formData, 
+		contentType: false,
+		processData : false,
+		type : 'POST',
+		success: function(data){
+			var errores = JSON.parse(data.error);
+			if (data.error != null){
+				hide();
+				jQuery.each(errores, function(i, val) {	
+						if(i == "errorUpdatesSystemCertificate"){
+							var messageError = val;
+							$('#errorUpdateCertificate').html(messageError);
+							$('#errorUpdateCertificate').addClass('alert alert-danger');
+						}
+						$('#systemCertificateEditForm *').filter('span').each(function(){
+								if (i == $(this).attr('id')){
+									$("#" + i).text(val);
+									$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
+								}
+							});
+				  })
+
+			  }else{
+//se oculta la capa 'cargando...'
+			  	hide();
+//se añade nuevo valor
+				tbl.row.add($(data.data)).draw(false);
+			 //se cierra modal
+				$('#modalEditCertificate').modal('hide');
+				$("#systemCertificateEditForm")[0].reset();
+			}
+	},
+	error : function(data){
+		// se oculat al capa 'cargando...'
+		hide();
+		//se cierra modal
+        $('#systemCertificateEditForm').modal('hide');
+
+	}
+	});
+}
+
+//función cerrar modales
+function closeModalButton(btnId, nameForm){
+	//se limpia posibles mensajes error de span
+	$('#'+nameForm+' *').filter('span').each(function(){
+		cleanSpan($(this).attr('id'));
+	});
+	//se limpia posible mensaje error en div
+		$("#errorUpdateCertificate").removeClass('alert alert-danger');
+		$("#errorUpdateCertificate").html('');
+		
+	//se limpia valores del formulario
+	
+	 $('#aliasId').val("");
+		$('#' + btnId).modal('hide');	
+}
+</script>

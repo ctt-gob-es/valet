@@ -79,6 +79,10 @@ public final class Language {
 	 * Attribute that represents the resource boundle with the messages for the core module.
 	 */
 	private static ResourceBundle corevalet;
+	/**
+	 * Attribute that represents the properties for the locale of the constants from the tables of the configuration schema.
+	 */
+	private static ResourceBundle persistenceconstantsvalet = null;
 
 	/**
 	 * Attribute that represents the locale specified in the configuration.
@@ -134,6 +138,11 @@ public final class Language {
 	 * Attribute that represents the location of file that contains the messages core module.
 	 */
 	private static final String CONTENT_CORE_PATH = "valet-core.corevalet";
+
+	/**
+	 * Attribute that represents the location of file that contains the messages persistence module.
+	 */
+	private static final String CONTENT_PERSISTENCE_CONSTANTS_PATH = "valet-persistence.constants";
 
 	/**
 	 * Constructor method for the class Language.java.
@@ -230,6 +239,8 @@ public final class Language {
 		cachevalet = ResourceBundle.getBundle(CONTENT_CACHE_PATH, currentLocale, urlClassLoaderMsg);
 
 		corevalet = ResourceBundle.getBundle(CONTENT_CORE_PATH, currentLocale, urlClassLoaderMsg);
+		
+		persistenceconstantsvalet = ResourceBundle.getBundle(CONTENT_PERSISTENCE_CONSTANTS_PATH, currentLocale, urlClassLoaderMsg);
 
 	}
 
@@ -345,6 +356,14 @@ public final class Language {
 	 */
 	public static String getResCoreValet(final String key) {
 		return corevalet.getString(key);
+	}
+	/**
+	 * Method that gets the bundle message of the constants from the tables of the configuration schema for certain key.
+	 * @param key Parameter that represents the key for obtain the message.
+	 * @return The bundle message of the constants from the tables of the configuration schema for certain key.
+	 */
+	public static String getResPersistenceConstants(String key) {
+		return persistenceconstantsvalet.getString(key);
 	}
 
 }

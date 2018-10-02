@@ -97,11 +97,18 @@ public class TslForm {
 	private String countryName;
 	
 	/**
-	 * Attribute that indicates if 
+	 * Attribute that indicates if the tsl has a readable document
 	 */
 	private Boolean isLegible;
+	
+	/**
+	 * Attribute that represents the alias assigned to the tsl.
+	 */
 	private String alias;
 	
+	/**
+	 * Attribute that represents the variable where the error messages will be stored.
+	 */
 	private String error;
 	
 	

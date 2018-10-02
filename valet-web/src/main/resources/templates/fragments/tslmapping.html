@@ -211,7 +211,7 @@ $(document).ready(function() {
 					        { "data": "idTslCountryRegionMapping", 
 					        	"render": function(data, type, row){		
 					        		
-					        		return '<button class="c-green-500 ti-pencil-alt" id="editMappingTsl"  onclick="editMappingTsl('+data+');"></button>&nbsp;<button class="c-red-500 ti-close" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);"></button>';
+					        		return '<button class="c-green-500 ti-pencil-alt" id="editMappingTsl"  onclick="editMappingTsl('+data+');"></button>&nbsp;<button class="c-red-500 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);"></button>';
 					        		
 					        	}
 					        }
@@ -430,7 +430,6 @@ function deleteMappingTsl(){
 		success: function(data){
 		//Se oculta la capa 'cargando...'
 		hide();
-		debugger;
 		closeModalButton('modalDeletetMapping', 'mappingTslDeleteForm');
     	tblMapping.row(data.index).remove().draw();
 		},

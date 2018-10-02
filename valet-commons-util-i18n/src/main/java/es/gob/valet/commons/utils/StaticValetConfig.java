@@ -39,7 +39,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.1, 25/09/2018.
+ * @version 1.2, 02/10/2018.
  */
 public final class StaticValetConfig {
 
@@ -64,6 +64,25 @@ public final class StaticValetConfig {
 	 */
 	public static final String CACHE_IMPLEMENTATION = "cache.implementation";
 
+	/**
+	 * Constant attribute that represents name for property <code>character.special</code>.
+	 */
+	public static final String LIST_CHARACTER_SPECIAL = "character.special";
+	
+	/**
+	 * Attribute that represents the Padding algorithm for the AES cipher.
+	 */
+	public static final String AES_PADDING_ALG = "aes.padding.alg";
+
+	/**
+	 * Attribute that represents the AES algorithm name.
+	 */
+	public static final String AES_ALGORITHM = "aes.algorithm";
+
+	/**
+	 * Attribute that represents the password for the system keystores.
+	 */
+	public static final String AES_PASSWORD = "aes.password";
 	/**
 	 * Constructor method for the class StaticValetConfig.java.
 	 */
@@ -140,3 +159,4 @@ public final class StaticValetConfig {
 	}
 
 }
+

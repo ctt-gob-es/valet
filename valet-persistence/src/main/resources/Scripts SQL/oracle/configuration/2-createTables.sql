@@ -114,6 +114,72 @@ COMMENT ON COLUMN "TSL_COUNTRY_REGION_MAPPING"."MAPPING_DESCRIPTION" IS 'Descrip
 COMMENT ON COLUMN "TSL_COUNTRY_REGION_MAPPING"."MAPPING_VALUE" IS 'Valor asignado al mapeo.';
 
 
+-- Table KEYSTORE
+CREATE TABLE "KEYSTORE"(
+  "ID_KEYSTORE" Number(19,0) NOT NULL,
+  "NAME" Varchar2(50) NOT NULL,
+  "KEYSTORE" Blob,
+  "TOKEN_NAME" Varchar2(30) NOT NULL,
+  "PASSWORD" Varchar2(255 ) NOT NULL,
+  "IS_HARDWARE" Char(1 ) NOT NULL,
+  "KEYSTORE_TYPE" Varchar2(50 ) NOT NULL,
+  "VERSION" Number(19,0) NOT NULL,  
+  "HAS_BACKUP" Char(1 ) NOT NULL
+)
+TABLESPACE VALET_CONFIGURACION_TABLESPACE INITRANS 1 MAXTRANS 255 NOCACHE;
+ALTER TABLE "KEYSTORE" ADD CONSTRAINT "ID_KEYSTORE" PRIMARY KEY ("ID_KEYSTORE");
+ALTER TABLE "KEYSTORE" ADD CONSTRAINT "KEYSTORE_UNIQUE_NAME" UNIQUE ("NAME");
+COMMENT ON TABLE "KEYSTORE" IS 'Tabla que almacena toda la información relativa a almacenes de certificados.';
+COMMENT ON COLUMN "KEYSTORE"."ID_KEYSTORE" IS 'Identificador de la tabla.';
+COMMENT ON COLUMN "KEYSTORE"."NAME" IS 'Valor que representa el nombre del almacén de claves.';
+COMMENT ON COLUMN "KEYSTORE"."KEYSTORE" IS 'Valor que representa el almacén de claves como archivo físico.';
+COMMENT ON COLUMN "KEYSTORE"."TOKEN_NAME" IS 'Valor que representa el token con la descripción almacenada en cada archivo de propiedades por idioma.';
+COMMENT ON COLUMN "KEYSTORE"."PASSWORD" IS 'Valor que representa la contraseña de acceso al almacén de claves.';
+COMMENT ON COLUMN "KEYSTORE"."IS_HARDWARE" IS 'Valor que indica si el almacén de claves es de tipo hardware (Y) o no (N).';
+COMMENT ON COLUMN "KEYSTORE"."KEYSTORE_TYPE" IS 'Valor que representa el tipo del almacén de claves.';
+COMMENT ON COLUMN "KEYSTORE"."VERSION" IS 'Valor que representa el número de modificaciones aplicadas al almacén de claves inicial.';
+COMMENT ON COLUMN "KEYSTORE"."HAS_BACKUP" IS 'Valor que indica si las entradas que se almacenen en el almacén de claves hardware se deben almacenar tanto en BBDD como en el HSM (Y) o sólo en el HSM (N).';
+
+-- Table SYSTEM_CERTIFICATE
+CREATE TABLE "SYSTEM_CERTIFICATE"(
+  "ID_SYSTEM_CERTIFICATE" Number(19,0) NOT NULL,
+  "ALIAS" Varchar2(4000) NOT NULL,
+  "ID_KEYSTORE" Number(19,0) NOT NULL,
+  "IS_KEY" Char(1) NOT NULL,
+  "ISSUER" Varchar2(4000) NOT NULL,
+  "SUBJECT" Varchar2(4000) NOT NULL,
+  "STATUS_CERT" Number(19,0) NOT NULL,
+  "HASH" Varchar2(100)
+)
+TABLESPACE VALET_CONFIGURACION_TABLESPACE INITRANS 1 MAXTRANS 255 NOCACHE;
+ALTER TABLE "SYSTEM_CERTIFICATE" ADD CONSTRAINT "ID_SYSTEM_CERTIFICATE" PRIMARY KEY ("ID_SYSTEM_CERTIFICATE");
+COMMENT ON TABLE "SYSTEM_CERTIFICATE" IS 'Tabla que almacena toda la información relativa a certificados de uso por el sistema.';
+COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."ID_SYSTEM_CERTIFICATE" IS 'Identificador de la tabla.';
+COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."ALIAS" IS 'Valor que representa el alias del certificado.';
+COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."ID_KEYSTORE" IS 'Valor que representa el almacén de claves donde se encuentra almacenado el certificado.';
+COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."IS_KEY" IS 'Valor que indica si el alias hace referencia a una clave (Y) o no (N).';
+COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."ISSUER" IS 'Valor que representa el emisor del certificado.';
+COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."SUBJECT" IS 'Valor que representa el asunto del certificado.';
+COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."STATUS_CERT" IS 'Estado del certificado representado en esta tupla.';
+COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."HASH" IS 'Valor que representa el hash en SHA-1 del valor del certificado, codificado en Base 64, y concatenado con el hash en SHA-1 del valor de la clave privada, codificado en Base 64. Este valor se utiliza como alias del par de claves en un HSM.';
+
+
+-- Table C_STATUS_CERTIFICATES
+CREATE TABLE "C_STATUS_CERTIFICATES"(
+  "ID_STATUS_CERTIFICATE" Number(19,0) NOT NULL,
+  "TOKEN_NAME" Varchar2(30) NOT NULL
+)
+TABLESPACE VALET_CONFIGURACION_TABLESPACE INITRANS 1 MAXTRANS 255 NOCACHE;
+ALTER TABLE "C_STATUS_CERTIFICATES" ADD CONSTRAINT "ID_STATUS_CERTIFICATE" PRIMARY KEY ("ID_STATUS_CERTIFICATE");
+  
+COMMENT ON TABLE "C_STATUS_CERTIFICATES" IS 'Tabla que almacena las constantes para los estados de los certificados.';
+COMMENT ON COLUMN "C_STATUS_CERTIFICATES"."ID_STATUS_CERTIFICATE" IS 'Identificador de la tabla.';
+COMMENT ON COLUMN "C_STATUS_CERTIFICATES"."TOKEN_NAME" IS 'Valor que representa el tag con la descripción almacenada en cada archivo de propiedades por idioma.';
+
+
+
 ALTER TABLE "TSL_VALET" ADD CONSTRAINT "R_TD_ICR" FOREIGN KEY ("ID_COUNTRY_REGION") REFERENCES "TSL_COUNTRY_REGION" ("ID_COUNTRY_REGION") ON DELETE CASCADE;
 ALTER TABLE "TSL_VALET" ADD CONSTRAINT "R_TD_ITI" FOREIGN KEY ("ID_TSL_IMPL") REFERENCES "C_TSL_IMPL" ("ID_TSL_IMPL");
 ALTER TABLE "TSL_COUNTRY_REGION_MAPPING" ADD CONSTRAINT "R_TCRM_ICR" FOREIGN KEY ("ID_COUNTRY_REGION") REFERENCES "TSL_COUNTRY_REGION" ("ID_COUNTRY_REGION") ON DELETE CASCADE;
+ALTER TABLE "SYSTEM_CERTIFICATE" ADD CONSTRAINT "R_SC_K" FOREIGN KEY ("ID_KEYSTORE") REFERENCES "KEYSTORE" ("ID_KEYSTORE");
+ALTER TABLE "SYSTEM_CERTIFICATE" ADD CONSTRAINT "R_SC_SCE" FOREIGN KEY ("STATUS_CERT") REFERENCES "C_STATUS_CERTIFICATES" ("ID_STATUS_CERTIFICATE");

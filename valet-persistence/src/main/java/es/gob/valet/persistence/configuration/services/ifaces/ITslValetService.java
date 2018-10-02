@@ -76,12 +76,13 @@ public interface ITslValetService {
 	 void deleteTslValet(Long idTslValet);
 	 
 	 /**
-	  * Method that obtains a TSL by country 
+	  * Method that obtains a TSL by country. 
 	  * 
 	  * @param tslCountryRegion Parameter that represents the country/region.
 	  * @return {@link TslValet} an object that represents the TSL obtained.
 	  */
 	 TslValet getTslByCountryRegion(TslCountryRegion tslCountryRegion);
 	
+	 
 	
 }

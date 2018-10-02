@@ -1,0 +1,56 @@
+<form name="altEditor-form" role="form" id="idAddCertificateForm"
+	th:object="${addcertificateform}" th:action="@{/saveCertificate}" method="post"
+	enctype="multipart/form-data" class="form-horizontal">
+	<div id="errorAddKeystore" role="alert"></div>
+	
+
+	<div class="form-group col-md-8">
+		<label for="idAlias" th:text="#{form.addCertificate.alias}"></label> <span
+			id="alias_span"
+			class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span><input
+			type="text" id="idAlias" class="form-control" th:field="*{alias}"
+			onchange="cleanSpan('alias_span');"></input>
+	</div>
+
+	<div class="form-group col-md-12">
+		<label for="fileCertificateId" th:text="#{form.addCertificate.file}"></label>
+		<span id="certificateFile_span"
+			class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+		<div id="customFile" class="form-group col-md-8">
+			<input type="file" class="custom-file-input" id="fileCertificateId"
+				th:field="*{certificateFile}" aria-describedby="fileHelp"
+				onchange="cleanSpan('certificateFile_span');"> <label
+				class="custom-file-label" for="fileCertificateId"
+				th:text="#{form.addCertificate.file.input}"></label>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+</form>
+<script th:inline="javascript">
+	$(document).ready(
+			function() {
+				$("#fileCertificateId").change(
+						function() {
+							var fieldVal = $(this).val();
+
+							// Change the node's value by removing the fake path (Chrome)
+							fieldVal = fieldVal.replace("C:\\fakepath\\", "");
+							if (fieldVal != undefined || fieldVal != "") {
+								$(this).next(".custom-file-label").attr(
+										'data-content', fieldVal);
+								$(this).next(".custom-file-label").text(
+										fieldVal);
+							}
+
+						});
+
+			});
+	
+	//función para limpiar mensajes de error en el modal
+	function cleanMsgError() {
+		$("#errorAddKeystore").removeClass('alert alert-danger');
+		$('#errorAddKeystore').html('');
+		cleanSpan('alias_span');
+		cleanSpan('certificateFile_span');
+	}
+</script>

@@ -141,7 +141,6 @@ var tbl = $('#tslTable').DataTable({
 					}   
 	        	},
 	        	error : function(data){			
-	        		debugger;
 	        		// se oculat al capa 'cargando...'
 	        		hide();
 	        		// se obtiene el JSON de los campos con errores de validación y se modifican los estilos y se añaden mensajes
@@ -152,8 +151,7 @@ var tbl = $('#tslTable').DataTable({
 	        	//}$('#tslForm').addClass('was-validated');
 	            break;
 	        case 'edit':
-	        	var formDataEdit = new FormData(document.forms["tslFormEdit"]);
-	        	
+	        	var formDataEdit = new FormData(document.forms["tslFormEdit"]);	        	
 	        	$.ajax(actionUpdate, {
 	        		data :formDataEdit,
 	        		contentType: false,
@@ -230,7 +228,7 @@ function loadMappingDatatable(idCountry) {
 			 data:$.param({'idTslCountryRegion':idCountryRegion} ),
 			 type:'GET',
 			 success: function(data){
-$("#tableMapping").show();
+				$("#tableMapping").show();
 			 	$("#tableMapping").html(data);
 			 },
 			 error:function(data){

@@ -181,3 +181,10 @@
 .btUploadFile{
   background-image: url('/images/upload-file-green.png');
 }
+
+.valet-form-row{
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 0px;
+  margin-left: 0px; }
+}

@@ -55,8 +55,18 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface FieldMatch {
 
+	/**
+	 * 
+	 * 
+	 * @return
+	 */
 	String message() default "{contraints.fieldmatch}";
 
+	/**
+	 * 
+	 * 
+	 * @return
+	 */
 	Class<?>[ ] groups() default { };
 
 	Class<? extends Payload>[ ] payload() default { };
@@ -72,7 +82,7 @@ public @interface FieldMatch {
 	String second();
 
 	/**
-	 * Defines several <code>@FieldMatch</code> annotations on the same element
+	 * Defines several <code>@FieldMatch</code> annotations on the same element.
 	 *
 	 * @see FieldMatch
 	 */
@@ -81,6 +91,10 @@ public @interface FieldMatch {
 	@Documented
 	@interface List {
 
+		/**
+		 * 
+		 * @return
+		 */
 		FieldMatch[ ] value();
 	}
 }

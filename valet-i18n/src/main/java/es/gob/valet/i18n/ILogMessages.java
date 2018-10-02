@@ -122,6 +122,75 @@ public interface ILogMessages {
 	String ERROR_EDIT_TSL_WEB = "errorEditTslWeb";
 
 	/**
+	 * Constant attribute that represents the name of the property <code>errorSaveCertificate</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_SAVE_CERTIFICATE = "errorSaveCertificate";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorSaveTslWeb</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_SAVE_CERTIFICATE_WEB = "errorSaveCertificateWeb";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankAlias</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_NOT_BLANK_ALIAS = "errorNotBlankAlias";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorSpecialCharAlias</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	public static final String ERROR_SPECIAL_CHAR_ALIAS = "errorSpecialCharAlias";
+	
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankAlias</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_NOT_CERTIFICATE_FILE = "errorNotCertificateFile";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankAlias</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String INFO_CERT_ADD = "infoCertificateAdd";
+	
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorUpdateCertificateWeb</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_UPDATE_CERTIFICATE_WEB = "errorUpdateCertificateWeb";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorUpdateCertificate</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_UPDATE_CERTIFICATE = "errorUpdateCertificate";
+	/**
+	 * Constant attribute that represents the name of the property <code>infoCertificateUpdated</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String INFO_CERTIFICATE_UPDATED = "infoCertificateUpdated";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorDownloadCertificate</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_DOWNLOAD_CERTIFICATE = "errorDownloadCertificate";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorDownloadCertificate</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_DOWNLOAD_CERTIFICATE_WEB = "errorDownloadCertificateWeb";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorGetCertificate</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_GET_CERTIFICATE = "errorGetCertificate";
+	/**
 	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.initMsg</code> belonging to the
 	 * file webvalet.properties.
 	 */

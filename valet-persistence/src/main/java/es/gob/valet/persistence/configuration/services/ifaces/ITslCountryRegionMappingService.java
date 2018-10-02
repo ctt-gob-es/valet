@@ -30,7 +30,6 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
-import es.gob.valet.persistence.configuration.model.entity.TslValet;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegionMapping entity.</p>

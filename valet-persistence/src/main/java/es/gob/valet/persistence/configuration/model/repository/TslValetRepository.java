@@ -50,7 +50,7 @@ public interface TslValetRepository  extends JpaRepository<TslValet, Long> {
 	
 	/**
 	 * 	Method that obtains from the persistence a TSL object by country.
-	 * @param tslCountryRegion  Country/Region of the TSL.
+	 * @param tslContryRegion  Country/Region of the TSL.
 	 * @return Object that represents a TslValet from the persistence.
 	 */
 	TslValet findByCountry(TslCountryRegion tslContryRegion);

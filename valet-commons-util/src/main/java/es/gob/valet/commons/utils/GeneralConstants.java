@@ -27,13 +27,13 @@ package es.gob.valet.commons.utils;
 /**
  * <p>Interface that contains general constants.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17/07/2018.
+ * @version 1.1, 17/07/2018.
  */
 public interface GeneralConstants {
 
 	/**
-	 * Constant attribute that represents the vaLET Logger name.
+	 * Constant attribute that represents the valET Logger name.
 	 */
-	String LOGGER_NAME_VALET_LOG = "vaLET";
+	String LOGGER_NAME_VALET_LOG = "valET";
 
 }

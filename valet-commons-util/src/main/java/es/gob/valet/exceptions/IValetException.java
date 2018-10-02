@@ -78,8 +78,8 @@ public interface IValetException {
 	//	/** Constant attribute that represents the error code: Error validating certificate status. */
 	//	String COD_057 = "COD_057";
 	//
-	//	/** Constant attribute that represents the error code: Failed to get info of the certificate. */
-	//	String COD_058 = "COD_058";
+		/** Constant attribute that represents the error code: Failed to get info of the certificate. */
+		String COD_058 = "COD_058";
 	//
 	//	/** Constant attribute that represents the error code: Error validating the CRL. */
 	//	String COD_060 = "COD_060";

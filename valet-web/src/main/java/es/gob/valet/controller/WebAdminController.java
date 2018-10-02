@@ -24,9 +24,15 @@
  */
 package es.gob.valet.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import es.gob.valet.persistence.configuration.model.entity.Keystore;
+import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 
 /** 
 * <p>Class that manages the requests related to the home page from vaLET.</p>
@@ -35,9 +41,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class WebAdminController {
+	/**
+	 * Attribute that represents the service object for accessing the repository. 
+	 */
+	@Autowired
+	private IKeystoreService keystoreService;
 	
+	/**
+	 *method that maps the list of keystores and sends it to the view "inicio.html".
+	 * @param model Holder object for model attributes.
+	 * @return String that represents the name of the view to forward.
+	 */
 	@RequestMapping(value="inicio")
 	public String index(Model model){
+		List<Keystore> listKeystores = keystoreService.getAllKeystore();
+		model.addAttribute("listkeystore", listKeystores);
 		return "inicio.html";
 	}
 }

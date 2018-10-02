@@ -1,0 +1,19 @@
+Orden de ejecución de scripts de Instalación desde cero de vaLET
+
+1) createTablespace.sql
+	(Usuario: SYS)
+
+2) createTables.sql
+	(Usuario: VALET_CONFIGOWNER)
+
+3) createSequences.sql
+	(Usuario: VALET_CONFIGOWNER)
+	
+4) createUser.sql
+	(Usuario: SYS)
+
+5) createSynonyms.sql
+	(Usuario: VALET_CONF)
+
+5) insertInitialValues.sql
+	(Usuario: VALET_CONFIGOWNER)

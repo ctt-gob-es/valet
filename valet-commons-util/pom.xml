@@ -87,6 +87,12 @@
 			<artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
 			<scope>compile</scope>
 		</dependency>
+				<!-- DEPENDENCIAS IAIK -->
+		<dependency>
+			<groupId>iaik</groupId>
+			<artifactId>iaik_jce</artifactId>
+			<version>5.2.4</version>
+		</dependency>
 	</dependencies>
 
 </project>

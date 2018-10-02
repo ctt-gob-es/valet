@@ -112,7 +112,7 @@ public class TslController {
 
 	/**
 	 * Method that maps the editing of TSL data to the controller and sets the backing form.
-	 * 
+	 * @param idTslValet Identifier of the TSL to be edited.
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
@@ -150,7 +150,7 @@ public class TslController {
 
 	
 	/**
-	 * Method that loads a datatable with the mappings for the TSL of the indicated country 
+	 * Method that loads a datatable with the mappings for the TSL of the indicated country. 
 	 * 
  	* @param idCountryRegion Parameter that represents a country identifier.
 	 * @param model Parameter that represents holder object for model attributes.

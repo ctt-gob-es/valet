@@ -40,6 +40,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import es.gob.valet.cache.FactoryCacheValet;
 import es.gob.valet.cache.exceptions.CacheValetException;
 import es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.commons.utils.UtilsProviders;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
@@ -82,6 +83,7 @@ public class ApplicationConfig {
 		try {
 			initializePlatform();
 			logger.info(Language.getResCoreValet(ICoreMessages.INITIALIZATION_001));
+			//initializeProviders();
 		} catch (Exception e) {
 			logger.error(Language.getResCoreValet(ICoreMessages.INITIALIZATION_002), e);
 		}
@@ -118,6 +120,15 @@ public class ApplicationConfig {
 	@PreDestroy
 	public final void destroy() {
 		managerPersistenceServices = null;
+	}
+	
+	/**
+	 * Internal method that initializes the providers.
+	 */
+	private void initializeProviders() {
+
+		// Inicializamos los proveedores.
+		UtilsProviders.initializeProviders();
 	}
 
 }

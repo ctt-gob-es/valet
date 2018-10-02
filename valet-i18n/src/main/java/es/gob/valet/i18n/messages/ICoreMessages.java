@@ -57,5 +57,128 @@ public interface ICoreMessages {
 	 * file messages/valet-core/corevalet_xx_YY.properties.
 	 */
 	String INITIALIZATION_003 = "INITIALIZATION_003";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_001</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_001= "CRYPTO_001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_002</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_002= "CRYPTO_002";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_003</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_003= "CRYPTO_003";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_004</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_004= "CRYPTO_004";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_005</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_005= "CRYPTO_005";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_006</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_006= "CRYPTO_006";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_007</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_007= "CRYPTO_007";
+	
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_008</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_008= "CRYPTO_008";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_009</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_009= "CRYPTO_009";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_010</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_010= "CRYPTO_010";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_011</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_011= "CRYPTO_011";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_012</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_012= "CRYPTO_012";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_013</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_013= "CRYPTO_013";
+
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_014</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_014= "CRYPTO_014";
+
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_015</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_015= "CRYPTO_015";
+
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_016</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_016= "CRYPTO_016";
+
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_017</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_017= "CRYPTO_017";
+
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_018</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_018= "CRYPTO_018";
+
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_019</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_019= "CRYPTO_019";
+
+	/**
+	 * Constant attribute that represents the property key <code>CRYPTO_020</code> belonging to the
+	 * file messages/valet-core/corevalet_xx_YY.properties.
+	 */
+	String CRYPTO_020= "CRYPTO_020";
+
+
 
 }
