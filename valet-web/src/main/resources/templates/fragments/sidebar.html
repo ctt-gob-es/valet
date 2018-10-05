@@ -100,10 +100,21 @@
 					<ul class="dropdown-menu">
 						<li>
 							<a id="aConfServerAdmin" class='sidebar-link' href="#">
+								<span class="icon-holder"><i class="c-black-500 ti-email"></i></span> 
 								<span class="title" th:text="#{menu.admin.confServerMail}"></span>
 								<script th:inline="javascript">
 		                 			var actionConfMail = /*[[@{/confmailadmin}]]*/;
 		                 			$('#aConfServerAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionConfMail, 'optionReplacement', 'GET', null, true); return false;});
+		               			</script>
+	               			</a>
+	               		</li>
+	               		<li>
+							<a id="aConfProxyAdmin" class='sidebar-link' href="#">
+								<span class="icon-holder"><i class="c-black-500 ti-world"></i></span> 
+								<span class="title" th:text="#{menu.admin.confServerWorld}"></span>
+								<script th:inline="javascript">
+		                 			var actionConfWorld = /*[[@{/confmailadmin}]]*/;
+		                 			$('#aConfWorldAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionConfWorld, 'optionReplacement', 'GET', null, true); return false;});
 		               			</script>
 	               			</a>
 	               		</li>
