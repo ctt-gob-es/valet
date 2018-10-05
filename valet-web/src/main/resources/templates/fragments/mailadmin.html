@@ -11,8 +11,8 @@
 							<input type="email" class="form-control" id="emailAddress" th:field="*{emailAddress}" required>
 						</div>
 					</div>
-					<button id="mailBtn" type="submit" class="btn btn-primary">Guardar</button>
-					<button id="cleanBtn" class="btn btn-primary" onclick="cleanForm('#newMailForm');">Limpiar formulario</button>
+					<button id="mailBtn" type="submit" class="btn btn-primary" th:utext="#{button.save}"></button>
+					<button id="cleanBtn" class="btn btn-primary" onclick="cleanForm('#newMailForm');" th:utext="#{button.cleanForm}"></button>
 				</form>
 			</div>
 		</div>

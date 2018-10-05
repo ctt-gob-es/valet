@@ -12,9 +12,6 @@
 									<img th:src="@{images/chart_logo.png}" alt="valET Logo" />
 								</div>
 							</div>
-							<div class="peer peer-greed">
-								<h5 class="lh-1 mB-0 logo-text" th:text="#{valet.title}"></h5>
-							</div>
 						</div>
 					</a>
 				</div>
@@ -89,6 +86,24 @@
 								<script th:inline="javascript">
 		                 			var actionAlarm = /*[[@{/alarmadmin}]]*/;
 		                 			$('#aAlarmAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionAlarm, 'optionReplacement', 'GET', null, true); return false;});
+		               			</script>
+	               			</a>
+	               		</li>
+					</ul>
+				</li>
+				
+				<li class="nav-item dropdown">
+					<a class='sidebar-link' href="#"> 
+						<span class="icon-holder"><i class="c-black-500 ti-settings"></i></span> 
+						<span class="title" th:text="#{menu.admin.conf}"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a id="aConfServerAdmin" class='sidebar-link' href="#">
+								<span class="title" th:text="#{menu.admin.confServerMail}"></span>
+								<script th:inline="javascript">
+		                 			var actionConfMail = /*[[@{/confmailadmin}]]*/;
+		                 			$('#aConfServerAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionConfMail, 'optionReplacement', 'GET', null, true); return false;});
 		               			</script>
 	               			</a>
 	               		</li>

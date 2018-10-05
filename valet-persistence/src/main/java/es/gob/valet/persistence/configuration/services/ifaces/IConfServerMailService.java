@@ -15,64 +15,51 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.IAlarmService.java.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailService.java.</p>
  * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer
- * in relation of the Alarm entity.</p>
+ * in relation of the ConfServerMail entity.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Date:</b><p>4 oct. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.0, 4 oct. 2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
-import java.util.List;
-
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-
-import es.gob.valet.persistence.configuration.model.entity.Alarm;
+import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer
- * in relation of the Alarm entity.</p>
+ * in relation of the ConfServerMail entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.0, 4 oct. 2018.
  */
-public interface IAlarmService {
+public interface IConfServerMailService {
 
 	/**
-	 *  Gets the list of alarms.
+	 *  Gets the unique confServerMails.
 	 * 
-	 * @return List of alarms.
+	 * @return Unique confServerMails.
 	 */
-	List<Alarm> getAllAlarm();
+	ConfServerMail getAllConfServerMail();
 
 	/**
-	 * Method that gets alarm by ID of Alarm.
-	 * @param idAlarm Id of Alarm
-	 * @return {@link Alarm} an object that represents the Alarm.
+	 * Method that gets confServerMail by ID of ConfServerMail.
+	 * @param idConfServerMail Id of ConfServerMail
+	 * @return {@link ConfServerMail} an object that represents the ConfServerMail.
 	 */
-	Alarm getAlarmById(String idAlarm);
+	ConfServerMail getConfServerMailById(Long idConfServerMail);
 
 	/**
-	* Method that saves Alarm.
-	* @param Alarm to update.
-	* @return {@link Alarm} an object that represents the Alarm.
+	* Method that saves ConfServerMail.
+	* @param ConfServerMail to update.
+	* @return {@link ConfServerMail} an object that represents the ConfServerMail.
 	*/
-	Alarm saveAlarm(Alarm alarm);
+	ConfServerMail saveConfServerMail(ConfServerMail confServerMail);
 
 	/**
-	 * Method that delete a Alarm.
-	 * @param idAlarm Id of Alarm
+	 * Method that delete a ConfServerMail.
+	 * @param idConfServerMail Id of ConfServerMail
 	 */
-	void deleteAlarm(Long idAlarm);
-
-	/**
-	 * Method that gets the list for the given {@link DataTablesInput}.
-	 * 
-	 * @param input the {@link DataTablesInput} mapped from the Ajax request.
-	 * @return {@link DataTablesOutput}
-	 */
-	DataTablesOutput<Alarm> getAllAlarm(DataTablesInput input);
+	void deleteConfServerMail(Long idConfServerMail);
 
 }

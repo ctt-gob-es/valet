@@ -143,10 +143,10 @@ public class AlarmRestController {
 	}
 
 	/**
-	 * TODO
+	 * Method that get all emails of system
 	 * 
-	 * @param idAlarm
-	 * @return
+	 * @param idAlarm Parameter that represents a Alarm identifier.
+	 * @return {@link List<Long>}
 	 */
 	@RequestMapping(path = "/emails", method = RequestMethod.GET)
 	public List<Long> emails(@RequestParam("id") String idAlarm) {

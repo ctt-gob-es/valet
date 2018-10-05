@@ -69,18 +69,18 @@ public interface IMailService {
 	void deleteMail(Long idMail);
 
 	/**
-	 * TODO
+	 * Method that gets the list for the given {@link DataTablesInput}.
 	 * 
-	 * @param input
-	 * @return
+	 * @param input the {@link DataTablesInput} mapped from the Ajax request.
+	 * @return {@link DataTablesOutput}
 	 */
 	DataTablesOutput<Mail> getAllMail(DataTablesInput input);
 
 	/**
-	 * TODO
+	 * Create a Set of e-mails from a String
 	 * 
-	 * @param concatString
-	 * @return
+	 * @param concatString String of e-mails
+	 * @return  {@link} Set<Mail>
 	 */
 	Set<Mail> splitMails(String concatString);
 

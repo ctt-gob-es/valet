@@ -1,0 +1,128 @@
+<div class="container-fluid">
+	<h4 class="c-grey-900 mT-10 mB-30" th:text="#{confServerMail.admin.title}"></h4>
+	<div class="masonry-item col-md-12">
+		
+		<div class="bgc-white p-20 bd">
+			<div class="mT-30">
+				<form id="newConfServerMailForm" th:object="${confServerMailForm}" th:action="@{/saveconfservermail}" method="post">
+					<input type='hidden' id="idConfServerMail" th:field="*{idConfServerMail}">
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="issuerMailForm" th:text="#{form.confServerMail.issuer}"></label> 
+							<input type="email" class="form-control" id="issuerMailForm" th:field="*{issuerMail}" required>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-8">
+							<label for="hostMailForm" th:text="#{form.confServerMail.host}"></label> 
+							<input type="text" class="form-control" id="hostMailForm" th:field="*{hostMail}" required>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="portMailForm" th:text="#{form.confServerMail.port}"></label> 
+							<input type="number" class="form-control" id="portMailForm" th:field="*{portMail}" required>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="userMailForm" th:text="#{form.confServerMail.user}"></label> 
+							<input type="text" class="form-control" id="userMailForm" th:field="*{userMail}">
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="passwordMailForm" th:text="#{form.confServerMail.password}"></label> 
+							<input type="password" class="form-control" id="passwordMailForm" th:field="*{passwordMail}">
+						</div>
+					</div>
+					
+					<button id="saveBtn" type="submit" class="btn btn-primary" 
+						th:utext="#{button.save}">
+					</button>
+					
+					<button id="cleanBtn" class="btn btn-primary" 
+						onclick="cleanForm('#newConfServerMailForm');"
+						th:utext="#{button.cleanForm}">
+					</button>
+					
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script th:inline="javascript">
+
+$( "#saveBtn" ).click(function( event ) {
+	  event.preventDefault();
+	  
+	  var formData = JSON.stringify($("#newConfServerMailForm").serializeJSON());
+	  var url = /*[[@{/saveconfservermail}]]*/ null;
+	  
+	  loading();
+	  if ($('#newConfServerMailForm')[0].checkValidity() === false) {
+		  hide();
+		  
+		  $('#newConfServerMailForm *').filter(':input').each(function(){
+    	    
+	          if(!$(this)[0].checkValidity()){
+	      	   	$("#" + $(this).attr('id')).addClass("has-error");
+	      	  } else {
+	      	   	$("#" + $(this).attr('id')).removeClass("has-error");
+	      	  }
+    	    
+    	  });
+		  
+	  } else{
+		  $.ajax({
+			  type: "POST",
+			  url: url,
+			  data: formData,
+			  dataType: "json",
+			  contentType : "application/json",
+			  success: function(data, error){
+				  hide();
+				  
+				  $('#idConfServerMail').val(data.idConfServerMail);
+				  $('#issuerMailForm').val(data.issuerMail);
+				  $('#hostMailForm').val(data.hostMail);
+				  $('#portMailForm').val(data.portMail);
+				  $('#userMailForm').val(data.userMail);
+				  $('#passwordMailForm').val(data.passwordMail);
+				  
+				  $('#newConfServerMailForm *').filter(':input').each(function(){
+					 $("#" + $(this).attr('id')).removeClass("has-error");
+				  });
+				   
+				  if ($('#errorModalConfMail').length > 0){
+					 $('#errorModalConfMail').remove();
+				  }
+				  
+			  },
+			  error:function(){
+				  hide();
+				  if ($('#errorModalConfMail').length > 0){
+						 $('#errorModalConfMail').remove();
+					  }
+				  $('#newConfServerMailForm').append('<div id="errorModalConfMail" class="alert alert-danger" role="alert"><strong>Error al guardar la configuraci&oacute;n del servidor del correo electr&oacute;nico</strong></div>');
+			  }
+			});
+	  }
+
+});
+
+function cleanForm(f){
+	$(f + ' *').filter(':input').each(function(){
+		$(this).val('');
+	});
+	$(f + ' *').filter('span').each(function(){
+		$(this).text('');
+	});
+	$(f + " select").select2().val('').change();
+	$(f).find(".alert").remove();
+}
+
+</script>

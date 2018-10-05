@@ -222,23 +222,23 @@ ALTER TABLE "R_ALARM_MAIL" ADD CONSTRAINT "R_MAIL_ALARM" FOREIGN KEY ("ID_MAIL")
 
 -- CONF_SERVER_MAIL
 CREATE TABLE "CONF_SERVER_MAIL"(
-  "ID_CONF_SERVER_MAIL" Varchar2(100) NOT NULL,
-  "ISSUER" Varchar2(200) NOT NULL,
-  "HOST" Varchar2(200) NOT NULL,
-  "PORT" Number(10,0) NOT NULL,
-  "USER" Varchar2(200),
-  "PASSWORD" Varchar2(200)
+  "ID_CONF_SERVER_MAIL" Number(19,0) NOT NULL,
+  "ISSUER_MAIL" Varchar2(200) NOT NULL,
+  "HOST_MAIL" Varchar2(200) NOT NULL,
+  "PORT_MAIL" Number(10,0) NOT NULL,
+  "USER_MAIL" Varchar2(200),
+  "PASSWORD_MAIL" Varchar2(200)
 )
 TABLESPACE VALET_CONFIGURACION_TABLESPACE INITRANS 1 MAXTRANS 255 NOCACHE;
 ALTER TABLE "CONF_SERVER_MAIL" ADD CONSTRAINT "ID_CONF_SERVER_MAIL" PRIMARY KEY ("ID_CONF_SERVER_MAIL");
 
 COMMENT ON TABLE "CONF_SERVER_MAIL" IS 'Tabla que almacena la configuración del servidor de correo.';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."ID_CONF_SERVER_MAIL" IS 'Identificador de la tabla.';
-COMMENT ON COLUMN "CONF_SERVER_MAIL"."ISSUER" IS 'Valor que representa el emisor del servidor de correo.';
-COMMENT ON COLUMN "CONF_SERVER_MAIL"."HOST" IS 'Valor que representa el host del servidor de correo.';
-COMMENT ON COLUMN "CONF_SERVER_MAIL"."PORT" IS 'Valor que representa el puerto del servidor de correo.';
-COMMENT ON COLUMN "CONF_SERVER_MAIL"."USER" IS 'Valor que representa el usuario del servidor de correo.';
-COMMENT ON COLUMN "CONF_SERVER_MAIL"."PASSWORD" IS 'Valor que representa la contraseña del servidor de correo.';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."ISSUER_MAIL" IS 'Valor que representa el emisor del servidor de correo.';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."HOST_MAIL" IS 'Valor que representa el host del servidor de correo.';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."PORT_MAIL" IS 'Valor que representa el puerto del servidor de correo.';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."USER_MAIL" IS 'Valor que representa el usuario del servidor de correo.';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."PASSWORD_MAIL" IS 'Valor que representa la contraseña del servidor de correo.';
 
 
 
