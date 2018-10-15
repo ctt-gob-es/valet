@@ -113,10 +113,10 @@ public class SystemCertificate implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #idSystemCertificate}.
-	 * @param idSystemCertificate The value for the attribute {@link #idSystemCertificate}.
+	 * @param idSystemCertificateParam The value for the attribute {@link #idSystemCertificate}.
 	 */
-	public void setIdSystemCertificate(Long idSystemCertificate) {
-		this.idSystemCertificate = idSystemCertificate;
+	public void setIdSystemCertificate(Long idSystemCertificateParam) {
+		this.idSystemCertificate = idSystemCertificateParam;
 	}
 	
 	/**
@@ -131,10 +131,10 @@ public class SystemCertificate implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #alias}.
-	 * @param alias The value for the attribute {@link #alias}.
+	 * @param aliasParam The value for the attribute {@link #alias}.
 	 */
-	public void setAlias(String alias) {
-		this.alias = alias;
+	public void setAlias(String aliasParam) {
+		this.alias = aliasParam;
 	}
 	
 	/**
@@ -150,10 +150,10 @@ public class SystemCertificate implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #keystore}.
-	 * @param keystore The value for the attribute {@link #keystore}.
+	 * @param keystoreParam The value for the attribute {@link #keystore}.
 	 */
-	public void setKeystore(Keystore keystore) {
-		this.keystore = keystore;
+	public void setKeystore(Keystore keystoreParam) {
+		this.keystore = keystoreParam;
 	}
 	
 	/**
@@ -168,10 +168,10 @@ public class SystemCertificate implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #isKey}.
-	 * @param isKey The value for the attribute {@link #isKey}.
+	 * @param isKeyParam The value for the attribute {@link #isKey}.
 	 */
-	public void setIsKey(Boolean isKey) {
-		this.isKey = isKey;
+	public void setIsKey(Boolean isKeyParam) {
+		this.isKey = isKeyParam;
 	}
 	
 	/**
@@ -186,10 +186,10 @@ public class SystemCertificate implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #issuer}.
-	 * @param issuer The value for the attribute {@link #issuer}.
+	 * @param issuerParam The value for the attribute {@link #issuer}.
 	 */
-	public void setIssuer(String issuer) {
-		this.issuer = issuer;
+	public void setIssuer(String issuerParam) {
+		this.issuer = issuerParam;
 	}
 	
 	/**
@@ -204,10 +204,10 @@ public class SystemCertificate implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #subject}.
-	 * @param subject The value for the attribute {@link #subject}.
+	 * @param subjectParam The value for the attribute {@link #subject}.
 	 */
-	public void setSubject(String subject) {
-		this.subject = subject;
+	public void setSubject(String subjectParam) {
+		this.subject = subjectParam;
 	}
 	
 	/**
@@ -223,10 +223,10 @@ public class SystemCertificate implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #statusCert}.
-	 * @param statusCert The value for the attribute {@link #statusCert}.
+	 * @param statusCertParam The value for the attribute {@link #statusCert}.
 	 */
-	public void setStatusCert(CStatusCertificate statusCert) {
-		this.statusCert = statusCert;
+	public void setStatusCert(CStatusCertificate statusCertParam) {
+		this.statusCert = statusCertParam;
 	}
 	
 	/**
@@ -240,9 +240,9 @@ public class SystemCertificate implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #hash}.
-	 * @param hash The value for the attribute {@link #hash}.
+	 * @param hashParam The value for the attribute {@link #hash}.
 	 */
-	public void setHash(String hash) {
-		this.hash = hash;
+	public void setHash(String hashParam) {
+		this.hash = hashParam;
 	}
 }

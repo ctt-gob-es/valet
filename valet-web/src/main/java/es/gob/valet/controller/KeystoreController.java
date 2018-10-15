@@ -52,7 +52,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificate
 public class KeystoreController {
 	
 	/**
-	 * Constant that represents the parameter 'idTslValet'.
+	 * Constant that represents the parameter 'idKeystore'.
 	 */
 	private static final String FIELD_ID_KEYSTORE = "idKeystore";
 	

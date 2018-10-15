@@ -55,7 +55,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 public class UserValet implements Serializable {
 
 	/**
-	 * Attribute that represents class serial version 
+	 * Attribute that represents class serial version. 
 	 */
 	private static final long serialVersionUID = -1373504780650604717L;
 	

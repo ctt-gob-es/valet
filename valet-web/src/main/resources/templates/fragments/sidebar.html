@@ -64,73 +64,85 @@
 							</span> <span class="title" th:text="${keystore.name}" />
 						</a></li>
 					</ul></li>
-
-				<li class="nav-item dropdown">
-					<a class='sidebar-link' href="#"> 
-						<span class="icon-holder"><i class="c-yellow-500 ti-alarm-clock"></i></span> 
-						<span class="title" th:text="#{menu.admin.alarm}"></span>
-					</a>
+				<li class="nav-item dropdown"><a id="aTaskAdmin"
+					class='sidebar-link' href="#"> <span class="icon-holder">
+							<i class="c-teal-500 ti-calendar"></i>
+					</span> <span class="title" th:text="#{menu.admin.task}"></span>
+				</a>
 					<ul class="dropdown-menu">
-						<li>
-							<a id="aMailAdmin" class='sidebar-link' href="#">
-								<span class="title" th:text="#{menu.admin.mail}"></span>
-								<script th:inline="javascript">
+						<li class="nav-item" th:each="task:${listtask}"><a
+							class="nav-link c-grey-800 cH-blue-500 active"
+							th:id="'aTask' + ${task.idTask}" href="#"
+							th:onclick="|loadTask('${task.idTask}')|"> <span
+								class="icon-holder"> <i class="c-teal-300"></i>
+							</span> <span class="title" th:text="${task.name}" />
+						</a></li>
+					</ul></li>
+				<li class="nav-item dropdown"><a class='sidebar-link' href="#">
+						<span class="icon-holder"><i
+							class="c-yellow-500 ti-alarm-clock"></i></span> <span class="title"
+						th:text="#{menu.admin.alarm}"></span>
+				</a>
+					<ul class="dropdown-menu">
+						<li><a id="aMailAdmin" class='sidebar-link' href="#"> <span
+								class="title" th:text="#{menu.admin.mail}"></span> <script
+									th:inline="javascript">
 		                 			var actionMail = /*[[@{/mailadmin}]]*/;
 		                 			$('#aMailAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionMail, 'optionReplacement', 'GET', null, true); return false;});
 		               			</script>
-	               			</a>
-	               		</li>
-	               		<li>
-							<a id="aAlarmAdmin" class='sidebar-link' href="#">
-								<span class="title" th:text="#{menu.admin.alarm}"></span>
-								<script th:inline="javascript">
+						</a></li>
+						<li><a id="aAlarmAdmin" class='sidebar-link' href="#"> <span
+								class="title" th:text="#{menu.admin.alarm}"></span> <script
+									th:inline="javascript">
 		                 			var actionAlarm = /*[[@{/alarmadmin}]]*/;
 		                 			$('#aAlarmAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionAlarm, 'optionReplacement', 'GET', null, true); return false;});
 		               			</script>
-	               			</a>
-	               		</li>
-					</ul>
-				</li>
-				
-				<li class="nav-item dropdown">
-					<a class='sidebar-link' href="#"> 
-						<span class="icon-holder"><i class="c-black-500 ti-settings"></i></span> 
-						<span class="title" th:text="#{menu.admin.conf}"></span>
-					</a>
+						</a></li>
+					</ul></li>
+
+				<li class="nav-item dropdown"><a class='sidebar-link' href="#">
+						<span class="icon-holder"><i
+							class="c-black-500 ti-settings"></i></span> <span class="title"
+						th:text="#{menu.admin.conf}"></span>
+				</a>
 					<ul class="dropdown-menu">
-						<li>
-							<a id="aConfServerAdmin" class='sidebar-link' href="#">
-								<span class="icon-holder"><i class="c-black-500 ti-email"></i></span> 
+						<li><a id="aConfServerAdmin" class='sidebar-link' href="#">
+								<span class="icon-holder"><i class="c-black-500 ti-email"></i></span>
 								<span class="title" th:text="#{menu.admin.confServerMail}"></span>
 								<script th:inline="javascript">
 		                 			var actionConfMail = /*[[@{/confmailadmin}]]*/;
 		                 			$('#aConfServerAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionConfMail, 'optionReplacement', 'GET', null, true); return false;});
 		               			</script>
-	               			</a>
-	               		</li>
-	               		<li>
-							<a id="aConfProxyAdmin" class='sidebar-link' href="#">
-								<span class="icon-holder"><i class="c-black-500 ti-world"></i></span> 
+						</a></li>
+						<li><a id="aConfProxyAdmin" class='sidebar-link' href="#">
+								<span class="icon-holder"><i class="c-black-500 ti-world"></i></span>
 								<span class="title" th:text="#{menu.admin.confServerWorld}"></span>
 								<script th:inline="javascript">
 		                 			var actionConfWorld = /*[[@{/confmailadmin}]]*/;
 		                 			$('#aConfWorldAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionConfWorld, 'optionReplacement', 'GET', null, true); return false;});
 		               			</script>
-	               			</a>
-	               		</li>
-					</ul>
-				</li>
+						</a></li>
+					</ul></li>
 
 			</ul>
 		</form>
 	</div>
 </div>
 <script th:inline="javascript">
+//funcion para cargar certificados
 function loadCertificatesDatatable(idKeystore) {
 var idKeystore = idKeystore;
 var loadCertificatesDt =/*[[@{/loadcertificatesdatatable?idKeystore=}]]*/;
 var loadCertificateKeystore= loadCertificatesDt+idKeystore;
 loadIntoAjax('formMenu', loadCertificateKeystore, 'optionReplacement', 'GET', null, true);
 
+}
+
+//función para cargar la tarea
+function loadTask(idTask){
+	var idTask = idTask;
+	var loadTask =/*[[@{/loadtask?idTask=}]]*/;
+	var loadTaskId = loadTask+idTask;
+	loadIntoAjax('formMenu', loadTaskId, 'optionReplacement','GET', null, true);
 }
 </script>

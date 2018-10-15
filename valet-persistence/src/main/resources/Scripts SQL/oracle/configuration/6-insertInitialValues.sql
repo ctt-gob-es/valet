@@ -33,3 +33,41 @@ Insert into ALARM (ID_ALARM, DESCRIPTION)
   
 Insert into ALARM (ID_ALARM, DESCRIPTION)
   Values ('ALM004', 'Alarma 4');
+  
+  
+ -- TABLA TASK 
+ 
+Insert into TASK
+   (ID_TASK, NAME, IMPLEMENTATION_CLASS, IS_ENABLED)
+ Values (1, 'Sincronización TSL', 'es.gob.valet.tasks.FindNewTSLRevisionsTask', 'N');
+ 
+
+    
+ -- TABLA PLANNER
+  Insert into PLANNER
+   (ID_PLANNER, HOUR_PERIOD, MINUTE_PERIOD, SECOND_PERIOD, INIT_DAY, 
+    ID_PLANNER_TYPE)
+ Values
+   (1, 23, 0, 0, TO_TIMESTAMP('01/01/2012 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), 
+    1);
+    
+ -- TABLA X_TASK_PLANNER 
+ 
+Insert into X_TASK_PLANNER
+   (ID_TASK, ID_PLANNER)
+ Values (1, 1);
+ 
+ -- TABLA C_PLANNER_TYPE 
+   
+Insert into C_PLANNER_TYPE
+   (ID_PLANNER_TYPE, TOKEN_NAME)
+ Values
+   (0, 'PLANNER_TYPE00');
+Insert into C_PLANNER_TYPE
+   (ID_PLANNER_TYPE, TOKEN_NAME)
+ Values
+   (1, 'PLANNER_TYPE01');
+Insert into C_PLANNER_TYPE
+   (ID_PLANNER_TYPE, TOKEN_NAME)
+ Values
+   (2, 'PLANNER_TYPE02');

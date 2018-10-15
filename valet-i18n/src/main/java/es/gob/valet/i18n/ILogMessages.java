@@ -201,6 +201,65 @@ public interface ILogMessages {
 	 * file webvalet.properties.
 	 */
 	String TASK_FIND_NEW_TSL_REV_END_MSG = "task.findNewTslRev.endMsg";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorUpdateTask</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_UPDATE_TASK = "errorUpdateTask";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorUpdateTaskWeb</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_UPDATE_TASK_WEB = "errorUpdateTaskWeb";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorActiveTask</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_ACTIVE_TASK = "errorActiveTask";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorGetClassTask</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_GET_CLASS_TASK = "errorGetClassTask";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorParseDate</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_PARSE_DATE = "errorParseDate";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>infoUpdateTaskOk</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String INFO_TASK_ACTIVE_OK = "infoTaskActiveOk";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>infoUpdateTaskOk</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String INFO_TASK_STOP = "infoTaskStop";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>infoUpdateTaskOk</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String INFO_UPDATE_TASK_OK = "infoUpdateTaskOk";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorValidateDate</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_VALIDATE_DATE ="errorValidateDate";
+	
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorValidateDateEmpty</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_VALIDATE_DATE_EMPTY ="errorValidateDateEmpty";
+	
 
 	/**
 	 * Constant attribute that represents the name of the property <code>REST001</code> belonging to the

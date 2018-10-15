@@ -100,10 +100,10 @@ public class TslCountryRegionMapping implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #idTslCountryRegionMapping}.
-	 * @param idTslCountryRegionMapping The value for the attribute {@link #idTslCountryRegionMapping}.
+	 * @param idTslCountryRegionMappingParam The value for the attribute {@link #idTslCountryRegionMapping}.
 	 */
-	public void setIdTslCountryRegionMapping(Long idTslCountryRegionMapping) {
-		this.idTslCountryRegionMapping = idTslCountryRegionMapping;
+	public void setIdTslCountryRegionMapping(Long idTslCountryRegionMappingParam) {
+		this.idTslCountryRegionMapping = idTslCountryRegionMappingParam;
 	}
 
 	
@@ -121,10 +121,10 @@ public class TslCountryRegionMapping implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #tslCountryRegion}.
-	 * @param tslCountryRegion The value for the attribute {@link #tslCountryRegion}.
+	 * @param tslCountryRegionParam The value for the attribute {@link #tslCountryRegion}.
 	 */
-	public void setTslCountryRegion(TslCountryRegion tslCountryRegion) {
-		this.tslCountryRegion = tslCountryRegion;
+	public void setTslCountryRegion(TslCountryRegion tslCountryRegionParam) {
+		this.tslCountryRegion = tslCountryRegionParam;
 	}
 
 	
@@ -141,10 +141,10 @@ public class TslCountryRegionMapping implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #mappingIdentificator}.
-	 * @param mappingIdentificator The value for the attribute {@link #mappingIdentificator}.
+	 * @param mappingIdentificatorParam The value for the attribute {@link #mappingIdentificator}.
 	 */
-	public void setMappingIdentificator(String mappingIdentificator) {
-		this.mappingIdentificator = mappingIdentificator;
+	public void setMappingIdentificator(String mappingIdentificatorParam) {
+		this.mappingIdentificator = mappingIdentificatorParam;
 	}
 
 	
@@ -161,10 +161,10 @@ public class TslCountryRegionMapping implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #mappingDescription}.
-	 * @param mappingDescription The value for the attribute {@link #mappingDescription}.
+	 * @param mappingDescriptionParam The value for the attribute {@link #mappingDescription}.
 	 */
-	public void setMappingDescription(String mappingDescription) {
-		this.mappingDescription = mappingDescription;
+	public void setMappingDescription(String mappingDescriptionParam) {
+		this.mappingDescription = mappingDescriptionParam;
 	}
 
 	
@@ -181,10 +181,10 @@ public class TslCountryRegionMapping implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #mappingValue}.
-	 * @param mappingValue The value for the attribute {@link #mappingValue}.
+	 * @param mappingValueParam The value for the attribute {@link #mappingValue}.
 	 */
-	public void setMappingValue(String mappingValue) {
-		this.mappingValue = mappingValue;
+	public void setMappingValue(String mappingValueParam) {
+		this.mappingValue = mappingValueParam;
 	}
 
 

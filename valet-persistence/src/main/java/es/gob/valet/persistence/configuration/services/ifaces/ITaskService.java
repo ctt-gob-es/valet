@@ -15,31 +15,47 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.ICStatusCertificate.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.ITaskService.java.</p>
+ * <b>Description:</b><p> Interface that provides communication with the operations of the persistence layer
+ * in relation of the Task entity.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Date:</b><p>2 oct. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 2 oct. 2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
-import es.gob.valet.persistence.configuration.model.entity.CStatusCertificate;
+import java.util.List;
+
+
+import es.gob.valet.persistence.configuration.model.entity.Task;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer
- * in relation of the CStatusCertificate entity.</p>
+ * in relation of the Task entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 2 oct. 2018.
  */
-public interface ICStatusCertificateService {
+public interface ITaskService {
+	/**
+	 *  Gets the list of tasks.
+	 * 
+	 * @return List of tasks.
+	 */
+	List<Task> getAllTask();
 	
 	/**
-	 * Method that obtains from the persistence a CStatusCertificate identified by its id.
+	  * Method that gets task by ID of Task.
+	  * @param idTask Id of task.
+	  * @return {@link Task} an object that represents the Task.
+	  */
+	Task getTaskById(Long idTask);
+	
+	/**
+	 * Method that saves a task.
 	 * 
-	 * @param idCStatusCertificateParam Long that represents the ID of StatusCertificate.
-	 * @return {@link CStatusCertificate} an object that represents the CStatusCertificate.
+	 * @param task Task to update.
+	 * @return {@link Task} an object that represents the Task.
 	 */
-	CStatusCertificate getCStatusCertificateById(Long idCStatusCertificateParam);
-
+	Task saveTask(Task task);
 }

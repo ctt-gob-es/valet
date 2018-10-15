@@ -642,7 +642,7 @@ public class TslRestController {
 		return tslForm;
 	}
 	/**
-	 * Method to load the datatable with all the mappings corresponding to the selected TSL 
+	 * Method to load the datatable with all the mappings corresponding to the selected TSL .
 	 * @param idCountryRegion Parameter that represents a country/region identifier.
 	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
 	 */
@@ -663,8 +663,8 @@ public class TslRestController {
 	}
 
 /**
-	 * 
-	 * @param idTslCountryRegionParameter Parameter that represents a country/region identifier.
+	 * Method that creates a new mapping for the indicated TSL.
+	 * @param idTslCountryRegion Parameter that represents a country/region identifier.
 	 * @param mappingIdentificator Parameter that represents the identificator for the logical mapping.
 	 * @param mappingValue Parameter that represents the value for the mapping. 
 	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}

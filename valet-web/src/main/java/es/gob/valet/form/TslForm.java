@@ -97,7 +97,7 @@ public class TslForm {
 	private String countryName;
 	
 	/**
-	 * Attribute that indicates if the tsl has a readable document
+	 * Attribute that indicates if the tsl has a readable document.
 	 */
 	private Boolean isLegible;
 	

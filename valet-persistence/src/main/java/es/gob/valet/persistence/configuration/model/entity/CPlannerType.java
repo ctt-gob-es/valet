@@ -15,12 +15,12 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.CStatusCertificate.java.</p>
- * <b>Description:</b><p>Class that maps the <i>C_STATUS_CERTIFICATE</i> database table as a Plain Old Java Object.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.CPlannerType.java.</p>
+ * <b>Description:</b><p> Class that represents the representation of the <i>C_PLANNER_TYPE</i> database table as a Plain Old Java Object.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Date:</b><p>2 oct. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 2 oct. 2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -31,30 +31,27 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-
-import com.fasterxml.jackson.annotation.JsonView;
-
 import es.gob.valet.commons.utils.NumberConstants;
 
 
 /** 
- * <p>Class that maps the <i>C_STATUS_CERTIFICATE</i> database table as a Plain Old Java Object.</p>
+ * <p>Class that represents the representation of the <i>C_PLANNER_TYPE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 2 oct. 2018.
  */
 @Entity
-@Table(name = "C_STATUS_CERTIFICATES")
-public class CStatusCertificate implements Serializable {
+@Table(name = "C_PLANNER_TYPE")
+public class CPlannerType implements Serializable {
 
 	/**
 	 * Attribute that represents the serial version UID. 
 	 */
-	private static final long serialVersionUID = 6565305733061626944L;
+	private static final long serialVersionUID = 601377740550446995L;
+
 	/**
 	 * Attribute that represents the object ID.
 	 */
-	private Long idStatusCertificate;
+	private Long idPlannerType;
 
 	/**
 	 * Attribute that represents the name of the token with the description stored in properties file for internationalization.
@@ -63,23 +60,22 @@ public class CStatusCertificate implements Serializable {
 
 	
 	/**
-	 * Gets the value of the attribute {@link #idStatusCertificate}.
-	 * @return the value of the attribute {@link #idStatusCertificate}.
+	 * Gets the value of the attribute {@link #idPlannerType}.
+	 * @return the value of the attribute {@link #idPlannerType}.
 	 */
 	@Id
-	@Column(name = "ID_STATUS_CERTIFICATE", unique = true, nullable = false, precision = NumberConstants.NUM19)
-	@JsonView(DataTablesOutput.View.class)
-	public Long getIdStatusCertificate() {
-		return idStatusCertificate;
+	@Column(name = "ID_PLANNER_TYPE", unique = true, nullable = false, precision = NumberConstants.NUM19)
+	public Long getIdPlannerType() {
+		return idPlannerType;
 	}
 
 	
 	/**
-	 * Sets the value of the attribute {@link #idCStatusCertificate}.
-	 * @param idStatusCertificateParam The value for the attribute {@link #idCStatusCertificate}.
+	 * Sets the value of the attribute {@link #idPlannerType}.
+	 * @param idPlannerTypeParam The value for the attribute {@link #idPlannerType}.
 	 */
-	public void setIdStatusCertificate(Long idStatusCertificateParam) {
-		this.idStatusCertificate = idStatusCertificateParam;
+	public void setIdPlannerType(Long idPlannerTypeParam) {
+		this.idPlannerType = idPlannerTypeParam;
 	}
 
 	
@@ -88,7 +84,6 @@ public class CStatusCertificate implements Serializable {
 	 * @return the value of the attribute {@link #tokenName}.
 	 */
 	@Column(name = "TOKEN_NAME", nullable = false, length = NumberConstants.NUM30)
-	@JsonView(DataTablesOutput.View.class)
 	public String getTokenName() {
 		return tokenName;
 	}
@@ -101,4 +96,5 @@ public class CStatusCertificate implements Serializable {
 	public void setTokenName(String tokenNameParam) {
 		this.tokenName = tokenNameParam;
 	}
+
 }

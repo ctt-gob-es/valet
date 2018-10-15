@@ -119,10 +119,10 @@ public class Keystore implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #idKeystore}.
-	 * @param idKeystore The value for the attribute {@link #idKeystore}.
+	 * @param idKeystoreParam The value for the attribute {@link #idKeystore}.
 	 */
-	public void setIdKeystore(Long idKeystore) {
-		this.idKeystore = idKeystore;
+	public void setIdKeystore(Long idKeystoreParam) {
+		this.idKeystore = idKeystoreParam;
 	}
 
 	
@@ -138,10 +138,10 @@ public class Keystore implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #name}.
-	 * @param name The value for the attribute {@link #name}.
+	 * @param nameParam The value for the attribute {@link #name}.
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String nameParam) {
+		this.name = nameParam;
 	}
 
 	
@@ -157,10 +157,10 @@ public class Keystore implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #tokenName}.
-	 * @param tokenName The value for the attribute {@link #tokenName}.
+	 * @param tokenNameParam The value for the attribute {@link #tokenName}.
 	 */
-	public void setTokenName(String tokenName) {
-		this.tokenName = tokenName;
+	public void setTokenName(String tokenNameParam) {
+		this.tokenName = tokenNameParam;
 	}
 
 	
@@ -176,10 +176,10 @@ public class Keystore implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #listSystemCertificates}.
-	 * @param listSystemCertificates The value for the attribute {@link #listSystemCertificates}.
+	 * @param listSystemCertificatesParam The value for the attribute {@link #listSystemCertificates}.
 	 */
-	public void setListSystemCertificates(List<SystemCertificate> listSystemCertificates) {
-		this.listSystemCertificates = listSystemCertificates;
+	public void setListSystemCertificates(List<SystemCertificate> listSystemCertificatesParam) {
+		this.listSystemCertificates = listSystemCertificatesParam;
 	}
 
 	
@@ -217,10 +217,10 @@ public class Keystore implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #password}.
-	 * @param password The value for the attribute {@link #password}.
+	 * @param passwordParam The value for the attribute {@link #password}.
 	 */
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPassword(String passwordParam) {
+		this.password = passwordParam;
 	}
 
 	
@@ -237,10 +237,10 @@ public class Keystore implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #isHardware}.
-	 * @param isHardware The value for the attribute {@link #isHardware}.
+	 * @param isHardwareParam The value for the attribute {@link #isHardware}.
 	 */
-	public void setIsHardware(Boolean isHardware) {
-		this.isHardware = isHardware;
+	public void setIsHardware(Boolean isHardwareParam) {
+		this.isHardware = isHardwareParam;
 	}
 
 	
@@ -255,11 +255,11 @@ public class Keystore implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #keystoreType}.
-	 * @param keystoreType The value for the attribute {@link #keystoreType}.
+	 * @param keystoreTypeParam The value for the attribute {@link #keystoreType}.
 	 */
 	@Column(name = "KEYSTORE_TYPE", nullable = false, length = NumberConstants.NUM50)
-	public void setKeystoreType(String keystoreType) {
-		this.keystoreType = keystoreType;
+	public void setKeystoreType(String keystoreTypeParam) {
+		this.keystoreType = keystoreTypeParam;
 	}
 
 	
@@ -275,10 +275,10 @@ public class Keystore implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #version}.
-	 * @param version The value for the attribute {@link #version}.
+	 * @param versionParam The value for the attribute {@link #version}.
 	 */
-	public void setVersion(Long version) {
-		this.version = version;
+	public void setVersion(Long versionParam) {
+		this.version = versionParam;
 	}
 
 	
@@ -295,10 +295,10 @@ public class Keystore implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #hasBackup}.
-	 * @param hasBackup The value for the attribute {@link #hasBackup}.
+	 * @param hasBackupParam The value for the attribute {@link #hasBackup}.
 	 */
-	public void setHasBackup(Boolean hasBackup) {
-		this.hasBackup = hasBackup;
+	public void setHasBackup(Boolean hasBackupParam) {
+		this.hasBackup = hasBackupParam;
 	}
 
 }

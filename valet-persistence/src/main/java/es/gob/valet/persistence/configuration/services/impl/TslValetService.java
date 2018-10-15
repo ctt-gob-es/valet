@@ -43,11 +43,6 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 26 jun. 2018.
  */
-/** 
- * <p>Class .</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 13 sept. 2018.
- */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class TslValetService implements ITslValetService {

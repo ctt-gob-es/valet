@@ -31,7 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.form.MappingTslForm.View;
-import es.gob.valet.persistence.configuration.model.entity.Keystore;
 
 /** 
  * <p>Class that represents the backing form for adding/editing certificates in a keystore.</p>
@@ -40,7 +39,7 @@ import es.gob.valet.persistence.configuration.model.entity.Keystore;
  */
 public class SystemCertificateForm {
 	/**
-	 * Attribute that represetns the ID of the certificate.
+	 * Attribute that represents the ID of the certificate.
 	 */
 	private Long idSystemCertificate;
 	
@@ -61,7 +60,7 @@ public class SystemCertificateForm {
 	private String alias;
 	
 	/**
-	 * Attribute that represents 
+	 * Attribute that represents file certificate.
 	 */
 	private MultipartFile certificateFile;
 	
@@ -115,10 +114,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #idSystemCertificate}.
-	 * @param idSystemCertificate The value for the attribute {@link #idSystemCertificate}.
+	 * @param idSystemCertificateParam The value for the attribute {@link #idSystemCertificate}.
 	 */
-	public void setIdSystemCertificate(Long idSystemCertificate) {
-		this.idSystemCertificate = idSystemCertificate;
+	public void setIdSystemCertificate(Long idSystemCertificateParam) {
+		this.idSystemCertificate = idSystemCertificateParam;
 	}
 
 	
@@ -133,10 +132,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #idKeystore}.
-	 * @param idKeystore The value for the attribute {@link #idKeystore}.
+	 * @param idKeystoreParam The value for the attribute {@link #idKeystore}.
 	 */
-	public void setIdKeystore(Long idKeystore) {
-		this.idKeystore = idKeystore;
+	public void setIdKeystore(Long idKeystoreParam) {
+		this.idKeystore = idKeystoreParam;
 	}
 
 	
@@ -151,10 +150,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #nameKeystore}.
-	 * @param nameKeystore The value for the attribute {@link #nameKeystore}.
+	 * @param nameKeystoreParam The value for the attribute {@link #nameKeystore}.
 	 */
-	public void setNameKeystore(String nameKeystore) {
-		this.nameKeystore = nameKeystore;
+	public void setNameKeystore(String nameKeystoreParam) {
+		this.nameKeystore = nameKeystoreParam;
 	}
 
 	
@@ -169,10 +168,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #alias}.
-	 * @param alias The value for the attribute {@link #alias}.
+	 * @param aliasParam The value for the attribute {@link #alias}.
 	 */
-	public void setAlias(String alias) {
-		this.alias = alias;
+	public void setAlias(String aliasParam) {
+		this.alias = aliasParam;
 	}
 
 	
@@ -187,10 +186,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #certificateFile}.
-	 * @param certificateFile The value for the attribute {@link #certificateFile}.
+	 * @param certificateFileParam The value for the attribute {@link #certificateFile}.
 	 */
-	public void setCertificateFile(MultipartFile certificateFile) {
-		this.certificateFile = certificateFile;
+	public void setCertificateFile(MultipartFile certificateFileParam) {
+		this.certificateFile = certificateFileParam;
 	}
 
 
@@ -207,10 +206,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #subject}.
-	 * @param subject The value for the attribute {@link #subject}.
+	 * @param subjectParam The value for the attribute {@link #subject}.
 	 */
-	public void setSubject(String subject) {
-		this.subject = subject;
+	public void setSubject(String subjectParam) {
+		this.subject = subjectParam;
 	}
 
 
@@ -227,10 +226,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #issuer}.
-	 * @param issuer The value for the attribute {@link #issuer}.
+	 * @param issuerParam The value for the attribute {@link #issuer}.
 	 */
-	public void setIssuer(String issuer) {
-		this.issuer = issuer;
+	public void setIssuer(String issuerParam) {
+		this.issuer = issuerParam;
 	}
 
 
@@ -247,10 +246,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #numberSerial}.
-	 * @param numberSerial The value for the attribute {@link #numberSerial}.
+	 * @param numberSerialParam The value for the attribute {@link #numberSerial}.
 	 */
-	public void setNumberSerial(String numberSerial) {
-		this.numberSerial = numberSerial;
+	public void setNumberSerial(String numberSerialParam) {
+		this.numberSerial = numberSerialParam;
 	}
 
 
@@ -268,10 +267,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #validFrom}.
-	 * @param validFrom The value for the attribute {@link #validFrom}.
+	 * @param validFromParam The value for the attribute {@link #validFrom}.
 	 */
-	public void setValidFrom(String validFrom) {
-		this.validFrom = validFrom;
+	public void setValidFrom(String validFromParam) {
+		this.validFrom = validFromParam;
 	}
 
 
@@ -289,10 +288,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #validTo}.
-	 * @param validTo The value for the attribute {@link #validTo}.
+	 * @param validToParam The value for the attribute {@link #validTo}.
 	 */
-	public void setValidTo(String validTo) {
-		this.validTo = validTo;
+	public void setValidTo(String validToParam) {
+		this.validTo = validToParam;
 	}
 
 
@@ -310,10 +309,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #publicKey}.
-	 * @param publicKey The value for the attribute {@link #publicKey}.
+	 * @param publicKeyParam The value for the attribute {@link #publicKey}.
 	 */
-	public void setPublicKey(String publicKey) {
-		this.publicKey = publicKey;
+	public void setPublicKey(String publicKeyParam) {
+		this.publicKey = publicKeyParam;
 	}
 
 
@@ -331,10 +330,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #rowIndexCertificate}.
-	 * @param rowIndexCertificate The value for the attribute {@link #rowIndexCertificate}.
+	 * @param rowIndexCertificateParam The value for the attribute {@link #rowIndexCertificate}.
 	 */
-	public void setRowIndexCertificate(String rowIndexCertificate) {
-		this.rowIndexCertificate = rowIndexCertificate;
+	public void setRowIndexCertificate(String rowIndexCertificateParam) {
+		this.rowIndexCertificate = rowIndexCertificateParam;
 	}
 
 
@@ -352,15 +351,10 @@ public class SystemCertificateForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #x509Certificate}.
-	 * @param x509Certificate The value for the attribute {@link #x509Certificate}.
+	 * @param x509CertificateParam The value for the attribute {@link #x509Certificate}.
 	 */
-	public void setX509Certificate(X509Certificate x509Certificate) {
-		this.x509Certificate = x509Certificate;
+	public void setX509Certificate(X509Certificate x509CertificateParam) {
+		this.x509Certificate = x509CertificateParam;
 	}
-	
-
-	
-	
-	
 
 }

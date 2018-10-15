@@ -37,7 +37,7 @@ import es.gob.valet.persistence.configuration.model.entity.Keystore;
  */
 public interface IKeystoreService {
 	/**
-	 *  Gets the list of keystores.
+	 * Method that gets the list of keystores.
 	 * 
 	 * @return List of keystores.
 	 */

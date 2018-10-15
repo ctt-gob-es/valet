@@ -15,31 +15,26 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.ICStatusCertificate.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.CPlannerTypeRepository.java.</p>
+ * <b>Description:</b><p>Interface that provides CRUD functionality for the CPlannerType entity .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Date:</b><p>3 oct. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 3 oct. 2018.
  */
-package es.gob.valet.persistence.configuration.services.ifaces;
+package es.gob.valet.persistence.configuration.model.repository;
 
-import es.gob.valet.persistence.configuration.model.entity.CStatusCertificate;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import es.gob.valet.persistence.configuration.model.entity.CPlannerType;
+
 
 /** 
- * <p>Interface that provides communication with the operations of the persistence layer
- * in relation of the CStatusCertificate entity.</p>
+ * <p>Interface that provides CRUD functionality for the CPlannerType entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 3 oct. 2018.
  */
-public interface ICStatusCertificateService {
+public interface CPlannerTypeRepository extends JpaRepository<CPlannerType, Long> {
 	
-	/**
-	 * Method that obtains from the persistence a CStatusCertificate identified by its id.
-	 * 
-	 * @param idCStatusCertificateParam Long that represents the ID of StatusCertificate.
-	 * @return {@link CStatusCertificate} an object that represents the CStatusCertificate.
-	 */
-	CStatusCertificate getCStatusCertificateById(Long idCStatusCertificateParam);
 
 }

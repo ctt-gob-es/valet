@@ -15,31 +15,38 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.ICStatusCertificate.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.TaskRepository.java.</p>
+ * <b>Description:</b><p> Interface that provides CRUD functionality for the Task entity.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Date:</b><p>2 oct. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 2 oct. 2018.
  */
-package es.gob.valet.persistence.configuration.services.ifaces;
+package es.gob.valet.persistence.configuration.model.repository;
 
-import es.gob.valet.persistence.configuration.model.entity.CStatusCertificate;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import es.gob.valet.persistence.configuration.model.entity.Task;
+
 
 /** 
- * <p>Interface that provides communication with the operations of the persistence layer
- * in relation of the CStatusCertificate entity.</p>
+ * <p>Interface that provides CRUD functionality for the Task entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 2 oct. 2018.
  */
-public interface ICStatusCertificateService {
-	
+@Repository
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+public interface TaskRepository extends JpaRepository<Task, Long> {
 	/**
-	 * Method that obtains from the persistence a CStatusCertificate identified by its id.
+	 * Method that obtains from the persistence a Task identified by its primary key.
 	 * 
-	 * @param idCStatusCertificateParam Long that represents the ID of StatusCertificate.
-	 * @return {@link CStatusCertificate} an object that represents the CStatusCertificate.
+	 * @param id Long that represents the primary key of the Task in the persistence.
+	 * @return Object that represents a Task from the persistence.
 	 */
-	CStatusCertificate getCStatusCertificateById(Long idCStatusCertificateParam);
-
+	Task findByIdTask(Long id);
+	
+	
 }

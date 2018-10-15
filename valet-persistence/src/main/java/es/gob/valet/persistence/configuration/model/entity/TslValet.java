@@ -140,10 +140,10 @@ public class TslValet implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #idTslValet}.
-	 * @param idTslValet The value for the attribute {@link #idTslValet}.
+	 * @param idTslValetParam The value for the attribute {@link #idTslValet}.
 	 */
-	public void setIdTslValet(Long idTslValet) {
-		this.idTslValet = idTslValet;
+	public void setIdTslValet(Long idTslValetParam) {
+		this.idTslValet = idTslValetParam;
 	}
 
 	/**
@@ -158,10 +158,10 @@ public class TslValet implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #sequenceNumber}.
-	 * @param sequenceNumber The value for the attribute {@link #sequenceNumber}.
+	 * @param sequenceNumberParam The value for the attribute {@link #sequenceNumber}.
 	 */
-	public void setSequenceNumber(Integer sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
+	public void setSequenceNumber(Integer sequenceNumberParam) {
+		this.sequenceNumber = sequenceNumberParam;
 	}
 
 	/**
@@ -176,10 +176,10 @@ public class TslValet implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #responsible}.
-	 * @param responsible The value for the attribute {@link #responsible}.
+	 * @param responsibleParam The value for the attribute {@link #responsible}.
 	 */
-	public void setResponsible(String responsible) {
-		this.responsible = responsible;
+	public void setResponsible(String responsibleParam) {
+		this.responsible = responsibleParam;
 	}
 
 	/**
@@ -195,10 +195,10 @@ public class TslValet implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #issueDate}.
-	 * @param issueDate The value for the attribute {@link #issueDate}.
+	 * @param issueDateParam The value for the attribute {@link #issueDate}.
 	 */
-	public void setIssueDate(Date issueDate) {
-		this.issueDate = issueDate;
+	public void setIssueDate(Date issueDateParam) {
+		this.issueDate = issueDateParam;
 	}
 
 	/**
@@ -214,10 +214,10 @@ public class TslValet implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #expirationDate}.
-	 * @param expirationDate The value for the attribute {@link #expirationDate}.
+	 * @param expirationDateParam The value for the attribute {@link #expirationDate}.
 	 */
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
+	public void setExpirationDate(Date expirationDateParam) {
+		this.expirationDate = expirationDateParam;
 	}
 
 	/**
@@ -232,10 +232,10 @@ public class TslValet implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #uriTslLocation}.
-	 * @param uriTslLocation The value for the attribute {@link #uriTslLocation}.
+	 * @param uriTslLocationParam The value for the attribute {@link #uriTslLocation}.
 	 */
-	public void setUriTslLocation(String uriTslLocation) {
-		this.uriTslLocation = uriTslLocation;
+	public void setUriTslLocation(String uriTslLocationParam) {
+		this.uriTslLocation = uriTslLocationParam;
 	}
 
 	/**
@@ -251,10 +251,10 @@ public class TslValet implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #xmlDocument}.
-	 * @param xmlDocument The value for the attribute {@link #xmlDocument}.
+	 * @param xmlDocumentParam The value for the attribute {@link #xmlDocument}.
 	 */
-	public void setXmlDocument(byte[ ] xmlDocument) {
-		this.xmlDocument = xmlDocument;
+	public void setXmlDocument(byte[ ] xmlDocumentParam) {
+		this.xmlDocument = xmlDocumentParam;
 	}
 
 	/**
@@ -270,10 +270,10 @@ public class TslValet implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #legibleDocument}.
-	 * @param legibleDocument The value for the attribute {@link #legibleDocument}.
+	 * @param legibleDocumentParam The value for the attribute {@link #legibleDocument}.
 	 */
-	public void setLegibleDocument(byte[ ] legibleDocument) {
-		this.legibleDocument = legibleDocument;
+	public void setLegibleDocument(byte[ ] legibleDocumentParam) {
+		this.legibleDocument = legibleDocumentParam;
 	}
 
 	/**
@@ -308,10 +308,10 @@ public class TslValet implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #country}.
-	 * @param country The value for the attribute {@link #country}.
+	 * @param countryParam The value for the attribute {@link #country}.
 	 */
-	public void setCountry(TslCountryRegion country) {
-		this.country = country;
+	public void setCountry(TslCountryRegion countryParam) {
+		this.country = countryParam;
 	}
 
 	/**
@@ -368,10 +368,10 @@ public class TslValet implements Serializable {
 	
 	/**
 	 * Sets the value of the attribute {@link #alias}.
-	 * @param alias The value for the attribute {@link #alias}.
+	 * @param aliasParam The value for the attribute {@link #alias}.
 	 */
-	public void setAlias(String alias) {
-		this.alias = alias;
+	public void setAlias(String aliasParam) {
+		this.alias = aliasParam;
 	}
 
 }

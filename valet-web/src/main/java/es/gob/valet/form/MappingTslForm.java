@@ -26,7 +26,7 @@ package es.gob.valet.form;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import es.gob.valet.form.TslForm.View;
+
 
 /** 
 * <p>Class that represents the backing form for adding/editing the mapping values for a TSL.</p>

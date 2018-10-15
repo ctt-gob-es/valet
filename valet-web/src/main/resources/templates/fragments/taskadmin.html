@@ -1,0 +1,207 @@
+<h4 class="c-grey-900 mB-20" th:text="#{task.admin.title}"></h4>
+
+<div class="row gap-20 masonry pos-r">
+
+	<div class="masonry-item col-md-10">
+
+		<div class="bgc-white p-20 bd">
+
+			<h5 class="c-grey-900" th:text="#{task.title}+': '+${taskform.name}" />
+
+			<div class="mT-30">
+				<form name="altEditor-form" role="form" id="taskFormId"
+					th:object="${taskform}" th:action="@{/updatetask}" method="post">
+<div id="messageUpdateTaskId" role="alert">
+
+</div>
+					
+					<input type='hidden' class='primarykey' id="idTask"
+						th:field="*{idTask}"> 
+						
+						<input type='hidden' id="idPlanner"
+						th:field="*{idPlanner}">
+
+					<!-- Campo tipo de planificador -->
+					<div class="form-group row">
+						<label for="typePlannerId" th:text="#{task.form.typePlanner}"
+							class="col-sm-3" />
+						<div class="col-sm-2">
+							<select id="typePlannerId" class="form-control"
+								th:field="*{idPlannerType}">
+								<option th:each="tp: ${typePlanners}"
+									th:value="${tp.idConstant}" th:text="${tp.value}"
+									th:selected="${taskform.idPlannerType == tp.idConstant}" />
+							</select>
+						</div>
+					</div>
+					<!-- Campo tarea activa -->
+					<div class="form-group row">
+						<div class="col-sm-3" th:text="#{task.form.active}"></div>
+						<div class="col-sm-2">
+							<div class="form-check">
+								<label class="form-check-label">
+								<input type="checkbox" id="enabledId" th:field="*{isEnabled}" >
+									&nbsp;
+								</label>
+							</div>
+						</div>
+					</div>
+					<!-- 			<div class="form-group">
+										<label for="hourId" th:text="#{task.form.period}"/>	
+											<input type="text" class="form-control col-3" value="1" min="1" max="24">	
+											<button class="btn btn-info" data-dir="dwn">
+												<span class="c-white-300 ti-minus"/>
+											</button>
+											<button class="btn btn-info" data-dir="up">
+												<span class="c-white-300 ti-plus"/>
+											</button>
+								</div>
+								<div class="form-group">
+										<label for="hourId" th:text="#{task.form.period}" class="sr-only"/>	
+											<input type="text" class="form-control col-3" value="1" min="0" max="59">	
+											<button class="btn btn-info" data-dir="dwn">
+												<span class="c-white-300 ti-minus"/>
+											</button>
+											<button class="btn btn-info" data-dir="up">
+												<span class="c-white-300 ti-plus"/>
+											</button>
+								</div>
+								<div class="form-group">
+										<label for="hourId" th:text="#{task.form.period}" class="sr-only"/>	
+											<input type="text" class="form-control col-3" value="1" min="0" max="59">	
+											<button class="btn btn-info" data-dir="dwn">
+												<span class="c-white-300 ti-minus"/>
+											</button>
+											<button class="btn btn-info" data-dir="up">
+												<span class="c-white-300 ti-plus"/>
+											</button>
+								</div> -->
+
+
+					<!-- Campos Periodo  -->
+					<div class="form-group row">
+						<label for="hourId" class="col-sm-3" th:text="#{task.form.period}"></label>
+						<div class="col-sm-2">
+							<select id="hourId" class="form-control" th:field="*{hourPeriod}"
+								th:disabled="${isDisabledPeriod}" th:readonly ="${isDisabledPeriod}" >
+								<option th:each="i : ${#numbers.sequence(0, 23)}"
+									th:value="${i}" th:text="${i}"></option>
+							</select>
+						</div>
+						<div class="col-sm-2">
+							<select id="minuteId" class="form-control"
+								th:field="*{minutePeriod}"
+								th:disabled="${isDisabledPeriod}" th:readonly ="${isDisabledPeriod}">
+								<option th:each="i : ${#numbers.sequence(0, 59)}"
+									th:value="${i}" th:text="${i}"></option>
+							</select>
+						</div>
+						<div class="col-sm-2">
+							<select id="secondId" class="form-control"
+								th:field="*{secondPeriod}"
+								th:disabled="${isDisabledPeriod}" th:readonly ="${isDisabledPeriod}">
+								<option th:each="i : ${#numbers.sequence(0, 59)}"
+									th:value="${i}" th:text="${i}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+					<label for="initDayId" class="col-sm-3"
+							th:text="#{task.form.initDay}"></label>
+							<div class="col-sm-2">
+					<div class="input-group date" id="datetimepicker1">
+					 <input type='text' class="form-control" id="initDayId" th:field="*{initDayString}">
+                    <span class="input-group-addon">
+                          <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+			
+					</div>
+					</div></div></div>
+					<div class="peer">
+						<button id="updateTaskBtn" type="submit"
+							th:text="#{task.btn.update} " class="btn btn-primary"></button>
+
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<script th:inline="javascript">
+	$(document).ready(function() {
+	
+		//función para configurar el elemento datetimepicker
+		$('#datetimepicker1').datetimepicker({
+		 format: 'DD/MM/YYYY HH:mm:ss',
+		 widgetPositioning:{
+			horizontal: 'auto',
+			vertical: 'top'
+		}
+		});
+
+		//si se cambia el tipo de planificador
+		$("#typePlannerId").change(function(){
+		if($("#typePlannerId").val() == 0 || $("#typePlannerId").val() == 2 ){
+			$('#hourId').attr('readonly', true);
+		   $('#minuteId').attr('readonly', true);
+		   $('#secondId').attr('readonly', true);
+		   $('#hourId').attr('disabled', true);
+		   $('#minuteId').attr('disabled', true);
+		   $('#secondId').attr('disabled', true);
+		}else{
+		$('#hourId').attr('readonly', true);
+			$('#hourId').attr('readonly', false);
+		   $('#minuteId').attr('readonly', false);
+		   $('#secondId').attr('readonly', false);
+		   $('#hourId').attr('disabled', false);
+		   $('#minuteId').attr('disabled', false);
+		   $('#secondId').attr('disabled', false);
+		}
+		});
+		
+		
+		$("#updateTaskBtn").click(function (event){
+			event.preventDefault();
+			var formData = JSON.stringify($("#taskFormId").serializeJSON());
+			var urlUpdateTask = /*[[@{/updatetask}]]*/;
+
+			 loading();
+			 
+			 //se borra si existiera algún mensaje
+			$('#messageUpdateTaskId').html("");
+			$('#messageUpdateTaskId').removeClass('alert alert-success');
+			$('#messageUpdateTaskId').removeClass('alert alert-danger');
+			 $.ajax({
+				 type: "POST",
+				 url: urlUpdateTask,
+				 data: formData,
+				 dataType :"json",
+				 contentType:"application/json",
+				success: function(data, error){
+				debugger;
+					 hide();
+					if(data.msgOk != "" && data.msgOk != null){
+							$('#messageUpdateTaskId').html(data.msgOk);
+							$('#messageUpdateTaskId').addClass('alert alert-success');
+						}
+					if(data.error != "" && data.error != null){
+							$('#messageUpdateTaskId').html(data.error);
+							$('#messageUpdateTaskId').addClass('alert alert-danger');
+					}
+				 },
+				 error: function(data){
+					 if(data.error != "" && data.error != null){
+						$('#messageUpdateTaskId').html(data.error);
+						$('#messageUpdateTaskId').addClass('alert alert-danger');
+					}
+				}
+			 });//fin ajax
+
+		});
+	});
+</script>

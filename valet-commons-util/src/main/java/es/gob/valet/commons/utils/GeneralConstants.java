@@ -35,5 +35,20 @@ public interface GeneralConstants {
 	 * Constant attribute that represents the valET Logger name.
 	 */
 	String LOGGER_NAME_VALET_LOG = "valET";
+	
+	/**
+	 * Constant attribute that represents the number to identify the daily planner type.
+	 */
+	Long PLANNING_TYPE_DAYLY = 0L;
+
+	/**
+	 * Constant attribute that represents the number to identify the periodic planner type.
+	 */
+	Long PLANNING_TYPE_PERIODIC = 1L;
+
+	/**
+	 * Constant attribute that represents the number to identify the planner type by date.
+	 */
+	Long PLANNING_TYPE_DATE = 2L;
 
 }
