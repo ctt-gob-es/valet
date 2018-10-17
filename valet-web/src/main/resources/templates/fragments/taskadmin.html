@@ -16,23 +16,11 @@
 					<input type='hidden' class='primarykey' id="idTask"
 						th:field="*{idTask}"> <input type='hidden' id="idPlanner"
 						th:field="*{idPlanner}">
-
-					<!-- Campo tipo de planificador -->
+	<!-- Campo tarea activa -->
 					<div class="form-group row">
-						<label for="typePlannerId" th:text="#{task.form.typePlanner}"
+<label for="enabledId" th:text="#{task.form.active}"
 							class="col-sm-3" />
-						<div class="col-sm-2">
-							<select id="typePlannerId" class="form-control"
-								th:field="*{idPlannerType}">
-								<option th:each="tp: ${typePlanners}"
-									th:value="${tp.idConstant}" th:text="${tp.value}"
-									th:selected="${taskform.idPlannerType == tp.idConstant}" />
-							</select>
-						</div>
-					</div>
-					<!-- Campo tarea activa -->
-					<div class="form-group row">
-						<div class="col-sm-3" th:text="#{task.form.active}"></div>
+						
 						<div class="col-sm-2">
 							<div class="form-check">
 								<label class="form-check-label"> <input type="checkbox"
@@ -41,20 +29,34 @@
 							</div>
 						</div>
 					</div>
+					<!-- Campo tipo de planificador -->
+					<div class="form-group row">
+						<label for="typePlannerId" th:text="#{task.form.typePlanner}"
+							class="col-sm-3" />
+						<div class="col-sm-3">
+							<select id="typePlannerId" class="form-control"
+								th:field="*{idPlannerType}">
+								<option th:each="tp: ${typePlanners}"
+									th:value="${tp.idConstant}" th:text="${tp.value}"
+									th:selected="${taskform.idPlannerType == tp.idConstant}" />
+							</select>
+						</div>
+					</div>
+				
 					<!-- Campos Periodo  -->
 					<div class="form-group row">
 						<label for="hourId" class="col-sm-3" th:text="#{task.form.period}"></label>
-						<div class="col-sm-2">
+						<div class="col-sm-1">
 							<input type="number" class="form-control" id="hourId"
 								th:field="*{hourPeriod}" min="0" max="23"
 								th:readonly="${isDisabledPeriod}">
 						</div>
-						<div class="col-sm-2">
+						<div class="col-sm-1">
 							<input type="number" class="form-control" id="minuteId"
 								th:field="*{minutePeriod}" min="0" max="59"
 								th:readonly="${isDisabledPeriod}">
 						</div>
-						<div class="col-sm-2">
+						<div class="col-sm-1">
 							<input type="number" class="form-control" id="secondId"
 								th:field="*{secondPeriod}" min="0" max="59"
 								th:readonly="${isDisabledPeriod}">
@@ -63,7 +65,7 @@
 					<div class="form-group row">
 						<label for="initDayId" class="col-sm-3"
 							th:text="#{task.form.initDay}"></label>
-						<div class="col-sm-2">
+						<div class="col-sm-3">
 							<div class="input-group date" id="datetimepicker1">
 								<input type='text' class="form-control" id="initDayId"
 									th:field="*{initDayString}"> <span
