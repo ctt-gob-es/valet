@@ -1,0 +1,117 @@
+<h4 class="c-grey-900 mB-20" th:text="#{proxy.admin.title}"></h4>
+<div class="row gap-20 masonry pos-r">
+	<div class="masonry-item col-md-10">
+		<div class="bgc-white p-20 bd">
+			<div class="mT-30">
+				<form name="altEditor-form" role="form" id="proxyFormId"
+					th:object="${proxyForm}" th:action="@{/saveproxy}" method="post">
+					<div id="messageUpdateProxyId" role="alert"></div>
+					
+					<input type='hidden' class='primarykey' id="idProxy"
+						th:field="*{idProxy}"> 
+					<div class="form-row">		
+						<div class="form-group col-md-4">
+							<label for="idOperationMode" th:text="#{proxy.form.operationMode}"></label>
+							<select id="idOperationMode" class="form-control" th:field="*{idOperationMode}">
+								<option th:each="ts: ${listOperationMode}" th:value="${ts.idCOperationMode}" th:text="${ts.operationMode}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="idHost" th:text="#{proxy.form.host}"></label> 
+							<input type="text" class="form-control" id="idHost" th:field="*{host}">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="idPort" th:text="#{proxy.form.port}"></label> 
+							<input type="number" class="form-control" id="idPort" th:field="*{port}">
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="idUser" th:text="#{proxy.form.user}"></label> 
+							<input type="text" class="form-control" id="idUser" th:field="*{user}">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="idPassword" th:text="#{proxy.form.password}"></label> 
+							<input type="password" class="form-control" id="idPassword" th:field="*{password}">
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="idUserDomain" th:text="#{proxy.form.userDomain}"></label> 
+							<input type="text" class="form-control" id="idUserDomain" th:field="*{userDomain}">
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="idListAddress" th:text="#{proxy.form.listAddress}"></label> 
+							<input type="text" class="form-control" id="idListAddress" th:field="*{addressList}">
+						</div>
+					</div>
+					
+					<div class="form-row">
+					<div class="form-group col-md-8">
+						<label for="idIsLocalAddress" th:text="#{proxy.form.isLocalAddress}"></label>
+						<select id="idIsLocalAddress" class="form-control"
+							th:field="*{isLocalAddress}" >
+							<option value="true">True</option>
+							<option value="false">False</option>
+							
+						</select>
+					</div> 
+</div>
+					
+					<button id="saveProxyBtn" type="submit" class="btn btn-primary" 
+						th:text="#{proxy.btn.save}">
+					</button>
+					
+					
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script th:inline="javascript">
+		$(document).ready(function() {
+		$("#saveProxyBtn").click(function (event){
+			event.preventDefault();
+			var formData = JSON.stringify($("#proxyFormId").serializeJSON());
+			var urlSaveProxy = /*[[@{/saveproxy}]]*/;
+
+			 loading();		 
+			 //se borra si existiera algún mensaje
+			$('#messageUpdateProxyId').html("");
+			$('#messageUpdateProxyId').removeClass('alert alert-success');
+			$('#messageUpdateProxyId').removeClass('alert alert-danger');
+			 $.ajax({
+				 type: "POST",
+				 url: urlSaveProxy,
+				 data: formData,
+				 dataType :"json",
+				 contentType:"application/json",
+ 
+				success: function(data){
+					hide();
+					if(data.msgOk!= "" && data.msgOk!= null){
+						$('#messageUpdateProxyId').html(data.msgOk);
+						$('#messageUpdateProxyId').addClass('alert alert-success');
+					}
+					if(data.error!= "" && data.error!= null){
+							$('#messageUpdateProxyId').html(data.error);
+							$('#messageUpdateProxyId').addClass('alert alert-danger');
+					}	
+				},
+				 error: function(data){
+					hide();
+					if(data.error!= "" && data.error!= null){
+							$('#messageUpdateProxyId').html(data.error);
+							$('#messageUpdateProxyId').addClass('alert alert-danger');
+					}			
+				}
+				
+			 });//fin ajax
+
+		});
+		});
+	</script>

@@ -84,10 +84,10 @@ public class CTslImpl implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #specification}.
-	 * @param specification The value for the attribute {@link #specification}.
+	 * @param specificationParam The value for the attribute {@link #specification}.
 	 */
-	public void setSpecification(String specification) {
-		this.specification = specification;
+	public void setSpecification(String specificationParam) {
+		this.specification = specificationParam;
 	}
 
 	/**
@@ -101,10 +101,10 @@ public class CTslImpl implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #version}.
-	 * @param version The value for the attribute {@link #version}.
+	 * @param versionParam The value for the attribute {@link #version}.
 	 */
-	public void setVersion(String version) {
-		this.version = version;
+	public void setVersion(String versionParam) {
+		this.version = versionParam;
 	}
 
 	/**
@@ -118,10 +118,10 @@ public class CTslImpl implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #namespace}.
-	 * @param namespace The value for the attribute {@link #namespace}.
+	 * @param namespaceParam The value for the attribute {@link #namespace}.
 	 */
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
+	public void setNamespace(String namespaceParam) {
+		this.namespace = namespaceParam;
 	}
 
 	/**
@@ -139,10 +139,10 @@ public class CTslImpl implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #idCTSLImpl}.
-	 * @param idCTSLImpl The value for the attribute {@link #idCTSLImpl}.
+	 * @param idCTSLImplParam The value for the attribute {@link #idCTSLImpl}.
 	 */
-	public void setIdCTSLImpl(Long idCTSLImpl) {
-		this.idCTSLImpl = idCTSLImpl;
+	public void setIdCTSLImpl(Long idCTSLImplParam) {
+		this.idCTSLImpl = idCTSLImplParam;
 	}
 
 }

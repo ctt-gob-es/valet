@@ -142,7 +142,7 @@ public interface ILogMessages {
 	 * Constant attribute that represents the name of the property <code>errorSpecialCharAlias</code> belonging to the
 	 * file webvalet.properties.
 	 */
-	public static final String ERROR_SPECIAL_CHAR_ALIAS = "errorSpecialCharAlias";
+	String ERROR_SPECIAL_CHAR_ALIAS = "errorSpecialCharAlias";
 	
 	
 	/**
@@ -259,6 +259,30 @@ public interface ILogMessages {
 	 * file webvalet.properties.
 	 */
 	String ERROR_VALIDATE_DATE_EMPTY ="errorValidateDateEmpty";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>infoProxyInit</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String INFO_PROXY_INIT = "infoProxyInit";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>infoModifyProxyOk</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String INFO_MODIFY_PROXY_OK = "infoModifyProxyOk";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorModifyProxy</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_MODIFY_PROXY = "errorModifyProxy";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorModifyProxyWeb</code> belonging to the
+	 * file webvalet.properties.
+	 */
+	String ERROR_MODIFY_PROXY_WEB = "errorModifyProxyWeb";
 	
 
 	/**
@@ -296,5 +320,6 @@ public interface ILogMessages {
 	 * file restvalet.properties.
 	 */
 	String REST_LOG006 = "REST006";
+
 
 }

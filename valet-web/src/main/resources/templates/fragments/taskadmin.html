@@ -11,14 +11,10 @@
 			<div class="mT-30">
 				<form name="altEditor-form" role="form" id="taskFormId"
 					th:object="${taskform}" th:action="@{/updatetask}" method="post">
-<div id="messageUpdateTaskId" role="alert">
+					<div id="messageUpdateTaskId" role="alert"></div>
 
-</div>
-					
 					<input type='hidden' class='primarykey' id="idTask"
-						th:field="*{idTask}"> 
-						
-						<input type='hidden' id="idPlanner"
+						th:field="*{idTask}"> <input type='hidden' id="idPlanner"
 						th:field="*{idPlanner}">
 
 					<!-- Campo tipo de planificador -->
@@ -39,100 +35,62 @@
 						<div class="col-sm-3" th:text="#{task.form.active}"></div>
 						<div class="col-sm-2">
 							<div class="form-check">
-								<label class="form-check-label">
-								<input type="checkbox" id="enabledId" th:field="*{isEnabled}" >
-									&nbsp;
+								<label class="form-check-label"> <input type="checkbox"
+									id="enabledId" th:field="*{isEnabled}"> &nbsp;
 								</label>
 							</div>
 						</div>
 					</div>
-					<!-- 			<div class="form-group">
-										<label for="hourId" th:text="#{task.form.period}"/>	
-											<input type="text" class="form-control col-3" value="1" min="1" max="24">	
-											<button class="btn btn-info" data-dir="dwn">
-												<span class="c-white-300 ti-minus"/>
-											</button>
-											<button class="btn btn-info" data-dir="up">
-												<span class="c-white-300 ti-plus"/>
-											</button>
-								</div>
-								<div class="form-group">
-										<label for="hourId" th:text="#{task.form.period}" class="sr-only"/>	
-											<input type="text" class="form-control col-3" value="1" min="0" max="59">	
-											<button class="btn btn-info" data-dir="dwn">
-												<span class="c-white-300 ti-minus"/>
-											</button>
-											<button class="btn btn-info" data-dir="up">
-												<span class="c-white-300 ti-plus"/>
-											</button>
-								</div>
-								<div class="form-group">
-										<label for="hourId" th:text="#{task.form.period}" class="sr-only"/>	
-											<input type="text" class="form-control col-3" value="1" min="0" max="59">	
-											<button class="btn btn-info" data-dir="dwn">
-												<span class="c-white-300 ti-minus"/>
-											</button>
-											<button class="btn btn-info" data-dir="up">
-												<span class="c-white-300 ti-plus"/>
-											</button>
-								</div> -->
-
-
 					<!-- Campos Periodo  -->
 					<div class="form-group row">
 						<label for="hourId" class="col-sm-3" th:text="#{task.form.period}"></label>
 						<div class="col-sm-2">
-							<select id="hourId" class="form-control" th:field="*{hourPeriod}"
-								th:disabled="${isDisabledPeriod}" th:readonly ="${isDisabledPeriod}" >
-								<option th:each="i : ${#numbers.sequence(0, 23)}"
-									th:value="${i}" th:text="${i}"></option>
-							</select>
+							<input type="number" class="form-control" id="hourId"
+								th:field="*{hourPeriod}" min="0" max="23"
+								th:readonly="${isDisabledPeriod}">
 						</div>
 						<div class="col-sm-2">
-							<select id="minuteId" class="form-control"
-								th:field="*{minutePeriod}"
-								th:disabled="${isDisabledPeriod}" th:readonly ="${isDisabledPeriod}">
-								<option th:each="i : ${#numbers.sequence(0, 59)}"
-									th:value="${i}" th:text="${i}"></option>
-							</select>
+							<input type="number" class="form-control" id="minuteId"
+								th:field="*{minutePeriod}" min="0" max="59"
+								th:readonly="${isDisabledPeriod}">
 						</div>
 						<div class="col-sm-2">
-							<select id="secondId" class="form-control"
-								th:field="*{secondPeriod}"
-								th:disabled="${isDisabledPeriod}" th:readonly ="${isDisabledPeriod}">
-								<option th:each="i : ${#numbers.sequence(0, 59)}"
-									th:value="${i}" th:text="${i}"></option>
-							</select>
+							<input type="number" class="form-control" id="secondId"
+								th:field="*{secondPeriod}" min="0" max="59"
+								th:readonly="${isDisabledPeriod}">
 						</div>
 					</div>
 					<div class="form-group row">
-					<label for="initDayId" class="col-sm-3"
+						<label for="initDayId" class="col-sm-3"
 							th:text="#{task.form.initDay}"></label>
-							<div class="col-sm-2">
-					<div class="input-group date" id="datetimepicker1">
-					 <input type='text' class="form-control" id="initDayId" th:field="*{initDayString}">
-                    <span class="input-group-addon">
-                          <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-			
-					</div>
-					</div></div></div>
-					<div class="peer">
-						<button id="updateTaskBtn" type="submit"
-							th:text="#{task.btn.update} " class="btn btn-primary"></button>
+						<div class="col-sm-2">
+							<div class="input-group date" id="datetimepicker1">
+								<input type='text' class="form-control" id="initDayId"
+									th:field="*{initDayString}"> <span
+									class="input-group-addon"> <span
+									class="glyphicon glyphicon-calendar"></span>
+								</span>
 
+							</div>
+						</div>
 					</div>
-
-				</form>
+			</div>
+			<div class="peer">
+				<button id="updateTaskBtn" type="submit"
+					th:text="#{task.btn.update} " class="btn btn-primary"></button>
 
 			</div>
+
+			</form>
+
 		</div>
 	</div>
+</div>
 
 
 
 
-	<script th:inline="javascript">
+<script th:inline="javascript">
 	$(document).ready(function() {
 	
 		//función para configurar el elemento datetimepicker
@@ -183,7 +141,6 @@
 				 dataType :"json",
 				 contentType:"application/json",
 				success: function(data, error){
-				debugger;
 					 hide();
 					if(data.msgOk != "" && data.msgOk != null){
 							$('#messageUpdateTaskId').html(data.msgOk);

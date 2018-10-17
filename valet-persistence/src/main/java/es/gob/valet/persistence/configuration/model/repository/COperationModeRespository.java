@@ -15,50 +15,37 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.SystemCertificateRepository.java.</p>
- * <b>Description:</b><p>Interface that provides CRUD functionality for the SystemCertificate entity.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.COperationModeRespository.java.</p>
+ * <b>Description:</b><p>Interface that provides CRUD functionality for the COperationMode entity.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Date:</b><p>16 oct. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 16 oct. 2018.
  */
 package es.gob.valet.persistence.configuration.model.repository;
-
-import java.util.List;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import es.gob.valet.persistence.configuration.model.entity.Keystore;
-import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
+import es.gob.valet.persistence.configuration.model.entity.COperationMode;
 
 
 /** 
- * <p>Interface that provides CRUD functionality for the SystemCertificate entity.</p>
+ * <p>Interface that provides CRUD functionality for the COperationMode entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 16 oct. 2018.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public interface SystemCertificateRepository extends JpaRepository<SystemCertificate, Long> {
-	
-	/**
-	 *	Method that gets all the certificates for a specified keystore.
-	 * 
-	 * @param keystore Object that represents Keystore.
-	 * @return List of certificates by keystore.
-	 */
-	List<SystemCertificate> findAllByKeystore(Keystore keystore);
-	
-	/**
-	  * Method that obtains from the persistence a SystemCertificate identified by its primary key. 
-	 * @param idSystemCertificate Long that represents the primary key of the SystemCertificate in the persistence.
-	 * @return Object that represents a SystemCertificate from the persistence. 
-	 */
-	SystemCertificate findByIdSystemCertificate(Long idSystemCertificate);
-	
-	 
+public interface COperationModeRespository extends JpaRepository<COperationMode, Long> {
 
+	/**
+	 *  Method that obtains from the persistence a COperationMode identified by its primary key. 
+	 * 
+	 * @param idOperationMode Long that represents the primary key of the COperationMode in the persistence.
+	 * @return Object that represents a COperationMode from the persistence. 
+	 */
+	COperationMode findByIdCOperationMode(Long idOperationMode);
 }

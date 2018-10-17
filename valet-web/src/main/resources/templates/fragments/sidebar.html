@@ -118,8 +118,8 @@
 								<span class="icon-holder"><i class="c-black-500 ti-world"></i></span>
 								<span class="title" th:text="#{menu.admin.confServerWorld}"></span>
 								<script th:inline="javascript">
-		                 			var actionConfWorld = /*[[@{/confmailadmin}]]*/;
-		                 			$('#aConfWorldAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionConfWorld, 'optionReplacement', 'GET', null, true); return false;});
+		                 			var actionConfWorld = /*[[@{/loadproxy}]]*/;
+		                 			$('#aConfProxyAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionConfWorld, 'optionReplacement', 'GET', null, true); return false;});
 		               			</script>
 						</a></li>
 					</ul></li>

@@ -300,6 +300,41 @@ COMMENT ON TABLE "C_PLANNER_TYPE" IS 'Tabla que almacena constantes para los tip
 COMMENT ON COLUMN "C_PLANNER_TYPE"."ID_PLANNER_TYPE" IS 'Identificador de la tabla.';
 COMMENT ON COLUMN "C_PLANNER_TYPE"."TOKEN_NAME" IS 'Valor que representa el token con la descripción almacenada en cada archivo de propiedades por idioma.';
 
+-- Table PROXY
+CREATE TABLE "PROXY"(
+"ID_PROXY" Number(19,0) NOT NULL, 
+"ID_OPERATION_MODE" Number(19,0) NOT NULL,
+"HOST_PROXY" Varchar2(15),
+"PORT_PROXY" Number(10,0),
+"USER_PROXY" Varchar2(200),
+"PASSWORD_PROXY" Varchar2(200), 
+"USER_DOMAIN" Varchar2(200), 
+"ADDRESS_LIST" Varchar2(200),
+"IS_LOCAL_ADDRESS" Char(1) NOT NULL
+)
+TABLESPACE VALET_CONFIGURACION_TABLESPACE INITRANS 1 MAXTRANS 255 NOCACHE;
+ALTER TABLE "PROXY" ADD CONSTRAINT "ID_PROXY" PRIMARY KEY("ID_PROXY");
+COMMENT ON TABLE "PROXY" IS 'Tabla que almacena toda la información relativa a la configuración del proxy.';
+COMMENT ON COLUMN "PROXY"."ID_PROXY" IS 'Identificador de la tabla.';
+COMMENT ON COLUMN "PROXY"."ID_OPERATION_MODE" IS 'Valor que representa el modo de operación en la configuración del proxy.';
+COMMENT ON COLUMN "PROXY"."HOST_PROXY" IS 'Valor que representa el host del proxy.';
+COMMENT ON COLUMN "PROXY"."PORT_PROXY" IS 'Valor que representa el puerto de escucha del proxy.';
+COMMENT ON COLUMN "PROXY"."USER_PROXY" IS 'Valor que representa el usuario de autenticación';
+COMMENT ON COLUMN "PROXY"."PASSWORD_PROXY" IS 'Valor que representa la contraseña de autenticación.';
+COMMENT ON COLUMN "PROXY"."USER_DOMAIN" IS 'Valor que representa el dominio del usuaio en caso de que el proxy necesite autenticación NTLM.';
+COMMENT ON COLUMN "PROXY"."ADDRESS_LIST" IS 'Valor que representa lista de direcciones para las que no se usará el proxy .';
+COMMENT ON COLUMN "PROXY"."IS_LOCAL_ADDRESS" IS 'Valor que representa si se trata de una ruta local o no.';
+
+-- Table C_OPERATION_MODE
+CREATE TABLE "C_OPERATION_MODE"(
+  "ID_OPERATION_MODE" Number(19,0) NOT NULL,
+  "OPERATION_MODE" Varchar2(30) NOT NULL
+)
+TABLESPACE VALET_CONFIGURACION_TABLESPACE INITRANS 1 MAXTRANS 255 NOCACHE;
+ALTER TABLE "C_OPERATION_MODE" ADD CONSTRAINT "ID_OPERATION_MODE" PRIMARY KEY ("ID_OPERATION_MODE");
+COMMENT ON TABLE "C_OPERATION_MODE" IS 'Tabla que almacena los distintos modos de operación.';
+COMMENT ON COLUMN "C_OPERATION_MODE"."ID_OPERATION_MODE" IS 'Identificador de la tabla.';
+COMMENT ON COLUMN "C_OPERATION_MODE"."OPERATION_MODE" IS 'Valor que representa el nombre del modo de operación.';
 
 
 ALTER TABLE "TSL_VALET" ADD CONSTRAINT "R_TD_ICR" FOREIGN KEY ("ID_COUNTRY_REGION") REFERENCES "TSL_COUNTRY_REGION" ("ID_COUNTRY_REGION") ON DELETE CASCADE;
@@ -310,3 +345,4 @@ ALTER TABLE "SYSTEM_CERTIFICATE" ADD CONSTRAINT "R_SC_SCE" FOREIGN KEY ("STATUS_
 ALTER TABLE "X_TASK_PLANNER" ADD CONSTRAINT "R_T_TP" FOREIGN KEY ("ID_TASK") REFERENCES "TASK" ("ID_TASK");
 ALTER TABLE "X_TASK_PLANNER" ADD CONSTRAINT "R_P_TP" FOREIGN KEY ("ID_PLANNER") REFERENCES "PLANNER" ("ID_PLANNER");
 ALTER TABLE "PLANNER" ADD CONSTRAINT "R_PT_P" FOREIGN KEY ("ID_PLANNER_TYPE") REFERENCES "C_PLANNER_TYPE" ("ID_PLANNER_TYPE");
+ALTER TABLE "PROXY" ADD CONSTRAINT "R_P_OP" FOREIGN KEY ("ID_OPERATION_MODE") REFERENCES "C_OPERATION_MODE" ("ID_OPERATION_MODE");

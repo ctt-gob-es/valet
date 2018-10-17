@@ -83,7 +83,7 @@ public class TaskController {
 
 
 	/**
-	 * Method that load the task.
+	 * Method that loads the task.
 	 * 
 	 * @param idTask Parameter that represents ID of task.
 	 * @param model Holder object form model attributes.
