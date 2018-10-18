@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.COperationMode.java.</p>
  * <b>Description:</b><p>Class that maps the <i>C_OPERATION_MODE</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>15 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>15/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 15 oct. 2018.
+ * @version 1.0, 15/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -33,31 +33,30 @@ import javax.persistence.Table;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-/** 
+/**
  * <p>Class that maps the <i>C_OPERATION_MODE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 15 oct. 2018.
+ * @version 1.0, 15/10/2018.
  */
 @Entity
 @Table(name = "C_OPERATION_MODE")
 public class COperationMode implements Serializable {
 
 	/**
-	 *  Attribute that represents the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = 2038893470104631485L;
-	
+	private static final long serialVersionUID = -1674174023525807569L;
+
 	/**
 	 * Attribute that represents the object ID.
 	 */
 	private Long idCOperationMode;
-	
+
 	/**
 	 * Attribute that represents the mode of operation.
 	 */
 	private String operationMode;
 
-	
 	/**
 	 * Gets the value of the attribute {@link #idCOperationMode}.
 	 * @return the value of the attribute {@link #idCOperationMode}.
@@ -68,7 +67,6 @@ public class COperationMode implements Serializable {
 		return idCOperationMode;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #idCOperationMode}.
 	 * @param idCOperationModeParam The value for the attribute {@link #idCOperationMode}.
@@ -77,7 +75,6 @@ public class COperationMode implements Serializable {
 		this.idCOperationMode = idCOperationModeParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #operationMode}.
 	 * @return the value of the attribute {@link #operationMode}.
@@ -87,7 +84,6 @@ public class COperationMode implements Serializable {
 		return operationMode;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #operationMode}.
 	 * @param operationModeParam The value for the attribute {@link #operationMode}.

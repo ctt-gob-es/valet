@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.SystemCertificate.java.</p>
  * <b>Description:</b><p>Class that maps the <i>SYSTEM_CERTIFICATE</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 18/09/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -44,20 +44,19 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-
-/** 
+/**
  *<p>Class that maps the <i>SYSTEM_CERTIFICATE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 18/09/2018.
  */
 @Entity
 @Table(name = "SYSTEM_CERTIFICATE")
 public class SystemCertificate implements Serializable {
 
 	/**
-	 * Attribute that represents the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = -553652886056195247L;
+	private static final long serialVersionUID = -5360652040333180484L;
 
 	/**
 	 * Attribute that represents the object ID.
@@ -97,7 +96,7 @@ public class SystemCertificate implements Serializable {
 	 * encoded on Base 64. This attribute is used only when the key pairs is stored inside of a HSM.
 	 */
 	private String hash;
-	
+
 	/**
 	 * Gets the value of the attribute {@link #idSystemCertificate}.
 	 * @return the value of the attribute {@link #idSystemCertificate}.
@@ -110,7 +109,7 @@ public class SystemCertificate implements Serializable {
 	public Long getIdSystemCertificate() {
 		return idSystemCertificate;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #idSystemCertificate}.
 	 * @param idSystemCertificateParam The value for the attribute {@link #idSystemCertificate}.
@@ -118,7 +117,7 @@ public class SystemCertificate implements Serializable {
 	public void setIdSystemCertificate(Long idSystemCertificateParam) {
 		this.idSystemCertificate = idSystemCertificateParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #alias}.
 	 * @return the value of the attribute {@link #alias}.
@@ -128,7 +127,7 @@ public class SystemCertificate implements Serializable {
 	public String getAlias() {
 		return alias;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #alias}.
 	 * @param aliasParam The value for the attribute {@link #alias}.
@@ -136,7 +135,7 @@ public class SystemCertificate implements Serializable {
 	public void setAlias(String aliasParam) {
 		this.alias = aliasParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #keystore}.
 	 * @return the value of the attribute {@link #keystore}.
@@ -147,7 +146,7 @@ public class SystemCertificate implements Serializable {
 	public Keystore getKeystore() {
 		return keystore;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #keystore}.
 	 * @param keystoreParam The value for the attribute {@link #keystore}.
@@ -155,7 +154,7 @@ public class SystemCertificate implements Serializable {
 	public void setKeystore(Keystore keystoreParam) {
 		this.keystore = keystoreParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #isKey}.
 	 * @return the value of the attribute {@link #isKey}.
@@ -165,7 +164,7 @@ public class SystemCertificate implements Serializable {
 	public Boolean getIsKey() {
 		return isKey;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #isKey}.
 	 * @param isKeyParam The value for the attribute {@link #isKey}.
@@ -173,7 +172,7 @@ public class SystemCertificate implements Serializable {
 	public void setIsKey(Boolean isKeyParam) {
 		this.isKey = isKeyParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #issuer}.
 	 * @return the value of the attribute {@link #issuer}.
@@ -183,7 +182,7 @@ public class SystemCertificate implements Serializable {
 	public String getIssuer() {
 		return issuer;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #issuer}.
 	 * @param issuerParam The value for the attribute {@link #issuer}.
@@ -191,7 +190,7 @@ public class SystemCertificate implements Serializable {
 	public void setIssuer(String issuerParam) {
 		this.issuer = issuerParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #subject}.
 	 * @return the value of the attribute {@link #subject}.
@@ -201,7 +200,7 @@ public class SystemCertificate implements Serializable {
 	public String getSubject() {
 		return subject;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #subject}.
 	 * @param subjectParam The value for the attribute {@link #subject}.
@@ -209,7 +208,7 @@ public class SystemCertificate implements Serializable {
 	public void setSubject(String subjectParam) {
 		this.subject = subjectParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #statusCert}.
 	 * @return the value of the attribute {@link #statusCert}.
@@ -220,7 +219,7 @@ public class SystemCertificate implements Serializable {
 	public CStatusCertificate getStatusCert() {
 		return statusCert;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #statusCert}.
 	 * @param statusCertParam The value for the attribute {@link #statusCert}.
@@ -228,7 +227,7 @@ public class SystemCertificate implements Serializable {
 	public void setStatusCert(CStatusCertificate statusCertParam) {
 		this.statusCert = statusCertParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #hash}.
 	 * @return the value of the attribute {@link #hash}.
@@ -237,7 +236,7 @@ public class SystemCertificate implements Serializable {
 	public String getHash() {
 		return hash;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #hash}.
 	 * @param hashParam The value for the attribute {@link #hash}.
@@ -245,4 +244,5 @@ public class SystemCertificate implements Serializable {
 	public void setHash(String hashParam) {
 		this.hash = hashParam;
 	}
+
 }

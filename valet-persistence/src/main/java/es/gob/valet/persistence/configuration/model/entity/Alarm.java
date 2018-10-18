@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,16 +14,17 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.Mail.java.</p>
  * <b>Description:</b><p>Class that maps the <i>MAIL</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 Oct. 2018.
+ * @version 1.0, 02/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -42,25 +43,28 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-/** 
+/**
  * <p>Class that maps the <i>KEYSTORE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 02/10/2018.
  */
 @Entity
 @Table(name = "ALARM")
-public class Alarm {
+public class Alarm implements Serializable {
 
 	/**
-	 * Class serial version.
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = 9090589742672624291L;
+	private static final long serialVersionUID = -6922902321185485093L;
 
 	/**
 	 * Attribute that represents the object ID.
 	 */
 	private String idAlarm;
 
+	/**
+	 * Attribute that represents the description for the alarm.
+	 */
 	private String description;
 
 	/**
@@ -91,10 +95,10 @@ public class Alarm {
 
 	/**
 	 * Sets the value of the attribute {@link #idAlarm}.
-	 * @param idAlarm The value for the attribute {@link #idAlarm}.
+	 * @param idAlarmParam The value for the attribute {@link #idAlarm}.
 	 */
-	public void setIdAlarm(String idAlarm) {
-		this.idAlarm = idAlarm;
+	public void setIdAlarm(String idAlarmParam) {
+		this.idAlarm = idAlarmParam;
 	}
 
 	/**
@@ -109,15 +113,15 @@ public class Alarm {
 
 	/**
 	 * Sets the value of the attribute {@link #description}.
-	 * @param description The value for the attribute {@link #description}.
+	 * @param descriptionParam The value for the attribute {@link #description}.
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDescription(String descriptionParam) {
+		this.description = descriptionParam;
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #timeBlocked}.
-	 * @return the value of the attribute {@link #timeBlocked}.
+	 * Gets the value of the attribute {@link #timeBlock}.
+	 * @return the value of the attribute {@link #timeBlock}.
 	 */
 	@Column(name = "TIME_BLOCK", nullable = true, precision = NumberConstants.NUM19)
 	@JsonView(DataTablesOutput.View.class)
@@ -127,10 +131,10 @@ public class Alarm {
 
 	/**
 	 * Sets the value of the attribute {@link #timeBlocked}.
-	 * @param timeBlocked The value for the attribute {@link #timeBlocked}.
+	 * @param timeBlockParam The value for the attribute {@link #timeBlock}.
 	 */
-	public void setTimeBlock(Long timeBlock) {
-		this.timeBlock = timeBlock;
+	public void setTimeBlock(Long timeBlockParam) {
+		this.timeBlock = timeBlockParam;
 	}
 
 	/**
@@ -146,10 +150,10 @@ public class Alarm {
 
 	/**
 	 * Sets the value of the attribute {@link #active}.
-	 * @param active The value for the attribute {@link #active}.
+	 * @param activeParam The value for the attribute {@link #active}.
 	 */
-	public void setActive(Boolean active) {
-		this.active = active;
+	public void setActive(Boolean activeParam) {
+		this.active = activeParam;
 	}
 
 	/**
@@ -165,10 +169,10 @@ public class Alarm {
 
 	/**
 	 * Sets the value of the attribute {@link #mails}.
-	 * @param mails The value for the attribute {@link #mails}.
+	 * @param mailsParam The value for the attribute {@link #mails}.
 	 */
-	public void setMails(Set<Mail> mails) {
-		this.mails = mails;
+	public void setMails(Set<Mail> mailsParam) {
+		this.mails = mailsParam;
 	}
 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.Keystore.java.</p>
  * <b>Description:</b><p>Class that maps the <i>KEYSTORE</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 18/09/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -40,20 +40,20 @@ import org.hibernate.annotations.Type;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-
-/** 
+/**
  * <p>Class that maps the <i>KEYSTORE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 18/09/2018.
  */
 @Entity
 @Table(name = "KEYSTORE")
 public class Keystore implements Serializable {
 
 	/**
-	 * Attribute that represents the serial version UID.
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = -14362306096260015L;
+	private static final long serialVersionUID = -5704821671476223968L;
+
 	/**
 	 * Attribute that represents the object ID.
 	 */
@@ -73,7 +73,6 @@ public class Keystore implements Serializable {
 	 * Attribute that represents the list of system certificates stored in the keystore.
 	 */
 	private List<SystemCertificate> listSystemCertificates;
-
 
 	/**
 	 * Attribute that represents the keystore.
@@ -105,7 +104,6 @@ public class Keystore implements Serializable {
 	 */
 	private Boolean hasBackup;
 
-	
 	/**
 	 * Gets the value of the attribute {@link #idKeystore}.
 	 * @return the value of the attribute {@link #idKeystore}.
@@ -116,7 +114,6 @@ public class Keystore implements Serializable {
 		return idKeystore;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #idKeystore}.
 	 * @param idKeystoreParam The value for the attribute {@link #idKeystore}.
@@ -125,7 +122,6 @@ public class Keystore implements Serializable {
 		this.idKeystore = idKeystoreParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #name}.
 	 * @return the value of the attribute {@link #name}.
@@ -135,7 +131,6 @@ public class Keystore implements Serializable {
 		return name;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #name}.
 	 * @param nameParam The value for the attribute {@link #name}.
@@ -144,7 +139,6 @@ public class Keystore implements Serializable {
 		this.name = nameParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #tokenName}.
 	 * @return the value of the attribute {@link #tokenName}.
@@ -154,7 +148,6 @@ public class Keystore implements Serializable {
 		return tokenName;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #tokenName}.
 	 * @param tokenNameParam The value for the attribute {@link #tokenName}.
@@ -163,7 +156,6 @@ public class Keystore implements Serializable {
 		this.tokenName = tokenNameParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #listSystemCertificates}.
 	 * @return the value of the attribute {@link #listSystemCertificates}.
@@ -173,7 +165,6 @@ public class Keystore implements Serializable {
 		return listSystemCertificates;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #listSystemCertificates}.
 	 * @param listSystemCertificatesParam The value for the attribute {@link #listSystemCertificates}.
@@ -182,7 +173,6 @@ public class Keystore implements Serializable {
 		this.listSystemCertificates = listSystemCertificatesParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #keystore}.
 	 * @return the value of the attribute {@link #keystore}.
@@ -193,7 +183,6 @@ public class Keystore implements Serializable {
 		return keystore;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #keystore}.
 	 * @param keystoreParam The value for the attribute {@link #keystore}.
@@ -204,7 +193,6 @@ public class Keystore implements Serializable {
 		}
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #password}.
 	 * @return the value of the attribute {@link #password}.
@@ -214,7 +202,6 @@ public class Keystore implements Serializable {
 		return password;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #password}.
 	 * @param passwordParam The value for the attribute {@link #password}.
@@ -223,7 +210,6 @@ public class Keystore implements Serializable {
 		this.password = passwordParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #isHardware}.
 	 * @return the value of the attribute {@link #isHardware}.
@@ -234,7 +220,6 @@ public class Keystore implements Serializable {
 		return isHardware;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #isHardware}.
 	 * @param isHardwareParam The value for the attribute {@link #isHardware}.
@@ -243,7 +228,6 @@ public class Keystore implements Serializable {
 		this.isHardware = isHardwareParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #keystoreType}.
 	 * @return the value of the attribute {@link #keystoreType}.
@@ -252,7 +236,6 @@ public class Keystore implements Serializable {
 		return keystoreType;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #keystoreType}.
 	 * @param keystoreTypeParam The value for the attribute {@link #keystoreType}.
@@ -262,7 +245,6 @@ public class Keystore implements Serializable {
 		this.keystoreType = keystoreTypeParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #version}.
 	 * @return the value of the attribute {@link #version}.
@@ -272,7 +254,6 @@ public class Keystore implements Serializable {
 		return version;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #version}.
 	 * @param versionParam The value for the attribute {@link #version}.
@@ -281,7 +262,6 @@ public class Keystore implements Serializable {
 		this.version = versionParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #hasBackup}.
 	 * @return the value of the attribute {@link #hasBackup}.
@@ -292,7 +272,6 @@ public class Keystore implements Serializable {
 		return hasBackup;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #hasBackup}.
 	 * @param hasBackupParam The value for the attribute {@link #hasBackup}.

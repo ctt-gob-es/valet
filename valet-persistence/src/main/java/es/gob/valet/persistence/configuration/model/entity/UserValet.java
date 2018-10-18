@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.UserValet.java.</p>
  * <b>Description:</b><p> Class that maps the <i>USER_VALET</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>13 jun. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>13/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 13 jun. 2018.
+ * @version 1.0, 13/06/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -42,28 +42,24 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-
-
-
-/** 
+/**
  * <p>Class that maps the <i>USER_VALET</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 13 jun. 2018.
+ * @version 1.0, 13/06/2018.
  */
 @Entity
-@Table (name ="USER_VALET")
+@Table(name = "USER_VALET")
 public class UserValet implements Serializable {
 
 	/**
-	 * Attribute that represents class serial version. 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = -1373504780650604717L;
-	
+	private static final long serialVersionUID = -4344979641003186960L;
+
 	/**
 	 * Constant attribute that represents the string <i>"yes_no"</i>.
 	 */
 	private static final String CONS_YES_NO = "yes_no";
-
 
 	/**
 	 * Attribute that represents the object ID.
@@ -99,7 +95,7 @@ public class UserValet implements Serializable {
 	 * Attribute that represents the surnames of the user.
 	 */
 	private String surnames;
-	
+
 	/**
 	 * Attribute that represents the accumulated number of failed attempts accessing the platform since the last time which the
 	 * user acceded correctly.
@@ -125,15 +121,7 @@ public class UserValet implements Serializable {
 	@Id
 	@Column(name = "ID_USER_VALET", unique = true, nullable = false, precision = NumberConstants.NUM19)
 	@GeneratedValue(generator = "sq_user_valet")
-	@GenericGenerator(
-	                  name = "sq_user_valet",
-	                  strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-	                  parameters = {
-	                          @Parameter(name = "sequence_name", value = "SQ_USER_VALET"),
-	                          @Parameter(name = "initial_value", value = "1"),
-	                          @Parameter(name = "increment_size", value = "1")
-	                  }
-	          )
+	@GenericGenerator(name = "sq_user_valet", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = { @Parameter(name = "sequence_name", value = "SQ_USER_VALET"), @Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
 	@JsonView(DataTablesOutput.View.class)
 	public Long getIdUserValet() {
 		// CHECKSTYLE:ON
@@ -173,7 +161,7 @@ public class UserValet implements Serializable {
 	public void setIsBlocked(Boolean isBlockedParam) {
 		// CHECKSTYLE:ON
 		this.isBlocked = isBlockedParam;
-	}	
+	}
 
 	/**
 	 * Gets the value of the attribute {@link #login}.
@@ -213,8 +201,8 @@ public class UserValet implements Serializable {
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #mail}.
-	 * @param mailParam The value for the attribute {@link #mail}.
+	 * Sets the value of the attribute {@link #email}.
+	 * @param mailParam The value for the attribute {@link #email}.
 	 */
 	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
 	// because Hibernate JPA needs not final access methods.

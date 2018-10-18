@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.TslValet.java.</p>
  * <b>Description:</b><p>Class that maps the <i>TSL_VALET</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>25 jun. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25 jun. 2018.
+ * @version 1.0, 25/06/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -47,19 +47,20 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-/** 
+/**
  * <p>Class that maps the <i>TSL_VALET</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25 jun. 2018.
+ * @version 1.0, 25/06/2018.
  */
 @Entity
 @Table(name = "TSL_VALET")
 public class TslValet implements Serializable {
 
 	/**
-	 * Attribute that represents the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = 3936139266630802541L;
+	private static final long serialVersionUID = -999355505652868226L;
+
 	/**
 	 * Attribute that represents the country/region for this TSL.
 	 */
@@ -119,7 +120,7 @@ public class TslValet implements Serializable {
 	 * Attribute that represents the last new TSL avaliable are find.
 	 */
 	private Date lastNewTSAvaliableFind;
-	
+
 	/**
 	 * Attribute that represents the alias for new TSL.
 	 */
@@ -335,8 +336,8 @@ public class TslValet implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #nextUpdateDate}.
-	 * @return the value of the attribute {@link #nextUpdateDate}.
+	 * Gets the value of the attribute {@link #lastNewTSAvaliableFind}.
+	 * @return the value of the attribute {@link #lastNewTSAvaliableFind}.
 	 */
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -355,7 +356,6 @@ public class TslValet implements Serializable {
 		this.lastNewTSAvaliableFind = lastNewTSAvaliableFindParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #alias}.
 	 * @return the value of the attribute {@link #alias}.
@@ -365,7 +365,6 @@ public class TslValet implements Serializable {
 		return alias;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #alias}.
 	 * @param aliasParam The value for the attribute {@link #alias}.

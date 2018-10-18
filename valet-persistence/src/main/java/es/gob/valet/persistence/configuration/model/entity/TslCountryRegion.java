@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,14 +14,15 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.TslCountryRegion.java.</p>
  * <b>Description:</b><p>Class the maps the <i>TSL_COUNTRY_REGION</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>17 jul. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 17 jul. 2018.
- */package es.gob.valet.persistence.configuration.model.entity;
+ * @version 1.0, 11/09/2018.
+ */
+package es.gob.valet.persistence.configuration.model.entity;
 
 import java.io.Serializable;
 
@@ -35,38 +36,36 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.NumberConstants;
-/** 
+
+/**
  * <p>Class the maps the <i>TSL_COUNTRY_REGION</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 11 sept. 2018.
+ * @version 1.0, 11/09/2018.
  */
 @Entity
 @Table(name = "TSL_COUNTRY_REGION")
 public class TslCountryRegion implements Serializable {
 
 	/**
-	 * Attribute that represents the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = -832198836173869847L;
+	private static final long serialVersionUID = 8054326752005320182L;
+
 	/**
 	 * Attribute that represents the object ID.
 	 */
 	private Long idTslCountryRegion;
-	
-	
+
 	/**
 	 * Attribute that represents the country/region code for a TSL (ISO 3166).
 	 */
 	private String countryRegionCode;
 
 	/**
-	 * Attribute that represents the country/region name. 
+	 * Attribute that represents the country/region name.
 	 */
 	private String countryRegionName;
 
-	
-
-	
 	/**
 	 * Gets the value of the attribute {@link #idTslCountryRegion}.
 	 * @return the value of the attribute {@link #idTslCountryRegion}.
@@ -75,7 +74,6 @@ public class TslCountryRegion implements Serializable {
 	@Column(name = "ID_COUNTRY_REGION", unique = true, nullable = false, precision = NumberConstants.NUM19)
 	@JsonView(DataTablesOutput.View.class)
 	public Long getIdTslCountryRegion() {
-		
 		return idTslCountryRegion;
 	}
 
@@ -101,7 +99,7 @@ public class TslCountryRegion implements Serializable {
 	 * Sets the value of the attribute {@link #countryRegionCode}.
 	 * @param countryRegionCodeParam The value for the attribute {@link #countryRegionCode}.
 	 */
-	
+
 	public void setCountryRegionCode(String countryRegionCodeParam) {
 		this.countryRegionCode = countryRegionCodeParam;
 	}
@@ -123,9 +121,5 @@ public class TslCountryRegion implements Serializable {
 	public void setCountryRegionName(String countryRegionNameParam) {
 		this.countryRegionName = countryRegionNameParam;
 	}
-	
-	
 
-
-	
 }

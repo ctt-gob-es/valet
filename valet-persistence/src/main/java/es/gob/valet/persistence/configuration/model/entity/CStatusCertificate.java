@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.CStatusCertificate.java.</p>
  * <b>Description:</b><p>Class that maps the <i>C_STATUS_CERTIFICATE</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 18/09/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -37,20 +37,20 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-
-/** 
+/**
  * <p>Class that maps the <i>C_STATUS_CERTIFICATE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 18/09/2018.
  */
 @Entity
 @Table(name = "C_STATUS_CERTIFICATES")
 public class CStatusCertificate implements Serializable {
 
 	/**
-	 * Attribute that represents the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = 6565305733061626944L;
+	private static final long serialVersionUID = 1587072570533127062L;
+
 	/**
 	 * Attribute that represents the object ID.
 	 */
@@ -61,7 +61,6 @@ public class CStatusCertificate implements Serializable {
 	 */
 	private String tokenName;
 
-	
 	/**
 	 * Gets the value of the attribute {@link #idStatusCertificate}.
 	 * @return the value of the attribute {@link #idStatusCertificate}.
@@ -73,16 +72,14 @@ public class CStatusCertificate implements Serializable {
 		return idStatusCertificate;
 	}
 
-	
 	/**
-	 * Sets the value of the attribute {@link #idCStatusCertificate}.
-	 * @param idStatusCertificateParam The value for the attribute {@link #idCStatusCertificate}.
+	 * Sets the value of the attribute {@link #idStatusCertificate}.
+	 * @param idStatusCertificateParam The value for the attribute {@link #idStatusCertificate}.
 	 */
 	public void setIdStatusCertificate(Long idStatusCertificateParam) {
 		this.idStatusCertificate = idStatusCertificateParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #tokenName}.
 	 * @return the value of the attribute {@link #tokenName}.
@@ -93,7 +90,6 @@ public class CStatusCertificate implements Serializable {
 		return tokenName;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #tokenName}.
 	 * @param tokenNameParam The value for the attribute {@link #tokenName}.
@@ -101,4 +97,5 @@ public class CStatusCertificate implements Serializable {
 	public void setTokenName(String tokenNameParam) {
 		this.tokenName = tokenNameParam;
 	}
+
 }

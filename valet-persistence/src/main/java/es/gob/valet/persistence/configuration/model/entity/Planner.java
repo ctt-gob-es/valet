@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.Planner.java.</p>
  * <b>Description:</b><p>Class that represents the representation of the <i>PLANNER</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.0, 02/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -44,20 +44,20 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-
-/** 
+/**
  * <p>Class that represents the representation of the <i>PLANNER</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.0, 02/10/2018.
  */
 @Entity
 @Table(name = "PLANNER")
 public class Planner implements Serializable {
 
 	/**
-	 * Attribute that represents the class serial version.
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = -2393187684085816603L;
+	private static final long serialVersionUID = 1731493626842035877L;
+
 	/**
 	 * Attribute that represents the object ID.
 	 */
@@ -93,7 +93,6 @@ public class Planner implements Serializable {
 	 */
 	private List<Task> listTasks;
 
-	
 	/**
 	 * Gets the value of the attribute {@link #idPlanner}.
 	 * @return the value of the attribute {@link #idPlanner}.
@@ -104,7 +103,6 @@ public class Planner implements Serializable {
 		return idPlanner;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #idPlanner}.
 	 * @param idPlannerParam The value for the attribute {@link #idPlanner}.
@@ -113,7 +111,6 @@ public class Planner implements Serializable {
 		this.idPlanner = idPlannerParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #hourPeriod}.
 	 * @return the value of the attribute {@link #hourPeriod}.
@@ -123,7 +120,6 @@ public class Planner implements Serializable {
 		return hourPeriod;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #hourPeriod}.
 	 * @param hourPeriodParam The value for the attribute {@link #hourPeriod}.
@@ -132,7 +128,6 @@ public class Planner implements Serializable {
 		this.hourPeriod = hourPeriodParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #initDay}.
 	 * @return the value of the attribute {@link #initDay}.
@@ -144,7 +139,6 @@ public class Planner implements Serializable {
 		return initDay;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #initDay}.
 	 * @param initDayParam The value for the attribute {@link #initDay}.
@@ -153,7 +147,6 @@ public class Planner implements Serializable {
 		this.initDay = initDayParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #minutePeriod}.
 	 * @return the value of the attribute {@link #minutePeriod}.
@@ -163,7 +156,6 @@ public class Planner implements Serializable {
 		return minutePeriod;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #minutePeriod}.
 	 * @param minutePeriodParam The value for the attribute {@link #minutePeriod}.
@@ -172,7 +164,6 @@ public class Planner implements Serializable {
 		this.minutePeriod = minutePeriodParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #secondPeriod}.
 	 * @return the value of the attribute {@link #secondPeriod}.
@@ -182,7 +173,6 @@ public class Planner implements Serializable {
 		return secondPeriod;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #secondPeriod}.
 	 * @param secondPeriodParam The value for the attribute {@link #secondPeriod}.
@@ -191,7 +181,6 @@ public class Planner implements Serializable {
 		this.secondPeriod = secondPeriodParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #plannerType}.
 	 * @return the value of the attribute {@link #plannerType}.
@@ -202,7 +191,6 @@ public class Planner implements Serializable {
 		return plannerType;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #plannerType}.
 	 * @param plannerTypeParam The value for the attribute {@link #plannerType}.
@@ -211,7 +199,6 @@ public class Planner implements Serializable {
 		this.plannerType = plannerTypeParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #listTasks}.
 	 * @return the value of the attribute {@link #listTasks}.
@@ -222,7 +209,6 @@ public class Planner implements Serializable {
 		return listTasks;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #listTasks}.
 	 * @param listTasksParam The value for the attribute {@link #listTasks}.
@@ -230,6 +216,5 @@ public class Planner implements Serializable {
 	public void setListTasks(List<Task> listTasksParam) {
 		this.listTasks = listTasksParam;
 	}
-
 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.Task.java.</p>
  * <b>Description:</b><p>Class that represents the representation of the <i>TASK</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.0, 02/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -41,20 +41,20 @@ import org.hibernate.annotations.Type;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-
-/** 
+/**
  * <p>Class that represents the representation of the <i>TASK</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.0, 02/10/2018.
  */
 @Entity
 @Table(name = "TASK")
 public class Task implements Serializable {
 
 	/**
-	 * Attribute that represents  the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = 6787410726809984204L;
+	private static final long serialVersionUID = -1725795830268897483L;
+
 	/**
 	 * Attribute that represents the object ID.
 	 */
@@ -74,13 +74,12 @@ public class Task implements Serializable {
 	 * Attribute that represents the list of associated planners.
 	 */
 	private List<Planner> planners;
-	
+
 	/**
 	 * Attribute that indicates if the task is enabled (true) or not (false).
 	 */
 	private Boolean isEnabled;
 
-	
 	/**
 	 * Gets the value of the attribute {@link #idTask}.
 	 * @return the value of the attribute {@link #idTask}.
@@ -91,7 +90,6 @@ public class Task implements Serializable {
 		return idTask;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #idTask}.
 	 * @param idTaskParam The value for the attribute {@link #idTask}.
@@ -100,7 +98,6 @@ public class Task implements Serializable {
 		this.idTask = idTaskParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #implementationClass}.
 	 * @return the value of the attribute {@link #implementationClass}.
@@ -110,7 +107,6 @@ public class Task implements Serializable {
 		return implementationClass;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #implementationClass}.
 	 * @param implementationClassParam The value for the attribute {@link #implementationClass}.
@@ -119,7 +115,6 @@ public class Task implements Serializable {
 		this.implementationClass = implementationClassParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #name}.
 	 * @return the value of the attribute {@link #name}.
@@ -129,7 +124,6 @@ public class Task implements Serializable {
 		return name;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #name}.
 	 * @param nameParam The value for the attribute {@link #name}.
@@ -138,10 +132,9 @@ public class Task implements Serializable {
 		this.name = nameParam;
 	}
 
-	
 	/**
-	 * Gets the value of the attribute {@link #listPlanners}.
-	 * @return the value of the attribute {@link #listPlanners}.
+	 * Gets the value of the attribute {@link #planners}.
+	 * @return the value of the attribute {@link #planners}.
 	 */
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "X_TASK_PLANNER", joinColumns = { @JoinColumn(name = "ID_TASK", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "ID_PLANNER", nullable = false) })
@@ -149,7 +142,6 @@ public class Task implements Serializable {
 		return planners;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #planners}.
 	 * @param plannersParam The value for the attribute {@link #planners}.
@@ -158,8 +150,6 @@ public class Task implements Serializable {
 		this.planners = plannersParam;
 	}
 
-
-	
 	/**
 	 * Gets the value of the attribute {@link #isEnabled}.
 	 * @return the value of the attribute {@link #isEnabled}.
@@ -170,8 +160,6 @@ public class Task implements Serializable {
 		return isEnabled;
 	}
 
-
-	
 	/**
 	 * Sets the value of the attribute {@link #isEnabled}.
 	 * @param isEnabledParam The value for the attribute {@link #isEnabled}.
@@ -179,8 +167,5 @@ public class Task implements Serializable {
 	public void setIsEnabled(Boolean isEnabledParam) {
 		this.isEnabled = isEnabledParam;
 	}
-
-
-	
 
 }

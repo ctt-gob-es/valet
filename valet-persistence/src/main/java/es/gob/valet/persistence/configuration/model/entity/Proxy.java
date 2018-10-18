@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.Proxy.java.</p>
  * <b>Description:</b><p>Class that maps the <i>PROXY</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>15 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>15/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 15 oct. 2018.
+ * @version 1.0, 15/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -38,61 +38,65 @@ import org.hibernate.annotations.Type;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-
-/** 
+/**
  * <p>Class that maps the <i>PROXY</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 15 oct. 2018.
+ * @version 1.0, 15/10/2018.
  */
 @Entity
-@Table(name ="PROXY")
+@Table(name = "PROXY")
 public class Proxy implements Serializable {
 
 	/**
-	 * Attribute that represents the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = -21847531281962870L;
-	
+	private static final long serialVersionUID = 1098990694077374096L;
+
 	/**
 	 * Attribute that represents the object ID.
 	 */
 	private Long idProxy;
-	
+
 	/**
 	 * Attribute that represents the operation mode in the proxy configuration.
 	 */
-	private COperationMode operationMode;	
-	
+	private COperationMode operationMode;
+
 	/**
 	 * Attribute that represents the proxy host.
 	 */
 	private String hostProxy;
+
 	/**
 	 * Attribute that represents the proxy port.
 	 */
 	private Long portProxy;
+
 	/**
 	 * Attribute that represents the user.
 	 */
 	private String userProxy;
-	
+
 	/**
 	 * Attribute that represents the password.
 	 */
 	private String passwordProxy;
+
 	/**
 	 * Attribute that represents the user's domain.
 	 */
 	private String userDomain;
+
 	/**
 	 * Attribute that represents the list of addresses that the proxy will not use.
 	 */
 	private String addressList;
+
 	/**
 	 * Attribute that indicates if the route is local or not.
 	 */
 	private Boolean isLocalAddress;
-	
+
 	/**
 	 * Gets the value of the attribute {@link #idProxy}.
 	 * @return the value of the attribute {@link #idProxy}.
@@ -102,7 +106,7 @@ public class Proxy implements Serializable {
 	public Long getIdProxy() {
 		return idProxy;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #idProxy}.
 	 * @param idProxyParam The value for the attribute {@link #idProxy}.
@@ -110,7 +114,7 @@ public class Proxy implements Serializable {
 	public void setIdProxy(Long idProxyParam) {
 		this.idProxy = idProxyParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #operationMode}.
 	 * @return the value of the attribute {@link #operationMode}.
@@ -120,7 +124,7 @@ public class Proxy implements Serializable {
 	public COperationMode getOperationMode() {
 		return operationMode;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #operationMode}.
 	 * @param operationModeParam The value for the attribute {@link #operationMode}.
@@ -128,7 +132,7 @@ public class Proxy implements Serializable {
 	public void setOperationMode(COperationMode operationModeParam) {
 		this.operationMode = operationModeParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #hostProxy}.
 	 * @return the value of the attribute {@link #hostProxy}.
@@ -137,7 +141,7 @@ public class Proxy implements Serializable {
 	public String getHostProxy() {
 		return hostProxy;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #hostProxy}.
 	 * @param hostProxyParam The value for the attribute {@link #hostProxy}.
@@ -145,16 +149,16 @@ public class Proxy implements Serializable {
 	public void setHostProxy(String hostProxyParam) {
 		this.hostProxy = hostProxyParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #portProxy}.
 	 * @return the value of the attribute {@link #portProxy}.
-	 */ 
+	 */
 	@Column(name = "PORT_PROXY", nullable = false, precision = NumberConstants.NUM10)
 	public Long getPortProxy() {
 		return portProxy;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #portProxy}.
 	 * @param portProxyParam The value for the attribute {@link #portProxy}.
@@ -162,7 +166,7 @@ public class Proxy implements Serializable {
 	public void setPortProxy(Long portProxyParam) {
 		this.portProxy = portProxyParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #userProxy}.
 	 * @return the value of the attribute {@link #userProxy}.
@@ -171,7 +175,7 @@ public class Proxy implements Serializable {
 	public String getUserProxy() {
 		return userProxy;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #userProxy}.
 	 * @param userProxyParam The value for the attribute {@link #userProxy}.
@@ -179,7 +183,7 @@ public class Proxy implements Serializable {
 	public void setUserProxy(String userProxyParam) {
 		this.userProxy = userProxyParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #passwordProxy}.
 	 * @return the value of the attribute {@link #passwordProxy}.
@@ -188,7 +192,7 @@ public class Proxy implements Serializable {
 	public String getPasswordProxy() {
 		return passwordProxy;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #passwordProxy}.
 	 * @param passwordProxyParam The value for the attribute {@link #passwordProxy}.
@@ -196,7 +200,7 @@ public class Proxy implements Serializable {
 	public void setPasswordProxy(String passwordProxyParam) {
 		this.passwordProxy = passwordProxyParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #userDomain}.
 	 * @return the value of the attribute {@link #userDomain}.
@@ -205,7 +209,7 @@ public class Proxy implements Serializable {
 	public String getUserDomain() {
 		return userDomain;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #userDomain}.
 	 * @param userDomainParam The value for the attribute {@link #userDomain}.
@@ -213,7 +217,7 @@ public class Proxy implements Serializable {
 	public void setUserDomain(String userDomainParam) {
 		this.userDomain = userDomainParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #addressList}.
 	 * @return the value of the attribute {@link #addressList}.
@@ -222,7 +226,7 @@ public class Proxy implements Serializable {
 	public String getAddressList() {
 		return addressList;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #addressList}.
 	 * @param addressListParam The value for the attribute {@link #addressList}.
@@ -230,7 +234,7 @@ public class Proxy implements Serializable {
 	public void setAddressList(String addressListParam) {
 		this.addressList = addressListParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #isLocalAddress}.
 	 * @return the value of the attribute {@link #isLocalAddress}.
@@ -240,7 +244,7 @@ public class Proxy implements Serializable {
 	public Boolean getIsLocalAddress() {
 		return isLocalAddress;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #isLocalAddress}.
 	 * @param isLocalAddressParam The value for the attribute {@link #isLocalAddress}.
@@ -248,9 +252,5 @@ public class Proxy implements Serializable {
 	public void setIsLocalAddress(Boolean isLocalAddressParam) {
 		this.isLocalAddress = isLocalAddressParam;
 	}
-	
-	
-	
-	
 
 }

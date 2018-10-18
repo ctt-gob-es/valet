@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.CTslImpl.java.</p>
  * <b>Description:</b><p>Class that maps the <i>C_TSL_IMPL</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>17 jul. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 17 jul. 2018.
+ * @version 1.0, 17/07/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -40,19 +40,20 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-/** 
+/**
  * <p>Class that maps the <i>C_TSL_IMPL</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17 jul. 2018.
+ * @version 1.0, 17/07/2018.
  */
 @Entity
 @Table(name = "C_TSL_IMPL")
 public class CTslImpl implements Serializable {
 
 	/**
-	 * Attribute that represents the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = -2075777713836623804L;
+	private static final long serialVersionUID = 3732498859705874272L;
+
 	/**
 	 * Attribute that represents the object ID.
 	 */
@@ -64,12 +65,12 @@ public class CTslImpl implements Serializable {
 	private String specification;
 
 	/**
-	 * Attribute that represents the ETSI TS specification version. 
+	 * Attribute that represents the ETSI TS specification version.
 	 */
 	private String version;
 
 	/**
-	 * Attribute that represents the namespace used in this specification and version for the TSL. 
+	 * Attribute that represents the namespace used in this specification and version for the TSL.
 	 */
 	private String namespace;
 

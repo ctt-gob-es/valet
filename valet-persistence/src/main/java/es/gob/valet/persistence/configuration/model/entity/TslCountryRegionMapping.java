@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping.java.</p>
  * <b>Description:</b><p> Class that represents the representation of the <i>TSL_COUNTRY_REGION_MAPPING</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>8 ago. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>08/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 8 ago. 2018.
+ * @version 1.0, 08/08/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -43,10 +43,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-/** 
+/**
  * <p>Class that represents the representation of the <i>TSL_COUNTRY_REGION_MAPPING</i> database table as a Plain Old Java Object</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 8 ago. 2018.
+ * @version 1.0, 08/08/2018.
  */
 @Entity
 @Table(name = "TSL_COUNTRY_REGION_MAPPING")
@@ -55,16 +55,15 @@ public class TslCountryRegionMapping implements Serializable {
 	/**
 	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = 8746633965104933856L;
-	
+	private static final long serialVersionUID = -6690773044430261L;
 
 	/**
 	 * Attribute that represents the object ID.
 	 */
 	private Long idTslCountryRegionMapping;
-	
+
 	/**
-	 * Attribute that represents the TSL country region for this mapping. 
+	 * Attribute that represents the TSL country region for this mapping.
 	 */
 	private TslCountryRegion tslCountryRegion;
 
@@ -74,16 +73,15 @@ public class TslCountryRegionMapping implements Serializable {
 	private String mappingIdentificator;
 
 	/**
-	 * Attribute that represents the description for the logical mapping. 
+	 * Attribute that represents the description for the logical mapping.
 	 */
 	private String mappingDescription;
-	
+
 	/**
-	 * Attribute that represents the value for the mapping. 
+	 * Attribute that represents the value for the mapping.
 	 */
 	private String mappingValue;
 
-	
 	/**
 	 * Gets the value of the attribute {@link #idTslCountryRegionMapping}.
 	 * @return the value of the attribute {@link #idTslCountryRegionMapping}.
@@ -97,7 +95,6 @@ public class TslCountryRegionMapping implements Serializable {
 		return idTslCountryRegionMapping;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #idTslCountryRegionMapping}.
 	 * @param idTslCountryRegionMappingParam The value for the attribute {@link #idTslCountryRegionMapping}.
@@ -106,7 +103,6 @@ public class TslCountryRegionMapping implements Serializable {
 		this.idTslCountryRegionMapping = idTslCountryRegionMappingParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #tslCountryRegion}.
 	 * @return the value of the attribute {@link #tslCountryRegion}.
@@ -118,7 +114,6 @@ public class TslCountryRegionMapping implements Serializable {
 		return tslCountryRegion;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #tslCountryRegion}.
 	 * @param tslCountryRegionParam The value for the attribute {@link #tslCountryRegion}.
@@ -127,7 +122,6 @@ public class TslCountryRegionMapping implements Serializable {
 		this.tslCountryRegion = tslCountryRegionParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #mappingIdentificator}.
 	 * @return the value of the attribute {@link #mappingIdentificator}.
@@ -138,7 +132,6 @@ public class TslCountryRegionMapping implements Serializable {
 		return mappingIdentificator;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #mappingIdentificator}.
 	 * @param mappingIdentificatorParam The value for the attribute {@link #mappingIdentificator}.
@@ -147,7 +140,6 @@ public class TslCountryRegionMapping implements Serializable {
 		this.mappingIdentificator = mappingIdentificatorParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #mappingDescription}.
 	 * @return the value of the attribute {@link #mappingDescription}.
@@ -158,7 +150,6 @@ public class TslCountryRegionMapping implements Serializable {
 		return mappingDescription;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #mappingDescription}.
 	 * @param mappingDescriptionParam The value for the attribute {@link #mappingDescription}.
@@ -167,7 +158,6 @@ public class TslCountryRegionMapping implements Serializable {
 		this.mappingDescription = mappingDescriptionParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #mappingValue}.
 	 * @return the value of the attribute {@link #mappingValue}.
@@ -178,7 +168,6 @@ public class TslCountryRegionMapping implements Serializable {
 		return mappingValue;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #mappingValue}.
 	 * @param mappingValueParam The value for the attribute {@link #mappingValue}.
@@ -186,9 +175,5 @@ public class TslCountryRegionMapping implements Serializable {
 	public void setMappingValue(String mappingValueParam) {
 		this.mappingValue = mappingValueParam;
 	}
-
-
-	
-	
 
 }

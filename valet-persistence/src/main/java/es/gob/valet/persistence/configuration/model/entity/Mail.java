@@ -17,13 +17,14 @@
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.Mail.java.</p>
  * <b>Description:</b><p>Class that maps the <i>MAIL</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 Oct. 2018.
+ * @version 1.0, 02/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -47,16 +48,16 @@ import es.gob.valet.commons.utils.NumberConstants;
 /** 
  * <p>Class that maps the <i>KEYSTORE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 02/10/2018.
  */
 @Entity
 @Table(name = "MAIL")
-public class Mail {
+public class Mail implements Serializable {
 
 	/**
-	 * Class serial version.
+	 * Constant attribute that represents the serial version UID. 
 	 */
-	private static final long serialVersionUID = 9090589742672624291L;
+	private static final long serialVersionUID = 707464190994966811L;
 
 	/**
 	 * Attribute that represents the object ID.
@@ -88,10 +89,10 @@ public class Mail {
 
 	/**
 	 * Sets the value of the attribute {@link #idMail}.
-	 * @param idMail The value for the attribute {@link #idMail}.
+	 * @param idMailParam The value for the attribute {@link #idMail}.
 	 */
-	public void setIdMail(Long idMail) {
-		this.idMail = idMail;
+	public void setIdMail(Long idMailParam) {
+		this.idMail = idMailParam;
 	}
 
 	/**
@@ -106,10 +107,10 @@ public class Mail {
 
 	/**
 	 * Sets the value of the attribute {@link #emailAddress}.
-	 * @param emailAddress The value for the attribute {@link #emailAddress}.
+	 * @param emailAddressParam The value for the attribute {@link #emailAddress}.
 	 */
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
+	public void setEmailAddress(String emailAddressParam) {
+		this.emailAddress = emailAddressParam;
 	}
 
 	/**
@@ -124,10 +125,10 @@ public class Mail {
 
 	/**
 	 * Sets the value of the attribute {@link #alarm}.
-	 * @param alarm The value for the attribute {@link #alarm}.
+	 * @param alarmParam The value for the attribute {@link #alarm}.
 	 */
-	public void setAlarm(Set<Alarm> alarm) {
-		this.alarm = alarm;
+	public void setAlarm(Set<Alarm> alarmParam) {
+		this.alarm = alarmParam;
 	}
 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.CPlannerType.java.</p>
  * <b>Description:</b><p> Class that represents the representation of the <i>C_PLANNER_TYPE</i> database table as a Plain Old Java Object.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.0, 02/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -33,20 +33,19 @@ import javax.persistence.Table;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-
-/** 
+/**
  * <p>Class that represents the representation of the <i>C_PLANNER_TYPE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.0, 02/10/2018.
  */
 @Entity
 @Table(name = "C_PLANNER_TYPE")
 public class CPlannerType implements Serializable {
 
 	/**
-	 * Attribute that represents the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = 601377740550446995L;
+	private static final long serialVersionUID = 3710288918662199270L;
 
 	/**
 	 * Attribute that represents the object ID.
@@ -58,7 +57,6 @@ public class CPlannerType implements Serializable {
 	 */
 	private String tokenName;
 
-	
 	/**
 	 * Gets the value of the attribute {@link #idPlannerType}.
 	 * @return the value of the attribute {@link #idPlannerType}.
@@ -69,7 +67,6 @@ public class CPlannerType implements Serializable {
 		return idPlannerType;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #idPlannerType}.
 	 * @param idPlannerTypeParam The value for the attribute {@link #idPlannerType}.
@@ -78,7 +75,6 @@ public class CPlannerType implements Serializable {
 		this.idPlannerType = idPlannerTypeParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #tokenName}.
 	 * @return the value of the attribute {@link #tokenName}.
@@ -88,7 +84,6 @@ public class CPlannerType implements Serializable {
 		return tokenName;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #tokenName}.
 	 * @param tokenNameParam The value for the attribute {@link #tokenName}.
