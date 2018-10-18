@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.cache.impl.javaConcurrentMap;
 
@@ -37,13 +37,13 @@ import es.gob.valet.cache.impl.ACacheValet;
 import es.gob.valet.cache.utils.GiveSomeTimeBeforeStopCacheThread;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICacheMessages;
+import es.gob.valet.i18n.messages.ICacheGeneralMessages;
 
 /**
  * <p>Implementation of the {@link ICacheValet} that extends the {@link ACacheValet}
  * implemented with the Java Concurrent HashMap.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 public class ConcurrentMapCacheValet extends ACacheValet {
 
@@ -77,7 +77,7 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 	 */
 	public ConcurrentMapCacheValet() {
 
-		LOGGER.debug(Language.getResCacheValet(ICacheMessages.CACHE_IMPL_JCM_001));
+		LOGGER.debug(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_001));
 
 		// Creamos la TreeCache.
 		if (concurrentMapCache == null) {
@@ -102,7 +102,7 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 		// Si finalmente se ha obtenido...
 		if (concurrentMapCache != null) {
 
-			LOGGER.debug(Language.getResCacheValet(ICacheMessages.CACHE_IMPL_JCM_002));
+			LOGGER.debug(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_002));
 
 			// Levantamos la bandera indicando que se ha creado de forma
 			// correcta la Caché.
@@ -110,7 +110,7 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 
 		} else {
 
-			LOGGER.error(Language.getResCacheValet(ICacheMessages.CACHE_IMPL_JCM_003));
+			LOGGER.error(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_003));
 
 		}
 
@@ -132,16 +132,16 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 	@Override
 	protected void stopCacheImplementation() throws CacheValetException {
 
-		LOGGER.debug(Language.getResCacheValet(ICacheMessages.CACHE_IMPL_JCM_004));
+		LOGGER.debug(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_004));
 		// Si no se ha creado aún, lanzamos una excepción.
 		if (!isCreationFlag()) {
-			throw new CacheValetException(IValetException.COD_153, Language.getResCacheValet(ICacheMessages.CACHE_IMPL_JCM_005));
+			throw new CacheValetException(IValetException.COD_153, Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_005));
 		}
 		setCreationFlag(false);
 		setInstance(null);
 		concurrentMapCache.clear();
 		concurrentMapCache = null;
-		LOGGER.debug(Language.getResCacheValet(ICacheMessages.CACHE_IMPL_JCM_006));
+		LOGGER.debug(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_006));
 
 	}
 
@@ -248,7 +248,7 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 		concurrentMapCacheReloadingName = Long.toString(System.currentTimeMillis());
 		concurrentMapCacheReloading = new ConcurrentHashMap<Object, Object>();
 
-		LOGGER.info(Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_JCM_007, new Object[ ] { concurrentMapCacheReloadingName }));
+		LOGGER.info(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_007, new Object[ ] { concurrentMapCacheReloadingName }));
 
 	}
 

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/09/2018.
+ * @version 1.3, 18/10/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -32,14 +32,14 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IQuartzMessages;
+import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
 import es.gob.valet.i18n.utils.UtilsTomcat;
 
 /**
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 02/10/2018.
+ * @version 1.3, 18/10/2018.
  */
 public final class StaticValetConfig {
 
@@ -68,7 +68,7 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents name for property <code>character.special</code>.
 	 */
 	public static final String LIST_CHARACTER_SPECIAL = "character.special";
-	
+
 	/**
 	 * Attribute that represents the Padding algorithm for the AES cipher.
 	 */
@@ -83,6 +83,7 @@ public final class StaticValetConfig {
 	 * Attribute that represents the password for the system keystores.
 	 */
 	public static final String AES_PASSWORD = "aes.password";
+
 	/**
 	 * Constructor method for the class StaticValetConfig.java.
 	 */
@@ -115,13 +116,13 @@ public final class StaticValetConfig {
 				staticProperties = new Properties();
 				FileInputStream configStream = null;
 				try {
-					LOGGER.info(Language.getFormatResQuartzValet(IQuartzMessages.LOG2, new Object[ ] { STATIC_VALET_FILENAME }));
+					LOGGER.info(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOG2, new Object[ ] { STATIC_VALET_FILENAME }));
 					configStream = new FileInputStream(UtilsTomcat.createAbsolutePath(UtilsTomcat.getTomcatConfigDir(), STATIC_VALET_FILENAME));
 					staticProperties.load(configStream);
-					LOGGER.info(Language.getFormatResQuartzValet(IQuartzMessages.LOG2, new Object[ ] { staticProperties }));
+					LOGGER.info(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOG2, new Object[ ] { staticProperties }));
 					result = true;
 				} catch (IOException e) {
-					LOGGER.error(Language.getFormatResQuartzValet(IQuartzMessages.LOG3, new Object[ ] { STATIC_VALET_FILENAME, e.getMessage() }), e);
+					LOGGER.error(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOG3, new Object[ ] { STATIC_VALET_FILENAME, e.getMessage() }), e);
 				} finally {
 					UtilsResources.safeCloseInputStream(configStream);
 				}
@@ -159,4 +160,3 @@ public final class StaticValetConfig {
 	}
 
 }
-

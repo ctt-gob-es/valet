@@ -16,11 +16,11 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.crypto.keystore.KeystoreFactory.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>26 sept. 2018.</p>
+ * <b>Description:</b><p>Class that manages the generation of the class which manages the keystores in the system.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 26 sept. 2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.crypto.keystore;
 
@@ -29,14 +29,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.utils.CryptographyValidationUtils;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreMessages;
+import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 
-/** 
+/**
  * <p>Class that manages the generation of the class which manages the keystores in the system.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 26 sept. 2018.
+ * @version 1.1, 18/10/2018.
  */
 public final class KeystoreFactory {
 	
@@ -58,13 +58,13 @@ public final class KeystoreFactory {
 	private KeystoreFactory(Long idKeystoreParam) throws CryptographyException {
 			// Comprobamos que el ID del almacén de claves no es nulo
 			if (idKeystoreParam == null) {
-				throw new CryptographyException(Language.getResCoreValet(ICoreMessages.CRYPTO_012));
+				throw new CryptographyException(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_012));
 			}
 
 			// Obtenemos el almacén de claves
 			Keystore keystore = keystoreService.getKeystoreById(idKeystoreParam);
 			// Comprobamos que el almacén de claves no es nulo
-			CryptographyValidationUtils.checkIsNotNull(keystore, Language.getFormatResCoreValet(ICoreMessages.CRYPTO_013, new Object[ ] { idKeystoreParam }));
+			CryptographyValidationUtils.checkIsNotNull(keystore, Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_013, new Object[ ] { idKeystoreParam }));
 
 			keystoreInstance = new KeystoreFacade(keystore);
 	}

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 07/09/2018.
+ * @version 1.2, 18/10/2018.
  */
 package es.gob.valet.rest.services;
 
@@ -41,8 +41,8 @@ import org.apache.log4j.Logger;
 import es.gob.valet.commons.utils.UtilsFecha;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.ValetRestException;
-import es.gob.valet.i18n.ILogMessages;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IRestGeneralMessages;
 import es.gob.valet.rest.elements.CertDetectedInTSL;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.GetTslInformationResponse;
@@ -53,7 +53,7 @@ import es.gob.valet.rest.elements.TslRevocationStatus;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 07/09/2018.
+ * @version 1.2, 18/10/2018.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -76,7 +76,7 @@ public class TslRestService implements ITslRestService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(CERTIFICATE) final String certificate, @FormParam(DETECTION_DATE) final String detectionDate, @FormParam(GET_INFO) final Boolean getInfo, @FormParam(CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(RETURN_REV_EVID) final Boolean returnRevoEvid) throws ValetRestException {
 		// CHECKSTYLE:ON
-		LOGGER.info(Language.getFormatResRestValet(ILogMessages.REST_LOG001, new Object[ ] { application, delegatedApp, tslLocation, certificate, detectionDate, getInfo, checkRevStatus, returnRevoEvid }));
+		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG001, new Object[ ] { application, delegatedApp, tslLocation, certificate, detectionDate, getInfo, checkRevStatus, returnRevoEvid }));
 		Boolean allIsOk = Boolean.TRUE;
 
 		DetectCertInTslInfoAndValidationResponse result = new DetectCertInTslInfoAndValidationResponse();
@@ -95,9 +95,9 @@ public class TslRestService implements ITslRestService {
 		// 'checkRevocationStatus' is true
 		if (allIsOk && returnRevoEvid && !checkRevStatus) {
 			allIsOk = Boolean.FALSE;
-			LOGGER.error(Language.getFormatResRestValet(ILogMessages.REST_LOG004));
+			LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG004));
 			result.setStatus(0);
-			result.setDescription(Language.getFormatResRestValet(ILogMessages.REST_LOG004));
+			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG004));
 		}
 
 		// Check if date format received is valid.
@@ -107,9 +107,9 @@ public class TslRestService implements ITslRestService {
 				detectionDateAux = UtilsFecha.convierteFecha(detectionDate, UtilsFecha.FORMATO_FECHA_ESTANDAR);
 			} catch (ParseException e) {
 				allIsOk = Boolean.FALSE;
-				LOGGER.error(Language.getFormatResRestValet(ILogMessages.REST_LOG006, new Object[ ] { "detectionDate" }));
+				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG006, new Object[ ] { "detectionDate" }));
 				result.setStatus(0);
-				result.setDescription(Language.getFormatResRestValet(ILogMessages.REST_LOG006, new Object[ ] { "detectionDate" }));
+				result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG006, new Object[ ] { "detectionDate" }));
 			}
 		}
 
@@ -200,7 +200,7 @@ public class TslRestService implements ITslRestService {
 	private String checkParamsDetectCertInTslInfoAndValidationResponse(final String application, final String certificate, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevoEvid) {
 
 		StringBuffer result = new StringBuffer();
-		result.append(Language.getFormatResRestValet(ILogMessages.REST_LOG003, new Object[ ] { "detectCertInTslInfoAndValidation" }));
+		result.append(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG003, new Object[ ] { "detectCertInTslInfoAndValidation" }));
 		Boolean checkError = Boolean.FALSE;
 
 		// Check received parameters
@@ -249,7 +249,7 @@ public class TslRestService implements ITslRestService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public GetTslInformationResponse getTslInformation(@FormParam(APPLICATION) final String application, @FormParam(DELEGATED_APP) final String delegatedApp, @FormParam(COUNTRY_REGION) final String countryRegion, @FormParam(TSL_LOCATION) final String tslLocation, @FormParam(GET_TSL_XML_DATA) final Boolean getTslXmlData) throws ValetRestException {
 		// CHECKSTYLE:ON
-		LOGGER.info(Language.getFormatResRestValet(ILogMessages.REST_LOG002, new Object[ ] { application, delegatedApp, countryRegion, tslLocation, getTslXmlData }));
+		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG002, new Object[ ] { application, delegatedApp, countryRegion, tslLocation, getTslXmlData }));
 		Boolean allIsOk = Boolean.TRUE;
 
 		GetTslInformationResponse result = new GetTslInformationResponse();
@@ -268,9 +268,9 @@ public class TslRestService implements ITslRestService {
 		// but not both
 		if (allIsOk && countryRegion != null && tslLocation != null) {
 			allIsOk = Boolean.FALSE;
-			LOGGER.error(Language.getFormatResRestValet(ILogMessages.REST_LOG005));
+			LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG005));
 			result.setStatus(0);
-			result.setDescription(Language.getFormatResRestValet(ILogMessages.REST_LOG005));
+			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG005));
 		}
 
 		// If all is OK, we can continue
@@ -315,7 +315,7 @@ public class TslRestService implements ITslRestService {
 	private String checkParamsGetTslInformation(final String application, final Boolean getTslXmlData) {
 
 		StringBuffer result = new StringBuffer();
-		result.append(Language.getFormatResRestValet(ILogMessages.REST_LOG003, new Object[ ] { "getTslInformation" }));
+		result.append(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG003, new Object[ ] { "getTslInformation" }));
 		Boolean checkError = Boolean.FALSE;
 
 		// Check received parameters

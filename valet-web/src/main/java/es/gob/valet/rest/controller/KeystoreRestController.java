@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.rest.controller.KeystoreRestController.java.</p>
  * <b>Description:</b><p> Class that manages the REST request related to the Keystore's administration.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>19 sept. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>19/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 19 sept. 2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -61,8 +61,8 @@ import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
 import es.gob.valet.crypto.keystore.KeystoreFacade;
-import es.gob.valet.i18n.ILogMessages;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.CStatusCertificate;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
@@ -70,10 +70,10 @@ import es.gob.valet.persistence.configuration.services.ifaces.ICStatusCertificat
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
 
-/** 
+/**
  * <p>Class that manages the REST request related to the Keystore's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19 sept. 2018.
+ * @version 1.1, 18/10/2018.
  */
 @RestController
 public class KeystoreRestController {
@@ -149,7 +149,7 @@ public class KeystoreRestController {
 	private ICStatusCertificateService cStatusCertificateService;
 
 	/**
-	 * Method to load the datatable with all the certificates stored in specified keystore.  
+	 * Method to load the datatable with all the certificates stored in specified keystore.
 	 * @param input Holder object for datatable attributes.
 	 * @param idKeystore Parameter that represents a keystore identifier.
 	 * @return String that represents the name of the view to forward.
@@ -162,7 +162,7 @@ public class KeystoreRestController {
 
 	/**
 	 * Method that store a system certificate in selected keystore.
-	 * 
+	 *
 	 * @param idKeystore Parameter that represents a keystore identifier.
 	 * @param alias Parameter that represents the alias of system certificate.
 	 * @param certificateFile Parameter that represents the file with system certificate.
@@ -186,8 +186,8 @@ public class KeystoreRestController {
 			// se comprueba que se han indicado todos los campos obligatorios
 
 			if (alias == null || alias.isEmpty()) {
-				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_ALIAS));
-				json.put(FIELD_ALIAS + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_ALIAS));
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
+				json.put(FIELD_ALIAS + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
 				error = true;
 			} else {
 				// se comprueba que no contenga caracteres especiales
@@ -203,8 +203,8 @@ public class KeystoreRestController {
 						}
 					}
 					if (!res.isEmpty()) {
-						LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
-						json.put(FIELD_ALIAS + "_span", Language.getFormatResWebValet(ILogMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
+						LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
+						json.put(FIELD_ALIAS + "_span", Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
 						error = true;
 					}
 
@@ -212,8 +212,8 @@ public class KeystoreRestController {
 
 			}
 			if (certificateFile == null || certificateFile.getSize() == 0 || certificateFile.getBytes() == null || certificateFile.getBytes().length == 0) {
-				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_CERTIFICATE_FILE));
-				json.put(FIELD_CERTIFICATE_FILE + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_CERTIFICATE_FILE));
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
+				json.put(FIELD_CERTIFICATE_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
 				error = true;
 			}
 
@@ -259,8 +259,8 @@ public class KeystoreRestController {
 				dtOutput.setError(json.toString());
 			}
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_SAVE_CERTIFICATE, new Object[ ] { e.getMessage() }));
-			json.put(KEY_JS_ERROR_SAVE_CERTIFICATE, Language.getResWebValet(ILogMessages.ERROR_SAVE_CERTIFICATE_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_CERTIFICATE, new Object[ ] { e.getMessage() }));
+			json.put(KEY_JS_ERROR_SAVE_CERTIFICATE, Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_CERTIFICATE_WEB));
 			listCertificates = StreamSupport.stream(systemCertificateService.getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 		}
@@ -270,7 +270,7 @@ public class KeystoreRestController {
 
 	/**
 	 * Method that download the selected system certificate.
-	 * 
+	 *
 	 * @param response Parameter that represents the response with information about file to download.
 	 * @param idSystemCertificate Parameter that represents the identifier of system certificate.
 	 * @throws IOException If the method fails.
@@ -285,11 +285,10 @@ public class KeystoreRestController {
 				Long idKeystoreSelected = systemCertificate.getKeystore().getIdKeystore();
 				IKeystoreFacade keystore = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystoreSelected)));
 				X509Certificate cert = keystore.getCertificate(systemCertificate.getAlias());
-				
 
 				if (cert != null) {
 					certificateFile = cert.getEncoded();
-					
+
 					InputStream in = new ByteArrayInputStream(certificateFile);
 					response.setContentType(CERT_CONTENT_TYPE);
 					response.setContentLength(certificateFile.length);
@@ -297,16 +296,16 @@ public class KeystoreRestController {
 					FileCopyUtils.copy(in, response.getOutputStream());
 				}
 			} catch (CertificateEncodingException e) {
-				LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_DOWNLOAD_CERTIFICATE, new Object[ ] { e.getMessage() }));
+				LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_DOWNLOAD_CERTIFICATE, new Object[ ] { e.getMessage() }));
 			} catch (CryptographyException e) {
-				LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_GET_CERTIFICATE, new Object[ ] { e.getMessage() }));
+				LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_GET_CERTIFICATE, new Object[ ] { e.getMessage() }));
 			}
 		}
 	}
 
 	/**
 	 * Method that updates a certificate.
-	 * 
+	 *
 	 * @param idKeystore Parameter that represents a keystore identifier.
 	 * @param alias Parameter that represents the alias of system certificate.
 	 * @param idSystemCertificate Parameter that represents the identifier of system certificate.
@@ -331,8 +330,8 @@ public class KeystoreRestController {
 			}
 			// se comprueba el campo alias
 			if (alias == null || alias.isEmpty()) {
-				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_ALIAS));
-				json.put(FIELD_ALIAS + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_ALIAS));
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
+				json.put(FIELD_ALIAS + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
 				error = true;
 			} else {
 				// se comprueba que no contenga caracteres especiales
@@ -348,8 +347,8 @@ public class KeystoreRestController {
 						}
 					}
 					if (!res.isEmpty()) {
-						LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
-						json.put(FIELD_ALIAS + "_span", Language.getFormatResWebValet(ILogMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
+						LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
+						json.put(FIELD_ALIAS + "_span", Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
 						error = true;
 					}
 
@@ -379,8 +378,7 @@ public class KeystoreRestController {
 				dtOutput.setData(listSystemCertificate);
 
 				// Importación correcta
-				LOGGER.info(Language.getFormatResWebValet(ILogMessages.INFO_CERTIFICATE_UPDATED, new Object[ ] { alias }));
-			
+				LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.INFO_CERTIFICATE_UPDATED, new Object[ ] { alias }));
 
 			} else {
 				// si ha ocurrido un error, se deja la lista de certificados tal
@@ -390,8 +388,8 @@ public class KeystoreRestController {
 				dtOutput.setError(json.toString());
 			}
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_UPDATE_CERTIFICATE, new Object[ ] { e.getMessage() }));
-			json.put(KEY_JS_ERROR_UPDATE_CERTIFICATE, Language.getResWebValet(ILogMessages.ERROR_UPDATE_CERTIFICATE_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_CERTIFICATE, new Object[ ] { e.getMessage() }));
+			json.put(KEY_JS_ERROR_UPDATE_CERTIFICATE, Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_CERTIFICATE_WEB));
 			Keystore keystore = keystoreService.getKeystoreById(idKeystore);
 			listSystemCertificate = StreamSupport.stream(systemCertificateService.getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());

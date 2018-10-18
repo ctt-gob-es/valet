@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.crypto.keystore.KeystoreFacade.java.</p>
  * <b>Description:</b><p>Class that manages all the operations related with JCE, JCEKS and PKCS#12 keystores.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>26 sept. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 26 sept. 2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.crypto.keystore;
 
@@ -54,13 +54,13 @@ import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.utils.CryptographyValidationUtils;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreMessages;
+import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 
-/** 
+/**
  * <p>Class that manages all the operations related with JCE, JCEKS and PKCS#12 keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 26 sept. 2018.
+ * @version 1.1, 18/10/2018.
  */
 public class KeystoreFacade implements IKeystoreFacade {
 
@@ -78,7 +78,6 @@ public class KeystoreFacade implements IKeystoreFacade {
 	 * Attribute that represents the PKCS#12 keystore type.
 	 */
 	private static final String PKCS12 = "PKCS12";
-
 
 	/**
 	 * Attribute that represents the information about the keystore from the cache system.
@@ -103,14 +102,14 @@ public class KeystoreFacade implements IKeystoreFacade {
 	 * @see es.gob.valet.crypto.keystore.IKeystoreFacade#storeCertificate(java.lang.String, java.security.cert.Certificate, java.security.Key)
 	 */
 	@Override
-	public Keystore storeCertificate(final String alias, final Certificate certificate,final  Key key) throws CryptographyException {
-		LOGGER.info(Language.getResCoreValet(ICoreMessages.CRYPTO_001));
+	public Keystore storeCertificate(final String alias, final Certificate certificate, final Key key) throws CryptographyException {
+		LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_001));
 		try {
 			// Comprobamos que el certificado no sea nulo
-			CryptographyValidationUtils.checkIsNotNull(certificate, Language.getResCoreValet(ICoreMessages.CRYPTO_003));
+			CryptographyValidationUtils.checkIsNotNull(certificate, Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_003));
 
 			// Comprobamos que el alias no sea nulo
-			CryptographyValidationUtils.checkIsNotNull(alias, Language.getResCoreValet(ICoreMessages.CRYPTO_004));
+			CryptographyValidationUtils.checkIsNotNull(alias, Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_004));
 
 			// Tratamos de convertir el objeto Certificate a X509Certificate
 			CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
@@ -123,25 +122,25 @@ public class KeystoreFacade implements IKeystoreFacade {
 
 			} catch (CertificateExpiredException e) {
 				// Certificado caducado
-				LOGGER.warn(Language.getResCoreValet(ICoreMessages.CRYPTO_005));
+				LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_005));
 			} catch (CertificateNotYetValidException e) {
 				// Certificado no válido aún
-				LOGGER.warn(Language.getResCoreValet(ICoreMessages.CRYPTO_006));
+				LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_006));
 			}
 			// Actualizamos el almacén de claves físicamente. Si la clave es
 			// nula, sólo se insertará el certificado.
-			LOGGER.debug(Language.getFormatResCoreValet(ICoreMessages.CRYPTO_007, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) }));
+			LOGGER.debug(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_007, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) }));
 			addEntryToKeystore(alias, certificate, key);
 		} catch (CertificateException e) {
-			String errorMsg = Language.getResCoreValet(ICoreMessages.CRYPTO_008);
+			String errorMsg = Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_008);
 			LOGGER.error(errorMsg, e);
 			throw new CryptographyException(errorMsg, e);
 		} catch (KeyStoreException e) {
-			String errorMsg = Language.getFormatResCoreValet(ICoreMessages.CRYPTO_009, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
+			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_009, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
 			LOGGER.error(errorMsg, e);
 			throw new CryptographyException(errorMsg, e);
 		} finally {
-			LOGGER.info(Language.getResCoreValet(ICoreMessages.CRYPTO_002));
+			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_002));
 		}
 		// Devolvemos los datos actualizados del almacen de clave
 		return keystoreValet;
@@ -153,25 +152,25 @@ public class KeystoreFacade implements IKeystoreFacade {
 	 */
 	@Override
 	public Keystore updateCertificate(String oldEntryAlias, String newEntryAlias) throws CryptographyException {
-		LOGGER.info(Language.getResCoreValet(ICoreMessages.CRYPTO_001));
+		LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_001));
 		try {
 			// Comprobamos que el alias no sea nulo
-			CryptographyValidationUtils.checkIsNotNull(newEntryAlias, Language.getResCoreValet(ICoreMessages.CRYPTO_004));
+			CryptographyValidationUtils.checkIsNotNull(newEntryAlias, Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_004));
 
 			// Actualizamos el almacén de claves físicamente. Si la clave es
 			// nula, sólo se insertará el certificado.
-			LOGGER.debug(Language.getFormatResCoreValet(ICoreMessages.CRYPTO_007, new Object[ ] { newEntryAlias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) }));
+			LOGGER.debug(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_007, new Object[ ] { newEntryAlias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) }));
 			updateEntryToKeystore(oldEntryAlias, newEntryAlias);
 		} catch (KeyStoreException e) {
-			String errorMsg = Language.getFormatResCoreValet(ICoreMessages.CRYPTO_009, new Object[ ] { newEntryAlias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
+			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_009, new Object[ ] { newEntryAlias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
 			LOGGER.error(errorMsg, e);
 			throw new CryptographyException(errorMsg, e);
 		} catch (UnrecoverableKeyException | NoSuchAlgorithmException e) {
-			String errorMsg = Language.getFormatResCoreValet(ICoreMessages.CRYPTO_011, new Object[ ] { oldEntryAlias, newEntryAlias,Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
+			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_011, new Object[ ] { oldEntryAlias, newEntryAlias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
 			LOGGER.error(errorMsg, e);
 			throw new CryptographyException(errorMsg, e);
 		} finally {
-			LOGGER.info(Language.getResCoreValet(ICoreMessages.CRYPTO_002));
+			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_002));
 		}
 		// Devolvemos los datos en caché actualizados del almacén de claves
 		return keystoreValet;
@@ -202,11 +201,11 @@ public class KeystoreFacade implements IKeystoreFacade {
 			keystoreValet.setKeystore(baos.toByteArray());
 		} catch (NoSuchAlgorithmException | CertificateException | IOException
 				| KeyStoreException e) {
-			String errorMsg = Language.getFormatResCoreValet(ICoreMessages.CRYPTO_009, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
+			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_009, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
 			LOGGER.error(errorMsg, e);
 			throw new CryptographyException(errorMsg, e);
 		} finally {
-			LOGGER.info(Language.getResCoreValet(ICoreMessages.CRYPTO_002));
+			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_002));
 		}
 
 		return keystoreValet;
@@ -245,40 +244,43 @@ public class KeystoreFacade implements IKeystoreFacade {
 	 */
 	@Override
 	public final X509Certificate getCertificate(String alias) {
-		LOGGER.info(Language.getResCoreValet(ICoreMessages.CRYPTO_018));
+		LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_018));
 		Certificate cert = null;
 		X509Certificate x509Cert = null;
 		try {
-		
+
 			// Comprobamos que el alias no sea nulo
-			CryptographyValidationUtils.checkIsNotNull(alias, Language.getResCoreValet(ICoreMessages.CRYPTO_004));
+			CryptographyValidationUtils.checkIsNotNull(alias, Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_004));
 			// Devolvemos el certificado del almacén de claves
-			LOGGER.debug(Language.getFormatResCoreValet(ICoreMessages.CRYPTO_016, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) }));
+			LOGGER.debug(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_016, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) }));
 			cert = getCertificateFromKeystore(alias);
 			x509Cert = UtilsCertificate.getIaikCertificate(cert);
-		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException | CommonUtilsException | CryptographyException e) {
-			String errorMsg = Language.getFormatResCoreValet(ICoreMessages.CRYPTO_017, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
-			LOGGER.error(errorMsg, e);	
-		
+		} catch (KeyStoreException | NoSuchAlgorithmException
+				| CertificateException | IOException | CommonUtilsException
+				| CryptographyException e) {
+			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_017, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
+			LOGGER.error(errorMsg, e);
+
 		} finally {
-			LOGGER.info(Language.getResCoreValet(ICoreMessages.CRYPTO_019));
+			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_019));
 		}
 		return x509Cert;
 	}
+
 	/**
 	 * Method that obtains a certificate from the keystore.
 	 * @param alias Parameter that represents the alias of the associated entry.
 	 * @return an object that represents the certificate.
 	 * @throws KeyStoreException If the keystore has not been initialized (loaded).
 	 * @throws IOException If the method fails.
-	 * @throws CertificateException 
-	 * @throws NoSuchAlgorithmException 
+	 * @throws CertificateException
+	 * @throws NoSuchAlgorithmException
 	 */
 	private Certificate getCertificateFromKeystore(String alias) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
 		Certificate cert = null;
-		KeyStore keystore = KeyStore.getInstance(keystoreValet.getKeystoreType());	
-		
-		//cargamos el keystore
+		KeyStore keystore = KeyStore.getInstance(keystoreValet.getKeystoreType());
+
+		// cargamos el keystore
 		ByteArrayInputStream bais = new ByteArrayInputStream(keystoreValet.getKeystore());
 
 		keystore.load(bais, null);
@@ -287,7 +289,7 @@ public class KeystoreFacade implements IKeystoreFacade {
 		}
 		return cert;
 	}
-	
+
 	/**
 	 * Method that inserts an entry inside of a keystore.
 	 * @param alias Parameter that represents the alias of the entry to store.
@@ -300,16 +302,16 @@ public class KeystoreFacade implements IKeystoreFacade {
 
 		// Cargamos el keystore desde la persistencia
 		KeyStore keystore = KeyStore.getInstance(keystoreValet.getKeystoreType());
-		//se obtiene char[] con la password decodificada, como son solos certificados, lo ponemos a null
+		// se obtiene char[] con la password decodificada, como son solos
+		// certificados, lo ponemos a null
 		char[ ] ksPass = new String(getKeystoreDecodedPassword(null)).toCharArray();
-		
-		
+
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(keystoreValet.getKeystore());) {
 			keystore.load(bais, new String(getKeystoreDecodedPassword(null)).toCharArray());
 		} catch (NoSuchAlgorithmException | CertificateException
 				| IOException e) {
-			LOGGER.error(Language.getResCoreValet(ICoreMessages.CRYPTO_014), e);
-			
+			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_014), e);
+
 		}
 
 		if (key == null) {
@@ -324,12 +326,10 @@ public class KeystoreFacade implements IKeystoreFacade {
 			keystoreValet.setKeystore(baos.toByteArray());
 		} catch (NoSuchAlgorithmException | CertificateException
 				| IOException e) {
-			LOGGER.error(Language.getResCoreValet(ICoreMessages.CRYPTO_015), e);
+			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_015), e);
 		}
 
 	}
-
-
 
 	/**
 	 * Method that updates an alias entry inside of a keystore.
@@ -344,14 +344,14 @@ public class KeystoreFacade implements IKeystoreFacade {
 	private Keystore updateEntryToKeystore(String oldEntryAlias, String newEntryAlias) throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CryptographyException {
 
 		char[ ] ksPass = new String(getKeystoreDecodedPassword(null)).toCharArray();
-		// Cargamos el keystore  desde la persistencia
+		// Cargamos el keystore desde la persistencia
 		KeyStore keystore = KeyStore.getInstance(keystoreValet.getKeystoreType());
 
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(keystoreValet.getKeystore());) {
 			keystore.load(bais, ksPass);
 		} catch (NoSuchAlgorithmException | CertificateException
 				| IOException e) {
-			LOGGER.error(Language.getResCoreValet(ICoreMessages.CRYPTO_014), e);
+			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_014), e);
 		}
 
 		if (keystore.containsAlias(oldEntryAlias)) {
@@ -373,12 +373,13 @@ public class KeystoreFacade implements IKeystoreFacade {
 			keystoreValet.setKeystore(baos.toByteArray());
 		} catch (NoSuchAlgorithmException | CertificateException
 				| IOException e) {
-			LOGGER.error(Language.getResCoreValet(ICoreMessages.CRYPTO_015), e);
+			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_015), e);
 		}
 
 		return keystoreValet;
-	}	
-	
+
+	}
+
 	/**
 	 * Method that obtains the decoded password of the keystore represented by {@link #keystore}.
 	 * @param password to decode.
@@ -386,14 +387,14 @@ public class KeystoreFacade implements IKeystoreFacade {
 	 * @throws CryptographyException If the method fails.
 	 */
 	private byte[ ] getKeystoreDecodedPassword(final String password) throws CryptographyException {
-		try {		
+		try {
 			SecretKeySpec key = new SecretKeySpec(StaticValetConfig.getProperty(StaticValetConfig.AES_PASSWORD).getBytes(), StaticValetConfig.getProperty(StaticValetConfig.AES_ALGORITHM));
 			Cipher cipher = Cipher.getInstance(StaticValetConfig.getProperty(StaticValetConfig.AES_PADDING_ALG));
 			cipher.init(Cipher.DECRYPT_MODE, key);
 
 			return cipher.doFinal(Base64.decodeBase64(password == null ? keystoreValet.getPassword() : password));
 		} catch (Exception e) {
-			String errorMsg = Language.getFormatResCoreValet(ICoreMessages.CRYPTO_010, new Object[ ] { Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
+			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_010, new Object[ ] { Language.getResPersistenceConstants(keystoreValet.getTokenName()) });
 			LOGGER.error(errorMsg, e);
 			throw new CryptographyException(errorMsg, e);
 		}

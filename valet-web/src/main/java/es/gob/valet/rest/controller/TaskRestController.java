@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,20 +14,19 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.rest.controller.TaskRestController.java.</p>
  * <b>Description:</b><p>Class that manages the REST request related to the Task's administration.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.rest.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -43,8 +42,8 @@ import org.springframework.web.bind.annotation.RestController;
 import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.UtilsFecha;
 import es.gob.valet.form.TaskForm;
-import es.gob.valet.i18n.ILogMessages;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.Planner;
 import es.gob.valet.persistence.configuration.model.entity.Task;
 import es.gob.valet.persistence.configuration.services.ifaces.IPlannerService;
@@ -55,10 +54,10 @@ import es.gob.valet.quartz.planner.PlanificadorPorFecha;
 import es.gob.valet.quartz.scheduler.ProcessTasksScheduler;
 import es.gob.valet.quartz.scheduler.ValetSchedulerException;
 
-/** 
+/**
  * <p>Class that manages the REST request related to the Task's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 18/10/2018.
  */
 @RestController
 public class TaskRestController {
@@ -99,7 +98,7 @@ public class TaskRestController {
 
 			// validamos las fechas
 			if (!validateInitDate(taskForm)) {
-				taskForm.setError(Language.getResWebValet(ILogMessages.ERROR_VALIDATE_DATE));
+				taskForm.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATE_DATE));
 			} else {
 				// se obtiene el planificador
 				Planner planner = plannerService.getPlannerById(taskForm.getIdPlanner());
@@ -131,7 +130,7 @@ public class TaskRestController {
 				Task updatedTask = taskService.saveTask(task);
 				Planner updatedPlanner = plannerService.savePlanner(planner);
 
-				LOGGER.info(Language.getResWebValet(ILogMessages.INFO_UPDATE_TASK_OK));
+				LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.INFO_UPDATE_TASK_OK));
 
 				ProcessTasksScheduler process = ProcessTasksScheduler.getInstance();
 				// se comprueba si la tarea está activa
@@ -146,9 +145,9 @@ public class TaskRestController {
 
 					process.addOrReplacePlannerInTask(taskName, planificador, taskClass, null);
 					// json.put(KEY_JS_MESSAGE_UPDATE_OK,
-					// Language.getFormatResWebValet(ILogMessages.INFO_TASK_ACTIVE_OK,
+					// Language.getFormatResWebValet(IWebGeneralMessages.INFO_TASK_ACTIVE_OK,
 					// new Object[ ] {taskName }));
-					taskForm.setMsgOk(Language.getFormatResWebValet(ILogMessages.INFO_TASK_ACTIVE_OK, new Object[ ] { taskName }));
+					taskForm.setMsgOk(Language.getFormatResWebGeneral(IWebGeneralMessages.INFO_TASK_ACTIVE_OK, new Object[ ] { taskName }));
 				} else {
 					// se comprueba que exista la tarea, si existe se para
 
@@ -156,35 +155,35 @@ public class TaskRestController {
 						// se para
 						process.stopTask(taskName);
 						// json.put(KEY_JS_MESSAGE_UPDATE_OK,
-						// Language.getFormatResWebValet(ILogMessages.INFO_TASK_STOP,
+						// Language.getFormatResWebValet(IWebGeneralMessages.INFO_TASK_STOP,
 						// new Object[ ] {taskName }));
-						taskForm.setMsgOk(Language.getFormatResWebValet(ILogMessages.INFO_TASK_STOP, new Object[ ] { taskName }));
-					}else{
-						//se indica que la tarea se ha modificado correctamente
-						taskForm.setMsgOk(Language.getResWebValet(ILogMessages.INFO_UPDATE_TASK_OK));
+						taskForm.setMsgOk(Language.getFormatResWebGeneral(IWebGeneralMessages.INFO_TASK_STOP, new Object[ ] { taskName }));
+					} else {
+						// se indica que la tarea se ha modificado correctamente
+						taskForm.setMsgOk(Language.getResWebGeneral(IWebGeneralMessages.INFO_UPDATE_TASK_OK));
 					}
 
 				}
 			}
 		} catch (ParseException e) {
-			LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_PARSE_DATE, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_PARSE_DATE, new Object[ ] { e.getMessage() }));
 			// json.put(KEY_JS_MESSAGE_UPDATE_ERROR,
-			// Language.getResWebValet(ILogMessages.ERROR_UPDATE_TASK_WEB));
-			taskForm.setError(Language.getResWebValet(ILogMessages.ERROR_UPDATE_TASK_WEB));
+			// Language.getResWebValet(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB));
+			taskForm.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB));
 
 		} catch (ClassNotFoundException e) {
-			LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_GET_CLASS_TASK, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_GET_CLASS_TASK, new Object[ ] { e.getMessage() }));
 			// json.put(KEY_JS_MESSAGE_UPDATE_ERROR,
-			// Language.getResWebValet(ILogMessages.ERROR_UPDATE_TASK_WEB));
-			taskForm.setError(Language.getResWebValet(ILogMessages.ERROR_UPDATE_TASK_WEB));
+			// Language.getResWebValet(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB));
+			taskForm.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB));
 		} catch (ValetSchedulerException e) {
-			LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_ACTIVE_TASK, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_ACTIVE_TASK, new Object[ ] { e.getMessage() }));
 			// json.put(KEY_JS_MESSAGE_UPDATE_ERROR,
-			// Language.getResWebValet(ILogMessages.ERROR_UPDATE_TASK_WEB));
-			taskForm.setError(Language.getResWebValet(ILogMessages.ERROR_UPDATE_TASK_WEB));
+			// Language.getResWebValet(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB));
+			taskForm.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB));
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_UPDATE_TASK_WEB, new Object[ ] { e.getMessage() }));
-			taskForm.setError(Language.getResWebValet(ILogMessages.ERROR_UPDATE_TASK_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB, new Object[ ] { e.getMessage() }));
+			taskForm.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB));
 		}
 
 		return taskForm;
@@ -221,10 +220,10 @@ public class TaskRestController {
 
 	/**
 	 * Method to obtain the class that implements the task.
-	 * 
+	 *
 	 * @param task Parameter represents a task.
 	 * @return Class that implements the task.
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
 	 */
 	private Class<es.gob.valet.quartz.task.Task> getClassTask(Task task) throws ClassNotFoundException {
 		Class<es.gob.valet.quartz.task.Task> taskClass = null;
@@ -235,7 +234,7 @@ public class TaskRestController {
 
 	/**
 	 * Method to validate the date indicated for the planning of the task.
-	 * 
+	 *
 	 * @param taskForm Parameter that represents the backing form for editing a Task
 	 * @return true, if the date is correct.
 	 */

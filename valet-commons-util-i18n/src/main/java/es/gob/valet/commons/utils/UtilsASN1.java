@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.commons.utils.ASN1Utilities.java.</p>
  * <b>Description:</b><p>Class that contains all utilities methods used in ASN1 Objects.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>21 sept. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 21 sept. 2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -31,17 +31,18 @@ import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import iaik.asn1.structures.Name;
 
-/** 
+/**
  * <p>Class that contains all utilities methods used in ASN1 Objects.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21 sept. 2018.
+ * @version 1.1, 18/10/2018.
  */
 public final class UtilsASN1 {
 
 	/**
-	 * Constructor method for the class ASN1Utilities.java. 
+	 * Constructor method for the class ASN1Utilities.java.
 	 */
-	public UtilsASN1() {
+	private UtilsASN1() {
+		super();
 	}
 
 	/**
@@ -60,9 +61,8 @@ public final class UtilsASN1 {
 				return name.getName(X500Principal.RFC2253);
 			}
 		} catch (Exception e) {
-			throw new CommonUtilsException(IValetException.COD_058, Language.getFormatResCommonsUtilValet(CommonUtilsException.UTILS_ASN1_CODE_001, e));
+			throw new CommonUtilsException(IValetException.COD_058, Language.getFormatResCommonsUtilGeneral(CommonUtilsException.UTILS_ASN1_CODE_001, e));
 		}
 	}
-	
-	
+
 }

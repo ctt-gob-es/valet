@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 25/09/2018.
+ * @version 1.4, 18/10/2018.
  */
 package es.gob.valet.i18n;
 
@@ -41,58 +41,9 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
 /**
  * <p>Class that manages the access to the properties files used for generation messages in the plataform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 25/09/2018.
+ * @version 1.4, 18/10/2018.
  */
 public final class Language {
-
-	/**
-	 * Attribute that represents the object that manages the log of the class.
-	 */
-	private static final Logger LOGGER = Logger.getLogger(Language.class);
-
-	/**
-	 * Attribute that represents the resource boundle with the messages for the web module.
-	 */
-	private static ResourceBundle webvalet;
-
-	/**
-	 * Attribute that represents the resource boundle with the messages for the rest module.
-	 */
-	private static ResourceBundle restvalet;
-
-	/**
-	 * Attribute that represents the resource boundle with the messages for the commons-util module.
-	 */
-	private static ResourceBundle commonsutilvalet;
-
-	/**
-	 * Attribute that represents the resource boundle with the messages for the quartz module.
-	 */
-	private static ResourceBundle quartzvalet;
-
-	/**
-	 * Attribute that represents the resource boundle with the messages for the cache module.
-	 */
-	private static ResourceBundle cachevalet;
-
-	/**
-	 * Attribute that represents the resource boundle with the messages for the core module.
-	 */
-	private static ResourceBundle corevalet;
-	/**
-	 * Attribute that represents the properties for the locale of the constants from the tables of the configuration schema.
-	 */
-	private static ResourceBundle persistenceconstantsvalet = null;
-
-	/**
-	 * Attribute that represents the locale specified in the configuration.
-	 */
-	private static Locale currentLocale;
-
-	/**
-	 * Attribute that represents the url class loader for the messages files.
-	 */
-	private static URLClassLoader urlClassLoaderMsg;
 
 	/**
 	 * Constant attribute that represents the name of messages directory inside configuration directory.
@@ -110,39 +61,99 @@ public final class Language {
 	private static final String LANGUAGE_KEY = "LANGUAGE";
 
 	/**
-	 * Attribute that represents the location of the file that contains the messages for the web module.
+	 * Attribute that represents the location of the file that contains the general messages for the web module.
 	 */
-	private static final String CONTENT_WEB_PATH = "valet-web.webvalet";
+	private static final String CONTENT_WEB_GENERAL_PATH = "valet-web.general";
 
 	/**
-	 * Attribute that represents the location of the file that contains the messages for the rest module.
+	 * Attribute that represents the location of the file that contains the general messages for the rest module.
 	 */
-	private static final String CONTENT_REST_PATH = "valet-rest.restvalet";
+	private static final String CONTENT_REST_GENERAL_PATH = "valet-rest.general";
 
 	/**
-	 * Attribute that represents the location of the file that contains the messages for the commons-utils module.
+	 * Attribute that represents the location of the file that contains the general messages for the commons-utils module.
 	 */
-	private static final String CONTENT_COMMONS_UTIL_PATH = "valet-commons-util.commonsutilvalet";
+	private static final String CONTENT_COMMONS_UTIL_GENERAL_PATH = "valet-commons-util.general";
 
 	/**
-	 * Attribute that represents the location of file that contains the messages quartz module.
+	 * Attribute that represents the location of file that contains the general messages quartz module.
 	 */
-	private static final String CONTENT_QUARTZ_PATH = "valet-quartz.quartzvalet";
+	private static final String CONTENT_QUARTZ_GENERAL_PATH = "valet-quartz.general";
 
 	/**
-	 * Attribute that represents the location of file that contains the messages cache module.
+	 * Attribute that represents the location of file that contains the general messages cache module.
 	 */
-	private static final String CONTENT_CACHE_PATH = "valet-cache.cachevalet";
+	private static final String CONTENT_CACHE_GENERAL_PATH = "valet-cache.general";
 
 	/**
-	 * Attribute that represents the location of file that contains the messages core module.
+	 * Attribute that represents the location of file that contains the general messages core module.
 	 */
-	private static final String CONTENT_CORE_PATH = "valet-core.corevalet";
+	private static final String CONTENT_CORE_GENERAL_PATH = "valet-core.general";
 
 	/**
-	 * Attribute that represents the location of file that contains the messages persistence module.
+	 * Attribute that represents the location of file that contains the TSL messages core module.
+	 */
+	private static final String CONTENT_CORE_TSL_PATH = "valet-core.tsl";
+
+	/**
+	 * Attribute that represents the location of file that contains the constants messages persistence module.
 	 */
 	private static final String CONTENT_PERSISTENCE_CONSTANTS_PATH = "valet-persistence.constants";
+
+	/**
+	 * Attribute that represents the object that manages the log of the class.
+	 */
+	private static final Logger LOGGER = Logger.getLogger(Language.class);
+
+	/**
+	 * Attribute that represents the resource boundle with the general messages for the web module.
+	 */
+	private static ResourceBundle webGeneral = null;
+
+	/**
+	 * Attribute that represents the resource boundle with the general messages for the rest module.
+	 */
+	private static ResourceBundle restGeneral = null;
+
+	/**
+	 * Attribute that represents the resource boundle with the general messages for the commons-util module.
+	 */
+	private static ResourceBundle commonsUtilGeneral = null;
+
+	/**
+	 * Attribute that represents the resource boundle with the general messages for the quartz module.
+	 */
+	private static ResourceBundle quartzGeneral = null;
+
+	/**
+	 * Attribute that represents the resource boundle with the general messages for the cache module.
+	 */
+	private static ResourceBundle cacheGeneral = null;
+
+	/**
+	 * Attribute that represents the resource boundle with the general messages for the core module.
+	 */
+	private static ResourceBundle coreGeneral = null;
+
+	/**
+	 * Attribute that represents the resource boundle with the TSL messages for the core module.
+	 */
+	private static ResourceBundle coreTsl = null;
+
+	/**
+	 * Attribute that represents the properties for the locale of the constants from the tables of the configuration schema.
+	 */
+	private static ResourceBundle persistenceConstants = null;
+
+	/**
+	 * Attribute that represents the locale specified in the configuration.
+	 */
+	private static Locale currentLocale;
+
+	/**
+	 * Attribute that represents the url class loader for the messages files.
+	 */
+	private static URLClassLoader urlClassLoaderMsg;
 
 	/**
 	 * Constructor method for the class Language.java.
@@ -228,142 +239,164 @@ public final class Language {
 			LOGGER.info("Take the next locale for messages logs: " + currentLocale.toString());
 		}
 
-		webvalet = ResourceBundle.getBundle(CONTENT_WEB_PATH, currentLocale, urlClassLoaderMsg);
+		webGeneral = ResourceBundle.getBundle(CONTENT_WEB_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
 
-		restvalet = ResourceBundle.getBundle(CONTENT_REST_PATH, currentLocale, urlClassLoaderMsg);
+		restGeneral = ResourceBundle.getBundle(CONTENT_REST_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
 
-		commonsutilvalet = ResourceBundle.getBundle(CONTENT_COMMONS_UTIL_PATH, currentLocale, urlClassLoaderMsg);
+		commonsUtilGeneral = ResourceBundle.getBundle(CONTENT_COMMONS_UTIL_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
 
-		quartzvalet = ResourceBundle.getBundle(CONTENT_QUARTZ_PATH, currentLocale, urlClassLoaderMsg);
+		quartzGeneral = ResourceBundle.getBundle(CONTENT_QUARTZ_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
 
-		cachevalet = ResourceBundle.getBundle(CONTENT_CACHE_PATH, currentLocale, urlClassLoaderMsg);
+		cacheGeneral = ResourceBundle.getBundle(CONTENT_CACHE_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
 
-		corevalet = ResourceBundle.getBundle(CONTENT_CORE_PATH, currentLocale, urlClassLoaderMsg);
-		
-		persistenceconstantsvalet = ResourceBundle.getBundle(CONTENT_PERSISTENCE_CONSTANTS_PATH, currentLocale, urlClassLoaderMsg);
+		coreGeneral = ResourceBundle.getBundle(CONTENT_CORE_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
+
+		coreTsl = ResourceBundle.getBundle(CONTENT_CORE_TSL_PATH, currentLocale, urlClassLoaderMsg);
+
+		persistenceConstants = ResourceBundle.getBundle(CONTENT_PERSISTENCE_CONSTANTS_PATH, currentLocale, urlClassLoaderMsg);
 
 	}
 
 	/**
-	 * Gets the message (web module) with the key and values indicated as input parameters.
+	 * Gets the general message (web module) with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @param values Values for insert in the message.
 	 * @return String with the message well-formed.
 	 */
-	public static String getFormatResWebValet(final String key, final Object... values) {
-		return new MessageFormat(webvalet.getString(key), currentLocale).format(values);
+	public static String getFormatResWebGeneral(final String key, final Object... values) {
+		return new MessageFormat(webGeneral.getString(key), currentLocale).format(values);
 	}
 
 	/**
-	 * Gets the message (web module) with the key indicated as input parameters.
+	 * Gets the message general (web module) with the key indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @return String with the message.
 	 */
-	public static String getResWebValet(final String key) {
-		return webvalet.getString(key);
+	public static String getResWebGeneral(final String key) {
+		return webGeneral.getString(key);
 	}
 
 	/**
-	 * Gets the message (rest module) with the key and values indicated as input parameters.
+	 * Gets the general message (rest module) with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @param values Values for insert in the message.
 	 * @return String with the message well-formed.
 	 */
-	public static String getFormatResRestValet(final String key, final Object... values) {
-		return new MessageFormat(restvalet.getString(key), currentLocale).format(values);
+	public static String getFormatResRestGeneral(final String key, final Object... values) {
+		return new MessageFormat(restGeneral.getString(key), currentLocale).format(values);
 	}
 
 	/**
-	 * Gets the message (rest module) with the key indicated as input parameters.
+	 * Gets the general message (rest module) with the key indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @return String with the message.
 	 */
-	public static String getResRestValet(final String key) {
-		return restvalet.getString(key);
+	public static String getResRestGeneral(final String key) {
+		return restGeneral.getString(key);
 	}
 
 	/**
-	 * Gets the message (commons-util module) with the key and values indicated as input parameters.
+	 * Gets the general message (commons-util module) with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @param values Values for insert in the message.
 	 * @return String with the message well-formed.
 	 */
-	public static String getFormatResCommonsUtilValet(final String key, final Object... values) {
-		return new MessageFormat(commonsutilvalet.getString(key), currentLocale).format(values);
+	public static String getFormatResCommonsUtilGeneral(final String key, final Object... values) {
+		return new MessageFormat(commonsUtilGeneral.getString(key), currentLocale).format(values);
 	}
 
 	/**
-	 * Gets the message (commons-util module) with the key indicated as input parameters.
+	 * Gets the general message (commons-util module) with the key indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @return String with the message.
 	 */
-	public static String getResCommonsUtilValet(final String key) {
-		return commonsutilvalet.getString(key);
+	public static String getResCommonsUtilGeneral(final String key) {
+		return commonsUtilGeneral.getString(key);
 	}
 
 	/**
-	 * Gets the message (quartz module) with the key and values indicated as input parameters.
+	 * Gets the general message (quartz module) with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @param values Values for insert in the message.
 	 * @return String with the message well-formed.
 	 */
-	public static String getFormatResQuartzValet(final String key, final Object... values) {
-		return new MessageFormat(quartzvalet.getString(key), currentLocale).format(values);
+	public static String getFormatResQuartzGeneral(final String key, final Object... values) {
+		return new MessageFormat(quartzGeneral.getString(key), currentLocale).format(values);
 	}
 
 	/**
-	 * Gets the message (quartz module) with the key indicated as input parameters.
+	 * Gets the general message (quartz module) with the key indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @return String with the message.
 	 */
-	public static String getResQuartzValet(final String key) {
-		return quartzvalet.getString(key);
+	public static String getResQuartzGeneral(final String key) {
+		return quartzGeneral.getString(key);
 	}
 
 	/**
-	 * Gets the message (cache module) with the key and values indicated as input parameters.
+	 * Gets the general message (cache module) with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @param values Values for insert in the message.
 	 * @return String with the message well-formed.
 	 */
-	public static String getFormatResCacheValet(final String key, final Object... values) {
-		return new MessageFormat(cachevalet.getString(key), currentLocale).format(values);
+	public static String getFormatResCacheGeneral(final String key, final Object... values) {
+		return new MessageFormat(cacheGeneral.getString(key), currentLocale).format(values);
 	}
 
 	/**
-	 * Gets the message (cache module) with the key indicated as input parameters.
+	 * Gets the general message (cache module) with the key indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @return String with the message.
 	 */
-	public static String getResCacheValet(final String key) {
-		return cachevalet.getString(key);
+	public static String getResCacheGeneral(final String key) {
+		return cacheGeneral.getString(key);
 	}
 
 	/**
-	 * Gets the message (core module) with the key and values indicated as input parameters.
+	 * Gets the general message (core module) with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @param values Values for insert in the message.
 	 * @return String with the message well-formed.
 	 */
-	public static String getFormatResCoreValet(final String key, final Object... values) {
-		return new MessageFormat(corevalet.getString(key), currentLocale).format(values);
+	public static String getFormatResCoreGeneral(final String key, final Object... values) {
+		return new MessageFormat(coreGeneral.getString(key), currentLocale).format(values);
 	}
 
 	/**
-	 * Gets the message (core module) with the key indicated as input parameters.
+	 * Gets the general message (core module) with the key indicated as input parameters.
 	 * @param key Key for obtain the message.
 	 * @return String with the message.
 	 */
-	public static String getResCoreValet(final String key) {
-		return corevalet.getString(key);
+	public static String getResCoreGeneral(final String key) {
+		return coreGeneral.getString(key);
 	}
+
+	/**
+	 * Gets the TSL message (core module) with the key and values indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @param values Values for insert in the message.
+	 * @return String with the message well-formed.
+	 */
+	public static String getFormatResCoreTsl(final String key, final Object... values) {
+		return new MessageFormat(coreTsl.getString(key), currentLocale).format(values);
+	}
+
+	/**
+	 * Gets the TSL message (core module) with the key indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @return String with the message.
+	 */
+	public static String getResCoreTsl(final String key) {
+		return coreTsl.getString(key);
+	}
+
 	/**
 	 * Method that gets the bundle message of the constants from the tables of the configuration schema for certain key.
 	 * @param key Parameter that represents the key for obtain the message.
 	 * @return The bundle message of the constants from the tables of the configuration schema for certain key.
 	 */
 	public static String getResPersistenceConstants(String key) {
-		return persistenceconstantsvalet.getString(key);
+		return persistenceConstants.getString(key);
 	}
 
 }

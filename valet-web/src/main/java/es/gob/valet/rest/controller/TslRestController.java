@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.rest.controller.TslRestController.java.</p>
  * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>17 jul. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 17 jul. 2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -64,8 +64,8 @@ import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
-import es.gob.valet.i18n.ILogMessages;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
@@ -75,10 +75,10 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionM
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
 
-/** 
+/**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17 jul. 2018.
+ * @version 1.1, 18/10/2018.
  */
 @RestController
 public class TslRestController {
@@ -133,7 +133,7 @@ public class TslRestController {
 	 * Constant that represents the parameter 'country'.
 	 */
 	private static final String FIELD_COUNTRY = "country";
-/**
+	/**
 	 * Constant that represents the parameter 'urlTsl'.
 	 */
 	private static final String FIELD_URL = "urlTsl";
@@ -141,7 +141,7 @@ public class TslRestController {
 	 * Constant that represents the parameter 'fileDocument'.
 	 */
 	private static final String FIELD_FILE_DOC = "fileDocument";
-/**
+	/**
 	 * Constant that represents the parameter 'specification'.
 	 */
 	private static final String FIELD_SPECIFICATION = "specification";
@@ -165,7 +165,7 @@ public class TslRestController {
 	 * Constant that represents the parameter 'mappingIdentificator'.
 	 */
 	private static final String FIELD_MAPPING_ID = "mappingIdentificator";
-/**
+	/**
 	 * Constant that represents the parameter 'mappingValue'.
 	 */
 	private static final String FIELD_MAPPING_VALUE = "mappingValue";
@@ -177,7 +177,7 @@ public class TslRestController {
 	 * Constant that represents the key Json 'errorUpdateTsl'.
 	 */
 	private static final String KEY_JS_ERROR_UPDATE_TSL = "errorUpdateTsl";
-/**
+	/**
 	 * Constant that represents the key Json 'errorSaveTsl'.
 	 */
 	private static final String KEY_JS_ERROR_SAVE_TSL = "errorSaveTsl";
@@ -185,7 +185,7 @@ public class TslRestController {
 	/**
 	 * Method that maps the list users web requests to the controller and
 	 * forwards the list of users to the view.
-	 * 
+	 *
 	 * @param input
 	 *            Holder object for datatable attributes.
 	 * @return String that represents the name of the view to forward.
@@ -199,7 +199,7 @@ public class TslRestController {
 
 	/**
 	 * Method that obtains the list of available versions for the indicated specification.
-	 * 
+	 *
 	 * @param specification Specification selected in the form.
 	 * @return List of versions.
 	 */
@@ -214,9 +214,10 @@ public class TslRestController {
 		return versions;
 
 	}
+
 	/**
 	 * Method that adds a new TSL.
-	 * 
+	 *
 	 * @param idTSL Parameter that represents the identifier TSL.
 	 * @param implTslFile Parameter that represents the file with the implementation of the TSL.
 	 * @param specification  Parameter that represents the ETSI TS number specification for TSL.
@@ -241,8 +242,8 @@ public class TslRestController {
 		try {
 			// comprobamos que se han indicado todos los campos obligatorios
 			if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
-				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
-				json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
+				json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
 				error = true;
 
 			} else {
@@ -251,14 +252,14 @@ public class TslRestController {
 			}
 
 			if (specification == null || specification.equals(String.valueOf(-1))) {
-				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_SPECIFICATION));
-				json.put(FIELD_SPECIFICATION + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_SPECIFICATION));
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
+				json.put(FIELD_SPECIFICATION + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
 				error = true;
 			}
 
 			if (UtilsStringChar.isNullOrEmpty(version) || version.equals(String.valueOf(-1))) {
-				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VERSION));
-				json.put(FIELD_VERSION + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VERSION));
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VERSION));
+				json.put(FIELD_VERSION + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VERSION));
 				error = true;
 			}
 
@@ -303,9 +304,9 @@ public class TslRestController {
 				tslValet.setResponsible("responsable TSL France");
 
 				// se comprueba si ya existe una TSL del mismo país
-			if (tslValetService.getTslByCountryRegion(country) != null) {
-					LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
-					json.put(INFO_EXIST_TSL, Language.getFormatResWebValet(ILogMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
+				if (tslValetService.getTslByCountryRegion(country) != null) {
+					LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
+					json.put(INFO_EXIST_TSL, Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
 
 					listTSL = StreamSupport.stream(tslValetService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 					dtOutput.setError(json.toString());
@@ -358,8 +359,8 @@ public class TslRestController {
 			}
 
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
-			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebValet(ILogMessages.ERROR_SAVE_TSL_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL_WEB));
 			listTSL = StreamSupport.stream(tslValetService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 		}
@@ -367,7 +368,6 @@ public class TslRestController {
 		return dtOutput;
 	}
 
-	
 	/**
 	 * Method that updates a TSL.
 	 * @param idTSL Parameter that represents the identifier TSL.
@@ -396,16 +396,16 @@ public class TslRestController {
 			if (idTSL != null) {
 				tsl = tslValetService.getTslValetById(idTSL);
 			} else {
-				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_UPDATE_TSL));
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TSL));
 				error = true;
-				json.put(KEY_JS_ERROR_UPDATE_TSL, Language.getResWebValet(ILogMessages.ERROR_UPDATE_TSL));
+				json.put(KEY_JS_ERROR_UPDATE_TSL, Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TSL));
 
 			}
 
 			if (!error) {
 				// comprobamos si se ha añadido una nueva implementación
-		
-						if (implTslFile != null && implTslFile.getSize() > 0 && implTslFile.getBytes() != null && implTslFile.getBytes().length > 0) {
+
+				if (implTslFile != null && implTslFile.getSize() > 0 && implTslFile.getBytes() != null && implTslFile.getBytes().length > 0) {
 					// se ha añadido nueva implementación, se actualiza.
 					fileImplementationTsl = implTslFile.getBytes();
 					tsl.setXmlDocument(fileImplementationTsl);
@@ -460,8 +460,8 @@ public class TslRestController {
 			}
 
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebValet(ILogMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
-			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebValet(ILogMessages.ERROR_EDIT_TSL_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_TSL_WEB));
 			listTSL = StreamSupport.stream(tslValetService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 
@@ -472,7 +472,7 @@ public class TslRestController {
 
 	/**
 	 * Method that download the XML document with the implementation of the TSL.
-	 * 
+	 *
 	 * @param response Parameter that represents the response with information about file to download.
 	 * @param idTsl Parameter that represents the identifier TSL.
 	 * @throws IOException If the method fails.
@@ -497,10 +497,9 @@ public class TslRestController {
 		}
 	}
 
-	
 	/**
 	 * Method that downloads the legible document that describes the TSL.
-	 * 
+	 *
 	 * @param response  Parameter that represents the response with information about file to download.
 	 * @param idTsl Parameter that represents the identifier TSL.
 	 * @throws IOException If the method fails.
@@ -558,12 +557,13 @@ public class TslRestController {
 		mappingTslForm.setRowIndexMapping(rowIndexMapping);
 		return mappingTslForm;
 	}
-/**
+
+	/**
 	 * Method that refreshes the screen of editing TSL without getting to persist.
 	 * @param idTSL Parameter that represents the identifier TSL.
 	 * @param idCountryRegion Parameter that represents a country identifier.
 	 * @param implTslFile Parameter that represents the file with the implementation of the TSL.
-	 * @return TslForm object with the updated data of the form.						
+	 * @return TslForm object with the updated data of the form.
 	 * @throws IOException If the method fails.
 	 */
 	@JsonView(TslForm.View.class)
@@ -576,11 +576,11 @@ public class TslRestController {
 		boolean error = false;
 		// se comprueba si se ha actualizado la implementación de TSL, si es así
 		// se obtiene los nuevos datos
-	if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
+		if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
 
 			// se muestra mensaje indicando que no se ha actualizado
-			LOGGER.info(Language.getResWebValet(ILogMessages.INFO_NOT_UPDATE_FILE_IMPL_TSL));
-		// json.put(FIELD_IMPL_TSL_FILE + "_span",
+			LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.INFO_NOT_UPDATE_FILE_IMPL_TSL));
+			// json.put(FIELD_IMPL_TSL_FILE + "_span",
 			// LanguageWeb.getResWebValet(LogMessages.INFO_NOT_UPDATE_FILE_IMPL_TSL));
 			// se mantiene el que tenía la tsl
 		} else {
@@ -631,8 +631,8 @@ public class TslRestController {
 				// otro país.
 				// se muestra mensaje indicando que no se ha actualizado
 				error = true;
-				LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_COUNTRY_INVALID));
-				json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebValet(ILogMessages.ERROR_COUNTRY_INVALID));
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_COUNTRY_INVALID));
+				json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_COUNTRY_INVALID));
 			}
 			if (error) {
 				tslForm.setError(json.toString());
@@ -641,6 +641,7 @@ public class TslRestController {
 
 		return tslForm;
 	}
+
 	/**
 	 * Method to load the datatable with all the mappings corresponding to the selected TSL .
 	 * @param idCountryRegion Parameter that represents a country/region identifier.
@@ -648,7 +649,7 @@ public class TslRestController {
 	 */
 	@RequestMapping(path = "/loadmapping", method = RequestMethod.GET)
 	@JsonView(DataTablesOutput.View.class)
-		public @ResponseBody DataTablesOutput<TslCountryRegionMapping> loadMapping(@RequestParam("id") Long idCountryRegion) {
+	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> loadMapping(@RequestParam("id") Long idCountryRegion) {
 		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<TslCountryRegionMapping>();
 		List<TslCountryRegionMapping> listMapping = new ArrayList<TslCountryRegionMapping>();
 
@@ -662,11 +663,11 @@ public class TslRestController {
 		return dtOutput;
 	}
 
-/**
+	/**
 	 * Method that creates a new mapping for the indicated TSL.
 	 * @param idTslCountryRegion Parameter that represents a country/region identifier.
 	 * @param mappingIdentificator Parameter that represents the identificator for the logical mapping.
-	 * @param mappingValue Parameter that represents the value for the mapping. 
+	 * @param mappingValue Parameter that represents the value for the mapping.
 	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
 	 * @throws IOException If the method fails.
 	 */
@@ -689,20 +690,20 @@ public class TslRestController {
 		// Long idCountryRegionMapping =
 		// mappingTslForm.getIdTslCountryRegionMapping();
 		if (mappingIdentificator == null || mappingIdentificator.isEmpty() || mappingIdentificator.length() != mappingIdentificator.trim().length()) {
-			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
-			json.put(FIELD_MAPPING_ID + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
+			json.put(FIELD_MAPPING_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
 			error = true;
 		}
 		if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
-			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VALUE));
-			json.put(FIELD_MAPPING_VALUE + "_span", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VALUE));
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
+			json.put(FIELD_MAPPING_VALUE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
 			error = true;
 		}
 
 		// se comprueba si existe un identificador igual
 		if (tslCountryRegionMappingService.existIdentificator(mappingIdentificator, idTslCountryRegion)) {
-			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VALUE));
-			json.put(KEY_JS_INFO_EXIST_IDENTIFICATOR, Language.getResWebValet(ILogMessages.ERROR_IDENTIFICATOR_DUPLICATE));
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
+			json.put(KEY_JS_INFO_EXIST_IDENTIFICATOR, Language.getResWebGeneral(IWebGeneralMessages.ERROR_IDENTIFICATOR_DUPLICATE));
 			error = true;
 		}
 
@@ -751,20 +752,20 @@ public class TslRestController {
 		TslCountryRegionMapping tslCountryRegionMapping = null;
 
 		if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
-			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VALUE));
-			json.put(FIELD_MAPPING_VALUE + "_spanEdit", Language.getResWebValet(ILogMessages.ERROR_NOT_BLANK_VALUE));
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
+			json.put(FIELD_MAPPING_VALUE + "_spanEdit", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
 			error = true;
 		}
 
 		if (idTslCountryRegionMapping == null) {
 			error = true;
-			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_EDIT_MAPPING));
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_MAPPING));
 		}
 		// se obtiene el campo
 		tslCountryRegionMapping = tslCountryRegionMappingService.getTslCountryRegionMappingById(idTslCountryRegionMapping);
 		if (tslCountryRegionMapping == null) {
 			error = true;
-			LOGGER.error(Language.getResWebValet(ILogMessages.ERROR_EDIT_MAPPING));
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_MAPPING));
 		}
 
 		if (!error) {
@@ -805,9 +806,9 @@ public class TslRestController {
 		return index;
 	}
 
-/**
+	/**
 	 * Method that assigns the removal request of the datatable TSL to the controller and performs the elimination of the TSL identified by its id.
-	 * 
+	 *
 	 * @param idTslValet
 	 *            Identifier of the TSL to be deleted.
 	 * @param index

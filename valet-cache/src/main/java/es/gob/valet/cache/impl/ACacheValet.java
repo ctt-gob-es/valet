@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.cache.impl;
 
@@ -34,13 +34,13 @@ import es.gob.valet.cache.ifaces.ICacheValet;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICacheMessages;
+import es.gob.valet.i18n.messages.ICacheGeneralMessages;
 
 /**
  * <p>Abstract class that represents a {@link ICacheValet} with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 public abstract class ACacheValet implements ICacheValet {
 
@@ -142,16 +142,16 @@ public abstract class ACacheValet implements ICacheValet {
 	protected final String buildPath(String[ ] path, boolean isNodePath) throws BadPathCacheValetException {
 
 		if (path == null) {
-			throw new BadPathCacheValetException(IValetException.COD_155, Language.getResCacheValet(ICacheMessages.CACHE_IMPL_003));
+			throw new BadPathCacheValetException(IValetException.COD_155, Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_003));
 		}
 
 		if (path.length == 0) {
-			throw new BadPathCacheValetException(IValetException.COD_155, Language.getResCacheValet(ICacheMessages.CACHE_IMPL_005));
+			throw new BadPathCacheValetException(IValetException.COD_155, Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_005));
 		}
 
 		for (int index = 0; index < path.length; index++) {
 			if (UtilsStringChar.isNullOrEmptyTrim(path[index])) {
-				throw new BadPathCacheValetException(IValetException.COD_155, Language.getResCacheValet(ICacheMessages.CACHE_IMPL_006));
+				throw new BadPathCacheValetException(IValetException.COD_155, Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_006));
 			}
 		}
 
@@ -184,10 +184,10 @@ public abstract class ACacheValet implements ICacheValet {
 			// Añadimos en el path indicado el objeto recibido.
 			addObjectImplCache(path, key, value, inLoadingCache);
 
-			getLogger().debug(Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_002, new Object[ ] { path + getSeparator() + key }));
+			getLogger().debug(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_002, new Object[ ] { path + getSeparator() + key }));
 
 		} catch (Exception e) {
-			throw new ManagingObjectCacheValetException(IValetException.COD_154, Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_001, new Object[ ] { e }));
+			throw new ManagingObjectCacheValetException(IValetException.COD_154, Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_001, new Object[ ] { e }));
 		}
 
 	}
@@ -203,11 +203,11 @@ public abstract class ACacheValet implements ICacheValet {
 	protected final void checkPathAndKey(String path, Object key) throws BadPathCacheValetException {
 
 		if (UtilsStringChar.isNullOrEmptyTrim(path)) {
-			throw new BadPathCacheValetException(IValetException.COD_155, Language.getResCacheValet(ICacheMessages.CACHE_IMPL_003));
+			throw new BadPathCacheValetException(IValetException.COD_155, Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_003));
 		} else if (!path.startsWith(getSeparator())) {
-			throw new BadPathCacheValetException(IValetException.COD_155, Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_004, new Object[ ] { getSeparator() }));
+			throw new BadPathCacheValetException(IValetException.COD_155, Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_004, new Object[ ] { getSeparator() }));
 		} else if (key == null) {
-			throw new BadPathCacheValetException(IValetException.COD_155, Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_004, new Object[ ] { path }));
+			throw new BadPathCacheValetException(IValetException.COD_155, Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_004, new Object[ ] { path }));
 		}
 
 	}
@@ -255,13 +255,13 @@ public abstract class ACacheValet implements ICacheValet {
 		try {
 			result = getObjectImplCache(path, key, inLoadingCache);
 		} catch (Exception e) {
-			throw new ManagingObjectCacheValetException(IValetException.COD_154, Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_007, new Object[ ] { e }));
+			throw new ManagingObjectCacheValetException(IValetException.COD_154, Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_007, new Object[ ] { e }));
 		}
 
 		if (result == null) {
-			getLogger().debug(Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_008, new Object[ ] { path + getSeparator() + key }));
+			getLogger().debug(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_008, new Object[ ] { path + getSeparator() + key }));
 		} else {
-			getLogger().debug(Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_009, new Object[ ] { path + getSeparator() + key }));
+			getLogger().debug(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_009, new Object[ ] { path + getSeparator() + key }));
 		}
 
 		return result;
@@ -320,10 +320,10 @@ public abstract class ACacheValet implements ICacheValet {
 		try {
 			result = removeObjectImplCache(path, key, inLoadingCache);
 		} catch (Exception e) {
-			throw new ManagingObjectCacheValetException(IValetException.COD_154, Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_010, new Object[ ] { e }));
+			throw new ManagingObjectCacheValetException(IValetException.COD_154, Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_010, new Object[ ] { e }));
 		}
 
-		getLogger().debug(Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_011, new Object[ ] { path + getSeparator() + key }));
+		getLogger().debug(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_011, new Object[ ] { path + getSeparator() + key }));
 
 		return result;
 
@@ -354,10 +354,10 @@ public abstract class ACacheValet implements ICacheValet {
 		try {
 			result = removeNodeImplCache(fullPath, inLoadingCache);
 		} catch (Exception e) {
-			throw new ManagingObjectCacheValetException(IValetException.COD_154, Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_012, new Object[ ] { e }));
+			throw new ManagingObjectCacheValetException(IValetException.COD_154, Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_012, new Object[ ] { e }));
 		}
 
-		getLogger().debug(Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_013, new Object[ ] { fullPath }));
+		getLogger().debug(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_013, new Object[ ] { fullPath }));
 
 		return result;
 

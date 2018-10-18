@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,29 +14,28 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.commons.utils.UtilsProviders.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>24 sept. 2018.</p>
+ * <b>Description:</b><p>Utilities class for manage the cryptographic providers.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>24/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 24 sept. 2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.commons.utils;
 
 import java.security.Provider;
 import java.security.Security;
 
-import org.apache.log4j.Logger;
-
 import iaik.security.provider.IAIK;
 
-/** 
+/**
  * <p>Utilities class for manage the cryptographic providers.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24 sept. 2018.
+ * @version 1.1, 18/10/2018.
  */
 public final class UtilsProviders {
+
 	/**
 	 * Constant attribute that represents the IAIK Provider.
 	 */
@@ -47,12 +46,6 @@ public final class UtilsProviders {
 	 */
 	public static final String IAIK_PROVIDER_TOKEN_NAME = IAIK_PROVIDER.getName();
 
-
-	/**
-	 * Attribute that represents the object that manages the log of the class.
-	 */
-	private static final Logger LOGGER = Logger.getLogger(UtilsProviders.class);
-
 	/**
 	 * Constructor method for the class UtilsProviders.java.
 	 */
@@ -61,7 +54,7 @@ public final class UtilsProviders {
 	}
 
 	/**
-	 * Method that initializes the providers
+	 * Method that initializes the providers.
 	 */
 	public static void initializeProviders() {
 
@@ -69,6 +62,6 @@ public final class UtilsProviders {
 		// posición 1.
 		Security.removeProvider(IAIK_PROVIDER_TOKEN_NAME);
 		Security.insertProviderAt(IAIK_PROVIDER, 1);
-		
+
 	}
 }

@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.quartz.scheduler.AbstractQuartzScheduler.java.</p>
  * <b>Description:</b><p> Class that represents an abstract quartz scheduler.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.quartz.scheduler;
 
@@ -46,12 +46,12 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IQuartzMessages;
+import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
 
-/** 
+/**
  * <p>Class that represents an abstract quartz scheduler.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 public abstract class AbstractQuartzScheduler {
 
@@ -85,7 +85,8 @@ public abstract class AbstractQuartzScheduler {
 	 * Private constructor method for the class AbstractQuartzScheduler.java.
 	 */
 	protected AbstractQuartzScheduler() {
-		// This constructor is intentionally empty. Nothing special is needed here.
+		// This constructor is intentionally empty. Nothing special is needed
+		// here.
 	}
 
 	/**
@@ -142,10 +143,10 @@ public abstract class AbstractQuartzScheduler {
 			Scheduler scheduler = schedulerFactory.getScheduler();
 			setScheduler(scheduler);
 			scheduler.start();
-			LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ06, new Object[ ] { filePath }));
+			LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ06, new Object[ ] { filePath }));
 		} catch (SchedulerException e) {
 			result = false;
-			LOGGER.error(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ07, new Object[ ] { filePath, e }));
+			LOGGER.error(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ07, new Object[ ] { filePath, e }));
 		}
 
 		return result;
@@ -165,7 +166,7 @@ public abstract class AbstractQuartzScheduler {
 
 			if (blockScheduler) {
 
-				LOGGER.warn(Language.getResQuartzValet(IQuartzMessages.LOGMQ28));
+				LOGGER.warn(Language.getResQuartzGeneral(IQuartzGeneralMessages.LOGMQ28));
 
 			} else {
 
@@ -178,7 +179,7 @@ public abstract class AbstractQuartzScheduler {
 					}
 
 				} catch (SchedulerException e) {
-					LOGGER.error(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ26, new Object[ ] { e }));
+					LOGGER.error(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ26, new Object[ ] { e }));
 				}
 
 			}
@@ -240,7 +241,7 @@ public abstract class AbstractQuartzScheduler {
 		checkParamsIn = checkParamsIn || UtilsStringChar.isNullOrEmptyTrim(triggerId) || jobClass == null;
 		if (checkParamsIn) {
 
-			LOGGER.debug(Language.getResQuartzValet(IQuartzMessages.LOGMQ08));
+			LOGGER.debug(Language.getResQuartzGeneral(IQuartzGeneralMessages.LOGMQ08));
 
 		} else {
 
@@ -292,7 +293,7 @@ public abstract class AbstractQuartzScheduler {
 		if (getScheduler().checkExists(jobKey)) {
 
 			// Si ya existe el job, lo recuperamos del scheduler.
-			LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ09, new Object[ ] { jobName, getSchedulerGroup() }));
+			LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ09, new Object[ ] { jobName, getSchedulerGroup() }));
 			job = getScheduler().getJobDetail(jobKey);
 
 		} else {
@@ -302,7 +303,7 @@ public abstract class AbstractQuartzScheduler {
 			// se inicialice a vacío.
 			JobDataMap jobDataMap = dataMap == null ? new JobDataMap() : dataMap;
 			// Si no existe, lo añadimos.
-			LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ10, new Object[ ] { jobName, getSchedulerGroup() }));
+			LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ10, new Object[ ] { jobName, getSchedulerGroup() }));
 			// Creamos el job.
 			job = JobBuilder.newJob(jobClass).withIdentity(jobKey).usingJobData(jobDataMap).requestRecovery(true).build();
 
@@ -312,12 +313,12 @@ public abstract class AbstractQuartzScheduler {
 		// generamos el trigger.
 		if (numberOfReps <= 0) {
 
-			LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ11, new Object[ ] { repeatMillis }));
+			LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ11, new Object[ ] { repeatMillis }));
 			trigger = (SimpleTrigger) newTrigger().withIdentity(triggerKey).startAt(startTime).withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(repeatMillis).repeatForever().withMisfireHandlingInstructionNowWithRemainingCount()).forJob(job).build();
 
 		} else {
 
-			LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ12, new Object[ ] { startTime }));
+			LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ12, new Object[ ] { startTime }));
 			trigger = (SimpleTrigger) newTrigger().withIdentity(triggerKey).startAt(startTime).withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(repeatMillis).withRepeatCount(numberOfReps - 1)).forJob(job).build();
 
 		}
@@ -330,12 +331,12 @@ public abstract class AbstractQuartzScheduler {
 		if (getScheduler().checkExists(triggerKey)) {
 
 			// Si existe, lo relanzamos con la nueva configuración.
-			LOGGER.debug(Language.getResQuartzValet(IQuartzMessages.LOGMQ13));
+			LOGGER.debug(Language.getResQuartzGeneral(IQuartzGeneralMessages.LOGMQ13));
 			getScheduler().rescheduleJob(triggerKey, trigger);
 
 		} else {
 
-			LOGGER.debug(Language.getResQuartzValet(IQuartzMessages.LOGMQ14));
+			LOGGER.debug(Language.getResQuartzGeneral(IQuartzGeneralMessages.LOGMQ14));
 			// En caso de que ya existiera el Job, tan solo hay que
 			// indicar
 			// que se lance el trigger.
@@ -366,7 +367,7 @@ public abstract class AbstractQuartzScheduler {
 
 		if (UtilsStringChar.isNullOrEmptyTrim(jobName)) {
 
-			LOGGER.debug(Language.getResQuartzValet(IQuartzMessages.LOGMQ15));
+			LOGGER.debug(Language.getResQuartzGeneral(IQuartzGeneralMessages.LOGMQ15));
 
 		} else {
 
@@ -376,9 +377,9 @@ public abstract class AbstractQuartzScheduler {
 
 				result = getScheduler().deleteJob(jobKey);
 				if (result) {
-					LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ16, new Object[ ] { jobKey.getName(), getSchedulerGroup() }));
+					LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ16, new Object[ ] { jobKey.getName(), getSchedulerGroup() }));
 				} else {
-					LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ17, new Object[ ] { jobKey.getName(), getSchedulerGroup() }));
+					LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ17, new Object[ ] { jobKey.getName(), getSchedulerGroup() }));
 				}
 
 			}
@@ -404,7 +405,7 @@ public abstract class AbstractQuartzScheduler {
 
 		if (UtilsStringChar.isNullOrEmptyTrim(jobName) || UtilsStringChar.isNullOrEmptyTrim(triggerId)) {
 
-			LOGGER.debug(Language.getResQuartzValet(IQuartzMessages.LOGMQ18));
+			LOGGER.debug(Language.getResQuartzGeneral(IQuartzGeneralMessages.LOGMQ18));
 
 		} else {
 
@@ -414,9 +415,9 @@ public abstract class AbstractQuartzScheduler {
 
 				result = getScheduler().unscheduleJob(triggerKey);
 				if (result) {
-					LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ19, new Object[ ] { triggerKey.getName(), getSchedulerGroup() }));
+					LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ19, new Object[ ] { triggerKey.getName(), getSchedulerGroup() }));
 				} else {
-					LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ20, new Object[ ] { triggerKey.getName(), getSchedulerGroup() }));
+					LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ20, new Object[ ] { triggerKey.getName(), getSchedulerGroup() }));
 				}
 
 			}
@@ -441,7 +442,7 @@ public abstract class AbstractQuartzScheduler {
 
 		if (UtilsStringChar.isNullOrEmptyTrim(jobName)) {
 
-			LOGGER.debug(Language.getResQuartzValet(IQuartzMessages.LOGMQ21));
+			LOGGER.debug(Language.getResQuartzGeneral(IQuartzGeneralMessages.LOGMQ21));
 
 		} else {
 
@@ -451,9 +452,9 @@ public abstract class AbstractQuartzScheduler {
 
 				result = getScheduler().checkExists(jobKey);
 				if (result) {
-					LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ22, new Object[ ] { jobName, getSchedulerGroup() }));
+					LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ22, new Object[ ] { jobName, getSchedulerGroup() }));
 				} else {
-					LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ23, new Object[ ] { jobName, getSchedulerGroup() }));
+					LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ23, new Object[ ] { jobName, getSchedulerGroup() }));
 				}
 
 			}
@@ -488,7 +489,7 @@ public abstract class AbstractQuartzScheduler {
 
 			if (blockScheduler) {
 
-				LOGGER.warn(Language.getResQuartzValet(IQuartzMessages.LOGMQ27));
+				LOGGER.warn(Language.getResQuartzGeneral(IQuartzGeneralMessages.LOGMQ27));
 
 				// Aunque el Scheduler esté bloqueado (no se puedan realizar
 				// operaciones sobre este),
@@ -496,17 +497,17 @@ public abstract class AbstractQuartzScheduler {
 				try {
 					result = getScheduler() == null || !getScheduler().isStarted();
 				} catch (SchedulerException e) {
-					LOGGER.error(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ25, new Object[ ] { taskManagerName, getPathPropertiesFile(), e }));
+					LOGGER.error(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ25, new Object[ ] { taskManagerName, getPathPropertiesFile(), e }));
 				}
 
 			} else {
 				try {
 					if (getScheduler() == null) {
-						LOGGER.warn(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ29, new Object[ ] { taskManagerName, getPathPropertiesFile() }));
+						LOGGER.warn(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ29, new Object[ ] { taskManagerName, getPathPropertiesFile() }));
 						result = true;
 					} else {
 						if (!getScheduler().isStarted()) {
-							LOGGER.warn(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ30, new Object[ ] { taskManagerName, getPathPropertiesFile() }));
+							LOGGER.warn(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ30, new Object[ ] { taskManagerName, getPathPropertiesFile() }));
 							result = true;
 						} else {
 							List<JobExecutionContext> executingJobs = getScheduler().getCurrentlyExecutingJobs();
@@ -520,17 +521,17 @@ public abstract class AbstractQuartzScheduler {
 									}
 								}
 								if (execJobsList.length() > 0) {
-									LOGGER.error(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ31, new Object[ ] { execJobsList.toString() }));
+									LOGGER.error(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ31, new Object[ ] { execJobsList.toString() }));
 								}
 							}
 							getScheduler().shutdown(true);
 							setScheduler(null);
-							LOGGER.debug(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ24, new Object[ ] { getPathPropertiesFile() }));
+							LOGGER.debug(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ24, new Object[ ] { getPathPropertiesFile() }));
 							result = true;
 						}
 					}
 				} catch (SchedulerException e) {
-					LOGGER.error(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ25, new Object[ ] { taskManagerName, getPathPropertiesFile(), e }));
+					LOGGER.error(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ25, new Object[ ] { taskManagerName, getPathPropertiesFile(), e }));
 				}
 			}
 

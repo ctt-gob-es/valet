@@ -17,10 +17,10 @@
 /**
  * <b>File:</b><p>es.gob.valet.sprint.config.ApplicationConfig.java.</p>
  * <b>Description:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
- * <b>Project:</b><p></p>
+ * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 25/09/2018.
+ * @version 1.3, 18/10/2018.
  */
 package es.gob.valet.spring.config;
 
@@ -42,13 +42,13 @@ import es.gob.valet.cache.exceptions.CacheValetException;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsProviders;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreMessages;
+import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 25/09/2018.
+ * @version 1.3, 18/10/2018.
  */
 @Configuration
 @EnableAutoConfiguration
@@ -82,10 +82,10 @@ public class ApplicationConfig {
 
 		try {
 			initializePlatform();
-			logger.info(Language.getResCoreValet(ICoreMessages.INITIALIZATION_001));
-			//initializeProviders();
+			logger.info(Language.getResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_001));
+			// initializeProviders();
 		} catch (Exception e) {
-			logger.error(Language.getResCoreValet(ICoreMessages.INITIALIZATION_002), e);
+			logger.error(Language.getResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_002), e);
 		}
 
 	}
@@ -101,13 +101,16 @@ public class ApplicationConfig {
 		// Despues de iniciar la configuración de log4j, iniciamos el logger.
 		logger = Logger.getLogger(ApplicationConfig.class);
 
-		logger.info(Language.getResCoreValet(ICoreMessages.INITIALIZATION_000));
+		logger.info(Language.getResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_000));
+
+		// Se inicializan los providers necesarios.
+		UtilsProviders.initializeProviders();
 
 		// Se inicializa la caché.
 		try {
 			FactoryCacheValet.getCacheAfirmaInstance();
 		} catch (CacheValetException e) {
-			logger.warn(Language.getResCoreValet(ICoreMessages.INITIALIZATION_003), e);
+			logger.warn(Language.getResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_003), e);
 			// TODO Aquí hay que enviar una alarma por no poder iniciar la
 			// caché.
 		}
@@ -120,15 +123,6 @@ public class ApplicationConfig {
 	@PreDestroy
 	public final void destroy() {
 		managerPersistenceServices = null;
-	}
-	
-	/**
-	 * Internal method that initializes the providers.
-	 */
-	private void initializeProviders() {
-
-		// Inicializamos los proveedores.
-		UtilsProviders.initializeProviders();
 	}
 
 }

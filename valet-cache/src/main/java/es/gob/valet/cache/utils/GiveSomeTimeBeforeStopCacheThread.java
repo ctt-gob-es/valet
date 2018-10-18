@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.cache.utils;
 
@@ -31,13 +31,13 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICacheMessages;
+import es.gob.valet.i18n.messages.ICacheGeneralMessages;
 
 /**
  * <p>Utility class that controls in a independent thread the operation of stopping a Cache
  * giving some time of living previosly.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 
@@ -113,7 +113,7 @@ public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 			// Realizamos la espera configurada.
 			checkTimeToWait();
 
-			LOGGER.debug(Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_016, new Object[ ] { concurrentMapCacheName }));
+			LOGGER.debug(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_016, new Object[ ] { concurrentMapCacheName }));
 
 			if (!concurrentMapCache.isEmpty()) {
 
@@ -135,7 +135,7 @@ public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 
 			}
 
-			LOGGER.info(Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_017, new Object[ ] { concurrentMapCacheName }));
+			LOGGER.info(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_017, new Object[ ] { concurrentMapCacheName }));
 			concurrentMapCacheName = null;
 
 		}
@@ -150,11 +150,11 @@ public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 		// Si el tiempo de espera es mayor que 0...
 		if (timeBeforeStopCacheInMilliSeconds > 0) {
 
-			LOGGER.debug(Language.getFormatResCacheValet(ICacheMessages.CACHE_IMPL_014, new Object[ ] { timeBeforeStopCacheInMilliSeconds }));
+			LOGGER.debug(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_014, new Object[ ] { timeBeforeStopCacheInMilliSeconds }));
 			try {
 				Thread.sleep(timeBeforeStopCacheInMilliSeconds);
 			} catch (InterruptedException e) {
-				LOGGER.error(Language.getResCacheValet(ICacheMessages.CACHE_IMPL_015), e);
+				LOGGER.error(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_015), e);
 			}
 
 		}

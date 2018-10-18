@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.tasks.FindNewTSLRevisionsTask.java.</p>
- * <b>Description:</b><p> Class that checks the new versions of TSLs.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Description:</b><p>Class that checks the new versions of TSLs.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.tasks;
 
@@ -29,15 +29,15 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import es.gob.valet.i18n.ILogMessages;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.task.Task;
 
-/** 
+/**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
@@ -52,7 +52,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	 */
 	@Override
 	protected final void initialMessage() {
-		LOGGER.info(Language.getFormatResWebValet(ILogMessages.TASK_FIND_NEW_TSL_REV_INIT_MSG, new Object[ ] { }));
+		LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_INIT_MSG, new Object[ ] { }));
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	 */
 	@Override
 	protected final void endMessage() {
-		LOGGER.info(Language.getFormatResWebValet(ILogMessages.TASK_FIND_NEW_TSL_REV_END_MSG, new Object[ ] { }));
+		LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_END_MSG, new Object[ ] { }));
 	}
 
 	/**

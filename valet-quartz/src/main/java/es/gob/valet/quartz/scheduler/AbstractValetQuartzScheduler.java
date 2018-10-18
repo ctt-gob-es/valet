@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.quartz.scheduler.AbstractValetQuartzScheduler.java.</p>
  * <b>Description:</b><p> Class that represents an abstract quartz scheduler for valET.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.quartz.scheduler;
 
@@ -34,14 +34,14 @@ import org.quartz.SchedulerException;
 
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IQuartzMessages;
+import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
 import es.gob.valet.quartz.job.AbstractValetTaskQuartzJob;
 import es.gob.valet.quartz.planner.IPlanificador;
 
-/** 
+/**
  * <p>Class that represents an abstract quartz scheduler for valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 public abstract class AbstractValetQuartzScheduler extends AbstractQuartzScheduler {
 
@@ -76,7 +76,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 
 			if (nextExecutionDate == null) {
 
-				LOGGER.warn(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ01, new Object[ ] { taskNameParam }));
+				LOGGER.warn(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ01, new Object[ ] { taskNameParam }));
 
 			} else {
 
@@ -99,7 +99,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 				try {
 					result = addOrReplaceJobTrigger(nextExecutionDate, periodInMillis, numberOfReps, taskNameParam, planner.getIdentifier(), taskClass, jobDataMap);
 				} catch (SchedulerException e) {
-					String errorMsg = Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ02, new Object[ ] { taskNameParam, getSchedulerGroup() });
+					String errorMsg = Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ02, new Object[ ] { taskNameParam, getSchedulerGroup() });
 					throw new ValetSchedulerException(IValetException.COD_184, errorMsg, e);
 				}
 
@@ -122,7 +122,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 		try {
 			return removeJob(taskName);
 		} catch (SchedulerException e) {
-			String errorMsg = Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ03, new Object[ ] { taskName, getSchedulerGroup() });
+			String errorMsg = Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ03, new Object[ ] { taskName, getSchedulerGroup() });
 			throw new ValetSchedulerException(IValetException.COD_184, errorMsg, e);
 		}
 
@@ -140,7 +140,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 		try {
 			return removeTrigger(taskName, plannerId);
 		} catch (SchedulerException e) {
-			String errorMsg = Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ04, new Object[ ] { taskName, getSchedulerGroup() });
+			String errorMsg = Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ04, new Object[ ] { taskName, getSchedulerGroup() });
 			throw new ValetSchedulerException(IValetException.COD_184, errorMsg, e);
 		}
 
@@ -198,7 +198,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 		try {
 			return checkIfExistJob(taskName);
 		} catch (SchedulerException e) {
-			String errorMsg = Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ05, new Object[ ] { taskName, getSchedulerGroup() });
+			String errorMsg = Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ05, new Object[ ] { taskName, getSchedulerGroup() });
 			throw new ValetSchedulerException(IValetException.COD_185, errorMsg, e);
 		}
 

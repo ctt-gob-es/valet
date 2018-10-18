@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/09/2018.
+ * @version 1.2, 18/10/2018.
  */
 package es.gob.valet.exceptions;
 
@@ -28,12 +28,12 @@ import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.UtilsXML;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilMessages;
+import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 
 /**
  * <p>Class for encapsulate exceptions thrown by the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/09/2018.
+ * @version 1.2, 18/10/2018.
  */
 public class ValetException extends Exception implements IValetException {
 
@@ -75,10 +75,10 @@ public class ValetException extends Exception implements IValetException {
 	 * @param errorDescParam Description for the error.
 	 */
 	public ValetException(final String errorCodeParam, final String errorDescParam) {
-		super(Language.getFormatResCommonsUtilValet(ICommonsUtilMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
+		super(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
 		errorCode = errorCodeParam;
 		errorDesc = errorDescParam;
-		LOGGER.warn(Language.getFormatResCommonsUtilValet(ICommonsUtilMessages.EXCEPTION_001), this);
+		LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
 	}
 
 	/**
@@ -88,11 +88,11 @@ public class ValetException extends Exception implements IValetException {
 	 * @param exceptionParam Exception that causes the error.
 	 */
 	public ValetException(final String errorCodeParam, final String errorDescParam, final Exception exceptionParam) {
-		super(Language.getFormatResCommonsUtilValet(ICommonsUtilMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
+		super(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
 		errorCode = errorCodeParam;
 		errorDesc = errorDescParam;
 		exception = exceptionParam;
-		LOGGER.warn(Language.getFormatResCommonsUtilValet(ICommonsUtilMessages.EXCEPTION_001), this);
+		LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
 	}
 
 	/**
@@ -151,9 +151,9 @@ public class ValetException extends Exception implements IValetException {
 	public final String toString() {
 
 		if (exception == null) {
-			return Language.getFormatResCommonsUtilValet(ICommonsUtilMessages.EXCEPTION_002, new Object[ ] { errorCode, errorDesc });
+			return Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_002, new Object[ ] { errorCode, errorDesc });
 		} else {
-			return Language.getFormatResCommonsUtilValet(ICommonsUtilMessages.EXCEPTION_003, new Object[ ] { errorCode, errorDesc, exception.toString() });
+			return Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_003, new Object[ ] { errorCode, errorDesc, exception.toString() });
 		}
 
 	}

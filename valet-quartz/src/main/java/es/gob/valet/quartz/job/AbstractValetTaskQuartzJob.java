@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,14 +14,14 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.quartz.job.AbstractValetTaskQuartzJob.java.</p>
  * <b>Description:</b><p>Class that represents a scheduler task in valET. This class must be extends
  * for all the scheduler task classes in valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 package es.gob.valet.quartz.job;
 
@@ -36,19 +36,19 @@ import org.quartz.JobExecutionException;
 import org.quartz.SchedulerException;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IQuartzMessages;
+import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
 import es.gob.valet.quartz.scheduler.AbstractQuartzScheduler;
 
-/** 
+/**
  * <p>Class that represents a scheduler task in valET. This class must be extends
  * for all the scheduler task classes in valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 18/10/2018.
  */
 public abstract class AbstractValetTaskQuartzJob implements Job {
 
 	/**
-	 * Attribute that represents the task name. 
+	 * Attribute that represents the task name.
 	 */
 	private transient String taskName;
 
@@ -70,7 +70,7 @@ public abstract class AbstractValetTaskQuartzJob implements Job {
 			for (JobExecutionContext job: jobs) {
 				if (job.getTrigger().equals(jobExecContext.getTrigger()) && !job.getFireInstanceId().equals(jobExecContext.getFireInstanceId())) {
 					String keyName = jobExecContext.getJobDetail().getKey().getName();
-					LOGGER.warn(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ32, new Object[ ] { keyName }));
+					LOGGER.warn(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ32, new Object[ ] { keyName }));
 					return;
 				}
 
@@ -102,11 +102,11 @@ public abstract class AbstractValetTaskQuartzJob implements Job {
 
 		} catch (TaskValetException e) {
 
-			LOGGER.error(Language.getFormatResQuartzValet(IQuartzMessages.LOGMQ00, new Object[ ] { jobExecContext.getJobDetail().getKey().getName() }));
+			LOGGER.error(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ00, new Object[ ] { jobExecContext.getJobDetail().getKey().getName() }));
 			throw new JobExecutionException(e);
 
 		} catch (SchedulerException e) {
-			LOGGER.error(Language.getResQuartzValet(IQuartzMessages.LOGMQ33));
+			LOGGER.error(Language.getResQuartzGeneral(IQuartzGeneralMessages.LOGMQ33));
 			throw new JobExecutionException(e);
 
 		}
