@@ -18,7 +18,7 @@
  * <b>File:</b><p>es.gob.valet.i18n.messages.ICacheMessages.java.</p>
  * <b>Description:</b><p>Interface that defines all the token constants for the messages
  * in the cache module of valET.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 25/09/2018.
@@ -28,7 +28,7 @@ package es.gob.valet.i18n.messages;
 /**
  * <p>Interface that defines all the token constants for the messages
  * in the cache module of valET.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 25/09/2018.
  */
 public interface ICacheMessages {

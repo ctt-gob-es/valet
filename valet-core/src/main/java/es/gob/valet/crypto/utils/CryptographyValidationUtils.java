@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.crypto.utils.CryptographyValidationUtils.java.</p>
  * <b>Description:</b><p>Class with utilities for the validation of objects for cryptography module.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26 sept. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 26 sept. 2018.
@@ -30,7 +30,7 @@ import es.gob.valet.crypto.exception.CryptographyException;
 
 /** 
  * <p>Class with utilities for the validation of objects for cryptography module.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 26 sept. 2018.
  */
 public final class CryptographyValidationUtils {

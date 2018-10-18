@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.quartz.planner.IPlanificador.java.</p>
  * <b>Description:</b><p> Interface that defines the methods for the planners.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 18/09/2018.
@@ -29,7 +29,7 @@ import java.util.Date;
 
 /** 
  * <p>Interface that defines the methods for the planners.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 18/09/2018.
  */
 public interface IPlanificador {

@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.quartz.planner.PlanificadorPorFecha.java.</p>
  * <b>Description:</b><p> Class that defines the information of a planner from a date.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 18/09/2018.
@@ -32,7 +32,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 
 /** 
  * <p>Class that defines the information of a planner from a date.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 18/09/2018.
  */
 public class PlanificadorPorFecha implements IPlanificador, Serializable {

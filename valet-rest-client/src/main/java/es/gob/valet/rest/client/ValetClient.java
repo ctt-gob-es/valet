@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.rest.client.ValetClient.java.</p>
  * <b>Description:</b><p> Class that implements a client for Valet rest services.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 21/09/2018.
@@ -46,7 +46,7 @@ import es.gob.valet.rest.services.ITslRestService;
 
 /** 
  * <p>Class that implements a client for Valet rest services.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 21/09/2018.
  */
 public class ValetClient implements ITslRestService {

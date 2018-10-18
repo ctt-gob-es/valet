@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.quartz.scheduler.ValetSchedulerException.java.</p>
  * <b>Description:</b><p> Class that manages exceptions produced by any valET scheduler.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 18/09/2018.
@@ -28,7 +28,7 @@ import es.gob.valet.exceptions.ValetException;
 
 /** 
  * <p>Class that manages exceptions produced by any valET scheduler.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 18/09/2018.
  */
 public class ValetSchedulerException extends ValetException {

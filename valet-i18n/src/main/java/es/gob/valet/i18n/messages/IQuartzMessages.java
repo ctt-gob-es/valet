@@ -18,7 +18,7 @@
  * <b>File:</b><p>es.gob.valet.i18n.messages.IQuartzMessages.java.</p>
  * <b>Description:</b><p>Interface that defines all the token constants for the messages
  * in the valet-quartz module of valET.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 18/09/2018.
@@ -28,7 +28,7 @@ package es.gob.valet.i18n.messages;
 /** 
  * <p>Interface that defines all the token constants for the messages
  * in the valet-quartz module of valET.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 18/09/2018.
  */
 public interface IQuartzMessages {

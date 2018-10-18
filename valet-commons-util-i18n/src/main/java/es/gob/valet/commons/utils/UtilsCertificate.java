@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.commons.utils.UtilsCertificate.java.</p>
  * <b>Description:</b><p> Class that provides methods for managing certificates.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21 sept. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 21 sept. 2018.
@@ -39,7 +39,7 @@ import es.gob.valet.exceptions.CommonUtilsException;
 
 /** 
  * <p>Class that provides methods for managing certificates.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 21 sept. 2018.
  */
 public final class UtilsCertificate {

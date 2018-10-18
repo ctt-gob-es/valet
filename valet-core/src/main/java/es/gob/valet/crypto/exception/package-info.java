@@ -17,14 +17,14 @@
 /** 
  * <b>File:</b><p>es.gob.valet.crypto.exception.package-info.java.</p>
  * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26 sept. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 26 sept. 2018.
  */
 /** 
  * <p>Class .</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 26 sept. 2018.
  */
 package es.gob.valet.crypto.exception;

@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.ICStatusCertificate.java.</p>
  * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18 sept. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 18 sept. 2018.
@@ -29,7 +29,7 @@ import es.gob.valet.persistence.configuration.model.entity.CStatusCertificate;
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the CStatusCertificate entity.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 18 sept. 2018.
  */
 public interface ICStatusCertificateService {

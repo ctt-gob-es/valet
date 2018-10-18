@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.form.ProxyForm.java.</p>
  * <b>Description:</b><p> Class that represents the backing form for editing proxy settings.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15 oct. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 15 oct. 2018.
@@ -30,7 +30,7 @@ import es.gob.valet.form.TslForm.View;
 
 /** 
  * <p>Class that represents the backing form for editing proxy settings.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 15 oct. 2018.
  */
 public class ProxyForm {

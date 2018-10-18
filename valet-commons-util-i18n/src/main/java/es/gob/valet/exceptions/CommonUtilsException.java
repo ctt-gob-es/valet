@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.exceptions.CommonUtilsException.java.</p>
  * <b>Description:</b><p> Class that creates an exception that occurs in CommonsUtils module.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21 sept. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 21 sept. 2018.
@@ -27,7 +27,7 @@ package es.gob.valet.exceptions;
 
 /** 
  * <p>Class that creates an exception that occurs in CommonsUtils module.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 21 sept. 2018.
  */
 public class CommonUtilsException extends ValetException {

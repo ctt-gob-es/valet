@@ -18,7 +18,7 @@
  * <b>File:</b><p>es.gob.valet.quartz.job.AbstractValetTaskQuartzJob.java.</p>
  * <b>Description:</b><p>Class that represents a scheduler task in valET. This class must be extends
  * for all the scheduler task classes in valET.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 18/09/2018.
@@ -42,7 +42,7 @@ import es.gob.valet.quartz.scheduler.AbstractQuartzScheduler;
 /** 
  * <p>Class that represents a scheduler task in valET. This class must be extends
  * for all the scheduler task classes in valET.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 18/09/2018.
  */
 public abstract class AbstractValetTaskQuartzJob implements Job {

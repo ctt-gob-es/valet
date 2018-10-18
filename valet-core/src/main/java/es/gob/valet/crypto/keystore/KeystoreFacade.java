@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.crypto.keystore.KeystoreFacade.java.</p>
  * <b>Description:</b><p>Class that manages all the operations related with JCE, JCEKS and PKCS#12 keystores.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26 sept. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 26 sept. 2018.
@@ -59,7 +59,7 @@ import es.gob.valet.persistence.configuration.model.entity.Keystore;
 
 /** 
  * <p>Class that manages all the operations related with JCE, JCEKS and PKCS#12 keystores.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 26 sept. 2018.
  */
 public class KeystoreFacade implements IKeystoreFacade {

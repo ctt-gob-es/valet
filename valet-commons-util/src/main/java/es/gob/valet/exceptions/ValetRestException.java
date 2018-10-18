@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.exceptions.ValetRestException.java.</p>
  * <b>Description:</b><p> Class that manages exceptions produced by the rest service module.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>27/09/2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 27/09/2018.
@@ -30,7 +30,7 @@ import es.gob.valet.commons.utils.UtilsXML;
 
 /** 
  * <p>Class that manages exceptions produced by the rest service module.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 27/09/2018.
  */
 public class ValetRestException extends Exception implements IValetException {

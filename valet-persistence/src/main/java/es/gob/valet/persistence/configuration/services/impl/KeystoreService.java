@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.services.impl.KeystoreService.java.</p>
  * <b>Description:</b><p>Class that implements the communication with the operations of the persistence layer for Keystore.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18 sept. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 18 sept. 2018.
@@ -39,7 +39,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 
 /** 
  * <p>Class that implements the communication with the operations of the persistence layer for Keystore.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 18 sept. 2018.
  */
 @Service

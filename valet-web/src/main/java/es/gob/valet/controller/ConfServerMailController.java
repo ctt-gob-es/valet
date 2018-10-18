@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.controller.ConfServerMailController.java.</p>
  * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>2 oct. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 2 oct. 2018.
@@ -35,7 +35,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailSer
 
 /** 
  * <p>Class that manages the requests related to the ConfServerMail administration.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 2 oct. 2018.
  */
 @Controller

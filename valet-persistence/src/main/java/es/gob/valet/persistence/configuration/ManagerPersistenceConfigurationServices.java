@@ -18,7 +18,7 @@
  * <b>File:</b><p>es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices.java.</p>
  * <b>Description:</b><p>Manager singleton instance for the use of the persistence services
  * of the configuration scheme.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 11/09/2018.
@@ -42,7 +42,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 /**
  * <p>Manager singleton instance for the use of the persistence services
  * of the configuration scheme.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 11/09/2018.
  */
 @Component

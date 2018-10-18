@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.CPlannerTypeService.java.</p>
  * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer related to CPlannerType.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>3 oct. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 3 oct. 2018.
@@ -30,7 +30,7 @@ import es.gob.valet.persistence.configuration.model.entity.CPlannerType;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer related to CPlannerType.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 3 oct. 2018.
  */
 public interface ICPlannerTypeService {

@@ -17,7 +17,7 @@
 /** 
  * <b>File:</b><p>es.gob.valet.rest.controller.KeystoreRestController.java.</p>
  * <b>Description:</b><p> Class that manages the REST request related to the Keystore's administration.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19 sept. 2018.</p>
  * @author Gobierno de España.
  * @version 1.0, 19 sept. 2018.
@@ -72,7 +72,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificate
 
 /** 
  * <p>Class that manages the REST request related to the Keystore's administration.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 19 sept. 2018.
  */
 @RestController

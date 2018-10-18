@@ -18,7 +18,7 @@
  * <b>File:</b><p>es.gob.valet.commons.utils.StaticValetConfig.java.</p>
  * <b>Description:</b><p> Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
  * @version 1.1, 25/09/2018.
@@ -38,7 +38,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
 /**
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.2, 02/10/2018.
  */
 public final class StaticValetConfig {

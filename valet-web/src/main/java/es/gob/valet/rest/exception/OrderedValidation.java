@@ -28,7 +28,7 @@ import javax.validation.GroupSequence;
 
 /** 
  * <p>Interface to indicate the order of the validations</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 13 sept. 2018.
  */
 @GroupSequence({CheckItFirst.class, ThenCheckIt.class})

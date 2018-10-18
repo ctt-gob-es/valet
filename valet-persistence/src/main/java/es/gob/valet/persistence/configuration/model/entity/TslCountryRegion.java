@@ -39,7 +39,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 
 /**
  * <p>Class the maps the <i>TSL_COUNTRY_REGION</i> database table as a Plain Old Java Object.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 11/09/2018.
  */
 @Entity
