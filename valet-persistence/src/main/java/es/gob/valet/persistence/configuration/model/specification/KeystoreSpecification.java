@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.specification.KeystoreSpecification.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>20 sept. 2018.</p>
+ * <b>Description:</b><p>Class that manages the SQL request over the keystore table.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 20 sept. 2018.
+ * @version 1.0, 20/09/2018.
  */
 package es.gob.valet.persistence.configuration.model.specification;
 
@@ -37,43 +37,31 @@ import org.springframework.data.jpa.domain.Specification;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 
-
-/** 
- * <p>Class .</p>
+/**
+ * <p>Class that manages the SQL request over the keystore entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 20 sept. 2018.
- */
-/** 
- * <p>Class .</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 20 sept. 2018.
+ * @version 1.0, 20/09/2018.
  */
 public class KeystoreSpecification implements Specification<SystemCertificate> {
 
 	/**
-	 * Attribute that represents the serial version UID.
+	 * Constant attribute that represents the serial version UID.
 	 */
 	private static final long serialVersionUID = 2394216280110018182L;
 
-	
 	/**
-	 * Attribute that represents . 
+	 * Attribute that represents the keystore entity to manage.
 	 */
-	private Keystore criteria;
-	
-	
-	
+	private Keystore keystoreEntity;
 
 	/**
 	 * Constructor method for the class KeystoreSpecification.java.
-	 * @param criteria 
+	 * @param keystoreEntityParam Keystore entity to manage.
 	 */
-	public KeystoreSpecification(Keystore criteria) {
+	public KeystoreSpecification(Keystore keystoreEntityParam) {
 		super();
-		this.criteria = criteria;
+		this.keystoreEntity = keystoreEntityParam;
 	}
-
-
 
 	/**
 	 * {@inheritDoc}
@@ -82,10 +70,8 @@ public class KeystoreSpecification implements Specification<SystemCertificate> {
 	@Override
 	public Predicate toPredicate(Root<SystemCertificate> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 		List<Predicate> predicates = new ArrayList<Predicate>();
-        
-        predicates.add(builder.equal(root.get("keystore").get("idKeystore"), criteria.getIdKeystore()));
-                
-        return builder.and(predicates.toArray(new Predicate[predicates.size()]));
+		predicates.add(builder.equal(root.get("keystore").get("idKeystore"), keystoreEntity.getIdKeystore()));
+		return builder.and(predicates.toArray(new Predicate[predicates.size()]));
 	}
 
 }

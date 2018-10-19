@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -15,16 +15,6 @@
  ******************************************************************************/
 
 /** 
- * <b>File:</b><p>es.gob.valet.crypto.exception.package-info.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>26 sept. 2018.</p>
- * @author Gobierno de España.
- * @version 1.0, 26 sept. 2018.
- */
-/** 
- * <p>Class .</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 26 sept. 2018.
+ * Package that includes all the exceptions related with the cryptographics operations.
  */
 package es.gob.valet.crypto.exception;
