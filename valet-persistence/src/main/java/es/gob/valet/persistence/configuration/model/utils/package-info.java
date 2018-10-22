@@ -15,6 +15,6 @@
  ******************************************************************************/
 
 /**
- * Package that contains classes that provides communication with the operations of the services configuration persistence layer.
+ * Package that includes all the utilities and constant classes for the configuration persistence model.
  */
-package es.gob.valet.persistence.configuration.services;
+package es.gob.valet.persistence.configuration.model.utils;

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 22/10/2018.
  */
 package es.gob.valet.cache;
 
@@ -37,7 +37,7 @@ import es.gob.valet.commons.utils.UtilsStringChar;
  * <p>Factory class that gets the unique instance of the valET Cache depending of
  * the implementation configured.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 22/10/2018.
  */
 public final class FactoryCacheValet {
 
@@ -63,7 +63,7 @@ public final class FactoryCacheValet {
 	 * @return unique instance of the valET Cache independently of its implementation.
 	 * @throws CacheValetException In case of some error creating the cache.
 	 */
-	public static ICacheValet getCacheAfirmaInstance() throws CacheValetException {
+	public static ICacheValet getCacheValetInstance() throws CacheValetException {
 
 		// Si la instancia no ha sido inicializada...
 		if (cacheValetInstance == null) {
@@ -129,7 +129,7 @@ public final class FactoryCacheValet {
 	 * Gets the value of the attribute {@link #cacheValetSeparator}.
 	 * @return the value of the attribute {@link #cacheValetSeparator}.
 	 */
-	public static String getCacheAfirmaSeparator() {
+	public static String getCacheValetSeparator() {
 		return cacheValetSeparator;
 	}
 

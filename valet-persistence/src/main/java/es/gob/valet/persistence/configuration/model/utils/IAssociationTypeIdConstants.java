@@ -15,54 +15,32 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.commons.utils.UtilsResources.java.</p>
- * <b>Description:</b><p>Class that provides functionality to control resources.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.IAssociationTypeIdConstants.java.</p>
+ * <b>Description:</b><p>Interface that contains all the IDs of the association types for the
+ * mappings of the system.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>01/08/2018.</p>
+ * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 22/10/2018.
+ * @version 1.0, 22/10/2018.
  */
-package es.gob.valet.commons.utils;
-
-import java.io.IOException;
-import java.io.InputStream;
+package es.gob.valet.persistence.configuration.model.utils;
 
 /**
- * <p>Class that provides functionality to control resources.</p>
+ * <p>Interface that contains all the IDs of the association types for the
+ * mappings of the system.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 22/10/2018.
+ * @version 1.0, 22/10/2018.
  */
-public class UtilsResources {
-
-
-	/**
-	 * Method that handles the closing of a {@link InputStream} resource.
-	 * @param is Parameter that represents a {@link InputStream} resource.
-	 */
-	public static void safeCloseInputStream(InputStream is) {
-		if (is != null) {
-			try {
-				is.close();
-			} catch (IOException e) {
-				// TODO
-				// LOGGER.error(Language.getFormatResCoreGeneral(LOG01, new
-				// Object[ ] { is.getClass().getName(), e.getMessage() }));
-			}
-		}
-	}
+public interface IAssociationTypeIdConstants {
 
 	/**
-	 * To free resources, this method sets the length of the input {@link StringBuilder} to
-	 * zero and then trim it.
-	 * @param sb String builder to clean. If it is <code>null</code>, this method do nothing.
+	 * Constant attribute that represents the ID to identify the simple association type.
 	 */
-	public static void cleanStringBuilder(StringBuilder sb) {
+	Long ID_SIMPLE_ASSOCIATION = 0L;
 
-		if (sb != null) {
-			sb.setLength(0);
-			sb.trimToSize();
-		}
-
-	}
+	/**
+	 * Constant attribute that represents the ID to identify the free association type.
+	 */
+	Long ID_FREE_ASSOCIATION = 4L;
 
 }

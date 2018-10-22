@@ -15,6 +15,6 @@
  ******************************************************************************/
 
 /**
- * Package that contains classes that provides communication with the operations of the services configuration persistence layer.
+ * Package that provides the configuration cache layer for the TSL.
  */
-package es.gob.valet.persistence.configuration.services;
+package es.gob.valet.persistence.configuration.cache.items.tsl;

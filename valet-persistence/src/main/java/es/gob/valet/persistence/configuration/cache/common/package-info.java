@@ -15,6 +15,6 @@
  ******************************************************************************/
 
 /**
- * Package that contains classes that provides communication with the operations of the services configuration persistence layer.
+ * Package that defines all the commons classes for the configuration cache.
  */
-package es.gob.valet.persistence.configuration.services;
+package es.gob.valet.persistence.configuration.cache.common;

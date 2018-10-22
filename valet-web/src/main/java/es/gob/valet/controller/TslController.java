@@ -18,9 +18,9 @@
  * <b>File:</b><p>es.gob.valet.controller.TslController.java.</p>
  * <b>Description:</b><p> Class that manages the requests related to the TSLs administration.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>25 jun. 2018.</p>
+ * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25 jun. 2018.
+ * @version 1.2, 22/10/2018.
  */
 package es.gob.valet.controller;
 
@@ -47,7 +47,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
 /** 
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.1, 12 sep. 2018.
+ *  @version 1.2, 22/10/2018.
  */
 @Controller
 public class TslController {
@@ -71,10 +71,6 @@ public class TslController {
 	private ITslCountryRegionService tslCountryRegionService;
 
 	/**
-	 * Attribute that represents the service object for acceding the repository
-	 */
-
-	/**
 	 * Method that maps the list TSLs to the controller and forwards the list of TSLs to the view.
 	 * 
 	 * @param model Holder object for model attributes.
@@ -84,9 +80,6 @@ public class TslController {
 	public String tslAdmin(Model model) {
 		return "fragments/tsladmin.html";
 	}
-	
-	
-
 
 	/**
 	 * Method that maps the add TSL web request to the controller and sets the
@@ -95,7 +88,6 @@ public class TslController {
 	 * @return String that represents the name of the view to forward.
 	 * @throws IOException 
 	 */
-
 	@RequestMapping(value = "addTsl")
 	public String addTsl(Model model) throws IOException {
 		List<String> listVersions = new ArrayList<String>();
@@ -105,7 +97,6 @@ public class TslController {
 		model.addAttribute("tslform",tslForm);
 		model.addAttribute("versions", listVersions);
 		model.addAttribute("listSpecifications", listSpecifications);
-		
 
 		return "modal/tsl/tslForm.html";
 	}
@@ -134,37 +125,33 @@ public class TslController {
 			tslForm.setIsLegible(false);
 		}
 		
-		
 		Date issueDate = tslValet.getIssueDate();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		tslForm.setIssueDate(sdf.format(issueDate));		
 		tslForm.setExpirationDate(sdf.format(tslValet.getExpirationDate()));
 		tslForm.setUrlTsl(tslValet.getUriTslLocation());
 		
-		
 		tslForm.setSequenceNumber(tslValet.getSequenceNumber());
 		model.addAttribute("isLegible", tslForm.getIsLegible());
 		model.addAttribute("tslform", tslForm);
 		return "modal/tsl/tslEditForm";
 	}
-
 	
 	/**
 	 * Method that loads a datatable with the mappings for the TSL of the indicated country. 
-	 * 
- 	* @param idCountryRegion Parameter that represents a country identifier.
+ 	 * @param idCountryRegion Parameter that represents a country identifier.
 	 * @param model Parameter that represents holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "/loadmappingdatatable", method = RequestMethod.GET)
 	public String loadMappingDataTable(@RequestParam("idTslCountryRegion") Long idCountryRegion, Model model){
-			MappingTslForm mappingTslForm = new MappingTslForm();
-			MappingTslForm mappingTslEditForm = new MappingTslForm();
-			mappingTslForm.setIdTslCountryRegion(idCountryRegion);
-			mappingTslForm.setNameCountryRegion(tslCountryRegionService.getNameCountryRegionById(idCountryRegion));
-			model.addAttribute("mappingtslform", mappingTslForm);
-			model.addAttribute("mappingedittslform", mappingTslEditForm);
-			return "fragments/tslmapping.html";
+		MappingTslForm mappingTslForm = new MappingTslForm();
+		MappingTslForm mappingTslEditForm = new MappingTslForm();
+		mappingTslForm.setIdTslCountryRegion(idCountryRegion);
+		mappingTslForm.setNameCountryRegion(tslCountryRegionService.getNameCountryRegionById(idCountryRegion));
+		model.addAttribute("mappingtslform", mappingTslForm);
+		model.addAttribute("mappingedittslform", mappingTslEditForm);
+		return "fragments/tslmapping.html";
 	}
 
 }

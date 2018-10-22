@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 18/10/2018.
+ * @version 1.5, 22/10/2018.
  */
 package es.gob.valet.i18n;
 
@@ -41,7 +41,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
 /**
  * <p>Class that manages the access to the properties files used for generation messages in the plataform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 18/10/2018.
+ * @version 1.5, 22/10/2018.
  */
 public final class Language {
 
@@ -101,6 +101,11 @@ public final class Language {
 	private static final String CONTENT_PERSISTENCE_CONSTANTS_PATH = "valet-persistence.constants";
 
 	/**
+	 * Attribute that represents the location of file that contains the cache messages persistence module.
+	 */
+	private static final String CONTENT_PERSISTENCE_CACHE_PATH = "valet-persistence.cache";
+
+	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(Language.class);
@@ -144,6 +149,11 @@ public final class Language {
 	 * Attribute that represents the properties for the locale of the constants from the tables of the configuration schema.
 	 */
 	private static ResourceBundle persistenceConstants = null;
+
+	/**
+	 * Attribute that represents the resource boundle with the cache messages for the persistence module.
+	 */
+	private static ResourceBundle persistenceCache = null;
 
 	/**
 	 * Attribute that represents the locale specified in the configuration.
@@ -254,6 +264,8 @@ public final class Language {
 		coreTsl = ResourceBundle.getBundle(CONTENT_CORE_TSL_PATH, currentLocale, urlClassLoaderMsg);
 
 		persistenceConstants = ResourceBundle.getBundle(CONTENT_PERSISTENCE_CONSTANTS_PATH, currentLocale, urlClassLoaderMsg);
+
+		persistenceCache = ResourceBundle.getBundle(CONTENT_PERSISTENCE_CACHE_PATH, currentLocale, urlClassLoaderMsg);
 
 	}
 
@@ -397,6 +409,25 @@ public final class Language {
 	 */
 	public static String getResPersistenceConstants(String key) {
 		return persistenceConstants.getString(key);
+	}
+
+	/**
+	 * Gets the TSL message (core module) with the key and values indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @param values Values for insert in the message.
+	 * @return String with the message well-formed.
+	 */
+	public static String getFormatResPersistenceCache(final String key, final Object... values) {
+		return new MessageFormat(persistenceCache.getString(key), currentLocale).format(values);
+	}
+
+	/**
+	 * Gets the TSL message (core module) with the key indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @return String with the message.
+	 */
+	public static String getResPersistenceCache(final String key) {
+		return persistenceCache.getString(key);
 	}
 
 }

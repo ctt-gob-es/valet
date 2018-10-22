@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 18/10/2018.
+ * @version 1.4, 22/10/2018.
  */
 package es.gob.valet.spring.config;
 
@@ -48,7 +48,7 @@ import es.gob.valet.persistence.ManagerPersistenceServices;
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 18/10/2018.
+ * @version 1.4, 22/10/2018.
  */
 @Configuration
 @EnableAutoConfiguration
@@ -108,7 +108,7 @@ public class ApplicationConfig {
 
 		// Se inicializa la caché.
 		try {
-			FactoryCacheValet.getCacheAfirmaInstance();
+			FactoryCacheValet.getCacheValetInstance();
 		} catch (CacheValetException e) {
 			logger.warn(Language.getResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_003), e);
 			// TODO Aquí hay que enviar una alarma por no poder iniciar la

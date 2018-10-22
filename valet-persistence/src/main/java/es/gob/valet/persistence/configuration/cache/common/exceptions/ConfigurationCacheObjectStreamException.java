@@ -15,54 +15,42 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.commons.utils.UtilsResources.java.</p>
- * <b>Description:</b><p>Class that provides functionality to control resources.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectStreamException.java.</p>
+ * <b>Description:</b><p>Class that represents an exception while is streaming a configuration object using the cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>01/08/2018.</p>
+ * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 22/10/2018.
+ * @version 1.0, 22/10/2018.
  */
-package es.gob.valet.commons.utils;
+package es.gob.valet.persistence.configuration.cache.common.exceptions;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.ObjectStreamException;
 
 /**
- * <p>Class that provides functionality to control resources.</p>
+ * <p>Class that represents an exception while is streaming a configuration object using the cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 22/10/2018.
+ * @version 1.0, 22/10/2018.
  */
-public class UtilsResources {
-
+public class ConfigurationCacheObjectStreamException extends ObjectStreamException {
 
 	/**
-	 * Method that handles the closing of a {@link InputStream} resource.
-	 * @param is Parameter that represents a {@link InputStream} resource.
+	 * Constant attribute that represents the serial version UID.
 	 */
-	public static void safeCloseInputStream(InputStream is) {
-		if (is != null) {
-			try {
-				is.close();
-			} catch (IOException e) {
-				// TODO
-				// LOGGER.error(Language.getFormatResCoreGeneral(LOG01, new
-				// Object[ ] { is.getClass().getName(), e.getMessage() }));
-			}
-		}
+	private static final long serialVersionUID = 8402478186505808842L;
+
+	/**
+	 * Constructor method for the class ConfigurationCacheObjectStreamException.java.
+	 */
+	public ConfigurationCacheObjectStreamException() {
+		super();
 	}
 
 	/**
-	 * To free resources, this method sets the length of the input {@link StringBuilder} to
-	 * zero and then trim it.
-	 * @param sb String builder to clean. If it is <code>null</code>, this method do nothing.
+	 * Constructor method for the class ConfigurationCacheObjectStreamException.java.
+	 * @param message Message that describes the exception.
 	 */
-	public static void cleanStringBuilder(StringBuilder sb) {
-
-		if (sb != null) {
-			sb.setLength(0);
-			sb.trimToSize();
-		}
-
+	public ConfigurationCacheObjectStreamException(String message) {
+		super(message);
 	}
 
 }

@@ -1,4 +1,4 @@
-/*
+/* 
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,7 +14,7 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/**
- * Package that contains classes that provides communication with the operations of the services configuration persistence layer.
+/** 
+ * Package that includes all the commons implemented classes for the configuration cache.
  */
-package es.gob.valet.persistence.configuration.services;
+package es.gob.valet.persistence.configuration.cache.common.impl;

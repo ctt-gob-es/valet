@@ -15,54 +15,30 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.commons.utils.UtilsResources.java.</p>
- * <b>Description:</b><p>Class that provides functionality to control resources.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService.java.</p>
+ * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer related to CAssociationType.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>01/08/2018.</p>
+ * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 22/10/2018.
+ * @version 1.0, 22/10/2018.
  */
-package es.gob.valet.commons.utils;
+package es.gob.valet.persistence.configuration.services.ifaces;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
+
+import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 
 /**
- * <p>Class that provides functionality to control resources.</p>
+ * <p>Interface that provides communication with the operations of the persistence layer related to CAssociationType.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 22/10/2018.
+ * @version 1.0, 22/10/2018.
  */
-public class UtilsResources {
-
-
-	/**
-	 * Method that handles the closing of a {@link InputStream} resource.
-	 * @param is Parameter that represents a {@link InputStream} resource.
-	 */
-	public static void safeCloseInputStream(InputStream is) {
-		if (is != null) {
-			try {
-				is.close();
-			} catch (IOException e) {
-				// TODO
-				// LOGGER.error(Language.getFormatResCoreGeneral(LOG01, new
-				// Object[ ] { is.getClass().getName(), e.getMessage() }));
-			}
-		}
-	}
+public interface ICAssociationTypeService {
 
 	/**
-	 * To free resources, this method sets the length of the input {@link StringBuilder} to
-	 * zero and then trim it.
-	 * @param sb String builder to clean. If it is <code>null</code>, this method do nothing.
+	 * Method that gets the list of all type of mapping associations.
+	 * @return List of type of mapping associations.
 	 */
-	public static void cleanStringBuilder(StringBuilder sb) {
-
-		if (sb != null) {
-			sb.setLength(0);
-			sb.trimToSize();
-		}
-
-	}
+	List<CAssociationType> getAllPlannerType();
 
 }

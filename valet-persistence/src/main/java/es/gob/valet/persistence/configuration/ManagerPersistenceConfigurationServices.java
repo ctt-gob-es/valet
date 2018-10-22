@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 11/09/2018.
+ * @version 1.1, 22/10/2018.
  */
 package es.gob.valet.persistence.configuration;
 
@@ -33,7 +33,19 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import es.gob.valet.persistence.configuration.services.ifaces.IAlarmService;
+import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
+import es.gob.valet.persistence.configuration.services.ifaces.ICOperationModeService;
+import es.gob.valet.persistence.configuration.services.ifaces.ICPlannerTypeService;
+import es.gob.valet.persistence.configuration.services.ifaces.ICStatusCertificateService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
+import es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailService;
+import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
+import es.gob.valet.persistence.configuration.services.ifaces.IMailService;
+import es.gob.valet.persistence.configuration.services.ifaces.IPlannerService;
+import es.gob.valet.persistence.configuration.services.ifaces.IProxyService;
+import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITaskService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
@@ -43,7 +55,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
  * <p>Manager singleton instance for the use of the persistence services
  * of the configuration scheme.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 11/09/2018.
+ * @version 1.1, 22/10/2018.
  */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -79,10 +91,82 @@ public class ManagerPersistenceConfigurationServices {
 	}
 
 	/**
+	 * Attribute that represents the services for the configuration persistence: Alarms.
+	 */
+	@Autowired
+	private IAlarmService alarmService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: Constants Mapping Associations.
+	 */
+	@Autowired
+	private ICAssociationTypeService cAssociationTypeService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: Configuration Mail Server.
+	 */
+	@Autowired
+	private IConfServerMailService confServerMailService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: Constants Operation Modes.
+	 */
+	@Autowired
+	private ICOperationModeService cOperationModeService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: Constants Planner Types.
+	 */
+	@Autowired
+	private ICPlannerTypeService cPlannerTypeService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: Constants Status Certificate.
+	 */
+	@Autowired
+	private ICStatusCertificateService cStatusCertificateService;
+
+	/**
 	 * Attribute that represents the services for the configuration persistence: TSL implementations/specifications.
 	 */
 	@Autowired
 	private ICTslImplService cTslImplService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: Keystore.
+	 */
+	@Autowired
+	private IKeystoreService keystoreService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: Mail.
+	 */
+	@Autowired
+	private IMailService mailService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: Planner.
+	 */
+	@Autowired
+	private IPlannerService plannerService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: Proxy.
+	 */
+	@Autowired
+	private IProxyService proxyService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: System Certificates.
+	 */
+	@Autowired
+	private ISystemCertificateService systemCertificateService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: Tasks.
+	 */
+	@Autowired
+	private ITaskService taskService;
 
 	/**
 	 * Attribute that represents the services for the configuration persistence: TSL mapping (country/region).
@@ -109,11 +193,107 @@ public class ManagerPersistenceConfigurationServices {
 	private IUserValetService userValetService;
 
 	/**
+	 * Gets the value of the attribute {@link #alarmService}.
+	 * @return the value of the attribute {@link #alarmService}.
+	 */
+	public final IAlarmService getAlarmService() {
+		return alarmService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #cAssociationTypeService}.
+	 * @return the value of the attribute {@link #cAssociationTypeService}.
+	 */
+	public final ICAssociationTypeService getCAssociationTypeService() {
+		return cAssociationTypeService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #confServerMailService}.
+	 * @return the value of the attribute {@link #confServerMailService}.
+	 */
+	public final IConfServerMailService getConfServerMailService() {
+		return confServerMailService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #cOperationModeService}.
+	 * @return the value of the attribute {@link #cOperationModeService}.
+	 */
+	public final ICOperationModeService getCOperationModeService() {
+		return cOperationModeService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #cPlannerTypeService}.
+	 * @return the value of the attribute {@link #cPlannerTypeService}.
+	 */
+	public final ICPlannerTypeService getCPlannerTypeService() {
+		return cPlannerTypeService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #cStatusCertificateService}.
+	 * @return the value of the attribute {@link #cStatusCertificateService}.
+	 */
+	public final ICStatusCertificateService getCStatusCertificateService() {
+		return cStatusCertificateService;
+	}
+
+	/**
 	 * Gets the value of the attribute {@link #cTslImplService}.
 	 * @return the value of the attribute {@link #cTslImplService}.
 	 */
-	public final ICTslImplService getcTslImplService() {
+	public final ICTslImplService getCTslImplService() {
 		return cTslImplService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #keystoreService}.
+	 * @return the value of the attribute {@link #keystoreService}.
+	 */
+	public final IKeystoreService getKeystoreService() {
+		return keystoreService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #mailService}.
+	 * @return the value of the attribute {@link #mailService}.
+	 */
+	public final IMailService getMailService() {
+		return mailService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #plannerService}.
+	 * @return the value of the attribute {@link #plannerService}.
+	 */
+	public final IPlannerService getPlannerService() {
+		return plannerService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #proxyService}.
+	 * @return the value of the attribute {@link #proxyService}.
+	 */
+	public final IProxyService getProxyService() {
+		return proxyService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #systemCertificateService}.
+	 * @return the value of the attribute {@link #systemCertificateService}.
+	 */
+	public final ISystemCertificateService getSystemCertificateService() {
+		return systemCertificateService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #taskService}.
+	 * @return the value of the attribute {@link #taskService}.
+	 */
+	public final ITaskService getTaskService() {
+		return taskService;
 	}
 
 	/**

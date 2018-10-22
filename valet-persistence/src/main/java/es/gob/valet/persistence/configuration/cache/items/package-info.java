@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 /**
- * Package that contains classes that provides communication with the operations of the services configuration persistence layer.
+ * Package that defines all the items and its manager that are goin to be used
+ * from/to the configuration cache.
  */
-package es.gob.valet.persistence.configuration.services;
+package es.gob.valet.persistence.configuration.cache.items;
