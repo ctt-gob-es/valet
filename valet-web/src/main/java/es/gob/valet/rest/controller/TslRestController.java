@@ -60,7 +60,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.GeneralConstants;
-import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
@@ -78,7 +77,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 22/10/2018.
  */
 @RestController
 public class TslRestController {
@@ -88,6 +87,16 @@ public class TslRestController {
 	 */
 	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
 
+
+	/**
+	 * Constant attribute that represents the token 'text/xml'.
+	 */
+	private static final String TOKEN_TEXT_XML = "text/xml";
+
+	/**
+	 * Constant attribute that represents the token 'application/pdf'.
+	 */
+	private static final String TOKEN_APPLICATION_PDF = "application/pdf";
 	/**
 	 * Attribute that represents the service object for accessing the
 	 * TslValetRepository.
@@ -218,7 +227,6 @@ public class TslRestController {
 	/**
 	 * Method that adds a new TSL.
 	 *
-	 * @param idTSL Parameter that represents the identifier TSL.
 	 * @param implTslFile Parameter that represents the file with the implementation of the TSL.
 	 * @param specification  Parameter that represents the ETSI TS number specification for TSL.
 	 * @param url Parameter that represents the URI where this TSL is officially located.
@@ -430,7 +438,7 @@ public class TslRestController {
 				}
 
 				// comprobamos si se ha subido documento legible de la tsl.
-				if (fileDocument != null) {
+				if (fileDocument != null && fileDocument.getSize() > 0) {
 					fileLegibleDocument = fileDocument.getBytes();
 					tsl.setLegibleDocument(fileLegibleDocument);
 				} else {
@@ -478,19 +486,14 @@ public class TslRestController {
 	 * @throws IOException If the method fails.
 	 */
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
-	public @ResponseBody void downloadTsl(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
+	@ResponseBody 
+	public void downloadTsl(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
 		TslValet tsl = tslValetService.getTslValetById(idTsl);
 		byte[ ] implTsl;
 		if (tsl != null) {
 			implTsl = tsl.getXmlDocument();
-			String mimeType = UtilsResources.getMimeType(implTsl);
-			String extension = UtilsResources.getExtension(mimeType);
-			if (extension == null) {
-				extension = UtilsStringChar.EMPTY_STRING;
-			}
-
 			InputStream in = new ByteArrayInputStream(implTsl);
-			response.setContentType(mimeType);
+			response.setContentType(TOKEN_TEXT_XML);
 			response.setContentLength(implTsl.length);
 			response.setHeader("Content-Disposition", "attachment; filename=" + tsl.getAlias() + EXTENSION_XML);
 			FileCopyUtils.copy(in, response.getOutputStream());
@@ -505,19 +508,15 @@ public class TslRestController {
 	 * @throws IOException If the method fails.
 	 */
 	@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)
-	public @ResponseBody void downloadDocument(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
+	@ResponseBody
+	public  void downloadDocument(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
 
 		TslValet tsl = tslValetService.getTslValetById(idTsl);
 		byte[ ] legibleDoc;
 		if (tsl != null) {
 			legibleDoc = tsl.getLegibleDocument();
-			String mimeType = UtilsResources.getMimeType(legibleDoc);
-			String extension = UtilsResources.getExtension(mimeType);
-			if (extension == null) {
-				extension = UtilsStringChar.EMPTY_STRING;
-			}
 			InputStream in = new ByteArrayInputStream(legibleDoc);
-			response.setContentType(mimeType);
+			response.setContentType(TOKEN_APPLICATION_PDF);
 			response.setContentLength(legibleDoc.length);
 			response.setHeader("Content-Disposition", "attachment; filename=" + tsl.getAlias() + EXTENSION_PDF);
 			FileCopyUtils.copy(in, response.getOutputStream());

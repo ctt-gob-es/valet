@@ -24,48 +24,16 @@
  */
 package es.gob.valet.commons.utils;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.tika.Tika;
-import org.apache.tika.mime.MimeType;
-import org.apache.tika.mime.MimeTypeException;
-import org.apache.tika.mime.MimeTypes;
 
 /**
  * <p>Class that provides functionality to control resources.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 10/09/2018.
+ * @version 1.2, 22/09/2018.
  */
 public class UtilsResources {
 
-	/**
-	 * Constant attribute that represents the token 'text/plain'.
-	 */
-	private static final String TOKEN_TEXT_PLAIN = "text/plain";
-
-	/**
-	 * Tries to get the MIME type of the input data.
-	 * @param data Byte array to analyze.
-	 * @return String representation of the MIME type of the input data. If there is some error,
-	 * then {@value #TOKEN_TEXT_PLAIN} is returned.
-	 */
-	public static String getMimeType(byte[ ] data) {
-		Tika t = new Tika();
-		InputStream is = new ByteArrayInputStream(data);
-		try {
-			return t.detect(is);
-		} catch (IOException e) {
-			// TODO
-			// LOGGER.error(Language.getFormatResCoreGeneral(LOG02, new Object[
-			// ] { }), e);
-
-		} finally {
-			safeCloseInputStream(is);
-		}
-		return TOKEN_TEXT_PLAIN;
-	}
 
 	/**
 	 * Method that handles the closing of a {@link InputStream} resource.
@@ -81,24 +49,6 @@ public class UtilsResources {
 				// Object[ ] { is.getClass().getName(), e.getMessage() }));
 			}
 		}
-	}
-
-	/**
-	 * Autodetects extension given a mime type.
-	 * @param mimeType Mime Type to autodetect its extension.
-	 * @return Extension associated to given mime type.
-	 */
-	public static String getExtension(String mimeType) {
-		MimeType m;
-		try {
-			m = MimeTypes.getDefaultMimeTypes().forName(mimeType);
-			return m.getExtension();
-		} catch (MimeTypeException e) {
-			// TODO
-			// LOGGER.error(Language.getFormatResCoreGeneral(LOG03, new Object[
-			// ] { }), e);
-		}
-		return UtilsStringChar.EMPTY_STRING;
 	}
 
 	/**

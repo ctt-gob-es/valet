@@ -186,10 +186,6 @@ function updateLegibleDoc() {
 function closeUpdateTsl() {	
 	//se limpia posibles mensajes error de span
 	cleanSpan('implTslFile_span');
-	// limpia valores del formulario
-	$('#fileId').val("");
-	$('#fileId').next(".custom-file-label").attr('data-content', '');
-	$('#fileId').next(".custom-file-label").text('');
 	$("#updateTslDiv").hide();
 	$("#updateTslBtn").show();
 }
