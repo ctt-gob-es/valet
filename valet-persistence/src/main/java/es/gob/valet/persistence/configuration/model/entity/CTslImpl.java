@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 17/07/2018.
+ * @version 1.1, 24/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -43,7 +43,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>C_TSL_IMPL</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17/07/2018.
+ * @version 1.1, 24/10/2018.
  */
 @Entity
 @Table(name = "C_TSL_IMPL")
@@ -57,7 +57,7 @@ public class CTslImpl implements Serializable {
 	/**
 	 * Attribute that represents the object ID.
 	 */
-	private Long idCTSLImpl;
+	private Long idTSLImpl;
 
 	/**
 	 * Attribute that represents the ETSI TS number specification for TSL.
@@ -126,24 +126,24 @@ public class CTslImpl implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #idCTSLImpl}.
-	 * @return the value of the attribute {@link #idCTSLImpl}.
+	 * Gets the value of the attribute {@link #idTSLImpl}.
+	 * @return the value of the attribute {@link #idTSLImpl}.
 	 */
 	@Id
 	@Column(name = "ID_TSL_IMPL", unique = true, nullable = false, precision = NumberConstants.NUM19)
 	@GeneratedValue(generator = "sq_c_tsl_impl")
 	@GenericGenerator(name = "sq_c_tsl_impl", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = { @Parameter(name = "sequence_name", value = "SQ_C_TSL_IMPL"), @Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
 	@JsonView(DataTablesOutput.View.class)
-	public Long getIdCTSLImpl() {
-		return idCTSLImpl;
+	public Long getIdTSLImpl() {
+		return idTSLImpl;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #idCTSLImpl}.
-	 * @param idCTSLImplParam The value for the attribute {@link #idCTSLImpl}.
+	 * Sets the value of the attribute {@link #idTSLImpl}.
+	 * @param idTSLImplParam The value for the attribute {@link #idTSLImpl}.
 	 */
-	public void setIdCTSLImpl(Long idCTSLImplParam) {
-		this.idCTSLImpl = idCTSLImplParam;
+	public void setIdTSLImpl(Long idTSLImplParam) {
+		this.idTSLImpl = idTSLImplParam;
 	}
 
 }

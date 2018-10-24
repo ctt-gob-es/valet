@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.TslValetRepository.java.</p>
- * <b>Description:</b><p>Interface that provides CRUD functionality for the TslValet entity.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>23 jul. 2018.</p>
+/**
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.TslDataRepository.java.</p>
+ * <b>Description:</b><p>Interface that provides CRUD functionality for the TslData entity.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 23 jul. 2018.
+ * @version 1.0, 24/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -30,30 +30,29 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
-import es.gob.valet.persistence.configuration.model.entity.TslValet;
-
+import es.gob.valet.persistence.configuration.model.entity.TslData;
 
 /**
- * <p>Interface that provides CRUD functionality for the TslValet entity.</p>
+ * <p>Interface that provides CRUD functionality for the TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 26 jun. 2018.
+ * @version 1.0, 24/10/2018.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public interface TslValetRepository  extends JpaRepository<TslValet, Long> {
+public interface TslDataRepository extends JpaRepository<TslData, Long> {
+
 	/**
-	  * Method that obtains from the persistence a TSL identified by its primary key. 
+	 * Method that obtains from the persistence a TSL identified by its primary key.
 	 * @param id String that represents the primary key of the TSL in the persistence.
-	 * @return Object that represents a TSL from the persistence. 
+	 * @return Object that represents a TSL from the persistence.
 	 */
-	TslValet findByIdTslValet(Long id);
-	
+	TslData findByIdTslData(Long id);
+
 	/**
-	 * 	Method that obtains from the persistence a TSL object by country.
-	 * @param tslContryRegion  Country/Region of the TSL.
-	 * @return Object that represents a TslValet from the persistence.
+	 * Method that obtains from the persistence a TSL object by country.
+	 * @param tslContryRegion Country/Region of the TSL.
+	 * @return Object that represents a TslData from the persistence.
 	 */
-	TslValet findByCountry(TslCountryRegion tslContryRegion);
-	
-	
+	TslData findByCountry(TslCountryRegion tslContryRegion);
+
 }

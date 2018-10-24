@@ -4,8 +4,8 @@
 	<h6 class="c-grey-900">Datos TSL</h6>
 	<div class="mT-20">
 	<div id="errorUpdateTsl" role="alert"></div>
-		<input type='hidden' class='primarykey' id="idTslValet"
-			th:field="*{idTslValet}"> <input type='hidden'
+		<input type='hidden' class='primarykey' id="idTslData"
+			th:field="*{idTslData}"> <input type='hidden'
 			id="idCountryRegion" th:field="*{country}"> <input
 			type='hidden' id="idAlias" th:field="*{alias}">
 		<div class="form-row">
@@ -70,7 +70,7 @@
 				</div>
 				<div class="text-right  mrg-top-30">
 
-					<a th:href="@{/download(id=${tslform.idTslValet})}"> <img
+					<a th:href="@{/download(id=${tslform.idTslData})}"> <img
 						id="downFileId" th:src="@{images/download-file.png}"
 						alt="Descargar Implementación TSL"
 						title="Descargar Implementación TSL"></img></a> <a id="updateTslBtn"
@@ -128,7 +128,7 @@
 				<div class="text-right mrg-top-30">
 
 					<a th:if="${isLegible} == true"
-						th:href="@{/downloadDocument(id=${tslform.idTslValet})}"> <img
+						th:href="@{/downloadDocument(id=${tslform.idTslData})}"> <img
 						id="downloadDocLeg" th:src="@{images/download-file.png}"
 						alt="Descargar Documento Legible"
 						title="Descargar Documento Legible"></img>
@@ -199,7 +199,7 @@ function closeUpdateLegDoc() {
 //actualiza el formulario de edición de TSL
 function updateImplFile() {
 	var updateImplFile =  /*[[@{/updateimplfile}]]*/;
-	var idTsl = idTslValet;
+	var idTsl = idTslData;
 	var formDataEdit = new FormData(document.forms["tslFormEdit"]);
 	$.ajax(updateImplFile, {
 		data :formDataEdit,

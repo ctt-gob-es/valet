@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.service.impl.CTSLImplServiceImpl.java.</p>
  * <b>Description:</b><p>Class that implements the communication with the operations of the persistence layer for CTslImpl.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>17 jul. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 17 jul. 2018.
+ * @version 1.1, 24/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -40,10 +40,10 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.repository.CTslImplRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 
-/** 
+/**
  * <p>Class that implements the communication with the operations of the persistence layer for CTslImpl.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17 jul. 2018.
+ * @version 1.1, 24/10/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -68,7 +68,7 @@ public class CTslImplService implements ICTslImplService {
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService#getCTSLImpById(java.lang.Long)
 	 */
 	public CTslImpl getCTSLImpById(Long id) {
-		return repository.findByIdCTSLImpl(id);
+		return repository.findByIdTSLImpl(id);
 	}
 
 	/**
@@ -117,8 +117,8 @@ public class CTslImplService implements ICTslImplService {
 		List<CTslImpl> listCTSLImpl = repository.findAll();
 		if (listCTSLImpl != null && !listCTSLImpl.isEmpty()) {
 			for (CTslImpl cTSL: listCTSLImpl) {
-				if(cTSL.getSpecification().equals(specification)){
-					if(cTSL.getVersion().equals(version)){
+				if (cTSL.getSpecification().equals(specification)) {
+					if (cTSL.getVersion().equals(version)) {
 						result = cTSL;
 						break;
 					}

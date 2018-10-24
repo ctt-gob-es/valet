@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 18/10/2018.
+ * @version 1.4, 24/10/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -39,7 +39,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 18/10/2018.
+ * @version 1.4, 24/10/2018.
  */
 public final class StaticValetConfig {
 
@@ -63,6 +63,12 @@ public final class StaticValetConfig {
 	 * to use for the cache.
 	 */
 	public static final String CACHE_IMPLEMENTATION = "cache.implementation";
+
+	/**
+	 * Constant attribute that represents the key for the property that indicates the idle time
+	 * before stop/destroy a configuration cache.
+	 */
+	public static final String CACHE_IDLETIMEBEFORESTOPCACHE = "cache.idleTimeBeforeStopCache";
 
 	/**
 	 * Constant attribute that represents name for property <code>character.special</code>.

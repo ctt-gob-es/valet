@@ -11,8 +11,8 @@ CREATE SEQUENCE SQ_USER_VALET
   CACHE 20
   ORDER; 
   
-  -- Secuencia necesaria para la clave de la tabla TS_VALET.
-CREATE SEQUENCE SQ_TSL_VALET
+  -- Secuencia necesaria para la clave de la tabla TSL_DATA.
+CREATE SEQUENCE SQ_TSL_DATA
   START WITH 2
   MAXVALUE 999999999999999999999999999
   MINVALUE 1

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 22/10/2018.
+ * @version 1.1, 24/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -31,8 +31,15 @@ import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 /**
  * <p>Interface that provides CRUD functionality for the CAssociationType entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 22/10/2018.
+ * @version 1.1, 24/10/2018.
  */
 public interface CAssociationTypeRepository extends JpaRepository<CAssociationType, Long> {
+
+	/**
+	 * Method that obtains from the persistence a CAssociationType identified by its primary key.
+	 * @param idAssociationType Long that represents the primary key of the CAssociationType in the persistence.
+	 * @return Object that represents a CAssociationType from the persistence.
+	 */
+	CAssociationType findByIdCAssociationType(Long idAssociationType);
 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.form.TslForm.java.</p>
- * <b>Description:</b><p> Class that represents the backing form for adding/editing a TSL.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>28 jun. 2018.</p>
+ * <b>Description:</b><p>Class that represents the backing form for adding/editing a TSL.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>23/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 28 jun. 2018.
+ * @version 1.1, 24/10/2018.
  */
 package es.gob.valet.form;
 
@@ -32,20 +32,20 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.rest.exception.CheckItFirst;
 
-/** 
+/**
  * <p>Class that represents the backing form for adding/editing a TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 28 jun. 2018.
+ * @version 1.1, 24/10/2018.
  */
 public class TslForm {
 
 	/**
 	 * Attribute that represents the value of the primary key as a hidden input in the form.
 	 */
-	private Long idTslValet = null;
+	private Long idTslData = null;
 
 	/**
-	 * Attribute that represents the name of the selected specification. 
+	 * Attribute that represents the name of the selected specification.
 	 */
 	@NotNull(message = "form.valid.tsl.specification.notempty")
 	private String specification;
@@ -60,86 +60,82 @@ public class TslForm {
 	 * Attribute that represents the TSL location URI.
 	 */
 	private String urlTsl;
-	
+
 	/**
 	 * Attribute that represents the country of TSL.
 	 */
 	private Long country;
+
 	/**
-	 * Attribute that represents the sequence number of the TSL. 
+	 * Attribute that represents the sequence number of the TSL.
 	 */
 	private int sequenceNumber = -1;
-	
+
 	/**
 	 * Attribute that represents a TSL name.
 	 */
 	private String tslName;
-	
+
 	/**
 	 * Attribute that represents a TSL responsible.
 	 */
 	private String tslResponsible;
-	
 
 	/**
-	 * Attribute that represents the issue date of the TSL. 
+	 * Attribute that represents the issue date of the TSL.
 	 */
 	private String issueDate = null;
 
 	/**
-	 * Attribute that represents the next update date of the TSL. 
+	 * Attribute that represents the next update date of the TSL.
 	 */
 	private String expirationDate = null;
-	
+
 	/**
 	 * Attribute that represents the name of the country.
 	 */
 	private String countryName;
-	
+
 	/**
 	 * Attribute that indicates if the tsl has a readable document.
 	 */
 	private Boolean isLegible;
-	
+
 	/**
 	 * Attribute that represents the alias assigned to the tsl.
 	 */
 	private String alias;
-	
+
 	/**
 	 * Attribute that represents the variable where the error messages will be stored.
 	 */
 	private String error;
-	
-	
 
 	/**
 	 * Attribute that represents the uploaded file.
 	 */
 	@NotNull(groups = CheckItFirst.class, message = "{form.valid.tsl.file.notempty}")
 	private MultipartFile implTslFile;
-	
-	
+
 	/**
 	 * Attribute that represents uploaded file corresponding to the readable TSL document.
 	 */
 	private MultipartFile fileDocument;
 
-
 	/**
-	 * Gets the value of the attribute {@link #idTslValet}.
-	 * @return the value of the attribute {@link #idTslValet}.
+	 * Gets the value of the attribute {@link #idTslData}.
+	 * @return the value of the attribute {@link #idTslData}.
 	 */
-	public Long getIdTslValet() {
-		return idTslValet;
+	public Long getIdTslData() {
+		return idTslData;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #idTslValet}.
-	 * @param idTslValet The value for the attribute {@link #idTslValet}.
+	 * Sets the value of the attribute {@link #idTslData}.
+	 * @param idTslDataParam The value for the attribute {@link #idTslData}.
 	 */
-	public void setIdTslValet(Long idTslValet) {
-		this.idTslValet = idTslValet;
+	public void setIdTslData(Long idTslDataParam) {
+		this.idTslData = idTslDataParam;
 	}
 
 	/**
@@ -152,10 +148,10 @@ public class TslForm {
 
 	/**
 	 * Sets the value of the attribute {@link #specification}.
-	 * @param specification The value for the attribute {@link #specification}.
+	 * @param specificationParam The value for the attribute {@link #specification}.
 	 */
-	public void setSpecification(String specification) {
-		this.specification = specification;
+	public void setSpecification(String specificationParam) {
+		this.specification = specificationParam;
 	}
 
 	/**
@@ -168,10 +164,10 @@ public class TslForm {
 
 	/**
 	 * Sets the value of the attribute {@link #version}.
-	 * @param version The value for the attribute {@link #version}.
+	 * @param versionParam The value for the attribute {@link #version}.
 	 */
-	public void setVersion(String version) {
-		this.version = version;
+	public void setVersion(String versionParam) {
+		this.version = versionParam;
 	}
 
 	/**
@@ -184,14 +180,12 @@ public class TslForm {
 
 	/**
 	 * Sets the value of the attribute {@link #urlTsl}.
-	 * @param urlTsl The value for the attribute {@link #urlTsl}.
+	 * @param urlTslParam The value for the attribute {@link #urlTsl}.
 	 */
-	public void setUrlTsl(String urlTsl) {
-		this.urlTsl = urlTsl;
+	public void setUrlTsl(String urlTslParam) {
+		this.urlTsl = urlTslParam;
 	}
 
-	
-	
 	/**
 	 * Gets the value of the attribute {@link #implTslFile}.
 	 * @return the value of the attribute {@link #implTslFile}.
@@ -200,13 +194,12 @@ public class TslForm {
 		return implTslFile;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #implTslFile}.
-	 * @param implTslFile The value for the attribute {@link #implTslFile}.
+	 * @param implTslFileParam The value for the attribute {@link #implTslFile}.
 	 */
-	public void setImplTslFile(MultipartFile implTslFile) {
-		this.implTslFile = implTslFile;
+	public void setImplTslFile(MultipartFile implTslFileParam) {
+		this.implTslFile = implTslFileParam;
 	}
 
 	/**
@@ -217,16 +210,14 @@ public class TslForm {
 		return country;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #country}.
-	 * @param country The value for the attribute {@link #country}.
+	 * @param countryParam The value for the attribute {@link #country}.
 	 */
-	public void setCountry(Long country) {
-		this.country = country;
+	public void setCountry(Long countryParam) {
+		this.country = countryParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #sequenceNumber}.
 	 * @return the value of the attribute {@link #sequenceNumber}.
@@ -236,16 +227,14 @@ public class TslForm {
 		return sequenceNumber;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #sequenceNumber}.
-	 * @param sequenceNumber The value for the attribute {@link #sequenceNumber}.
+	 * @param sequenceNumberParam The value for the attribute {@link #sequenceNumber}.
 	 */
-	public void setSequenceNumber(int sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
+	public void setSequenceNumber(int sequenceNumberParam) {
+		this.sequenceNumber = sequenceNumberParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #tslName}.
 	 * @return the value of the attribute {@link #tslName}.
@@ -255,16 +244,14 @@ public class TslForm {
 		return tslName;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #tslName}.
-	 * @param tslName The value for the attribute {@link #tslName}.
+	 * @param tslNameParam The value for the attribute {@link #tslName}.
 	 */
-	public void setTslName(String tslName) {
-		this.tslName = tslName;
+	public void setTslName(String tslNameParam) {
+		this.tslName = tslNameParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #tslResponsible}.
 	 * @return the value of the attribute {@link #tslResponsible}.
@@ -274,18 +261,14 @@ public class TslForm {
 		return tslResponsible;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #tslResponsible}.
-	 * @param tslResponsible The value for the attribute {@link #tslResponsible}.
+	 * @param tslResponsibleParam The value for the attribute {@link #tslResponsible}.
 	 */
-	public void setTslResponsible(String tslResponsible) {
-		this.tslResponsible = tslResponsible;
+	public void setTslResponsible(String tslResponsibleParam) {
+		this.tslResponsible = tslResponsibleParam;
 	}
 
-	
-	
-	
 	/**
 	 * Gets the value of the attribute {@link #countryName}.
 	 * @return the value of the attribute {@link #countryName}.
@@ -295,16 +278,14 @@ public class TslForm {
 		return countryName;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #countryName}.
-	 * @param countryName The value for the attribute {@link #countryName}.
+	 * @param countryNameParam The value for the attribute {@link #countryName}.
 	 */
-	public void setCountryName(String countryName) {
-		this.countryName = countryName;
+	public void setCountryName(String countryNameParam) {
+		this.countryName = countryNameParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #issueDate}.
 	 * @return the value of the attribute {@link #issueDate}.
@@ -314,16 +295,14 @@ public class TslForm {
 		return issueDate;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #issueDate}.
-	 * @param issueDate The value for the attribute {@link #issueDate}.
+	 * @param issueDateParam The value for the attribute {@link #issueDate}.
 	 */
-	public void setIssueDate(String issueDate) {
-		this.issueDate = issueDate;
+	public void setIssueDate(String issueDateParam) {
+		this.issueDate = issueDateParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #expirationDate}.
 	 * @return the value of the attribute {@link #expirationDate}.
@@ -333,13 +312,12 @@ public class TslForm {
 		return expirationDate;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #expirationDate}.
-	 * @param expirationDate The value for the attribute {@link #expirationDate}.
+	 * @param expirationDateParam The value for the attribute {@link #expirationDate}.
 	 */
-	public void setExpirationDate(String expirationDate) {
-		this.expirationDate = expirationDate;
+	public void setExpirationDate(String expirationDateParam) {
+		this.expirationDate = expirationDateParam;
 	}
 
 	/**
@@ -353,13 +331,12 @@ public class TslForm {
 
 	/**
 	 * Sets the value of the attribute {@link #isLegible}.
-	 * @param isLegible The value for the attribute {@link #isLegible}.
+	 * @param isLegibleParam The value for the attribute {@link #isLegible}.
 	 */
-	public void setIsLegible(Boolean isLegible) {
-		this.isLegible = isLegible;
+	public void setIsLegible(Boolean isLegibleParam) {
+		this.isLegible = isLegibleParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #alias}.
 	 * @return the value of the attribute {@link #alias}.
@@ -369,13 +346,12 @@ public class TslForm {
 		return alias;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #alias}.
-	 * @param alias The value for the attribute {@link #alias}.
+	 * @param aliasParam The value for the attribute {@link #alias}.
 	 */
-	public void setAlias(String alias) {
-		this.alias = alias;
+	public void setAlias(String aliasParam) {
+		this.alias = aliasParam;
 	}
 
 	/**
@@ -389,15 +365,12 @@ public class TslForm {
 
 	/**
 	 * Sets the value of the attribute {@link #fileDocument}.
-	 * @param fileDocument The value for the attribute {@link #fileDocument}.
+	 * @param fileDocumentParam The value for the attribute {@link #fileDocument}.
 	 */
-	public void setFileDocument(MultipartFile fileDocument) {
-		this.fileDocument = fileDocument;
+	public void setFileDocument(MultipartFile fileDocumentParam) {
+		this.fileDocument = fileDocumentParam;
 	}
 
-	
-
-	
 	/**
 	 * Gets the value of the attribute {@link #error}.
 	 * @return the value of the attribute {@link #error}.
@@ -407,24 +380,20 @@ public class TslForm {
 		return error;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #error}.
-	 * @param error The value for the attribute {@link #error}.
+	 * @param errorParam The value for the attribute {@link #error}.
 	 */
-	public void setError(String error) {
-		this.error = error;
+	public void setError(String errorParam) {
+		this.error = errorParam;
 	}
 
-
-
-/**
- * 
- * <p>Class .</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 12 sept. 2018.
- */
+	/**
+	 * <p>Class .</p>
+	 * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+	 * @version 1.0, 12 sept. 2018.
+	 */
 	public interface View {
-	}	
+	}
 
 }

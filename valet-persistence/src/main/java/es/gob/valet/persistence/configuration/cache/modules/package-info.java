@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 /**
- * Package that provides the configuration cache layer for the TSL.
+ * Package that defines all the modules and its managers that are goin to be used
+ * from/to the configuration cache.
  */
-package es.gob.valet.persistence.configuration.cache.items.tsl;
+package es.gob.valet.persistence.configuration.cache.modules;

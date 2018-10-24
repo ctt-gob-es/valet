@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.service.impl.TslCountryRegionMappingService.java.</p>
  * <b>Description:</b><p>Class that implements the communication with the operations of the persistence layer for TslCountryRegionMapping .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>8 ago. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>08/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 8 ago. 2018.
+ * @version 1.0, 08/08/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -39,10 +39,10 @@ import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionM
 import es.gob.valet.persistence.configuration.model.repository.datatable.TslCountryRegionMappingDataTablesRespository;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 
-/** 
+/**
  * <p>Class that implements the communication with the operations of the persistence layer for TslCountryRegionMapping.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 8 ago. 2018.
+ * @version 1.0, 08/08/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -55,14 +55,14 @@ public class TslCountryRegionMappingService implements ITslCountryRegionMappingS
 	private TslCountryRegionMappingRepository repository;
 
 	/**
-	 * Attribute that represnts the injected interface that provides 
+	 * Attribute that represnts the injected interface that provides.
 	 */
 	@Autowired
 	private TslCountryRegionMappingDataTablesRespository dtRepository;
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService#getTslValetById(java.lang.Long)
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService#getTslDataById(java.lang.Long)
 	 */
 	@Override
 	public TslCountryRegionMapping getTslCountryRegionMappingById(Long idTslCountryRegionMapping) {
@@ -85,14 +85,17 @@ public class TslCountryRegionMappingService implements ITslCountryRegionMappingS
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService#existIdentificator(java.lang.String, java.lang.Long)
+	 */
 	public boolean existIdentificator(String identificator, Long idCRM) {
 		boolean existId = false;
 		List<String> listIdentificators = new ArrayList<String>();
-		listIdentificators = getIdentificatorsByIdCountry(idCRM);
+		listIdentificators = getIdentificatorsByIdCountryRegion(idCRM);
 		if (listIdentificators.contains(identificator)) {
 			existId = true;
 		}
-
 		return existId;
 	}
 
@@ -128,14 +131,12 @@ public class TslCountryRegionMappingService implements ITslCountryRegionMappingS
 		repository.deleteInBatch(listMapping);
 	}
 
-	
 	/**
-	 * Method that returns the list of identifiers of the mappings of a country.
-	 * 
-	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.  
+	 * Method that returns the list of identifiers of the mappings of a country/region.
+	 * @param idTslCountryRegion Parameter that represents the ID of the country/region.
 	 * @return List of identifiers of the mappings.
 	 */
-	private List<String> getIdentificatorsByIdCountry(Long idTslCountryRegion) {
+	private List<String> getIdentificatorsByIdCountryRegion(Long idTslCountryRegion) {
 		List<TslCountryRegionMapping> lcrm = getAllMappingByIdCountry(idTslCountryRegion);
 		List<String> listIdent = new ArrayList<String>();
 		for (TslCountryRegionMapping tslcrm: lcrm) {

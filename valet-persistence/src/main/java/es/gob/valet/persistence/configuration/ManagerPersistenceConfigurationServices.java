@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 22/10/2018.
+ * @version 1.2, 24/10/2018.
  */
 package es.gob.valet.persistence.configuration;
 
@@ -48,14 +48,14 @@ import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificate
 import es.gob.valet.persistence.configuration.services.ifaces.ITaskService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
-import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 
 /**
  * <p>Manager singleton instance for the use of the persistence services
  * of the configuration scheme.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 22/10/2018.
+ * @version 1.2, 24/10/2018.
  */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -184,7 +184,7 @@ public class ManagerPersistenceConfigurationServices {
 	 * Attribute that represents the services for the configuration persistence: TSL Services.
 	 */
 	@Autowired
-	private ITslValetService tslValetService;
+	private ITslDataService tslDataService;
 
 	/**
 	 * Attribute that represents the services for the configuration persistence: ValET Users.
@@ -313,11 +313,11 @@ public class ManagerPersistenceConfigurationServices {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #tslValetService}.
-	 * @return the value of the attribute {@link #tslValetService}.
+	 * Gets the value of the attribute {@link #tslDataService}.
+	 * @return the value of the attribute {@link #tslDataService}.
 	 */
-	public final ITslValetService getTslValetService() {
-		return tslValetService;
+	public final ITslDataService getTslDataService() {
+		return tslDataService;
 	}
 
 	/**

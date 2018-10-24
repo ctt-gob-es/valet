@@ -20,15 +20,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 11/09/2018.
+ * @version 1.1, 24/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -40,7 +44,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class the maps the <i>TSL_COUNTRY_REGION</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 11/09/2018.
+ * @version 1.1, 24/10/2018.
  */
 @Entity
 @Table(name = "TSL_COUNTRY_REGION")
@@ -65,6 +69,11 @@ public class TslCountryRegion implements Serializable {
 	 * Attribute that represents the country/region name.
 	 */
 	private String countryRegionName;
+
+	/**
+	 * Attribute that represents the list of mappings associated to this TSL Country/Region.
+	 */
+	private List<TslCountryRegionMapping> listTslCountryRegionMappings;
 
 	/**
 	 * Gets the value of the attribute {@link #idTslCountryRegion}.
@@ -99,7 +108,6 @@ public class TslCountryRegion implements Serializable {
 	 * Sets the value of the attribute {@link #countryRegionCode}.
 	 * @param countryRegionCodeParam The value for the attribute {@link #countryRegionCode}.
 	 */
-
 	public void setCountryRegionCode(String countryRegionCodeParam) {
 		this.countryRegionCode = countryRegionCodeParam;
 	}
@@ -120,6 +128,23 @@ public class TslCountryRegion implements Serializable {
 	 */
 	public void setCountryRegionName(String countryRegionNameParam) {
 		this.countryRegionName = countryRegionNameParam;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #listTslCountryRegionMappings}.
+	 * @return the value of the attribute {@link #listTslCountryRegionMappings}.
+	 */
+	@OneToMany(mappedBy = "tslCountryRegion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public List<TslCountryRegionMapping> getListTslCountryRegionMapping() {
+		return listTslCountryRegionMappings;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #listTslCountryRegionMappings}.
+	 * @param listTslCountryRegionMappingsParam The value for the attribute {@link #listTslCountryRegionMappings}.
+	 */
+	public void setListTslCountryRegionMapping(List<TslCountryRegionMapping> listTslCountryRegionMappingsParam) {
+		this.listTslCountryRegionMappings = listTslCountryRegionMappingsParam;
 	}
 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.controller.TslController.java.</p>
  * <b>Description:</b><p> Class that manages the requests related to the TSLs administration.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 22/10/2018.
+ * @version 1.3, 24/10/2018.
  */
 package es.gob.valet.controller;
 
@@ -39,40 +39,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
-import es.gob.valet.persistence.configuration.model.entity.TslValet;
+import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
-import es.gob.valet.persistence.configuration.services.ifaces.ITslValetService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 
-/** 
+/**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.2, 22/10/2018.
+ *  @version 1.3, 24/10/2018.
  */
 @Controller
 public class TslController {
 
 	/**
-	 * Attribute that represents the service object for acceding to TslValetRepository.
+	 * Attribute that represents the service object for acceding to TslDataRepository.
 	 */
 	@Autowired
-	private ITslValetService tslService;
+	private ITslDataService tslService;
 
 	/**
 	 * Attribute that represents the service object for acceding to CTslImplRepository.
 	 */
 	@Autowired
 	private ICTslImplService cTSLImplService;
-	
+
 	/**
-	 * Attribute that represents the service object for acceding the repository. 
+	 * Attribute that represents the service object for acceding the repository.
 	 */
 	@Autowired
 	private ITslCountryRegionService tslCountryRegionService;
 
 	/**
 	 * Method that maps the list TSLs to the controller and forwards the list of TSLs to the view.
-	 * 
+	 *
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
@@ -86,15 +86,15 @@ public class TslController {
 	 * backing form.
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@RequestMapping(value = "addTsl")
 	public String addTsl(Model model) throws IOException {
 		List<String> listVersions = new ArrayList<String>();
 		List<String> listSpecifications = cTSLImplService.getAllSpecifications();
-	
+
 		TslForm tslForm = new TslForm();
-		model.addAttribute("tslform",tslForm);
+		model.addAttribute("tslform", tslForm);
 		model.addAttribute("versions", listVersions);
 		model.addAttribute("listSpecifications", listSpecifications);
 
@@ -103,48 +103,48 @@ public class TslController {
 
 	/**
 	 * Method that maps the editing of TSL data to the controller and sets the backing form.
-	 * @param idTslValet Identifier of the TSL to be edited.
+	 * @param idTslData Identifier of the TSL to be edited.
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "edittsl", method = RequestMethod.POST)
-	public String editTsl(@RequestParam("id") Long idTslValet, Model model) {
-		TslValet tslValet = tslService.getTslValetById(idTslValet);
+	public String editTsl(@RequestParam("id") Long idTslData, Model model) {
+		TslData tslData = tslService.getTslDataById(idTslData);
 		TslForm tslForm = new TslForm();
-		tslForm.setIdTslValet(idTslValet);
-		tslForm.setCountryName(tslValet.getCountry().getCountryRegionName());
-		tslForm.setCountry(tslValet.getCountry().getIdTslCountryRegion());
-		tslForm.setAlias(tslValet.getAlias());
+		tslForm.setIdTslData(idTslData);
+		tslForm.setCountryName(tslData.getTslCountryRegion().getCountryRegionName());
+		tslForm.setCountry(tslData.getTslCountryRegion().getIdTslCountryRegion());
+		tslForm.setAlias(tslData.getAlias());
 		tslForm.setTslName("prueba nombre tsl");
 		tslForm.setTslResponsible("prueba nombre responsable");
-		
-		//Se comprueba si tiene documento legible
-		if(tslValet.getLegibleDocument()!=null){
+
+		// Se comprueba si tiene documento legible
+		if (tslData.getLegibleDocument() != null) {
 			tslForm.setIsLegible(true);
-		}else{
+		} else {
 			tslForm.setIsLegible(false);
 		}
-		
-		Date issueDate = tslValet.getIssueDate();
+
+		Date issueDate = tslData.getIssueDate();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		tslForm.setIssueDate(sdf.format(issueDate));		
-		tslForm.setExpirationDate(sdf.format(tslValet.getExpirationDate()));
-		tslForm.setUrlTsl(tslValet.getUriTslLocation());
-		
-		tslForm.setSequenceNumber(tslValet.getSequenceNumber());
+		tslForm.setIssueDate(sdf.format(issueDate));
+		tslForm.setExpirationDate(sdf.format(tslData.getExpirationDate()));
+		tslForm.setUrlTsl(tslData.getUriTslLocation());
+
+		tslForm.setSequenceNumber(tslData.getSequenceNumber());
 		model.addAttribute("isLegible", tslForm.getIsLegible());
 		model.addAttribute("tslform", tslForm);
 		return "modal/tsl/tslEditForm";
 	}
-	
+
 	/**
-	 * Method that loads a datatable with the mappings for the TSL of the indicated country. 
- 	 * @param idCountryRegion Parameter that represents a country identifier.
+	 * Method that loads a datatable with the mappings for the TSL of the indicated country.
+	 * @param idCountryRegion Parameter that represents a country identifier.
 	 * @param model Parameter that represents holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "/loadmappingdatatable", method = RequestMethod.GET)
-	public String loadMappingDataTable(@RequestParam("idTslCountryRegion") Long idCountryRegion, Model model){
+	public String loadMappingDataTable(@RequestParam("idTslCountryRegion") Long idCountryRegion, Model model) {
 		MappingTslForm mappingTslForm = new MappingTslForm();
 		MappingTslForm mappingTslEditForm = new MappingTslForm();
 		mappingTslForm.setIdTslCountryRegion(idCountryRegion);

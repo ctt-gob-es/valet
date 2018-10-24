@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 24/10/2018.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 24/10/2018.
  */
 public interface ICoreGeneralMessages {
 
@@ -56,6 +56,18 @@ public interface ICoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	String INITIALIZATION_003 = "INITIALIZATION_003";
+
+	/**
+	 * Constant attribute that represents the property key <code>INITIALIZATION_004</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String INITIALIZATION_004 = "INITIALIZATION_004";
+
+	/**
+	 * Constant attribute that represents the property key <code>INITIALIZATION_005</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String INITIALIZATION_005 = "INITIALIZATION_005";
 
 	/**
 	 * Constant attribute that represents the property key <code>CRYPTO_001</code> belonging to the

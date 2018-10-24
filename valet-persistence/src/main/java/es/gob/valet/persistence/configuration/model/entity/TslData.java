@@ -15,12 +15,12 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.TslValet.java.</p>
- * <b>Description:</b><p>Class that maps the <i>TSL_VALET</i> database table as a Plain Old Java Object.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.TslData.java.</p>
+ * <b>Description:</b><p>Class that maps the <i>TSL_DATA</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>25/06/2018.</p>
+ * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/06/2018.
+ * @version 1.0, 24/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -48,13 +48,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import es.gob.valet.commons.utils.NumberConstants;
 
 /**
- * <p>Class that maps the <i>TSL_VALET</i> database table as a Plain Old Java Object.</p>
+ * <p>Class that maps the <i>TSL_DATA</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/06/2018.
+ * @version 1.0, 24/10/2018.
  */
 @Entity
-@Table(name = "TSL_VALET")
-public class TslValet implements Serializable {
+@Table(name = "TSL_DATA")
+public class TslData implements Serializable {
 
 	/**
 	 * Constant attribute that represents the serial version UID.
@@ -64,7 +64,7 @@ public class TslValet implements Serializable {
 	/**
 	 * Attribute that represents the country/region for this TSL.
 	 */
-	private Long idTslValet;
+	private Long idTslData;
 
 	/**
 	 * Attribute that represents the sequence number of this TSL.
@@ -109,17 +109,17 @@ public class TslValet implements Serializable {
 	/**
 	 * Attribute that represents the country/region for this TSL.
 	 */
-	private TslCountryRegion country;
+	private TslCountryRegion tslCountryRegion;
 
 	/**
-	 * Attribute that represents if a new TSL are avaliable.
+	 * Attribute that represents if a new TSL are available.
 	 */
-	private String newTSLAvaliable;
+	private String newTSLAvailable;
 
 	/**
-	 * Attribute that represents the last new TSL avaliable are find.
+	 * Attribute that represents the last new TSL available are find.
 	 */
-	private Date lastNewTSAvaliableFind;
+	private Date lastNewTSLAvailableFind;
 
 	/**
 	 * Attribute that represents the alias for new TSL.
@@ -127,24 +127,24 @@ public class TslValet implements Serializable {
 	private String alias;
 
 	/**
-	 * Gets the value of the attribute {@link #idTslValet}.
-	 * @return the value of the attribute {@link #idTslValet}.
+	 * Gets the value of the attribute {@link #idTslData}.
+	 * @return the value of the attribute {@link #idTslData}.
 	 */
 	@Id
-	@Column(name = "ID_TSL_VALET", unique = true, nullable = false, precision = NumberConstants.NUM19)
-	@GeneratedValue(generator = "sq_tsl_valet")
-	@GenericGenerator(name = "sq_tsl_valet", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = { @Parameter(name = "sequence_name", value = "SQ_TSL_VALET"), @Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
+	@Column(name = "ID_TSL_DATA", unique = true, nullable = false, precision = NumberConstants.NUM19)
+	@GeneratedValue(generator = "sq_tsl_data")
+	@GenericGenerator(name = "sq_tsl_data", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = { @Parameter(name = "sequence_name", value = "SQ_TSL_DATA"), @Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
 	@JsonView(DataTablesOutput.View.class)
-	public Long getIdTslValet() {
-		return idTslValet;
+	public Long getIdTslData() {
+		return idTslData;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #idTslValet}.
-	 * @param idTslValetParam The value for the attribute {@link #idTslValet}.
+	 * Sets the value of the attribute {@link #idTslData}.
+	 * @param idTslDataParam The value for the attribute {@link #idTslData}.
 	 */
-	public void setIdTslValet(Long idTslValetParam) {
-		this.idTslValet = idTslValetParam;
+	public void setIdTslData(Long idTslDataParam) {
+		this.idTslData = idTslDataParam;
 	}
 
 	/**
@@ -297,63 +297,63 @@ public class TslValet implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #country}.
-	 * @return the value of the attribute {@link #country}.
+	 * Gets the value of the attribute {@link #tslCountryRegion}.
+	 * @return the value of the attribute {@link #tslCountryRegion}.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_COUNTRY_REGION")
 	@JsonView(DataTablesOutput.View.class)
-	public TslCountryRegion getCountry() {
-		return country;
+	public TslCountryRegion getTslCountryRegion() {
+		return tslCountryRegion;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #country}.
-	 * @param countryParam The value for the attribute {@link #country}.
+	 * Sets the value of the attribute {@link #tslCountryRegion}.
+	 * @param tslCountryRegionParam The value for the attribute {@link #tslCountryRegion}.
 	 */
-	public void setCountry(TslCountryRegion countryParam) {
-		this.country = countryParam;
+	public void setTslCountryRegion(TslCountryRegion tslCountryRegionParam) {
+		this.tslCountryRegion = tslCountryRegionParam;
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #newTSLAvaliable}.
-	 * @return the value of the attribute {@link #newTSLAvaliable}.
-	 */
-
-	@Column(name = "NEW_TSL_AVALIABLE", nullable = false, length = 1)
-	public String getNewTSLAvaliable() {
-		return newTSLAvaliable;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #newTSLAvaliable}.
-	 * @param newTSLAvaliableParam The value for the attribute {@link #newTSLAvaliable}.
+	 * Gets the value of the attribute {@link #newTSLAvailable}.
+	 * @return the value of the attribute {@link #newTSLAvailable}.
 	 */
 
-	public void setNewTSLAvaliable(String newTSLAvaliableParam) {
-
-		this.newTSLAvaliable = newTSLAvaliableParam;
+	@Column(name = "NEW_TSL_AVAILABLE", nullable = false, length = 1)
+	public String getNewTSLAvailable() {
+		return newTSLAvailable;
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #lastNewTSAvaliableFind}.
-	 * @return the value of the attribute {@link #lastNewTSAvaliableFind}.
+	 * Sets the value of the attribute {@link #newTSLAvailable}.
+	 * @param newTSLAvailableParam The value for the attribute {@link #newTSLAvailable}.
+	 */
+
+	public void setNewTSLAvailable(String newTSLAvailableParam) {
+
+		this.newTSLAvailable = newTSLAvailableParam;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #lastNewTSLAvailableFind}.
+	 * @return the value of the attribute {@link #lastNewTSLAvailableFind}.
 	 */
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "LAST_TSLA_FIND", nullable = true)
-	public Date getLastNewTSAvaliableFind() {
+	public Date getLastNewTSLAvailableFind() {
 
-		return lastNewTSAvaliableFind;
+		return lastNewTSLAvailableFind;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #lastNewTSAvaliableFind}.
-	 * @param lastNewTSAvaliableFindParam The value for the attribute {@link #lastNewTSAvaliableFind}.
+	 * Sets the value of the attribute {@link #lastNewTSLAvailableFind}.
+	 * @param lastNewTSLAvailableFindParam The value for the attribute {@link #lastNewTSLAvailableFind}.
 	 */
 
-	public void setLastNewTSAvaliableFind(Date lastNewTSAvaliableFindParam) {
-		this.lastNewTSAvaliableFind = lastNewTSAvaliableFindParam;
+	public void setLastNewTSLAvailableFind(Date lastNewTSLAvailableFindParam) {
+		this.lastNewTSLAvailableFind = lastNewTSLAvailableFindParam;
 	}
 
 	/**

@@ -86,9 +86,9 @@ COMMENT ON COLUMN "USER_VALET"."ATTEMPTS_NUMBER" IS 'Valor que representa el nú
 COMMENT ON COLUMN "USER_VALET"."LAST_ACCESS" IS 'Valor que representa la fecha del último acceso del usuario a la plataforma.';
 COMMENT ON COLUMN "USER_VALET"."IP_LAST_ACCESS" IS 'Valor que representa la dirección IP desde la que accedió el usuario por última vez.';
 
--- Table TSL_VALET
-CREATE TABLE "TSL_VALET"(
-	"ID_TSL_VALET" Number(19,0) NOT NULL,
+-- Table TSL_DATA
+CREATE TABLE "TSL_DATA"(
+	"ID_TSL_DATA" Number(19,0) NOT NULL,
 	"SEQUENCE_NUMBER" Integer NOT NULL,
 	"RESPONSIBLE" Varchar2(128),
 	"ISSUE_DATE" Timestamp(6) NOT NULL, 
@@ -98,25 +98,25 @@ CREATE TABLE "TSL_VALET"(
 	"LEGIBLE_DOCUMENT" Blob,
 	"ID_COUNTRY_REGION" Number(19,0)NULL,
 	"ID_TSL_IMPL" Number(19,0) NOT NULL,
-	"NEW_TSL_AVALIABLE" Varchar2(1) NOT NULL,
+	"NEW_TSL_AVAILABLE" Varchar2(1) NOT NULL,
 	"LAST_TSLA_FIND" Timestamp(6) ,
 	"ALIAS" Varchar2(128) NOT NULL
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
-ALTER TABLE "TSL_VALET" ADD CONSTRAINT "ID_TSL_VALET" PRIMARY KEY ("ID_TSL_VALET");
-ALTER TABLE "TSL_VALET" ADD CONSTRAINT "TV_IDCR_SN" UNIQUE ("ID_COUNTRY_REGION","SEQUENCE_NUMBER");
-COMMENT ON TABLE "TSL_VALET" IS 'Tabla que almacena todos los datos relacionados con una TSL concreta, asignada a un país/región e implementación.';
-COMMENT ON COLUMN "TSL_VALET"."ID_TSL_VALET" IS 'Identificador de la tabla.';
-COMMENT ON COLUMN "TSL_VALET"."ID_COUNTRY_REGION" IS 'Identificador del código de país/región según ISO 3166 asignado a esta TSL.';
-COMMENT ON COLUMN "TSL_VALET"."URI_TSL_LOCATION" IS 'URI con la localización del lugar de donde se puede obtener esta TSL de forma pública.';
-COMMENT ON COLUMN "TSL_VALET"."XML_DOCUMENT" IS 'Representación en bytes del documento XML que define a la TSL.';
-COMMENT ON COLUMN "TSL_VALET"."LEGIBLE_DOCUMENT" IS 'Representación en bytes del documento legible de la TSL.';
-COMMENT ON COLUMN "TSL_VALET"."ISSUE_DATE" IS 'Fecha de emisión de la TSL.';
-COMMENT ON COLUMN "TSL_VALET"."EXPIRATION_DATE" IS 'Fecha de caducidad o próxima emisión de la TSL.';
-COMMENT ON COLUMN "TSL_VALET"."SEQUENCE_NUMBER" IS 'Número de secuencia de la TSL.';
-COMMENT ON COLUMN "TSL_VALET"."ID_TSL_IMPL" IS 'Identificador de la especificación ETSI TS que sigue la implementación de esta TSL.';
-COMMENT ON COLUMN "TSL_VALET"."NEW_TSL_AVALIABLE" IS 'Indica si hay una nueva TSL disponible valores: Y (hay disponible nueva TSL), N (no hay disponible nueva TSL), P (posiblemente hay disponible una nueva TSL).';
-COMMENT ON COLUMN "TSL_VALET"."LAST_TSLA_FIND" IS 'Fecha en la que se encontro (avisó) una nueva TSL disponible.';
-COMMENT ON COLUMN "TSL_VALET"."ALIAS" IS 'Alias interno asignado a la TSL.';
+ALTER TABLE "TSL_DATA" ADD CONSTRAINT "ID_TSL_DATA" PRIMARY KEY ("ID_TSL_DATA");
+ALTER TABLE "TSL_DATA" ADD CONSTRAINT "TV_IDCR_SN" UNIQUE ("ID_COUNTRY_REGION","SEQUENCE_NUMBER");
+COMMENT ON TABLE "TSL_DATA" IS 'Tabla que almacena todos los datos relacionados con una TSL concreta, asignada a un país/región e implementación.';
+COMMENT ON COLUMN "TSL_DATA"."ID_TSL_DATA" IS 'Identificador de la tabla.';
+COMMENT ON COLUMN "TSL_DATA"."ID_COUNTRY_REGION" IS 'Identificador del código de país/región según ISO 3166 asignado a esta TSL.';
+COMMENT ON COLUMN "TSL_DATA"."URI_TSL_LOCATION" IS 'URI con la localización del lugar de donde se puede obtener esta TSL de forma pública.';
+COMMENT ON COLUMN "TSL_DATA"."XML_DOCUMENT" IS 'Representación en bytes del documento XML que define a la TSL.';
+COMMENT ON COLUMN "TSL_DATA"."LEGIBLE_DOCUMENT" IS 'Representación en bytes del documento legible de la TSL.';
+COMMENT ON COLUMN "TSL_DATA"."ISSUE_DATE" IS 'Fecha de emisión de la TSL.';
+COMMENT ON COLUMN "TSL_DATA"."EXPIRATION_DATE" IS 'Fecha de caducidad o próxima emisión de la TSL.';
+COMMENT ON COLUMN "TSL_DATA"."SEQUENCE_NUMBER" IS 'Número de secuencia de la TSL.';
+COMMENT ON COLUMN "TSL_DATA"."ID_TSL_IMPL" IS 'Identificador de la especificación ETSI TS que sigue la implementación de esta TSL.';
+COMMENT ON COLUMN "TSL_DATA"."NEW_TSL_AVAILABLE" IS 'Indica si hay una nueva TSL disponible valores: Y (hay disponible nueva TSL), N (no hay disponible nueva TSL), P (posiblemente hay disponible una nueva TSL).';
+COMMENT ON COLUMN "TSL_DATA"."LAST_TSLA_FIND" IS 'Fecha en la que se encontro (avisó) una nueva TSL disponible.';
+COMMENT ON COLUMN "TSL_DATA"."ALIAS" IS 'Alias interno asignado a la TSL.';
 
 -- Table TSL_COUNTRY_REGION
 CREATE TABLE "TSL_COUNTRY_REGION"(
@@ -317,8 +317,8 @@ COMMENT ON COLUMN "PROXY"."USER_DOMAIN" IS 'Valor que representa el dominio del 
 COMMENT ON COLUMN "PROXY"."ADDRESS_LIST" IS 'Valor que representa lista de direcciones para las que no se usará el proxy .';
 COMMENT ON COLUMN "PROXY"."IS_LOCAL_ADDRESS" IS 'Valor que representa si se trata de una ruta local o no.';
 
-ALTER TABLE "TSL_VALET" ADD CONSTRAINT "R_TD_ICR" FOREIGN KEY ("ID_COUNTRY_REGION") REFERENCES "TSL_COUNTRY_REGION" ("ID_COUNTRY_REGION") ON DELETE CASCADE;
-ALTER TABLE "TSL_VALET" ADD CONSTRAINT "R_TD_ITI" FOREIGN KEY ("ID_TSL_IMPL") REFERENCES "C_TSL_IMPL" ("ID_TSL_IMPL");
+ALTER TABLE "TSL_DATA" ADD CONSTRAINT "R_TD_ICR" FOREIGN KEY ("ID_COUNTRY_REGION") REFERENCES "TSL_COUNTRY_REGION" ("ID_COUNTRY_REGION") ON DELETE CASCADE;
+ALTER TABLE "TSL_DATA" ADD CONSTRAINT "R_TD_ITI" FOREIGN KEY ("ID_TSL_IMPL") REFERENCES "C_TSL_IMPL" ("ID_TSL_IMPL");
 ALTER TABLE "TSL_COUNTRY_REGION_MAPPING" ADD CONSTRAINT "R_TCRM_ICR" FOREIGN KEY ("ID_COUNTRY_REGION") REFERENCES "TSL_COUNTRY_REGION" ("ID_COUNTRY_REGION") ON DELETE CASCADE;
 ALTER TABLE "TSL_COUNTRY_REGION_MAPPING" ADD CONSTRAINT "R_TCRM_IAT" FOREIGN KEY ("ID_ASSOCIATION_TYPE") REFERENCES "C_ASSOCIATION_TYPE" ("ID_ASSOCIATION_TYPE");
 ALTER TABLE "SYSTEM_CERTIFICATE" ADD CONSTRAINT "R_SC_K" FOREIGN KEY ("ID_KEYSTORE") REFERENCES "KEYSTORE" ("ID_KEYSTORE");

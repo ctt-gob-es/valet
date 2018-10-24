@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.CTSLImplRepository.java.</p>
  * <b>Description:</b><p>Interface that provides CRUD functionality for the CTSLImpl entity .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>17 jul. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 17 jul. 2018.
+ * @version 1.1, 24/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -31,19 +31,19 @@ import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 
-/** 
+/**
  * <p>Interface that provides CRUD functionality for the CTSLImpl entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17 jul. 2018.
+ * @version 1.1, 24/10/2018.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public interface CTslImplRepository  extends JpaRepository<CTslImpl, Long> {
-	
+public interface CTslImplRepository extends JpaRepository<CTslImpl, Long> {
+
 	/**
 	 * Method that obtains from the persistence a CTslImpl object by its primary key.
 	 * @param id Long that represents the primary key of the CTslImpl object.
 	 * @return Object that represents a CTslImpl
 	 */
- CTslImpl findByIdCTSLImpl(Long id);
+	CTslImpl findByIdTSLImpl(Long id);
 }

@@ -17,4 +17,4 @@
 /**
  * Package that provides all the exceptions for the configuration cache layer for the TSL.
  */
-package es.gob.valet.persistence.configuration.cache.items.tsl.exceptions;
+package es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions;

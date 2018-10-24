@@ -15,21 +15,21 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.persistence.configuration.cache.items.tsl.exceptions.TSLCacheException.java.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException.java.</p>
  * <b>Description:</b><p>Class that manages the errors related with the TSL in the Cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>22/10/2018.</p>
+ * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 22/10/2018.
+ * @version 1.0, 24/10/2018.
  */
-package es.gob.valet.persistence.configuration.cache.items.tsl.exceptions;
+package es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions;
 
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 
 /**
  * <p>Class that manages the errors related with the TSL in the Cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 22/10/2018.
+ * @version 1.0, 24/10/2018.
  */
 public class TSLCacheException extends ConfigurationCacheException {
 

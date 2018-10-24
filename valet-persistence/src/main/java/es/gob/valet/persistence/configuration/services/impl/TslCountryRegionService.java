@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.service.impl.TslCountryRegionService.java.</p>
  * <b>Description:</b><p> Class that implements the communication with the operations of the persistence layer for TslCountryRegion.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>23 jul. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 23 jul. 2018.
+ * @version 1.1, 24/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -28,16 +28,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 
-
-/** 
+/**
  * <p>Class that implements the communication with the operations of the persistence layer for TslCountryRegion.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 23 jul. 2018.
+ * @version 1.1, 24/10/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -48,22 +48,44 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 	 */
 	@Autowired
 	private TslCountryRegionRepository repository;
+
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getTslCountryRegionById()
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getTslCountryRegionById(java.lang.Long, boolean)
 	 */
 	@Override
-	public TslCountryRegion getTslCountryRegionById(Long idCountry) {
-		
-		return repository.findByIdTslCountryRegion(idCountry);
+	@Transactional // TODO: ¿es necesario si ya está puesta esta anotación en la
+				   // interfaz?
+	public TslCountryRegion getTslCountryRegionById(Long idCountry, boolean loadMappings) {
+		TslCountryRegion result = repository.findByIdTslCountryRegion(idCountry);
+		if (result != null && loadMappings && result.getListTslCountryRegionMapping() != null) {
+			result.getListTslCountryRegionMapping().size();
+		}
+		return result;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getTslCountryRegionByCode(java.lang.String, boolean)
+	 */
+	@Override
+	@Transactional // TODO: ¿es necesario si ya está puesta esta anotación en la
+				   // interfaz?
+	public TslCountryRegion getTslCountryRegionByCode(String countryRegionCode, boolean loadMappings) {
+		TslCountryRegion result = repository.findByCountryRegionCode(countryRegionCode);
+		if (result != null && loadMappings && result.getListTslCountryRegionMapping() != null) {
+			result.getListTslCountryRegionMapping().size();
+		}
+		return result;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getNameCountryRegionById(java.lang.Long)
 	 */
-	public String getNameCountryRegionById(Long idCountry){
-		TslCountryRegion tslCountryRegion = getTslCountryRegionById(idCountry);
+	@Override
+	public String getNameCountryRegionById(Long idCountry) {
+		TslCountryRegion tslCountryRegion = repository.findByIdTslCountryRegion(idCountry);
 		return tslCountryRegion.getCountryRegionName();
 	}
 

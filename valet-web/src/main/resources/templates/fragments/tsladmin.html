@@ -77,7 +77,7 @@ var tbl = $('#tslTable').DataTable({
           }
         },
 	"columns": [
-        { "data": "idTslValet","visible": false},
+        { "data": "idTslData","visible": false},
         { "data": "country.idTslCountryRegion", "visible":false},
         { "data": "country.countryRegionName"},
         { "data": "sequenceNumber"},
@@ -90,7 +90,7 @@ var tbl = $('#tslTable').DataTable({
         	}
         } 
         ]
-}).on('crudaction', function(e, accion, idTslValet, data, rowindex) {
+}).on('crudaction', function(e, accion, idTslData, data, rowindex) {
 	// e          Evento Jquery
     // accion     [add|edit|delete]
     // pkid       Primer campo en la data [id]                ... en add,    retorna null
@@ -196,7 +196,7 @@ var tbl = $('#tslTable').DataTable({
          	break;
 	        case 'delete':
 	        	 $.ajax(actionDelete,{
-		            	data:$.param({'id':data.idTslValet, 'index':rowindex}),
+		            	data:$.param({'id':data.idTslData, 'index':rowindex}),
 		                type:'POST',
 		                success: function(data){
 		                	// Se oculta la capa 'cargando...'

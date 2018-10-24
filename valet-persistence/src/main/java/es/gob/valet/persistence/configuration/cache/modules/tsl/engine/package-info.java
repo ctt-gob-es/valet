@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 /**
- * Package that provides all the elements/items for the configuration cache layer for the TSL.
+ * Package that includes all the classes that work as engines to manage the TSL
+ * configuration cache.
  */
-package es.gob.valet.persistence.configuration.cache.items.tsl.elements;
+package es.gob.valet.persistence.configuration.cache.modules.tsl.engine;
