@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 22/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -38,7 +38,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeS
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for CAssociationType.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 22/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -52,11 +52,21 @@ public class CAssociationTypeService implements ICAssociationTypeService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService#getAllPlannerType()
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService#getAllAssociationType()
 	 */
 	@Override
-	public List<CAssociationType> getAllPlannerType() {
-		return repository.findAll();
+	public List<CAssociationType> getAllAssociationType() {
+	 return repository.findAll();
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService#getAssociationType(java.lang.Long)
+	 */
+	@Override
+	public CAssociationType getAssociationTypeById(Long idCAssociationType) {
+		return repository.findByIdAssociationType(idCAssociationType);
+	}
+
 
 }

@@ -18,20 +18,18 @@
  * <b>File:</b><p>es.gob.valet.form.MappingForm.java.</p>
  * <b>Description:</b><p>Class that represents the backing form for adding/editing the mapping values for a TSL.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>12 ago. 2018.</p>
+ * <b>Date:</b><p>12/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 12 ago. 2018.
+ *@version 1.1, 25/10/2018
  */
 package es.gob.valet.form;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-
-
 /** 
-* <p>Class that represents the backing form for adding/editing the mapping values for a TSL.</p>
+ * <p>Class that represents the backing form for adding/editing the mapping values for a TSL</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 12 ago. 2018.
+ * @version 1.1, 25/10/2018.
  */
 public class MappingTslForm {
 	/**
@@ -57,6 +55,12 @@ public class MappingTslForm {
 	 * Attribute that represents the value for the mapping. 
 	 */
 	private String mappingValue;
+	
+	/**
+	 * Attribute that represents the association type identifier.
+	 */
+	private Long idMappingType;
+	
 	/**
 	 * Attribute that represents index of the row of the selected mapping.
 	 */
@@ -72,10 +76,10 @@ public class MappingTslForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #idTslCountryRegion}.
-	 * @param idTslCountryRegion The value for the attribute {@link #idTslCountryRegion}.
+	 * @param idTslCountryRegionParam The value for the attribute {@link #idTslCountryRegion}.
 	 */
-	public void setIdTslCountryRegion(Long idTslCountryRegion) {
-		this.idTslCountryRegion = idTslCountryRegion;
+	public void setIdTslCountryRegion(Long idTslCountryRegionParam) {
+		this.idTslCountryRegion = idTslCountryRegionParam;
 	}
 	
 	/**
@@ -89,10 +93,10 @@ public class MappingTslForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #idTslCountryRegionMapping}.
-	 * @param idTslCountryRegionMapping The value for the attribute {@link #idTslCountryRegionMapping}.
+	 * @param idTslCountryRegionMappingParam The value for the attribute {@link #idTslCountryRegionMapping}.
 	 */
-	public void setIdTslCountryRegionMapping(Long idTslCountryRegionMapping) {
-		this.idTslCountryRegionMapping = idTslCountryRegionMapping;
+	public void setIdTslCountryRegionMapping(Long idTslCountryRegionMappingParam) {
+		this.idTslCountryRegionMapping = idTslCountryRegionMappingParam;
 	}
 	
 	/**
@@ -106,10 +110,10 @@ public class MappingTslForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #nameCountryRegion}.
-	 * @param nameCountryRegion The value for the attribute {@link #nameCountryRegion}.
+	 * @param nameCountryRegionParam The value for the attribute {@link #nameCountryRegion}.
 	 */
-	public void setNameCountryRegion(String nameCountryRegion) {
-		this.nameCountryRegion = nameCountryRegion;
+	public void setNameCountryRegion(String nameCountryRegionParam) {
+		this.nameCountryRegion = nameCountryRegionParam;
 	}
 	
 	/**
@@ -123,10 +127,10 @@ public class MappingTslForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #mappingIdentificator}.
-	 * @param mappingIdentificator The value for the attribute {@link #mappingIdentificator}.
+	 * @param mappingIdentificatorParam The value for the attribute {@link #mappingIdentificator}.
 	 */
-	public void setMappingIdentificator(String mappingIdentificator) {
-		this.mappingIdentificator = mappingIdentificator;
+	public void setMappingIdentificator(String mappingIdentificatorParam) {
+		this.mappingIdentificator = mappingIdentificatorParam;
 	}
 	
 	/**
@@ -142,10 +146,10 @@ public class MappingTslForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #mappingValue}.
-	 * @param mappingValue The value for the attribute {@link #mappingValue}.
+	 * @param mappingValueParam The value for the attribute {@link #mappingValue}.
 	 */
-	public void setMappingValue(String mappingValue) {
-		this.mappingValue = mappingValue;
+	public void setMappingValue(String mappingValueParam) {
+		this.mappingValue = mappingValueParam;
 	}
 	
 	
@@ -161,10 +165,28 @@ public class MappingTslForm {
 	
 	/**
 	 * Sets the value of the attribute {@link #rowIndexMapping}.
-	 * @param rowIndexMapping The value for the attribute {@link #rowIndexMapping}.
+	 * @param rowIndexMappingParam The value for the attribute {@link #rowIndexMapping}.
 	 */
-	public void setRowIndexMapping(String rowIndexMapping) {
-		this.rowIndexMapping = rowIndexMapping;
+	public void setRowIndexMapping(String rowIndexMappingParam) {
+		this.rowIndexMapping = rowIndexMappingParam;
+	}
+
+	
+	/**
+	 * Gets the value of the attribute {@link #idMappingType}.
+	 * @return the value of the attribute {@link #idMappingType}.
+	 */
+	public Long getIdMappingType() {
+		return idMappingType;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #idMappingType}.
+	 * @param idMappingTypeParam The value for the attribute {@link #idMappingType}.
+	 */
+	public void setIdMappingType(Long idMappingTypeParam) {
+		this.idMappingType = idMappingTypeParam;
 	}
 
 	/**

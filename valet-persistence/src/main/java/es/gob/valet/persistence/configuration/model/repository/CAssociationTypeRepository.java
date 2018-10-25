@@ -24,7 +24,10 @@
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 
@@ -33,13 +36,13 @@ import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.1, 24/10/2018.
  */
+@Repository
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public interface CAssociationTypeRepository extends JpaRepository<CAssociationType, Long> {
-
 	/**
-	 * Method that obtains from the persistence a CAssociationType identified by its primary key.
+	  * Method that obtains from the persistence a CAssociationType identified by its primary key. 
 	 * @param idAssociationType Long that represents the primary key of the CAssociationType in the persistence.
-	 * @return Object that represents a CAssociationType from the persistence.
+	 * @return Object that represents a CAssociationType from the persistence. 
 	 */
-	CAssociationType findByIdCAssociationType(Long idAssociationType);
-
+	CAssociationType findByIdAssociationType(Long idAssociationType);
 }

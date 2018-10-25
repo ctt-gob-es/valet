@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/10/2018.
+ * @version 1.2, 25/10/2018.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 public interface IWebGeneralMessages {
 
@@ -86,6 +86,11 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String ERROR_EDIT_MAPPING = "errorEditMapping";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorSaveMapping</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_SAVE_MAPPING = "errorSaveMapping";
 
 	/**
 	 * Constant attribute that represents the name of the property <code>errorUpdateTsl</code> belonging to the

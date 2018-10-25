@@ -18,9 +18,9 @@
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.CAssociationType.java.</p>
  * <b>Description:</b><p>Class that represents the representation of the <i>C_ASSOCIATION_TYPE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>22/10/2018.</p>
+ * <b>Date:</b><p>25/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 22/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -32,12 +32,16 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
 import es.gob.valet.commons.utils.NumberConstants;
 
 /**
  * <p>Class that represents the representation of the <i>C_ASSOCIATION_TYPE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 22/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 @Cacheable
 @Entity
@@ -67,6 +71,7 @@ public class CAssociationType implements Serializable {
 	// because Hibernate JPA needs not final access methods.
 	@Id
 	@Column(name = "ID_ASSOCIATION_TYPE", unique = true, nullable = false, precision = NumberConstants.NUM19)
+	@JsonView(DataTablesOutput.View.class)
 	public Long getIdAssociationType() {
 		// CHECKSTYLE:ON
 		return idAssociationType;
@@ -90,6 +95,7 @@ public class CAssociationType implements Serializable {
 	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
 	// because Hibernate JPA needs not final access methods.
 	@Column(name = "TOKEN_NAME", nullable = false, length = NumberConstants.NUM30)
+	@JsonView(DataTablesOutput.View.class)
 	public String getTokenName() {
 		// CHECKSTYLE:ON
 		return tokenName;

@@ -20,11 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 24/10/2018.
+ * @version 1.4, 25/10/2018.
  */
 package es.gob.valet.controller;
 
-import java.io.IOException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,9 +37,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import es.gob.valet.form.ConstantsForm;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
+import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
@@ -47,7 +51,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.3, 24/10/2018.
+ *  @version 1.4, 25/10/2018.
  */
 @Controller
 public class TslController {
@@ -69,6 +73,11 @@ public class TslController {
 	 */
 	@Autowired
 	private ITslCountryRegionService tslCountryRegionService;
+	/**
+	 * Attribute that represents the service object for acceding to CAssociationTypeRepository.
+	 */
+	@Autowired
+	private ICAssociationTypeService associationTypeService;
 
 	/**
 	 * Method that maps the list TSLs to the controller and forwards the list of TSLs to the view.
@@ -86,10 +95,9 @@ public class TslController {
 	 * backing form.
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
-	 * @throws IOException
 	 */
 	@RequestMapping(value = "addTsl")
-	public String addTsl(Model model) throws IOException {
+	public String addTsl(Model model){
 		List<String> listVersions = new ArrayList<String>();
 		List<String> listSpecifications = cTSLImplService.getAllSpecifications();
 
@@ -151,7 +159,36 @@ public class TslController {
 		mappingTslForm.setNameCountryRegion(tslCountryRegionService.getNameCountryRegionById(idCountryRegion));
 		model.addAttribute("mappingtslform", mappingTslForm);
 		model.addAttribute("mappingedittslform", mappingTslEditForm);
+		
+		//se cargan los tipos de asociaciones
+		List<ConstantsForm> associationTypes = loadAssociationType();
+		model.addAttribute("listTypes", associationTypes);
 		return "fragments/tslmapping.html";
+	}
+	
+	/**
+	 * Method that loads association types.
+	 * @return List of constants that represents the different association types.
+	 */
+	private List<ConstantsForm> loadAssociationType() {
+		List<ConstantsForm> listAssociationTypes = new ArrayList<ConstantsForm>();
+		// obtenemos los tipos de planificadores.
+		List<CAssociationType> listCAssociationType = associationTypeService.getAllAssociationType();
+		for (CAssociationType associationType: listCAssociationType) {
+			ConstantsForm item = new ConstantsForm(associationType.getIdAssociationType(), getConstantsValue(associationType.getTokenName()));
+			listAssociationTypes.add(item);
+		}
+		
+		return listAssociationTypes;
+	}
+	/**
+	 * Method that gets string constant from multilanguage file.
+	 * 
+	 * @param key Key for getting constant string from multilanguage file.
+	 * @return Constants string.
+	 */
+	private String getConstantsValue(String key) {
+		return Language.getResPersistenceConstants(key);
 	}
 
 }

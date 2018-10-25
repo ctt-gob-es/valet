@@ -53,6 +53,6 @@ public interface TslDataRepository extends JpaRepository<TslData, Long> {
 	 * @param tslContryRegion Country/Region of the TSL.
 	 * @return Object that represents a TslData from the persistence.
 	 */
-	TslData findByCountry(TslCountryRegion tslContryRegion);
+	TslData findByTslCountryRegion(TslCountryRegion tslContryRegion);
 
 }

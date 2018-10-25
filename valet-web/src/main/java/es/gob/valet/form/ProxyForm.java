@@ -18,20 +18,16 @@
  * <b>File:</b><p>es.gob.valet.form.ProxyForm.java.</p>
  * <b>Description:</b><p> Class that represents the backing form for editing proxy settings.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>15 oct. 2018.</p>
+ *  <b>Date:</b><p>15/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 15 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.form;
-
-import com.fasterxml.jackson.annotation.JsonView;
-
-import es.gob.valet.form.TslForm.View;
 
 /** 
  * <p>Class that represents the backing form for editing proxy settings.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 15 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 public class ProxyForm {
 
@@ -169,8 +165,7 @@ public class ProxyForm {
 	public String getUser() {
 		return user;
 	}
-	public interface View {
-	}	
+	
 	
 	/**
 	 * Sets the value of the attribute {@link #user}.
@@ -275,7 +270,7 @@ public class ProxyForm {
 	 * Gets the value of the attribute {@link #error}.
 	 * @return the value of the attribute {@link #error}.
 	 */
-	@JsonView(View.class)
+	
 	public String getError() {
 		return error;
 	}

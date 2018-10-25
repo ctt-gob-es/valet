@@ -98,15 +98,16 @@ Insert into KEYSTORE
  Values (2,'TruststoreTSL', 'KEYSTORE02', 'CECECECE00000002000000002F03597B85569C665FE07C832801E57EFF4A872C', 'UH2rpWNDX+RLltMuyFPirQ==', 'N', 'JCEKS', 0, 'N');
 
 
--- TABLA ALARM
+-- TABLA ALARM_DEFECT
+
 Insert into ALARM (ID_ALARM, DESCRIPTION)
-  Values ('ALM001', 'Alarma 1');
+  Values ('ALM001', 'No es posible sincronizar la TSL');
 Insert into ALARM (ID_ALARM, DESCRIPTION)
-  Values ('ALM002', 'Alarma 2');
+  Values ('ALM002', 'Error al parsear una TSL');
 Insert into ALARM (ID_ALARM, DESCRIPTION)
-  Values ('ALM003', 'Alarma 3');
+  Values ('ALM003', 'Error al obtener una CRL'); 
 Insert into ALARM (ID_ALARM, DESCRIPTION)
-  Values ('ALM004', 'Alarma 4');
+  Values ('ALM004', 'Error al obtener una respuesta OCSP');
 
 
 -- TABLA TASK 

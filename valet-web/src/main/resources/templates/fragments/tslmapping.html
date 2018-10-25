@@ -9,9 +9,6 @@
 		<input type='hidden' id="idNameCountry"
 			th:field="*{nameCountryRegion}"></input>
 
-		<!--  nombre del pais al que pertenece la TSL - PARA EDITAR.....-> 
-	<!-- 	<input type='hidden' id="idCountryRegionMapping"
-			th:field="*{idTslCountryRegionMapping}"></input> -->
 	</form>
 	<div class="bgc-white bd bdrs-3 p-20 mB-20">
 
@@ -26,6 +23,7 @@
 					<!-- Columna oculta para el identificador de la TSL -->
 					<th th:text="#{table.tsl.mapeo.id}"></th>
 					<th th:text="#{table.tsl.mapeo.value}"></th>
+					<th th:text="#{table.tsl.mapeo.type}"></th>
 					<th></th>
 
 				</tr>
@@ -41,7 +39,8 @@
 			<div class="modal-header">
 				<h4 class="modal-title" th:text="#{form.newMapping.title}"></h4>
 				<button type="button" class="close"
-					onclick="closeModalButton('modalAddMapping', 'mappingTslForm')" aria-label="Cerrar">
+					onclick="closeModalButton('modalAddMapping', 'mappingTslForm')"
+					aria-label="Cerrar">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
@@ -51,14 +50,21 @@
 					<div id="errorModalMapping" role="alert"></div>
 					<input type='hidden' id="idCountryRegion"
 						th:field="*{idTslCountryRegion}"></input>
-
+					<div class="form-group col-md-4">
+						<label for="idAssociationType" th:text="#{form.newMapping.type}"></label>
+						<select id="idAssociationType" class="form-control"
+							th:field="*{idMappingType}">
+							<option th:each="ta: ${listTypes}" th:value="${ta.idConstant}"
+								th:text="${ta.value}"></option>
+						</select>
+					</div>
 					<div class="form-group col-md-12">
 						<label for="idIdentificator"
 							th:text="#{form.newMapping.identificator}"></label> <span
 							id="mappingIdentificator_span"
 							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span><input
 							type="text" id="idIdentificator" class="form-control"
-							th:field="*{mappingIdentificator}" 
+							th:field="*{mappingIdentificator}"
 							onchange="cleanSpan('mappingIdentificator_span');"></input>
 						<div style="clear: both;"></div>
 					</div>
@@ -75,7 +81,8 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default"
-					onclick="closeModalButton('modalAddMapping', 'mappingTslForm')" th:text="#{form.newMapping.btn.close}"></button>
+					onclick="closeModalButton('modalAddMapping', 'mappingTslForm')"
+					th:text="#{form.newMapping.btn.close}"></button>
 
 				<button type="button" id="idNewMappingBtn" class="btn btn-primary"
 					th:text="#{form.newMapping.btn.save}" onclick="saveNewMapping();"></button>
@@ -86,13 +93,15 @@
 
 
 <!-- Modal para editar mapeo -->
-<div class="modal fade" tabindex="-1" role="dialog" id="modalEditMapping">
+<div class="modal fade" tabindex="-1" role="dialog"
+	id="modalEditMapping">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">Editar Mapeo</h4>
 				<button type="button" class="close"
-					onclick="closeModalButton('modalEditMapping', 'mappingTslEditForm')" aria-label="Cerrar">
+					onclick="closeModalButton('modalEditMapping', 'mappingTslEditForm')"
+					aria-label="Cerrar">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
@@ -101,10 +110,18 @@
 					th:object="${mappingtslform}" method="post">
 
 					<input type='hidden' id="idCountryRegionMappingEd"
-						th:field="*{idTslCountryRegionMapping}"></input> 
-					<input
+						th:field="*{idTslCountryRegionMapping}"></input> <input
 						type='hidden' id="idCountryRegionEd"
 						th:field="*{idTslCountryRegion}"></input>
+					<div class="form-group col-md-4">
+						<label for="idAssociationType" th:text="#{form.newMapping.type}"></label>
+						<select id="idAssociationType" class="form-control"
+							th:field="*{idMappingType}">
+							<option th:each="ta: ${listTypes}" th:value="${ta.idConstant}"
+								th:text="${ta.value}"
+								th:selected="${mappingtslform.idMappingType == ta.idConstant}"></option>
+						</select>
+					</div>
 					<div class="form-group col-md-12">
 						<label for="idIdentificatorEd"
 							th:text="#{form.newMapping.identificator}"></label> <input
@@ -135,32 +152,37 @@
 </div>
 
 <!-- Modal para eliminar un mapeo -->
-<div class="modal fade" tabindex="-1" role="dialog" id="modalDeletetMapping">
-   <div class="modal-dialog">
+<div class="modal fade" tabindex="-1" role="dialog"
+	id="modalDeletetMapping">
+	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" th:text="#{form.deleteMapping.title}"></h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.deleteMapping.btn.close}">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="#{form.deleteMapping.btn.close}">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form name="altEditor-form" role="form" id="mappingTslDeleteForm" method="post" th:object="${mappingtslform}">
-					
+				<form name="altEditor-form" role="form" id="mappingTslDeleteForm"
+					method="post" th:object="${mappingtslform}">
+
 					<input type='hidden' id="idCountryRegionMappingDel"
-						th:field="*{idTslCountryRegionMapping}"></input>
-						
-						<input type='hidden' id="rowIndexMappingDel"
+						th:field="*{idTslCountryRegionMapping}"></input> <input
+						type='hidden' id="rowIndexMappingDel"
 						th:field="*{rowIndexMapping}"></input>
-						
-						<p th:text="#{form.deleteMapping.message}"></p>
+
+					<p th:text="#{form.deleteMapping.message}"></p>
 
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" th:text="#{form.deleteMapping.btn.close}" onclick="closeModalButton('modalDeletetMapping', 'mappingTslDeleteForm')"></button>
-				<button type="button" id="idDeleteMappingBtn" class="btn btn-primary"
-					th:text="#{form.deleteMapping.btn.delete}" onclick="deleteMappingTsl();"></button>
+				<button type="button" class="btn btn-default"
+					th:text="#{form.deleteMapping.btn.close}"
+					onclick="closeModalButton('modalDeletetMapping', 'mappingTslDeleteForm')"></button>
+				<button type="button" id="idDeleteMappingBtn"
+					class="btn btn-primary" th:text="#{form.deleteMapping.btn.delete}"
+					onclick="deleteMappingTsl();"></button>
 			</div>
 		</div>
 	</div>
@@ -208,6 +230,7 @@ $(document).ready(function() {
 				        	{ "data": "tslCountryRegion.idTslCountryRegion","visible": false},
 					        { "data": "mappingIdentificator" },
 					        { "data": "mappingValue" },
+					        { "data": "associationType.tokenName"},
 					        { "data": "idTslCountryRegionMapping", 
 					        	"render": function(data, type, row){		
 					        		

@@ -106,7 +106,7 @@ public class TslDataService implements ITslDataService {
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#getTslByCountryRegion(es.gob.valet.persistence.configuration.model.entity.TslCountryRegion)
 	 */
 	public TslData getTslByCountryRegion(TslCountryRegion tslCountryRegion) {
-		return repository.findByCountry(tslCountryRegion);
+		return repository.findByTslCountryRegion(tslCountryRegion);
 	}
 
 }

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 24/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -46,7 +46,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that represents the representation of the <i>TSL_COUNTRY_REGION_MAPPING</i> database table as a Plain Old Java Object</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 24/10/2018.
  */
 @Entity
 @Table(name = "TSL_COUNTRY_REGION_MAPPING")
@@ -81,7 +81,7 @@ public class TslCountryRegionMapping implements Serializable {
 	 * Attribute that represents the value for the mapping.
 	 */
 	private String mappingValue;
-
+	
 	/**
 	 * Attribute that represents the association type for the mapping.
 	 */
@@ -180,17 +180,18 @@ public class TslCountryRegionMapping implements Serializable {
 	public void setMappingValue(String mappingValueParam) {
 		this.mappingValue = mappingValueParam;
 	}
-
+	
 	/**
 	 * Gets the value of the attribute {@link #associationType}.
 	 * @return the value of the attribute {@link #associationType}.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_ASSOCIATION_TYPE", nullable = false)
+	@JsonView(DataTablesOutput.View.class)
 	public CAssociationType getAssociationType() {
 		return associationType;
 	}
-
+	
 	/**
 	 * Sets the value of the attribute {@link #associationType}.
 	 * @param associationTypeParam The value for the attribute {@link #associationType}.

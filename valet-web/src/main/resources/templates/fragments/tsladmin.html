@@ -78,12 +78,12 @@ var tbl = $('#tslTable').DataTable({
         },
 	"columns": [
         { "data": "idTslData","visible": false},
-        { "data": "country.idTslCountryRegion", "visible":false},
-        { "data": "country.countryRegionName"},
+        { "data": "tslCountryRegion.idTslCountryRegion", "visible":false},
+        { "data": "tslCountryRegion.countryRegionName"},
         { "data": "sequenceNumber"},
         { "data": "issueDate"},
         { "data": "expirationDate"},
-        { "data": "country.idTslCountryRegion", 
+        { "data": "tslCountryRegion.idTslCountryRegion", 
         	"render": function(data, type, row){		
         		
         		return '<button class="c-green-500 ti-panel" id="loadMap" onclick="loadMappingDatatable('+data+');"></button>';
