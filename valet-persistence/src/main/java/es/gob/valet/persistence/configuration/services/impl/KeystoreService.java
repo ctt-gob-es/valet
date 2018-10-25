@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.repository.KeystoreRepository;
@@ -39,7 +40,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Keystore.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 25/10/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -77,11 +78,16 @@ public class KeystoreService implements IKeystoreService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService#getKeystoreById(java.lang.Long)
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService#getKeystoreById(java.lang.Long, boolean)
 	 */
 	@Override
-	public Keystore getKeystoreById(Long idKeystore) {
-		return repository.findByIdKeystore(idKeystore);
+	@Transactional // TODO ¿Es necesario al haberlo puesto ya en la interfaz?
+	public Keystore getKeystoreById(Long idKeystore, boolean loadSystemCertificates) {
+		Keystore result = repository.findByIdKeystore(idKeystore);
+		if (result != null && loadSystemCertificates && result.getListSystemCertificates() != null) {
+			result.getListSystemCertificates().size();
+		}
+		return result;
 	}
 
 	/**

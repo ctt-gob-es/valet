@@ -18,7 +18,7 @@
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.CAssociationType.java.</p>
  * <b>Description:</b><p>Class that represents the representation of the <i>C_ASSOCIATION_TYPE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>25/10/2018.</p>
+ * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
  * @version 1.1, 25/10/2018.
  */

@@ -20,13 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,6 +36,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -50,7 +52,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>TSL_DATA</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 @Entity
 @Table(name = "TSL_DATA")
@@ -243,7 +245,8 @@ public class TslData implements Serializable {
 	 * Gets the value of the attribute {@link #xmlDocument}.
 	 * @return the value of the attribute {@link #xmlDocument}.
 	 */
-	@Lob()
+	@Lob 
+	@Basic(fetch=FetchType.LAZY, optional = false)
 	@Column(name = "XML_DOCUMENT", nullable = false)
 	@JsonView(DataTablesOutput.View.class)
 	public byte[ ] getXmlDocument() {
@@ -263,6 +266,7 @@ public class TslData implements Serializable {
 	 * @return the value of the attribute {@link #legibleDocument}.
 	 */
 	@Lob()
+	@Basic(fetch=FetchType.LAZY, optional = false)
 	@Column(name = "LEGIBLE_DOCUMENT")
 	@JsonView(DataTablesOutput.View.class)
 	public byte[ ] getLegibleDocument() {
@@ -300,7 +304,7 @@ public class TslData implements Serializable {
 	 * Gets the value of the attribute {@link #tslCountryRegion}.
 	 * @return the value of the attribute {@link #tslCountryRegion}.
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_COUNTRY_REGION")
 	@JsonView(DataTablesOutput.View.class)
 	public TslCountryRegion getTslCountryRegion() {
@@ -319,7 +323,6 @@ public class TslData implements Serializable {
 	 * Gets the value of the attribute {@link #newTSLAvailable}.
 	 * @return the value of the attribute {@link #newTSLAvailable}.
 	 */
-
 	@Column(name = "NEW_TSL_AVAILABLE", nullable = false, length = 1)
 	public String getNewTSLAvailable() {
 		return newTSLAvailable;
@@ -329,9 +332,7 @@ public class TslData implements Serializable {
 	 * Sets the value of the attribute {@link #newTSLAvailable}.
 	 * @param newTSLAvailableParam The value for the attribute {@link #newTSLAvailable}.
 	 */
-
 	public void setNewTSLAvailable(String newTSLAvailableParam) {
-
 		this.newTSLAvailable = newTSLAvailableParam;
 	}
 
@@ -339,11 +340,9 @@ public class TslData implements Serializable {
 	 * Gets the value of the attribute {@link #lastNewTSLAvailableFind}.
 	 * @return the value of the attribute {@link #lastNewTSLAvailableFind}.
 	 */
-
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "LAST_TSLA_FIND", nullable = true)
 	public Date getLastNewTSLAvailableFind() {
-
 		return lastNewTSLAvailableFind;
 	}
 

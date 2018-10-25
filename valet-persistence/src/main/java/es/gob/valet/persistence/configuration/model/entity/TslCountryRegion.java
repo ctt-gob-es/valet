@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 24/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -31,10 +31,15 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -44,7 +49,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class the maps the <i>TSL_COUNTRY_REGION</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 24/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 @Entity
 @Table(name = "TSL_COUNTRY_REGION")
@@ -76,11 +81,18 @@ public class TslCountryRegion implements Serializable {
 	private List<TslCountryRegionMapping> listTslCountryRegionMappings;
 
 	/**
+	 * Attribute that represents the TSL data associated to this country/region (if it is defined).
+	 */
+	private TslData tslData;
+
+	/**
 	 * Gets the value of the attribute {@link #idTslCountryRegion}.
 	 * @return the value of the attribute {@link #idTslCountryRegion}.
 	 */
 	@Id
 	@Column(name = "ID_COUNTRY_REGION", unique = true, nullable = false, precision = NumberConstants.NUM19)
+	@GeneratedValue(generator = "sq_tsl_country_region")
+	@GenericGenerator(name = "sq_tsl_country_region", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = { @Parameter(name = "sequence_name", value = "SQ_TSL_COUNTRY_REGION"), @Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
 	@JsonView(DataTablesOutput.View.class)
 	public Long getIdTslCountryRegion() {
 		return idTslCountryRegion;
@@ -145,6 +157,24 @@ public class TslCountryRegion implements Serializable {
 	 */
 	public void setListTslCountryRegionMapping(List<TslCountryRegionMapping> listTslCountryRegionMappingsParam) {
 		this.listTslCountryRegionMappings = listTslCountryRegionMappingsParam;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #tslData}.
+	 * @return the value of the attribute {@link #tslData}.
+	 */
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ID_TSL_DATA", nullable = false)
+	public TslData getTslData() {
+		return tslData;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #tslData}.
+	 * @param tslDataParam The value for the attribute {@link #tslData}.
+	 */
+	public void setTslData(TslData tslDataParam) {
+		this.tslData = tslDataParam;
 	}
 
 }

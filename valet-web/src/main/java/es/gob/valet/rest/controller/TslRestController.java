@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 24/10/2018.
+ * @version 1.4, 25/10/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -79,7 +79,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 24/10/2018.
+ * @version 1.4, 25/10/2018.
  */
 @RestController
 public class TslRestController {
@@ -427,7 +427,7 @@ public class TslRestController {
 
 			// se comprueba que existe la tsl que se quiere editar.
 			if (idTSL != null) {
-				tsl = tslDataService.getTslDataById(idTSL);
+				tsl = tslDataService.getTslDataById(idTSL, true, true);
 			} else {
 				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TSL));
 				error = true;
@@ -512,14 +512,14 @@ public class TslRestController {
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
 	@ResponseBody
 	public void downloadTsl(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
-		TslData tsl = tslDataService.getTslDataById(idTsl);
+		TslData tsl = tslDataService.getTslDataById(idTsl, true, false);
 		byte[ ] implTsl;
 		if (tsl != null) {
 			implTsl = tsl.getXmlDocument();
 			InputStream in = new ByteArrayInputStream(implTsl);
 			response.setContentType(TOKEN_TEXT_XML);
 			response.setContentLength(implTsl.length);
-			response.setHeader("Content-Disposition", "attachment; filename=" + tsl.getAlias() + EXTENSION_XML);
+			response.setHeader("Content-Disposition", "attachment; filename=" + tsl.getTslCountryRegion().getCountryRegionCode() + UtilsStringChar.SYMBOL_HYPHEN_STRING + tsl.getSequenceNumber() + EXTENSION_XML);
 			FileCopyUtils.copy(in, response.getOutputStream());
 		}
 	}
@@ -534,14 +534,14 @@ public class TslRestController {
 	@ResponseBody
 	public void downloadDocument(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
 
-		TslData tsl = tslDataService.getTslDataById(idTsl);
+		TslData tsl = tslDataService.getTslDataById(idTsl, false, true);
 		byte[ ] legibleDoc;
 		if (tsl != null) {
 			legibleDoc = tsl.getLegibleDocument();
 			InputStream in = new ByteArrayInputStream(legibleDoc);
 			response.setContentType(TOKEN_APPLICATION_PDF);
 			response.setContentLength(legibleDoc.length);
-			response.setHeader("Content-Disposition", "attachment; filename=" + tsl.getAlias() + EXTENSION_PDF);
+			response.setHeader("Content-Disposition", "attachment; filename=" + tsl.getTslCountryRegion().getCountryRegionCode() + UtilsStringChar.SYMBOL_HYPHEN_STRING + tsl.getSequenceNumber() + EXTENSION_PDF);
 			FileCopyUtils.copy(in, response.getOutputStream());
 		}
 	}
@@ -845,7 +845,7 @@ public class TslRestController {
 	@RequestMapping(path = "/deletetsl", method = RequestMethod.POST)
 	public String deleteTsl(@RequestParam("id") Long idTslData, @RequestParam("index") String index) {
 
-		TslData tsl = tslDataService.getTslDataById(idTslData);
+		TslData tsl = tslDataService.getTslDataById(idTslData, false, false);
 		Long idCountryRegion = tsl.getTslCountryRegion().getIdTslCountryRegion();
 		tslDataService.deleteTslData(idTslData);
 		// se elimina también los mapeos del pais de la TSL eliminada.

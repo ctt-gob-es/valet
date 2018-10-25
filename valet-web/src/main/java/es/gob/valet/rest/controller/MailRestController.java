@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,14 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.rest.controller.MailRestController.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Description:</b><p>Class that manages the REST requests related to the Mails administration and
+ * JSON communication.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -53,11 +54,11 @@ import es.gob.valet.persistence.configuration.model.entity.Mail;
 import es.gob.valet.persistence.configuration.services.ifaces.IMailService;
 import es.gob.valet.rest.exception.OrderedValidation;
 
-/** 
+/**
  * <p>Class that manages the REST requests related to the Mails administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 @RestController
 public class MailRestController {
@@ -72,7 +73,7 @@ public class MailRestController {
 	/**
 	 * Method that maps the list mails web requests to the controller and
 	 * forwards the list of mails to the view.
-	 * 
+	 *
 	 * @param input
 	 *            Holder object for datatable attributes.
 	 * @return String that represents the name of the view to forward.
@@ -86,7 +87,7 @@ public class MailRestController {
 	/**
 	 * Method that maps the delete mail request from datatable to the controller
 	 * and performs the delete of the mail identified by its id.
-	 * 
+	 *
 	 * @param mailId
 	 *            Identifier of the mail to be deleted.
 	 * @param index
@@ -102,16 +103,12 @@ public class MailRestController {
 	}
 
 	/**
-	* Method that maps the save user web request to the controller and saves
-	it
-	* in the persistence.
-	*
-	* @param userForm
-	* Object that represents the backing user form.
-	* @param bindingResult
-	* Object that represents the form validation result.
-	* @return {@link DataTablesOutput<UserValet>}
-	*/
+	 * Method that maps the save user web request to the controller and saves it
+	 * in the persistence.
+	 * @param mailForm Object that represents the backing user form.
+	 * @param bindingResult Object that represents the form validation result.
+	 * @return {@link DataTablesOutput<UserValet>}
+	 */
 	@RequestMapping(value = "/savemail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@JsonView(DataTablesOutput.View.class)
 	public @ResponseBody DataTablesOutput<Mail> save(@Validated(OrderedValidation.class) @RequestBody MailForm mailForm, BindingResult bindingResult) {
@@ -129,7 +126,7 @@ public class MailRestController {
 		} else {
 			try {
 				if (mailForm.getIdMail() != null) {
-					mail = mailService.getMailById(mailForm.getIdMail());
+					mail = mailService.getMailById(mailForm.getIdMail(), false);
 				} else {
 					mail = new Mail();
 				}
@@ -151,14 +148,12 @@ public class MailRestController {
 	}
 
 	/**
-	* Method that maps the save user web request to the controller and saves
-	it
-	* in the persistence.
-	*
-	* @param userForm Object that represents the backing user form.
-	* @param bindingResult Object that represents the form validation result.
-	* @return {@link DataTablesOutput<UserValet>}
-	*/
+	 * Method that maps the save user web request to the controller and saves it
+	 * in the persistence.
+	 * @param mailForm Object that represents the backing user form.
+	 * @param bindingResult Object that represents the form validation result.
+	 * @return {@link DataTablesOutput<UserValet>}
+	 */
 	@RequestMapping(value = "/savemailedit", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@JsonView(DataTablesOutput.View.class)
 	public @ResponseBody DataTablesOutput<Mail> saveEdit(@Validated(OrderedValidation.class) @RequestBody MailForm mailForm, BindingResult bindingResult) {
@@ -176,7 +171,7 @@ public class MailRestController {
 		} else {
 			try {
 				if (mailForm.getIdMail() != null) {
-					mail = mailService.getMailById(mailForm.getIdMail());
+					mail = mailService.getMailById(mailForm.getIdMail(), false);
 				} else {
 					mail = new Mail();
 				}

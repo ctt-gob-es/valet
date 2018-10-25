@@ -20,12 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 02/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -36,8 +37,9 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that represents the representation of the <i>C_PLANNER_TYPE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 02/10/2018.
+ * @version 1.1, 25/10/2018.
  */
+@Cacheable
 @Entity
 @Table(name = "C_PLANNER_TYPE")
 public class CPlannerType implements Serializable {

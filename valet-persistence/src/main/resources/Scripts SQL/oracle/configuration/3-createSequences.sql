@@ -11,7 +11,7 @@ CREATE SEQUENCE SQ_USER_VALET
   CACHE 20
   ORDER; 
   
-  -- Secuencia necesaria para la clave de la tabla TSL_DATA.
+-- Secuencia necesaria para la clave de la tabla TSL_DATA.
 CREATE SEQUENCE SQ_TSL_DATA
   START WITH 2
   MAXVALUE 999999999999999999999999999
@@ -20,7 +20,7 @@ CREATE SEQUENCE SQ_TSL_DATA
   CACHE 20
   ORDER; 
   
-  -- Secuencia necesaria para la clave de la tabla TSL_COUNTRY_REGION.
+-- Secuencia necesaria para la clave de la tabla TSL_COUNTRY_REGION.
 CREATE SEQUENCE SQ_TSL_COUNTRY_REGION
   START WITH 1
   MAXVALUE 999999999999999999999999999
@@ -29,7 +29,7 @@ CREATE SEQUENCE SQ_TSL_COUNTRY_REGION
   CACHE 20
   ORDER;
   
-  -- Secuencia necesaria para la clave de la tabla TSL_COUNTRY_REGION_MAPPING.
+-- Secuencia necesaria para la clave de la tabla TSL_COUNTRY_REGION_MAPPING.
 CREATE SEQUENCE SQ_TSL_COUNTRY_REGION_MAPPING
   START WITH 1
   MAXVALUE 999999999999999999999999999
@@ -38,7 +38,7 @@ CREATE SEQUENCE SQ_TSL_COUNTRY_REGION_MAPPING
   CACHE 20
   ORDER;
   
-  -- Secuencia necesaria para la clave de la tabla SYSTEM_CERTIFICATE.
+-- Secuencia necesaria para la clave de la tabla SYSTEM_CERTIFICATE.
 CREATE SEQUENCE SQ_SYSTEM_CERTIFICATE
   START WITH 1
   MAXVALUE 999999999999999999999999999
@@ -47,7 +47,7 @@ CREATE SEQUENCE SQ_SYSTEM_CERTIFICATE
   CACHE 20
   ORDER;
   
-  -- Secuencia necesaria para la clave de la tabla MAIL.
+-- Secuencia necesaria para la clave de la tabla MAIL.
 CREATE SEQUENCE SQ_MAIL
   START WITH 1
   MAXVALUE 999999999999999999999999999
@@ -56,15 +56,16 @@ CREATE SEQUENCE SQ_MAIL
   CACHE 20
   ORDER; 
   
-  -- Secuencia necesaria para la clave de la tabla CONF_SERVER_MAIL.
+-- Secuencia necesaria para la clave de la tabla CONF_SERVER_MAIL.
 CREATE SEQUENCE SQ_CONF_SERVER_MAIL
   START WITH 1
   MAXVALUE 999999999999999999999999999
   MINVALUE 1
   NOCYCLE
   CACHE 20
-  ORDER; 
-    -- Secuencia necesaria para la clave de la tabla TASK.
+  ORDER;
+
+-- Secuencia necesaria para la clave de la tabla TASK.
 CREATE SEQUENCE SQ_TASK
   START WITH 2
   MAXVALUE 999999999999999999999999999
@@ -72,3 +73,14 @@ CREATE SEQUENCE SQ_TASK
   NOCYCLE
   CACHE 20
   ORDER;
+
+-- Secuencia necesaria para la clave de la tabla TASK.
+CREATE SEQUENCE SQ_PLANNER
+  START WITH 2
+  MAXVALUE 999999999999999999999999999
+  MINVALUE 1
+  NOCYCLE
+  CACHE 20
+  ORDER;
+
+COMMIT;

@@ -20,20 +20,18 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -43,8 +41,9 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>C_TSL_IMPL</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 25/10/2018.
  */
+@Cacheable
 @Entity
 @Table(name = "C_TSL_IMPL")
 public class CTslImpl implements Serializable {
@@ -73,6 +72,25 @@ public class CTslImpl implements Serializable {
 	 * Attribute that represents the namespace used in this specification and version for the TSL.
 	 */
 	private String namespace;
+
+	/**
+	 * Gets the value of the attribute {@link #idTSLImpl}.
+	 * @return the value of the attribute {@link #idTSLImpl}.
+	 */
+	@Id
+	@Column(name = "ID_TSL_IMPL", unique = true, nullable = false, precision = NumberConstants.NUM19)
+	@JsonView(DataTablesOutput.View.class)
+	public Long getIdTSLImpl() {
+		return idTSLImpl;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #idTSLImpl}.
+	 * @param idTSLImplParam The value for the attribute {@link #idTSLImpl}.
+	 */
+	public void setIdTSLImpl(Long idTSLImplParam) {
+		this.idTSLImpl = idTSLImplParam;
+	}
 
 	/**
 	 * Gets the value of the attribute {@link #specification}.
@@ -123,27 +141,6 @@ public class CTslImpl implements Serializable {
 	 */
 	public void setNamespace(String namespaceParam) {
 		this.namespace = namespaceParam;
-	}
-
-	/**
-	 * Gets the value of the attribute {@link #idTSLImpl}.
-	 * @return the value of the attribute {@link #idTSLImpl}.
-	 */
-	@Id
-	@Column(name = "ID_TSL_IMPL", unique = true, nullable = false, precision = NumberConstants.NUM19)
-	@GeneratedValue(generator = "sq_c_tsl_impl")
-	@GenericGenerator(name = "sq_c_tsl_impl", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = { @Parameter(name = "sequence_name", value = "SQ_C_TSL_IMPL"), @Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
-	@JsonView(DataTablesOutput.View.class)
-	public Long getIdTSLImpl() {
-		return idTSLImpl;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #idTSLImpl}.
-	 * @param idTSLImplParam The value for the attribute {@link #idTSLImpl}.
-	 */
-	public void setIdTSLImpl(Long idTSLImplParam) {
-		this.idTSLImpl = idTSLImplParam;
 	}
 
 }

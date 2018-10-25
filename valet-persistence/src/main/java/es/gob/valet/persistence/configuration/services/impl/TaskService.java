@@ -17,10 +17,10 @@
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.services.impl.TaskService.java.</p>
  * <b>Description:</b><p> Class that implements the communication with the operations of the persistence layer for Task.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.entity.Task;
 import es.gob.valet.persistence.configuration.model.repository.TaskRepository;
@@ -40,7 +41,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITaskService;
 /** 
  * <p>Class that implements the communication with the operations of the persistence layer for Task.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -56,7 +57,7 @@ public class TaskService implements ITaskService {
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITaskService#getAllTask()
 	 */
-	public final List<Task> getAllTask(){
+	public List<Task> getAllTask(){
 		List<Task> listTask = new ArrayList<Task>();
 		listTask = repository.findAll();
 		return listTask;
@@ -64,10 +65,15 @@ public class TaskService implements ITaskService {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITaskService#getTaskById(java.lang.Long)
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITaskService#getTaskById(java.lang.Long, boolean)
 	 */
-	public Task getTaskById(Long idTask){
-		return repository.findByIdTask(idTask);
+	@Transactional // TODO ¿Es necesario al haberlo indicado ya en la interfaz?
+	public Task getTaskById(Long idTask, boolean loadPlanners){
+		Task result = repository.findByIdTask(idTask);
+		if (result!=null && loadPlanners && result.getPlanners()!=null) {
+			result.getPlanners().size();
+		}
+		return result;
 	}
 	
 	/**

@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,17 +14,15 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.services.impl.PlannerService.java.</p>
  * <b>Description:</b><p> Class that implements the communication with the operations of the persistence layer for Planner.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>3 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>03/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 3 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
-
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -35,10 +33,10 @@ import es.gob.valet.persistence.configuration.model.entity.Planner;
 import es.gob.valet.persistence.configuration.model.repository.PlannerRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.IPlannerService;
 
-/** 
+/**
  * <p>Class that implements the communication with the operations of the persistence layer for Planner.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 3 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -56,7 +54,7 @@ public class PlannerService implements IPlannerService {
 	 */
 	@Override
 	public Iterable<Planner> getListPlannersByTask(Long idTask) {
-		return repository.findByListTasksIdTask(idTask);
+		return repository.findByTaskIdTask(idTask);
 	}
 
 	/**
@@ -76,20 +74,6 @@ public class PlannerService implements IPlannerService {
 	@Override
 	public Planner savePlanner(Planner planner) {
 		return repository.save(planner);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.IPlannerService#getFirstListPlannersByTask(java.lang.Long)
-	 */
-	@Override
-	public Planner getFirstListPlannersByTask(Long idTask) {
-		List<Planner> listPlanner = (List<Planner>) getListPlannersByTask(idTask);
-		Planner planner = null;
-		if (listPlanner != null) {
-			planner = listPlanner.get(0);
-		}
-		return planner;
 	}
 
 }

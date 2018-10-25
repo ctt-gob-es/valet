@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 25/10/2018.
+ * @version 1.5, 25/10/2018.
  */
 package es.gob.valet.controller;
 
@@ -51,7 +51,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.4, 25/10/2018.
+ *  @version 1.5, 25/10/2018.
  */
 @Controller
 public class TslController {
@@ -73,6 +73,7 @@ public class TslController {
 	 */
 	@Autowired
 	private ITslCountryRegionService tslCountryRegionService;
+
 	/**
 	 * Attribute that represents the service object for acceding to CAssociationTypeRepository.
 	 */
@@ -97,7 +98,7 @@ public class TslController {
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "addTsl")
-	public String addTsl(Model model){
+	public String addTsl(Model model) {
 		List<String> listVersions = new ArrayList<String>();
 		List<String> listSpecifications = cTSLImplService.getAllSpecifications();
 
@@ -117,7 +118,7 @@ public class TslController {
 	 */
 	@RequestMapping(value = "edittsl", method = RequestMethod.POST)
 	public String editTsl(@RequestParam("id") Long idTslData, Model model) {
-		TslData tslData = tslService.getTslDataById(idTslData);
+		TslData tslData = tslService.getTslDataById(idTslData, false, false);
 		TslForm tslForm = new TslForm();
 		tslForm.setIdTslData(idTslData);
 		tslForm.setCountryName(tslData.getTslCountryRegion().getCountryRegionName());

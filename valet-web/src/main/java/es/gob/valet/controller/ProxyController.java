@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.controller.ProxyController.java.</p>
- * <b>Description:</b><p> Class that manages the requests related to the configuration of the Proxy.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>16 oct. 2018.</p>
+ * <b>Description:</b><p>Class that manages the requests related to the configuration of the Proxy.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>16/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 16 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.controller;
 
@@ -38,10 +38,10 @@ import es.gob.valet.persistence.configuration.model.entity.Proxy;
 import es.gob.valet.persistence.configuration.services.ifaces.ICOperationModeService;
 import es.gob.valet.persistence.configuration.services.ifaces.IProxyService;
 
-/** 
+/**
  * <p>Class that manages the requests related to the configuration of the Proxy.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 16 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 @Controller
 public class ProxyController {
@@ -50,20 +50,22 @@ public class ProxyController {
 	 * Constant that represents the parameter 'idProxy'.
 	 */
 	private static final Long ID_PROXY = 1L;
+
 	/**
 	 * Attribute that represents the service object for acceding to ProxyRespository.
 	 */
 	@Autowired
 	private IProxyService proxyService;
+
 	/**
 	 * Attribute that represents the service object for acceding to COperationModeRespository.
 	 */
 	@Autowired
 	private ICOperationModeService operationModeService;
-	
+
 	/**
 	 * Method that loads the proxy configuration.
-	 * 
+	 *
 	 * @param model Holder object form model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
@@ -75,13 +77,13 @@ public class ProxyController {
 		proxyForm.setIdProxy(ID_PROXY);
 		proxyForm.setIdOperationMode(proxy.getOperationMode().getIdCOperationMode());
 		proxyForm.setHost(proxy.getHostProxy());
-		proxyForm.setPort(proxy.getIdProxy());
+		proxyForm.setPort(proxy.getPortProxy());
 		proxyForm.setUser(proxy.getUserProxy());
 		proxyForm.setPassword(proxy.getPasswordProxy());
 		proxyForm.setUserDomain(proxy.getUserDomain());
 		proxyForm.setAddressList(proxy.getAddressList());
 		proxyForm.setIsLocalAddress(proxy.getIsLocalAddress());
-		
+
 		List<COperationMode> listOperationMode = operationModeService.getAllOperationMode();
 		model.addAttribute("proxyForm", proxyForm);
 		model.addAttribute("listOperationMode", listOperationMode);

@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.crypto.keystore.KeystoreFactory.java.</p>
  * <b>Description:</b><p>Class that manages the generation of the class which manages the keystores in the system.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 25/10/2018.
  */
 package es.gob.valet.crypto.keystore;
 
@@ -36,38 +36,39 @@ import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 /**
  * <p>Class that manages the generation of the class which manages the keystores in the system.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 25/10/2018.
  */
 public final class KeystoreFactory {
-	
+
 	/**
 	 * Attribute that represents an instance of the class which manages all the operations related with keystores in the system.
 	 */
 	private IKeystoreFacade keystoreInstance = null;
 	/**
-	 * Attribute that represents the service object for accessing the repository. 
+	 * Attribute that represents the service object for accessing the repository.
 	 */
 	@Autowired
-	private IKeystoreService keystoreService; 
-	
+	private IKeystoreService keystoreService;
+
 	/**
 	 * Constructor method for the class KeystoreFactory.java.
 	 * @param idKeystoreParam Parameter that represents the ID of the keystore in the database.
 	 * @throws CryptographyException If the method fails.
 	 */
 	private KeystoreFactory(Long idKeystoreParam) throws CryptographyException {
-			// Comprobamos que el ID del almacén de claves no es nulo
-			if (idKeystoreParam == null) {
-				throw new CryptographyException(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_012));
-			}
+		// Comprobamos que el ID del almacén de claves no es nulo
+		if (idKeystoreParam == null) {
+			throw new CryptographyException(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_012));
+		}
 
-			// Obtenemos el almacén de claves
-			Keystore keystore = keystoreService.getKeystoreById(idKeystoreParam);
-			// Comprobamos que el almacén de claves no es nulo
-			CryptographyValidationUtils.checkIsNotNull(keystore, Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_013, new Object[ ] { idKeystoreParam }));
+		// Obtenemos el almacén de claves
+		Keystore keystore = keystoreService.getKeystoreById(idKeystoreParam, false);
+		// Comprobamos que el almacén de claves no es nulo
+		CryptographyValidationUtils.checkIsNotNull(keystore, Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_013, new Object[ ] { idKeystoreParam }));
 
-			keystoreInstance = new KeystoreFacade(keystore);
+		keystoreInstance = new KeystoreFacade(keystore);
 	}
+
 	/**
 	 * Method that obtains an instance of the class.
 	 * @param idKeystoreParam Parameter that represents the ID of the keystore in the database.

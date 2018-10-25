@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>13/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 13/06/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -45,7 +45,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>USER_VALET</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 13/06/2018.
+ * @version 1.1, 25/10/2018.
  */
 @Entity
 @Table(name = "USER_VALET")
@@ -121,7 +121,7 @@ public class UserValet implements Serializable {
 	@Id
 	@Column(name = "ID_USER_VALET", unique = true, nullable = false, precision = NumberConstants.NUM19)
 	@GeneratedValue(generator = "sq_user_valet")
-	@GenericGenerator(name = "sq_user_valet", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = { @Parameter(name = "sequence_name", value = "SQ_USER_VALET"), @Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
+	@GenericGenerator(name = "sq_user_valet", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = { @Parameter(name = "sequence_name", value = "SQ_USER_VALET"), @Parameter(name = "initial_value", value = "2"), @Parameter(name = "increment_size", value = "1") })
 	@JsonView(DataTablesOutput.View.class)
 	public Long getIdUserValet() {
 		// CHECKSTYLE:ON

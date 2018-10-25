@@ -20,12 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
@@ -33,7 +34,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to TslData.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 public interface ITslDataService {
 
@@ -47,9 +48,14 @@ public interface ITslDataService {
 	/**
 	 * Method that obtains a TSL by its identifier.
 	 * @param tslId The TSL identifier.
+	 * @param loadXmlDocument Flag that indicates if it is necessary to load the XML document
+	 * (<code>true</code>) or not (<code>false</code>).
+	 * @param loadLegibleDocument Flag that indicates if it is necessary to load the legible document
+	 * (<code>true</code>) or not (<code>false</code>).
 	 * @return {@link TslData} an object that represents the TSL.
 	 */
-	TslData getTslDataById(Long tslId);
+	@Transactional
+	TslData getTslDataById(Long tslId, boolean loadXmlDocument, boolean loadLegibleDocument);
 
 	/**
 	 * Method that gets all TSL of the system.

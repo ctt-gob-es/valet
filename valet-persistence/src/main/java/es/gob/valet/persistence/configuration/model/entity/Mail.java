@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,18 +14,18 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.Mail.java.</p>
  * <b>Description:</b><p>Class that maps the <i>MAIL</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 02/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,17 +45,17 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
-/** 
+/**
  * <p>Class that maps the <i>KEYSTORE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 02/10/2018.
+ * @version 1.0, 25/10/2018.
  */
 @Entity
 @Table(name = "MAIL")
 public class Mail implements Serializable {
 
 	/**
-	 * Constant attribute that represents the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
 	private static final long serialVersionUID = 707464190994966811L;
 
@@ -72,7 +72,7 @@ public class Mail implements Serializable {
 	/**
 	 * Attribute that represents the alarms using this mail.
 	 */
-	private Set<Alarm> alarm;
+	private List<Alarm> alarms;
 
 	/**
 	 * Gets the value of the attribute {@link #idMail}.
@@ -114,21 +114,21 @@ public class Mail implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #alarm}.
-	 * @return the value of the attribute {@link #alarm}.
+	 * Gets the value of the attribute {@link #alarms}.
+	 * @return the value of the attribute {@link #alarms}.
 	 */
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "R_ALARM_MAIL", joinColumns = @JoinColumn(name = "ID_MAIL", referencedColumnName = "ID_MAIL", nullable = false), inverseJoinColumns = @JoinColumn(name = "ID_ALARM", referencedColumnName = "ID_ALARM", nullable = false))
-	public Set<Alarm> getAlarm() {
-		return alarm;
+	public List<Alarm> getAlarms() {
+		return alarms;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #alarm}.
-	 * @param alarmParam The value for the attribute {@link #alarm}.
+	 * Sets the value of the attribute {@link #alarms}.
+	 * @param alarmParam The value for the attribute {@link #alarms}.
 	 */
-	public void setAlarm(Set<Alarm> alarmParam) {
-		this.alarm = alarmParam;
+	public void setAlarms(List<Alarm> alarmParam) {
+		this.alarms = alarmParam;
 	}
 
 }

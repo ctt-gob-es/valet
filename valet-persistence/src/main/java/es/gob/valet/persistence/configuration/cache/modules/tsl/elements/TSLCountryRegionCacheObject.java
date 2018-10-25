@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
@@ -41,7 +41,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 /**
  * <p>Class that represents a TSL Country/Region Info in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 public class TSLCountryRegionCacheObject extends ConfigurationCacheObject {
 
@@ -101,19 +101,21 @@ public class TSLCountryRegionCacheObject extends ConfigurationCacheObject {
 			setCountryRegionId(tcr.getIdTslCountryRegion().longValue());
 			setCode(tcr.getCountryRegionCode());
 			setName(tcr.getCountryRegionName());
-			
+			setTslDataId(tcr.getTslData().getIdTslData());
+
 			// Obtenemos la lista de mapeos.
 			List<TslCountryRegionMapping> tcrmList = tcr.getListTslCountryRegionMapping();
-			// Si no es nula ni vacía, la recorremos creando los objectos de caché
+			// Si no es nula ni vacía, la recorremos creando los objectos de
+			// caché
 			// para finalmente establecerla.
-			if (tcrmList!=null && !tcrmList.isEmpty()) {
-				
+			if (tcrmList != null && !tcrmList.isEmpty()) {
+
 				Set<TSLCountryRegionMappingCacheObject> tcrmcoSet = new TreeSet<TSLCountryRegionMappingCacheObject>();
 				for (TslCountryRegionMapping tcrm: tcrmList) {
 					tcrmcoSet.add(new TSLCountryRegionMappingCacheObject(tcrm));
 				}
 				setMappingSet(tcrmcoSet);
-				
+
 			}
 
 		}

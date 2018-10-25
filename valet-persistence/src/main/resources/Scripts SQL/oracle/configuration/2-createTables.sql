@@ -99,7 +99,7 @@ CREATE TABLE "TSL_DATA"(
 	"ID_COUNTRY_REGION" Number(19,0)NULL,
 	"ID_TSL_IMPL" Number(19,0) NOT NULL,
 	"NEW_TSL_AVAILABLE" Varchar2(1) NOT NULL,
-	"LAST_TSLA_FIND" Timestamp(6) ,
+	"LAST_TSLA_FIND" Timestamp(6),
 	"ALIAS" Varchar2(128) NOT NULL
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
 ALTER TABLE "TSL_DATA" ADD CONSTRAINT "ID_TSL_DATA" PRIMARY KEY ("ID_TSL_DATA");
@@ -122,7 +122,8 @@ COMMENT ON COLUMN "TSL_DATA"."ALIAS" IS 'Alias interno asignado a la TSL.';
 CREATE TABLE "TSL_COUNTRY_REGION"(
 	"ID_COUNTRY_REGION" Number(19,0) NOT NULL,
 	"COUNTRY_REGION_CODE" Varchar2(16) NOT NULL,
-	"COUNTRY_REGION_NAME" Varchar2(128) NOT NULL
+	"COUNTRY_REGION_NAME" Varchar2(128) NOT NULL,
+	"ID_TSL_DATA" Number(19,0) NOT NULL
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
 ALTER TABLE "TSL_COUNTRY_REGION" ADD CONSTRAINT "ID_COUNTRY_REGION" PRIMARY KEY ("ID_COUNTRY_REGION");
 ALTER TABLE "TSL_COUNTRY_REGION" ADD CONSTRAINT "TCR_UNIQUE_COUNTRYREGIONCODE" UNIQUE ("COUNTRY_REGION_CODE");
@@ -130,6 +131,7 @@ COMMENT ON TABLE "TSL_COUNTRY_REGION" IS 'Tabla que almacena las distintas regio
 COMMENT ON COLUMN "TSL_COUNTRY_REGION"."ID_COUNTRY_REGION" IS 'Identificador de la tabla.';
 COMMENT ON COLUMN "TSL_COUNTRY_REGION"."COUNTRY_REGION_CODE" IS 'Código de país/región según ISO 3166.';
 COMMENT ON COLUMN "TSL_COUNTRY_REGION"."COUNTRY_REGION_NAME" IS 'Nombre del país/región.';
+COMMENT ON COLUMN "TSL_COUNTRY_REGION"."ID_TSL_DATA" IS 'Identificador del código que identifica de forma única los datos de la TSL asociada a este país/región.';
 
 -- Table TSL_COUNTRY_REGION_MAPPING
 CREATE TABLE "TSL_COUNTRY_REGION_MAPPING"(
@@ -197,7 +199,7 @@ COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."SUBJECT" IS 'Valor que representa el asu
 COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."STATUS_CERT" IS 'Estado del certificado representado en esta tupla.';
 COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."HASH" IS 'Valor que representa el hash en SHA-1 del valor del certificado, codificado en Base 64, y concatenado con el hash en SHA-1 del valor de la clave privada, codificado en Base 64. Este valor se utiliza como alias del par de claves en un HSM.';
 
--- Table Mail
+-- Table MAIL
 CREATE TABLE "MAIL"(
 	"ID_MAIL" Number(19,0) NOT NULL,
 	"EMAIL_ADDRESS" Varchar2(200) NOT NULL
@@ -208,7 +210,7 @@ COMMENT ON TABLE "MAIL" IS 'Tabla que almacena los destinatarios de las alarmas.
 COMMENT ON COLUMN "MAIL"."ID_MAIL" IS 'Identificador de la tabla.';
 COMMENT ON COLUMN "MAIL"."EMAIL_ADDRESS" IS 'Valor que representa el correo electrónico del destinatario.';
 
--- Table ALARM_DEFECT
+-- Table ALARM
 CREATE TABLE "ALARM"(
 	"ID_ALARM" Varchar2(100) NOT NULL,
 	"DESCRIPTION" Varchar2(200),
@@ -265,16 +267,6 @@ COMMENT ON COLUMN "TASK"."NAME" IS 'Valor que representa el nombre de la tarea.'
 COMMENT ON COLUMN "TASK"."IMPLEMENTATION_CLASS" IS 'Valor que representa el nombre del objeto JAVA que constituye la implementación de esa tarea desde el punto de vista de codificación.';
 COMMENT ON COLUMN "TASK"."IS_ENABLED" IS 'Valor que indica si el planificador está habilitado (Y) o no (N).';
 
--- Table X_TASK_PLANNER
-CREATE TABLE "X_TASK_PLANNER"(
-	"ID_TASK" Number(19,0) NOT NULL,
-	"ID_PLANNER" Number(19,0) NOT NULL
-) INITRANS 1 MAXTRANS 255 NOCACHE;
-ALTER TABLE "X_TASK_PLANNER" ADD CONSTRAINT "ID_TASK_PLANNER" PRIMARY KEY ("ID_TASK","ID_PLANNER");
-COMMENT ON TABLE "X_TASK_PLANNER" IS 'Tabla que relaciona las tareas con los planificadores que usan.';
-COMMENT ON COLUMN "X_TASK_PLANNER"."ID_TASK" IS 'Valor que representa la tarea asociada.';
-COMMENT ON COLUMN "X_TASK_PLANNER"."ID_PLANNER" IS 'Valor que representa el planificador asociado.';
-
 -- Table PLANNER
 CREATE TABLE "PLANNER"(
 	"ID_PLANNER" Number(19,0) NOT NULL,
@@ -292,6 +284,16 @@ COMMENT ON COLUMN "PLANNER"."MINUTE_PERIOD" IS 'Valor que representa los minutos
 COMMENT ON COLUMN "PLANNER"."SECOND_PERIOD" IS 'Valor que representa los segundos asociadas a un periodo.';
 COMMENT ON COLUMN "PLANNER"."INIT_DAY" IS 'Valor que representa la fecha de inicio del planificador.';
 COMMENT ON COLUMN "PLANNER"."ID_PLANNER_TYPE" IS 'Valor que representa el tipo de planificador asociado.';
+
+-- Table X_TASK_PLANNER
+CREATE TABLE "X_TASK_PLANNER"(
+	"ID_TASK" Number(19,0) NOT NULL,
+	"ID_PLANNER" Number(19,0) NOT NULL
+) INITRANS 1 MAXTRANS 255 NOCACHE;
+ALTER TABLE "X_TASK_PLANNER" ADD CONSTRAINT "ID_TASK_PLANNER" PRIMARY KEY ("ID_TASK","ID_PLANNER");
+COMMENT ON TABLE "X_TASK_PLANNER" IS 'Tabla que relaciona las tareas con los planificadores que usan.';
+COMMENT ON COLUMN "X_TASK_PLANNER"."ID_TASK" IS 'Valor que representa la tarea asociada.';
+COMMENT ON COLUMN "X_TASK_PLANNER"."ID_PLANNER" IS 'Valor que representa el planificador asociado.';
 
 -- Table PROXY
 CREATE TABLE "PROXY"(
@@ -317,6 +319,8 @@ COMMENT ON COLUMN "PROXY"."USER_DOMAIN" IS 'Valor que representa el dominio del 
 COMMENT ON COLUMN "PROXY"."ADDRESS_LIST" IS 'Valor que representa lista de direcciones para las que no se usará el proxy .';
 COMMENT ON COLUMN "PROXY"."IS_LOCAL_ADDRESS" IS 'Valor que representa si se trata de una ruta local o no.';
 
+
+ALTER TABLE "TSL_COUNTRY_REGION" ADD CONSTRAINT "R_TCR_TD" FOREIGN KEY ("ID_TSL_DATA") REFERENCES "TSL_DATA" ("ID_TSL_DATA") ON DELETE CASCADE;
 ALTER TABLE "TSL_DATA" ADD CONSTRAINT "R_TD_ICR" FOREIGN KEY ("ID_COUNTRY_REGION") REFERENCES "TSL_COUNTRY_REGION" ("ID_COUNTRY_REGION") ON DELETE CASCADE;
 ALTER TABLE "TSL_DATA" ADD CONSTRAINT "R_TD_ITI" FOREIGN KEY ("ID_TSL_IMPL") REFERENCES "C_TSL_IMPL" ("ID_TSL_IMPL");
 ALTER TABLE "TSL_COUNTRY_REGION_MAPPING" ADD CONSTRAINT "R_TCRM_ICR" FOREIGN KEY ("ID_COUNTRY_REGION") REFERENCES "TSL_COUNTRY_REGION" ("ID_COUNTRY_REGION") ON DELETE CASCADE;

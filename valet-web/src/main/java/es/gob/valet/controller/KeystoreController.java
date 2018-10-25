@@ -16,11 +16,11 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.controller.KeystoreController.java.</p>
- * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Description:</b><p>Class that manages the requests related to the Keystore administration.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.controller;
 
@@ -46,7 +46,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificate
 /** 
  * <p>Class that manages the requests related to the Keystore administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.1, 25/10/2018.
  */
 @Controller
 public class KeystoreController {
@@ -119,7 +119,7 @@ public class KeystoreController {
 		SystemCertificateForm certificateForm = new SystemCertificateForm();
 		//obtenemos el certificado
 		Long idKeystoreSelected = certificateToEdit.getKeystore().getIdKeystore();
-		IKeystoreFacade keystore = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystoreSelected)));
+		IKeystoreFacade keystore = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystoreSelected), false));
 		try {
 			X509Certificate cert = keystore.getCertificate(certificateToEdit.getAlias());
 			//se obtiene las fechas hasta y desde

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 25/10/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -73,7 +73,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificate
 /**
  * <p>Class that manages the REST request related to the Keystore's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 25/10/2018.
  */
 @RestController
 public class KeystoreRestController {
@@ -180,7 +180,7 @@ public class KeystoreRestController {
 		SystemCertificate systemCertificateToAdd = null;
 		// se obtiene el keystore
 
-		Keystore keystore = keystoreService.getKeystoreById(Long.valueOf(idKeystore));
+		Keystore keystore = keystoreService.getKeystoreById(Long.valueOf(idKeystore), false);
 		try {
 
 			// se comprueba que se han indicado todos los campos obligatorios
@@ -218,7 +218,7 @@ public class KeystoreRestController {
 			}
 
 			if (!error) {
-				IKeystoreFacade keyStoreFacade = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystore)));
+				IKeystoreFacade keyStoreFacade = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystore), false));
 				certificateFileBytes = certificateFile.getBytes();
 				// se obtiene X509Certificate
 				X509Certificate certToAdd = UtilsCertificate.getCertificate(certificateFileBytes);
@@ -276,14 +276,15 @@ public class KeystoreRestController {
 	 * @throws IOException If the method fails.
 	 */
 	@RequestMapping(value = "/downloadcertificate", method = RequestMethod.GET, produces = CERT_CONTENT_TYPE)
-	public @ResponseBody void downloadCertificate(HttpServletResponse response, @RequestParam("idSystemCertificate") Long idSystemCertificate) throws IOException {
+	@ResponseBody
+	public void downloadCertificate(HttpServletResponse response, @RequestParam("idSystemCertificate") Long idSystemCertificate) throws IOException {
 		SystemCertificate systemCertificate = systemCertificateService.getSystemCertificateById(idSystemCertificate);
 		byte[ ] certificateFile;
 		String name = DEFAULT_CERTIFICATE_NAME;
 		if (systemCertificate != null) {
 			try {
 				Long idKeystoreSelected = systemCertificate.getKeystore().getIdKeystore();
-				IKeystoreFacade keystore = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystoreSelected)));
+				IKeystoreFacade keystore = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystoreSelected), false));
 				X509Certificate cert = keystore.getCertificate(systemCertificate.getAlias());
 
 				if (cert != null) {
@@ -358,7 +359,7 @@ public class KeystoreRestController {
 
 			if (!error) {
 				// obtengo el keystore
-				IKeystoreFacade keyStoreFacade = new KeystoreFacade(keystoreService.getKeystoreById(idKeystore));
+				IKeystoreFacade keyStoreFacade = new KeystoreFacade(keystoreService.getKeystoreById(idKeystore, false));
 				SystemCertificate oldCert = systemCertificateService.getSystemCertificateById(idSystemCertificate);
 
 				// Actualiza el alias del certificado
@@ -383,14 +384,14 @@ public class KeystoreRestController {
 			} else {
 				// si ha ocurrido un error, se deja la lista de certificados tal
 				// y como estaba.
-				Keystore keystore = keystoreService.getKeystoreById(idKeystore);
+				Keystore keystore = keystoreService.getKeystoreById(idKeystore, false);
 				listSystemCertificate = StreamSupport.stream(systemCertificateService.getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
 				dtOutput.setError(json.toString());
 			}
 		} catch (Exception e) {
 			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_CERTIFICATE, new Object[ ] { e.getMessage() }));
 			json.put(KEY_JS_ERROR_UPDATE_CERTIFICATE, Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_CERTIFICATE_WEB));
-			Keystore keystore = keystoreService.getKeystoreById(idKeystore);
+			Keystore keystore = keystoreService.getKeystoreById(idKeystore, false);
 			listSystemCertificate = StreamSupport.stream(systemCertificateService.getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 		}
@@ -413,7 +414,7 @@ public class KeystoreRestController {
 
 			SystemCertificate systemCertificate = systemCertificateService.getSystemCertificateById(idSystemCertificate);
 			Long idKeystore = systemCertificate.getKeystore().getIdKeystore();
-			IKeystoreFacade keystoreFacade = new KeystoreFacade(keystoreService.getKeystoreById(idKeystore));
+			IKeystoreFacade keystoreFacade = new KeystoreFacade(keystoreService.getKeystoreById(idKeystore, false));
 
 			Keystore keystore = keystoreFacade.deleteCertificate(systemCertificate.getAlias());
 			keystoreService.saveKeystore(keystore);

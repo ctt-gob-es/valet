@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>10/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 10/09/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -29,7 +29,7 @@ import org.apache.commons.codec.binary.Hex;
 /**
  * <p>Class that provides functionality for managing strings and characters.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 10/09/2018.
+ * @version 1.1, 25/10/2018.
  */
 public final class UtilsStringChar {
 
@@ -86,7 +86,7 @@ public final class UtilsStringChar {
 	public static final String SPECIAL_TABULATION_STRING = String.valueOf(SPECIAL_TABULATION);
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>#</code>.
+	 * Constant attribute that represents the char to identify the symbol: <code>#</code>.
 	 */
 	public static final char SYMBOL_PAD = '#';
 
@@ -96,24 +96,54 @@ public final class UtilsStringChar {
 	public static final String SYMBOL_PAD_STRING = String.valueOf(SYMBOL_PAD);
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>:</code>.
+	 * Constant attribute that represents the char to identify the symbol: <code>&</code>.
+	 */
+	public static final char SYMBOL_AMPERSAND = '&';
+
+	/**
+	 * Constant attribute that represents the string to identify the symbol: <code>&</code>.
+	 */
+	public static final String SYMBOL_AMPERSAND_STRING = String.valueOf(SYMBOL_AMPERSAND);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>:</code>.
 	 */
 	public static final char SYMBOL_COLON = ':';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>;</code>.
+	 * Constant attribute that represents the string to identify the symbol: <code>:</code>.
+	 */
+	public static final String SYMBOL_COLON_STRING = String.valueOf(SYMBOL_COLON);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>;</code>.
 	 */
 	public static final char SYMBOL_SEMICOLON = ';';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>=</code>.
+	 * Constant attribute that represents the string to identify the symbol: <code>;</code>.
+	 */
+	public static final String SYMBOL_SEMICOLON_STRING = String.valueOf(SYMBOL_SEMICOLON);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>=</code>.
 	 */
 	public static final char SYMBOL_EQUAL = '=';
 
 	/**
+	 * Constant attribute that represents the string to identify the symbol: <code>=</code>.
+	 */
+	public static final String SYMBOL_EQUAL_STRING = String.valueOf(SYMBOL_EQUAL);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>-</code>.
+	 */
+	public static final char SYMBOL_HYPHEN = '-';
+
+	/**
 	 * Constant attribute that represents the string to identify the symbol: <code>-</code>.
 	 */
-	public static final char SYMBOL_MINUS = '-';
+	public static final String SYMBOL_HYPHEN_STRING = String.valueOf(SYMBOL_HYPHEN);
 
 	/**
 	 * Constant attribute that represents the string to identify the symbol: <code>,</code>.
@@ -240,7 +270,7 @@ public final class UtilsStringChar {
 	/**
 	 * Method that converts a byte array to a hexadecimal string.
 	 * @param data Parameter that represents the byte array to convert.
-	 * @param separate Parameter that indicates if to separate each two bytes with {@link #SYMBOL_MINUS} (true) or not (false).
+	 * @param separate Parameter that indicates if to separate each two bytes with {@link #SYMBOL_HYPHEN} (true) or not (false).
 	 * @return an string with hexadecimal format.
 	 */
 	public static String convertByteArrayToHex(byte[ ] data, boolean separate) {
@@ -259,7 +289,7 @@ public final class UtilsStringChar {
 			if (separate) {
 				numChars++;
 				if (numChars % 2 == 0 && i < c.length - 1) {
-					resultSB.append(UtilsStringChar.SYMBOL_MINUS);
+					resultSB.append(UtilsStringChar.SYMBOL_HYPHEN);
 				}
 			}
 		}

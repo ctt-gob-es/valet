@@ -20,12 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 02/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,7 +46,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>KEYSTORE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 02/10/2018.
+ * @version 1.1, 25/10/2018.
  */
 @Entity
 @Table(name = "ALARM")
@@ -80,7 +80,7 @@ public class Alarm implements Serializable {
 	/**
 	 * Attribute that represents a list of person where alarm is sended.
 	 */
-	private Set<Mail> mails;
+	private List<Mail> mails;
 
 	/**
 	 * Gets the value of the attribute {@link #idAlarm}.
@@ -163,7 +163,7 @@ public class Alarm implements Serializable {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "R_ALARM_MAIL", joinColumns = @JoinColumn(name = "ID_ALARM", referencedColumnName = "ID_ALARM", nullable = false), inverseJoinColumns = @JoinColumn(name = "ID_MAIL", referencedColumnName = "ID_MAIL", nullable = false))
 	@JsonView(DataTablesOutput.View.class)
-	public Set<Mail> getMails() {
+	public List<Mail> getMails() {
 		return mails;
 	}
 
@@ -171,7 +171,7 @@ public class Alarm implements Serializable {
 	 * Sets the value of the attribute {@link #mails}.
 	 * @param mailsParam The value for the attribute {@link #mails}.
 	 */
-	public void setMails(Set<Mail> mailsParam) {
+	public void setMails(List<Mail> mailsParam) {
 		this.mails = mailsParam;
 	}
 

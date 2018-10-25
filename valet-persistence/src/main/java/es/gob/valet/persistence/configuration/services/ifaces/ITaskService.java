@@ -18,15 +18,16 @@
  * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.ITaskService.java.</p>
  * <b>Description:</b><p> Interface that provides communication with the operations of the persistence layer
  * in relation of the Task entity.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.entity.Task;
 
@@ -34,7 +35,7 @@ import es.gob.valet.persistence.configuration.model.entity.Task;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the Task entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 25/10/2018.
  */
 public interface ITaskService {
 	/**
@@ -47,9 +48,12 @@ public interface ITaskService {
 	/**
 	  * Method that gets task by ID of Task.
 	  * @param idTask Id of task.
+	  * @param loadPlanners Flag that indicates if it is necessary to load the
+	  * planners (<code>true</code>) or not (<code>false</code>).
 	  * @return {@link Task} an object that represents the Task.
 	  */
-	Task getTaskById(Long idTask);
+	@Transactional
+	Task getTaskById(Long idTask, boolean loadPlanners);
 	
 	/**
 	 * Method that saves a task.
