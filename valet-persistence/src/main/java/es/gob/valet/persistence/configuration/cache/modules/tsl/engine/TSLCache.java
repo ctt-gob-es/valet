@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 29/10/2018.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.engine;
 
@@ -44,7 +44,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Class to handle the TSL configuration cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 29/10/2018.
  */
 public final class TSLCache extends ConfigurationCache {
 
@@ -491,7 +491,7 @@ public final class TSLCache extends ConfigurationCache {
 			result = TYPE_MAPPING + SEPARATOR_ID + tcrmco.getMappingId() + SEPARATOR_IDENTIFIER + tcrmco.getIdentificator();
 		} else if (cco instanceof TSLDataCacheObject) {
 			TSLDataCacheObject tdco = (TSLDataCacheObject) cco;
-			result = TYPE_TSL_DATA + SEPARATOR_ID + tdco.getTslDataId() + SEPARATOR_IDENTIFIER + tdco.getAlias();
+			result = TYPE_TSL_DATA + SEPARATOR_ID + tdco.getTslDataId() + SEPARATOR_IDENTIFIER + tdco.getSequenceNumber();
 		} else if (cco instanceof TSLLocationAndIdRelationCacheObject) {
 			result = TYPE_LOCATION_IDS + SEPARATOR_ID + TSLLocationAndIdRelationCacheObject.TOKEN_ID;
 		}

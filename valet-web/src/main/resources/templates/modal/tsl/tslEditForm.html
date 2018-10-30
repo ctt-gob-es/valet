@@ -1,9 +1,9 @@
 <form name="altEditor-form" role="form" id="tslFormEdit"
 	th:object="${tslform}" th:action="@{/updatetsl}" method="post"
-	enctype="multipart/form-data">
+	enctype="multipart/form-data" action="">
 	<h6 class="c-grey-900">Datos TSL</h6>
 	<div class="mT-20">
-	<div id="errorUpdateTsl" role="alert"></div>
+		<div id="errorUpdateTsl" role="alert"></div>
 		<input type='hidden' class='primarykey' id="idTslData"
 			th:field="*{idTslData}"> <input type='hidden'
 			id="idCountryRegion" th:field="*{country}"> <input
@@ -72,12 +72,12 @@
 
 					<a th:href="@{/download(id=${tslform.idTslData})}"> <img
 						id="downFileId" th:src="@{images/download-file.png}"
-						alt="Descargar Implementación TSL"
-						title="Descargar Implementación TSL"></img></a> <a id="updateTslBtn"
-						onclick="updateFormTsl();"> <img id="downFileId"
-						th:src="@{images/update_file2.png}"
-						alt="Actualizar implementación TSL"
-						title="Actualizar implementación TSL"></img></a>
+						th:alt="#{form.editTsl.downloadImpl.alt}"
+						th:title="#{form.editTsl.downloadImpl.alt}" src="" alt="" /></a> <a
+						id="updateTslBtn" onclick="updateFormTsl();"> <img
+						id="downFileId" th:src="@{images/update_file2.png}"
+						th:alt="#{form.editTsl.updateImpl.alt}"
+						th:title="#{form.editTsl.updateImpl.alt}" src="" alt="" /></a>
 
 				</div>
 
@@ -106,9 +106,8 @@
 							</div>
 						</div>
 					</div>
-
-
-				</div>	<!-- end updateTslDiv form subir implTSL -->
+				</div>
+				<!-- end updateTslDiv form subir implTSL -->
 			</div>
 		</div>
 	</div>
@@ -130,11 +129,12 @@
 					<a th:if="${isLegible} == true"
 						th:href="@{/downloadDocument(id=${tslform.idTslData})}"> <img
 						id="downloadDocLeg" th:src="@{images/download-file.png}"
-						alt="Descargar Documento Legible"
-						title="Descargar Documento Legible"></img>
+						th:alt="#{form.editTsl.downloadDoc.alt}"
+						th:title="#{form.editTsl.downloadDoc.alt}" src="" alt="" />
 					</a> <a id="updateDocBtn" onclick="updateLegibleDoc();"> <img
-						id="downloadDocLeg" th:src="@{images/upload-file-green.png}"
-						alt="Subir documento legible" title="Subir documento legible"></img>
+						id="uploadDocLeg" th:src="@{images/upload-file-green.png}"
+						th:alt="#{form.editTsl.uploadDoc.alt}"
+						th:title="#{form.editTsl.uploadDoc.alt}" src="" alt="" />
 					</a>
 
 				</div>
@@ -163,11 +163,11 @@
 		<!-- end bgc_white -->
 	</div>
 	<!-- end mt-20 doc legible -->
-	</div>
+	<div></div>
 </form>
 
 
-<script th:inline="javascript">
+<script th:inline="javascript" type="text/javascript">
 
 //muestra formulario actualizar TSL
 function updateFormTsl() {

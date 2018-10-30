@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 29/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -52,7 +53,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>TSL_DATA</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 29/10/2018.
  */
 @Entity
 @Table(name = "TSL_DATA")
@@ -122,11 +123,6 @@ public class TslData implements Serializable {
 	 * Attribute that represents the last new TSL available are find.
 	 */
 	private Date lastNewTSLAvailableFind;
-
-	/**
-	 * Attribute that represents the alias for new TSL.
-	 */
-	private String alias;
 
 	/**
 	 * Gets the value of the attribute {@link #idTslData}.
@@ -245,7 +241,7 @@ public class TslData implements Serializable {
 	 * Gets the value of the attribute {@link #xmlDocument}.
 	 * @return the value of the attribute {@link #xmlDocument}.
 	 */
-	@Lob 
+	@Lob
 	@Basic(fetch=FetchType.LAZY, optional = false)
 	@Column(name = "XML_DOCUMENT", nullable = false)
 	@JsonView(DataTablesOutput.View.class)
@@ -304,8 +300,8 @@ public class TslData implements Serializable {
 	 * Gets the value of the attribute {@link #tslCountryRegion}.
 	 * @return the value of the attribute {@link #tslCountryRegion}.
 	 */
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ID_COUNTRY_REGION")
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "ID_COUNTRY_REGION", nullable = false)
 	@JsonView(DataTablesOutput.View.class)
 	public TslCountryRegion getTslCountryRegion() {
 		return tslCountryRegion;
@@ -355,21 +351,5 @@ public class TslData implements Serializable {
 		this.lastNewTSLAvailableFind = lastNewTSLAvailableFindParam;
 	}
 
-	/**
-	 * Gets the value of the attribute {@link #alias}.
-	 * @return the value of the attribute {@link #alias}.
-	 */
-	@Column(name = "ALIAS", unique = true, nullable = false, length = NumberConstants.NUM128)
-	public String getAlias() {
-		return alias;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #alias}.
-	 * @param aliasParam The value for the attribute {@link #alias}.
-	 */
-	public void setAlias(String aliasParam) {
-		this.alias = aliasParam;
-	}
 
 }

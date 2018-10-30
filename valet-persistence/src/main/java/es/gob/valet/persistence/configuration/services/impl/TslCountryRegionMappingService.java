@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 08/08/2018.
+ * @version 1.1, 29/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -42,7 +42,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionM
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for TslCountryRegionMapping.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 08/08/2018.
+ * @version 1.1, 29/10/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -121,14 +121,6 @@ public class TslCountryRegionMappingService implements ITslCountryRegionMappingS
 	 */
 	public void deleteTslCountryRegionMapping(Long idTslCountryRegionMapping) {
 		repository.deleteById(idTslCountryRegionMapping);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService#deleteTslCountryRegionMappingByInBatch(java.util.List)
-	 */
-	public void deleteTslCountryRegionMappingByInBatch(List<TslCountryRegionMapping> listMapping) {
-		repository.deleteInBatch(listMapping);
 	}
 
 	/**

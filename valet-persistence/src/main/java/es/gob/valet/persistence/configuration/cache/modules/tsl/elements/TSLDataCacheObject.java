@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 29/10/2018.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
@@ -39,7 +39,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Class that represents a TSL Data Object representation in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 29/10/2018.
  */
 public class TSLDataCacheObject extends ConfigurationCacheObject {
 
@@ -58,10 +58,6 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 	 */
 	private long tslImplId = -1;
 
-	/**
-	 * Attribute that represents the TSL alias.
-	 */
-	private String alias = null;
 
 	/**
 	 * Attribute that represents the TSL location URI.
@@ -128,7 +124,6 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 
 			setTslDataId(td.getIdTslData().longValue());
 			setTslImplId(td.getTslImpl().getIdTSLImpl().longValue());
-			setAlias(td.getAlias());
 			setTslLocationUri(td.getUriTslLocation());
 			setLegibleDocumentAdded(td.getLegibleDocument() != null);
 			setIssueDate(td.getIssueDate());
@@ -174,21 +169,6 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 		this.tslImplId = tslImplIdParam;
 	}
 
-	/**
-	 * Gets the value of the attribute {@link #alias}.
-	 * @return the value of the attribute {@link #alias}.
-	 */
-	public final String getAlias() {
-		return alias;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #alias}.
-	 * @param aliasParam The value for the attribute {@link #alias}.
-	 */
-	public final void setAlias(String aliasParam) {
-		this.alias = aliasParam;
-	}
 
 	/**
 	 * Gets the value of the attribute {@link #tslLocationUri}.
@@ -359,7 +339,6 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 
 		tdco.setTslDataId(getTslDataId());
 		tdco.setTslImplId(getTslImplId());
-		tdco.setAlias(getAlias());
 		tdco.setTslLocationUri(getTslLocationUri());
 		tdco.setLegibleDocumentAdded(isLegibleDocumentAdded());
 		tdco.setIssueDate((Date) getIssueDate().clone());

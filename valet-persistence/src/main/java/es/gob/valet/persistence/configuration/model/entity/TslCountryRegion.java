@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 28/10/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -33,7 +33,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -49,7 +48,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class the maps the <i>TSL_COUNTRY_REGION</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 28/10/2018.
  */
 @Entity
 @Table(name = "TSL_COUNTRY_REGION")
@@ -163,8 +162,7 @@ public class TslCountryRegion implements Serializable {
 	 * Gets the value of the attribute {@link #tslData}.
 	 * @return the value of the attribute {@link #tslData}.
 	 */
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ID_TSL_DATA", nullable = false)
+	@OneToOne(mappedBy = "tslCountryRegion", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public TslData getTslData() {
 		return tslData;
 	}

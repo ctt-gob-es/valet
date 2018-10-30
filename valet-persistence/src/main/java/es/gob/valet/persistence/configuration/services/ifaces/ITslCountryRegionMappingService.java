@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
- * <b>File:</b><p>es.gob.valet.service.ITslCountryRegionMappingService.java.</p>
- * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegionMapping entity .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>8 ago. 2018.</p>
+/**
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService.java.</p>
+ * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegionMapping entity.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 8 ago. 2018.
+ * @version 1.2, 29/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -31,10 +31,11 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 
-/** 
- * <p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegionMapping entity.</p>
+
+/**
+ * <p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegionMapping entity .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 8 ago. 2018.
+ * @version 1.2, 29/10/2018.
  */
 public interface ITslCountryRegionMappingService {
 
@@ -48,7 +49,7 @@ public interface ITslCountryRegionMappingService {
 	/**
 	 * Method that gets all the mappings for a specified Country/Region.
 	 * @param idCRM Long that represents CountryRegion identifier.
-	 * @return List of TslContryRegionMapping by country 
+	 * @return List of TslContryRegionMapping by country
 	 */
 	List<TslCountryRegionMapping> getAllMappingByIdCountry(Long idCRM);
 
@@ -64,24 +65,19 @@ public interface ITslCountryRegionMappingService {
 	 * @param tslCountryRegionMapping Parameter that represents the new mapping for the Country/Region.
 	 * @return {@link TslCountryRegionMapping} TslCountryRegionMapping stored.
 	 */
-	TslCountryRegionMapping save(TslCountryRegionMapping tslCRMParam);
-	
+	TslCountryRegionMapping save(TslCountryRegionMapping tslCountryRegionMapping);
+
 	/**
-	 * Method that removes a country/region Mapping. 
+	 * Method that removes a country/region Mapping.
 	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.
 	 */
 	void deleteTslCountryRegionMapping(Long idTslCountryRegionMapping);
 
-	/**
-	 * Method that removes a list of country/region mappings.
-	 * @param listMapping Parameter that represents a list of country/region mappings to remove.
-	 */
-	void deleteTslCountryRegionMappingByInBatch(List<TslCountryRegionMapping> listMapping);
 	/**
 	 * Method that checks if there is an identificator in the list of mappings belonging to a specified country.
 	 * @param identificator Parameter that represents the identifier to be checked.
 	 * @param idTslCountryRegion Parameter that represents the country/region of TSL.
 	 * @return true, if it exists.
 	 */
-	boolean existIdentificator(String identificator, Long idCRM);
+	boolean existIdentificator(String identificator, Long idTslCountryRegion);
 }

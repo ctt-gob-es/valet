@@ -26,12 +26,7 @@
 	</div>
 </div>
 <div id="tableMapping"></div>
-
-
 <script th:inline="javascript">
-
-
-
 $(document).ready(function() {
 var getTsls =/*[[@{/tsldatatable}]]*/;
 var addTemplate = /*[[@{/addTsl}]]*/;
@@ -79,14 +74,15 @@ var tbl = $('#tslTable').DataTable({
 	"columns": [
         { "data": "idTslData","visible": false},
         { "data": "tslCountryRegion.idTslCountryRegion", "visible":false},
-        { "data": "tslCountryRegion.countryRegionName"},
-        { "data": "sequenceNumber"},
-        { "data": "issueDate"},
-        { "data": "expirationDate"},
-        { "data": "tslCountryRegion.idTslCountryRegion", 
+        { "data": "tslCountryRegion.countryRegionName","width": "25%"},
+        { "data": "sequenceNumber","width": "15%"},
+        { "data": "issueDate","width": "25%", "render": function(data, type, row){
+		return moment(data).format("MM-DD-YYYY HH:mm");}},
+        { "data": "expirationDate", "width": "25%", "render": function(data, type, row){
+		return moment(data).format("MM-DD-YYYY HH:mm");}},
+        { "data": "tslCountryRegion.idTslCountryRegion", "width": "10%", 
         	"render": function(data, type, row){		
-        		
-        		return '<button class="c-green-500 ti-panel" id="loadMap" onclick="loadMappingDatatable('+data+');"></button>';
+        		return '<button class="c-green-500 ti-list" id="loadMap" onclick="loadMappingDatatable('+data+');" th:alt="#{table.tsl.mapeo.alt}" th:title="#{table.tsl.mapeo.alt}"></button>';
         	}
         } 
         ]
@@ -109,6 +105,7 @@ var tbl = $('#tslTable').DataTable({
 	        		processData : false,
 	        		type : 'POST',
 	        		success: function(data){
+
 	        			var errores = JSON.parse(data.error);
 						$("#tableMapping").hide();						 
 						if (data.error != null){
@@ -118,6 +115,7 @@ var tbl = $('#tslTable').DataTable({
 								var messageError = val;
 								$('#errorAddTsl').html(messageError);
 								$('#errorAddTsl').addClass('alert alert-danger');
+
 						 	 } 
 							if(i == "errorSaveTsl"){
 								var messageError = val;
@@ -134,6 +132,7 @@ var tbl = $('#tslTable').DataTable({
 					  })
 
 				  }else{
+
 						  hide();
 						  tbl.row.add($(data.data)).draw(false);
 						  $('#altEditor-modal .modal-body .alert').remove();

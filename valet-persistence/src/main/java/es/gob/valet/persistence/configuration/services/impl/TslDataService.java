@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 29/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -41,7 +41,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer related to TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 29/10/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -52,6 +52,8 @@ public class TslDataService implements ITslDataService {
 	 */
 	@Autowired
 	private TslDataRepository repository;
+
+
 
 	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
@@ -101,6 +103,7 @@ public class TslDataService implements ITslDataService {
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#saveTSL(es.gob.valet.persistence.configuration.model.entity.TslData)
 	 */
+	@Transactional
 	public TslData saveTSL(TslData tslData) {
 		return repository.save(tslData);
 	}

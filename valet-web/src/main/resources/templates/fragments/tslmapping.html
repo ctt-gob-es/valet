@@ -1,4 +1,15 @@
 <div class="masonry-item col-md-12">
+
+	<form name="altEditor-form" role="form" id="getIdCountryForm"
+		th:object="${mappingtslform}" method="post">
+		<!--  identificador idCountryRegion -->
+		<input type='hidden' class='primarykey' id="idCountry"
+			th:field="*{idTslCountryRegion}"></input>
+
+		<!--  nombre del pais al que pertenece la TSL -->
+		<input type='hidden' id="idNameCountry"
+			th:field="*{nameCountryRegion}"></input>
+<div class="masonry-item col-md-12">
 	<form name="altEditor-form" role="form" id="getIdCountryForm"
 		th:object="${mappingtslform}" method="post">
 		<!--  identificador idCountryRegion -->
@@ -98,7 +109,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Editar Mapeo</h4>
+				<h4 class="modal-title" th:text="#{form.editMapping.title}"></h4>
 				<button type="button" class="close"
 					onclick="closeModalButton('modalEditMapping', 'mappingTslEditForm')"
 					aria-label="Cerrar">
@@ -142,10 +153,10 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default"
-					onclick="closeModalButton('modalEditMapping', 'mappingTslEditForm')">Cerrar</button>
+					onclick="closeModalButton('modalEditMapping', 'mappingTslEditForm')" th:text="#{form.editMapping.btn.close}"></button>
 
 				<button type="button" id="idEditMappingBtn" class="btn btn-primary"
-					th:text="Guardar" onclick="modifyMapping();"></button>
+					th:text="#{form.editMapping.btn.modify}" onclick="modifyMapping();"></button>
 			</div>
 		</div>
 	</div>
@@ -178,10 +189,10 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default"
-					th:text="#{form.deleteMapping.btn.close}"
+					th:text="#{form.deleteMapping.btn.close}" th:alt="#{form.deleteMapping.btn.close}"
 					onclick="closeModalButton('modalDeletetMapping', 'mappingTslDeleteForm')"></button>
 				<button type="button" id="idDeleteMappingBtn"
-					class="btn btn-primary" th:text="#{form.deleteMapping.btn.delete}"
+					class="btn btn-primary" th:text="#{form.deleteMapping.btn.delete}" th:alt="#{form.deleteMapping.btn.delete}"
 					onclick="deleteMappingTsl();"></button>
 			</div>
 		</div>
@@ -228,10 +239,10 @@ $(document).ready(function() {
 				        },
 				        "columns": [
 				        	{ "data": "tslCountryRegion.idTslCountryRegion","visible": false},
-					        { "data": "mappingIdentificator" },
-					        { "data": "mappingValue" },
-					        { "data": "associationType.tokenName"},
-					        { "data": "idTslCountryRegionMapping", 
+					        { "data": "mappingIdentificator",  "width": "35%" },
+					        { "data": "mappingValue",  "width": "35%" },
+					        { "data": "associationType.tokenName",  "width": "20%"},
+					        { "data": "idTslCountryRegionMapping",  "width": "10%",
 					        	"render": function(data, type, row){		
 					        		
 					        		return '<button class="c-green-500 ti-pencil-alt" id="editMappingTsl"  onclick="editMappingTsl('+data+');"></button>&nbsp;<button class="c-red-500 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);"></button>';
@@ -333,9 +344,6 @@ function saveNewMapping() {
 		}
 	});
 }
-
-
-
 
 
 //método para editar mapeo
@@ -457,9 +465,9 @@ function deleteMappingTsl(){
     	tblMapping.row(data.index).remove().draw();
 		},
 		error:function(){
-			alert("error al eliminar");
 		}
 		});
 }
 
 </script>
+	

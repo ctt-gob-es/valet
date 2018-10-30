@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 25/10/2018.
+ * @version 1.5, 30/10/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -43,7 +43,6 @@ import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpStatus;
@@ -65,6 +64,7 @@ import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
@@ -79,7 +79,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 25/10/2018.
+ * @version 1.5, 30/10/2018.
  */
 @RestController
 public class TslRestController {
@@ -98,40 +98,6 @@ public class TslRestController {
 	 * Constant attribute that represents the token 'application/pdf'.
 	 */
 	private static final String TOKEN_APPLICATION_PDF = "application/pdf";
-
-	/**
-	 * Attribute that represents the service object for accessing the
-	 * TslDataRepository.
-	 */
-	@Autowired
-	private ITslDataService tslDataService;
-
-	/**
-	 * Attribute that represents the service object for accessing the
-	 * CTslImplRepository.
-	 */
-	@Autowired
-	private ICTslImplService cTSLImplService;
-
-	/**
-	 * Attribute that represents the service object for accessing the
-	 * TslcountryRegionRepository.
-	 */
-	@Autowired
-	private ITslCountryRegionService tslCountryRegionService;
-
-	/**
-	 * Attribute that represents the service object for accessing the
-	 * TslCountryRegionMappingRespository.
-	 */
-	@Autowired
-	private ITslCountryRegionMappingService tslCountryRegionMappingService;
-
-	/**
-	 * Attribute that represents the service object for acceding to CAssociationTypeRepository.
-	 */
-	@Autowired
-	private ICAssociationTypeService associationTypeService;
 
 	/**
 	 * Constant that represents the parameter 'implTslFile'.
@@ -222,6 +188,7 @@ public class TslRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/tsldatatable", method = RequestMethod.GET)
 	public DataTablesOutput<TslData> loadTslDataTable(@Valid DataTablesInput input) {
+		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
 		return (DataTablesOutput<TslData>) tslDataService.getAllTsl(input);
 
 	}
@@ -236,6 +203,7 @@ public class TslRestController {
 		List<String> versions = new ArrayList<String>();
 
 		if (!specification.equals(String.valueOf(-1))) {
+			ICTslImplService cTSLImplService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService();
 			Map<String, Set<String>> res = cTSLImplService.getsTSLRelationSpecificatioAndVersion();
 			versions.addAll(res.get(specification));
 		}
@@ -265,6 +233,9 @@ public class TslRestController {
 		List<TslData> listTSL = new ArrayList<TslData>();
 		TslData tslData = null;
 
+		ITslCountryRegionService tslCountryRegionService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService();
+		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
+		ICTslImplService cTSLImplService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService();
 		try {
 			// comprobamos que se han indicado todos los campos obligatorios
 			if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
@@ -274,7 +245,6 @@ public class TslRestController {
 
 			} else {
 				fileBytes = implTslFile.getBytes();
-
 			}
 
 			if (specification == null || specification.equals(String.valueOf(-1))) {
@@ -303,59 +273,58 @@ public class TslRestController {
 				// el
 				// mapeo.
 
-				/** DATOSSS PARA CREAR UNA TSL DE ESPAÑA************************************************************/
-				LocalDateTime expDate = LocalDateTime.of(2019, 8, 10, 0, 0, 0);
+				/*DATOSSS PARA CREAR UNA TSL DE ESPAÑA************************************************************/
+				//				LocalDateTime expDate = LocalDateTime.of(2019, 8, 10, 0, 0, 0);
+				//				LocalDateTime issueDate = LocalDateTime.now();
+				//				Instant instantExp = expDate.atZone(ZoneId.systemDefault()).toInstant();
+				//				tslData.setExpirationDate(Date.from(instantExp));
+				//				Instant instantIssue = issueDate.atZone(ZoneId.systemDefault()).toInstant();
+				//				tslData.setIssueDate(Date.from(instantIssue));
+				//				tslData.setUriTslLocation(url);
+				//				tslData.setResponsible("responsable TSL Spain");
+				//
+				//				// Obtenemos el pais de base de datos, sino se inserta el
+				//				// obtenido en el mapeo.
+				//				String codeCountry = "ES";
+
+				/**	DATOS PARA CREAR UNA TSL DE FRANCIA***********************************************************/
+				LocalDateTime expDate = LocalDateTime.of(2020, 2, 2, 0, 0, 0);
 				LocalDateTime issueDate = LocalDateTime.now();
 				Instant instantExp = expDate.atZone(ZoneId.systemDefault()).toInstant();
 				tslData.setExpirationDate(Date.from(instantExp));
 				Instant instantIssue = issueDate.atZone(ZoneId.systemDefault()).toInstant();
 				tslData.setIssueDate(Date.from(instantIssue));
 				tslData.setUriTslLocation(url);
-				tslData.setResponsible("responsable TSL Spain");
-				
+				tslData.setResponsible("responsable TSL Francia");
+
 				// Obtenemos el pais de base de datos, sino se inserta el
 				// obtenido en el mapeo.
-				TslCountryRegion country = tslCountryRegionService.getTslCountryRegionById(Long.valueOf(1), false);
+				String codeCountry = "FR";
 
-				/*	DATOS PARA CREAR UNA TSL DE FRANCIA************************************************************/
-//				LocalDateTime expDate = LocalDateTime.of(2020, 2, 10, 0, 0, 0);
-//				LocalDateTime issueDate = LocalDateTime.now();
-//				Instant instantExp = expDate.atZone(ZoneId.systemDefault()).toInstant();
-//				Instant instantIssue = issueDate.atZone(ZoneId.systemDefault()).toInstant();
-//
-//				// el país lo obtenemos del XML, si no existiera se insertaría
-//				// el
-//				// nuevo pais en bd? //TODO preguntar a JAGG
-//				TslCountryRegion country = tslCountryRegionService.getTslCountryRegionById(Long.valueOf(2), false);
-//				if(country == null){
-//					country = new TslCountryRegion();
-//					country.setIdTslCountryRegion(1L);
-//					country.setCountryRegionName("Spain");
-//					country.setCountryRegionCode("ES");
-//					tslCountryRegionService.
-//				}
-				tslData.setResponsible("responsable TSL France");
 
-				// se comprueba si ya existe una TSL del mismo país
-				if (tslDataService.getTslByCountryRegion(country) != null) {
+
+				TslCountryRegion country = tslCountryRegionService.getTslCountryRegionByCode(codeCountry, false);
+				// si country no es nulo, es que existe una TSL asociada a ese
+				// pais.
+				if (country != null) {
 					LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
 					json.put(INFO_EXIST_TSL, Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
 
 					listTSL = StreamSupport.stream(tslDataService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 					dtOutput.setError(json.toString());
+
 				} else {
 
-					tslData.setTslCountryRegion(country);
-					// construimos el alias de la TSL, nos servirá como nombre
-					// para
-					// las
-					// descargas de implementación y de documento legible.
-					// Formato
-					// (CodigoPais-Secuencia-VVersion)
-					Integer seqNum = 1;
+					// se crea una nueva instancia de TslCountryRegion,
+					country = new TslCountryRegion();
+					// el codigo se obtiene del XML
+					country.setCountryRegionCode(codeCountry);
+					// el nombre de una clase d utilidades
+					country.setCountryRegionName("France");
+					country.setTslData(tslData);
 
-					String alias = country.getCountryRegionCode() + "-" + String.valueOf(seqNum) + "-V" + version;
-					tslData.setAlias(alias);
+					// se obtienen los datos del XML
+
 					// fecha de caducidad
 					tslData.setExpirationDate(Date.from(instantExp));
 					// fecha de emisión
@@ -366,10 +335,9 @@ public class TslRestController {
 					// implementación TSL
 					tslData.setXmlDocument(fileBytes);
 					// número de secuencia
-					tslData.setSequenceNumber(seqNum);
+					tslData.setSequenceNumber(1);
 					// si existe nueva TSL disponible
 					tslData.setNewTSLAvailable("N");
-
 					// se realiza comprobación de la especificación y la versión
 					// seleccionada en el formulario, con lo obtenido del XML
 					CTslImpl tslImplForm = cTSLImplService.getCTSLImplBySpecificationVersion(specification, version);
@@ -377,13 +345,12 @@ public class TslRestController {
 						tslImplForm = new CTslImpl(); // TODO preguntar JAGG
 					}
 					tslData.setTslImpl(tslImplForm);
-
-					// añade la TSL a la base de datos.
+					tslData.setTslCountryRegion(country);
 					TslData tslNew = tslDataService.saveTSL(tslData);
-
 					// lo añade a una lista de TSLs
 					listTSL.add(tslNew);
 					dtOutput.setData(listTSL);
+
 				}
 
 			} else {
@@ -423,6 +390,8 @@ public class TslRestController {
 		JSONObject json = new JSONObject();
 		List<TslData> listTSL = new ArrayList<TslData>();
 		TslData tsl = null;
+		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
+		ICTslImplService cTSLImplService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService();
 		try {
 
 			// se comprueba que existe la tsl que se quiere editar.
@@ -449,10 +418,6 @@ public class TslRestController {
 					tsl.setResponsible("responsable actualizado");
 					int seqNumber = 3;
 					tsl.setSequenceNumber(seqNumber);
-
-					// (CodigoPais-Secuencia-VVersion)
-					String alias = tsl.getTslCountryRegion().getCountryRegionCode() + "-" + String.valueOf(seqNumber) + "-V" + tsl.getTslImpl().getVersion();
-					tsl.setAlias(alias);
 
 					CTslImpl ctslUpdate = cTSLImplService.getCTSLImpById(Long.valueOf(2));
 					tsl.setTslImpl(ctslUpdate);
@@ -512,6 +477,7 @@ public class TslRestController {
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
 	@ResponseBody
 	public void downloadTsl(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
+		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
 		TslData tsl = tslDataService.getTslDataById(idTsl, true, false);
 		byte[ ] implTsl;
 		if (tsl != null) {
@@ -533,7 +499,7 @@ public class TslRestController {
 	@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)
 	@ResponseBody
 	public void downloadDocument(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
-
+		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
 		TslData tsl = tslDataService.getTslDataById(idTsl, false, true);
 		byte[ ] legibleDoc;
 		if (tsl != null) {
@@ -555,6 +521,7 @@ public class TslRestController {
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/loadmappingbyid", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public MappingTslForm loadMappingById(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping) {
+		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
 		TslCountryRegionMapping tslCRM = tslCountryRegionMappingService.getTslCountryRegionMappingById(idTslCountryRegionMapping);
 		MappingTslForm mappingTslForm = new MappingTslForm();
 		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
@@ -674,11 +641,18 @@ public class TslRestController {
 	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> loadMapping(@RequestParam("id") Long idCountryRegion) {
 		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<TslCountryRegionMapping>();
 		List<TslCountryRegionMapping> listMapping = new ArrayList<TslCountryRegionMapping>();
-
+		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
 		if (idCountryRegion != null) {
 			// obtenemos todos los mapeos de ese pais
 			listMapping = tslCountryRegionMappingService.getAllMappingByIdCountry(idCountryRegion);
-			dtOutput.setData(listMapping);
+			List<TslCountryRegionMapping> listMappingLanguage = new ArrayList<TslCountryRegionMapping>();
+			for(TslCountryRegionMapping tcrm : listMapping){
+				CAssociationType cat = tcrm.getAssociationType();
+				cat.setTokenName(Language.getResPersistenceConstants(cat.getTokenName()));
+				tcrm.setAssociationType(cat);
+				listMappingLanguage.add(tcrm);
+			}
+			dtOutput.setData(listMappingLanguage);
 		}
 
 		dtOutput.setData(listMapping);
@@ -707,6 +681,9 @@ public class TslRestController {
 		List<TslCountryRegionMapping> listTslCountryRegionMapping = new ArrayList<TslCountryRegionMapping>();
 		TslCountryRegionMapping tslCountryRegionMapping = null;
 
+		ITslCountryRegionService tslCountryRegionService  = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService();
+		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
+		ICAssociationTypeService cAssociationTypeService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCAssociationTypeService();
 		// String mappingIdentificator =
 		// mappingTslForm.getMappingIdentificator();
 		// String mappingValue = mappingTslForm.getMappingValue();
@@ -738,9 +715,9 @@ public class TslRestController {
 			tslCountryRegionMapping.setTslCountryRegion(tslCountryRegion);
 			tslCountryRegionMapping.setMappingIdentificator(mappingIdentificator);
 			tslCountryRegionMapping.setMappingValue(mappingValue);
-			
-			//se obtiene el tipo de asociación
-			CAssociationType associationType = associationTypeService.getAssociationTypeById(idMappingType);
+
+			// se obtiene el tipo de asociación
+			CAssociationType associationType = cAssociationTypeService.getAssociationTypeById(idMappingType);
 			tslCountryRegionMapping.setAssociationType(associationType);
 
 			TslCountryRegionMapping tslCRMNew = tslCountryRegionMappingService.save(tslCountryRegionMapping);
@@ -761,6 +738,7 @@ public class TslRestController {
 	 * @param idTslCountryRegionMapping  Parameter that represents the ID of the mapping.
 	 * @param idTslCountryRegion  Parameter that represents the ID of the country/region.
 	 * @param mappingValue Parameter that represents the new value for the mapping.
+	 * @param idMappingType Parameter that represents the type of association.
 	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
 	 * @throws IOException If the method fails.
 	 */
@@ -777,6 +755,8 @@ public class TslRestController {
 		List<TslCountryRegionMapping> listTslCountryRegionMapping = new ArrayList<TslCountryRegionMapping>();
 		TslCountryRegionMapping tslCountryRegionMapping = null;
 
+		ICAssociationTypeService associationTypeService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCAssociationTypeService();
+		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
 		if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
 			json.put(FIELD_MAPPING_VALUE + "_spanEdit", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
@@ -797,7 +777,7 @@ public class TslRestController {
 		if (!error) {
 
 			tslCountryRegionMapping.setMappingValue(mappingValue);
-			//se obtiene el tipo de asociación
+			// se obtiene el tipo de asociación
 			CAssociationType associationType = associationTypeService.getAssociationTypeById(idMappingType);
 			tslCountryRegionMapping.setAssociationType(associationType);
 
@@ -819,13 +799,15 @@ public class TslRestController {
 	/**
 	 * Method to remove a mappings.
 	 * @param idTslCountryRegionMapping Parameter that represents ID of mapping to delete.
-	 * @param index Parameter that represents the index of the row of the selected mapping.
+	 * @param indexParam Parameter that represents the index of the row of the selected mapping.
 	 * @return String that represents the index of the deleted row.
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(path = "/deletemappingbyid", method = RequestMethod.POST)
-	public String deleteMappingById(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam("rowIndexMapping") String index) {
+	public String deleteMappingById(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam("rowIndexMapping") String indexParam) {
+		String index = indexParam;
+		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
 
 		try {
 			tslCountryRegionMappingService.deleteTslCountryRegionMapping(idTslCountryRegionMapping);
@@ -838,20 +820,20 @@ public class TslRestController {
 	/**
 	 * Method that assigns the removal request of the datatable TSL to the controller and performs the elimination of the TSL identified by its id.
 	 * @param idTslData Identifier of the TSL to be deleted.
-	 * @param index Row index of the datatable.
+	 * @param indexParam Row index of the datatable.
 	 * @return String that represents the index of the deleted row.
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/deletetsl", method = RequestMethod.POST)
-	public String deleteTsl(@RequestParam("id") Long idTslData, @RequestParam("index") String index) {
-
-		TslData tsl = tslDataService.getTslDataById(idTslData, false, false);
-		Long idCountryRegion = tsl.getTslCountryRegion().getIdTslCountryRegion();
-		tslDataService.deleteTslData(idTslData);
-		// se elimina también los mapeos del pais de la TSL eliminada.
-		List<TslCountryRegionMapping> listMapping = new ArrayList<TslCountryRegionMapping>();
-		listMapping = tslCountryRegionMappingService.getAllMappingByIdCountry(idCountryRegion);
-		tslCountryRegionMappingService.deleteTslCountryRegionMappingByInBatch(listMapping);
+	public String deleteTsl(@RequestParam("id") Long idTslData, @RequestParam("index") String indexParam) {
+		String index = indexParam;
+		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
+		try {
+			tslDataService.deleteTslData(idTslData);
+		} catch (Exception e) {
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+			index = "-1";
+		}
 
 		return index;
 	}

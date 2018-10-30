@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 29/10/2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -34,7 +34,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to TslData.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 29/10/2018.
  */
 public interface ITslDataService {
 
@@ -68,6 +68,7 @@ public interface ITslDataService {
 	 * @param tslData Parameter that represents the new TSL.
 	 * @return {@link TslData} an object that represents the TSL.
 	 */
+	@Transactional
 	TslData saveTSL(TslData tslData);
 
 	/**
