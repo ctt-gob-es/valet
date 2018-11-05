@@ -1,9 +1,9 @@
-<div class="modal" tabindex="-1" role="dialog" id="modalPassword">
+<div class="modal fade" tabindex="-1" role="dialog" id="modalPassword">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Cambiar contrase&ntilde;a</h4>
-				<button type="button" class="close" onclick="closeButton('modalEdit')" aria-label="Cerrar">
+				<h4 class="modal-title" th:text="#{table.user.action.password}"></h4>
+				<button type="button" class="close" onclick="closeModalButton('modalPassword','userFormPassword')"  aria-label="Cerrar">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
@@ -15,7 +15,7 @@
 					<div class="form-group">
 						<label for="oldPassword" class="col-form-label" th:text="#{form.user.oldPassword}"></label>
 						<span id="oldPassword_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
-						<input type="password" id="oldPassword" th:field="*{oldPassword}" class="form-control" />
+						<input onblur="validateField(this, messageName);" type="password" id="oldPassword" th:field="*{oldPassword}" class="form-control" />
 					</div>
 					
 					<div class="form-group">
@@ -33,8 +33,8 @@
 
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" onclick="closeButton('modalPassword')">Cerrar</button>
-				<button type="submit" id="passwordBtn" class="btn btn-primary">Guardar cambios</button>
+				<button type="button" class="btn btn-default" onclick="closeModalButton('modalPassword','userFormPassword')" th:text="#{form.user.btn.close}"></button>
+				<button type="submit" id="passwordBtn" th:text="#{form.user.btn.modify}" class="btn btn-primary"></button>
 			</div>
 		</div>
 	</div>
@@ -42,25 +42,27 @@
 
 <script th:inline="javascript">
 	function validateConfirmPassword(){
-		
-		var pass = $('#password').val();
-	    var repass = $('#confirmPassword').val();
-		var messageConfirmPassword = /*[[#{form.user.confirmPassword.pattern}]]*/ 'default';
-		
-		if(($('input[name=password]').val().length == 0) || ($('input[name=confirmPassword]').val().length == 0)){
-			$('#invalid-confirmPassword').html(messageConfirmPassword);
-			$('#invalid-confirmPassword').addClass("invalid-modal");
-	    }
-	    else if (pass != repass) {
-	    	$('#invalid-confirmPassword').html(messageConfirmPassword);
-			$('#invalid-confirmPassword').addClass("invalid-modal");
-	    }
-	    else {
-	    	$('#invalid-confirmPassword').html('');
-			$('#invalid-confirmPassword').removeClass("invalid-modal");
-	    }
-		
-	}
+	
+	var pass = $('#passwordAdd').val();
+    var repass = $('#confirmPasswordAdd').val();
+	var messageConfirmPassword = /*[[#{form.user.confirmPassword.pattern}]]*/ 'default';
+	
+	if(($('#passwordAdd').val().length == 0) || ($('#confirmPasswordAdd').val().length == 0)){
+		 $("#confirmPasswordAdd_span").text(messageConfirmPassword);
+		$("#confirmPasswordAdd_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill");
+    }
+    else if (pass != repass) {
+    	$("#confirmPasswordAdd_span").text(messageConfirmPassword);
+		$("#confirmPasswordAdd_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill");
+    }
+    else {
+    	$("#confirmPasswordAdd_span").text('');
+		$("#confirmPasswordAdd_span").removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill");
+    }
+	
+}
+	
+	//función para modificar contraseña
 	$( "#passwordBtn" ).click(function( event ) {
 	  event.preventDefault();
 		
@@ -82,12 +84,14 @@
 				$('#modalPassword').modal('hide');
 				break;
 			case -1:
+				  var msgError =  /*[[#{form.user.password.old}]]*/;
 				$('#errorModalUser').remove();
-				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>La contrase\u00F1a anterior debe de coincidir!</strong></div>');
+				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
 				break;
 			case -2:
+				  var msgError =  /*[[#{form.user.error}]]*/;
 				$('#errorModalUser').remove();
-				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>Error inesperado, int\u00E9ntelo mas tarde!</strong></div>');
+				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
 				break;
 			default:
 				if (data != null){
@@ -103,7 +107,8 @@
 		  },
 		  error:function(){
 			  hide();
-			  $('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>Error inesperado, int\u00E9ntelo mas tarde!</strong></div>');
+			  var msgError =  /*[[#{form.user.error}]]*/;
+			  $('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
 		  },
 		  dataType: "json",
 		  contentType : "application/json"

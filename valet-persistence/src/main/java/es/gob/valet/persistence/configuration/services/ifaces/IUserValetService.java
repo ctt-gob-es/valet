@@ -18,9 +18,9 @@
  * <b>File:</b><p>es.gob.valet.service.IUserValetService.java.</p>
  * <b>Description:</b><p> .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>15 jun. 2018.</p>
+ * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 15 jun. 2018.
+ * @version 1.0, 15/06/2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -32,7 +32,7 @@ import es.gob.valet.persistence.configuration.model.entity.UserValet;
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 15 jun. 2018.
+ * @version 1.0, 15/06/2018.
  */
 public interface IUserValetService {
 	/**
@@ -44,7 +44,7 @@ public interface IUserValetService {
 	
 	/**
 	 * Method that obtains an user by its login.
-	 * @param userId The user login.
+	 * @param login The user login.
 	 * @return {@link UserValet}
 	 */
 	UserValet getUserValetByLogin(String login);

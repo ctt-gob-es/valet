@@ -322,5 +322,27 @@ function cleanSpan(obj){
 $("#"+ obj).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
 var msg = '';
 $("#"+ obj).html(msg);
+}
 
+//Client side validation
+function validateField(obj, msg)
+{
+  if(!obj.checkValidity())
+  {
+	 $("#" + $(obj).attr('id')+"_span").html(msg);
+	 $("#" + $(obj).attr('id')+"_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill");
+  } else {
+  $("#" + $(obj).attr('id')+"_span").text('');
+	 $("#" + $(obj).attr('id')).removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill");
+  }
+}
+
+///funcion para cerrar los modales
+function closeModalButton(modalId, nameForm){
+	//se limpia posibles mensajes error de span
+	$('#'+nameForm+' *').filter('span').each(function(){
+		cleanSpan($(this).attr('id'));
+	});
+		//se limpia valores del formulario
+	$('#' + modalId).modal('hide');	
 }

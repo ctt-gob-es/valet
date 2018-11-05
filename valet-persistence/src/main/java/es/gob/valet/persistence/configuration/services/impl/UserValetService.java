@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,12 +14,12 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.service.impl.UserValetService.java.</p> * <b>Description:</b><p>Class that implements the communication with the operations of the persistence layer.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>15 jun. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 15 jun. 2018.
+ * @version 1.0, 15/06/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -35,83 +35,82 @@ import es.gob.valet.persistence.configuration.model.repository.UserValetReposito
 import es.gob.valet.persistence.configuration.model.repository.datatable.UserValetDataTablesRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 
-/** 
+/**
  * <p>Class that implements the communication with the operations of the persistence layer.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 15 jun. 2018.
+ * @version 1.0, 15/06/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class UserValetService implements IUserValetService{
-	
+public class UserValetService implements IUserValetService {
+
 	/**
 	 * Attribute that represents the injected interface that proves CRUD operations for the persistence.
 	 */
-@Autowired
-private UserValetRepository repository;
+	@Autowired
+	private UserValetRepository repository;
 
-/**
- * Attribute that represents the injected interface that provides CRUD operations for the persistence.
- */
-@Autowired
-private UserValetDataTablesRepository dtRepository;
+	/**
+	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
+	 */
+	@Autowired
+	private UserValetDataTablesRepository dtRepository;
 
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getUserValetById(java.lang.Long)
+	 */
+	@Override
+	public UserValet getUserValetById(Long userId) {
+		return repository.findByIdUserValet(userId);
+	}
 
-/**
- * {@inheritDoc}
- * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getUserValetById(java.lang.Long)
- */
-@Override
-public UserValet getUserValetById(Long userId) {
-	return repository.findByIdUserValet(userId);
-}
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#saveUserValet(es.gob.valet.persistence.configuration.model.entity.UserValet)
+	 */
+	@Override
+	public UserValet saveUserValet(UserValet user) {
+		return repository.save(user);
 
-/**
- * {@inheritDoc}
- * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#saveUserValet(es.gob.valet.persistence.configuration.model.entity.UserValet)
- */
-@Override
-public UserValet saveUserValet(UserValet user) {
-	return repository.save(user);
-	
-}
+	}
 
-/**
- * {@inheritDoc}
- * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#deleteUserValet(java.lang.Long)
- */
-@Override
-public void deleteUserValet(Long userId) {
-	repository.deleteById(userId);
-	
-}
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#deleteUserValet(java.lang.Long)
+	 */
+	@Override
+	public void deleteUserValet(Long userId) {
+		repository.deleteById(userId);
 
-/**
- * {@inheritDoc}
- * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getAllUserValet()
- */
-@Override
-public Iterable<UserValet> getAllUserValet() {
-	return repository.findAll();
-}
+	}
 
-/**
- * {@inheritDoc}
- * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getUserValetByLogin(java.lang.String)
- */
-@Override
-public UserValet getUserValetByLogin(String login) {
-	return repository.findByLogin(login);
-}
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getAllUserValet()
+	 */
+	@Override
+	public Iterable<UserValet> getAllUserValet() {
+		return repository.findAll();
+	}
 
-/**
- * {@inheritDoc}
- * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#findAll(org.springframework.data.jpa.datatables.mapping.DataTablesInput)
- */
-@Override
-public DataTablesOutput<UserValet> getAllUser(DataTablesInput input) {
-	
-	return dtRepository.findAll(input);
-}
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getUserValetByLogin(java.lang.String)
+	 */
+	@Override
+	public UserValet getUserValetByLogin(String login) {
+		return repository.findByLogin(login);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#findAll(org.springframework.data.jpa.datatables.mapping.DataTablesInput)
+	 */
+	@Override
+	public DataTablesOutput<UserValet> getAllUser(DataTablesInput input) {
+
+		return dtRepository.findAll(input);
+	}
 
 }

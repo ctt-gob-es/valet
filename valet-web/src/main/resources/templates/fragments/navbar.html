@@ -21,7 +21,7 @@
                   <li>
                     <a href="#" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700" id="aUser">
                       <i class="ti-settings mR-10"></i>
-                      <span>Editar datos personales</span>
+                      <span th:text="#{navbar.editUser.title}"></span>
                       <script th:inline="javascript">
                       
                       	var menuEdit = /*[[@{/menuedit}]]*/;
@@ -36,13 +36,8 @@
 	      						cache : false,
 	      						success : function(data) {
 	      							hide();
-	      							$("body").append(data);
-
-	      							$('#modalEdit').modal({
-	      		                    	backdrop: 'static',
-	      		                        keyboard: true, 
-	      		                        show: true
-	      		                	});
+	      							$('#modal').html(data);
+	      							$('#modalEdit').modal('show');
 	      						},
 	      						error : function() {}
 	      					});
@@ -63,22 +58,16 @@
                       	var menuPass = /*[[@{/menupass}]]*/;
 	      				var username = /*[[${#httpServletRequest.remoteUser}]]*/;
 	      				$('#aPass').click(function(e){
-	      					e.preventDefault(); 
-	      					
+	      					e.preventDefault(); 		
 	      					$.ajax({
 	      						url : menuPass,
 	      						type : 'GET',
-	      						data : $.param({'username':username}),
+	      						data : $.param({'login':username}),
 	      						cache : false,
 	      						success : function(data) {
 	      							hide();
-	      							$("body").append(data);
-
-	      							$('#modalPassword').modal({
-	      		                    	backdrop: 'static',
-	      		                        keyboard: true, 
-	      		                        show: true
-	      		                	});
+	      							$('#modal').html(data);
+	      							$('#modalPassword').modal('show');
 	      						},
 	      						error : function() {}
 	      					});

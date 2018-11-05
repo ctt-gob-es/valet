@@ -1,88 +1,98 @@
-<div class="modal" tabindex="-1" role="dialog" id="modalEdit">
+<div class="modal fade" tabindex="-1" role="dialog" id="modalEdit">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Editar registro</h4>
-				<button type="button" class="close" onclick="closeButton('modalEdit')" aria-label="Cerrar">
+				<h4 class="modal-title" th:text="#{table.user.action.edit}"></h4>
+				<button type="button" class="close"
+					onclick="closeModalButton('modalEdit','userFormEditModal')" aria-label="Cerrar">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form name="altEditor-form" role="form" id="userFormEditModal" th:object="${userformEdit}" th:action="@{/menueditsave}" method="post">
-					<input type='hidden' class='primarykey' id="idUserValetEdit" th:field="*{idUserValetEdit}">
-					
-					<div class="form-group">
+				<form name="altEditor-form" role="form" id="userFormEditModal"
+					th:object="${userformEdit}" th:action="@{/menueditsave}"
+					method="post" action="">
+					<input type='hidden' class='primarykey' id="idUserValetEdit"
+						th:field="*{idUserValetEdit}"></input>
 						
-							<label for="nameEdit" class="col-form-label" th:text="#{form.user.name}"></label>
-							<script th:inline="javascript">
+					<div class="form-group">
+						<label for="nameEdit" th:text="#{form.user.name}"></label>
+						<script th:inline="javascript" type="text/javascript">
 								/*<![CDATA[*/
 								    var messageName = /*[[#{form.user.name.pattern}]]*/ 'default';
 								/*]]>*/
 							</script>
-							<input onblur="validate(this,messageName);" type="text" id="nameEdit" th:field="*{nameEdit}" style="overflow:hidden" class="form-control" required pattern=".{3,15}" />
-							<div id="invalid-name" class="invalid-feedback" ></div>
-						
-						<div style="clear:both;"/>
+						<span id="nameEdit_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+						<input onblur="validateField(this,messageName);" type="text"
+							id="nameEdit" th:field="*{nameEdit}" class="form-control"
+							required pattern=".{3,15}" ></input>
 					</div>
 					
 					<div class="form-group">
-						
-							<label for="surnamesEdit" class="col-form-label" th:text="#{form.user.surnames}"></label>
-							<script th:inline="javascript">
+						<label for="surnamesEdit"
+							th:text="#{form.user.surnames}"></label>
+						<script th:inline="javascript" type="text/javascript">
 								/*<![CDATA[*/
 								    var messageSurname = /*[[#{form.user.surnames.pattern}]]*/ 'default';
 								/*]]>*/
 							</script>
-							<input onblur="validate(this,messageSurname);" type="text" id="surnamesEdit" th:field="*{surnamesEdit}" style="overflow:hidden" class="form-control" required pattern=".{3,30}"/>
-							<div id="invalid-surnames" class="invalid-feedback" ></div>
-						
-						<div style="clear:both;"/>
+						<span id="surnamesEdit_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+						<input onblur="validateField(this,messageSurname);" type="text"
+							id="surnamesEdit" th:field="*{surnamesEdit}" class="form-control"
+							required pattern=".{3,30}"></input>
 					</div>
 					
 					<div class="form-group">
-						
-							<label for="loginEdit" class="col-form-label" th:text="#{form.user.login}"></label>
-							<script th:inline="javascript">
+						<label for="loginEdit"
+							th:text="#{form.user.login}"></label>
+						<script th:inline="javascript" type="text/javascript">
 								/*<![CDATA[*/
 								    var messageLogin = /*[[#{form.user.login.pattern}]]*/ 'default';
 								/*]]>*/
 							</script>
-							<input onblur="validate(this,messageLogin);" type="text" id="loginEdit" th:field="*{loginEdit}" style="overflow:hidden" class="form-control" required pattern=".{5,30}"/>
-							<div id="invalid-login" class="invalid-feedback" ></div>
-						
-						<div style="clear:both;"/>
+						<span id="loginEdit_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+						<input onblur="validateField(this,messageLogin);" type="text"
+							id="loginEdit" th:field="*{loginEdit}" class="form-control"
+							required pattern=".{5,30}"></input>
 					</div>
-					
+
 					<div class="form-group">
-						
-							<label for="emailEdit" class="col-form-label" th:text="#{form.user.email}"></label>
-							<script th:inline="javascript">
+						<label for="emailEdit"
+							th:text="#{form.user.email}"></label>
+						<script th:inline="javascript" type="text/javascript">
 								/*<![CDATA[*/
 								    var messageEmail = /*[[#{form.user.email.pattern}]]*/ 'default';
 								/*]]>*/
 							</script>
-							<input onblur="validate(this,messageEmail);" type="email" id="emailEdit" th:field="*{emailEdit}" style="overflow:hidden" class="form-control" required/>
-							<div id="invalid-email" class="invalid-feedback" ></div>
-						
-						<div style="clear:both;"/>
+						<span id="emailEdit_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+						<input onblur="validateField(this,messageEmail);" type="email"
+							id="emailEdit" th:field="*{emailEdit}" class="form-control"
+							required></input>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" onclick="closeButton('modalEdit')">Cerrar</button>
-				<button type="submit" id="editBtnModal" class="btn btn-primary">Guardar cambios</button>
+				<button type="button" class="btn btn-default"
+					onclick="closeModalButton('modalEdit','userFormEditModal')" th:text="#{form.user.btn.close}"></button>
+				<button type="submit" id="editBtnModal" class="btn btn-primary"
+					th:text="#{form.user.btn.modify}"></button>
 			</div>
 		</div>
 	</div>
 </div>
 
-<script th:inline="javascript">
+<script th:inline="javascript" type="text/javascript">
 	$( "#editBtnModal" ).click(function( event ) {
 		  event.preventDefault();
 			
 		  var formData = JSON.stringify($("#userFormEditModal").serializeJSON());
-		  var url = /*[[@{/menueditsave}]]*/;
-		  
+			var tbl = $('#userTable').DataTable();
+		 // var url = /*[[@{/menueditsave}]]*/;
+		  var url = /*[[@{/saveuseredit}]]*/;
 		  loading();
 		  
 		  $.ajax({
@@ -91,14 +101,9 @@
 			  data: formData,
 			  success: function(data){
 				hide();
-				
-				if ($('#errorModalEdit').length > 0){
-					$('#errorModalEdit').remove();
-				}
-				
-				$('#modalEdit').modal('hide');
-				$('#modalEdit').remove();
-				
+								
+				$('#modalEdit').modal('hide');	
+				tbl.row.add($(data.data)).draw(false);			
 			  },
 			  error:function(){
 				  hide();
@@ -110,4 +115,6 @@
 			  contentType : "application/json"
 		});
 	});
+	
+	closeModalButton
 </script>

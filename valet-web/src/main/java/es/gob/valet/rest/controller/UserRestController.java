@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.rest.controller.UserRestController.java.</p>
  * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>19 jun. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>19/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 19 jun. 2018.
+ * @version 1.1, 02/11/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -32,7 +32,6 @@ import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.MediaType;
@@ -54,30 +53,25 @@ import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.UserForm;
 import es.gob.valet.form.UserFormEdit;
 import es.gob.valet.form.UserFormPassword;
+import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
 import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 import es.gob.valet.rest.exception.OrderedValidation;
 
-/** 
+/**
  * <p>Class that manages the REST requests related to the Users administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19 jun. 2018.
+ * @version 1.1, 02/11/2018.
  */
 @RestController
 public class UserRestController {
-	
-	/**
-	 * Attribute that represents the service object for accessing the
-	 * UserValetRespository.
-	 */
-	@Autowired
-	private IUserValetService userService;
+
 
 	/**
 	 * Method that maps the list users web requests to the controller and
 	 * forwards the list of users to the view.
-	 * 
+	 *
 	 * @param input
 	 *            Holder object for datatable attributes.
 	 * @return String that represents the name of the view to forward.
@@ -85,6 +79,7 @@ public class UserRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/usersdatatable", method = RequestMethod.GET)
 	public DataTablesOutput<UserValet> users(@Valid DataTablesInput input) {
+		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		return (DataTablesOutput<UserValet>) userService.getAllUser(input);
 
 	}
@@ -92,7 +87,7 @@ public class UserRestController {
 	/**
 	 * Method that maps the delete user request from datatable to the controller
 	 * and performs the delete of the user identified by its id.
-	 * 
+	 *
 	 * @param userId
 	 *            Identifier of the user to be deleted.
 	 * @param index
@@ -102,6 +97,7 @@ public class UserRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/deleteuser", method = RequestMethod.POST)
 	public String deleteUser(@RequestParam("id") Long userId, @RequestParam("index") String index) {
+		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		userService.deleteUserValet(userId);
 
 		return index;
@@ -110,7 +106,7 @@ public class UserRestController {
 	/**
 	 * Method that maps the save user web request to the controller and saves it
 	 * in the persistence.
-	 * 
+	 *
 	 * @param userForm
 	 *            Object that represents the backing user form.
 	 * @param bindingResult
@@ -124,7 +120,7 @@ public class UserRestController {
 		DataTablesOutput<UserValet> dtOutput = new DataTablesOutput<>();
 		UserValet userValet = null;
 		List<UserValet> listNewUser = new ArrayList<UserValet>();
-
+		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		if (bindingResult.hasErrors()) {
 			listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false)
 					.collect(Collectors.toList());
@@ -176,7 +172,7 @@ public class UserRestController {
 	/**
 	 * Method that maps the save user web request to the controller and saves it
 	 * in the persistence.
-	 * 
+	 *
 	 * @param userForm Object that represents the backing user form.
 	 * @param bindingResult  Object that represents the form validation result.
 	 * @return  {@link DataTablesOutput<UserValet>}
@@ -188,7 +184,7 @@ public class UserRestController {
 		DataTablesOutput<UserValet> dtOutput = new DataTablesOutput<>();
 		UserValet userValet = null;
 		List<UserValet> listNewUser = new ArrayList<UserValet>();
-
+		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		if (bindingResult.hasErrors()) {
 			listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false)
 					.collect(Collectors.toList());
@@ -231,7 +227,7 @@ public class UserRestController {
 
 	/**
 	 * Method that changes the password.
-	 * 
+	 *
 	 * @param userFormPassword Object that represents the backup form fot the user's password modification.
 	 * @param bindingResult Object that represents the form validation result.
 	 * @return String result
@@ -240,6 +236,7 @@ public class UserRestController {
 	public String savePassword(@Validated(OrderedValidation.class) @RequestBody UserFormPassword userFormPassword,
 			BindingResult bindingResult) {
 		String result = UtilsStringChar.EMPTY_STRING;
+		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		UserValet userValet = userService.getUserValetById(userFormPassword.getIdUserValetPass());
 
 		if (bindingResult.hasErrors()) {
@@ -258,10 +255,10 @@ public class UserRestController {
 			try {
 				if (bc.matches(oldPwd, userValet.getPassword())) {
 					userValet.setPassword(hashPwd);
-
 					userService.saveUserValet(userValet);
 					result = "0";
 				} else {
+					// no coincide la contraseña introducida, con la contraseña actual del usuario.
 					result = "-1";
 				}
 			} catch (Exception e) {
@@ -272,53 +269,4 @@ public class UserRestController {
 
 		return result;
 	}
-
-
-	
-	/**
-	 * Method that edits the user.
-	 * @param userForm Object that represents the backing user form.
-	 * @param bindingResult  Object that represents the form validation result.
-	 * @return String result.
-	 */
-	@RequestMapping(value = "/menueditsave", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String saveEditMenu(@Validated(OrderedValidation.class) @RequestBody UserFormEdit userForm,
-			BindingResult bindingResult) {
-		UserValet userValet = null;
-		String result = UtilsStringChar.EMPTY_STRING;;
-
-		if (bindingResult.hasErrors()) {
-			JSONObject json = new JSONObject();
-			for (FieldError o : bindingResult.getFieldErrors()) {
-				json.put(o.getField() + "_span", o.getDefaultMessage());
-			}
-			result = json.toString();
-		} else {
-			try {
-				if (userForm.getIdUserValetEdit() != null) {
-					userValet = userService.getUserValetById(userForm.getIdUserValetEdit());
-				} else {
-					userValet = new UserValet();
-				}
-				userValet.setLogin(userForm.getLoginEdit());
-				userValet.setAttemptsNumber(NumberConstants.NUM0);
-				userValet.setEmail(userForm.getEmailEdit());
-				userValet.setIsBlocked(Boolean.FALSE);
-				userValet.setLastAccess(null);
-				userValet.setLastIpAccess(null);
-				userValet.setName(userForm.getNameEdit());
-				userValet.setSurnames(userForm.getSurnamesEdit());
-
-				userService.saveUserValet(userValet);
-
-				result = "0";
-			} catch (Exception e) {
-				result = "-1";
-				throw e;
-			}
-		}
-
-		return result;
-	}
-
 }

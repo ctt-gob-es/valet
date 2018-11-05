@@ -18,9 +18,9 @@
  * <b>File:</b><p>es.gob.valet.form.UserFormPassword.java.</p>
  * <b>Description:</b><p> .</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>19 jun. 2018.</p>
+ * <b>Date:</b><p>19/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 19 jun. 2018.
+ * @version 1.1, 05/11/2018
  */
 package es.gob.valet.form;
 
@@ -28,6 +28,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.rest.exception.CheckItFirst;
 import es.gob.valet.rest.exception.ThenCheckIt;
@@ -37,7 +38,7 @@ import es.gob.valet.rest.exception.ThenCheckIt;
  * Class that represents the backing form for adding/editing a user.
  * </p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19 jun. 2018.
+ * @version 1.1, 19/06/2018.
  */
 public class UserFormPassword {
 
@@ -52,7 +53,7 @@ public class UserFormPassword {
 	 * the form.
 	 */
 	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.user.password.notempty}")
-	@Size(min = 7, max = 30, groups = ThenCheckIt.class)
+	@Size(min = NumberConstants.NUM7, max = NumberConstants.NUM30, groups = ThenCheckIt.class)
 	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "{form.valid.user.password.noPattern}", groups = ThenCheckIt.class)
 	private String password = UtilsStringChar.EMPTY_STRING;
 
@@ -61,77 +62,96 @@ public class UserFormPassword {
 	 * the form.
 	 */
 	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.user.confirmPassword.notempty}")
-	@Size(min = 7, max = 30, groups = ThenCheckIt.class)
+	@Size(min = NumberConstants.NUM7, max = NumberConstants.NUM30, groups = ThenCheckIt.class)
 	private String confirmPassword = UtilsStringChar.EMPTY_STRING;
 
+	
+	/**
+	 * Attribute that represents the value of the current password.
+	 */
 	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.user.oldPassword.notempty}")
 	private String oldPassword = UtilsStringChar.EMPTY_STRING;
 
+
+	
 	/**
-	 * Gets the value of the attribute {@link #idUserValet}.
-	 * 
-	 * @return the value of the attribute {@link #idUserValet}.
+	 * Gets the value of the attribute {@link #idUserValetPass}.
+	 * @return the value of the attribute {@link #idUserValetPass}.
 	 */
 	public Long getIdUserValetPass() {
 		return idUserValetPass;
 	}
 
+
+	
 	/**
-	 * Gets the value of the attribute {@link #idUserValet}.
-	 * 
-	 * @return the value of the attribute {@link #idUserValet}.
+	 * Sets the value of the attribute {@link #idUserValetPass}.
+	 * @param idUserValetPassParam The value for the attribute {@link #idUserValetPass}.
 	 */
-	public void setIdUserValetPass(Long idUserValetPass) {
-		this.idUserValetPass = idUserValetPass;
+	public void setIdUserValetPass(Long idUserValetPassParam) {
+		this.idUserValetPass = idUserValetPassParam;
 	}
 
+
+	
 	/**
 	 * Gets the value of the attribute {@link #password}.
-	 * 
 	 * @return the value of the attribute {@link #password}.
 	 */
 	public String getPassword() {
 		return password;
 	}
 
+
+	
 	/**
 	 * Sets the value of the attribute {@link #password}.
-	 * 
-	 * @param password
-	 *            the value for the attribute {@link #password} to set.
+	 * @param passwordParam The value for the attribute {@link #password}.
 	 */
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPassword(String passwordParam) {
+		this.password = passwordParam;
 	}
 
+
+	
 	/**
-	 * @return the confirmPassword
+	 * Gets the value of the attribute {@link #confirmPassword}.
+	 * @return the value of the attribute {@link #confirmPassword}.
 	 */
 	public String getConfirmPassword() {
 		return confirmPassword;
 	}
 
+
+	
 	/**
-	 * @param confirmPassword
-	 *            the confirmPassword to set
+	 * Sets the value of the attribute {@link #confirmPassword}.
+	 * @param confirmPasswordParam The value for the attribute {@link #confirmPassword}.
 	 */
-	public void setConfirmPassword(String confirmPassword) {
-		this.confirmPassword = confirmPassword;
+	public void setConfirmPassword(String confirmPasswordParam) {
+		this.confirmPassword = confirmPasswordParam;
 	}
 
+
+	
 	/**
-	 * @return the oldPassword
+	 * Gets the value of the attribute {@link #oldPassword}.
+	 * @return the value of the attribute {@link #oldPassword}.
 	 */
 	public String getOldPassword() {
 		return oldPassword;
 	}
 
+
+	
 	/**
-	 * @param oldPassword
-	 *            the oldPassword to set
+	 * Sets the value of the attribute {@link #oldPassword}.
+	 * @param oldPasswordParam The value for the attribute {@link #oldPassword}.
 	 */
-	public void setOldPassword(String oldPassword) {
-		this.oldPassword = oldPassword;
+	public void setOldPassword(String oldPasswordParam) {
+		this.oldPassword = oldPasswordParam;
 	}
+
+	
 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.controller.UserController.java.</p>
  * <b>Description:</b><p>Class that manages the requests related to the Users administration.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>15 jun. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 15 jun. 2018.
+ * @version 1.1, 02/11/2018.
  */
 package es.gob.valet.controller;
 
@@ -37,10 +37,10 @@ import es.gob.valet.form.UserFormPassword;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
 import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 
-/** 
+/**
  * <p>Class that manages the requests related to the Users administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 15 jun. 2018.
+ * @version 1.1, 02/11/2018.
  */
 @Controller
 public class UserController {
@@ -55,7 +55,7 @@ public class UserController {
 	/**
 	 * Method that maps the list users web requests to the controller and
 	 * forwards the list of users to the view.
-	 * 
+	 *
 	 * @param model
 	 *            Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
@@ -70,7 +70,7 @@ public class UserController {
 	/**
 	 * Method that maps the add user web request to the controller and sets the
 	 * backing form.
-	 * 
+	 *
 	 * @param model
 	 *            Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
@@ -84,25 +84,25 @@ public class UserController {
 
 	/**
 	 * Method that maps the change password to the controller and sets the backing form.
-	 * 
-	 * @param username User requesting the password change.
+	 *
+	 * @param login User requesting the password change.
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "menupass")
-	public String menuPass(@RequestParam("username") String username, Model model) {
-		UserValet userValet = userService.getUserValetByLogin(username);
+	public String menuPass(@RequestParam("login") String login, Model model) {
+		UserValet userValet = userService.getUserValetByLogin(login);
 		UserFormPassword userFormPassword = new UserFormPassword();
-
-		userFormPassword.setIdUserValetPass(userValet.getIdUserValet());
-
+		if (userValet != null) {
+			userFormPassword.setIdUserValetPass(userValet.getIdUserValet());
+		}
 		model.addAttribute("userFormPassword", userFormPassword);
 		return "modal/user/userFormPass.html";
 	}
 
 	/**
 	 * Method that maps the editing of user data to the controller and sets the backing form.
-	 * 
+	 *
 	 * @param username User whose information will be modified.
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.

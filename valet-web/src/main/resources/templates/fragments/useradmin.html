@@ -4,7 +4,7 @@
 		<div class="col-md-12">
 			<div class="bgc-white bd bdrs-3 p-20 mB-20">
 				<h4 class="c-grey-900 mB-20" th:text="#{table.user.title}"></h4>
-				<table id="userTable" class="table table-striped table-bordered" 
+				<table id="userTable" class="table table-striped table-bordered"
 					cellspacing="0" width="100%">
 					<thead>
 						<tr>
@@ -23,126 +23,6 @@
 	</div>
 </div>
 
-<div class="modal" tabindex="-1" role="dialog" id="modalEditAdmin">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">Editar registro</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form name="altEditor-form" role="form" id="userFormEdit" th:object="${userformEdit}" th:action="@{/saveuseredit}" method="post">
-					<input type='hidden' class='primarykey' id="idUserValetEdit" th:field="*{idUserValetEdit}">
-					
-					<div class="form-group-modal">
-						
-							<label for="nameEdit" class="col-form-label" th:text="#{form.user.name}"></label>
-							<script th:inline="javascript">
-								/*<![CDATA[*/
-								    var messageName = /*[[#{form.user.name.pattern}]]*/ 'default';
-								/*]]>*/
-							</script>
-							<input onblur="validate(this,messageName);" type="text" id="nameEdit" th:field="*{nameEdit}" style="overflow:hidden" class="form-control" required pattern=".{3,15}" />
-							<div id="invalid-name" class="invalid-feedback" ></div>
-						
-						<div style="clear:both;"/>
-					</div>
-					
-					<div class="form-group-modal">
-						
-							<label for="surnamesEdit" class="col-form-label" th:text="#{form.user.surnames}"></label>
-							<script th:inline="javascript">
-								/*<![CDATA[*/
-								    var messageSurname = /*[[#{form.user.surnames.pattern}]]*/ 'default';
-								/*]]>*/
-							</script>
-							<input onblur="validate(this,messageSurname);" type="text" id="surnamesEdit" th:field="*{surnamesEdit}" style="overflow:hidden" class="form-control" required pattern=".{3,30}"/>
-							<div id="invalid-surnames" class="invalid-feedback" ></div>
-						
-						<div style="clear:both;"/>
-					</div>
-					
-					<div class="form-group-modal">
-						
-							<label for="loginEdit" class="col-form-label" th:text="#{form.user.login}"></label>
-							<script th:inline="javascript">
-								/*<![CDATA[*/
-								    var messageLogin = /*[[#{form.user.login.pattern}]]*/ 'default';
-								/*]]>*/
-							</script>
-							<input onblur="validate(this,messageLogin);" type="text" id="loginEdit" th:field="*{loginEdit}" style="overflow:hidden" class="form-control" required pattern=".{5,30}"/>
-							<div id="invalid-login" class="invalid-feedback" ></div>
-						
-						<div style="clear:both;"/>
-					</div>
-					
-					<div class="form-group-modal">
-						
-							<label for="emailEdit" class="col-form-label" th:text="#{form.user.email}"></label>
-							<script th:inline="javascript">
-								/*<![CDATA[*/
-								    var messageEmail = /*[[#{form.user.email.pattern}]]*/ 'default';
-								/*]]>*/
-							</script>
-							<input onblur="validate(this,messageEmail);" type="email" id="emailEdit" th:field="*{emailEdit}" style="overflow:hidden" class="form-control" required/>
-							<div id="invalid-email" class="invalid-feedback" ></div>
-						
-						<div style="clear:both;"/>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-				<button type="submit" id="editBtn" class="btn btn-primary">Guardar cambios</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal" tabindex="-1" role="dialog" id="modalPassword">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">Cambiar contrase&ntilde;a</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form role="form" id="userFormPassword" th:object="${userFormPassword}" th:action="@{/saveuserpassword}" method="post">
-					
-					<input type='hidden' class='primarykey' id="idUserValetPass" th:field="*{idUserValetPass}">
-					
-					<div class="form-group-modal">
-						<label for="oldPassword" class="col-form-label" th:text="#{form.user.oldPassword}"></label>
-						<span id="oldPassword_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
-						<input type="password" id="oldPassword" th:field="*{oldPassword}" class="form-control" />
-					</div>
-					
-					<div class="form-group-modal">
-						<label for="password" class="col-form-label" th:text="#{form.user.password}"></label>
-						<span id="password_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
-						<input type="password" id="password" th:field="*{password}" class="form-control" />
-					</div>
-					
-					<div class="form-group-modal">
-						<label for="confirmPassword" class="col-form-label" th:text="#{form.user.confirmPassword}"></label>
-						<span id="confirmPassword_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
-						<input onblur="validateConfirmPassword();" type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" />
-					</div>
-				</form>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-				<button type="submit" id="passwordBtn" class="btn btn-primary">Guardar cambios</button>
-			</div>
-		</div>
-	</div>
-</div>
-
 <script th:inline="javascript">
 $(document).ready(function() {
 	
@@ -151,17 +31,20 @@ $(document).ready(function() {
 	var getusers = /*[[@{/usersdatatable}]]*/;
 	var editTemplate = /*[[@{/edituser}]]*/;
 	var addTemplate = /*[[@{/adduser}]]*/;
+	
+	var btnAddUser =  /*[[#{table.user.action.add}]]*/;
+	var btnEditUser =  /*[[#{table.user.action.edit}]]*/;
+	var btnDelUser = /*[[#{table.user.action.delete}]]*/;
+	var btnChangePassword =  /*[[#{table.user.action.password}]]*/;
+	
 	var tbl = $('#userTable').DataTable({
 		dom: 'Bfrtip',
 	    select: 'single',
 	    responsive: true,
 	    altEditor: true,
-	    buttons: [{text: 'Agregar',name: 'add'}, 
-	    		  {extend: 'selected',text: 'Editar',name: 'edit',
-	    			  action: function ( e, dt, node, config ) {
-					  
-						$('#modalEditAdmin').modal('show');
-	    				  
+	    buttons: [{text: btnAddUser,name: 'add'}, 
+	    		  {extend: 'selected',text: btnEditUser,name: 'editUser',
+	    			  action: function ( e, dt, node, config ) {	    				  
 	    				  for (var o = dt, a = [], e = 0; e < o.context[0].aoColumns.length; e++) a.push({
 							id: o.context[0].aoColumns[e].mData,
 							title: o.context[0].aoColumns[e].sTitle                
@@ -170,37 +53,47 @@ $(document).ready(function() {
 						  var d = dt.rows({
 	                        selected: !0
 						  });
-							
-						  var idUserValetEdit = d.data()[0][a[0].id];
 						  var name = d.data()[0][a[1].id];
-						  var surnames = d.data()[0][a[2].id];
-						  var login = d.data()[0][a[3].id];
-						  var email = d.data()[0][a[5].id];
-						  
-						  $("#idUserValetEdit").val(idUserValetEdit);
-						  $("#nameEdit").val(name);
-						  $("#surnamesEdit").val(surnames);
-						  $("#loginEdit").val(login);
-						  $("#emailEdit").val(email);
-						
+						  var menuEdit = /*[[@{/menuedit}]]*/;
+						  $.ajax({
+	      						url : menuEdit,
+	      						type : 'GET',
+	      						data : $.param({'username':name}),
+	      						cache : false,
+	      						success : function(data) {
+	      							hide();
+	      							$('#modal').html(data);
+	      							$('#modalEdit').modal('show');																
+	      						},
+	      						error : function() {}
+	      					});
 	    			  }
 	    		  }, 
-	    		  {extend: 'selected',text: 'Eliminar',name: 'delete'}, 
-	    		  {extend: 'selected',text: 'Cambiar password',name: 'changePassword',
+	    		  {extend: 'selected',text: btnDelUser,name: 'delete'}, 
+	    		  {extend: 'selected',text: btnChangePassword,name: 'changePassword',
 	    			  action: function ( e, dt, node, config ) {
-	    				  $('#modalPassword').modal('show');
-						  
+	  			  
 						  for (var o = dt, a = [], e = 0; e < o.context[0].aoColumns.length; e++) a.push({
 							id: o.context[0].aoColumns[e].mData,
 							title: o.context[0].aoColumns[e].sTitle                
-						  });
-						  
+						  });	  
 						  var d = dt.rows({
 	                        selected: !0
-						  });
-							
-						  var idUserValetPass = d.data()[0][a[0].id];
-						  $("#idUserValetPass").val(idUserValetPass);
+						  });							
+						  var login = d.data()[0][a[3].id];
+						  var menuPass = /*[[@{/menupass}]]*/;
+						  $.ajax({
+	      						url : menuPass,
+	      						type : 'GET',
+	      						data : $.param({'login':login}),
+	      						cache : false,
+	      						success : function(data) {
+	      							hide();
+	      							$('#modal').html(data);
+	      							$('#modalPassword').modal('show');
+	      						},
+	      						error : function() {}
+	      					});
 	    	                
 	    				}
 					}],
@@ -259,10 +152,10 @@ $(document).ready(function() {
 		            	    		            	    
 		                	if(!$(this)[0].checkValidity())
 		            	    {
-		            	  	 $("#invalid-" + $(this).attr('id')).html();
-		            	  	 $("#" + $(this).attr('id')).addClass("is-invalid");
-		            	    } else {
-		            	  	 $("#" + $(this).attr('id')).removeClass("is-invalid");
+		                	$("#" + $(obj).attr('id')+"_span").html();
+		                	$("#" + $(obj).attr('id')+"_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill");
+		              	    } else {
+		              	    	 $("#" + $(obj).attr('id')).removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill");
 		            	    }
 		            	    
 		            	});
@@ -271,7 +164,8 @@ $(document).ready(function() {
 		                $('<input type="submit">').hide().appendTo($('#userForm')).click().remove();
 		            } else {
 		            	if ($('#passwordAdd').val() != $('#confirmPasswordAdd').val()){
-		            		$('#userForm').append('<div id="errorModalUser3" class="alert alert-danger" role="alert"><strong>El campo Confirmar contrase&ntilde;a es obligatorio y debe coincidir con el campo Contrase&ntilde;a.</strong></div>');
+		            		var msgConfirmPassword =  /*[[#{form.user.confirm.password}]]*/;
+		            		$('#userForm').append('<div id="errorModalUser3" class="alert alert-danger" role="alert"><strong>'+btnEditMappingAlt+'</strong></div>');
 		            		hide();
 		            	}else{
 		            		
@@ -311,8 +205,9 @@ $(document).ready(function() {
 				                },
 				                error:function(data){
 				                	hide();
+				                	var msgExistLogin =  /*[[#{form.user.exist.login}]]*/;			                	
 				                	$('#errorModalUser').remove();
-				                	$('#userForm').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>Hay un usuario con el mismo login!</strong></div>');
+				                	$('#userForm').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgExistLogin+'</strong></div>');
 				                }
 				            });
 		            	}
@@ -363,12 +258,14 @@ $(document).ready(function() {
 				$('#modalPassword').modal('hide');
 				break;
 			case -1:
+				var msgPasswordMath =  /*[[#{form.user.password.math}]]*/;
 				$('#errorModalUser').remove();
-				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>La contrase\u00F1a anterior debe de coincidir!</strong></div>');
+				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgPasswordMath+'</strong></div>');
 				break;
 			case -2:
+				var msgError =  /*[[#{form.user.error}]]*/;
 				$('#errorModalUser').remove();
-				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>Error inesperado, int\u00E9ntelo mas tarde!</strong></div>');
+				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
 				break;
 			default:
 				if (data != null){
@@ -384,8 +281,9 @@ $(document).ready(function() {
 		  },
 		  error:function(){
 			  hide();
+			  var msgError =  /*[[#{form.user.error}]]*/;
 			  $('#errorModalUser').remove();
-			  $('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>Error inesperado, int\u00E9ntelo mas tarde!</strong></div>');
+			  $('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
 		  },
 		  dataType: "json",
 		  contentType : "application/json"
@@ -418,8 +316,9 @@ $(document).ready(function() {
 			  },
 			  error:function(){
 				  hide();
+				  var msgError =  /*[[#{form.user.error}]]*/;
 				  $('#errorModalEdit').remove();
-				  $('#userFormEdit').append('<div id="errorModalEdit" class="alert alert-danger" role="alert"><strong>Error inesperado, int\u00E9ntelo mas tarde!</strong></div>');
+				  $('#userFormEdit').append('<div id="errorModalEdit" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
 			  },
 			  dataType: "json",
 			  contentType : "application/json"

@@ -206,11 +206,14 @@ $(document).ready(function() {
 	var addMappingTemplate = /*[[@{/addmappingtsl}]]*/;
 	var idCountry = $("#idCountry").val();
 	var actionSaveMapping = /*[[@{/savemappingtsl}]]*/;
+	var btnAddMapping =  /*[[#{tsl.admin.btn.add}]]*/;
+	var btnEditMappingAlt =  /*[[#{table.tsl.mapeo.edit.alt}]]*/;
+	var btnDelMappingAlt =  /*[[#{table.tsl.mapeo.del.alt}]]*/;
 	var tblMapping = $('#mappingTable').DataTable({
 		dom: 'Bfrtip',
 		responsive : true,
 		altEditor: true,
- 		buttons: [{text: 'Añadir Campo', 
+ 		buttons: [{text: btnAddMapping, 
 		action: function(e, dt, node, config){
 			
 		 	$('#modalAddMapping').modal('show'); 		 
@@ -245,7 +248,7 @@ $(document).ready(function() {
 					        { "data": "idTslCountryRegionMapping",  "width": "10%",
 					        	"render": function(data, type, row){		
 					        		
-					        		return '<button class="c-green-500 ti-pencil-alt" id="editMappingTsl"  onclick="editMappingTsl('+data+');"></button>&nbsp;<button class="c-red-500 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);"></button>';
+					        		return '<button class="c-green-500 ti-pencil-alt" id="editMappingTsl"  onclick="editMappingTsl('+data+');" alt='+btnEditMappingAlt+' title='+btnEditMappingAlt+'></button>&nbsp;<button class="c-red-500 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);" alt='+btnDelMappingAlt+' title='+btnDelMappingAlt+'></button>';
 					        		
 					        	}
 					        }
@@ -271,7 +274,10 @@ function loadMappingTsl(idCountry) {
 			                	$("#tableMapping").html(data);
 			                },
 							error:function(data){
-								alert("errorr");
+								 hide();
+								  var msgError =  /*[[#{tsl.msg.error}]]*/;
+								  $('#modalEditMapping').remove();
+								  $('#mappingTslEditForm').append('<div id="errorModalEdit" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
 							}
 	
 	});
