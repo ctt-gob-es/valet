@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,20 +14,19 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.controller.KeystoreController.java.</p>
  * <b>Description:</b><p>Class that manages the requests related to the Keystore administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 05/11/2018.
  */
 package es.gob.valet.controller;
 
 import java.io.IOException;
 import java.security.cert.X509Certificate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,44 +38,32 @@ import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
 import es.gob.valet.crypto.keystore.KeystoreFacade;
 import es.gob.valet.form.SystemCertificateForm;
+import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
 
-/** 
+/**
  * <p>Class that manages the requests related to the Keystore administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 05/11/2018.
  */
 @Controller
 public class KeystoreController {
-	
+
 	/**
 	 * Constant that represents the parameter 'idKeystore'.
 	 */
 	private static final String FIELD_ID_KEYSTORE = "idKeystore";
-	
+
 	/**
 	 * Constant that represents the parameter 'idSystemCertificate'.
 	 */
 	private static final String FIELD_ID_SYSTEM_CERTIFICATE = "idSystemCertificate";
-	
+
 	/**
-	 * Attribute that represents the service object for acceding to KeystoreRepository.
-	 */
-	@Autowired
-	private IKeystoreService keystoreService;
-	
-	
-	
-	/**
-	 * Attribute that represents the service object for acceding to SystemCertificateRepository.
-	 */
-	@Autowired
-	private ISystemCertificateService systemCertificateService;
-	/**
-	 * Method that load the list of certificates stored in the specified keystore. 
-	 * 
+	 * Method that load the list of certificates stored in the specified keystore.
+	 *
 	 * @param idKeystore Parameter that represents ID of kestore.
 	 * @param model Holder object form model attributes.
 	 * @return String that represents the name of the view to forward.
@@ -85,28 +72,29 @@ public class KeystoreController {
 	public String loadCertificatesDatatable(@RequestParam(FIELD_ID_KEYSTORE) Long idKeystore, Model model){
 		SystemCertificateForm systemCertificateForm = new SystemCertificateForm();
 		systemCertificateForm.setIdKeystore(idKeystore);
+		IKeystoreService keystoreService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService();
 		systemCertificateForm.setNameKeystore(keystoreService.getNameKeystoreById(idKeystore));
 		model.addAttribute("keystoreform", systemCertificateForm);
 		return "fragments/keystoreadmin.html";
-		
+
 	}
-	
+
 	/**
 	 * Method that maps the add TSL web request to the controller and sets the
 	 * backing form.
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
-	 * @throws IOException 
+	 * @throws IOException If the method fails.
 	 */
 
 	@RequestMapping(value = "/addcertificate")
 	public String addCertificate(Model model) throws IOException {
-		SystemCertificateForm systemCertificateForm = new SystemCertificateForm();	
-		model.addAttribute("addcertificateform", systemCertificateForm);			
+		SystemCertificateForm systemCertificateForm = new SystemCertificateForm();
+		model.addAttribute("addcertificateform", systemCertificateForm);
 		return "modal/keystore/systemCertificateForm.html";
 	}
-	
-	
+
+
 	/**
 	 * Method that maps the editing of system certificate to the controller and sets the backing form.
 	 * @param idSystemCertificate Parameter that represetns ID of system certificate.
@@ -115,38 +103,41 @@ public class KeystoreController {
 	 */
 	@RequestMapping(value = "/loadeditcertificate",  method = RequestMethod.GET)
 	public String editCertificate(@RequestParam("id") Long idSystemCertificate, Model model) {
+		ISystemCertificateService systemCertificateService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService();
 		SystemCertificate certificateToEdit = systemCertificateService.getSystemCertificateById(idSystemCertificate);
 		SystemCertificateForm certificateForm = new SystemCertificateForm();
 		//obtenemos el certificado
+		IKeystoreService keystoreService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService();
 		Long idKeystoreSelected = certificateToEdit.getKeystore().getIdKeystore();
 		IKeystoreFacade keystore = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystoreSelected), false));
 		try {
 			X509Certificate cert = keystore.getCertificate(certificateToEdit.getAlias());
 			//se obtiene las fechas hasta y desde
+
 			certificateForm.setValidFrom(UtilsCertificate.getValidFrom(cert));
 			certificateForm.setValidTo(UtilsCertificate.getValidTo(cert));
 		} catch (CryptographyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 
-		
-		
+
+
+
 		certificateForm.setAlias(certificateToEdit.getAlias());
 		certificateForm.setSubject(certificateToEdit.getSubject());
 		certificateForm.setIssuer(certificateToEdit.getIssuer());
 		certificateForm.setIdKeystore(certificateToEdit.getKeystore().getIdKeystore());
 		certificateForm.setIdSystemCertificate(idSystemCertificate);
-		
+
 		model.addAttribute("editcertificateform", certificateForm);
 		return "modal/keystore/systemCertificateEditForm.html";
 	}
-	
-	
+
+
 	/**
 	 *  Method that loads the necessary information to show the confirmation modal to remove a selected certificate.
-	 * 
+	 *
 	 * @param idSystemCertificate Parameter that represetns ID of system certificate.
 	 * @param rowIndexCertificate Parameter that represents the index of the row of the selected certificate.
 	 * @param model Holder object for model attributes.
@@ -157,7 +148,7 @@ public class KeystoreController {
 		SystemCertificateForm certificateForm = new SystemCertificateForm();
 		certificateForm.setIdSystemCertificate(idSystemCertificate);
 		certificateForm.setRowIndexCertificate(rowIndexCertificate);
-		
+
 		model.addAttribute("deletecertificateform", certificateForm);
 		return "modal/keystore/systemCertificateDelete.html";
 	}

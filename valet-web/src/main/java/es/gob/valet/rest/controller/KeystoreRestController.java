@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 25/10/2018.
+ * @version 1.3, 05/11/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -38,7 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpStatus;
@@ -63,6 +62,8 @@ import es.gob.valet.crypto.keystore.IKeystoreFacade;
 import es.gob.valet.crypto.keystore.KeystoreFacade;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.CStatusCertificate;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
@@ -73,7 +74,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificate
 /**
  * <p>Class that manages the REST request related to the Keystore's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 25/10/2018.
+ * @version 1.3, 05/11/2018.
  */
 @RestController
 public class KeystoreRestController {
@@ -128,27 +129,6 @@ public class KeystoreRestController {
 	private static final String CERT_CONTENT_TYPE = "application/x-x509-ca-cert";
 
 	/**
-	 * Attribute that represents the service object for accessing the
-	 * SystemCertificateRespository.
-	 */
-	@Autowired
-	private ISystemCertificateService systemCertificateService;
-
-	/**
-	 * Attribute that represents the service object for accessing the
-	 * KeystoreRespository.
-	 */
-	@Autowired
-	private IKeystoreService keystoreService;
-
-	/**
-	 * Attribute that represents the service object for accessing the
-	 * CStatusCertificateRespository.
-	 */
-	@Autowired
-	private ICStatusCertificateService cStatusCertificateService;
-
-	/**
 	 * Method to load the datatable with all the certificates stored in specified keystore.
 	 * @param input Holder object for datatable attributes.
 	 * @param idKeystore Parameter that represents a keystore identifier.
@@ -157,6 +137,7 @@ public class KeystoreRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/loadcertificates", method = RequestMethod.GET)
 	public DataTablesOutput<SystemCertificate> listCertificates(DataTablesInput input, @RequestParam("idKeystore") Long idKeystore) {
+		ISystemCertificateService systemCertificateService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService();
 		return (DataTablesOutput<SystemCertificate>) systemCertificateService.getAllByKeystore(input, idKeystore);
 	}
 
@@ -179,8 +160,9 @@ public class KeystoreRestController {
 		List<SystemCertificate> listCertificates = new ArrayList<SystemCertificate>();
 		SystemCertificate systemCertificateToAdd = null;
 		// se obtiene el keystore
-
+		IKeystoreService keystoreService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService();
 		Keystore keystore = keystoreService.getKeystoreById(Long.valueOf(idKeystore), false);
+		ISystemCertificateService systemCertificateService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService();
 		try {
 
 			// se comprueba que se han indicado todos los campos obligatorios
@@ -219,6 +201,7 @@ public class KeystoreRestController {
 
 			if (!error) {
 				IKeystoreFacade keyStoreFacade = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystore), false));
+
 				certificateFileBytes = certificateFile.getBytes();
 				// se obtiene X509Certificate
 				X509Certificate certToAdd = UtilsCertificate.getCertificate(certificateFileBytes);
@@ -238,6 +221,7 @@ public class KeystoreRestController {
 				String subject = UtilsCertificate.getCertificateId(certToAdd);
 				// se obtiene el estado del certificado - siempre será valor 0,
 				// estado OK
+				ICStatusCertificateService cStatusCertificateService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCStatusCertificateService();
 				CStatusCertificate statusCert = cStatusCertificateService.getCStatusCertificateById(Long.valueOf(0));
 
 				// se le asignan los valores al nuevo certificado
@@ -278,12 +262,14 @@ public class KeystoreRestController {
 	@RequestMapping(value = "/downloadcertificate", method = RequestMethod.GET, produces = CERT_CONTENT_TYPE)
 	@ResponseBody
 	public void downloadCertificate(HttpServletResponse response, @RequestParam("idSystemCertificate") Long idSystemCertificate) throws IOException {
+		ISystemCertificateService systemCertificateService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService();
 		SystemCertificate systemCertificate = systemCertificateService.getSystemCertificateById(idSystemCertificate);
 		byte[ ] certificateFile;
 		String name = DEFAULT_CERTIFICATE_NAME;
 		if (systemCertificate != null) {
 			try {
 				Long idKeystoreSelected = systemCertificate.getKeystore().getIdKeystore();
+				IKeystoreService keystoreService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService();
 				IKeystoreFacade keystore = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystoreSelected), false));
 				X509Certificate cert = keystore.getCertificate(systemCertificate.getAlias());
 
@@ -323,7 +309,8 @@ public class KeystoreRestController {
 
 		JSONObject json = new JSONObject();
 		List<SystemCertificate> listSystemCertificate = new ArrayList<SystemCertificate>();
-
+		IKeystoreService keystoreService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService();
+		ISystemCertificateService systemCertificateService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService();
 		try {
 
 			if (idSystemCertificate == null) {
@@ -411,7 +398,8 @@ public class KeystoreRestController {
 	public String deleteCertificateById(@RequestParam(FIELD_ID_SYSTEM_CERTIFICATE) Long idSystemCertificate, @RequestParam(FIELD_ROW_INDEX_CERTIFICATE) String index) {
 
 		try {
-
+			ISystemCertificateService systemCertificateService = ManagerPersistenceConfigurationServices.getInstance().getSystemCertificateService();
+			IKeystoreService keystoreService = ManagerPersistenceConfigurationServices.getInstance().getKeystoreService();
 			SystemCertificate systemCertificate = systemCertificateService.getSystemCertificateById(idSystemCertificate);
 			Long idKeystore = systemCertificate.getKeystore().getIdKeystore();
 			IKeystoreFacade keystoreFacade = new KeystoreFacade(keystoreService.getKeystoreById(idKeystore, false));

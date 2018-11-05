@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.commons.utils.UtilsCertificate.java.</p>
  * <b>Description:</b><p> Class that provides methods for managing certificates.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>21 sept. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 21 sept. 2018.
+ * @version 1.1, 05/11/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -31,16 +31,18 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
 import es.gob.valet.exceptions.CommonUtilsException;
 
-/** 
+/**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21 sept. 2018.
+ * @version 1.1, 05/11/2018.
  */
 public final class UtilsCertificate {
 	/**
@@ -52,6 +54,7 @@ public final class UtilsCertificate {
 	 */
 	private static final String COMA_SEPARATOR = ",";
 
+
 	/**
 	 * Constant that represents a equals character.
 	 */
@@ -61,6 +64,12 @@ public final class UtilsCertificate {
 	 * Constant that defines a default hash algorithm (SHA-256) used to calculate certificate hash.
 	 */
 	public static final String DEFAULT_HASH_ALGORITHM = "SHA-256";
+
+	/**
+	 * Constant that represents the format date.
+	 */
+	private static final String FORMAT_DATE = "dd/MM/yyyy HH:mm:ss";
+
 	/**
 	 * Creates a X509Certificate given its content.
 	 *
@@ -99,7 +108,7 @@ public final class UtilsCertificate {
 		}
 
 	}
-	
+
 	/**
 	 * Creates a Iaik X509Certificate given its content.
 	 *
@@ -114,7 +123,7 @@ public final class UtilsCertificate {
 			throw new CommonUtilsException(CommonUtilsException.UTILS_CERTIFICATE_CODE_001,e.getMessage(), e);
 		}
 	}
-	
+
 	/**
 	 * Gets certificate´s identifier (canonicalized subject).
 	 *
@@ -176,7 +185,7 @@ public final class UtilsCertificate {
 			return idCertificado;
 		}
 	}
-	
+
 	/**
 	 * Method that obtains the canonicalized identifier of the issuer of a certificate.
 	 * @param cert Parameter that represents the certificate.
@@ -189,36 +198,41 @@ public final class UtilsCertificate {
 		}
 		return canonicalizarIdCertificado(UtilsASN1.toString(cert.getIssuerX500Principal()));
 	}
-	
+
 	/**
-	 * Gets certificate from validation date.
-	 * 
-	 * @return Certificate from validation date.
+	 * Gets the notBefore date from the validity period of the certificate.
+	 * @param x509Certificate certificate to obtain your valid date from.
+	 * @return String Date from the validity period of the certificate.
 	 */
 
 	public static String getValidFrom(X509Certificate x509Certificate) {
 		String validFrom = null;
 		if (x509Certificate != null && x509Certificate.getNotBefore() != null) {
-			validFrom = x509Certificate.getNotBefore().toString();
+			Date validFromDate = x509Certificate.getNotBefore();
+			SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
+			validFrom = sdf.format(validFromDate);
 		}
 		return validFrom;
 	}
 
+
 	/**
-	 * Gets certificate to validation date.
-	 * 
-	 * @return Certificate to validation date.
+	 * Gets the notAfter date from the validity period of the certificate.
+	 * @param x509Certificate certificate to obtain your valid date from.
+	 * @return String Date from the validity period of the certificate.
 	 */
-	
 	public static String getValidTo(X509Certificate x509Certificate) {
-	
+
 		String validTo = null;
 		if (x509Certificate != null && x509Certificate.getNotAfter() != null) {
-			validTo = x509Certificate.getNotAfter().toString();
+			Date validToDate = x509Certificate.getNotAfter();
+			SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
+			validTo = sdf.format(validToDate);
+
 		}
 		return validTo;
 	}
 
-	
-	
+
+
 }

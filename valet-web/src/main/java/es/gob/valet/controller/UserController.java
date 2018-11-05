@@ -24,7 +24,6 @@
  */
 package es.gob.valet.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import es.gob.valet.form.UserForm;
 import es.gob.valet.form.UserFormEdit;
 import es.gob.valet.form.UserFormPassword;
+import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
 import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 
@@ -45,12 +45,6 @@ import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 @Controller
 public class UserController {
 
-	/**
-	 * Attribute that represents the service object for accessing the
-	 * repository.
-	 */
-	@Autowired
-	private IUserValetService userService;
 
 	/**
 	 * Method that maps the list users web requests to the controller and
@@ -91,6 +85,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "menupass")
 	public String menuPass(@RequestParam("login") String login, Model model) {
+		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		UserValet userValet = userService.getUserValetByLogin(login);
 		UserFormPassword userFormPassword = new UserFormPassword();
 		if (userValet != null) {
@@ -109,6 +104,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "menuedit")
 	public String menuEdit(@RequestParam("username") String username, Model model) {
+		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		UserValet userValet = userService.getUserValetByLogin(username);
 		UserFormEdit userFormEdit = new UserFormEdit();
 

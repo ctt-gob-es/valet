@@ -10,17 +10,18 @@
 
 			<div class="mT-30">
 				<form name="altEditor-form" role="form" id="taskFormId"
-					th:object="${taskform}" th:action="@{/updatetask}" method="post">
+					th:object="${taskform}" th:action="@{/updatetask}" method="post"
+					action="">
 					<div id="messageUpdateTaskId" role="alert"></div>
 
 					<input type='hidden' class='primarykey' id="idTask"
 						th:field="*{idTask}"> <input type='hidden' id="idPlanner"
 						th:field="*{idPlanner}">
-	<!-- Campo tarea activa -->
+					<!-- Campo tarea activa -->
 					<div class="form-group row">
-<label for="enabledId" th:text="#{task.form.active}"
+						<label for="enabledId" th:text="#{task.form.active}"
 							class="col-sm-3" />
-						
+
 						<div class="col-sm-2">
 							<div class="form-check">
 								<label class="form-check-label"> <input type="checkbox"
@@ -42,7 +43,7 @@
 							</select>
 						</div>
 					</div>
-				
+
 					<!-- Campos Periodo  -->
 					<div class="form-group row">
 						<label for="hourId" class="col-sm-3" th:text="#{task.form.period}"></label>
@@ -76,6 +77,7 @@
 							</div>
 						</div>
 					</div>
+				</form>
 			</div>
 			<div class="peer">
 				<button id="updateTaskBtn" type="submit"
@@ -83,7 +85,7 @@
 
 			</div>
 
-			</form>
+			<form action=""></form>
 
 		</div>
 	</div>
@@ -92,7 +94,7 @@
 
 
 
-<script th:inline="javascript">
+<script th:inline="javascript" type="text/javascript">
 	$(document).ready(function() {
 	
 		//función para configurar el elemento datetimepicker

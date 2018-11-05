@@ -18,9 +18,9 @@
  * <b>File:</b><p>es.gob.valet.form.SystemCertificateForm.java.</p>
  * <b>Description:</b><p> Class that represents the backing form for adding/editing certificates in a keystore.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>19 sept. 2018.</p>
+ * <b>Date:</b><p>19/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 19 sept. 2018.
+ * @version 1.0, 19/09/2018
  */
 package es.gob.valet.form;
 
@@ -35,7 +35,7 @@ import es.gob.valet.form.MappingTslForm.View;
 /** 
  * <p>Class that represents the backing form for adding/editing certificates in a keystore.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19 sept. 2018.
+ * @version 1.0, 19/09/2018.
  */
 public class SystemCertificateForm {
 	/**

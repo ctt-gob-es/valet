@@ -18,9 +18,9 @@
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.KeystoreRepository.java.</p>
  * <b>Description:</b><p> Interface that provides CRUD functionality for the Keystore entity.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 18/09/2018.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -35,7 +35,7 @@ import es.gob.valet.persistence.configuration.model.entity.Keystore;
 /** 
  * <p>Interface that provides CRUD functionality for the Keystore entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 18/09/2018.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
