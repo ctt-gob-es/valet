@@ -49,7 +49,7 @@ public interface ITslCountryRegionMappingService {
 	/**
 	 * Method that gets all the mappings for a specified Country/Region.
 	 * @param idCRM Long that represents CountryRegion identifier.
-	 * @return List of TslContryRegionMapping by country
+	 * @return List of TslContryRegionMapping by country.
 	 */
 	List<TslCountryRegionMapping> getAllMappingByIdCountry(Long idCRM);
 
@@ -80,4 +80,5 @@ public interface ITslCountryRegionMappingService {
 	 * @return true, if it exists.
 	 */
 	boolean existIdentificator(String identificator, Long idTslCountryRegion);
+
 }

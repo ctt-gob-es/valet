@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 06/11/2018.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the commons-util module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 06/11/2018.
  */
 public interface ICommonsUtilGeneralMessages {
 
@@ -56,5 +56,41 @@ public interface ICommonsUtilGeneralMessages {
 	 * file messages/valet-commons-util/general_xx_YY.properties.
 	 */
 	String EXCEPTION_003 = "EXCEPTION003";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_RFC2253_000</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_RFC_2253_000 = "UTILS_RFC2253_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CERTIFICATE_000</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CERTIFICATE_000 = "UTILS_CERTIFICATE_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_RESOURCES_000</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_RESOURCES_CODE_000 = "UTILS_RESOURCES_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CRYPTO_000</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CRYPTO_000 = "UTILS_CRYPTO_000";
+	
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CRYPTO_001</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CRYPTO_001 = "UTILS_CRYPTO_001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CRYPTO_002</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CRYPTO_002 = "UTILS_CRYPTO_002";
 
 }

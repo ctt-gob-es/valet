@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 25/10/2018.
+ * @version 1.3, 06/11/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -57,7 +57,7 @@ import es.gob.valet.quartz.scheduler.ValetSchedulerException;
 /**
  * <p>Class that manages the REST request related to the Task's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 25/10/2018.
+ * @version 1.3, 06/11/2018.
  */
 @RestController
 public class TaskRestController {
@@ -127,7 +127,7 @@ public class TaskRestController {
 				task.setIsEnabled(taskForm.getIsEnabled());
 
 				// persistimos los cambios del planificador y d la tarea.
-				Task updatedTask = taskService.saveTask(task);
+				taskService.saveTask(task);
 				Planner updatedPlanner = plannerService.savePlanner(planner);
 
 				LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.INFO_UPDATE_TASK_OK));

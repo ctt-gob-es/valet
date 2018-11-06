@@ -16,11 +16,11 @@
 
 /**
  * <b>File:</b><p>es.gob.valet.commons.utils.UtilsCertificate.java.</p>
- * <b>Description:</b><p> Class that provides methods for managing certificates.</p>
+ * <b>Description:</b><p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 05/11/2018.
+ * @version 1.2, 06/11/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -38,32 +38,28 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import es.gob.valet.exceptions.CommonUtilsException;
+import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 05/11/2018.
+ * @version 1.2, 06/11/2018.
  */
 public final class UtilsCertificate {
+
+	/**
+	 * Constructor method for the class UtilsCertificate.java.
+	 */
+	private UtilsCertificate() {
+		super();
+	}
+
 	/**
 	 * Constant that represents a "x509" Certificate type.
 	 */
 	private static final String CERTIFICATE_TYPE = "x509";
-	/**
-	 * Constant that represents a coma separator.
-	 */
-	private static final String COMA_SEPARATOR = ",";
-
-
-	/**
-	 * Constant that represents a equals character.
-	 */
-	private static final String EQUALS_CHAR = "=";
-
-	/**
-	 * Constant that defines a default hash algorithm (SHA-256) used to calculate certificate hash.
-	 */
-	public static final String DEFAULT_HASH_ALGORITHM = "SHA-256";
 
 	/**
 	 * Constant that represents the format date.
@@ -72,61 +68,57 @@ public final class UtilsCertificate {
 
 	/**
 	 * Creates a X509Certificate given its content.
-	 *
 	 * @param certificate Certificate content.
 	 * @return X509Certificate jce X509Certificate.
 	 * @throws CommonUtilsException Exception thrown if there is any problem creating the certificate.
 	 */
-	public static X509Certificate getCertificate(byte[ ] certificate) throws CommonUtilsException {
+	public static X509Certificate getX509Certificate(byte[ ] certificate) throws CommonUtilsException {
 		InputStream is = new ByteArrayInputStream(certificate);
 		try {
 			return (X509Certificate) CertificateFactory.getInstance(CERTIFICATE_TYPE).generateCertificate(is);
 		} catch (CertificateException e) {
-			throw new CommonUtilsException(CommonUtilsException.UTILS_CERTIFICATE_CODE_001,e.getMessage(), e);
+			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
+		} finally {
+			UtilsResources.safeCloseInputStream(is);
 		}
 	}
 
-
 	/**
-	 * Creates a Iaik X509Certificate from a java X509Certificate.
+	 * Creates a BouncyCastle X509Certificate from a java X509Certificate.
 	 * @param x509cert Certificate to transform.
-	 * @return Iaik X509Certificate.
+	 * @return BouncyCastle X509Certificate.
 	 * @throws CommonUtilsException Exception thrown if there is any problem creating the certificate.
 	 */
-	public static iaik.x509.X509Certificate getIaikCertificate(Certificate x509cert) throws CommonUtilsException {
+	public static org.bouncycastle.asn1.x509.Certificate getBouncyCastleCertificate(Certificate x509cert) throws CommonUtilsException {
 
 		if (x509cert == null) {
 			return null;
-		} else if (x509cert instanceof iaik.x509.X509Certificate) {
-			return (iaik.x509.X509Certificate) x509cert;
 		} else {
 			try {
-				return getIaikCertificate(x509cert.getEncoded());
+				return getBouncyCastleCertificate(x509cert.getEncoded());
 			} catch (CertificateEncodingException e) {
-				throw new CommonUtilsException(CommonUtilsException.UTILS_CERTIFICATE_CODE_001, e.getMessage(), e);
+				throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
 			}
 		}
 
 	}
 
 	/**
-	 * Creates a Iaik X509Certificate given its content.
-	 *
+	 * Creates a BouncyCastle X509Certificate given its content.
 	 * @param certificate Certificate content.
-	 * @return Iaik X509Certificate
+	 * @return BouncyCastle X509Certificate.
 	 * @throws CommonUtilsException Exception thrown if there is any problem creating the certificate.
 	 */
-	public static iaik.x509.X509Certificate getIaikCertificate(byte[ ] certificate) throws CommonUtilsException {
+	public static org.bouncycastle.asn1.x509.Certificate getBouncyCastleCertificate(byte[ ] certificate) throws CommonUtilsException {
 		try {
-			return new iaik.x509.X509Certificate(certificate);
-		} catch (CertificateException e) {
-			throw new CommonUtilsException(CommonUtilsException.UTILS_CERTIFICATE_CODE_001,e.getMessage(), e);
+			return org.bouncycastle.asn1.x509.Certificate.getInstance(certificate);
+		} catch (Exception e) {
+			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
 		}
 	}
 
 	/**
 	 * Gets certificate´s identifier (canonicalized subject).
-	 *
 	 * @param cert Certificate to get the identifier.
 	 * @return Certificate identifier.
 	 * @throws CommonUtilsException Exception thrown if there is any problem creating the certificate.
@@ -145,8 +137,8 @@ public final class UtilsCertificate {
 	 * @return the canonicalized identifier of the certificate.
 	 */
 	public static String canonicalizarIdCertificado(String idCertificado) {
-		if (idCertificado.indexOf(EQUALS_CHAR) != -1) {
-			String[ ] campos = idCertificado.split(COMA_SEPARATOR);
+		if (idCertificado.indexOf(UtilsStringChar.SYMBOL_EQUAL_STRING) != -1) {
+			String[ ] campos = idCertificado.split(UtilsStringChar.SYMBOL_COMMA_STRING);
 			Set<String> ordenados = new TreeSet<String>();
 			StringBuffer sb = new StringBuffer();
 			String[ ] pair;
@@ -159,14 +151,14 @@ public final class UtilsCertificate {
 				// Lo primero es ver si estamos en el campo final y si el
 				// siguiente campo no posee el símbolo igual, lo
 				// concatenamos al actual
-				while (i < campos.length - 1 && !campos[i + 1].contains(EQUALS_CHAR)) {
-					campos[currentIndex] += COMA_SEPARATOR + campos[i + 1];
+				while (i < campos.length - 1 && !campos[i + 1].contains(UtilsStringChar.SYMBOL_EQUAL_STRING)) {
+					campos[currentIndex] += UtilsStringChar.SYMBOL_COMMA_STRING + campos[i + 1];
 					i++;
 				}
 				sb = new StringBuffer();
-				pair = campos[currentIndex].trim().split(EQUALS_CHAR);
+				pair = campos[currentIndex].trim().split(UtilsStringChar.SYMBOL_EQUAL_STRING);
 				sb.append(pair[0].toLowerCase());
-				sb.append(EQUALS_CHAR);
+				sb.append(UtilsStringChar.SYMBOL_EQUAL_STRING);
 				if (pair.length == 2) {
 					sb.append(pair[1]);
 				}
@@ -177,7 +169,7 @@ public final class UtilsCertificate {
 			sb = new StringBuffer();
 			while (it.hasNext()) {
 				sb.append(it.next());
-				sb.append(COMA_SEPARATOR);
+				sb.append(UtilsStringChar.SYMBOL_COMMA_STRING);
 			}
 			return sb.substring(0, sb.length() - 1);
 		} else {
@@ -204,7 +196,6 @@ public final class UtilsCertificate {
 	 * @param x509Certificate certificate to obtain your valid date from.
 	 * @return String Date from the validity period of the certificate.
 	 */
-
 	public static String getValidFrom(X509Certificate x509Certificate) {
 		String validFrom = null;
 		if (x509Certificate != null && x509Certificate.getNotBefore() != null) {
@@ -215,14 +206,12 @@ public final class UtilsCertificate {
 		return validFrom;
 	}
 
-
 	/**
 	 * Gets the notAfter date from the validity period of the certificate.
 	 * @param x509Certificate certificate to obtain your valid date from.
 	 * @return String Date from the validity period of the certificate.
 	 */
 	public static String getValidTo(X509Certificate x509Certificate) {
-
 		String validTo = null;
 		if (x509Certificate != null && x509Certificate.getNotAfter() != null) {
 			Date validToDate = x509Certificate.getNotAfter();
@@ -232,7 +221,5 @@ public final class UtilsCertificate {
 		}
 		return validTo;
 	}
-
-
 
 }

@@ -104,7 +104,6 @@ public class CTslImplService implements ICTslImplService {
 				result.put(cTSL.getSpecification(), versions);
 			}
 		}
-
 		return result;
 	}
 
@@ -125,7 +124,6 @@ public class CTslImplService implements ICTslImplService {
 				}
 			}
 		}
-
 		return result;
 	}
 

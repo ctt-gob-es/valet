@@ -16,11 +16,12 @@
 
 /**
  * <b>File:</b><p>es.gob.valet.rest.controller.UserRestController.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that manages the REST requests related to the Users administration and
+ * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 02/11/2018.
+ * @version 1.2, 06/11/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -62,7 +63,7 @@ import es.gob.valet.rest.exception.OrderedValidation;
  * <p>Class that manages the REST requests related to the Users administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 02/11/2018.
+ * @version 1.2, 06/11/2018.
  */
 @RestController
 public class UserRestController {

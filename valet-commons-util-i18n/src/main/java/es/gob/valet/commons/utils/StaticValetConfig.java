@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 24/10/2018.
+ * @version 1.5, 06/11/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -39,7 +39,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 24/10/2018.
+ * @version 1.5, 06/11/2018.
  */
 public final class StaticValetConfig {
 
@@ -78,7 +78,7 @@ public final class StaticValetConfig {
 	/**
 	 * Attribute that represents the Padding algorithm for the AES cipher.
 	 */
-	public static final String AES_PADDING_ALG = "aes.padding.alg";
+	public static final String AES_NO_PADDING_ALG = "aes.nopadding.alg";
 
 	/**
 	 * Attribute that represents the AES algorithm name.
@@ -86,9 +86,21 @@ public final class StaticValetConfig {
 	public static final String AES_ALGORITHM = "aes.algorithm";
 
 	/**
-	 * Attribute that represents the password for the system keystores.
+	 * Attribute that represents the password for the AES algorithm.
 	 */
 	public static final String AES_PASSWORD = "aes.password";
+
+	/**
+	 * Attribute that represents the flag to indicate if it is necessary to check the structure
+	 * of the TSL signature.
+	 */
+	public static final String TSL_SIGNATURE_VERIFY_STRUCTURE = "tsl.signature.verify.structure";
+
+	/**
+	 * Attribute that represents the flag to indicate if it is necessary to check the specification
+	 * requirements for the TSL signature.
+	 */
+	public static final String TSL_SIGNATURE_VERIFY_SPECIFICATION = "tsl.signature.verify.specification";
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.
@@ -145,7 +157,12 @@ public final class StaticValetConfig {
 	 * @return the value of property given.
 	 */
 	public static String getProperty(final String propertyName) {
-		return (String) getProperties().get(propertyName);
+		String result = (String) getProperties().get(propertyName);
+		if (result != null) {
+			return result.trim();
+		} else {
+			return result;
+		}
 	}
 
 	/**

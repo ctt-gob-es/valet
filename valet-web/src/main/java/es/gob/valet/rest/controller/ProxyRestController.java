@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>16/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -47,7 +47,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IProxyService;
 /**
  * <p>Class that manages the REST request related to the proxy configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 @RestController
 public class ProxyRestController {
@@ -110,7 +110,7 @@ public class ProxyRestController {
 			proxy.setIsLocalAddress(proxyForm.getIsLocalAddress());
 
 			// se guarda en la base de datos
-			Proxy proxyUpdated = proxyService.saveProxy(proxy);
+			proxyService.saveProxy(proxy);
 			LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.INFO_MODIFY_PROXY_OK));
 			proxyFormUpdated.setMsgOk(Language.getResWebGeneral(IWebGeneralMessages.INFO_MODIFY_PROXY_OK));
 		} catch (Exception e) {

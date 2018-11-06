@@ -186,6 +186,7 @@ CREATE TABLE "SYSTEM_CERTIFICATE"(
 	"HASH" Varchar2(100)
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
 ALTER TABLE "SYSTEM_CERTIFICATE" ADD CONSTRAINT "ID_SYSTEM_CERTIFICATE" PRIMARY KEY ("ID_SYSTEM_CERTIFICATE");
+ALTER TABLE "SYSTEM_CERTIFICATE" ADD CONSTRAINT "SC_UNIQUE_ALIAS_KEYSTORE" UNIQUE ("ALIAS", "ID_KEYSTORE");
 COMMENT ON TABLE "SYSTEM_CERTIFICATE" IS 'Tabla que almacena toda la información relativa a certificados de uso por el sistema.';
 COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."ID_SYSTEM_CERTIFICATE" IS 'Identificador de la tabla.';
 COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."ALIAS" IS 'Valor que representa el alias del certificado.';
@@ -315,7 +316,6 @@ COMMENT ON COLUMN "PROXY"."PASSWORD_PROXY" IS 'Valor que representa la contrase�
 COMMENT ON COLUMN "PROXY"."USER_DOMAIN" IS 'Valor que representa el dominio del usuaio en caso de que el proxy necesite autenticación NTLM.';
 COMMENT ON COLUMN "PROXY"."ADDRESS_LIST" IS 'Valor que representa lista de direcciones para las que no se usará el proxy .';
 COMMENT ON COLUMN "PROXY"."IS_LOCAL_ADDRESS" IS 'Valor que representa si se trata de una ruta local o no.';
-
 
 
 ALTER TABLE "TSL_DATA" ADD CONSTRAINT "R_TD_ICR" FOREIGN KEY ("ID_COUNTRY_REGION") REFERENCES "TSL_COUNTRY_REGION" ("ID_COUNTRY_REGION") ON DELETE CASCADE;

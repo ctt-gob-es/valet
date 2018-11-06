@@ -60,6 +60,41 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-quartz</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlbeans</groupId>
+			<artifactId>xmlbeans-afirma</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.afirma.xmlbeans.2_3_0</groupId>
+			<artifactId>afirmaSchemaXMLTSLv5</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>afirma-crypto-validation</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.bouncycastle</groupId>
+		    <artifactId>bcmail-jdk15on</artifactId>
+		    <scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
 			<scope>compile</scope>
@@ -67,16 +102,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-			<scope>compile</scope>
-		</dependency>
-			<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>es.gob.valet</groupId>
-			<artifactId>valet-quartz</artifactId>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

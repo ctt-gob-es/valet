@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>10/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -29,7 +29,7 @@ import org.apache.commons.codec.binary.Hex;
 /**
  * <p>Class that provides functionality for managing strings and characters.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 public final class UtilsStringChar {
 
@@ -294,8 +294,22 @@ public final class UtilsStringChar {
 			}
 		}
 		String result = resultSB.toString();
-		UtilsResources.cleanStringBuilder(resultSB);
+		cleanStringBuilder(resultSB);
 		return result;
+	}
+
+	/**
+	 * To free resources, this method sets the length of the input {@link StringBuilder} to
+	 * zero and then trim it.
+	 * @param sb String builder to clean. If it is <code>null</code>, this method do nothing.
+	 */
+	public static void cleanStringBuilder(StringBuilder sb) {
+
+		if (sb != null) {
+			sb.setLength(0);
+			sb.trimToSize();
+		}
+
 	}
 
 	/**

@@ -67,6 +67,7 @@ public class SystemCertificate implements Serializable {
 	 * Attribute that represents the alias of the certificate.
 	 */
 	private String alias;
+
 	/**
 	 * Attribute that represents the keystore where this system certificate is stored.
 	 */
@@ -91,6 +92,7 @@ public class SystemCertificate implements Serializable {
 	 * Attribute that represents the status certificate for this certificate type.
 	 */
 	private CStatusCertificate statusCert;
+
 	/**
 	 * Attribute that represents the SHA-1 hash of the certificate encoded on Base 64 concatenates with the SHA-1 hash of the private key for the certificate
 	 * encoded on Base 64. This attribute is used only when the key pairs is stored inside of a HSM.

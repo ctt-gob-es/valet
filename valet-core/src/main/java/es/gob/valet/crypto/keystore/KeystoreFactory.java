@@ -20,71 +20,91 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 25/10/2018.
+ * @version 1.3, 06/11/2018.
  */
 package es.gob.valet.crypto.keystore;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.HashMap;
+import java.util.Map;
 
 import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.utils.CryptographyValidationUtils;
+import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
-import es.gob.valet.persistence.configuration.model.entity.Keystore;
-import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
+import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
+import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
+import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
 
 /**
  * <p>Class that manages the generation of the class which manages the keystores in the system.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 25/10/2018.
+ * @version 1.3, 06/11/2018.
  */
 public final class KeystoreFactory {
 
 	/**
-	 * Attribute that represents an instance of the class which manages all the operations related with keystores in the system.
+	 * Attribute that represents a map with the keystores facade already loaded.
 	 */
-	private IKeystoreFacade keystoreInstance = null;
-	/**
-	 * Attribute that represents the service object for accessing the repository.
-	 */
-	@Autowired
-	private IKeystoreService keystoreService;
+	private static Map<Long, IKeystoreFacade> keystoresMap = new HashMap<Long, IKeystoreFacade>();
 
 	/**
 	 * Constructor method for the class KeystoreFactory.java.
-	 * @param idKeystoreParam Parameter that represents the ID of the keystore in the database.
+	 */
+	private KeystoreFactory() {
+		super();
+	}
+
+	/**
+	 * Method that obtains an instance of a specified keystore.
+	 * @param idKeystore Parameter that represents the ID of the keystore to get.
+	 * @return an instance of the keystore facade.
 	 * @throws CryptographyException If the method fails.
 	 */
-	private KeystoreFactory(Long idKeystoreParam) throws CryptographyException {
-		// Comprobamos que el ID del almacén de claves no es nulo
-		if (idKeystoreParam == null) {
-			throw new CryptographyException(Language.getResCoreGeneral(ICoreGeneralMessages.CRYPTO_012));
+	public static synchronized IKeystoreFacade getKeystoreInstance(Long idKeystore) throws CryptographyException {
+
+		// Comprobamos que no sea nulo...
+		if (idKeystore == null) {
+			throw new CryptographyException(IValetException.COD_190, Language.getResCoreGeneral(ICoreGeneralMessages.KEYSTORE_FACTORY_001));
 		}
 
-		// Obtenemos el almacén de claves
-		Keystore keystore = keystoreService.getKeystoreById(idKeystoreParam, false);
-		// Comprobamos que el almacén de claves no es nulo
-		CryptographyValidationUtils.checkIsNotNull(keystore, Language.getFormatResCoreGeneral(ICoreGeneralMessages.CRYPTO_013, new Object[ ] { idKeystoreParam }));
+		// Lo intentamos obtener del map...
+		IKeystoreFacade result = keystoresMap.get(idKeystore);
+		// Si no lo hemos encontrado...
+		if (result == null) {
 
-		keystoreInstance = new KeystoreFacade(keystore);
+			// Obtenemos el almacén de claves de la caché.
+			KeystoreCacheObject kco = null;
+			try {
+				kco = ConfigurationCacheFacade.keystoreGetKeystoreCacheObject(idKeystore);
+			} catch (KeystoreCacheException e) {
+				throw new CryptographyException(IValetException.COD_190, Language.getFormatResCoreGeneral(ICoreGeneralMessages.KEYSTORE_FACTORY_002, new Object[ ] { idKeystore }), e);
+			}
+
+			// Comprobamos que no sea nulo...
+			CryptographyValidationUtils.checkIsNotNull(kco, Language.getFormatResCoreGeneral(ICoreGeneralMessages.KEYSTORE_FACTORY_002, new Object[ ] { idKeystore }));
+
+			// Comprobamos si vamos a acceder a un Keystore hardware o no...
+			if (kco.isHardware()) {
+				// TODO Aún no contemplamos el uso de HSM en valET.
+			} else {
+				result = new StandardKeystoreFacade(kco);
+			}
+			
+			// Lo añadimos en el map.
+			keystoresMap.put(idKeystore, result);
+
+		}
+
+		return result;
+
 	}
-
+	
 	/**
-	 * Method that obtains an instance of the class.
-	 * @param idKeystoreParam Parameter that represents the ID of the keystore in the database.
-	 * @return an instance of the class.
-	 * @throws CryptographyException If the method fails.
+	 * Clears the map where it is cached all the keystore facades representations.
 	 */
-	public static synchronized KeystoreFactory getInstance(Long idKeystoreParam) throws CryptographyException {
-		return new KeystoreFactory(idKeystoreParam);
-	}
-
-	/**
-	 * Method that obtains the concrete instance of {@link #keystoreInstance}.
-	 * @return the concrete instance of {@link #keystoreInstance}.
-	 */
-	public IKeystoreFacade getKeystoreInstance() {
-		return keystoreInstance;
+	public static void forceReloadKeystoreFactory() {
+		keystoresMap.clear();
 	}
 
 }

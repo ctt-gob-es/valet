@@ -58,7 +58,6 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 	 */
 	private long tslImplId = -1;
 
-
 	/**
 	 * Attribute that represents the TSL location URI.
 	 */

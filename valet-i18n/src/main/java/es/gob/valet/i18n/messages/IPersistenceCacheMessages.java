@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the persistence module of valET: cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 public interface IPersistenceCacheMessages {
 
@@ -332,6 +332,24 @@ public interface IPersistenceCacheMessages {
 //	 * file messages/valet-persistence/cache_xx_YY.properties.
 //	 */
 //	String CONFIG_CACHE_LOG049 = "CONFCACHE049";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFCACHE050</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_CACHE_LOG050 = "CONFCACHE050";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFCACHE051</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_CACHE_LOG051 = "CONFCACHE051";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFCACHE052</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_CACHE_LOG052 = "CONFCACHE052";
 
 //	/**
 //	 * Constant attribute that represents the name of the property <code>CONFTSLCACHE000</code> belonging to the
@@ -908,5 +926,53 @@ public interface IPersistenceCacheMessages {
 	 * file messages/valet-persistence/cache_xx_YY.properties.
 	 */
 	String CONFIG_TSL_CACHE_LOG095 = "CONFTSLCACHE095";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFKEYSTORECACHE000</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_KEYSTORE_CACHE_LOG000 = "CONFKEYSTORECACHE000";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFKEYSTORECACHE001</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_KEYSTORE_CACHE_LOG001 = "CONFKEYSTORECACHE001";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFKEYSTORECACHE002</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_KEYSTORE_CACHE_LOG002 = "CONFKEYSTORECACHE002";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFKEYSTORECACHE003</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_KEYSTORE_CACHE_LOG003 = "CONFKEYSTORECACHE003";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFKEYSTORECACHE004</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_KEYSTORE_CACHE_LOG004 = "CONFKEYSTORECACHE004";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFKEYSTORECACHE005</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_KEYSTORE_CACHE_LOG005 = "CONFKEYSTORECACHE005";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFKEYSTORECACHE006</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_KEYSTORE_CACHE_LOG006 = "CONFKEYSTORECACHE006";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFKEYSTORECACHE007</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_KEYSTORE_CACHE_LOG007 = "CONFKEYSTORECACHE007";
 
 }

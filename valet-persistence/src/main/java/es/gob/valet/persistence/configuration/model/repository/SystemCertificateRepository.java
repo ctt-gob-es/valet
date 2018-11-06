@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.SystemCertificateRepository.java.</p>
  * <b>Description:</b><p>Interface that provides CRUD functionality for the SystemCertificate entity.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>18 sept. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18 sept. 2018.
+ * @version 1.1, 06/11/2018.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -34,31 +34,35 @@ import org.springframework.stereotype.Repository;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 
-
-/** 
+/**
  * <p>Interface that provides CRUD functionality for the SystemCertificate entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.1, 06/11/2018.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public interface SystemCertificateRepository extends JpaRepository<SystemCertificate, Long> {
-	
+
 	/**
 	 *	Method that gets all the certificates for a specified keystore.
-	 * 
 	 * @param keystore Object that represents Keystore.
 	 * @return List of certificates by keystore.
 	 */
 	List<SystemCertificate> findAllByKeystore(Keystore keystore);
-	
+
 	/**
-	  * Method that obtains from the persistence a SystemCertificate identified by its primary key. 
+	 * Method that obtains from the persistence a SystemCertificate identified by its primary key.
 	 * @param idSystemCertificate Long that represents the primary key of the SystemCertificate in the persistence.
-	 * @return Object that represents a SystemCertificate from the persistence. 
+	 * @return Object that represents a SystemCertificate from the persistence.
 	 */
 	SystemCertificate findByIdSystemCertificate(Long idSystemCertificate);
-	
-	 
+
+	/**
+	 * Method that obtains from the persistence a SystemCertificate identified by its alias and keystore.
+	 * @param alias Alias to search.
+	 * @param keystore Keystore to search.
+	 * @return Object that represents a SystemCertificate from the persistence.
+	 */
+	SystemCertificate findByAliasAndKeystore(String alias, Keystore keystore);
 
 }

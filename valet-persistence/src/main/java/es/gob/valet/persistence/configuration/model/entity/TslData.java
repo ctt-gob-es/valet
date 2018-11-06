@@ -351,5 +351,4 @@ public class TslData implements Serializable {
 		this.lastNewTSLAvailableFind = lastNewTSLAvailableFindParam;
 	}
 
-
 }

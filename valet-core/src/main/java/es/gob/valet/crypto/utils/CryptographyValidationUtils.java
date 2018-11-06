@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,32 +14,35 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.crypto.utils.CryptographyValidationUtils.java.</p>
  * <b>Description:</b><p>Class with utilities for the validation of objects for cryptography module.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>26 sept. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 26 sept. 2018.
+ * @version 1.1, 06/11/2018.
  */
 package es.gob.valet.crypto.utils;
 
 import java.util.List;
 
 import es.gob.valet.crypto.exception.CryptographyException;
+import es.gob.valet.exceptions.IValetException;
 
-/** 
+/**
  * <p>Class with utilities for the validation of objects for cryptography module.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 26 sept. 2018.
+ * @version 1.1, 06/11/2018.
  */
 public final class CryptographyValidationUtils {
 
 	/**
-	 * Constructor method for the class CryptographyValidationUtils.java. 
+	 * Constructor method for the class CryptographyValidationUtils.java.
 	 */
 	private CryptographyValidationUtils() {
+		super();
 	}
+
 	/**
 	 * Method that checks if an object is null or not.
 	 * @param o Parameter that represents the object to check.
@@ -48,10 +51,10 @@ public final class CryptographyValidationUtils {
 	 */
 	public static void checkIsNotNull(Object o, String msg) throws CryptographyException {
 		if (o == null) {
-			throw new CryptographyException(msg);
+			throw new CryptographyException(IValetException.COD_190, msg);
 		}
 	}
-	
+
 	/**
 	 * Method that checks if a list is null or empty, or not.
 	 * @param list Parameter that represents the list to check.
@@ -60,7 +63,7 @@ public final class CryptographyValidationUtils {
 	 */
 	public static void checkIsNotNullAndNotEmpty(List<?> list, String msg) throws CryptographyException {
 		if (list == null || list.size() == 0) {
-			throw new CryptographyException(msg);
+			throw new CryptographyException(IValetException.COD_190, msg);
 		}
 	}
 

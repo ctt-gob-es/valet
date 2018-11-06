@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 29/10/2018.
+ * @version 1.3, 06/11/2018.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
@@ -41,7 +41,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 /**
  * <p>Class that represents a TSL Country/Region Info in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 29/10/2018.
+ * @version 1.3, 06/11/2018.
  */
 public class TSLCountryRegionCacheObject extends ConfigurationCacheObject {
 
@@ -243,7 +243,7 @@ public class TSLCountryRegionCacheObject extends ConfigurationCacheObject {
 		tcrco.setCountryRegionId(getCountryRegionId());
 		tcrco.setCode(getCode());
 		tcrco.setName(getName());
-		tcrco.setTslDataId(getTslDataId().longValue());
+		tcrco.setTslDataId(getTslDataId());
 
 		for (TSLCountryRegionMappingCacheObject tcrmco: getMappingSet()) {
 			tcrco.getMappingSet().add((TSLCountryRegionMappingCacheObject) tcrmco.clone());

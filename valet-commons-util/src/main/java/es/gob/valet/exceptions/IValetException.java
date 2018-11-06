@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 22/10/2018.
+ * @version 1.3, 06/11/2018.
  */
 package es.gob.valet.exceptions;
 
@@ -29,7 +29,7 @@ package es.gob.valet.exceptions;
  * <p>Interface defining constants codes accepted for
  * the exceptions on the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 22/10/2018.
+ * @version 1.3, 06/11/2018.
  */
 public interface IValetException {
 
@@ -276,11 +276,11 @@ public interface IValetException {
 	//	/** Constant attribute that represents the error code: The service is unauthorized for the indicated application. */
 	//	String COD_189 = "COD_189";
 	//
-	//	/** Constant attribute that represents the error code: Error in the Keystore TreeCache. */
-	//	String COD_190 = "COD_190";
+	/** Constant attribute that represents the error code: Error managing Keystore. */
+	String COD_190 = "COD_190";
 	
-		/** Constant attribute that represents the error code: Error in the Configuration Cache. */
-		String COD_191 = "COD_191";
+	/** Constant attribute that represents the error code: Error in the Configuration Cache. */
+	String COD_191 = "COD_191";
 	
 	//	/** Constant attribute that represents the error code: Error with a SSL+SNI connection. */
 	//	String COD_192 = "COD_192";
@@ -303,6 +303,10 @@ public interface IValetException {
 	/** Constant attribute that represents the error code: Generic error. */
 	String COD_198 = "COD_198";
 
-	
-	
+	/** Constant attribute that represents the error code: Error managing encoded (AES) messages. */
+	String COD_199 = "COD_199";
+
+	/** Constant attribute that represents the error code: Commons utilities error. */
+	String COD_200 = "COD_200";
+
 }

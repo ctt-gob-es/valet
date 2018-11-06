@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 30/10/2018.
+ * @version 1.6, 06/11/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -70,6 +70,7 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
+import es.gob.valet.persistence.configuration.model.utils.ITslImplIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
@@ -79,7 +80,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 30/10/2018.
+ * @version 1.6, 06/11/2018.
  */
 @RestController
 public class TslRestController {
@@ -419,7 +420,7 @@ public class TslRestController {
 					int seqNumber = 3;
 					tsl.setSequenceNumber(seqNumber);
 
-					CTslImpl ctslUpdate = cTSLImplService.getCTSLImpById(Long.valueOf(2));
+					CTslImpl ctslUpdate = cTSLImplService.getCTSLImpById(ITslImplIdConstants.ID_TSLIMPL_119162_020101);
 					tsl.setTslImpl(ctslUpdate);
 
 				} else {

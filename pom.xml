@@ -305,6 +305,69 @@
 <!-- 				<version>2.5</version> -->
 <!-- 			</dependency> -->
 			<dependency>
+				<groupId>org.apache.xmlbeans</groupId>
+				<artifactId>xmlbeans-afirma</artifactId>
+				<version>2.3.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>stax</groupId>
+						<artifactId>stax-api</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>es.gob.afirma.xmlbeans.2_3_0</groupId>
+				<artifactId>afirmaSchemaXMLTSLv5</artifactId>
+				<version>119612v020101</version>
+			</dependency>
+			<dependency>
+			  <groupId>es.gob.afirma</groupId>
+			  <artifactId>afirma-crypto-validation</artifactId>
+			  <version>1.6.2</version>
+			  <exclusions>
+			      <exclusion>
+			            <artifactId>afirma-crypto-cms</artifactId>
+			            <groupId>es.gob.afirma</groupId>
+			      </exclusion>
+			      <exclusion>
+			            <artifactId>afirma-crypto-cades</artifactId>
+			            <groupId>es.gob.afirma</groupId>
+			      </exclusion>
+			      <exclusion>
+			            <artifactId>afirma-crypto-pdf</artifactId>
+			            <groupId>es.gob.afirma</groupId>
+			      </exclusion>
+			      <exclusion>
+			            <artifactId>afirma-crypto-ooxml</artifactId>
+			            <groupId>es.gob.afirma</groupId>
+			      </exclusion>
+			      <exclusion>
+			            <artifactId>afirma-crypto-odf</artifactId>
+			            <groupId>es.gob.afirma</groupId>
+			      </exclusion>
+			      <exclusion>
+			            <artifactId>afirma-crypto-core-pkcs7-tsp</artifactId>
+			            <groupId>es.gob.afirma</groupId>
+			      </exclusion>
+			      <exclusion>
+			            <artifactId>afirma-lib-jmimemagic</artifactId>
+			            <groupId>es.gob.afirma.lib</groupId>
+			      </exclusion>
+			      <exclusion>
+			            <artifactId>afirma-lib-itext</artifactId>
+			            <groupId>es.gob.afirma.lib</groupId>
+			      </exclusion>
+			      <exclusion>
+			            <artifactId>core</artifactId>
+			            <groupId>com.madgag.spongycastle</groupId>
+			      </exclusion>
+			      <exclusion>
+			            <artifactId>prov</artifactId>
+			            <groupId>com.madgag.spongycastle</groupId>
+			      </exclusion>
+			  </exclusions>
+			</dependency>
+			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>1.2.16</version>
@@ -315,19 +378,24 @@
 				<version>1.11</version>
 			</dependency>
 			<dependency>
+			    <groupId>commons-io</groupId>
+			    <artifactId>commons-io</artifactId>
+			    <version>2.6</version>
+			</dependency>
+			<dependency>
 			    <groupId>org.apache.commons</groupId>
 			    <artifactId>commons-text</artifactId>
 			    <version>1.4</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.tika</groupId>
-				<artifactId>tika-core</artifactId>
-				<version>1.2</version>
+			    <groupId>org.bouncycastle</groupId>
+			    <artifactId>bcprov-jdk15on</artifactId>
+			    <version>1.60</version>
 			</dependency>
 			<dependency>
-				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcprov-jdk16</artifactId>
-				<version>1.46</version>
+			    <groupId>org.bouncycastle</groupId>
+			    <artifactId>bcmail-jdk15on</artifactId>
+			    <version>1.60</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss.spec.javax.ws.rs</groupId>

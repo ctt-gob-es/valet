@@ -53,8 +53,6 @@ public class TslDataService implements ITslDataService {
 	@Autowired
 	private TslDataRepository repository;
 
-
-
 	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
 	 */

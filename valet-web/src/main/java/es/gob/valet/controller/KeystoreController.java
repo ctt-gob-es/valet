@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 05/11/2018.
+ * @version 1.3, 06/11/2018.
  */
 package es.gob.valet.controller;
 
 import java.io.IOException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
-import es.gob.valet.crypto.keystore.KeystoreFacade;
+import es.gob.valet.crypto.keystore.KeystoreFactory;
+import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.form.SystemCertificateForm;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
@@ -46,7 +48,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificate
 /**
  * <p>Class that manages the requests related to the Keystore administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 05/11/2018.
+ * @version 1.3, 06/11/2018.
  */
 @Controller
 public class KeystoreController {
@@ -94,7 +96,6 @@ public class KeystoreController {
 		return "modal/keystore/systemCertificateForm.html";
 	}
 
-
 	/**
 	 * Method that maps the editing of system certificate to the controller and sets the backing form.
 	 * @param idSystemCertificate Parameter that represetns ID of system certificate.
@@ -107,23 +108,18 @@ public class KeystoreController {
 		SystemCertificate certificateToEdit = systemCertificateService.getSystemCertificateById(idSystemCertificate);
 		SystemCertificateForm certificateForm = new SystemCertificateForm();
 		//obtenemos el certificado
-		IKeystoreService keystoreService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService();
-		Long idKeystoreSelected = certificateToEdit.getKeystore().getIdKeystore();
-		IKeystoreFacade keystore = new KeystoreFacade(keystoreService.getKeystoreById(Long.valueOf(idKeystoreSelected), false));
 		try {
-			X509Certificate cert = keystore.getCertificate(certificateToEdit.getAlias());
+			Long idKeystoreSelected = certificateToEdit.getKeystore().getIdKeystore();
+			IKeystoreFacade keystore = KeystoreFactory.getKeystoreInstance(idKeystoreSelected);
+			X509Certificate cert = UtilsCertificate.getX509Certificate(keystore.getCertificate(certificateToEdit.getAlias()).getEncoded());
 			//se obtiene las fechas hasta y desde
-
 			certificateForm.setValidFrom(UtilsCertificate.getValidFrom(cert));
 			certificateForm.setValidTo(UtilsCertificate.getValidTo(cert));
-		} catch (CryptographyException e) {
+		} catch (CryptographyException | CertificateEncodingException | CommonUtilsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-
-
-
+		
 		certificateForm.setAlias(certificateToEdit.getAlias());
 		certificateForm.setSubject(certificateToEdit.getSubject());
 		certificateForm.setIssuer(certificateToEdit.getIssuer());
@@ -134,10 +130,8 @@ public class KeystoreController {
 		return "modal/keystore/systemCertificateEditForm.html";
 	}
 
-
 	/**
 	 *  Method that loads the necessary information to show the confirmation modal to remove a selected certificate.
-	 *
 	 * @param idSystemCertificate Parameter that represetns ID of system certificate.
 	 * @param rowIndexCertificate Parameter that represents the index of the row of the selected certificate.
 	 * @param model Holder object for model attributes.
@@ -148,7 +142,6 @@ public class KeystoreController {
 		SystemCertificateForm certificateForm = new SystemCertificateForm();
 		certificateForm.setIdSystemCertificate(idSystemCertificate);
 		certificateForm.setRowIndexCertificate(rowIndexCertificate);
-
 		model.addAttribute("deletecertificateform", certificateForm);
 		return "modal/keystore/systemCertificateDelete.html";
 	}

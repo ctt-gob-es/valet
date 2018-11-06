@@ -20,21 +20,22 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 package es.gob.valet.commons.utils;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.asn1.x500.X500Name;
+
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
-import iaik.asn1.structures.Name;
 
 /**
  * <p>Class that contains all utilities methods used in ASN1 Objects.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 public final class UtilsASN1 {
 
@@ -53,8 +54,8 @@ public final class UtilsASN1 {
 	 */
 	public static String toString(X500Principal name) throws CommonUtilsException {
 		try {
-			Name nombre = new Name(name.getEncoded());
-			String rfcName = (String) nombre.getRFC2253String();
+			X500Name x500Name = X500Name.getInstance(name.getEncoded());
+			String rfcName = (String) x500Name.toString();
 			if (rfcName != null) {
 				return rfcName;
 			} else {
