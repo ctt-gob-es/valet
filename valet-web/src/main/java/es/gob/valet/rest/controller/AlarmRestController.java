@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -33,7 +33,6 @@ import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.MediaType;
@@ -52,6 +51,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.AlarmForm;
+import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.Alarm;
 import es.gob.valet.persistence.configuration.model.entity.Mail;
 import es.gob.valet.persistence.configuration.services.ifaces.IAlarmService;
@@ -62,24 +62,10 @@ import es.gob.valet.rest.exception.OrderedValidation;
  * <p>Class that manages the REST requests related to the Alarms administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 @RestController
 public class AlarmRestController {
-
-	/**
-	 * Attribute that represents the service object for accessing the
-	 * AlarmRespository.
-	 */
-	@Autowired
-	private IAlarmService alarmService;
-
-	/**
-	 * Attribute that represents the service object for accessing the
-	 * MailRepository.
-	 */
-	@Autowired
-	private IMailService mailService;
 
 	/**
 	 * Method that maps the list alarms web requests to the controller and
@@ -92,6 +78,7 @@ public class AlarmRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/alarmsdatatable", method = RequestMethod.GET)
 	public DataTablesOutput<Alarm> alarms(@Valid DataTablesInput input) {
+		IAlarmService alarmService = ManagerPersistenceConfigurationServices.getInstance().getAlarmService();
 		return (DataTablesOutput<Alarm>) alarmService.getAllAlarm(input);
 	}
 
@@ -108,7 +95,7 @@ public class AlarmRestController {
 		DataTablesOutput<Alarm> dtOutput = new DataTablesOutput<>();
 		Alarm alarm = null;
 		List<Alarm> listNewAlarm = new ArrayList<Alarm>();
-
+		IAlarmService alarmService = ManagerPersistenceConfigurationServices.getInstance().getAlarmService();
 		if (bindingResult.hasErrors()) {
 			listNewAlarm = StreamSupport.stream(alarmService.getAllAlarm().spliterator(), false).collect(Collectors.toList());
 			JSONObject json = new JSONObject();
@@ -128,6 +115,7 @@ public class AlarmRestController {
 				Alarm alarmNew = alarmService.saveAlarm(alarm);
 
 				for (Mail m: mails) {
+					IMailService mailService = ManagerPersistenceConfigurationServices.getInstance().getMailService();
 					mailService.saveMail(m);
 				}
 
@@ -152,6 +140,7 @@ public class AlarmRestController {
 
 		List<Mail> result = new ArrayList<Mail>();
 		String[ ] aux = concatString.split(UtilsStringChar.SYMBOL_AMPERSAND_STRING);
+		IMailService mailService = ManagerPersistenceConfigurationServices.getInstance().getMailService();
 		for (int i = 0; i < aux.length; i++) {
 			result.add(mailService.getMailById(Long.parseLong(aux[i], NumberConstants.NUM10), false));
 		}
@@ -168,7 +157,7 @@ public class AlarmRestController {
 	@RequestMapping(path = "/emails", method = RequestMethod.GET)
 	public List<Long> emails(@RequestParam("id") String idAlarm) {
 		List<Long> result = new ArrayList<Long>();
-
+		IAlarmService alarmService = ManagerPersistenceConfigurationServices.getInstance().getAlarmService();
 		Alarm alarmMonitoriza = alarmService.getAlarmById(idAlarm);
 		List<Mail> mails = alarmMonitoriza.getMails();
 		if (mails != null) {

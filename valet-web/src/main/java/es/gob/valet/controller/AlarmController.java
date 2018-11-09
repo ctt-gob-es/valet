@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.controller.AlarmController.java.</p>
  * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 06/11/2018.
  */
 package es.gob.valet.controller;
 
@@ -29,36 +29,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import es.gob.valet.form.AlarmForm;
+import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.Alarm;
 import es.gob.valet.persistence.configuration.model.entity.Mail;
 import es.gob.valet.persistence.configuration.services.ifaces.IAlarmService;
 import es.gob.valet.persistence.configuration.services.ifaces.IMailService;
 
-/** 
+/**
  * <p>Class that manages the requests related to the Alarm administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 06/11/2018.
  */
 @Controller
 public class AlarmController {
-
-	/**
-	 * Attribute that represents the service object for acceding to AlarmRepository.
-	 */
-	@Autowired
-	private IAlarmService alarmService;
-
-	/**
-	 * Attribute that represents the service object for acceding to MailRepository.
-	 */
-	@Autowired
-	private IMailService mailService;
 
 	/**
 	 * Method that maps the add Alarm web request to the controller and sets the
@@ -71,7 +59,8 @@ public class AlarmController {
 		List<Alarm> alarms = new ArrayList<Alarm>();
 		List<Mail> mails = new ArrayList<Mail>();
 		AlarmForm alarmForm = new AlarmForm();
-
+		IAlarmService alarmService = ManagerPersistenceConfigurationServices.getInstance().getAlarmService();
+		IMailService mailService = ManagerPersistenceConfigurationServices.getInstance().getMailService();
 		alarms = StreamSupport.stream(alarmService.getAllAlarm().spliterator(), false).collect(Collectors.toList());
 		mails = StreamSupport.stream(mailService.getAllMail().spliterator(), false).collect(Collectors.toList());
 

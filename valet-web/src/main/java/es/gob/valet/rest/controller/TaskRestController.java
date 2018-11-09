@@ -31,7 +31,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +43,7 @@ import es.gob.valet.commons.utils.UtilsFecha;
 import es.gob.valet.form.TaskForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.Planner;
 import es.gob.valet.persistence.configuration.model.entity.Task;
 import es.gob.valet.persistence.configuration.services.ifaces.IPlannerService;
@@ -73,18 +73,6 @@ public class TaskRestController {
 	private static final String FORMAT_DATE = "dd/MM/yyyy HH:mm:ss";
 
 	/**
-	 * Attribute that represents the service object for acceding to PlannerRespository.
-	 */
-	@Autowired
-	private IPlannerService plannerService;
-
-	/**
-	 * Attribute that represents the service object for acceding to TaskRespository.
-	 */
-	@Autowired
-	private ITaskService taskService;
-
-	/**
 	 * Method to update the task.
 	 * @param taskForm Parameter that represents the backing form for editing a Task
 	 * @return Modified task.
@@ -101,6 +89,7 @@ public class TaskRestController {
 				taskForm.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATE_DATE));
 			} else {
 				// se obtiene el planificador
+				IPlannerService plannerService = ManagerPersistenceConfigurationServices.getInstance().getPlannerService();
 				Planner planner = plannerService.getPlannerById(taskForm.getIdPlanner());
 
 				// se obtiene el tipo de planificador seleccionado
@@ -121,6 +110,7 @@ public class TaskRestController {
 				planner.setInitDay(initDay);
 
 				// se obtiene la clase que implementa la tarea
+				ITaskService taskService = ManagerPersistenceConfigurationServices.getInstance().getTaskService();
 				Task task = taskService.getTaskById(taskForm.getIdTask(), false);
 
 				// se actualiza la tarea indicando si está habilitada o no.
@@ -134,8 +124,7 @@ public class TaskRestController {
 
 				ProcessTasksScheduler process = ProcessTasksScheduler.getInstance();
 				// se comprueba si la tarea está activa
-
-				String taskName = task.getName();
+				String taskName = Language.getResPersistenceConstants(task.getTokenName());
 
 				if (taskForm.getIsEnabled()) {
 					IPlanificador planificador = getPlannerFromSchedulerConfiguration(updatedPlanner);

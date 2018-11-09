@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 package es.gob.valet.controller;
 
@@ -28,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +38,7 @@ import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.form.ConstantsForm;
 import es.gob.valet.form.TaskForm;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.CPlannerType;
 import es.gob.valet.persistence.configuration.model.entity.Planner;
 import es.gob.valet.persistence.configuration.model.entity.Task;
@@ -48,7 +48,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITaskService;
 /**
  * <p>Class that manages the requests related to the Task's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 @Controller
 public class TaskController {
@@ -62,18 +62,6 @@ public class TaskController {
 	 * Constant that represents the format date.
 	 */
 	private static final String FORMAT_DATE = "dd/MM/yyyy HH:mm:ss";
-
-	/**
-	 * Attribute that represents the service object for acceding to TaskRespository.
-	 */
-	@Autowired
-	private ITaskService taskService;
-
-	/**
-	 * Attribute that represents the service object for acceding to CPlannerTypeRespository.
-	 */
-	@Autowired
-	private ICPlannerTypeService cplannerTypeService;
 
 	/**
 	 * Method that loads the task.
@@ -91,9 +79,10 @@ public class TaskController {
 
 		// se obtiene de persistencia la tarea seleccionada, para obtener el
 		// nombre
+		ITaskService taskService = ManagerPersistenceConfigurationServices.getInstance().getTaskService();
 		Task taskSelected = taskService.getTaskById(idTask, true);
 		taskForm.setIdTask(idTask);
-		taskForm.setName(taskSelected.getName());
+		taskForm.setName(Language.getResPersistenceConstants(taskSelected.getTokenName()));
 
 		// se cargan los tipos de planificadores
 		List<ConstantsForm> typePlanners = loadTypePlanner();
@@ -138,6 +127,7 @@ public class TaskController {
 	private List<ConstantsForm> loadTypePlanner() {
 		List<ConstantsForm> listPlannerType = new ArrayList<ConstantsForm>();
 		// obtenemos los tipos de planificadores.
+		ICPlannerTypeService cplannerTypeService = ManagerPersistenceConfigurationServices.getInstance().getCPlannerTypeService();
 		List<CPlannerType> listCPlannerType = cplannerTypeService.getAllPlannerType();
 		for (CPlannerType typePlanner: listCPlannerType) {
 			ConstantsForm item = new ConstantsForm(typePlanner.getIdPlannerType(), getConstantsValue(typePlanner.getTokenName()));

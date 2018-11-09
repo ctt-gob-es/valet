@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 06/11/2018.
+ * @version 1.7, 08/11/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,7 +61,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
@@ -80,7 +80,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 06/11/2018.
+ * @version 1.7, 08/11/2018.
  */
 @RestController
 public class TslRestController {
@@ -275,18 +275,21 @@ public class TslRestController {
 				// mapeo.
 
 				/*DATOSSS PARA CREAR UNA TSL DE ESPAÑA************************************************************/
-				//				LocalDateTime expDate = LocalDateTime.of(2019, 8, 10, 0, 0, 0);
-				//				LocalDateTime issueDate = LocalDateTime.now();
-				//				Instant instantExp = expDate.atZone(ZoneId.systemDefault()).toInstant();
-				//				tslData.setExpirationDate(Date.from(instantExp));
-				//				Instant instantIssue = issueDate.atZone(ZoneId.systemDefault()).toInstant();
-				//				tslData.setIssueDate(Date.from(instantIssue));
-				//				tslData.setUriTslLocation(url);
-				//				tslData.setResponsible("responsable TSL Spain");
+				// LocalDateTime expDate = LocalDateTime.of(2019, 8, 10, 0, 0,
+				// 0);
+				// LocalDateTime issueDate = LocalDateTime.now();
+				// Instant instantExp =
+				// expDate.atZone(ZoneId.systemDefault()).toInstant();
+				// tslData.setExpirationDate(Date.from(instantExp));
+				// Instant instantIssue =
+				// issueDate.atZone(ZoneId.systemDefault()).toInstant();
+				// tslData.setIssueDate(Date.from(instantIssue));
+				// tslData.setUriTslLocation(url);
+				// tslData.setResponsible("responsable TSL Spain");
 				//
-				//				// Obtenemos el pais de base de datos, sino se inserta el
-				//				// obtenido en el mapeo.
-				//				String codeCountry = "ES";
+				// // Obtenemos el pais de base de datos, sino se inserta el
+				// // obtenido en el mapeo.
+				// String codeCountry = "ES";
 
 				/**	DATOS PARA CREAR UNA TSL DE FRANCIA***********************************************************/
 				LocalDateTime expDate = LocalDateTime.of(2020, 2, 2, 0, 0, 0);
@@ -301,8 +304,6 @@ public class TslRestController {
 				// Obtenemos el pais de base de datos, sino se inserta el
 				// obtenido en el mapeo.
 				String codeCountry = "FR";
-
-
 
 				TslCountryRegion country = tslCountryRegionService.getTslCountryRegionByCode(codeCountry, false);
 				// si country no es nulo, es que existe una TSL asociada a ese
@@ -514,41 +515,6 @@ public class TslRestController {
 	}
 
 	/**
-	 * Method that loads the mapping by ID of TslCountryRegionMapping.
-	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.
-	 * @return MappingTslForm object with the information of the obtained mapping values.
-	 */
-	@JsonView(MappingTslForm.View.class)
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/loadmappingbyid", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public MappingTslForm loadMappingById(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping) {
-		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
-		TslCountryRegionMapping tslCRM = tslCountryRegionMappingService.getTslCountryRegionMappingById(idTslCountryRegionMapping);
-		MappingTslForm mappingTslForm = new MappingTslForm();
-		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
-		mappingTslForm.setIdTslCountryRegion(tslCRM.getTslCountryRegion().getIdTslCountryRegion());
-		mappingTslForm.setMappingIdentificator(tslCRM.getMappingIdentificator());
-		mappingTslForm.setMappingValue(tslCRM.getMappingValue());
-		return mappingTslForm;
-	}
-
-	/**
-	 * Method that loads the necessary information to show the confirmation modal to remove a selected mapping.
-	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.
-	 * @param rowIndexMapping Parameter that represents the index of the row of the selected mapping.
-	 * @return MappingTslForm object with the necessary information to remove a mapping.
-	 */
-	@JsonView(MappingTslForm.View.class)
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/loadconfirmdelete", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public MappingTslForm loadConfirmDeleteMapping(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam("rowindex") String rowIndexMapping) {
-		MappingTslForm mappingTslForm = new MappingTslForm();
-		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
-		mappingTslForm.setRowIndexMapping(rowIndexMapping);
-		return mappingTslForm;
-	}
-
-	/**
 	 * Method that refreshes the screen of editing TSL without getting to persist.
 	 * @param idTSL Parameter that represents the identifier TSL.
 	 * @param idCountryRegion Parameter that represents a country identifier.
@@ -643,13 +609,14 @@ public class TslRestController {
 		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<TslCountryRegionMapping>();
 		List<TslCountryRegionMapping> listMapping = new ArrayList<TslCountryRegionMapping>();
 		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
+		Map<Long, String> mapAssociationType = loadAssociationType();
 		if (idCountryRegion != null) {
 			// obtenemos todos los mapeos de ese pais
 			listMapping = tslCountryRegionMappingService.getAllMappingByIdCountry(idCountryRegion);
 			List<TslCountryRegionMapping> listMappingLanguage = new ArrayList<TslCountryRegionMapping>();
-			for(TslCountryRegionMapping tcrm : listMapping){
+			for (TslCountryRegionMapping tcrm: listMapping) {
 				CAssociationType cat = tcrm.getAssociationType();
-				cat.setTokenName(Language.getResPersistenceConstants(cat.getTokenName()));
+				cat.setTokenName(mapAssociationType.get(tcrm.getAssociationType().getIdAssociationType()));
 				tcrm.setAssociationType(cat);
 				listMappingLanguage.add(tcrm);
 			}
@@ -682,14 +649,10 @@ public class TslRestController {
 		List<TslCountryRegionMapping> listTslCountryRegionMapping = new ArrayList<TslCountryRegionMapping>();
 		TslCountryRegionMapping tslCountryRegionMapping = null;
 
-		ITslCountryRegionService tslCountryRegionService  = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService();
+		ITslCountryRegionService tslCountryRegionService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService();
 		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
 		ICAssociationTypeService cAssociationTypeService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCAssociationTypeService();
-		// String mappingIdentificator =
-		// mappingTslForm.getMappingIdentificator();
-		// String mappingValue = mappingTslForm.getMappingValue();
-		// Long idCountryRegionMapping =
-		// mappingTslForm.getIdTslCountryRegionMapping();
+
 		if (mappingIdentificator == null || mappingIdentificator.isEmpty() || mappingIdentificator.length() != mappingIdentificator.trim().length()) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
 			json.put(FIELD_MAPPING_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
@@ -703,7 +666,7 @@ public class TslRestController {
 
 		// se comprueba si existe un identificador igual
 		if (tslCountryRegionMappingService.existIdentificator(mappingIdentificator, idTslCountryRegion)) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_IDENTIFICATOR_DUPLICATE));
 			json.put(KEY_JS_INFO_EXIST_IDENTIFICATOR, Language.getResWebGeneral(IWebGeneralMessages.ERROR_IDENTIFICATOR_DUPLICATE));
 			error = true;
 		}
@@ -749,9 +712,7 @@ public class TslRestController {
 	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> modifyMappingTsl(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam("idTslCountryRegion") Long idTslCountryRegion, @RequestParam("mappingValue") String mappingValue, @RequestParam("idMappingType") Long idMappingType) throws IOException {
 
 		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<>();
-
 		boolean error = false;
-
 		JSONObject json = new JSONObject();
 		List<TslCountryRegionMapping> listTslCountryRegionMapping = new ArrayList<TslCountryRegionMapping>();
 		TslCountryRegionMapping tslCountryRegionMapping = null;
@@ -776,7 +737,6 @@ public class TslRestController {
 		}
 
 		if (!error) {
-
 			tslCountryRegionMapping.setMappingValue(mappingValue);
 			// se obtiene el tipo de asociación
 			CAssociationType associationType = associationTypeService.getAssociationTypeById(idMappingType);
@@ -787,7 +747,6 @@ public class TslRestController {
 			// lo añade a una lista de Mapeos
 			listTslCountryRegionMapping.add(tslCRMNew);
 
-			// dtOutput.setData(listTslCountryRegionMapping);
 		} else {
 			listTslCountryRegionMapping = StreamSupport.stream(tslCountryRegionMappingService.getAllMappingByIdCountry(idTslCountryRegion).spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
@@ -838,5 +797,22 @@ public class TslRestController {
 
 		return index;
 	}
+
+	/**
+	 * Method to load the types of associations in the table by applying multi-language.
+	 * @return Map that contains the types of associations with multi-language.
+	 */
+	private Map<Long, String> loadAssociationType() {
+		Map<Long, String> mapAssociationType  = new HashMap<Long, String>();
+		// obtenemos los tipos de planificadores.
+		ICAssociationTypeService cAssociationTypeService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCAssociationTypeService();
+		List<CAssociationType> listCAssociationType = cAssociationTypeService.getAllAssociationType();
+		for (CAssociationType associationType: listCAssociationType) {
+			mapAssociationType.put(associationType.getIdAssociationType(), Language.getResPersistenceConstants(associationType.getTokenName()));
+		}
+		return mapAssociationType;
+
+	}
+
 
 }

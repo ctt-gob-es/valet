@@ -70,28 +70,37 @@
 					</span> <span class="title" th:text="#{menu.admin.task}"></span>
 				</a>
 					<ul class="dropdown-menu">
-						<li class="nav-item" th:each="task:${listtask}"><a
+						<li class="nav-item" th:each="task:${listtask}">
+						<a
 							class="nav-link c-grey-800 cH-blue-500 active"
 							th:id="'aTask' + ${task.idTask}" href="#"
-							th:onclick="|loadTask('${task.idTask}')|"> <span
-								class="icon-holder"> <i class="c-teal-300"></i>
-							</span> <span class="title" th:text="${task.name}" />
+							th:onclick="|loadTask('${task.idTask}')|"> 
+							<span class="icon-holder"> 
+							<i class="c-teal-300 ti-reload"></i>
+							</span>
+							<span class="title" th:text="${task.tokenName}" />
 						</a></li>
 					</ul></li>
 				<li class="nav-item dropdown"><a class='sidebar-link' href="#">
 						<span class="icon-holder"><i
-							class="c-yellow-500 ti-alarm-clock"></i></span> <span class="title"
+							class="c-orange-500 ti-alarm-clock"></i></span> <span class="title"
 						th:text="#{menu.admin.alarm}"></span>
 				</a>
 					<ul class="dropdown-menu">
-						<li><a id="aMailAdmin" class='sidebar-link' href="#"> <span
-								class="title" th:text="#{menu.admin.mail}"></span> <script
+						<li class="nav-item">
+						<a id="aMailAdmin" class='nav-link c-grey-800 cH-blue-500 active' href="#"> 
+						 <span class="icon-holder">
+						<i class="c-orange-300 ti-agenda"></i>
+						</span>
+						<span class="title" th:text="#{menu.admin.mail}"></span> <script
 									th:inline="javascript">
 		                 			var actionMail = /*[[@{/mailadmin}]]*/;
 		                 			$('#aMailAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionMail, 'optionReplacement', 'GET', null, true); return false;});
 		               			</script>
 						</a></li>
-						<li><a id="aAlarmAdmin" class='sidebar-link' href="#"> <span
+						<li class="nav-item"><a id="aAlarmAdmin" class='nav-link c-grey-800 cH-blue-500 active' href="#">  <span class="icon-holder">
+						<i class="c-orange-300 ti-alarm-clock"></i>
+						</span><span
 								class="title" th:text="#{menu.admin.alarm}"></span> <script
 									th:inline="javascript">
 		                 			var actionAlarm = /*[[@{/alarmadmin}]]*/;

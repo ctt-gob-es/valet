@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 30/10/2018.
+ * @version 1.7, 08/11/2018.
  */
 package es.gob.valet.controller;
 
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,19 +43,26 @@ import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.6, 30/10/2018.
+ *  @version 1.7, 08/11/2018.
  */
 @Controller
 public class TslController {
+
+	/**
+	 * Constant that represents the parameter 'idTslCountryRegionMapping'.
+	 */
+	private static final String FIELD_ID_COUNTRY_REGION_MAPPING = "idTslCountryRegionMapping";
 	/**
 	 * Method that maps the list TSLs to the controller and forwards the list of TSLs to the view.
 	 *
@@ -145,6 +153,66 @@ public class TslController {
 		model.addAttribute("listTypes", associationTypes);
 		return "fragments/tslmapping.html";
 	}
+
+	/**
+	 * Method that loads the mapping by ID of TslCountryRegionMapping.
+	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.
+	 * @param model Parameter that represents holder object for model attributes.
+	 * @return String that represents the name of the view to forward.
+	 */
+	@RequestMapping(value = "/loadmappingbyid", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String loadMappingById(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, Model model) {
+		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
+		TslCountryRegionMapping tslCRM = tslCountryRegionMappingService.getTslCountryRegionMappingById(idTslCountryRegionMapping);
+		MappingTslForm mappingTslForm = new MappingTslForm();
+		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
+		mappingTslForm.setIdTslCountryRegion(tslCRM.getTslCountryRegion().getIdTslCountryRegion());
+		mappingTslForm.setMappingIdentificator(tslCRM.getMappingIdentificator());
+		mappingTslForm.setMappingValue(tslCRM.getMappingValue());
+		mappingTslForm.setIdMappingType(tslCRM.getAssociationType().getIdAssociationType());
+
+		//se cargan los tipos de asociaciones
+		List<ConstantsForm> associationTypes = loadAssociationType();
+		model.addAttribute("listTypes", associationTypes);
+		model.addAttribute("mappingtslform", mappingTslForm);
+		return "modal/tsl/mappingEditForm";
+	}
+
+	/**
+	 * Method to load the datatable with all the mappings corresponding to the selected TSL .
+	 * @param idCountryRegion Parameter that represents a country/region identifier.
+	 * @param model Parameter that represents holder object for model attributes.
+	 * @return String that represents the name of the view to forward.
+	 */
+	@RequestMapping(path = "/loadaddmapping", method = RequestMethod.GET)
+	public String loadAddMapping(@RequestParam("id") Long idCountryRegion, Model model) {
+
+		//se cargan los tipos de asociaciones
+		List<ConstantsForm> associationTypes = loadAssociationType();
+		model.addAttribute("listTypes", associationTypes);
+		MappingTslForm mappingTslForm = new MappingTslForm();
+		mappingTslForm.setIdTslCountryRegion(idCountryRegion);
+		model.addAttribute("mappingtslform", mappingTslForm);
+		return "modal/tsl/mappingForm";
+
+	}
+
+	/**
+	 * Method that loads the necessary information to show the confirmation modal to remove a selected mapping.
+	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.
+	 * @param rowIndexMapping Parameter that represents the index of the row of the selected mapping.
+	 * @param model Parameter that represents holder object for model attributes.
+	 * @return String that represents the name of the view to forward.
+	 */
+	@RequestMapping(value = "/loadconfirmdelete", method = RequestMethod.GET)
+	public String loadConfirmDeleteMapping(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam("rowindex") String rowIndexMapping, Model model) {
+		MappingTslForm mappingTslForm = new MappingTslForm();
+		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
+		mappingTslForm.setRowIndexMapping(rowIndexMapping);
+		model.addAttribute("mappingtslform", mappingTslForm);
+		return "modal/tsl/mappingDelete";
+	}
+
 
 	/**
 	 * Method that loads association types.

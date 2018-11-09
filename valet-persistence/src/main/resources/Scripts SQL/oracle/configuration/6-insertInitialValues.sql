@@ -112,8 +112,8 @@ Insert into ALARM (ID_ALARM, DESCRIPTION)
 
 -- TABLA TASK 
 Insert into TASK
-   (ID_TASK, NAME, IMPLEMENTATION_CLASS, IS_ENABLED)
- Values (1, 'Sincronización TSL', 'es.gob.valet.tasks.FindNewTSLRevisionsTask', 'N');
+   (ID_TASK, TOKEN_NAME, IMPLEMENTATION_CLASS, IS_ENABLED)
+ Values (1, 'TASK01', 'es.gob.valet.tasks.FindNewTSLRevisionsTask', 'N');
 
 
 -- TABLA PLANNER

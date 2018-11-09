@@ -1,6 +1,5 @@
 <div class="masonry-item col-md-12">
-
-	<form name="altEditor-form" role="form" id="getIdCountryForm"
+	<form name="altEditor-form" role="form" id="idMappingForm"
 		th:object="${mappingtslform}" method="post">
 		<!--  identificador idCountryRegion -->
 		<input type='hidden' class='primarykey' id="idCountry"
@@ -9,17 +8,6 @@
 		<!--  nombre del pais al que pertenece la TSL -->
 		<input type='hidden' id="idNameCountry"
 			th:field="*{nameCountryRegion}"></input>
-<div class="masonry-item col-md-12">
-	<form name="altEditor-form" role="form" id="getIdCountryForm"
-		th:object="${mappingtslform}" method="post">
-		<!--  identificador idCountryRegion -->
-		<input type='hidden' class='primarykey' id="idCountry"
-			th:field="*{idTslCountryRegion}"></input>
-
-		<!--  nombre del pais al que pertenece la TSL -->
-		<input type='hidden' id="idNameCountry"
-			th:field="*{nameCountryRegion}"></input>
-
 	</form>
 	<div class="bgc-white bd bdrs-3 p-20 mB-20">
 
@@ -40,189 +28,53 @@
 				</tr>
 			</thead>
 		</table>
-
-	</div>
-</div>
-<!--  Modal para añadir mapeo -->
-<div class="modal fade" tabindex="-1" role="dialog" id="modalAddMapping">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" th:text="#{form.newMapping.title}"></h4>
-				<button type="button" class="close"
-					onclick="closeModalButton('modalAddMapping', 'mappingTslForm')"
-					aria-label="Cerrar">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form name="altEditor-form" role="form" id="mappingTslForm"
-					th:object="${mappingtslform}" method="post">
-					<div id="errorModalMapping" role="alert"></div>
-					<input type='hidden' id="idCountryRegion"
-						th:field="*{idTslCountryRegion}"></input>
-					<div class="form-group col-md-4">
-						<label for="idAssociationType" th:text="#{form.newMapping.type}"></label>
-						<select id="idAssociationType" class="form-control"
-							th:field="*{idMappingType}">
-							<option th:each="ta: ${listTypes}" th:value="${ta.idConstant}"
-								th:text="${ta.value}"></option>
-						</select>
-					</div>
-					<div class="form-group col-md-12">
-						<label for="idIdentificator"
-							th:text="#{form.newMapping.identificator}"></label> <span
-							id="mappingIdentificator_span"
-							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span><input
-							type="text" id="idIdentificator" class="form-control"
-							th:field="*{mappingIdentificator}"
-							onchange="cleanSpan('mappingIdentificator_span');"></input>
-						<div style="clear: both;"></div>
-					</div>
-					<div class="form-group col-md-12">
-						<label for="idValue" th:text="#{form.newMapping.value}"></label> <span
-							id="mappingValue_span"
-							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
-						<input type="text" id="idValue" class="form-control"
-							th:field="*{mappingValue}"
-							onchange="cleanSpan('mappingValue_span');"></input>
-						<div style="clear: both;"></div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default"
-					onclick="closeModalButton('modalAddMapping', 'mappingTslForm')"
-					th:text="#{form.newMapping.btn.close}"></button>
-
-				<button type="button" id="idNewMappingBtn" class="btn btn-primary"
-					th:text="#{form.newMapping.btn.save}" onclick="saveNewMapping();"></button>
-			</div>
-		</div>
 	</div>
 </div>
 
 
-<!-- Modal para editar mapeo -->
-<div class="modal fade" tabindex="-1" role="dialog"
-	id="modalEditMapping">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" th:text="#{form.editMapping.title}"></h4>
-				<button type="button" class="close"
-					onclick="closeModalButton('modalEditMapping', 'mappingTslEditForm')"
-					aria-label="Cerrar">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form name="altEditor-form" role="form" id="mappingTslEditForm"
-					th:object="${mappingtslform}" method="post">
-
-					<input type='hidden' id="idCountryRegionMappingEd"
-						th:field="*{idTslCountryRegionMapping}"></input> <input
-						type='hidden' id="idCountryRegionEd"
-						th:field="*{idTslCountryRegion}"></input>
-					<div class="form-group col-md-4">
-						<label for="idAssociationType" th:text="#{form.newMapping.type}"></label>
-						<select id="idAssociationType" class="form-control"
-							th:field="*{idMappingType}">
-							<option th:each="ta: ${listTypes}" th:value="${ta.idConstant}"
-								th:text="${ta.value}"
-								th:selected="${mappingtslform.idMappingType == ta.idConstant}"></option>
-						</select>
-					</div>
-					<div class="form-group col-md-12">
-						<label for="idIdentificatorEd"
-							th:text="#{form.newMapping.identificator}"></label> <input
-							type="text" id="idIdentificatorEd" class="form-control"
-							th:field="*{mappingIdentificator}" readonly></input>
-						<div style="clear: both;"></div>
-					</div>
-					<div class="form-group col-md-12">
-						<label for="idValueEd" th:text="#{form.newMapping.value}"></label>
-						<span id="mappingValue_spanEdit"
-							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
-						<input type="text" id="idValueEd" class="form-control"
-							th:field="*{mappingValue}"
-							onchange="cleanSpan('mappingValue_spanEdit');"></input>
-						<div style="clear: both;"></div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default"
-					onclick="closeModalButton('modalEditMapping', 'mappingTslEditForm')" th:text="#{form.editMapping.btn.close}"></button>
-
-				<button type="button" id="idEditMappingBtn" class="btn btn-primary"
-					th:text="#{form.editMapping.btn.modify}" onclick="modifyMapping();"></button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Modal para eliminar un mapeo -->
-<div class="modal fade" tabindex="-1" role="dialog"
-	id="modalDeletetMapping">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" th:text="#{form.deleteMapping.title}"></h4>
-				<button type="button" class="close" data-dismiss="modal"
-					aria-label="#{form.deleteMapping.btn.close}">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form name="altEditor-form" role="form" id="mappingTslDeleteForm"
-					method="post" th:object="${mappingtslform}">
-
-					<input type='hidden' id="idCountryRegionMappingDel"
-						th:field="*{idTslCountryRegionMapping}"></input> <input
-						type='hidden' id="rowIndexMappingDel"
-						th:field="*{rowIndexMapping}"></input>
-
-					<p th:text="#{form.deleteMapping.message}"></p>
-
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default"
-					th:text="#{form.deleteMapping.btn.close}" th:alt="#{form.deleteMapping.btn.close}"
-					onclick="closeModalButton('modalDeletetMapping', 'mappingTslDeleteForm')"></button>
-				<button type="button" id="idDeleteMappingBtn"
-					class="btn btn-primary" th:text="#{form.deleteMapping.btn.delete}" th:alt="#{form.deleteMapping.btn.delete}"
-					onclick="deleteMappingTsl();"></button>
-			</div>
-		</div>
-	</div>
-</div>
 
 <script th:inline="javascript">
 $(document).ready(function() {
 
 	var actionOpenMapping = /*[[@{/loadmapping}]]*/;
-	var addMappingTemplate = /*[[@{/addmappingtsl}]]*/;
+	var addMappingTemplate = /*[[@{/loadaddmapping}]]*/;
 	var idCountry = $("#idCountry").val();
-	var actionSaveMapping = /*[[@{/savemappingtsl}]]*/;
+	
+	//textos de botones
 	var btnAddMapping =  /*[[#{tsl.admin.btn.add}]]*/;
 	var btnEditMappingAlt =  /*[[#{table.tsl.mapeo.edit.alt}]]*/;
 	var btnDelMappingAlt =  /*[[#{table.tsl.mapeo.del.alt}]]*/;
+	
+	//declaración de la tabla de mapeo
 	var tblMapping = $('#mappingTable').DataTable({
 		dom: 'Bfrtip',
 		responsive : true,
 		altEditor: true,
  		buttons: [{text: btnAddMapping, 
 		action: function(e, dt, node, config){
+			  $.ajax({
+					url : addMappingTemplate,
+					type : 'GET',
+					data : $.param({'id':idCountry}),
+					cache : false,
+					success : function(data) {
+						hide();
+						$('#modal').html(data);
+						$('#modalAddMapping').modal('show');																
+					},
+					error : function() {
+						hide();
+			    		var msgError =  /*[[#{tsl.msg.error}]]*/;
+			    		$('#idMappingForm').append('<div id="errorModalEdit" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
+			        
+					}
+				});
 			
-		 	$('#modalAddMapping').modal('show'); 		 
 	 } }],
  			    "iTotalRecords": "totalElements",
 		        "iTotalDisplayRecords": "numberOfElements",
-			    
-				"processing": true,
-			    "serverSide": true,
+				"processing": false,
+				"serverSide": true,
 				"ajax": {
 			        "url": actionOpenMapping,
 			        "dataSrc" : "data",
@@ -243,16 +95,17 @@ $(document).ready(function() {
 				        "columns": [
 				        	{ "data": "tslCountryRegion.idTslCountryRegion","visible": false},
 					        { "data": "mappingIdentificator",  "width": "35%" },
-					        { "data": "mappingValue",  "width": "35%" },
+					        { "data": "mappingValue",  "width": "35%"}, 
 					        { "data": "associationType.tokenName",  "width": "20%"},
 					        { "data": "idTslCountryRegionMapping",  "width": "10%",
 					        	"render": function(data, type, row){		
 					        		
-					        		return '<button class="c-green-500 ti-pencil-alt" id="editMappingTsl"  onclick="editMappingTsl('+data+');" alt='+btnEditMappingAlt+' title='+btnEditMappingAlt+'></button>&nbsp;<button class="c-red-500 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);" alt='+btnDelMappingAlt+' title='+btnDelMappingAlt+'></button>';
+					        		return '<button class="c-green-500 ti-pencil-alt" id="editMappingTsl"  onclick="editMapping('+data+');" alt='+btnEditMappingAlt+' title='+btnEditMappingAlt+'></button>&nbsp;<button class="c-red-500 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);" alt='+btnDelMappingAlt+' title='+btnDelMappingAlt+'></button>';
 					        		
 					        	}
 					        }
 					        ]});
+		
 	
 	//borra mensaje de identificador duplicado
 	$("#idIdentificator").change(function(){
@@ -263,145 +116,9 @@ $(document).ready(function() {
 	
 });
 
-//método para cargar la tabla con los valores de mapeo del pais pasado por parámetro
-function loadMappingTsl(idCountry) {
-	var openMapping = /*[[@{/openmapping}]]*/;
-	var idCountry = idCountry;
-	$.ajax(openMapping,{
-			            	data:$.param({'id':idCountry}),
-			                type:'GET',
-			                success: function(data){
-			                	$("#tableMapping").html(data);
-			                },
-							error:function(data){
-								 hide();
-								  var msgError =  /*[[#{tsl.msg.error}]]*/;
-								  $('#modalEditMapping').remove();
-								  $('#mappingTslEditForm').append('<div id="errorModalEdit" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
-							}
-	
-	});
-}
 
-//función cerrar modales
-function closeModalButton(btnId, nameForm){
-	//se limpia posibles mensajes error de span
-	$('#'+nameForm+' *').filter('span').each(function(){
-		cleanSpan($(this).attr('id'));
-	});
-	//se limpia posible mensaje error en div
-		$("#errorModalMapping").removeClass('alert alert-danger');
-		$("#errorModalMapping").html('');
-		
-	//se limpia valores del formulario
-	
-	 $('#idIdentificator').val("");
-     $('#idValue').val("");
-	$('#' + btnId).modal('hide');	
-}
-
-
-
-//método que agrega un nuevo par de identificador/valor en la tabla de mapeos
-function saveNewMapping() {
-	var actionSaveMapping = /*[[@{/savemappingtsl}]]*/;
-	var formDataMapping = new FormData(document.forms["mappingTslForm"]);
-	formDataMapping.append('idCountryRegion',idCountry);
-	var tblMapping = $('#mappingTable').DataTable();
- 	$.ajax(actionSaveMapping, {
-		data :formDataMapping, 
-		contentType: false,
-		processData : false,
-		type : 'POST',
-		success: function(data){
-				var errores = JSON.parse(data.error);
-				if (data.error != null){
-						 	hide();
-					  jQuery.each(errores, function(i, val) {			  
-						  if(i == "existIdentificator"){	
-								var messageExistIden = val;
-								$('#errorModalMapping').html(messageExistIden);
-								$('#errorModalMapping').addClass('alert alert-danger');
-						  } 						  	
-						$('#mappingTslForm *').filter('span').each(function(){
-						if (i == $(this).attr('id')){
-								$("#" + i).text(val);
-								$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
-						}
-						});
-					  })
-
-				  }else{
-					//se oculta la capa 'cargando...'
-				  	hide();
-					//se añade nuevo valor
-					tblMapping.row.add($(data.data)).draw(false);
-				 //se cierra modal
-            $('#modalAddMapping').modal('hide');
-			$("#mappingTslForm")[0].reset();
-}
-		},
-		error : function(data){
-			// se oculat al capa 'cargando...'
-			hide();
-			//se cierra modal
-            $('#modalAddMapping').modal('hide');
-
-		}
-	});
-}
-
-
-//método para editar mapeo
-function modifyMapping() {
-	var actionSaveMapping = /*[[@{/modifymappingtsl}]]*/;
-	var formDataMapping = new FormData(document.forms["mappingTslEditForm"]);
-	
-	var tblMapping = $('#mappingTable').DataTable();
- 	$.ajax(actionSaveMapping, {
-		data :formDataMapping, 
-		contentType: false,
-		processData : false,
-		type : 'POST',
-		success: function(data){
-			var errores = JSON.parse(data.error);
-			if (data.error != null){
-					 	hide();
-				  jQuery.each(errores, function(i, val) {		  	
-				$('#mappingTslEditForm *').filter('span').each(function(){
-								if (i == $(this).attr('id')){
-									$("#" + i).text(val);
-									$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
-								}
-							});
-				  })
-
-			  }else{
-//se oculta la capa 'cargando...'
-			  	hide();
-//se añade nuevo valor
-			 tblMapping.row.add($(data.data)).draw(false);
-			 //se cierra modal
-        $('#modalEditMapping').modal('hide');
-		$("#mappingTslEditForm")[0].reset();
-}
-	},
-	error : function(data){
-		// se oculat al capa 'cargando...'
-		hide();
-		//se cierra modal
-        $('#modalEditMapping').modal('hide');
-
-	}
-	});
-}
-
-
-
-
-
-//Función para cargar los datos del par identificador/valor seleccionado.
-function editMappingTsl(idTslCountryRegionMapping) {
+//Función para cargar el modal de editar con los valores del mapeo seleccionado
+function editMapping(idTslCountryRegionMapping) {
 	var loadMapping = /*[[@{/loadmappingbyid}]]*/
 	var idCRM= idTslCountryRegionMapping;
 	$.ajax(loadMapping,{
@@ -410,19 +127,16 @@ function editMappingTsl(idTslCountryRegionMapping) {
         success: function(data){
     		// Se oculta la capa 'cargando...'
     		hide();
-    		 $('#modalEditMapping').modal('show');
-    		 $('#idCountryRegionEd').val(data.idTslCountryRegion);
-    		 $('#idCountryRegionMappingEd').val(data.idTslCountryRegionMapping);
-    		 $('#idIdentificatorEd').val(data.mappingIdentificator);
-    		 $('#idValueEd').val(data.mappingValue);
+    		$('#modal').html(data);
+			$('#modalEditMapping').modal('show');
+    		
         },
         error:function(data){
         	// Se oculta la capa 'cargando...'
         	hide();
-        	// Se eliminan los posibles errores anteriores...
-        	//cleanValidationResult('tslFormEdit');
-        	alert("error");
-        
+    		var msgError =  /*[[#{tsl.msg.error}]]*/;
+    		$('#idMappingForm').append('<div id="errorModalEdit" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
+
 }
 	});
 }
@@ -436,44 +150,23 @@ function deleteConfirmMappingTsl(idTslCountryRegionMapping,  element) {
 			data:$.param({'idTslCountryRegionMapping':idCRM, 'rowindex':rowIndex}),
 	        type:'GET',
 	        success: function(data){
-	    		// Se oculta la capa 'cargando...'
+	        	// Se oculta la capa 'cargando...'
 	    		hide();
-	    		 $('#modalDeletetMapping').modal('show');
-	    		 $('#idCountryRegionMappingDel').val(data.idTslCountryRegionMapping);
-	    		 $('#rowIndexMappingDel').val(data.rowIndexMapping);
+	    		$('#modal').html(data);
+				$('#modalDeleteMapping').modal('show');
 	        },
 	        error:function(data){
 	        	// Se oculta la capa 'cargando...'
 	        	hide();
-	        	// Se eliminan los posibles errores anteriores...
-	        	//cleanValidationResult('tslFormEdit');
-	        	alert("error");
+	    		var msgError =  /*[[#{tsl.msg.error}]]*/;
+	    		$('#idMappingForm').append('<div id="errorModalEdit" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
 	        
 	}
 		});
 }
 
 
-//borrar el par identificador/valor seleccionado
-function deleteMappingTsl(){
-	var formDataMapping = new FormData(document.forms["mappingTslDeleteForm"]);	
-	var deleteMapping = /*[[@{/deletemappingbyid}]]*/;
-	var tblMapping = $('#mappingTable').DataTable();
-	$.ajax(deleteMapping,{
-		data:formDataMapping,
-		type:'POST',
-		contentType: false,
-		processData : false,
-		success: function(data){
-		//Se oculta la capa 'cargando...'
-		hide();
-		closeModalButton('modalDeletetMapping', 'mappingTslDeleteForm');
-    	tblMapping.row(data.index).remove().draw();
-		},
-		error:function(){
-		}
-		});
-}
+
 
 </script>
 	

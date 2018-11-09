@@ -18,9 +18,9 @@
  * <b>File:</b><p>es.gob.valet.controller.WebAdminController.java.</p>
  * <b>Description:</b><p>Class that manages the requests related to the home page from vaLET.</p>
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>15 jun. 2018.</p>
+ * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 15 jun. 2018.
+ * @version  @version 1.1, 06/11/2018.
  */
 package es.gob.valet.controller;
 
@@ -31,6 +31,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import es.gob.valet.i18n.Language;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.Task;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
@@ -39,7 +40,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITaskService;
 /** 
 * <p>Class that manages the requests related to the home page from vaLET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 15 jun. 2018.
+ * @version 1.1, 06/11/2018.
  */
 @Controller
 public class WebAdminController {
@@ -64,6 +65,9 @@ public class WebAdminController {
 	public String index(Model model){
 		List<Keystore> listKeystores = keystoreService.getAllKeystore();
 		List<Task> listTask = taskService.getAllTask();
+		for(Task task: listTask){
+			task.setTokenName(Language.getResPersistenceConstants(task.getTokenName()));
+		}
 		model.addAttribute("listtask", listTask);
 		model.addAttribute("listkeystore", listKeystores);
 		return "inicio.html";

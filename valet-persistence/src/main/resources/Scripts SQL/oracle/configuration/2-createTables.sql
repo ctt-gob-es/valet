@@ -253,7 +253,7 @@ COMMENT ON COLUMN "CONF_SERVER_MAIL"."PASSWORD_MAIL" IS 'Valor que representa la
 -- Table TASK
 CREATE TABLE "TASK"(
 	"ID_TASK" Number(19,0) NOT NULL,
-	"NAME" Varchar2(50) NOT NULL,
+	"TOKEN_NAME" Varchar2(30) NOT NULL,
 	"IMPLEMENTATION_CLASS" Varchar2(150) NOT NULL, 
 	"IS_ENABLED" Char(1) NOT NULL
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
@@ -261,7 +261,7 @@ ALTER TABLE "TASK" ADD CONSTRAINT "ID_TASK" PRIMARY KEY ("ID_TASK");
 ALTER TABLE "TASK" ADD CONSTRAINT "TASK_UNIQUE_NAME" UNIQUE ("NAME");
 COMMENT ON TABLE "TASK" IS 'Tabla que almacena toda la información relativa a tareas.';
 COMMENT ON COLUMN "TASK"."ID_TASK" IS 'Identificador de la tabla.';
-COMMENT ON COLUMN "TASK"."NAME" IS 'Valor que representa el nombre de la tarea.';
+COMMENT ON COLUMN "TASK"."TOKEN_NAME" IS 'Valor que representa el token con la descripción almacenada en cada archivo de propiedades por idioma.';
 COMMENT ON COLUMN "TASK"."IMPLEMENTATION_CLASS" IS 'Valor que representa el nombre del objeto JAVA que constituye la implementación de esa tarea desde el punto de vista de codificación.';
 COMMENT ON COLUMN "TASK"."IS_ENABLED" IS 'Valor que indica si el planificador está habilitado (Y) o no (N).';
 

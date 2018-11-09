@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -50,7 +50,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that represents the representation of the <i>TASK</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/11/2018.
  */
 @Entity
 @Table(name = "TASK")
@@ -72,9 +72,9 @@ public class Task implements Serializable {
 	private String implementationClass;
 
 	/**
-	 * Attribute that represents the name of the task.
+	 * Attribute that represents the name of the token with the description stored in properties file for internationalization.
 	 */
-	private String name;
+	private String tokenName;
 
 	/**
 	 * Attribute that represents the list of associated planners.
@@ -125,20 +125,20 @@ public class Task implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #name}.
-	 * @return the value of the attribute {@link #name}.
+	 * Gets the value of the attribute {@link #tokenName}.
+	 * @return the value of the attribute {@link #tokenName}.
 	 */
-	@Column(name = "NAME", nullable = false, length = NumberConstants.NUM50, unique = true)
-	public String getName() {
-		return name;
+	@Column(name = "TOKEN_NAME", nullable = false, length = NumberConstants.NUM30, unique = true)
+	public String getTokenName() {
+		return tokenName;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #name}.
-	 * @param nameParam The value for the attribute {@link #name}.
+	 * Sets the value of the attribute {@link #tokenName}.
+	 * @param tokenNameParam The value for the attribute {@link #tokenName}.
 	 */
-	public void setName(String nameParam) {
-		this.name = nameParam;
+	public void setTokenName(String tokenNameParam) {
+		this.tokenName = tokenNameParam;
 	}
 
 	/**

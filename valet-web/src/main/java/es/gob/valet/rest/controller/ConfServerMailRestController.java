@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,18 +14,17 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.rest.controller.ConfServerMailRestController.java.</p>
  * <b>Description:</b><p> .</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>4 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 4 oct. 2018.
+ *@version 1.1, 06/11/2018.
  */
 package es.gob.valet.rest.controller;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
@@ -37,35 +36,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.gob.valet.form.ConfServerMailForm;
+import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
 import es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailService;
 
-/** 
+/**
  * <p>Class that manages the REST requests related to the ConfServerMails administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 4 oct. 2018.
+ * @version 1.1, 06/11/2018.
  */
 @RestController
 public class ConfServerMailRestController {
 
 	/**
-	 * Attribute that represents the service object for accessing the
-	 * ConfServerMailRespository.
+	 * Method that maps the save configuration of server mail web request to the controller and saves
+	 * it in the persistence.
+	 *
+	 * @param confServerMailForm
+	 * Object that represents the backing configuration server mail form.
+	 * @param bindingResult
+	 * Object that represents the form validation result.
+	 * @return {@link ConfServerMail}
 	 */
-	@Autowired
-	private IConfServerMailService confServerMailService;
-
-	/**
-	* Method that maps the save configuration of server mail web request to the controller and saves
-	* it in the persistence.
-	*
-	* @param confServerMailForm
-	* Object that represents the backing configuration server mail form.
-	* @param bindingResult
-	* Object that represents the form validation result.
-	* @return {@link ConfServerMail}
-	*/
 	@RequestMapping(value = "/saveconfservermail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody ConfServerMail save(@RequestBody ConfServerMailForm confServerMailForm, BindingResult bindingResult) {
 		ConfServerMail confMail, result = new ConfServerMail();
@@ -77,6 +70,7 @@ public class ConfServerMailRestController {
 			}
 		} else {
 			try {
+				IConfServerMailService confServerMailService = ManagerPersistenceConfigurationServices.getInstance().getConfServerMailService();
 				if (confServerMailForm.getIdConfServerMail() != null) {
 					confMail = confServerMailService.getConfServerMailById(confServerMailForm.getIdConfServerMail());
 				} else {

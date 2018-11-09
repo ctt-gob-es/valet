@@ -1,0 +1,109 @@
+<!--  Modal para añadir mapeo -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalAddMapping">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.newMapping.title}"></h4>
+				<button type="button" class="close"
+					onclick="closeModalButton('modalAddMapping', 'mappingTslForm')"
+					aria-label="Cerrar">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form name="altEditor-form" role="form" id="mappingTslForm"
+					th:object="${mappingtslform}" method="post">
+					<div id="errorModalMapping" role="alert"></div>
+					<input type='hidden' id="idCountryRegion"
+						th:field="*{idTslCountryRegion}"></input>
+					<div class="form-group col-md-4">
+						<label for="idAssociationType" th:text="#{form.newMapping.type}"></label>
+						<select id="idAssociationType" class="form-control"
+							th:field="*{idMappingType}">
+							<option th:each="ta: ${listTypes}" th:value="${ta.idConstant}"
+								th:text="${ta.value}"></option>
+						</select>
+					</div>
+					<div class="form-group col-md-12">
+						<label for="idIdentificator"
+							th:text="#{form.newMapping.identificator}"></label> <span
+							id="mappingIdentificator_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span><input
+							type="text" id="idIdentificator" class="form-control"
+							th:field="*{mappingIdentificator}"
+							onchange="cleanSpan('mappingIdentificator_span');"></input>
+						<div style="clear: both;"></div>
+					</div>
+					<div class="form-group col-md-12">
+						<label for="idValue" th:text="#{form.newMapping.value}"></label> <span
+							id="mappingValue_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+						<input type="text" id="idValue" class="form-control"
+							th:field="*{mappingValue}"
+							onchange="cleanSpan('mappingValue_span');"></input>
+						<div style="clear: both;"></div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default"
+					onclick="closeModalButton('modalAddMapping', 'mappingTslForm')"
+					th:text="#{form.newMapping.btn.close}"></button>
+
+				<button type="button" id="idNewMappingBtn" class="btn btn-primary"
+					th:text="#{form.newMapping.btn.save}" onclick="saveNewMapping();"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+//método que agrega un nuevo par de identificador/valor en la tabla de mapeos
+function saveNewMapping() {
+	var actionSaveMapping = /*[[@{/savemappingtsl}]]*/;
+	var formDataMapping = new FormData(document.forms["mappingTslForm"]);
+	formDataMapping.append('idCountryRegion',idCountry);
+	var tblMapping = $('#mappingTable').DataTable();
+ 	$.ajax(actionSaveMapping, {
+		data :formDataMapping, 
+		contentType: false,
+		processData : false,
+		type : 'POST',
+		success: function(data){
+				var errores = JSON.parse(data.error);
+				if (data.error != null){
+						 	hide();
+					  jQuery.each(errores, function(i, val) {			  
+						  if(i == "existIdentificator"){	
+								var messageExistIden = val;
+								$('#errorModalMapping').html(messageExistIden);
+								$('#errorModalMapping').addClass('alert alert-danger');
+						  } 						  	
+						$('#mappingTslForm *').filter('span').each(function(){
+						if (i == $(this).attr('id')){
+								$("#" + i).text(val);
+								$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
+						}
+						});
+					  })
+
+				  }else{
+					//se oculta la capa 'cargando...'
+				  	hide();
+					//se añade nuevo valor
+					tblMapping.row.add($(data.data)).draw(false);
+				 //se cierra modal
+            $('#modalAddMapping').modal('hide');
+			$("#mappingTslForm")[0].reset();
+}
+		},
+		error : function(data){
+			// se oculta al capa 'cargando...'
+			hide();
+			//se cierra modal
+            $('#modalAddMapping').modal('hide');
+
+		}
+	});
+}
+
+</script>
