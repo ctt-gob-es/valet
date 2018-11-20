@@ -258,7 +258,7 @@ CREATE TABLE "TASK"(
 	"IS_ENABLED" Char(1) NOT NULL
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
 ALTER TABLE "TASK" ADD CONSTRAINT "ID_TASK" PRIMARY KEY ("ID_TASK");
-ALTER TABLE "TASK" ADD CONSTRAINT "TASK_UNIQUE_NAME" UNIQUE ("NAME");
+ALTER TABLE "TASK" ADD CONSTRAINT "TASK_UNIQUE_NAME" UNIQUE ("TOKEN_NAME");
 COMMENT ON TABLE "TASK" IS 'Tabla que almacena toda la información relativa a tareas.';
 COMMENT ON COLUMN "TASK"."ID_TASK" IS 'Identificador de la tabla.';
 COMMENT ON COLUMN "TASK"."TOKEN_NAME" IS 'Valor que representa el token con la descripción almacenada en cada archivo de propiedades por idioma.';
