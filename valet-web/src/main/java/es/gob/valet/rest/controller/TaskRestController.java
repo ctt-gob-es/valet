@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 06/11/2018.
+ * @version 1.4, 25/11/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.gob.valet.commons.utils.GeneralConstants;
-import es.gob.valet.commons.utils.UtilsFecha;
+import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.form.TaskForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
@@ -57,7 +57,7 @@ import es.gob.valet.quartz.scheduler.ValetSchedulerException;
 /**
  * <p>Class that manages the REST request related to the Task's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 06/11/2018.
+ * @version 1.4, 25/11/2018.
  */
 @RestController
 public class TaskRestController {
@@ -124,6 +124,7 @@ public class TaskRestController {
 
 				ProcessTasksScheduler process = ProcessTasksScheduler.getInstance();
 				// se comprueba si la tarea está activa
+
 				String taskName = Language.getResPersistenceConstants(task.getTokenName());
 
 				if (taskForm.getIsEnabled()) {
@@ -188,12 +189,12 @@ public class TaskRestController {
 		Long periodMs = null;
 		switch (planner.getPlannerType().getIdPlannerType().intValue()) {
 			case IPlanificador.TIPO_PLAN_DIARIO:
-				periodMs = UtilsFecha.getPeriod(planner.getHourPeriod(), planner.getMinutePeriod(), planner.getSecondPeriod());
+				periodMs = UtilsDate.getPeriod(planner.getHourPeriod(), planner.getMinutePeriod(), planner.getSecondPeriod());
 				PlanificadorPeriodico ppDaily = new PlanificadorPeriodico(periodMs, planner.getInitDay(), true);
 				result = (IPlanificador) ppDaily;
 				break;
 			case IPlanificador.TIPO_PLAN_PERIOD:
-				periodMs = UtilsFecha.getPeriod(planner.getHourPeriod(), planner.getMinutePeriod(), planner.getSecondPeriod());
+				periodMs = UtilsDate.getPeriod(planner.getHourPeriod(), planner.getMinutePeriod(), planner.getSecondPeriod());
 				PlanificadorPeriodico ppPeriod = new PlanificadorPeriodico(periodMs, planner.getInitDay(), false);
 				result = (IPlanificador) ppPeriod;
 				break;

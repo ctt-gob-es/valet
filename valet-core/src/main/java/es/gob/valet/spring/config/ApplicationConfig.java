@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 24/10/2018.
+ * @version 1.6, 25/11/2018.
  */
 package es.gob.valet.spring.config;
 
@@ -42,6 +42,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import es.gob.valet.cache.FactoryCacheValet;
 import es.gob.valet.cache.exceptions.CacheValetException;
 import es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.commons.utils.UtilsGrayLog;
 import es.gob.valet.commons.utils.UtilsProviders;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
@@ -51,7 +52,7 @@ import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFac
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 24/10/2018.
+ * @version 1.6, 25/11/2018.
  */
 @Configuration
 @EnableAutoConfiguration
@@ -105,6 +106,9 @@ public class ApplicationConfig {
 		logger = Logger.getLogger(ApplicationConfig.class);
 
 		logger.info(Language.getResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_000));
+
+		// Inicializamos la conexión con GrayLog si es necesario.
+		UtilsGrayLog.loadGrayLogConfiguration();
 
 		// Se inicializan los providers necesarios.
 		UtilsProviders.initializeProviders();

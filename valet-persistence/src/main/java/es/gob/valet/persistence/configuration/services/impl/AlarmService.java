@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.services.impl.AlarmService.java.</p>
  * <b>Description:</b><p>Class that implements the communication with the operations of the persistence layer for Alarm.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 25/11/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -39,10 +39,10 @@ import es.gob.valet.persistence.configuration.model.repository.AlarmRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.AlarmDataTablesRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.IAlarmService;
 
-/** 
+/**
  * <p>Class that implements the communication with the operations of the persistence layer for Alarm.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 25/11/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -61,7 +61,7 @@ public class AlarmService implements IAlarmService {
 	private AlarmDataTablesRepository dtRepository;
 
 	/**
-	 * 
+	 *
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IAlarmService#getAllAlarm()
 	 */
@@ -86,8 +86,8 @@ public class AlarmService implements IAlarmService {
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IAlarmService#saveAlarm(es.gob.valet.persistence.configuration.model.entity.Alarm)
 	 */
 	@Override
-	public Alarm saveAlarm(Alarm Alarm) {
-		return repository.save(Alarm);
+	public Alarm saveAlarm(Alarm alarm) {
+		return repository.save(alarm);
 	}
 
 	/**

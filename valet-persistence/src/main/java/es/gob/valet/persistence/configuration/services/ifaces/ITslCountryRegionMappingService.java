@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 29/10/2018.
+ * @version 1.3, 25/11/2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -31,11 +31,10 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 
-
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegionMapping entity .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 29/10/2018.
+ * @version 1.3, 25/11/2018.
  */
 public interface ITslCountryRegionMappingService {
 
@@ -53,13 +52,13 @@ public interface ITslCountryRegionMappingService {
 	 */
 	List<TslCountryRegionMapping> getAllMappingByIdCountry(Long idCRM);
 
-
 	/**
 	 * Method that returns a list with all the TslCountryRegionMapping objects to be showed in Datatable.
 	 * @param input DataTableInput with filtering, paging and sorting configuration.
 	 * @return A set of DataTable rows that matches the query.
 	 */
 	DataTablesOutput<TslCountryRegionMapping> findAll(DataTablesInput input);
+
 	/**
 	 * Method that stores a new Mapping for a Country/Region representation for TSL.
 	 * @param tslCountryRegionMapping Parameter that represents the new mapping for the Country/Region.

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 25/11/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -31,11 +31,12 @@ import org.bouncycastle.asn1.x500.X500Name;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 
 /**
  * <p>Class that contains all utilities methods used in ASN1 Objects.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 25/11/2018.
  */
 public final class UtilsASN1 {
 
@@ -53,17 +54,27 @@ public final class UtilsASN1 {
 	 * @throws CommonUtilsException If the method fails.
 	 */
 	public static String toString(X500Principal name) throws CommonUtilsException {
-		try {
-			X500Name x500Name = X500Name.getInstance(name.getEncoded());
-			String rfcName = (String) x500Name.toString();
-			if (rfcName != null) {
-				return rfcName;
-			} else {
-				return name.getName(X500Principal.RFC2253);
+
+		String result = null;
+
+		if (name != null) {
+
+			try {
+				X500Name x500Name = X500Name.getInstance(name.getEncoded());
+				String rfcName = (String) x500Name.toString();
+				if (rfcName != null) {
+					result = rfcName;
+				} else {
+					result = name.getName(X500Principal.RFC2253);
+				}
+			} catch (Exception e) {
+				throw new CommonUtilsException(IValetException.COD_058, Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_ASN1_CODE_001, e));
 			}
-		} catch (Exception e) {
-			throw new CommonUtilsException(IValetException.COD_058, Language.getFormatResCommonsUtilGeneral(CommonUtilsException.UTILS_ASN1_CODE_001, e));
+
 		}
+
+		return result;
+
 	}
 
 }

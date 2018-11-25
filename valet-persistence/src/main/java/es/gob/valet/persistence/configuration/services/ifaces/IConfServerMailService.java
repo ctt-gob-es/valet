@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,30 +14,30 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailService.java.</p>
  * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer
  * in relation of the ConfServerMail entity.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>4 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 4 oct. 2018.
+ * @version 1.1, 25/11/2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
 import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
 
-/** 
+/**
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the ConfServerMail entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 4 oct. 2018.
+ * @version 1.1, 25/11/2018.
  */
 public interface IConfServerMailService {
 
 	/**
 	 *  Gets the unique confServerMails.
-	 * 
+	 *
 	 * @return Unique confServerMails.
 	 */
 	ConfServerMail getAllConfServerMail();
@@ -50,10 +50,10 @@ public interface IConfServerMailService {
 	ConfServerMail getConfServerMailById(Long idConfServerMail);
 
 	/**
-	* Method that saves ConfServerMail.
-	* @param ConfServerMail to update.
-	* @return {@link ConfServerMail} an object that represents the ConfServerMail.
-	*/
+	 * Method that saves ConfServerMail.
+	 * @param confServerMail to update.
+	 * @return {@link ConfServerMail} an object that represents the ConfServerMail.
+	 */
 	ConfServerMail saveConfServerMail(ConfServerMail confServerMail);
 
 	/**

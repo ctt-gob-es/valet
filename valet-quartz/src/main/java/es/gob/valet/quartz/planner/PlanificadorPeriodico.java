@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.quartz.planner.PlanificadorPeriodico.java.</p>
  * <b>Description:</b><p> Class that defines the information of a diary/periodic planner.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 25/11/2018.
  */
 package es.gob.valet.quartz.planner;
 
@@ -29,12 +29,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.commons.utils.UtilsFecha;
+import es.gob.valet.commons.utils.UtilsDate;
 
-/** 
+/**
  * <p>Class that defines the information of a diary/periodic planner.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 25/11/2018.
  */
 public class PlanificadorPeriodico implements IPlanificador, Serializable {
 
@@ -44,12 +44,12 @@ public class PlanificadorPeriodico implements IPlanificador, Serializable {
 	private static final long serialVersionUID = -4656113774614331791L;
 
 	/**
-	 * Attribute that represents the period planner identifier. 
+	 * Attribute that represents the period planner identifier.
 	 */
 	public static final String PERIOD_PLANNER = "periodPlanner";
 
 	/**
-	 * Attribute that represents the daily planner identifier. 
+	 * Attribute that represents the daily planner identifier.
 	 */
 	public static final String DAILY_PLANNER = "dailyPlanner";
 
@@ -59,7 +59,7 @@ public class PlanificadorPeriodico implements IPlanificador, Serializable {
 	private transient Planner planner;
 
 	/**
-	 * Attribute that represents the default planner identifier. 
+	 * Attribute that represents the default planner identifier.
 	 */
 	private transient String plannerTypeId = PERIOD_PLANNER;
 
@@ -191,7 +191,7 @@ public class PlanificadorPeriodico implements IPlanificador, Serializable {
 		long hourPeriod = planner.getHourPeriod().longValue();
 		long minutePeriod = planner.getMinutePeriod().longValue();
 		long secondPeriod = planner.getSecondPeriod().longValue();
-		return UtilsFecha.getPeriod(hourPeriod, minutePeriod, secondPeriod);
+		return UtilsDate.getPeriod(hourPeriod, minutePeriod, secondPeriod);
 	}
 
 	/**

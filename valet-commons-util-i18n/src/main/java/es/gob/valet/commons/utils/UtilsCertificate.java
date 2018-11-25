@@ -20,22 +20,38 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 25/11/2018.
  */
 package es.gob.valet.commons.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PublicKey;
+import java.security.SignatureException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.security.auth.x500.X500Principal;
+
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
+import org.bouncycastle.asn1.x509.KeyPurposeId;
+import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.IValetException;
@@ -45,7 +61,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 25/11/2018.
  */
 public final class UtilsCertificate {
 
@@ -57,9 +73,9 @@ public final class UtilsCertificate {
 	}
 
 	/**
-	 * Constant that represents a "x509" Certificate type.
+	 * Constant that represents a "X.509" Certificate type.
 	 */
-	private static final String CERTIFICATE_TYPE = "x509";
+	public static final String X509_TYPE = "X.509";
 
 	/**
 	 * Constant that represents the format date.
@@ -75,7 +91,7 @@ public final class UtilsCertificate {
 	public static X509Certificate getX509Certificate(byte[ ] certificate) throws CommonUtilsException {
 		InputStream is = new ByteArrayInputStream(certificate);
 		try {
-			return (X509Certificate) CertificateFactory.getInstance(CERTIFICATE_TYPE).generateCertificate(is);
+			return (X509Certificate) CertificateFactory.getInstance(X509_TYPE).generateCertificate(is);
 		} catch (CertificateException e) {
 			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
 		} finally {
@@ -220,6 +236,200 @@ public final class UtilsCertificate {
 
 		}
 		return validTo;
+	}
+
+	/**
+	 * Method that indicates whether some other certificate is "equal to" this one (<code>true</code>) or not (<code>false</code>).
+	 * @param cert1 Parameter that represents the first certificate to compare.
+	 * @param cert2 Parameter that represents the second certificate to compare.
+	 * @return a boolean that indicates whether some other certificate is "equal to" this one (<code>true</code>) or not (<code>false</code>).
+	 * @throws CommonUtilsException If there is some error getting de issuer information from the input certificates.
+	 */
+	public static boolean equals(X509Certificate cert1, X509Certificate cert2) throws CommonUtilsException {
+		boolean res = false;
+		if (cert1 != null && cert2 != null) {
+			if (cert1.getPublicKey().equals(cert2.getPublicKey())) {
+				String idEmisor1 = getCertificateIssuerId(cert1);
+				String idEmisor2 = getCertificateIssuerId(cert2);
+				if (idEmisor1 != null && idEmisor2 != null && idEmisor1.equalsIgnoreCase(idEmisor2)) {
+					if (cert1.getSerialNumber() != null && cert2.getSerialNumber() != null && cert1.getSerialNumber().equals(cert2.getSerialNumber())) {
+						res = true;
+					} else {
+						res = false;
+					}
+				}
+			} else {
+				res = false;
+			}
+		}
+		return res;
+	}
+
+	/**
+	 * Checks if a given certificate is issued by another one.
+	 * @param certIssuer Issuer to check
+	 * @param cert Certificate to be checked.
+	 * @return <code>true</code> if the input certificate is issued by the specified issuer certificate,
+	 * otherwise <code>false</code>.
+	 * @throws CommonUtilsException Exception thrown if there is any problem verifying the certificates.
+	 */
+	public static boolean verify(X509Certificate certIssuer, X509Certificate cert) throws CommonUtilsException {
+		boolean result = certIssuer != null && cert != null;
+		return result && verify(certIssuer.getPublicKey(), cert) && getCertificateId(certIssuer).equals(getCertificateIssuerId(cert));
+	}
+
+	/**
+	 * Checks if a given public key corresponds to the private key that signed the input certificate.
+	 * @param publicKey Public key to use to verify the certificate.
+	 * @param cert Certificate to check.
+	 * @return <code>true</code> if the public key verifies the certificate.
+	 * @throws CommonUtilsException if there is any problem verifying the certificate.
+	 */
+	public static boolean verify(PublicKey publicKey, X509Certificate cert) throws CommonUtilsException {
+		if (publicKey == null || cert == null) {
+			return false;
+		}
+		try {
+			cert.verify(publicKey);
+		} catch (InvalidKeyException e) {
+			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_001), e);
+		} catch (CertificateException e) {
+			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_002), e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_003), e);
+		} catch (NoSuchProviderException e) {
+			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_004), e);
+		} catch (SignatureException e) {
+			// La firma no coincide.
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Method that checks whether a certificate is self-signed (<code>true</code>) or not (<code>false</code>).
+	 * @param cert Parameter that represents the certificate.
+	 * @return a boolean that indicates whether a certificate is self-signed (<code>true</code>) or not (<code>false</code>).
+	 */
+	public static boolean isSelfSigned(X509Certificate cert) {
+		try {
+			return verify(cert, cert);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Gets the country specified in the issuer name of the input certificate.
+	 * @param x509cert X509 Certificate to analyze to obtain the country of its issuer name.
+	 * @return String with the representation of the country of the certificate issuer.
+	 * in ISO 3166-1. <code>null</code> in case of some error or the country is not defined.
+	 */
+	public static String getIssuerCountryOfTheCertificateString(X509Certificate x509cert) {
+
+		String result = null;
+
+		if (x509cert != null) {
+
+			result = getRDNFirstValueFromX500Principal(x509cert.getIssuerX500Principal(), X509ObjectIdentifiers.countryName);
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Gets the RDN First ocurrence value with the OID indicated from the input X500Name.
+	 * @param x500Name X.500 Name to analyze.
+	 * @param rdnAsn1ObjectIdentifier Object Identifier that represents the RDN to search.
+	 * @return the RDN First ocurrence value with the OID indicated from the input X500Name.
+	 * <code>null</code> if some of the input parameters are <code>null</code> or there is some
+	 * error analyzing the X.500 Name.
+	 */
+	public static String getRDNFirstValueFromX500Name(X500Name x500Name, ASN1ObjectIdentifier rdnAsn1ObjectIdentifier) {
+
+		String result = null;
+
+		if (x500Name != null && rdnAsn1ObjectIdentifier != null) {
+
+			RDN[ ] rdnArray = x500Name.getRDNs(rdnAsn1ObjectIdentifier);
+			if (rdnArray != null && rdnArray.length > 0) {
+				result = IETFUtils.valueToString(rdnArray[0].getFirst().getValue());
+			}
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Gets the RDN First ocurrence value with the OID indicated from the input X.500 Principal.
+	 * @param x500Principal X.500 Principal to analyze.
+	 * @param rdnAsn1ObjectIdentifier Object Identifier that represents the RDN to search.
+	 * @return the RDN First ocurrence value with the OID indicated from the input X.500 Principal.
+	 * <code>null</code> if some of the input parameters are <code>null</code> or there is some
+	 * error analyzing the X.500 Principal.
+	 */
+	public static String getRDNFirstValueFromX500Principal(X500Principal x500Principal, ASN1ObjectIdentifier rdnAsn1ObjectIdentifier) {
+
+		String result = null;
+
+		if (x500Principal != null && rdnAsn1ObjectIdentifier != null) {
+
+			X500Name x500Name = X500Name.getInstance(x500Principal.getEncoded());
+			result = getRDNFirstValueFromX500Name(x500Name, rdnAsn1ObjectIdentifier);
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Checks if the input certificate has the key purpose for TimeStamping.
+	 * @param cert X509v3 certificate to check.
+	 * @return <code>true</code> if the input certificate has the key purpose for timestamping, otherwise <code>false</code>.
+	 * @throws CommonUtilsException In case of some error extracting the keyPurpose extension from the certificate.
+	 */
+	public static boolean hasCertKeyPurposeTimeStamping(X509Certificate cert) throws CommonUtilsException {
+
+		boolean result = false;
+
+		// Si el certificado no es nulo...
+		if (cert != null) {
+
+			try {
+
+				// Obtenemos la lista de KeyPurpose del certificado.
+				List<String> keyPurposeList = cert.getExtendedKeyUsage();
+
+				// Si la lista no es nula ni vacía...
+				if (keyPurposeList != null && !keyPurposeList.isEmpty()) {
+
+					// Recorremos los OIDs declarados en la lista...
+					for (String keyPurpose: keyPurposeList) {
+
+						// Si es igual al OID de id_kp_timestamping, es que lo
+						// hemos encontrado.
+						if (KeyPurposeId.id_kp_timeStamping.getId().equals(keyPurpose)) {
+							result = true;
+							break;
+						}
+
+					}
+
+				}
+
+			} catch (CertificateParsingException e) {
+				throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_005), e);
+			}
+
+		}
+
+		return result;
+
 	}
 
 }

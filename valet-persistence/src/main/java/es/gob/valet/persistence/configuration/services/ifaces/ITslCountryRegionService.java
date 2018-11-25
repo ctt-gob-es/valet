@@ -20,9 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 25/11/2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
+
+import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +33,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer.</p>
  * <b>Project:</b><p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegion entity.</p>
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 25/11/2018.
  */
 public interface ITslCountryRegionService {
 
@@ -61,5 +63,28 @@ public interface ITslCountryRegionService {
 	 * @return Name of country/region.
 	 */
 	String getNameCountryRegionById(Long idCountry);
+
+	/**
+	 * Gets all the TSL Country Region from the data base.
+	 * @param loadMappings Flag that indicates if it is necesary to load the associated mappings (<code>true</code>)
+	 * or not (<code>false</code>).
+	 * @return List with all the TSL Country Region data representation from the data base.
+	 */
+	@Transactional
+	List<TslCountryRegion> getAllTslCountryRegion(boolean loadMappings);
+
+	/**
+	 * Updates/Saves the input TSL Country Region in the data base.
+	 * @param tslCountryRegion TSL country region to update/save in the data base.
+	 * @return The updates/saves TSL country region, or <code>null</code> if the input
+	 * is <code>null</code>.
+	 */
+	TslCountryRegion updateSaveTslCountryRegion(TslCountryRegion tslCountryRegion);
+
+	/**
+	 * Delete from the data base the TSL Country Region with the input id.
+	 * @param idTslCountryRegion TSL Country Region Id to remove.
+	 */
+	void deleteTslCountryRegionById(Long idTslCountryRegion);
 
 }

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 25/11/2018.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the commons-util module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 25/11/2018.
  */
 public interface ICommonsUtilGeneralMessages {
 
@@ -64,10 +64,46 @@ public interface ICommonsUtilGeneralMessages {
 	String UTILS_RFC_2253_000 = "UTILS_RFC2253_000";
 
 	/**
+	 * Constant attribute that represents the property key <code>UTILS_ASN1_CODE_001</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_ASN1_CODE_001 = "UTILS_ASN1_CODE_001";
+
+	/**
 	 * Constant attribute that represents the property key <code>UTILS_CERTIFICATE_000</code> belonging to the
 	 * file messages/valet-commons-util/general_xx_YY.properties.
 	 */
 	String UTILS_CERTIFICATE_000 = "UTILS_CERTIFICATE_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CERTIFICATE_001</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CERTIFICATE_001 = "UTILS_CERTIFICATE_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CERTIFICATE_002</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CERTIFICATE_002 = "UTILS_CERTIFICATE_002";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CERTIFICATE_003</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CERTIFICATE_003 = "UTILS_CERTIFICATE_003";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CERTIFICATE_004</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CERTIFICATE_004 = "UTILS_CERTIFICATE_004";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CERTIFICATE_005</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CERTIFICATE_005 = "UTILS_CERTIFICATE_005";
 
 	/**
 	 * Constant attribute that represents the property key <code>UTILS_RESOURCES_000</code> belonging to the
@@ -80,17 +116,179 @@ public interface ICommonsUtilGeneralMessages {
 	 * file messages/valet-commons-util/general_xx_YY.properties.
 	 */
 	String UTILS_CRYPTO_000 = "UTILS_CRYPTO_000";
-	
+
 	/**
 	 * Constant attribute that represents the property key <code>UTILS_CRYPTO_001</code> belonging to the
 	 * file messages/valet-commons-util/general_xx_YY.properties.
 	 */
 	String UTILS_CRYPTO_001 = "UTILS_CRYPTO_001";
-	
+
 	/**
 	 * Constant attribute that represents the property key <code>UTILS_CRYPTO_002</code> belonging to the
 	 * file messages/valet-commons-util/general_xx_YY.properties.
 	 */
 	String UTILS_CRYPTO_002 = "UTILS_CRYPTO_002";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CRL_000</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CRL_000 = "UTILS_CRL_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CRL_001</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CRL_001 = "UTILS_CRL_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CRL_002</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CRL_002 = "UTILS_CRL_002";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CRL_003</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CRL_003 = "UTILS_CRL_003";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CRL_003</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CRL_004 = "UTILS_CRL_004";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_000</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_GRAYLOG_000 = "UTILS_GRAYLOG_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_001</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_GRAYLOG_001 = "UTILS_GRAYLOG_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_002</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_GRAYLOG_002 = "UTILS_GRAYLOG_002";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_003</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_GRAYLOG_003 = "UTILS_GRAYLOG_003";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_004</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_GRAYLOG_004 = "UTILS_GRAYLOG_004";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_005</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_GRAYLOG_005 = "UTILS_GRAYLOG_005";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_006</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_GRAYLOG_006 = "UTILS_GRAYLOG_006";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_LDAP_000</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_LDAP_000 = "UTILS_LDAP_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_LDAP_001</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_LDAP_001 = "UTILS_LDAP_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_LDAP_002</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_LDAP_002 = "UTILS_LDAP_002";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_LDAP_003</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_LDAP_003 = "UTILS_LDAP_003";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_LDAP_004</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_LDAP_004 = "UTILS_LDAP_004";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_LDAP_005</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_LDAP_005 = "UTILS_LDAP_005";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CONNECTION_000</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CONNECTION_000 = "UTILS_CONNECTION_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CONNECTION_001</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CONNECTION_001 = "UTILS_CONNECTION_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_SSL_SOCKET_000</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_SSL_SOCKET_000 = "UTILS_SSL_SOCKET_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_SSL_SOCKET_001</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_SSL_SOCKET_001 = "UTILS_SSL_SOCKET_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_PROVIDERS_000</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_PROVIDERS_000 = "UTILS_PROVIDERS_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_PROVIDERS_001</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_PROVIDERS_001 = "UTILS_PROVIDERS_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_PROVIDERS_002</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_PROVIDERS_002 = "UTILS_PROVIDERS_002";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_PROVIDERS_003</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_PROVIDERS_003 = "UTILS_PROVIDERS_003";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_PROVIDERS_004</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_PROVIDERS_004 = "UTILS_PROVIDERS_004";
 
 }

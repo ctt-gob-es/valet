@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 25/11/2018.
  */
 package es.gob.valet.exceptions;
 
 /**
  * <p>Class that creates an exception that occurs in CommonsUtils module.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 25/11/2018.
  */
 public class CommonUtilsException extends ValetException {
 
@@ -35,11 +35,6 @@ public class CommonUtilsException extends ValetException {
 	 * Attribute that represents serialVersionUID.
 	 */
 	private static final long serialVersionUID = -7931386877131764009L;
-
-	/**
-	 * Exception i18n occurred in utilsAsn1(CertificateException).
-	 */
-	public static final String UTILS_ASN1_CODE_001 = "UTILS_ASN1_CODE_001";
 
 	/**
 	 * Constructor method for the class CommonUtilsException.java.

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>10/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 25/11/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -29,7 +29,7 @@ import org.apache.commons.codec.binary.Hex;
 /**
  * <p>Class that provides functionality for managing strings and characters.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 25/11/2018.
  */
 public final class UtilsStringChar {
 
@@ -146,7 +146,7 @@ public final class UtilsStringChar {
 	public static final String SYMBOL_HYPHEN_STRING = String.valueOf(SYMBOL_HYPHEN);
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>,</code>.
+	 * Constant attribute that represents the char to identify the symbol: <code>,</code>.
 	 */
 	public static final char SYMBOL_COMMA = ',';
 
@@ -156,7 +156,7 @@ public final class UtilsStringChar {
 	public static final String SYMBOL_COMMA_STRING = String.valueOf(SYMBOL_COMMA);
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>/</code>.
+	 * Constant attribute that represents the char to identify the symbol: <code>/</code>.
 	 */
 	public static final char SYMBOL_SLASH = '/';
 
@@ -166,7 +166,7 @@ public final class UtilsStringChar {
 	public static final String SYMBOL_SLASH_STRING = String.valueOf(SYMBOL_SLASH);
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>?</code>.
+	 * Constant attribute that represents the char to identify the symbol: <code>?</code>.
 	 */
 	public static final char SYMBOL_QUESTION_MARK = '?';
 
@@ -174,6 +174,46 @@ public final class UtilsStringChar {
 	 * Constant attribute that represents the string to identify the symbol: <code>?</code>.
 	 */
 	public static final String SYMBOL_QUESTION_MARK_STRING = String.valueOf(SYMBOL_QUESTION_MARK);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>\</code>.
+	 */
+	public static final char SYMBOL_ESCAPED_BACKSLASH = '\\';
+
+	/**
+	 * Constant attribute that represents the string to identify the symbol: <code>\</code>.
+	 */
+	public static final String SYMBOL_ESCAPED_BACKSLASH_STRING = String.valueOf(SYMBOL_ESCAPED_BACKSLASH);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>(</code>.
+	 */
+	public static final char SYMBOL_OPEN_BRACKET = '(';
+
+	/**
+	 * Constant attribute that represents the string to identify the symbol: <code>(</code>.
+	 */
+	public static final String SYMBOL_OPEN_BRACKET_STRING = String.valueOf(SYMBOL_OPEN_BRACKET);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>)</code>.
+	 */
+	public static final char SYMBOL_CLOSE_BRACKET = ')';
+
+	/**
+	 * Constant attribute that represents the string to identify the symbol: <code>)</code>.
+	 */
+	public static final String SYMBOL_CLOSE_BRACKET_STRING = String.valueOf(SYMBOL_CLOSE_BRACKET);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>*</code>.
+	 */
+	public static final char SYMBOL_ASTERISK = '*';
+
+	/**
+	 * Constant attribute that represents the string to identify the symbol: <code>*</code>.
+	 */
+	public static final String SYMBOL_ASTERISK_STRING = String.valueOf(SYMBOL_ASTERISK);
 
 	/**
 	 * Constant attribute that represents the array with all the characters defined as constants in this class.

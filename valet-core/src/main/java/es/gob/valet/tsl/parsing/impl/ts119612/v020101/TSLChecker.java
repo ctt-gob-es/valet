@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 25/11/2018.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -42,12 +42,10 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.DERBitString;
-import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
+import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.etsi.uri.x01903.v13.CertIDListType;
 import org.etsi.uri.x01903.v13.CertIDType;
@@ -103,7 +101,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSPInformation;
  * <p>Class that represents a TSL Data Checker of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 25/11/2018.
  */
 public class TSLChecker extends ATSLChecker {
 
@@ -1861,15 +1859,8 @@ public class TSLChecker extends ATSLChecker {
 	 */
 	private void checkX509v3CountryCodeAndOrganization(X509Certificate x509Certificate) throws TSLMalformedException {
 
-		JcaX509CertificateHolder jcaX509cert = null;
-		try {
-			jcaX509cert = new JcaX509CertificateHolder(x509Certificate);
-		} catch (CertificateEncodingException e) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL094), e);
-		}
-		X500Name x500name = jcaX509cert.getSubject();
-		String countryCode = IETFUtils.valueToString(x500name.getRDNs(BCStyle.C)[0].getFirst().getValue());
-		String organization = IETFUtils.valueToString(x500name.getRDNs(BCStyle.O)[0].getFirst().getValue());
+		String countryCode = UtilsCertificate.getRDNFirstValueFromX500Principal(x509Certificate.getSubjectX500Principal(), X509ObjectIdentifiers.countryName);
+		String organization = UtilsCertificate.getRDNFirstValueFromX500Principal(x509Certificate.getSubjectX500Principal(), X509ObjectIdentifiers.organization);
 
 		String schemeTerritory = getTSLObject().getSchemeInformation().getSchemeTerritory();
 		if (!schemeTerritory.equals(countryCode)) {

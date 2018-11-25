@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 18/10/2018.
+ * @version 1.3, 25/11/2018.
  */
 package es.gob.valet.rest.services;
 
@@ -38,7 +38,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 
-import es.gob.valet.commons.utils.UtilsFecha;
+import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.i18n.Language;
@@ -53,7 +53,7 @@ import es.gob.valet.rest.elements.TslRevocationStatus;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 18/10/2018.
+ * @version 1.3, 25/11/2018.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -104,7 +104,7 @@ public class TslRestService implements ITslRestService {
 		Date detectionDateAux = null;
 		if (!UtilsStringChar.isNullOrEmpty(detectionDate)) {
 			try {
-				detectionDateAux = UtilsFecha.convierteFecha(detectionDate, UtilsFecha.FORMATO_FECHA_ESTANDAR);
+				detectionDateAux = UtilsDate.transformDate(detectionDate, UtilsDate.FORMAT_DATE_TIME_STANDARD);
 			} catch (ParseException e) {
 				allIsOk = Boolean.FALSE;
 				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG006, new Object[ ] { "detectionDate" }));

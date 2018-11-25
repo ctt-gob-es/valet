@@ -373,6 +373,16 @@
 				<version>1.2.16</version>
 			</dependency>
 			<dependency>
+				<groupId>biz.paluch.logging</groupId>
+				<artifactId>logstash-gelf</artifactId>
+				<version>1.11.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.novell.ldap</groupId>
+				<artifactId>jldap</artifactId>
+				<version>20071012</version>
+			</dependency>
+			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>1.11</version>
@@ -388,6 +398,16 @@
 			    <version>1.4</version>
 			</dependency>
 			<dependency>
+			    <groupId>org.apache.httpcomponents</groupId>
+			    <artifactId>httpclient</artifactId>
+			    <version>4.5.6</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.samba.jcifs</groupId>
+			    <artifactId>jcifs</artifactId>
+			    <version>1.3.14-kohsuke-1</version>
+			</dependency>
+			<dependency>
 			    <groupId>org.bouncycastle</groupId>
 			    <artifactId>bcprov-jdk15on</artifactId>
 			    <version>1.60</version>
@@ -395,6 +415,11 @@
 			<dependency>
 			    <groupId>org.bouncycastle</groupId>
 			    <artifactId>bcmail-jdk15on</artifactId>
+			    <version>1.60</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.bouncycastle</groupId>
+			    <artifactId>bcpkix-jdk15on</artifactId>
 			    <version>1.60</version>
 			</dependency>
 			<dependency>

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 25/11/2018.
  */
 package es.gob.valet.persistence.configuration.cache.engine;
 
@@ -50,7 +50,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Facade for all the configuration cache objects of the configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 25/11/2018.
  */
 public final class ConfigurationCacheFacade {
 
@@ -72,6 +72,16 @@ public final class ConfigurationCacheFacade {
 	 */
 	private static TSLCacheFacade getTSLCacheFacade() {
 		return TSLCacheFacade.getInstance();
+	}
+
+	/**
+	 * Clear the TSL Cache.
+	 * @throws TSLCacheException In case of some error while clearing the cache.
+	 */
+	public static void tslClearTSLCache() throws TSLCacheException {
+
+		getTSLCacheFacade().clearTSLCache();
+
 	}
 
 	/**
@@ -230,7 +240,7 @@ public final class ConfigurationCacheFacade {
 	private static KeystoreCacheFacade getKeystoreCacheFacade() {
 		return KeystoreCacheFacade.getInstance();
 	}
-	
+
 	/**
 	 * Adds or update the keystore in the configuration cache.
 	 * @param kco Object reprensentation of the keystore in the configuration cache.
@@ -240,7 +250,7 @@ public final class ConfigurationCacheFacade {
 	public static KeystoreCacheObject keystoreAddUpdateKeystore(KeystoreCacheObject kco) throws KeystoreCacheException {
 		return getKeystoreCacheFacade().addUpdateKeystore(kco);
 	}
-	
+
 	/**
 	 * Gets the Keystore representation from the configuration cache.
 	 * @param idKeystore Keystore identifier.
@@ -312,12 +322,13 @@ public final class ConfigurationCacheFacade {
 	 */
 	private static void initializeAllConfigurationCacheData(boolean inLoadingCache) {
 
-		 // Declaramos las variables a usar para indicar los tiempos de carga de
-		 // cada "módulo".
-		 long initTime = 0;
-		 long endTime = 0;
-		 
-		// Se inicializan todas los almacenes de certificados en la caché de configuración...
+		// Declaramos las variables a usar para indicar los tiempos de carga de
+		// cada "módulo".
+		long initTime = 0;
+		long endTime = 0;
+
+		// Se inicializan todas los almacenes de certificados en la caché de
+		// configuración...
 		LOGGER.info(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG050));
 		initTime = Calendar.getInstance().getTimeInMillis();
 		try {
