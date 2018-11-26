@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 26/11/2018.
  */
 package es.gob.valet.tsl.access;
 
@@ -77,7 +77,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /** 
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 26/11/2018.
  */
 public final class TSLManager {
 
@@ -776,7 +776,7 @@ public final class TSLManager {
 	}
 
 	/**
-	 * Reloads the TSL clustered cache. First clear all the data associated to the TSL in the cache, and then
+	 * Reloads the TSL cache. First clear all the data associated to the TSL in the cache, and then
 	 * gets it from the data base and parses all the XML that reprensents its.
 	 */
 	public void reloadTSLCache() {
@@ -1067,8 +1067,8 @@ public final class TSLManager {
 	}
 
 	/**
-	 * Gets the country/region information from the clustered cache.
-	 * @param countryRegionCode Country/Region code to search in the clustered cache.
+	 * Gets the country/region information from the cache.
+	 * @param countryRegionCode Country/Region code to search in the cache.
 	 * @return TSL country/region cache object representation. <code>null</code> if it does not exist.
 	 * @throws TSLManagingException In case of some error getting the country/region information.
 	 */
@@ -1136,7 +1136,7 @@ public final class TSLManager {
 	}
 
 	/**
-	 * Remove a TSL Country/Region from the data base and the clustered cache.
+	 * Remove a TSL Country/Region from the data base and the cache.
 	 * @param countryRegionCode Country/Region code that represents the country/region to remove.
 	 * @throws TSLManagingException In case of some error while is removing the country/region from the data base and cache.
 	 */
@@ -1192,7 +1192,7 @@ public final class TSLManager {
 	}
 
 	/**
-	 * Gets a country/region mapping information from the clustered cache.
+	 * Gets a country/region mapping information from the cache.
 	 * @param countryRegionCode Country/Region code representation.
 	 * @param mappingId Country/Region Mapping ID to get.
 	 * @return TSL country/region mapping cache object representation. <code>null</code> if it does not exist.
@@ -1274,10 +1274,15 @@ public final class TSLManager {
 	 * @param mappingValue Mapping value.
 	 * @param associationType Association type for the mapping. It only must be {@link IAssociationTypeIdConstants#ID_FREE_ASSOCIATION}
 	 * or {@link IAssociationTypeIdConstants#ID_SIMPLE_ASSOCIATION}.
-	 * @throws TSLManagingException In case of some error adding the new mapping to the data base and clustered cache.
+	 * @return TSL Country/Region Mapping data base object representation that has been added. <code>null</code> if there is
+	 * some problem with the input parameters, adding the mapping to the data base or if the TSL Country/Region is not defined.
+	 * @throws TSLManagingException In case of some error adding the new mapping to the data base and cache.
 	 */
-	public void addNewMappingToCountryRegion(String countryRegionCode, String mappingIdentificator, String mappingDescription, String mappingValue, Long associationType) throws TSLManagingException {
+	public TslCountryRegionMapping addNewMappingToCountryRegion(String countryRegionCode, String mappingIdentificator, String mappingDescription, String mappingValue, Long associationType) throws TSLManagingException {
 
+		// Inicializamos el resultado...
+		TslCountryRegionMapping result = null;
+		
 		// Comprobamos que los parámetros de entrada son válidos.
 		if (!UtilsStringChar.isNullOrEmptyTrim(countryRegionCode) && !UtilsStringChar.isNullOrEmptyTrim(mappingIdentificator) && !UtilsStringChar.isNullOrEmptyTrim(mappingValue) && associationType != null) {
 
@@ -1305,9 +1310,12 @@ public final class TSLManager {
 						tslcrm.setMappingDescription(mappingDescription);
 						tslcrm.setAssociationType(cat);
 						tslcrm.setMappingValue(mappingValue);
-						ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService().save(tslcrm);
+						tslcrm = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService().save(tslcrm);
 
 						ConfigurationCacheFacade.tslAddUpdateMappingToCountryRegion(countryRegionCode, tslcrm);
+						
+						// Asignamos el objeto añadido en base de datos como resultado.
+						result = tslcrm;
 
 					}
 
@@ -1320,6 +1328,8 @@ public final class TSLManager {
 			}
 
 		}
+		
+		return result;
 
 	}
 
@@ -1454,7 +1464,7 @@ public final class TSLManager {
 	 * @param tslDataId TSL Data ID to search.
 	 * @return a TSL Data Cache Object representation with the input TSL Data ID.
 	 * <code>null</code> if there is not exist.
-	 * @throws TSLManagingException In case of some error getting the data from the clustered cache.
+	 * @throws TSLManagingException In case of some error getting the data from the cache.
 	 */
 	public TSLDataCacheObject getTSLDataCacheObject(long tslDataId) throws TSLManagingException {
 
@@ -1471,7 +1481,7 @@ public final class TSLManager {
 //	 * @param tslDataIds TSL Data ID to search.
 //	 * @return a TSL Data Cache Object array representation with the input TSL Data IDs.
 //	 * <code>null</code> if these are not exist.
-//	 * @throws TSLManagingException In case of some error getting the data from the clustered cache.
+//	 * @throws TSLManagingException In case of some error getting the data from the cache.
 //	 */
 //	public TSLDataCacheObject[ ] getTSLDataCacheObject(long[ ] tslDataIds) throws TSLManagingException {
 //
@@ -1601,13 +1611,13 @@ public final class TSLManager {
 	 * @param tslSpecification TSL Specification that covers the input TSL.
 	 * @param tslSpecificationVersion TSL Specification Version that covers the input TSL.
 	 * @param tslXMLbytes Array of bytes that defines the TSL in a XML format.
-	 * @return TSL Data cache object representation of the TSL data added. <code>null</code> if
+	 * @return TSL Data data base object representation of the TSL data added. <code>null</code> if
 	 * some input parameter is not correctly defined.
 	 * @throws TSLManagingException In case of some error adding the TSL in the data base or the cache.
 	 */
-	public TSLDataCacheObject addNewTSLData(String urlTsl, String tslSpecification, String tslSpecificationVersion, byte[ ] tslXMLbytes) throws TSLManagingException {
+	public TslData addNewTSLData(String urlTsl, String tslSpecification, String tslSpecificationVersion, byte[ ] tslXMLbytes) throws TSLManagingException {
 
-		TSLDataCacheObject result = null;
+		TslData result = null;
 		
 		// Comprobamos que los parámetros de entrada sean válidos.
 		if (!UtilsStringChar.isNullOrEmptyTrim(tslSpecification) && !UtilsStringChar.isNullOrEmptyTrim(tslSpecificationVersion) && tslXMLbytes != null) {
@@ -1655,7 +1665,10 @@ public final class TSLManager {
 				updateNewAvaliableTSLData(tcrco);
 
 				// Y ahora lo añadimos en la caché compartida.
-				result = ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
+				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
+				
+				// Asignamos como resultado el objeto de base de datos.
+				result = td;
 
 			} catch (Exception e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171), e);
@@ -1896,10 +1909,10 @@ public final class TSLManager {
 	}
 
 	/**
-	 * Removes the specified TSL Data from the data base and the clustered cache.
+	 * Removes the specified TSL Data from the data base and the cache.
 	 * @param countryRegionCode Country/Region code representation.
 	 * @param tslDataId TSL Data identifier to remove.
-	 * @throws TSLManagingException In case of some error removinga TSL from the data base and clustered cache.
+	 * @throws TSLManagingException In case of some error removing a TSL from the data base and cache.
 	 */
 	public void removeTSLData(String countryRegionCode, Long tslDataId) throws TSLManagingException {
 
