@@ -284,7 +284,7 @@ public final class TSLManager {
 		return result;
 
 	}
-
+	
 	/**
 	 * Tries to detect the input X509v3 certificate searching a valid TSL for it, and using this for the detection process.
 	 * Then returns the validation/detection result. If no TSL is finded for the certificate, then returns <code>null</code>.
@@ -1426,6 +1426,30 @@ public final class TSLManager {
 	}
 
 	/**
+	 * Gets the TSL Data associated to a specific TSL location from the cache.
+	 * @param tslLocation URI string representation of the TSL location where to obtain it.
+	 * @return TSL Data Cache Object representation. <code>null</code> if there is not.
+	 * @throws TSLManagingException In case of some error getting the TSL associated to a specific TSL location.
+	 */
+	public TSLDataCacheObject getTSLDataFromTSLLocation(String tslLocation) throws TSLManagingException {
+		
+		TSLDataCacheObject result = null;
+		
+		if (!UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
+			
+			try {
+				result = ConfigurationCacheFacade.tslGetTSLDataFromLocation(tslLocation);
+			} catch (TSLCacheException e) {
+				throw new TSLManagingException(IValetException.COD_191, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL103, new Object[ ] { tslLocation, "Not specified" }), e);
+			}
+			
+		}
+		
+		return result;
+		
+	}
+
+	/**
 	 * Gets the TSL Data Cache Object representation with the input ID.
 	 * @param tslDataId TSL Data ID to search.
 	 * @return a TSL Data Cache Object representation with the input TSL Data ID.
@@ -1577,10 +1601,14 @@ public final class TSLManager {
 	 * @param tslSpecification TSL Specification that covers the input TSL.
 	 * @param tslSpecificationVersion TSL Specification Version that covers the input TSL.
 	 * @param tslXMLbytes Array of bytes that defines the TSL in a XML format.
+	 * @return TSL Data cache object representation of the TSL data added. <code>null</code> if
+	 * some input parameter is not correctly defined.
 	 * @throws TSLManagingException In case of some error adding the TSL in the data base or the cache.
 	 */
-	public void addNewTSLData(String urlTsl, String tslSpecification, String tslSpecificationVersion, byte[ ] tslXMLbytes) throws TSLManagingException {
+	public TSLDataCacheObject addNewTSLData(String urlTsl, String tslSpecification, String tslSpecificationVersion, byte[ ] tslXMLbytes) throws TSLManagingException {
 
+		TSLDataCacheObject result = null;
+		
 		// Comprobamos que los parámetros de entrada sean válidos.
 		if (!UtilsStringChar.isNullOrEmptyTrim(tslSpecification) && !UtilsStringChar.isNullOrEmptyTrim(tslSpecificationVersion) && tslXMLbytes != null) {
 
@@ -1627,13 +1655,15 @@ public final class TSLManager {
 				updateNewAvaliableTSLData(tcrco);
 
 				// Y ahora lo añadimos en la caché compartida.
-				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
+				result = ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
 
 			} catch (Exception e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171), e);
 			}
 
 		}
+		
+		return result;
 
 	}
 
