@@ -300,7 +300,7 @@ public class TslData implements Serializable {
 	 * Gets the value of the attribute {@link #tslCountryRegion}.
 	 * @return the value of the attribute {@link #tslCountryRegion}.
 	 */
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_COUNTRY_REGION", nullable = false)
 	@JsonView(DataTablesOutput.View.class)
 	public TslCountryRegion getTslCountryRegion() {

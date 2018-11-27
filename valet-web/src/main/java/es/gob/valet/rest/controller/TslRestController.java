@@ -65,6 +65,7 @@ import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
@@ -76,6 +77,8 @@ import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
+import es.gob.valet.tsl.access.TSLManager;
+import es.gob.valet.tsl.exceptions.TSLManagingException;
 
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
@@ -215,16 +218,16 @@ public class TslRestController {
 	/**
 	 * Method that adds a new TSL.
 	 * @param implTslFile Parameter that represents the file with the implementation of the TSL.
-	 * @param specification  Parameter that represents the ETSI TS number specification for TSL.
-	 * @param url Parameter that represents the URI where this TSL is officially located.
-	 * @param version Parameter that represents the ETSI TS specification version.
+	 * @param specificationTsl  Parameter that represents the ETSI TS number specification for TSL.
+	 * @param urlTsl Parameter that represents the URI where this TSL is officially located.
+	 * @param versionTsl Parameter that represents the ETSI TS specification version.
 	 * @return {@link DataTablesOutput<TslData>}
 	 * @throws IOException If the method fails.
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/savetsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody DataTablesOutput<TslData> saveTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_SPECIFICATION) String specification, @RequestParam(FIELD_URL) String url, @RequestParam(FIELD_VERSION) String version) throws IOException {
+	public @ResponseBody DataTablesOutput<TslData> saveTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_SPECIFICATION) String specificationTsl, @RequestParam(FIELD_URL) String urlTsl, @RequestParam(FIELD_VERSION) String versionTsl) throws IOException {
 
 		DataTablesOutput<TslData> dtOutput = new DataTablesOutput<>();
 
@@ -232,11 +235,9 @@ public class TslRestController {
 		byte[ ] fileBytes = null;
 		JSONObject json = new JSONObject();
 		List<TslData> listTSL = new ArrayList<TslData>();
-		TslData tslData = null;
 
-		ITslCountryRegionService tslCountryRegionService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService();
 		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
-		ICTslImplService cTSLImplService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService();
+
 		try {
 			// comprobamos que se han indicado todos los campos obligatorios
 			if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
@@ -248,119 +249,33 @@ public class TslRestController {
 				fileBytes = implTslFile.getBytes();
 			}
 
-			if (specification == null || specification.equals(String.valueOf(-1))) {
+			if (specificationTsl == null || specificationTsl.equals(String.valueOf(-1))) {
 				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
 				json.put(FIELD_SPECIFICATION + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
 				error = true;
 			}
 
-			if (UtilsStringChar.isNullOrEmpty(version) || version.equals(String.valueOf(-1))) {
+			if (UtilsStringChar.isNullOrEmpty(versionTsl) || versionTsl.equals(String.valueOf(-1))) {
 				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VERSION));
 				json.put(FIELD_VERSION + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VERSION));
 				error = true;
 			}
 
 			if (!error) {
-				// creamos una nueva instancia de TslData
+				// se añade una nueva TSL en la base de datos y en la caché
+				// compartida.
+				TslData tslNew = TSLManager.getInstance().addNewTSLData(urlTsl, specificationTsl, versionTsl, fileBytes);
 
-				tslData = new TslData();
-
-				// Construimos el InputStream asociado al array y lo parseamos
-				ByteArrayInputStream bais = new ByteArrayInputStream(fileBytes);
-				// TODO hay que crear la clase para obtener información del XML.
-
-				// TODO Para las pruebas. Borrar y asignar los valores obtenidos
-				// en
-				// el
-				// mapeo.
-
-				/*DATOSSS PARA CREAR UNA TSL DE ESPAÑA************************************************************/
-				// LocalDateTime expDate = LocalDateTime.of(2019, 8, 10, 0, 0,
-				// 0);
-				// LocalDateTime issueDate = LocalDateTime.now();
-				// Instant instantExp =
-				// expDate.atZone(ZoneId.systemDefault()).toInstant();
-				// tslData.setExpirationDate(Date.from(instantExp));
-				// Instant instantIssue =
-				// issueDate.atZone(ZoneId.systemDefault()).toInstant();
-				// tslData.setIssueDate(Date.from(instantIssue));
-				// tslData.setUriTslLocation(url);
-				// tslData.setResponsible("responsable TSL Spain");
-				//
-				// // Obtenemos el pais de base de datos, sino se inserta el
-				// // obtenido en el mapeo.
-				// String codeCountry = "ES";
-
-				/**	DATOS PARA CREAR UNA TSL DE FRANCIA***********************************************************/
-				LocalDateTime expDate = LocalDateTime.of(2020, 2, 2, 0, 0, 0);
-				LocalDateTime issueDate = LocalDateTime.now();
-				Instant instantExp = expDate.atZone(ZoneId.systemDefault()).toInstant();
-				tslData.setExpirationDate(Date.from(instantExp));
-				Instant instantIssue = issueDate.atZone(ZoneId.systemDefault()).toInstant();
-				tslData.setIssueDate(Date.from(instantIssue));
-				tslData.setUriTslLocation(url);
-				tslData.setResponsible("responsable TSL Francia");
-
-				// Obtenemos el pais de base de datos, sino se inserta el
-				// obtenido en el mapeo.
-				String codeCountry = "FR";
-
-				TslCountryRegion country = tslCountryRegionService.getTslCountryRegionByCode(codeCountry, false);
-				// si country no es nulo, es que existe una TSL asociada a ese
-				// pais.
-				if (country != null) {
-					LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
-					json.put(INFO_EXIST_TSL, Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXISTS_TSL_COUNTRY, new Object[ ] { country.getCountryRegionName() }));
-
-					listTSL = StreamSupport.stream(tslDataService.getAllTSL().spliterator(), false).collect(Collectors.toList());
-					dtOutput.setError(json.toString());
-
-				} else {
-
-					// se crea una nueva instancia de TslCountryRegion,
-					country = new TslCountryRegion();
-					// el codigo se obtiene del XML
-					country.setCountryRegionCode(codeCountry);
-					// el nombre de una clase d utilidades
-					country.setCountryRegionName("France");
-					country.setTslData(tslData);
-
-					// se obtienen los datos del XML
-
-					// fecha de caducidad
-					tslData.setExpirationDate(Date.from(instantExp));
-					// fecha de emisión
-					tslData.setIssueDate(Date.from(instantIssue));
-					// url, si no se ha incluido en el formulario se obtiene del
-					// XML
-					tslData.setUriTslLocation(url);
-					// implementación TSL
-					tslData.setXmlDocument(fileBytes);
-					// número de secuencia
-					tslData.setSequenceNumber(1);
-					// si existe nueva TSL disponible
-					tslData.setNewTSLAvailable("N");
-					// se realiza comprobación de la especificación y la versión
-					// seleccionada en el formulario, con lo obtenido del XML
-					CTslImpl tslImplForm = cTSLImplService.getCTSLImplBySpecificationVersion(specification, version);
-					if (tslImplForm == null) {
-						tslImplForm = new CTslImpl(); // TODO preguntar JAGG
-					}
-					tslData.setTslImpl(tslImplForm);
-					tslData.setTslCountryRegion(country);
-					TslData tslNew = tslDataService.saveTSL(tslData);
-					// lo añade a una lista de TSLs
-					listTSL.add(tslNew);
-					dtOutput.setData(listTSL);
-
-				}
+				// se actualiza la lsita de TSL para mostrar en la datatable.
+				listTSL.add(tslNew);
+				dtOutput.setData(listTSL);
 
 			} else {
 				listTSL = StreamSupport.stream(tslDataService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 				dtOutput.setError(json.toString());
 			}
 
-		} catch (Exception e) {
+		} catch (TSLManagingException e) {
 			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
 			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL_WEB));
 			listTSL = StreamSupport.stream(tslDataService.getAllTSL().spliterator(), false).collect(Collectors.toList());
@@ -392,12 +307,14 @@ public class TslRestController {
 		JSONObject json = new JSONObject();
 		List<TslData> listTSL = new ArrayList<TslData>();
 		TslData tsl = null;
+		TSLDataCacheObject tslDataCache = null;
 		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
 		ICTslImplService cTSLImplService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService();
 		try {
 
 			// se comprueba que existe la tsl que se quiere editar.
 			if (idTSL != null) {
+				tslDataCache = TSLManager.getInstance().getTSLDataCacheObject(idTSL);
 				tsl = tslDataService.getTslDataById(idTSL, true, true);
 			} else {
 				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TSL));
@@ -480,15 +397,18 @@ public class TslRestController {
 	@ResponseBody
 	public void downloadTsl(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
 		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
-		TslData tsl = tslDataService.getTslDataById(idTsl, true, false);
-		byte[ ] implTsl;
-		if (tsl != null) {
-			implTsl = tsl.getXmlDocument();
+		try {
+			String name = "";//tsl.getTslCountryRegion().getCountryRegionCode() + UtilsStringChar.SYMBOL_HYPHEN_STRING + tsl.getSequenceNumber()
+			byte[ ] implTsl = TSLManager.getInstance().getTSLDataXMLDocument(idTsl);
 			InputStream in = new ByteArrayInputStream(implTsl);
 			response.setContentType(TOKEN_TEXT_XML);
 			response.setContentLength(implTsl.length);
-			response.setHeader("Content-Disposition", "attachment; filename=" + tsl.getTslCountryRegion().getCountryRegionCode() + UtilsStringChar.SYMBOL_HYPHEN_STRING + tsl.getSequenceNumber() + EXTENSION_XML);
+			response.setHeader("Content-Disposition", "attachment; filename=" + name + EXTENSION_XML);
 			FileCopyUtils.copy(in, response.getOutputStream());
+
+		} catch (TSLManagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -787,10 +707,11 @@ public class TslRestController {
 	@RequestMapping(path = "/deletetsl", method = RequestMethod.POST)
 	public String deleteTsl(@RequestParam("id") Long idTslData, @RequestParam("index") String indexParam) {
 		String index = indexParam;
-		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
+		// ITslDataService tslDataService =
+		// ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
 		try {
-			tslDataService.deleteTslData(idTslData);
-		} catch (Exception e) {
+			TSLManager.getInstance().removeTSLData(null, idTslData);
+		} catch (TSLManagingException e) {
 			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
 			index = "-1";
 		}
@@ -803,7 +724,7 @@ public class TslRestController {
 	 * @return Map that contains the types of associations with multi-language.
 	 */
 	private Map<Long, String> loadAssociationType() {
-		Map<Long, String> mapAssociationType  = new HashMap<Long, String>();
+		Map<Long, String> mapAssociationType = new HashMap<Long, String>();
 		// obtenemos los tipos de planificadores.
 		ICAssociationTypeService cAssociationTypeService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCAssociationTypeService();
 		List<CAssociationType> listCAssociationType = cAssociationTypeService.getAllAssociationType();
@@ -813,6 +734,5 @@ public class TslRestController {
 		return mapAssociationType;
 
 	}
-
 
 }

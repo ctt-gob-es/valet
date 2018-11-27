@@ -61,6 +61,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
@@ -1653,7 +1654,7 @@ public final class TSLManager {
 				}
 				
 				// Si el país/región ya tiene un TSL Data asociado, lo eliminamos.
-				if (tcrco.getTslDataId() == null) {
+				if (tcrco.getTslDataId() != null) {
 					
 					removeTSLData(tcrco.getCode(), tcrco.getTslDataId());
 					
@@ -1909,26 +1910,50 @@ public final class TSLManager {
 	}
 
 	/**
-	 * Removes the specified TSL Data from the data base and the cache.
-	 * @param countryRegionCode Country/Region code representation.
-	 * @param tslDataId TSL Data identifier to remove.
-	 * @throws TSLManagingException In case of some error removing a TSL from the data base and cache.
-	 */
-	public void removeTSLData(String countryRegionCode, Long tslDataId) throws TSLManagingException {
+     * Removes the specified TSL Data from the data base and the cache.
+     * @param countryRegionCode Country/Region code representation. If this is <code>null</code>, tries to get
+     * from the TSLData.
+     * @param tslDataId TSL Data identifier to remove.
+     * @throws TSLManagingException In case of some error removing a TSL from the data base and cache.
+     */
+     public void removeTSLData(String countryRegionCode, Long tslDataId) throws TSLManagingException {
 
-		try {
+            String crc = null;
+            try {
+            		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
+                   // Calculamos el valor del Country/Region code.
+                   if (UtilsStringChar.isNullOrEmptyTrim(countryRegionCode)) {
+                         TSLDataCacheObject tsldco = getTSLDataCacheObject(tslDataId);
+                         if (tsldco != null) {
+                                ITSLObject tslObject = (ITSLObject)tsldco.getTslObject();
+                                crc = tslObject.getSchemeInformation().getSchemeTerritory();
+                         }else{
+                        	 //se obtiene el valor country/region code desde base de datos
+                        	TslData tslData = tslDataService.getTslDataById(tslDataId, false, false);
+                        	crc = tslData.getTslCountryRegion().getCountryRegionCode();
+                        	 
+                         }
+                   } else {
+                         crc = countryRegionCode;
+                   }
+                   
+                   // Si hemos obtenido el Country/Region code, continuamos...
+                   if (crc != null) {
+                         
+                         // Lo eliminamos de base de datos.
+                   ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().deleteTslData(tslDataId);
 
-			// Lo eliminamos de base de datos.
-			ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().deleteTslData(tslDataId);
+                         // Lo eliminamos de la caché compartida.
+                         ConfigurationCacheFacade.tslRemoveTSLDataFromCountryRegion(crc);                       
+                         
+                   }
 
-			// Lo eliminamos de la caché compartida.
-			ConfigurationCacheFacade.tslRemoveTSLDataFromCountryRegion(countryRegionCode);
+            } catch (Exception e) {
+                   throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL173, new Object[ ] { tslDataId, crc }), e);
+            }
 
-		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL173, new Object[ ] { tslDataId, countryRegionCode }), e);
-		}
+     }
 
-	}
 
 //	/**
 //	 * Gets the CAs certificates that are with a good status from the input TSL.

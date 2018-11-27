@@ -162,7 +162,7 @@ public class TslCountryRegion implements Serializable {
 	 * Gets the value of the attribute {@link #tslData}.
 	 * @return the value of the attribute {@link #tslData}.
 	 */
-	@OneToOne(mappedBy = "tslCountryRegion", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "tslCountryRegion", fetch = FetchType.LAZY)
 	public TslData getTslData() {
 		return tslData;
 	}
