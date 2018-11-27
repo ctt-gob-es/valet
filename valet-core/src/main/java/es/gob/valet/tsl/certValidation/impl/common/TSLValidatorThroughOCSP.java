@@ -201,6 +201,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 					// Recorremos los distintos puntos de distribución hasta que
 					// obtengamos una respuesta OCSP.
+					String ocspUri = null;
 					for (URI uri: supplyPointsURIList) {
 
 						// Creamos el valor para la extensión Nonce.
@@ -215,6 +216,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 						if (ocspResponse != null) {
 							if (checkOCSPResponseIsValid(ocspResponse, nonceByteArray, validationDate, validationResult, true, null, null)) {
 								LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL256, new Object[ ] { uri }));
+								ocspUri = uri.toString();
 								break;
 							} else {
 								ocspResponse = null;
@@ -227,7 +229,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					// Si hemos obtenido una respuesta...
 					if (ocspResponse != null) {
 
-						checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, timeIntervalAllowed, validationResult);
+						checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, ocspUri, timeIntervalAllowed, validationResult);
 
 					} else {
 
@@ -888,11 +890,13 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	 * Checks in the OCSP response the revocation status of the certificate and sets the result.
 	 * @param certificateId CertificateID of the certificate to check its revocation status.
 	 * @param validationDate Validation date to use for check the revocation status.
+	 * @param uri {@link String} that represents the URI that localizes the OCSP server from which has
+	 * been obtained the Basic OCSP Response.
 	 * @param ocspResponse OCSP response to analyze.
 	 * @param timeIntervalAllowed Time interval allowed (in seconds) for the OCSP response.
 	 * @param validationResult Object where must be stored the validation result data.
 	 */
-	private void checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate, OCSPResp ocspResponse, int timeIntervalAllowed, TSLValidatorResult validationResult) {
+	private void checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate, OCSPResp ocspResponse, String uri, int timeIntervalAllowed, TSLValidatorResult validationResult) {
 
 		try {
 
@@ -900,7 +904,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			BasicOCSPResp basicOcspResponse = (BasicOCSPResp) ocspResponse.getResponseObject();
 
 			// Continuamos el proceso en otro método.
-			checkCertificateInOCSPResponse(certificateId, validationDate, basicOcspResponse, timeIntervalAllowed, validationResult);
+			checkCertificateInOCSPResponse(certificateId, validationDate, basicOcspResponse, uri, timeIntervalAllowed, validationResult);
 
 		} catch (OCSPException e) {
 
@@ -915,10 +919,12 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	 * @param certificateId CertificateID of the certificate to check its revocation status.
 	 * @param validationDate Validation date to use for check the revocation status.
 	 * @param basicOcspResponse Basic OCSP response to analyze.
+	 * @param uri {@link String} that represents the URI that localizes the OCSP server from which has
+	 * been obtained the Basic OCSP Response.
 	 * @param timeIntervalAllowed Time interval allowed (in seconds) for the OCSP response.
 	 * @param validationResult Object where must be stored the validation result data.
 	 */
-	private void checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate, BasicOCSPResp basicOcspResponse, int timeIntervalAllowed, TSLValidatorResult validationResult) {
+	private void checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate, BasicOCSPResp basicOcspResponse, String uri, int timeIntervalAllowed, TSLValidatorResult validationResult) {
 
 		try {
 
@@ -942,6 +948,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 			// La almacenamos en la respuesta.
 			validationResult.setRevocationValueBasicOCSPResponse(basicOcspResponse);
+			validationResult.setRevocationValueURL(uri);
 
 			// Comprobamos el estado de revocación del certificado.
 			checkCertificateInOCSPResponse(validationDate, singleResponse, timeIntervalAllowed, validationResult);
@@ -1103,7 +1110,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 			// Hacemos uso de esta para comprobar el estado de revocación del
 			// certificado.
-			checkCertificateInBasicOCSPResponseRevocationValue(cert, validationDate, basicOcspResponse, validationResult);
+			checkCertificateInBasicOCSPResponseRevocationValue(cert, validationDate, basicOcspResponse, null, validationResult);
 
 		}
 
@@ -1114,9 +1121,11 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	 * @param cert Certificate X509v3 to validate its revocation.
 	 * @param validationDate Validation date to use for check the revocation status.
 	 * @param basicOcspResponse Basic OCSP response to analyze.
+	 * @param uri {@link String} that represents the URI that localizes the OCSP server from which has
+	 * been obtained the Basic OCSP Response.
 	 * @param validationResult Object in which must be stored the validation result data.
 	 */
-	private void checkCertificateInBasicOCSPResponseRevocationValue(X509Certificate cert, Date validationDate, BasicOCSPResp basicOcspResponse, TSLValidatorResult validationResult) {
+	private void checkCertificateInBasicOCSPResponseRevocationValue(X509Certificate cert, Date validationDate, BasicOCSPResp basicOcspResponse, String uri, TSLValidatorResult validationResult) {
 
 		try {
 
@@ -1126,7 +1135,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			int timeIntervalAllowed = TSLProperties.getOcspTimeIntervalAllowed();
 			// Finalmente comprobamos el estado de revocación del certificado en
 			// la respuesta OCSP.
-			checkCertificateInOCSPResponse(certificateId, validationDate, basicOcspResponse, timeIntervalAllowed, validationResult);
+			checkCertificateInOCSPResponse(certificateId, validationDate, basicOcspResponse, uri, timeIntervalAllowed, validationResult);
 
 		} catch (Exception e) {
 			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL125), e);
@@ -1176,7 +1185,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				// Los vamos recorriendo uno a uno hasta que encontremos un
 				// servicio OCSP que se pueda usar.
 				AccessDescription[ ] accessDescArray = aia.getAccessDescriptions();
-
+				String uri = null;
 				for (AccessDescription accessDescription: accessDescArray) {
 
 					if (OCSPObjectIdentifiers.id_pkix_ocsp.equals(accessDescription.getAccessMethod())) {
@@ -1204,6 +1213,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 									ocspResponse = null;
 									LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL223));
 								} else {
+									uri = ocspUriString;
 									break;
 								}
 							}
@@ -1217,7 +1227,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				// Si hemos obtenido una respuesta...
 				if (ocspResponse != null) {
 
-					checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, timeIntervalAllowed, validationResult);
+					checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, uri, timeIntervalAllowed, validationResult);
 
 				} else {
 

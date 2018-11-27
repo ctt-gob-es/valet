@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 07/09/2018.
+ * @version 1.1, 26/11/2018.
  */
 package es.gob.valet.rest.services;
 
@@ -33,98 +33,108 @@ import javax.ws.rs.core.MediaType;
 
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
-import es.gob.valet.rest.elements.GetTslInformationResponse;
+import es.gob.valet.rest.elements.TslInformationResponse;
 
 /**
  * <p>Interface that represents the TSL restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 07/09/2018.
+ * @version 1.1, 26/11/2018.
  */
 public interface ITslRestService {
 
 	/**
 	 * Constant attribute that represents the token parameter 'application'.
 	 */
-	String APPLICATION = "application";
+	String PARAM_APPLICATION = "application";
 
 	/**
-	 * Constant attribute that represents the token parameter 'delegatedApplication'.
+	 * Constant attribute that represents the token parameter 'delegatedApp'.
 	 */
-	String DELEGATED_APP = "delegatedApplication";
+	String PARAM_DELEGATED_APP = "delegatedApp";
 
 	/**
 	 * Constant attribute that represents the token parameter 'tslLocation'.
 	 */
-	String TSL_LOCATION = "tslLocation";
+	String PARAM_TSL_LOCATION = "tslLocation";
 
 	/**
 	 * Constant attribute that represents the token parameter 'certificate'.
 	 */
-	String CERTIFICATE = "certificate";
+	String PARAM_CERTIFICATE = "certificate";
 
 	/**
 	 * Constant attribute that represents the token parameter 'detectionDate'.
 	 */
-	String DETECTION_DATE = "detectionDate";
+	String PARAM_DETECTION_DATE = "detectionDate";
 
 	/**
 	 * Constant attribute that represents the token parameter 'getInfo'.
 	 */
-	String GET_INFO = "getInfo";
+	String PARAM_GET_INFO = "getInfo";
 
 	/**
 	 * Constant attribute that represents the token parameter 'checkRevocationStatus'.
 	 */
-	String CHECK_REV_STATUS = "checkRevocationStatus";
+	String PARAM_CHECK_REV_STATUS = "checkRevocationStatus";
 
 	/**
 	 * Constant attribute that represents the token parameter 'returnRevocationEvidence'.
 	 */
-	String RETURN_REV_EVID = "returnRevocationEvidence";
+	String PARAM_RETURN_REV_EVID = "returnRevocationEvidence";
 
 	/**
-	 * Constant attribute that represents the token parameter 'countryRegion'.
+	 * Constant attribute that represents the token parameter 'countryRegionCode'.
 	 */
-	String COUNTRY_REGION = "countryRegion";
+	String PARAM_COUNTRY_REGION_CODE = "countryRegionCode";
 
 	/**
 	 * Constant attribute that represents the token parameter 'getTslXmlData'.
 	 */
-	String GET_TSL_XML_DATA = "getTslXmlData";
+	String PARAM_GET_TSL_XML_DATA = "getTslXmlData";
 
 	/**
-	 * Method that returns the information and validation of detected certificates in TSL.
-	 * @param application Application
-	 * @param delegatedApp Delegated application
-	 * @param tslLocation TSL location
-	 * @param certificate Certificate to detect (byte[] in Base64 encoded)
-	 * @param detectionDate Detection date. Format: {@code dd/MM/yyyy HH:mm:ss}
-	 * @param getInfo Get certificate info in response
-	 * @param checkRevStatus Check revocation status
-	 * @param returnRevoEvid Get revocation evidence (only if {@code checkRevocationStatus} is true)
-	 * @return detectCertInTslInfoAndValidation structure with detected certificate in TSL and validation
+	 * Constant attribute that represents the token parameter 'detectCertInTslInfoAndValidation'.
+	 */
+	String SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION = "detectCertInTslInfoAndValidation";
+
+	/**
+	 * Constant attribute that represents the token parameter 'getTslInformation'.
+	 */
+	String SERVICENAME_GET_TSL_INFORMATION = "getTslInformation";
+
+	/**
+	 * Method that returns the information and revocation status of the input certificate extracted from a TSL.
+	 * @param application Application identifier.
+	 * @param delegatedApp Delegated application identifier.
+	 * @param tslLocation TSL location to use. It could be <code>null</code>.
+	 * @param certificate Certificate to detect (byte[] in Base64 encoded).
+	 * @param detectionDate Date to use to detect and validate the input certificate. Format: {@code dd/MM/yyyy HH:mm:ss}.
+	 * @param getInfo Flag that indicates if it is necessary to get the certificate information in response.
+	 * @param checkRevStatus Flag that indicates if it is necessary to check the revocation status of the input certificate.
+	 * @param returnRevocationEvidence Flag that indicates if it is necessary to return the revocation evidence (only if {@code checkRevocationStatus} is <code>true</code>).
+	 * @return Structure with detected certificate in TSL and revocation status.
 	 * @throws ValetRestException If some error is produced in the execution of the service.
 	 */
 	@POST
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(APPLICATION) String application, @FormParam(DELEGATED_APP) String delegatedApp, @FormParam(TSL_LOCATION) String tslLocation, @FormParam(CERTIFICATE) String certificate, @FormParam(DETECTION_DATE) String detectionDate, @FormParam(GET_INFO) Boolean getInfo, @FormParam(CHECK_REV_STATUS) Boolean checkRevStatus, @FormParam(RETURN_REV_EVID) Boolean returnRevoEvid) throws ValetRestException;
+	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) String application, @FormParam(PARAM_DELEGATED_APP) String delegatedApp, @FormParam(PARAM_TSL_LOCATION) String tslLocation, @FormParam(PARAM_CERTIFICATE) String certificate, @FormParam(PARAM_DETECTION_DATE) String detectionDate, @FormParam(PARAM_GET_INFO) Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) Boolean returnRevocationEvidence) throws ValetRestException;
 
 	/**
 	 * Method that returns the TSL information.
-	 * @param application Application
-	 * @param delegatedApp Delegated application
-	 * @param countryRegion Country region in TSL
-	 * @param tslLocation TSL Location
-	 * @param getTslXmlData Get TSL xml data in response
-	 * @return getTslInformation structure of TSL information
-	 * @throws ValetRestException If some error is produced in the execution of the service
+	 * @param application Application identifier.
+	 * @param delegatedApp Delegated application identifier.
+	 * @param countryRegionCode Country/Region code that represents the TSL. It could be <code>null</code>.
+	 * @param tslLocation TSL location to use. It could be <code>null</code>.
+	 * @param getTslXmlData Flag that indicates if it is necessary to return the XML data that represents the TSL.
+	 * @return Structure of TSL information.
+	 * @throws ValetRestException If some error is produced in the execution of the service.
 	 */
 	@POST
 	@Path("/getTslInformation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	GetTslInformationResponse getTslInformation(@FormParam(APPLICATION) String application, @FormParam(DELEGATED_APP) String delegatedApp, @FormParam(COUNTRY_REGION) String countryRegion, @FormParam(TSL_LOCATION) String tslLocation, @FormParam(GET_TSL_XML_DATA) Boolean getTslXmlData) throws ValetRestException;
+	TslInformationResponse getTslInformation(@FormParam(PARAM_APPLICATION) String application, @FormParam(PARAM_DELEGATED_APP) String delegatedApp, @FormParam(PARAM_COUNTRY_REGION_CODE) String countryRegionCode, @FormParam(PARAM_TSL_LOCATION) String tslLocation, @FormParam(PARAM_GET_TSL_XML_DATA) Boolean getTslXmlData) throws ValetRestException;
 
 }

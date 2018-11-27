@@ -75,7 +75,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * Constant attribute that represents a token for a TSP Service Name when the validation has been executed
 	 * using the Distribution Point of the certificate to validate.
 	 */
-	private static final String TSP_SERVICE_NAME_FOR_DIST_POINT = "TSPService-Certificate-DistributionPoint";
+	public static final String TSP_SERVICE_NAME_FOR_DIST_POINT = "TSPService-Certificate-DistributionPoint";
 
 	/**
 	 * Attribute that represents the TSL object to use for validate certificates.

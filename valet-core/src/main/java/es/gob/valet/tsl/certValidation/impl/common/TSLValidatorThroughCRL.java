@@ -130,6 +130,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 				// Recorremos los distintos puntos de distribución hasta que
 				// obtengamos la CRL.
+				String uriSelected = null;
 				for (URI uri: supplyPointsURIList) {
 
 					try {
@@ -145,6 +146,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 						if (crl != null) {
 							if (checkCRLisValid(crl, validationDate, true, validationResult, null, null)) {
 								LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL253, new Object[ ] { uri }));
+								uriSelected = uri.toString();
 								break;
 							} else {
 								LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL254, new Object[ ] { uri }));
@@ -165,6 +167,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 					// Asignamos la CRL a aplicar.
 					validationResult.setRevocationValueCRL(crl);
+					validationResult.setRevocationValueURL(uriSelected);
 					// Buscamos el certificado dentro de esta.
 					searchCertInCRL(cert, validationDate, crl, validationResult);
 
@@ -734,6 +737,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 				// se
 				// pueda obtener...
 				X509CRL crl = null;
+				String uriSelected = null;
 				for (int indexDp = 0; crl == null && indexDp < crlDpsArray.length; indexDp++) {
 
 					// Obtenemos el name.
@@ -812,10 +816,13 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 								// Tratamos de obtener la CRL.
 								crl = downloadCRLFromSupplyPoint(uri, connectionTimeout, readTimeout);
 								// Si la CRL es nula o no es válida respecto a
-								// la
-								// fecha de validación, la descartamos.
+								// la fecha de validación, la descartamos.
 								if (crl != null && !checkCRLisValid(crl, validationDate, !isTsaCertificate, validationResult, tsp, tslValidator)) {
 									crl = null;
+								}
+								// Si no es nula, guardamos la URI.
+								if (crl != null) {
+									uriSelected = uri.toString();
 								}
 
 							}
@@ -838,6 +845,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 					// Asignamos la CRL a aplicar.
 					validationResult.setRevocationValueCRL(crl);
+					validationResult.setRevocationValueURL(uriSelected);
 					// Buscamos el certificado dentro de esta.
 					searchCertInCRL(cert, validationDate, crl, validationResult);
 

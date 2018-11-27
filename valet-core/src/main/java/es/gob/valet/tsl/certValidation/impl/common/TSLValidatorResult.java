@@ -173,6 +173,11 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	private X509CRL x509crl = null;
 
 	/**
+	 * Attribute that represents the URL from which the revocation values has been obtained.
+	 */
+	private String revValueUrl = null;
+
+	/**
 	 * Constructor method for the class TSLValidatorResult.java.
 	 */
 	private TSLValidatorResult() {
@@ -344,8 +349,8 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #tspServiceForDetect}.
-	 * @return the value of the attribute {@link #tspServiceForDetect}.
+	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#getTSPServiceForDetect()
 	 */
 	public final TSPService getTSPServiceForDetect() {
 		return tspServiceForDetect;
@@ -573,6 +578,24 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 
 	/**
 	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#getRevocationValueURL()
+	 */
+	@Override
+	public String getRevocationValueURL() {
+		return revValueUrl;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#setRevocationValueURL(java.lang.String)
+	 */
+	@Override
+	public void setRevocationValueURL(String revValueUrlParam) {
+		revValueUrl = revValueUrlParam;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#getRevocationDate()
 	 */
 	@Override
@@ -626,6 +649,7 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 		setMappings(null);
 		setRevocationValueBasicOCSPResponse(null);
 		setRevocationValueCRL(null);
+		setRevocationValueURL(null);
 
 	}
 

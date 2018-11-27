@@ -61,6 +61,11 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-core</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<scope>compile</scope>

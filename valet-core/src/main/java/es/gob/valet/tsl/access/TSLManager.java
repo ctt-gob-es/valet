@@ -305,7 +305,7 @@ public final class TSLManager {
 
 		// Si hemos encontrado una TSL, continuamos.
 		if (tslObject != null) {
-			result = validateX509withTSL(cert, date, false, tslObject);
+			result = validateX509withTSL(cert, date, false, true, tslObject);
 		}
 
 		return result;
@@ -332,7 +332,7 @@ public final class TSLManager {
 
 		// Si hemos encontrado una TSL, continuamos.
 		if (tslObject != null) {
-			result = validateX509withTSL(cert, date, false, tslObject);
+			result = validateX509withTSL(cert, date, false, true, tslObject);
 		}
 
 		return result;
@@ -451,11 +451,15 @@ public final class TSLManager {
 	 * @param cert X509v3 certificate to validate.
 	 * @param date Date that must cover the TSL to obtain. If this parameter is <code>null</code>, then search
 	 * the more updated TSL with that TSL location.
+	 * @param checkStatusRevocation Flag that indicates if only try to detect the input certificate (<code>false</code>)
+	 * or also checks the revocation status of this (<code>true</code>).
+	 * @param calculateMappings Flag that indicates if it is necessary to calculate the mappings associated if the certificate
+	 * has been detected (<code>true</code>) or not (<code>false</code>).
 	 * @return TSL validation result, with all the collected information. If no TSL is finded for the certificate, then returns
 	 * <code>null</code>.
 	 * @throws TSLManagingException If there is some error with the cache or validating the certificate with the TSL.
 	 */
-	public ITSLValidatorResult validateX509withTSL(X509Certificate cert, Date date) throws TSLManagingException {
+	public ITSLValidatorResult validateX509withTSL(X509Certificate cert, Date date, boolean checkStatusRevocation, boolean calculateMappings) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
@@ -464,7 +468,7 @@ public final class TSLManager {
 
 		// Si hemos encontrado una TSL, continuamos.
 		if (tslObject != null) {
-			result = validateX509withTSL(cert, date, true, tslObject);
+			result = validateX509withTSL(cert, date, checkStatusRevocation, calculateMappings, tslObject);
 		}
 
 		return result;
@@ -478,11 +482,15 @@ public final class TSLManager {
 	 * @param tslLocation URI string representation of the TSL location where to obtain it.
 	 * @param date Date that must cover the TSL to obtain. If this parameter is <code>null</code>, then search
 	 * the more updated TSL with that TSL location.
+	 * @param checkStatusRevocation Flag that indicates if only try to detect the input certificate (<code>false</code>)
+	 * or also checks the revocation status of this (<code>true</code>).
+	 * @param calculateMappings Flag that indicates if it is necessary to calculate the mappings associated if the certificate
+	 * has been detected (<code>true</code>) or not (<code>false</code>).
 	 * @return TSL validation result, with all the collected information. If no TSL is finded for the certificate, then returns
 	 * <code>null</code>.
 	 * @throws TSLManagingException If there is some error with the cache or validating the certificate with the TSL.
 	 */
-	public ITSLValidatorResult validateX509withTSL(X509Certificate cert, String tslLocation, Date date) throws TSLManagingException {
+	public ITSLValidatorResult validateX509withTSL(X509Certificate cert, String tslLocation, Date date, boolean checkStatusRevocation, boolean calculateMappings) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
@@ -491,7 +499,7 @@ public final class TSLManager {
 
 		// Si hemos encontrado una TSL, continuamos.
 		if (tslObject != null) {
-			result = validateX509withTSL(cert, date, true, tslObject);
+			result = validateX509withTSL(cert, date, checkStatusRevocation, calculateMappings, tslObject);
 		}
 
 		return result;
@@ -504,11 +512,13 @@ public final class TSLManager {
 	 * @param validationDate Validation date to check.
 	 * @param checkStatusRevocation Flag that indicates if only try to detect the input certificate (<code>false</code>)
 	 * or also checks the revocation status of this (<code>true</code>).
+	 * @param calculateMappings Flag that indicates if it is necessary to calculate the mappings associated if the certificate
+	 * has been detected (<code>true</code>) or not (<code>false</code>).
 	 * @param tslObject TSL object representation to use.
 	 * @return TSL validation result, with all the collected information.
 	 * @throws TSLManagingException If there is some error with the cache or validating the certificate with the TSL.
 	 */
-	private ITSLValidatorResult validateX509withTSL(X509Certificate cert, Date validationDate, boolean checkStatusRevocation, TSLObject tslObject) throws TSLManagingException {
+	private ITSLValidatorResult validateX509withTSL(X509Certificate cert, Date validationDate, boolean checkStatusRevocation, boolean calculateMappings, TSLObject tslObject) throws TSLManagingException {
 
 		LOGGER.info(Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL199, new Object[ ] { tslObject.getSchemeInformation().getTslVersionIdentifier(), tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }));
 
@@ -540,7 +550,9 @@ public final class TSLManager {
 		// Si no se ha producido excepción, el resultado no es nulo,
 		// y el certificado ha sido detectado,
 		// calculamos los mapeos asociados.
-		calculateMappingsForCertificateAndSetInResult(cert, tslObject, result);
+		if (calculateMappings) {
+			calculateMappingsForCertificateAndSetInResult(cert, tslObject, result);
+		}
 
 		return result;
 

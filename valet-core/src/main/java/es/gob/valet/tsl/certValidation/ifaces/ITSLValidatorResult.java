@@ -33,6 +33,7 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.tsl.certValidation.impl.common.TSLCertificateExtensionAnalyzer;
+import es.gob.valet.tsl.parsing.impl.common.TSPService;
 
 /**
  * <p>Interface that represents a validation result using TSL.</p>
@@ -169,11 +170,25 @@ public interface ITSLValidatorResult {
 	String getTSPServiceNameForDetect();
 
 	/**
+	 * Gets the TSP Service which has detected the certificate.
+	 * @return TSP Service which has detected the certificate, or <code>null</code> if
+	 * the certificate has not been detected.
+	 */
+	TSPService getTSPServiceForDetect();
+
+	/**
 	 * Gets the name of the TSP Service which has validate the certificate.
 	 * @return the name of the TSP Service which has validate the certificate, or <code>null</code> if
 	 * the certificate has not been validated.
 	 */
 	String getTSPServiceNameForValidate();
+
+	/**
+	 * Gets the TSP Service which has validate the certificate.
+	 * @return the TSP Service which has validate the certificate, or <code>null</code> if
+	 * the certificate has not been validated.
+	 */
+	TSPService getTSPServiceForValidate();
 
 	/**
 	 * Constant attribute that represents the value for a mapping certificate type unknown.
@@ -331,6 +346,18 @@ public interface ITSLValidatorResult {
 	 * @param crl CRL to assign how the selected revocation value.
 	 */
 	void setRevocationValueCRL(X509CRL crl);
+
+	/**
+	 * Gets the URL from which the revocation value has been obtained.
+	 * @return the URL from which the revocation value has been obtained.
+	 */
+	String getRevocationValueURL();
+
+	/**
+	 * Sets the URL from which the revocation value has been obtained.
+	 * @param revValueUrl the URL from which the revocation value has been obtained.
+	 */
+	void setRevocationValueURL(String revValueUrl);
 
 	/**
 	 * Gets the revocation date of the certificate validate (if it is revoked).

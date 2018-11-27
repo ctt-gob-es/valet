@@ -15,12 +15,12 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.rest.elements.GetTslInformationResponse.java.</p>
+ * <b>File:</b><p>es.gob.valet.rest.elements.TslInformationResponse.java.</p>
  * <b>Description:</b><p> .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 10/09/2018.
+ * @version 1.2, 26/11/2018.
  */
 package es.gob.valet.rest.elements;
 
@@ -29,9 +29,9 @@ import java.io.Serializable;
 /**
  * <p>Class that represents structure of TSL information.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
- * @version 1.1, 10/09/2018.
+ * @version 1.2, 26/11/2018.
  */
-public class GetTslInformationResponse implements Serializable {
+public class TslInformationResponse implements Serializable {
 
 	/**
 	 * Constant attribute that represents the serial version UID.

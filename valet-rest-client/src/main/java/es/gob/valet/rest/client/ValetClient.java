@@ -41,7 +41,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
-import es.gob.valet.rest.elements.GetTslInformationResponse;
+import es.gob.valet.rest.elements.TslInformationResponse;
 import es.gob.valet.rest.services.ITslRestService;
 
 /** 
@@ -115,10 +115,10 @@ public class ValetClient implements ITslRestService {
 	 * @see es.gob.valet.rest.services.ITslRestService#getTslInformation(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public GetTslInformationResponse getTslInformation(final String application, final String delegatedApp, final String countryRegion, final String tslLocation, final Boolean getTslXmlData) throws ValetRestException {
+	public TslInformationResponse getTslInformation(final String application, final String delegatedApp, final String countryRegion, final String tslLocation, final Boolean getTslXmlData) throws ValetRestException {
 		LOGGER.info("Starting call to \'getTslInformation\' method at Valet rest service.");
 
-		GetTslInformationResponse response = null;
+		TslInformationResponse response = null;
 		if (restService != null) {
 
 			try {

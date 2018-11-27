@@ -87,6 +87,16 @@ public class TslRevocationStatus implements Serializable {
 	 * Attribute that represents the evidence in TSL revocation status.
 	 */
 	private byte[ ] evidence;
+	
+	/**
+	 * Attribute that represents the revocation reason of the certificate. 
+	 */
+	private Integer revocationReason;
+	
+	/**
+	 * Attribute that represents the revocation date of the certificate. 
+	 */
+	private String revocationDate;
 
 	/**
 	 * Gets the value of the attribute {@link #revocationStatus}.
@@ -248,6 +258,38 @@ public class TslRevocationStatus implements Serializable {
 		if (evidenceParam != null) {
 			this.evidence = evidenceParam.clone();
 		}
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #revocationReason}.
+	 * @return the value of the attribute {@link #revocationReason}.
+	 */
+	public final Integer getRevocationReason() {
+		return revocationReason;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #revocationReason}.
+	 * @param revocationReasonParam The value for the attribute {@link #revocationReason}.
+	 */
+	public final void setRevocationReason(Integer revocationReasonParam) {
+		this.revocationReason = revocationReasonParam;
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #revocationDate}.
+	 * @return the value of the attribute {@link #revocationDate}.
+	 */
+	public final String getRevocationDate() {
+		return revocationDate;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #revocationDate}.
+	 * @param revocationDateParam The value for the attribute {@link #revocationDate}.
+	 */
+	public final void setRevocationDate(String revocationDateParam) {
+		this.revocationDate = revocationDateParam;
 	}
 
 }
