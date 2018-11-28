@@ -1275,7 +1275,7 @@ public abstract class ATSLChecker implements ITSLChecker {
 
 		SignValidity validity = new ValidateXMLSignature().validate(fullTSLxml);
 		if (validity.getValidity() != SignValidity.SIGN_DETAIL_TYPE.OK) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreGeneral(ICoreTslMessages.LOGMTSL078));
+			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL078));
 		}
 
 	}

@@ -204,7 +204,7 @@ public class TSLObject implements ITSLObject {
 
 		// Si la entrada es nula, lanzamos excepción.
 		if (si == null) {
-			throw new TSLArgumentException(IValetException.COD_187, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL014, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SCHEME_INFORMATION }));
+			throw new TSLArgumentException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL014, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SCHEME_INFORMATION }));
 		} else {
 			schemeInformation = si;
 		}
@@ -235,7 +235,7 @@ public class TSLObject implements ITSLObject {
 
 		// Si la entrada es nula, lanzamos excepción.
 		if (tsp == null) {
-			throw new TSLArgumentException(IValetException.COD_187, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL015, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TRUST_SERVICE_PROVIDER }));
+			throw new TSLArgumentException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL015, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TRUST_SERVICE_PROVIDER }));
 		} else {
 			trustServiceProviderList.add(tsp);
 		}

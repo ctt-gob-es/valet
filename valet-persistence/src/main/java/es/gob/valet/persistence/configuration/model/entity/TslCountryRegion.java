@@ -161,6 +161,7 @@ public class TslCountryRegion implements Serializable {
 	/**
 	 * Gets the value of the attribute {@link #tslData}.
 	 * @return the value of the attribute {@link #tslData}.
+	 * TODO Hay que hacer que se borre en cascada.
 	 */
 	@OneToOne(mappedBy = "tslCountryRegion", fetch = FetchType.LAZY)
 	public TslData getTslData() {

@@ -349,22 +349,11 @@ public class CriteriaList implements Serializable {
 		// la de las políticas de certificación.
 		if (result && isThereSomePolicySet()) {
 
-//			// Obtenemos el objeto IAIK que representa al certificado.
-//			iaik.x509.X509Certificate certIaik = null;
-//
-//			try {
-//
-//				certIaik = UtilsCertificate.getIaikCertificate(cert);
-
-				// Los recorremos y comprobamos que todos están en el
-				// certificado.
-				for (int index = 0; result && index < policySetList.size(); index++) {
-					result = policySetList.get(index).checkCertificate(cert);
-				}
-//
-//			} catch (CommonUtilsException e) {
-//				throw new TSLQualificationEvalProcessException(IValetException.COD_187, Language.getResCoreGeneral(ICoreTslMessages.LOGMTSL109), e);
-//			}
+			// Los recorremos y comprobamos que todos están en el
+			// certificado.
+			for (int index = 0; result && index < policySetList.size(); index++) {
+				result = policySetList.get(index).checkCertificate(cert);
+			}
 
 		}
 
@@ -411,22 +400,11 @@ public class CriteriaList implements Serializable {
 		// la de las políticas de certificación.
 		if (!result && isThereSomePolicySet()) {
 
-//			// Obtenemos el objeto IAIK que representa al certificado.
-//			iaik.x509.X509Certificate certIaik = null;
-//
-//			try {
-//
-//				certIaik = UtilsCertificate.getIaikCertificate(cert);
-
-				// Los recorremos y comprobamos que al menos uno está en el
-				// certificado.
-				for (int index = 0; !result && index < policySetList.size(); index++) {
-					result = policySetList.get(index).checkCertificate(cert);
-				}
-//
-//			} catch (CommonUtilsException e) {
-//				throw new TSLQualificationEvalProcessException(IValetException.COD_187, Language.getResCoreGeneral(ICoreTslMessages.LOGMTSL145), e);
-//			}
+			// Los recorremos y comprobamos que al menos uno está en el
+			// certificado.
+			for (int index = 0; !result && index < policySetList.size(); index++) {
+				result = policySetList.get(index).checkCertificate(cert);
+			}
 
 		}
 

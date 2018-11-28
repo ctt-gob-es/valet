@@ -1483,7 +1483,7 @@ public class TSLBuilder extends ATSLBuilder {
 				try {
 					servInf.addNewSchemeServiceDefinitionURI(defUri.getLang(), new URI(defUri.getStringValue()));
 				} catch (URISyntaxException e) {
-					throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SCHEMESERVICEDEFINITIONURI }), e);
+					throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SCHEMESERVICEDEFINITIONURI }), e);
 				}
 			}
 		}
@@ -1504,7 +1504,7 @@ public class TSLBuilder extends ATSLBuilder {
 				try {
 					servInf.addNewServiceSupplyPointURI(new URI(supplyPoint));
 				} catch (URISyntaxException e) {
-					throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICESUPPLYPOINTS }), e);
+					throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICESUPPLYPOINTS }), e);
 				}
 			}
 		}
@@ -1525,7 +1525,7 @@ public class TSLBuilder extends ATSLBuilder {
 				try {
 					servInf.addNewServiceDefinitionURI(defUri.getLang(), new URI(defUri.getStringValue()));
 				} catch (URISyntaxException e) {
-					throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_TSPSERVICEDEFINITIONURI }), e);
+					throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_TSPSERVICEDEFINITIONURI }), e);
 				}
 			}
 		}
@@ -1750,7 +1750,7 @@ public class TSLBuilder extends ATSLBuilder {
 		SignatureType signature = tsl.getSignature();
 		// Para esta especificación, la firma es obligatoria.
 		if (signature == null) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SIGNATURE }));
+			throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SIGNATURE }));
 		}
 		return signature;
 

@@ -117,7 +117,7 @@ public class KeyUsage implements Serializable {
 
 		// La lista debe tener entre 1 y 9 elementos.
 		if (keyUsageBitList.isEmpty() || keyUsageBitList.size() > NumberConstants.NUM9) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL026, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_KEYUSAGE }));
+			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL026, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_KEYUSAGE }));
 		}
 
 		// Comprobamos cada uno de los KeyUsageBit.

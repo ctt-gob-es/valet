@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 28/11/2018.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -47,7 +47,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLOIDs;
 /**
  * <p>Utilities wrapper for analyze the extensions defined in a specific X509v3 certificate.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 28/11/2018.
  */
 public class TSLCertificateExtensionAnalyzer {
 
@@ -97,7 +97,7 @@ public class TSLCertificateExtensionAnalyzer {
 		try {
 			certBc = UtilsCertificate.getBouncyCastleCertificate(cert);
 		} catch (CommonUtilsException e) {
-			throw new TSLCertificateValidationException(IValetException.COD_187, Language.getResCoreGeneral(ICoreTslMessages.LOGMTSL180), e);
+			throw new TSLCertificateValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL180), e);
 		}
 
 		// Extraemos y analizamos las extensiones que pueda tener.

@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 28/11/2018.
  */
 package es.gob.valet.utils;
 
@@ -44,6 +44,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.CredentialsManager;
+import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
@@ -56,7 +57,7 @@ import es.gob.valet.persistence.configuration.model.utils.IOperationModeIdConsta
  * to obtain the data necessary to establish a connection via PROXY. Besides this load will be done in the initialization
  * of the platform, and this class is responsible for setting the data in the virtual machine.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 28/11/2018.
  */
 public final class UtilsProxy {
 
@@ -285,7 +286,7 @@ public final class UtilsProxy {
 		// Propiedades del proxy no seguro.
 		proxyOperational = proxy.getOperationMode().getIdCOperationMode().intValue();
 		proxyHost = proxy.getHostProxy() == null ? null : proxy.getHostProxy().trim();
-		proxyPort = proxy.getPortProxy().intValue();
+		proxyPort = proxy.getPortProxy() == null ? NumberConstants.NUM80 : proxy.getPortProxy().intValue();
 		proxyUserName = proxy.getUserProxy() == null ? null : proxy.getUserProxy().trim();
 		proxyUserPass = proxy.getPasswordProxy() == null ? null : proxy.getPasswordProxy().trim();
 		proxyDomain = proxy.getUserDomain() == null ? null : proxy.getUserDomain().trim();
@@ -295,7 +296,7 @@ public final class UtilsProxy {
 		// PROXY SEGURO!!
 		proxySecureOperational = proxy.getOperationMode().getIdCOperationMode().intValue();
 		proxySecureHost = proxy.getHostProxy() == null ? null : proxy.getHostProxy().trim();
-		proxySecurePort = proxy.getPortProxy().intValue();
+		proxySecurePort = proxy.getPortProxy() == null ? NumberConstants.NUM443 : proxy.getPortProxy().intValue();
 		proxySecureUserName = proxy.getUserProxy() == null ? null : proxy.getUserProxy().trim();
 		proxySecureUserPass = proxy.getPasswordProxy() == null ? null : proxy.getPasswordProxy().trim();
 		proxySecureDomain = proxy.getUserDomain() == null ? null : proxy.getUserDomain().trim();
@@ -533,26 +534,26 @@ public final class UtilsProxy {
 		if (disableProxy) {
 			System.setProperty(SYSPROP_PROXYSET, Boolean.FALSE.toString());
 			Authenticator.setDefault(null);
-			System.setProperty(SYSPROP_HTTP_PROXYHOST, null);
-			System.setProperty(SYSPROP_HTTP_PROXYPORT, null);
-			System.setProperty(SYSPROP_HTTP_PROXYUSER, null);
-			System.setProperty(SYSPROP_HTTP_PROXYPASSWORD, null);
-			System.setProperty(SYSPROP_HTTP_AUTH_NTLM_USERNAME, null);
-			System.setProperty(SYSPROP_HTTP_AUTH_NTLM_PASSWORD, null);
-			System.setProperty(SYSPROP_HTTP_AUTH_NTLM_DOMAIN, null);
-			System.setProperty(SYSPROP_HTTP_AUTH_NTLM_WORKSTATION, null);
-			System.setProperty(SYSPROP_HTTP_AUTH_NTLM_HOST, null);
-			System.setProperty(SYSPROP_HTTP_NONPROXYHOSTS, null);
-			System.setProperty(SYSPROP_HTTPS_PROXYHOST, null);
-			System.setProperty(SYSPROP_HTTPS_PROXYPORT, null);
-			System.setProperty(SYSPROP_HTTPS_PROXYUSER, null);
-			System.setProperty(SYSPROP_HTTPS_PROXYPASSWORD, null);
-			System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_USERNAME, null);
-			System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_PASSWORD, null);
-			System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_DOMAIN, null);
-			System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_WORKSTATION, null);
-			System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_HOST, null);
-			System.setProperty(SYSPROP_HTTPS_NONPROXYHOSTS, null);
+			System.setProperty(SYSPROP_HTTP_PROXYHOST, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTP_PROXYPORT, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTP_PROXYUSER, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTP_PROXYPASSWORD, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTP_AUTH_NTLM_USERNAME, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTP_AUTH_NTLM_PASSWORD, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTP_AUTH_NTLM_DOMAIN, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTP_AUTH_NTLM_WORKSTATION, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTP_AUTH_NTLM_HOST, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTP_NONPROXYHOSTS, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTPS_PROXYHOST, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTPS_PROXYPORT, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTPS_PROXYUSER, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTPS_PROXYPASSWORD, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_USERNAME, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_PASSWORD, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_DOMAIN, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_WORKSTATION, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_HOST, UtilsStringChar.EMPTY_STRING);
+			System.setProperty(SYSPROP_HTTPS_NONPROXYHOSTS, UtilsStringChar.EMPTY_STRING);
 		}
 
 	}

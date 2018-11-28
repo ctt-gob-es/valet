@@ -90,7 +90,7 @@ public class UnknownExtension extends Extension {
 
 		// Si la extensión es desconocida y crítica, debe producirse un error.
 		if (isCritical) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreGeneral(ICoreTslMessages.LOGMTSL038, new Object[ ] { extensionName, extensionTypeToString(getExtensionType()) }));
+			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL038, new Object[ ] { extensionName, extensionTypeToString(getExtensionType()) }));
 		}
 
 	}

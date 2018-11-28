@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 25/11/2018.
+ * @version 1.7, 28/11/2018.
  */
 package es.gob.valet.spring.config;
 
@@ -48,11 +48,13 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
+import es.gob.valet.tsl.access.TSLManager;
+import es.gob.valet.utils.UtilsProxy;
 
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 25/11/2018.
+ * @version 1.7, 28/11/2018.
  */
 @Configuration
 @EnableAutoConfiguration
@@ -128,13 +130,16 @@ public class ApplicationConfig {
 
 		// Cargamos las TSL.
 		long startOperationTime = Calendar.getInstance().getTimeInMillis();
-		// TODO TSLManager.getInstance().reloadTSLCache();
+		TSLManager.getInstance().reloadTSLCache();
 		logger.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_004, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 
 		// Mostramos en el log el tiempo empleado en cargar las caché de
 		// configuración
 		// de forma completa.
 		logger.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_005, new Object[ ] { Calendar.getInstance().getTimeInMillis() - cacheInitializationTime }));
+		
+		// Cargamos la configuración del proxy.
+		UtilsProxy.loadProxyConfiguration();
 
 	}
 
