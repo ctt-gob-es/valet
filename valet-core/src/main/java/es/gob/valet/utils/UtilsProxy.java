@@ -569,30 +569,30 @@ public final class UtilsProxy {
 
 		switch (proxyOperational) {
 			case IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
-				System.setProperty(SYSPROP_HTTP_PROXYUSER, null);
-				System.setProperty(SYSPROP_HTTP_PROXYPASSWORD, null);
+				System.setProperty(SYSPROP_HTTP_PROXYUSER, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTP_PROXYPASSWORD, UtilsStringChar.EMPTY_STRING);
 				Authenticator.setDefault(null);
-				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_USERNAME, null);
-				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_PASSWORD, null);
-				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_DOMAIN, null);
-				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_WORKSTATION, null);
-				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_HOST, null);
+				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_USERNAME, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_PASSWORD, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_DOMAIN, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_WORKSTATION, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_HOST, UtilsStringChar.EMPTY_STRING);
 				break;
 
 			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
 				System.setProperty(SYSPROP_HTTP_PROXYUSER, proxyUserName);
 				System.setProperty(SYSPROP_HTTP_PROXYPASSWORD, proxyUserPass);
 				Authenticator.setDefault(new CredentialsManager(proxyUserName, proxyUserPass));
-				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_USERNAME, null);
-				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_PASSWORD, null);
-				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_DOMAIN, null);
-				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_WORKSTATION, null);
-				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_HOST, null);
+				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_USERNAME, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_PASSWORD, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_DOMAIN, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_WORKSTATION, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_HOST, UtilsStringChar.EMPTY_STRING);
 				break;
 
 			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
-				System.setProperty(SYSPROP_HTTP_PROXYUSER, null);
-				System.setProperty(SYSPROP_HTTP_PROXYPASSWORD, null);
+				System.setProperty(SYSPROP_HTTP_PROXYUSER, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTP_PROXYPASSWORD, UtilsStringChar.EMPTY_STRING);
 				Authenticator.setDefault(new CredentialsManager(proxyUserName, proxyUserPass));
 				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_USERNAME, proxyUserName);
 				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_PASSWORD, proxyUserPass);
@@ -609,7 +609,7 @@ public final class UtilsProxy {
 		// aplicar el proxy...
 		if (UtilsStringChar.isNullOrEmptyTrim(dontUseProxyAddresses)) {
 
-			System.setProperty(SYSPROP_HTTP_NONPROXYHOSTS, null);
+			System.setProperty(SYSPROP_HTTP_NONPROXYHOSTS, UtilsStringChar.EMPTY_STRING);
 
 		} else {
 
@@ -630,30 +630,30 @@ public final class UtilsProxy {
 
 		switch (proxyOperational) {
 			case IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
-				System.setProperty(SYSPROP_HTTPS_PROXYUSER, null);
-				System.setProperty(SYSPROP_HTTPS_PROXYPASSWORD, null);
+				System.setProperty(SYSPROP_HTTPS_PROXYUSER, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTPS_PROXYPASSWORD, UtilsStringChar.EMPTY_STRING);
 				Authenticator.setDefault(null);
-				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_USERNAME, null);
-				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_PASSWORD, null);
-				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_DOMAIN, null);
-				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_WORKSTATION, null);
-				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_HOST, null);
+				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_USERNAME, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_PASSWORD, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_DOMAIN, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_WORKSTATION, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_HOST, UtilsStringChar.EMPTY_STRING);
 				break;
 
 			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
 				System.setProperty(SYSPROP_HTTPS_PROXYUSER, proxySecureUserName);
 				System.setProperty(SYSPROP_HTTPS_PROXYPASSWORD, proxySecureUserPass);
 				Authenticator.setDefault(new CredentialsManager(proxySecureUserName, proxySecureUserPass));
-				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_USERNAME, null);
-				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_PASSWORD, null);
-				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_DOMAIN, null);
-				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_WORKSTATION, null);
-				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_HOST, null);
+				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_USERNAME, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_PASSWORD, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_DOMAIN, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_WORKSTATION, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_HOST, UtilsStringChar.EMPTY_STRING);
 				break;
 
 			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
-				System.setProperty(SYSPROP_HTTPS_PROXYUSER, null);
-				System.setProperty(SYSPROP_HTTPS_PROXYPASSWORD, null);
+				System.setProperty(SYSPROP_HTTPS_PROXYUSER, UtilsStringChar.EMPTY_STRING);
+				System.setProperty(SYSPROP_HTTPS_PROXYPASSWORD, UtilsStringChar.EMPTY_STRING);
 				Authenticator.setDefault(new CredentialsManager(proxySecureUserName, proxySecureUserPass));
 				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_USERNAME, proxySecureUserName);
 				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_PASSWORD, proxySecureUserPass);
@@ -670,7 +670,7 @@ public final class UtilsProxy {
 		// aplicar el proxy...
 		if (UtilsStringChar.isNullOrEmptyTrim(dontUseProxyAddresses)) {
 
-			System.setProperty(SYSPROP_HTTPS_NONPROXYHOSTS, null);
+			System.setProperty(SYSPROP_HTTPS_NONPROXYHOSTS, UtilsStringChar.EMPTY_STRING);
 
 		} else {
 

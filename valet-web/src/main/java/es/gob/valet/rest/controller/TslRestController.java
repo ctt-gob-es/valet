@@ -65,6 +65,7 @@ import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
@@ -315,7 +316,7 @@ public class TslRestController {
 			// se comprueba que existe la tsl que se quiere editar.
 			if (idTSL != null) {
 				tslDataCache = TSLManager.getInstance().getTSLDataCacheObject(idTSL);
-				tsl = tslDataService.getTslDataById(idTSL, true, true);
+				//tsl = tslDataService.getTslDataById(idTSL, true, true);
 			} else {
 				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TSL));
 				error = true;
@@ -396,19 +397,20 @@ public class TslRestController {
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
 	@ResponseBody
 	public void downloadTsl(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
-		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
+
 		try {
-			String name = "";//tsl.getTslCountryRegion().getCountryRegionCode() + UtilsStringChar.SYMBOL_HYPHEN_STRING + tsl.getSequenceNumber()
+			TSLDataCacheObject tsldco = TSLManager.getInstance().getTSLDataCacheObject(idTsl);
+			TSLCountryRegionCacheObject tslcrco = TSLManager.getInstance().getTSLCountryRegionByIdTslData(idTsl);
+			String filenameTSL = tslcrco.getCode() + "-" + tsldco.getSequenceNumber() + EXTENSION_XML;
 			byte[ ] implTsl = TSLManager.getInstance().getTSLDataXMLDocument(idTsl);
 			InputStream in = new ByteArrayInputStream(implTsl);
 			response.setContentType(TOKEN_TEXT_XML);
 			response.setContentLength(implTsl.length);
-			response.setHeader("Content-Disposition", "attachment; filename=" + name + EXTENSION_XML);
+			response.setHeader("Content-Disposition", "attachment; filename=" + filenameTSL);
 			FileCopyUtils.copy(in, response.getOutputStream());
 
 		} catch (TSLManagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_DOWNLOAD_TSL, new Object[ ] { e.getMessage() }));
 		}
 	}
 
@@ -421,17 +423,23 @@ public class TslRestController {
 	@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)
 	@ResponseBody
 	public void downloadDocument(HttpServletResponse response, @RequestParam("id") Long idTsl) throws IOException {
-		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
-		TslData tsl = tslDataService.getTslDataById(idTsl, false, true);
-		byte[ ] legibleDoc;
-		if (tsl != null) {
-			legibleDoc = tsl.getLegibleDocument();
+		byte[ ] legibleDoc = null;
+		try {
+			TSLDataCacheObject tsldco = TSLManager.getInstance().getTSLDataCacheObject(idTsl);
+			TSLCountryRegionCacheObject tslcrco = TSLManager.getInstance().getTSLCountryRegionByIdTslData(idTsl);
+			String filenameTSL = tslcrco.getCode() + "-" + tsldco.getSequenceNumber() + EXTENSION_PDF;
+
+			legibleDoc = TSLManager.getInstance().getTSLLegibleDocument(idTsl);
+
 			InputStream in = new ByteArrayInputStream(legibleDoc);
 			response.setContentType(TOKEN_APPLICATION_PDF);
 			response.setContentLength(legibleDoc.length);
-			response.setHeader("Content-Disposition", "attachment; filename=" + tsl.getTslCountryRegion().getCountryRegionCode() + UtilsStringChar.SYMBOL_HYPHEN_STRING + tsl.getSequenceNumber() + EXTENSION_PDF);
+			response.setHeader("Content-Disposition", "attachment; filename=" + filenameTSL);
 			FileCopyUtils.copy(in, response.getOutputStream());
+		} catch (TSLManagingException e) {
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_DOWNLOAD_DOC_LEGIBLE, new Object[ ] { e.getMessage() }));
 		}
+
 	}
 
 	/**
@@ -445,7 +453,7 @@ public class TslRestController {
 	@JsonView(TslForm.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/updateimplfile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public TslForm updateImplFile(@RequestParam(FIELD_ID_TSL) Long idTSL, @RequestParam(FIELD_COUNTRY) Long idCountryRegion, @RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile) throws IOException {
+	public TslForm updateImplFile(@RequestParam(FIELD_ID_TSL) Long idTSL, @RequestParam(FIELD_URL) String urlTsl, @RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile) throws IOException {
 		TslForm tslForm = new TslForm();
 		byte[ ] fileBytes = null;
 		JSONObject json = new JSONObject();
@@ -462,6 +470,8 @@ public class TslRestController {
 		} else {
 
 			fileBytes = implTslFile.getBytes();
+			
+			
 
 			// Construimos el InputStream asociado al array y lo parseamos
 			ByteArrayInputStream bais = new ByteArrayInputStream(fileBytes);
@@ -474,7 +484,7 @@ public class TslRestController {
 			// con España, id=1
 			Long idCountryXML = Long.valueOf(1);
 
-			if (idCountryXML.equals(idCountryRegion)) {
+			if (idCountryXML.equals("")) {
 				// seguimos obteniendo la información desde el fichero.
 
 				// TODO Para las pruebas. Borrar y asignar los valores obtenidos
@@ -707,9 +717,7 @@ public class TslRestController {
 	@RequestMapping(path = "/deletetsl", method = RequestMethod.POST)
 	public String deleteTsl(@RequestParam("id") Long idTslData, @RequestParam("index") String indexParam) {
 		String index = indexParam;
-		// ITslDataService tslDataService =
-		// ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
-		try {
+	try {
 			TSLManager.getInstance().removeTSLData(null, idTslData);
 		} catch (TSLManagingException e) {
 			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));

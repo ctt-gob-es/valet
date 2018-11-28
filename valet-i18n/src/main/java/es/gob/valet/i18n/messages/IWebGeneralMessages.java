@@ -308,4 +308,35 @@ public interface IWebGeneralMessages {
 	 */
 	String ERROR_MODIFY_PROXY_WEB = "errorModifyProxyWeb";
 
+	/**
+	 * Constant attribute that represents the name of the property <code>errorLoadEditTsl</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_LOAD_EDIT_TSL = "errorLoadEditTsl";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorDownloadTsl</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_DOWNLOAD_TSL ="errorDownloadTsl";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorDownloadDocLegible</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_DOWNLOAD_DOC_LEGIBLE ="errorDownloadDocLegible";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorLoadAddTsl</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_LOAD_ADD_TSL = "errorLoadAddTss";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorLoadTslMapping</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_LOAD_TSL_MAPPING = "errorLoadTslMapping";
+	
+	
+
 }

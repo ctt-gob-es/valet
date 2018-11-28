@@ -1323,6 +1323,12 @@ public interface ICoreTslMessages {
 	 */
 	String LOGMTSL257 = "logMTSL257";
 
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL258</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL258 = "logMTSL258";
+
+
 	//	/**
 	//	 * Constant attribute that represents the name of the property <code>resultVal00</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	//	 */

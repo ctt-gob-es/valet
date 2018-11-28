@@ -24,12 +24,14 @@
  */
 package es.gob.valet.controller;
 
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,32 +39,47 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.form.ConstantsForm;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
+import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
-import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
-import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
+import es.gob.valet.tsl.access.TSLManager;
+import es.gob.valet.tsl.exceptions.TSLManagingException;
+import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.7, 08/11/2018.
+ *  @version 1.8, 28/11/2018.
  */
 @Controller
 public class TslController {
 
 	/**
+	 * Attribute that represents the object that manages the log of the class.
+	 */
+	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+
+	/**
 	 * Constant that represents the parameter 'idTslCountryRegionMapping'.
 	 */
 	private static final String FIELD_ID_COUNTRY_REGION_MAPPING = "idTslCountryRegionMapping";
+	/**
+	 * Constant that represents the extension XML.
+	 */
+	private static final String EXTENSION_XML = ".xml";
+
 	/**
 	 * Method that maps the list TSLs to the controller and forwards the list of TSLs to the view.
 	 *
@@ -82,10 +99,16 @@ public class TslController {
 	 */
 	@RequestMapping(value = "addTsl")
 	public String addTsl(Model model) {
+
+		List<String> listSpecifications = new ArrayList<String>();
 		List<String> listVersions = new ArrayList<String>();
 
-		ICTslImplService cTSLImplService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService();
-		List<String> listSpecifications = cTSLImplService.getAllSpecifications();
+		try {
+			Map<String, Set<String>> mapTslSV = TSLManager.getInstance().getsTSLRelationSpecificationAndVersion();
+			listSpecifications.addAll(mapTslSV.keySet());
+		} catch (TSLManagingException e) {
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_LOAD_ADD_TSL, new Object[ ] { e.getMessage() }));
+		}
 
 		TslForm tslForm = new TslForm();
 		model.addAttribute("tslform", tslForm);
@@ -103,34 +126,75 @@ public class TslController {
 	 */
 	@RequestMapping(value = "edittsl", method = RequestMethod.POST)
 	public String editTsl(@RequestParam("id") Long idTslData, Model model) {
-		ITslDataService tslService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
-		TslData tslData = tslService.getTslDataById(idTslData, false, false);
-		TslForm tslForm = new TslForm();
-		tslForm.setIdTslData(idTslData);
-		tslForm.setCountryName(tslData.getTslCountryRegion().getCountryRegionName());
-		tslForm.setCountry(tslData.getTslCountryRegion().getIdTslCountryRegion());
-		tslForm.setTslName("prueba nombre tsl");
-		tslForm.setTslResponsible("prueba nombre responsable");
 
-		// Se comprueba si tiene documento legible
-		if (tslData.getLegibleDocument() != null) {
-			tslForm.setIsLegible(true);
-		} else {
-			tslForm.setIsLegible(false);
+		TslForm tslForm = new TslForm();
+		try {
+
+			TSLDataCacheObject tsldco = TSLManager.getInstance().getTSLDataCacheObject(idTslData);
+			TSLCountryRegionCacheObject tslcrco = TSLManager.getInstance().getTSLCountryRegionByIdTslData(idTslData);
+			ITSLObject tslObject = (ITSLObject) tsldco.getTslObject();
+
+			// se van obtiendo los datos a mostrar en el formulario
+			tslForm.setIdTslData(idTslData);
+			tslForm.setCountryName(tslcrco.getName());
+			tslForm.setCountry(tslcrco.getCountryRegionId());
+			tslForm.setSpecification(tslObject.getSpecification());
+			tslForm.setVersion(tslObject.getSpecificationVersion());
+			tslForm.setSequenceNumber(tslObject.getSchemeInformation().getTslSequenceNumber());
+			tslForm.setUrlTsl(tsldco.getTslLocationUri());
+			tslForm.setTslName(TSLManager.getInstance().getTSLSchemeName(idTslData));
+			tslForm.setTslResponsible(TSLManager.getInstance().getTSLSchemeName(idTslData));
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			tslForm.setIssueDate(sdf.format(tsldco.getIssueDate()));
+			tslForm.setExpirationDate(sdf.format(tsldco.getNextUpdateDate()));
+			if (TSLManager.getInstance().getTSLLegibleDocument(idTslData) != null) {
+				tslForm.setIsLegible(true);
+			} else {
+				tslForm.setIsLegible(false);
+			}
+			// componemos el nombre del fichero de la implementación XML para
+			// que se muestre en administración
+			String filenameTSL = tslcrco.getCode() + "-" + tsldco.getSequenceNumber() + EXTENSION_XML;
+			tslForm.setAlias(filenameTSL);
+
+		} catch (TSLManagingException e) {
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_LOAD_EDIT_TSL, new Object[ ] { e.getMessage() }));
 		}
 
-		Date issueDate = tslData.getIssueDate();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		tslForm.setIssueDate(sdf.format(issueDate));
-		tslForm.setExpirationDate(sdf.format(tslData.getExpirationDate()));
-		tslForm.setUrlTsl(tslData.getUriTslLocation());
-
-		tslForm.setSequenceNumber(tslData.getSequenceNumber());
 		model.addAttribute("isLegible", tslForm.getIsLegible());
 		model.addAttribute("tslform", tslForm);
 		return "modal/tsl/tslEditForm";
 	}
 
+	/**
+	 * Method that loads a datatable with the mappings for the TSL of the indicated country.
+	 * @param countryRegionCode Parameter that represents a code of country/region.
+	 * @param model Parameter that represents holder object for model attributes.
+	 * @return String that represents the name of the view to forward.
+	 */
+//	@RequestMapping(value = "/loadmappingdatatable", method = RequestMethod.GET)
+//	public String loadMappingDataTable(@RequestParam("countryRegionCode") String countryRegionCode, Model model) {
+//		MappingTslForm mappingTslForm = new MappingTslForm();
+//		MappingTslForm mappingTslEditForm = new MappingTslForm();
+//
+//		TSLCountryRegionCacheObject tslcrco;
+//		try {
+//			tslcrco = TSLManager.getInstance().getTSLCountryRegionCacheObject(countryRegionCode);
+//			mappingTslForm.setIdTslCountryRegion(tslcrco.getCountryRegionId());
+//			mappingTslForm.setNameCountryRegion(tslcrco.getName());
+//		} catch (TSLManagingException e) {
+//			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_LOAD_TSL_MAPPING, new Object[ ] { e.getMessage() }));
+//		}
+//		model.addAttribute("mappingtslform", mappingTslForm);
+//		model.addAttribute("mappingedittslform", mappingTslEditForm);
+//
+//		// se cargan los tipos de asociaciones
+//		List<ConstantsForm> associationTypes = loadAssociationType();
+//		model.addAttribute("listTypes", associationTypes);
+//		return "fragments/tslmapping.html";
+//	}
+	
+	
 	/**
 	 * Method that loads a datatable with the mappings for the TSL of the indicated country.
 	 * @param idCountryRegion Parameter that represents a country identifier.
@@ -154,6 +218,7 @@ public class TslController {
 		return "fragments/tslmapping.html";
 	}
 
+
 	/**
 	 * Method that loads the mapping by ID of TslCountryRegionMapping.
 	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.
@@ -171,7 +236,7 @@ public class TslController {
 		mappingTslForm.setMappingValue(tslCRM.getMappingValue());
 		mappingTslForm.setIdMappingType(tslCRM.getAssociationType().getIdAssociationType());
 
-		//se cargan los tipos de asociaciones
+		// se cargan los tipos de asociaciones
 		List<ConstantsForm> associationTypes = loadAssociationType();
 		model.addAttribute("listTypes", associationTypes);
 		model.addAttribute("mappingtslform", mappingTslForm);
@@ -187,7 +252,7 @@ public class TslController {
 	@RequestMapping(path = "/loadaddmapping", method = RequestMethod.GET)
 	public String loadAddMapping(@RequestParam("id") Long idCountryRegion, Model model) {
 
-		//se cargan los tipos de asociaciones
+		// se cargan los tipos de asociaciones
 		List<ConstantsForm> associationTypes = loadAssociationType();
 		model.addAttribute("listTypes", associationTypes);
 		MappingTslForm mappingTslForm = new MappingTslForm();
@@ -213,7 +278,6 @@ public class TslController {
 		return "modal/tsl/mappingDelete";
 	}
 
-
 	/**
 	 * Method that loads association types.
 	 * @return List of constants that represents the different association types.
@@ -230,6 +294,7 @@ public class TslController {
 
 		return listAssociationTypes;
 	}
+
 	/**
 	 * Method that gets string constant from multilanguage file.
 	 *
