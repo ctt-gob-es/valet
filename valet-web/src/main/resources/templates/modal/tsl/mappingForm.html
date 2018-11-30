@@ -15,7 +15,7 @@
 					th:object="${mappingtslform}" method="post">
 					<div id="errorModalMapping" role="alert"></div>
 					<input type='hidden' id="idCountryRegion"
-						th:field="*{idTslCountryRegion}"></input>
+						th:field="*{codeCountryRegion}"></input>
 					<div class="form-group col-md-4">
 						<label for="idAssociationType" th:text="#{form.newMapping.type}"></label>
 						<select id="idAssociationType" class="form-control"
@@ -61,7 +61,6 @@
 function saveNewMapping() {
 	var actionSaveMapping = /*[[@{/savemappingtsl}]]*/;
 	var formDataMapping = new FormData(document.forms["mappingTslForm"]);
-	formDataMapping.append('idCountryRegion',idCountry);
 	var tblMapping = $('#mappingTable').DataTable();
  	$.ajax(actionSaveMapping, {
 		data :formDataMapping, 

@@ -297,7 +297,7 @@ COMMENT ON COLUMN "X_TASK_PLANNER"."ID_PLANNER" IS 'Valor que representa el plan
 CREATE TABLE "PROXY"(
 	"ID_PROXY" Number(19,0) NOT NULL, 
 	"ID_OPERATION_MODE" Number(19,0) NOT NULL,
-	"HOST_PROXY" Varchar2(15),
+	"HOST_PROXY" Varchar2(200),
 	"PORT_PROXY" Number(10,0),
 	"USER_PROXY" Varchar2(200),
 	"PASSWORD_PROXY" Varchar2(200), 

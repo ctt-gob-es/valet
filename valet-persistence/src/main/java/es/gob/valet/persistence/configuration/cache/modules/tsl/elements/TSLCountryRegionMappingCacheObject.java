@@ -51,6 +51,11 @@ public class TSLCountryRegionMappingCacheObject extends ConfigurationCacheObject
 	 * Attribute that represents the mapping ID.
 	 */
 	private long mappingId = -1;
+	
+	/**
+	 * Attribute that represents the TSLCountryRegion identificator.
+	 */
+	private long countryRegionId = -1;
 
 	/**
 	 * Attribute that represents the mapping identificator.
@@ -100,6 +105,7 @@ public class TSLCountryRegionMappingCacheObject extends ConfigurationCacheObject
 			setDescription(tcrm.getMappingDescription());
 			setValue(tcrm.getMappingValue());
 			setAssociationType(tcrm.getAssociationType().getIdAssociationType().longValue());
+			setCountryRegionId(tcrm.getTslCountryRegion().getIdTslCountryRegion());
 
 		}
 
@@ -119,6 +125,22 @@ public class TSLCountryRegionMappingCacheObject extends ConfigurationCacheObject
 	 */
 	public final void setMappingId(long mappingIdParam) {
 		this.mappingId = mappingIdParam;
+	}
+
+	
+	/**
+	 * @return the countryRegionId
+	 */
+	public long getCountryRegionId() {
+		return countryRegionId;
+	}
+
+	
+	/**
+	 * @param countryRegionIdParam the countryRegionId to set
+	 */
+	public void setCountryRegionId(long countryRegionIdParam) {
+		this.countryRegionId = countryRegionIdParam;
 	}
 
 	/**

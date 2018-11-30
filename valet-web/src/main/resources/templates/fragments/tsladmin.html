@@ -81,9 +81,9 @@ var tbl = $('#tslTable').DataTable({
 		return moment(data).format("MM-DD-YYYY HH:mm");}},
         { "data": "expirationDate", "width": "25%", "render": function(data, type, row){
 		return moment(data).format("MM-DD-YYYY HH:mm");}},
-        { "data": "tslCountryRegion.idTslCountryRegion", "width": "10%", 
+        { "data": "tslCountryRegion.countryRegionCode", "width": "10%", 
         	"render": function(data, type, row){		
-        		return '<button class="c-green-500 ti-list" id="loadMap" onclick="loadMappingDatatable('+data+');" alt='+btnShowMapping+' title='+btnShowMapping+'></button>';
+        		return '<button class="c-green-500 ti-list" id="loadMap" onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'></button>';
         	}
         } 
         ]
@@ -221,11 +221,11 @@ var tbl = $('#tslTable').DataTable({
 
 
 //función para cargar la tabla con los valores del mapeo
-function loadMappingDatatable(idCountry) {
+function loadMappingDatatable(countryRegionCode) {
 	var loadMappingDt =/*[[@{/loadmappingdatatable}]]*/;
-	var idCountryRegion = idCountry;
+	var crc = countryRegionCode;
 	$.ajax(loadMappingDt,{
-			 data:$.param({'idTslCountryRegion':idCountryRegion} ),
+			 data:$.param({'countryRegionCode':crc} ),
 			 type:'GET',
 			 success: function(data){
 				$("#tableMapping").show();

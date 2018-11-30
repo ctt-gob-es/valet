@@ -4,7 +4,8 @@
 		<!--  identificador idCountryRegion -->
 		<input type='hidden' class='primarykey' id="idCountry"
 			th:field="*{idTslCountryRegion}"></input>
-
+	<input type='hidden' class='primarykey' id="idCodeCountry"
+			th:field="*{codeCountryRegion}"></input>
 		<!--  nombre del pais al que pertenece la TSL -->
 		<input type='hidden' id="idNameCountry"
 			th:field="*{nameCountryRegion}"></input>
@@ -39,7 +40,7 @@ $(document).ready(function() {
 	var actionOpenMapping = /*[[@{/loadmapping}]]*/;
 	var addMappingTemplate = /*[[@{/loadaddmapping}]]*/;
 	var idCountry = $("#idCountry").val();
-	
+	var codCountry =  $("#idCodeCountry").val();
 	//textos de botones
 	var btnAddMapping =  /*[[#{tsl.admin.btn.add}]]*/;
 	var btnEditMappingAlt =  /*[[#{table.tsl.mapeo.edit.alt}]]*/;
@@ -55,7 +56,7 @@ $(document).ready(function() {
 			  $.ajax({
 					url : addMappingTemplate,
 					type : 'GET',
-					data : $.param({'id':idCountry}),
+					data : $.param({'id':codCountry}),
 					cache : false,
 					success : function(data) {
 						hide();
@@ -98,8 +99,7 @@ $(document).ready(function() {
 					        { "data": "mappingValue",  "width": "35%"}, 
 					        { "data": "associationType.tokenName",  "width": "20%"},
 					        { "data": "idTslCountryRegionMapping",  "width": "10%",
-					        	"render": function(data, type, row){		
-					        		
+					        	"render": function(data, type, row){	
 					        		return '<button class="c-green-500 ti-pencil-alt" id="editMappingTsl"  onclick="editMapping('+data+');" alt='+btnEditMappingAlt+' title='+btnEditMappingAlt+'></button>&nbsp;<button class="c-red-500 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);" alt='+btnDelMappingAlt+' title='+btnDelMappingAlt+'></button>';
 					        		
 					        	}
@@ -146,8 +146,9 @@ function deleteConfirmMappingTsl(idTslCountryRegionMapping,  element) {
 	var loadConfirmDelete = /*[[@{/loadconfirmdelete}]]*/
 	var idCRM= idTslCountryRegionMapping;
 	var rowIndex = element.parentNode.parentNode.rowIndex;
+	var codCountry =  $("#idCodeCountry").val();
 	$.ajax(loadConfirmDelete,{
-			data:$.param({'idTslCountryRegionMapping':idCRM, 'rowindex':rowIndex}),
+			data:$.param({'idTslCountryRegionMapping':idCRM, 'rowindex':rowIndex, 'codeRegionCountry':codCountry}),
 	        type:'GET',
 	        success: function(data){
 	        	// Se oculta la capa 'cargando...'

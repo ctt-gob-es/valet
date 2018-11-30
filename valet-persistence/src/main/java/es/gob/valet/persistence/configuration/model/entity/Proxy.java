@@ -137,7 +137,7 @@ public class Proxy implements Serializable {
 	 * Gets the value of the attribute {@link #hostProxy}.
 	 * @return the value of the attribute {@link #hostProxy}.
 	 */
-	@Column(name = "HOST_PROXY", nullable = false, precision = NumberConstants.NUM15)
+	@Column(name = "HOST_PROXY", nullable = false, precision = NumberConstants.NUM200)
 	public String getHostProxy() {
 		return hostProxy;
 	}

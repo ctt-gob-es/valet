@@ -20,13 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 08/11/2018.
+ * @version 1.8, 29/11/2018.
  */
 package es.gob.valet.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,14 +45,12 @@ import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
-import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
-import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
-import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
@@ -61,7 +58,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.8, 28/11/2018.
+ *  @version 1.9, 29/11/2018.
  */
 @Controller
 public class TslController {
@@ -168,47 +165,26 @@ public class TslController {
 
 	/**
 	 * Method that loads a datatable with the mappings for the TSL of the indicated country.
-	 * @param countryRegionCode Parameter that represents a code of country/region.
-	 * @param model Parameter that represents holder object for model attributes.
-	 * @return String that represents the name of the view to forward.
-	 */
-//	@RequestMapping(value = "/loadmappingdatatable", method = RequestMethod.GET)
-//	public String loadMappingDataTable(@RequestParam("countryRegionCode") String countryRegionCode, Model model) {
-//		MappingTslForm mappingTslForm = new MappingTslForm();
-//		MappingTslForm mappingTslEditForm = new MappingTslForm();
-//
-//		TSLCountryRegionCacheObject tslcrco;
-//		try {
-//			tslcrco = TSLManager.getInstance().getTSLCountryRegionCacheObject(countryRegionCode);
-//			mappingTslForm.setIdTslCountryRegion(tslcrco.getCountryRegionId());
-//			mappingTslForm.setNameCountryRegion(tslcrco.getName());
-//		} catch (TSLManagingException e) {
-//			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_LOAD_TSL_MAPPING, new Object[ ] { e.getMessage() }));
-//		}
-//		model.addAttribute("mappingtslform", mappingTslForm);
-//		model.addAttribute("mappingedittslform", mappingTslEditForm);
-//
-//		// se cargan los tipos de asociaciones
-//		List<ConstantsForm> associationTypes = loadAssociationType();
-//		model.addAttribute("listTypes", associationTypes);
-//		return "fragments/tslmapping.html";
-//	}
-	
-	
-	/**
-	 * Method that loads a datatable with the mappings for the TSL of the indicated country.
-	 * @param idCountryRegion Parameter that represents a country identifier.
+	 * @param countryRegionCode Parameter that represents a country/region code.
 	 * @param model Parameter that represents holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "/loadmappingdatatable", method = RequestMethod.GET)
-	public String loadMappingDataTable(@RequestParam("idTslCountryRegion") Long idCountryRegion, Model model) {
+	public String loadMappingDataTable(@RequestParam("countryRegionCode") String countryRegionCode, Model model) {
 		MappingTslForm mappingTslForm = new MappingTslForm();
 		MappingTslForm mappingTslEditForm = new MappingTslForm();
-		mappingTslForm.setIdTslCountryRegion(idCountryRegion);
+		mappingTslForm.setCodeCountryRegion(countryRegionCode);
 
-		ITslCountryRegionService tslCountryRegionService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService();
-		mappingTslForm.setNameCountryRegion(tslCountryRegionService.getNameCountryRegionById(idCountryRegion));
+		try {
+			TSLCountryRegionCacheObject tslcrco = TSLManager.getInstance().getTSLCountryRegionCacheObject(countryRegionCode);
+			mappingTslForm.setIdTslCountryRegion(tslcrco.getCountryRegionId());
+			mappingTslForm.setNameCountryRegion(tslcrco.getName());
+
+		} catch (TSLManagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// mappingTslForm.setNameCountryRegion(tslCountryRegionService.getNameCountryRegionById(idCountryRegion));
 		model.addAttribute("mappingtslform", mappingTslForm);
 		model.addAttribute("mappingedittslform", mappingTslEditForm);
 
@@ -218,7 +194,6 @@ public class TslController {
 		return "fragments/tslmapping.html";
 	}
 
-
 	/**
 	 * Method that loads the mapping by ID of TslCountryRegionMapping.
 	 * @param idTslCountryRegionMapping Parameter that represents the ID of the mapping.
@@ -227,14 +202,20 @@ public class TslController {
 	 */
 	@RequestMapping(value = "/loadmappingbyid", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String loadMappingById(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, Model model) {
-		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
-		TslCountryRegionMapping tslCRM = tslCountryRegionMappingService.getTslCountryRegionMappingById(idTslCountryRegionMapping);
+		// TSLCountryRegionMappingCacheObject tslcrmco;
 		MappingTslForm mappingTslForm = new MappingTslForm();
+		TslCountryRegionMapping tslcrmco = ManagerPersistenceConfigurationServices.getInstance().getTslCountryRegionMappingService().getTslCountryRegionMappingById(idTslCountryRegionMapping);
+		// TODO provisionalmente lo obtenemos directamente de BBDD, tendría que
+		// ser desde la cache.
+
+		// tslcrmco =
+		// TSLManager.getInstance().getTSLCountryRegionMappingCacheObject(null,
+		// idTslCountryRegionMapping);
 		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
-		mappingTslForm.setIdTslCountryRegion(tslCRM.getTslCountryRegion().getIdTslCountryRegion());
-		mappingTslForm.setMappingIdentificator(tslCRM.getMappingIdentificator());
-		mappingTslForm.setMappingValue(tslCRM.getMappingValue());
-		mappingTslForm.setIdMappingType(tslCRM.getAssociationType().getIdAssociationType());
+		mappingTslForm.setMappingIdentificator(tslcrmco.getMappingIdentificator());
+		mappingTslForm.setMappingValue(tslcrmco.getMappingValue());
+		mappingTslForm.setIdMappingType(tslcrmco.getAssociationType().getIdAssociationType());
+		mappingTslForm.setIdTslCountryRegion(tslcrmco.getTslCountryRegion().getIdTslCountryRegion());
 
 		// se cargan los tipos de asociaciones
 		List<ConstantsForm> associationTypes = loadAssociationType();
@@ -250,13 +231,13 @@ public class TslController {
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(path = "/loadaddmapping", method = RequestMethod.GET)
-	public String loadAddMapping(@RequestParam("id") Long idCountryRegion, Model model) {
+	public String loadAddMapping(@RequestParam("id") String codeCountryRegion, Model model) {
 
 		// se cargan los tipos de asociaciones
 		List<ConstantsForm> associationTypes = loadAssociationType();
 		model.addAttribute("listTypes", associationTypes);
 		MappingTslForm mappingTslForm = new MappingTslForm();
-		mappingTslForm.setIdTslCountryRegion(idCountryRegion);
+		mappingTslForm.setCodeCountryRegion(codeCountryRegion);
 		model.addAttribute("mappingtslform", mappingTslForm);
 		return "modal/tsl/mappingForm";
 
@@ -270,10 +251,11 @@ public class TslController {
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "/loadconfirmdelete", method = RequestMethod.GET)
-	public String loadConfirmDeleteMapping(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam("rowindex") String rowIndexMapping, Model model) {
+	public String loadConfirmDeleteMapping(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam("codeRegionCountry") String codeRegionCountry, @RequestParam("rowindex") String rowIndexMapping, Model model) {
 		MappingTslForm mappingTslForm = new MappingTslForm();
 		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
 		mappingTslForm.setRowIndexMapping(rowIndexMapping);
+		mappingTslForm.setCodeCountryRegion(codeRegionCountry);
 		model.addAttribute("mappingtslform", mappingTslForm);
 		return "modal/tsl/mappingDelete";
 	}

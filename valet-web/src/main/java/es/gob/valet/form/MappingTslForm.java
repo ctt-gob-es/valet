@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/08/2018.</p>
  * @author Gobierno de España.
- *@version 1.1, 25/10/2018
+ *@version 1.2, 30/10/2018
  */
 package es.gob.valet.form;
 
@@ -46,6 +46,10 @@ public class MappingTslForm {
 	 */
 	private String nameCountryRegion;
 	
+	/**
+	 * Attribute that represents the code of the country or region.
+	 */
+	private String codeCountryRegion;
 	/**
 	 * Attribute that represents the identificator for the logical mapping.
 	 */
@@ -116,6 +120,22 @@ public class MappingTslForm {
 		this.nameCountryRegion = nameCountryRegionParam;
 	}
 	
+	
+	/**
+	 * @return the codeCountryRegion
+	 */
+	public String getCodeCountryRegion() {
+		return codeCountryRegion;
+	}
+
+	
+	/**
+	 * @param codeCountryRegion the codeCountryRegion to set
+	 */
+	public void setCodeCountryRegion(String codeCountryRegion) {
+		this.codeCountryRegion = codeCountryRegion;
+	}
+
 	/**
 	 * Gets the value of the attribute {@link #mappingIdentificator}.
 	 * @return the value of the attribute {@link #mappingIdentificator}.

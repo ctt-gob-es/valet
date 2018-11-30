@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 28/11/2018.
+ * @version 1.3, 29/11/2018.
  */
 package es.gob.valet.tsl.access;
 
@@ -61,7 +61,6 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
-import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;
@@ -79,7 +78,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /** 
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 28/11/2018.
+ * @version 1.3, 29/11/2018.
  */
 public final class TSLManager {
 
@@ -1355,10 +1354,14 @@ public final class TSLManager {
 	 * @param mappingValue Mapping value to assign.
 	 * @param associationType Association type for the mapping. It only must be {@link IAssociationTypeIdConstants#ID_FREE_ASSOCIATION}
 	 * or {@link IAssociationTypeIdConstants#ID_SIMPLE_ASSOCIATION}.
+	 * @return TSL Country/Region Mapping data base object representation that has been updated. <code>null</code> if there is
+	 * some problem with the input parameters, adding the mapping to the data base or if the TSL Country/Region is not defined.
 	 * @throws TSLManagingException In case of some error updating a TSL mapping.
 	 */
-	public void updateTSLCountryRegionMapping(Long mappingId, String mappingIdentificator, String mappingDescription, String mappingValue, Long associationType) throws TSLManagingException {
-
+	public TslCountryRegionMapping updateTSLCountryRegionMapping(Long mappingId, String mappingIdentificator, String mappingDescription, String mappingValue, Long associationType) throws TSLManagingException {
+		// Inicializamos el resultado...
+		TslCountryRegionMapping result = null;
+		
 		// Comprobamos que los parámetros de entrada son válidos.
 		if (mappingId != null && !UtilsStringChar.isNullOrEmptyTrim(mappingIdentificator) && !UtilsStringChar.isNullOrEmptyTrim(mappingValue) && associationType != null) {
 
@@ -1388,7 +1391,7 @@ public final class TSLManager {
 						ConfigurationCacheFacade.tslAddUpdateMappingToCountryRegion(tslcr.getCountryRegionCode(), tslcrm);
 
 					}
-
+					result = tslcrm;
 				}
 
 			} catch (Exception e) {
@@ -1396,6 +1399,7 @@ public final class TSLManager {
 			}
 
 		}
+		return result;
 
 	}
 
@@ -1619,38 +1623,6 @@ public final class TSLManager {
 
 	}
 
-	/**
-	 * 
-	 * @param idTSLData
-	 * @param tslXMLbytes
-	 * @throws TSLManagingException
-	 */
-	public void updateTSLData(Long idTSLData, String urlTsl, byte[ ] tslXMLbytes) throws TSLManagingException {
-		// Se comprueba que el parámetro de entrada es correcto
-		if (idTSLData != null || tslXMLbytes != null) {
-			// Construimos el InputStream asociado al array, y tratamos de
-			// parsearlo y añadirlo
-			ByteArrayInputStream bais = new ByteArrayInputStream(tslXMLbytes);
-			ITSLObject tslObject = (ITSLObject) getTSLDataCacheObject(idTSLData).getTslObject();
-			try {
-				tslObject.buildTSLFromXMLcheckValues(bais);
-			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
-
-			} finally {
-				UtilsResources.safeCloseInputStream(bais);
-			}
-			// Una vez parseada la TSL, comprobamos a que país/region pertenece.
-			String schemeTerritory = tslObject.getSchemeInformation().getSchemeTerritory();
-			// // Recuperamos de la caché el país/región.
-			// TSLCountryRegionCacheObject tcrco =
-			// ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(schemeTerritory);
-			// // Añadimos un nuevo TSL Data asociado al país/región.
-			// TslData td = addNewTSLDataInDataBase(tcrco.getCountryRegionId(),
-			// urlTsl, tslXMLbytes, tslObject);
-
-		}
-	}
 
 	/**
 	 * Adds a new TSL Data in the data base and in the cache.
@@ -2063,6 +2035,8 @@ public final class TSLManager {
 		}
 		return tslcrco;
 	}
+	
+	
 	
 	
 
