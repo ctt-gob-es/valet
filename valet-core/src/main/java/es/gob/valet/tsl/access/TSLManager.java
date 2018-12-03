@@ -198,19 +198,20 @@ public final class TSLManager {
 			} catch (TSLCacheException e) {
 				throw new TSLManagingException(IValetException.COD_191, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL103, new Object[ ] { countryCode, dateString }), e);
 			}
-			
+
 			// Si lo hemos obtenido...
 			if (tdco != null) {
-				
-				// Si hemos recibido una fecha, se debe cumplir que esta sea anterior
+
+				// Si hemos recibido una fecha, se debe cumplir que esta sea
+				// anterior
 				// a la fecha de caducidad de la TSL.
-				if (date!=null && date.before(tdco.getNextUpdateDate())) {
+				if (date != null && date.before(tdco.getNextUpdateDate())) {
 					// Establecemos como resultado esta TSL.
 					result = (TSLObject) tdco.getTslObject();
 				}
-				
+
 			}
-			
+
 		}
 
 		return result;
@@ -271,9 +272,10 @@ public final class TSLManager {
 			}
 			// Si lo hemos recuperado...
 			if (tdco != null) {
-				// Si hemos recibido una fecha, se debe cumplir que esta sea anterior
+				// Si hemos recibido una fecha, se debe cumplir que esta sea
+				// anterior
 				// a la fecha de caducidad de la TSL.
-				if (date!=null && date.before(tdco.getNextUpdateDate())) {
+				if (date != null && date.before(tdco.getNextUpdateDate())) {
 					// Establecemos como resultado esta TSL.
 					result = (TSLObject) tdco.getTslObject();
 				}
@@ -285,7 +287,7 @@ public final class TSLManager {
 		return result;
 
 	}
-	
+
 	/**
 	 * Tries to detect the input X509v3 certificate searching a valid TSL for it, and using this for the detection process.
 	 * Then returns the validation/detection result. If no TSL is finded for the certificate, then returns <code>null</code>.
@@ -403,26 +405,34 @@ public final class TSLManager {
 
 				// Buscamos la TSL de España.
 				TSLDataCacheObject tdco = ConfigurationCacheFacade.tslGetTSLDataFromCountryRegion(UtilsCountryLanguage.ES_COUNTRY_CODE);
-				
-				// Si hemos encontrado la TSL y su fecha de caducidad es posterior
+
+				// Si hemos encontrado la TSL y su fecha de caducidad es
+				// posterior
 				// a la fecha actual...
-				if (tdco!=null && tdco.getNextUpdateDate().after(actualDate)) {
-					
-					// Inicializamos el resultado de detectar el certificado y obtener
+				if (tdco != null && tdco.getNextUpdateDate().after(actualDate)) {
+
+					// Inicializamos el resultado de detectar el certificado y
+					// obtener
 					// mapeos.
 					ITSLValidatorResult tslValResult = detectX509andGetMappingInfoWithTSL(cert, actualDate);
 
-					// Si hemos obtenido resultado y el certificado ha sido detectado...
+					// Si hemos obtenido resultado y el certificado ha sido
+					// detectado...
 					if (tslValResult != null && tslValResult.hasBeenDetectedTheCertificate()) {
 
 						// Obtenemos los mapeos.
 						result = tslValResult.getMappings();
 
-						// TODO: Esto no se puede hacer aquí porque es necesario conocer el valor de 'clasificacion' que va en función de la política.
-//						// Tratamos de asignar el
-//						// mapeo estático "certClassification" mediante el campo "clasificacion"
-//						// si no estuviera ya definido.
-//						result = TSLValidatorMappingCalculator.addMappingsAndCheckCertClassification(null, result);
+						// TODO: Esto no se puede hacer aquí porque es necesario
+						// conocer el valor de 'clasificacion' que va en función
+						// de la política.
+						// // Tratamos de asignar el
+						// // mapeo estático "certClassification" mediante el
+						// campo "clasificacion"
+						// // si no estuviera ya definido.
+						// result =
+						// TSLValidatorMappingCalculator.addMappingsAndCheckCertClassification(null,
+						// result);
 
 					}
 
@@ -819,7 +829,7 @@ public final class TSLManager {
 
 					// Si no es nulo, continuamos.
 					if (td != null) {
-						
+
 						// Lo cargamos completamente.
 						td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslDataById(td.getIdTslData(), true, false);
 
@@ -1165,7 +1175,7 @@ public final class TSLManager {
 
 				// Si lo hemos recuperado, continuamos...
 				if (tcrco != null) {
-					
+
 					// Lo borramos de base de datos.
 					ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().deleteTslCountryRegionById(tcrco.getCountryRegionId());
 
@@ -1295,7 +1305,7 @@ public final class TSLManager {
 
 		// Inicializamos el resultado...
 		TslCountryRegionMapping result = null;
-		
+
 		// Comprobamos que los parámetros de entrada son válidos.
 		if (!UtilsStringChar.isNullOrEmptyTrim(countryRegionCode) && !UtilsStringChar.isNullOrEmptyTrim(mappingIdentificator) && !UtilsStringChar.isNullOrEmptyTrim(mappingValue) && associationType != null) {
 
@@ -1326,8 +1336,9 @@ public final class TSLManager {
 						tslcrm = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService().save(tslcrm);
 
 						ConfigurationCacheFacade.tslAddUpdateMappingToCountryRegion(countryRegionCode, tslcrm);
-						
-						// Asignamos el objeto añadido en base de datos como resultado.
+
+						// Asignamos el objeto añadido en base de datos como
+						// resultado.
 						result = tslcrm;
 
 					}
@@ -1341,7 +1352,7 @@ public final class TSLManager {
 			}
 
 		}
-		
+
 		return result;
 
 	}
@@ -1361,7 +1372,7 @@ public final class TSLManager {
 	public TslCountryRegionMapping updateTSLCountryRegionMapping(Long mappingId, String mappingIdentificator, String mappingDescription, String mappingValue, Long associationType) throws TSLManagingException {
 		// Inicializamos el resultado...
 		TslCountryRegionMapping result = null;
-		
+
 		// Comprobamos que los parámetros de entrada son válidos.
 		if (mappingId != null && !UtilsStringChar.isNullOrEmptyTrim(mappingIdentificator) && !UtilsStringChar.isNullOrEmptyTrim(mappingValue) && associationType != null) {
 
@@ -1375,7 +1386,7 @@ public final class TSLManager {
 
 					// Recuperamos el país/región asociado.
 					TslCountryRegion tslcr = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getTslCountryRegionById(tslcrm.getTslCountryRegion().getIdTslCountryRegion(), false);
-					
+
 					// Si lo hemos recuperado...
 					if (tslcr != null) {
 
@@ -1460,21 +1471,21 @@ public final class TSLManager {
 	 * @throws TSLManagingException In case of some error getting the TSL associated to a specific TSL location.
 	 */
 	public TSLDataCacheObject getTSLDataFromTSLLocation(String tslLocation) throws TSLManagingException {
-		
+
 		TSLDataCacheObject result = null;
-		
+
 		if (!UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
-			
+
 			try {
 				result = ConfigurationCacheFacade.tslGetTSLDataFromLocation(tslLocation);
 			} catch (TSLCacheException e) {
 				throw new TSLManagingException(IValetException.COD_191, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL103, new Object[ ] { tslLocation, "Not specified" }), e);
 			}
-			
+
 		}
-		
+
 		return result;
-		
+
 	}
 
 	/**
@@ -1494,25 +1505,28 @@ public final class TSLManager {
 
 	}
 
-//	/**
-//	 * Gets the TSL Data Cache Object representation with the input IDs.
-//	 * @param tslDataIds TSL Data ID to search.
-//	 * @return a TSL Data Cache Object array representation with the input TSL Data IDs.
-//	 * <code>null</code> if these are not exist.
-//	 * @throws TSLManagingException In case of some error getting the data from the cache.
-//	 */
-//	public TSLDataCacheObject[ ] getTSLDataCacheObject(long[ ] tslDataIds) throws TSLManagingException {
-//
-//		TSLDataCacheObject[ ] result = null;
-//		if (tslDataIds != null && tslDataIds.length > 0) {
-//			result = new TSLDataCacheObject[tslDataIds.length];
-//			for (int index = 0; index < tslDataIds.length; index++) {
-//				result[index] = getTSLDataCacheObject(tslDataIds[index]);
-//			}
-//		}
-//		return result;
-//
-//	}
+	// /**
+	// * Gets the TSL Data Cache Object representation with the input IDs.
+	// * @param tslDataIds TSL Data ID to search.
+	// * @return a TSL Data Cache Object array representation with the input TSL
+	// Data IDs.
+	// * <code>null</code> if these are not exist.
+	// * @throws TSLManagingException In case of some error getting the data
+	// from the cache.
+	// */
+	// public TSLDataCacheObject[ ] getTSLDataCacheObject(long[ ] tslDataIds)
+	// throws TSLManagingException {
+	//
+	// TSLDataCacheObject[ ] result = null;
+	// if (tslDataIds != null && tslDataIds.length > 0) {
+	// result = new TSLDataCacheObject[tslDataIds.length];
+	// for (int index = 0; index < tslDataIds.length; index++) {
+	// result[index] = getTSLDataCacheObject(tslDataIds[index]);
+	// }
+	// }
+	// return result;
+	//
+	// }
 
 	/**
 	 * Gets the Scheme Name associated to the TSL represented by the input ID.
@@ -1623,7 +1637,6 @@ public final class TSLManager {
 
 	}
 
-
 	/**
 	 * Adds a new TSL Data in the data base and in the cache.
 	 * @param urlTsl URL location for the TSL.
@@ -1637,7 +1650,7 @@ public final class TSLManager {
 	public TslData addNewTSLData(String urlTsl, String tslSpecification, String tslSpecificationVersion, byte[ ] tslXMLbytes) throws TSLManagingException {
 
 		TslData result = null;
-		
+
 		// Comprobamos que los parámetros de entrada sean válidos.
 		if (!UtilsStringChar.isNullOrEmptyTrim(tslSpecification) && !UtilsStringChar.isNullOrEmptyTrim(tslSpecificationVersion) && tslXMLbytes != null) {
 
@@ -1670,12 +1683,13 @@ public final class TSLManager {
 					tcrco = ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(schemeTerritory);
 
 				}
-				
-				// Si el país/región ya tiene un TSL Data asociado, lo eliminamos.
+
+				// Si el país/región ya tiene un TSL Data asociado, lo
+				// eliminamos.
 				if (tcrco.getTslDataId() != null) {
-					
+
 					removeTSLData(tcrco.getCode(), tcrco.getTslDataId());
-					
+
 				}
 
 				// Añadimos un nuevo TSL Data asociado al país/región.
@@ -1685,7 +1699,7 @@ public final class TSLManager {
 
 				// Y ahora lo añadimos en la caché compartida.
 				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
-				
+
 				// Asignamos como resultado el objeto de base de datos.
 				result = td;
 
@@ -1694,7 +1708,7 @@ public final class TSLManager {
 			}
 
 		}
-		
+
 		return result;
 
 	}
@@ -1853,7 +1867,7 @@ public final class TSLManager {
 				// Lo actualizamos en la caché comaprtida.
 				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tdco.getTslObject());
 			}
-			
+
 		} catch (Exception e) {
 			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL191, new Object[ ] { tslDataId, newTSLAvailable }), e);
 		}
@@ -1973,20 +1987,26 @@ public final class TSLManager {
 
 	}
 
-//	/**
-//	 * Gets the CAs certificates that are with a good status from the input TSL.
-//	 * @param tslObject Object from which extracts the certificates.
-//	 * @param caFromPolicy Map with the relation <CAIdentificator, X509v3 Certificate> from the certification
-//	 * policy to compare with the TSL.
-//	 * @return Map with the CAs certificates that are with a good status from the
-//	 * input TSL and its names.
-//	 * @throws TSLManagingException In case of some error making the comparation.
-//	 */
-//	public TSLObjectX509DigIdentities getTSLDigitalIdentitiesComparationWithCAs(ITSLObject tslObject, Map<String, X509Certificate> caFromPolicy) throws TSLManagingException {
-//
-//		return new TSLObjectX509DigIdentities(tslObject, caFromPolicy);
-//
-//	}
+	// /**
+	// * Gets the CAs certificates that are with a good status from the input
+	// TSL.
+	// * @param tslObject Object from which extracts the certificates.
+	// * @param caFromPolicy Map with the relation <CAIdentificator, X509v3
+	// Certificate> from the certification
+	// * policy to compare with the TSL.
+	// * @return Map with the CAs certificates that are with a good status from
+	// the
+	// * input TSL and its names.
+	// * @throws TSLManagingException In case of some error making the
+	// comparation.
+	// */
+	// public TSLObjectX509DigIdentities
+	// getTSLDigitalIdentitiesComparationWithCAs(ITSLObject tslObject,
+	// Map<String, X509Certificate> caFromPolicy) throws TSLManagingException {
+	//
+	// return new TSLObjectX509DigIdentities(tslObject, caFromPolicy);
+	//
+	// }
 
 	/**
 	 * Checks if the input date is equal or is after the initial date from which can be
@@ -2035,10 +2055,92 @@ public final class TSLManager {
 		}
 		return tslcrco;
 	}
-	
-	
-	
-	
 
+	/**
+	 * Update the TSLData in the database and in the cache.
+	 * @param tslDataId TSL ID which identifies the TSL to update.
+	 * @param tslXMLbytes Array of bytes that defines the TSL in a XML.
+	 * @param urlTsl URL location for the TSL.
+	 * @param legibleDocumentArrayByte Array of bytes that represents the legible document. It can be <code>null</code>.
+	 * @return Updated TslData.
+	 * @throws TSLManagingException In case of some error updating the TSL Legible Document in the data base and the cache.
+	 */
+	public TslData updateTSLData(long tslDataId, byte[ ] tslXMLbytes, String urlTsl, byte[ ] legibleDocumentArrayByte) throws TSLManagingException {
+		TslData result = null;
+		try {
+
+			// Recuperamos de la caché compartida el TSLData a actualizar, y de
+			// esta el objeto serializable que representa a la TSL.
+			TSLDataCacheObject tdco = getTSLDataCacheObject(tslDataId);
+			ITSLObject tslObject = (ITSLObject) tdco.getTslObject();
+
+			// Cargamos el pojo de base de datos.
+			TslData td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslDataById(tslDataId, false, false);
+
+			// se obtiene la información de la nueva TSL
+
+			// parsearlo y añadirlo.
+			if (tslXMLbytes != null) {
+				ByteArrayInputStream bais = new ByteArrayInputStream(tslXMLbytes);
+
+				try {
+
+					tslObject.buildTSLFromXMLcheckValues(bais);
+				} catch (Exception e) {
+					throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
+				} finally {
+					UtilsResources.safeCloseInputStream(bais);
+				}
+
+				// se actualiza el número de secuencia
+				td.setSequenceNumber(tslObject.getSchemeInformation().getTslSequenceNumber());
+
+				// se actualiza el responsable
+				String responsible = TOKEN_UNKNOWN;
+				// Recuperamos el nombre del operador del esquema en inglés.
+				List<String> sonList = tslObject.getSchemeInformation().getSchemeOperatorNameInLanguage(Locale.UK.getLanguage());
+				if (sonList != null && !sonList.isEmpty()) {
+					responsible = sonList.get(0);
+				}
+				// Si no lo hemos recuperado, tomamos el primero que haya.
+				if (UtilsStringChar.isNullOrEmptyTrim(responsible)) {
+					responsible = tslObject.getSchemeInformation().getSchemeOperatorNames().values().iterator().next().get(0);
+				}
+				td.setResponsible(responsible);
+
+				// fecha de emisión
+				td.setIssueDate(tslObject.getSchemeInformation().getListIssueDateTime());
+
+				// fecha de caducidad
+				td.setExpirationDate(tslObject.getSchemeInformation().getNextUpdate());
+
+				// Asignamos y actualizamos el fichero con la nueva TSL.
+				td.setXmlDocument(tslXMLbytes);
+
+				// Se actualiza la TSL en la base de datos.
+				td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().saveTSL(td);
+
+				// Lo actualizamos en la caché con el nuevo pojo.
+				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
+
+			}
+			// Punto de distribución
+			if (UtilsStringChar.isNullOrEmpty(urlTsl)) {
+				updateDistributionPointTSLData(tslDataId, urlTsl);
+			}
+
+			// se actualiza documento legible
+			if (legibleDocumentArrayByte != null) {
+				updateTSLDataLegibleDocument(tslDataId, legibleDocumentArrayByte);
+			}
+			result = td;
+		} catch (Exception e) {
+
+			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL259, new Object[ ] { tslDataId }), e);
+
+		}
+		return result;
+
+	}
 
 }

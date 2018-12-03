@@ -140,10 +140,11 @@ public class TslController {
 			tslForm.setSequenceNumber(tslObject.getSchemeInformation().getTslSequenceNumber());
 			tslForm.setUrlTsl(tsldco.getTslLocationUri());
 			tslForm.setTslName(TSLManager.getInstance().getTSLSchemeName(idTslData));
-			tslForm.setTslResponsible(TSLManager.getInstance().getTSLSchemeName(idTslData));
+			tslForm.setTslResponsible(TSLManager.getInstance().getTSLSchemeOperatorName(idTslData));
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			tslForm.setIssueDate(sdf.format(tsldco.getIssueDate()));
 			tslForm.setExpirationDate(sdf.format(tsldco.getNextUpdateDate()));
+
 			if (TSLManager.getInstance().getTSLLegibleDocument(idTslData) != null) {
 				tslForm.setIsLegible(true);
 			} else {
@@ -181,8 +182,7 @@ public class TslController {
 			mappingTslForm.setNameCountryRegion(tslcrco.getName());
 
 		} catch (TSLManagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_LOAD_TSL_MAPPING, new Object[] {e.getMessage()}));
 		}
 		// mappingTslForm.setNameCountryRegion(tslCountryRegionService.getNameCountryRegionById(idCountryRegion));
 		model.addAttribute("mappingtslform", mappingTslForm);

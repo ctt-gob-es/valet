@@ -78,9 +78,9 @@ var tbl = $('#tslTable').DataTable({
         { "data": "tslCountryRegion.countryRegionName","width": "25%"},
         { "data": "sequenceNumber","width": "15%"},
         { "data": "issueDate","width": "25%", "render": function(data, type, row){
-		return moment(data).format("MM-DD-YYYY HH:mm");}},
+		return moment(data).format("DD-MM-YYYY HH:mm");}},
         { "data": "expirationDate", "width": "25%", "render": function(data, type, row){
-		return moment(data).format("MM-DD-YYYY HH:mm");}},
+		return moment(data).format("DD-MM-YYYY HH:mm");}},
         { "data": "tslCountryRegion.countryRegionCode", "width": "10%", 
         	"render": function(data, type, row){		
         		return '<button class="c-green-500 ti-list" id="loadMap" onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'></button>';
@@ -141,7 +141,7 @@ var tbl = $('#tslTable').DataTable({
 					}   
 	        	},
 	        	error : function(data){			
-	        		// se oculat al capa 'cargando...'
+	        		// se oculta al capa 'cargando...'
 	        		hide();
 	        		// se obtiene el JSON de los campos con errores de validación y se modifican los estilos y se añaden mensajes
 	        		var validation = $(data)["0"].responseJSON;
