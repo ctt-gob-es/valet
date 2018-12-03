@@ -566,13 +566,13 @@ public interface ICoreGeneralMessages {
 	//	 * file messages/valet-core/general_xx_YY.properties.
 	//	 */
 	//	String UTILS_CACHE_007 = "UTILS_CACHE_007";
-	//
-	//	/**
-	//	 * Constant attribute that represents the property key <code>UTILS_CACHE_008</code> belonging to the
-	//	 * file messages/valet-core/general_xx_YY.properties.
-	//	 */
-	//	String UTILS_CACHE_008 = "UTILS_CACHE_008";
-	//
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CACHE_008</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String UTILS_CACHE_008 = "UTILS_CACHE_008";
+
 	//	/**
 	//	 * Constant attribute that represents the property key <code>UTILS_CACHE_009</code> belonging to the
 	//	 * file messages/valet-core/general_xx_YY.properties.
@@ -644,13 +644,13 @@ public interface ICoreGeneralMessages {
 	//	 * file messages/valet-core/general_xx_YY.properties.
 	//	 */
 	//	String UTILS_CACHE_020 = "UTILS_CACHE_020";
-	//
-	//	/**
-	//	 * Constant attribute that represents the property key <code>UTILS_CACHE_021</code> belonging to the
-	//	 * file messages/valet-core/general_xx_YY.properties.
-	//	 */
-	//	String UTILS_CACHE_021 = "UTILS_CACHE_021";
-	//
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CACHE_021</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String UTILS_CACHE_021 = "UTILS_CACHE_021";
+
 	//	/**
 	//	 * Constant attribute that represents the property key <code>UTILS_CACHE_022</code> belonging to the
 	//	 * file messages/valet-core/general_xx_YY.properties.

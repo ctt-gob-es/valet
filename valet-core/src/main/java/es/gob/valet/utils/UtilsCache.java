@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 03/12/2018.
  */
 package es.gob.valet.utils;
 
@@ -34,11 +34,12 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
+import es.gob.valet.tsl.access.TSLManager;
 
 /**
  * <p>Utilities class for local cache operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 03/12/2018.
  */
 public final class UtilsCache {
 
@@ -82,14 +83,11 @@ public final class UtilsCache {
 				ConfigurationCacheFacade.reloadConfigurationCache();
 			}
 
-			// TODO Recargamos los datos del proxy.
-			// LOGGER.info(Language.getResCoreGeneral(LOG_COREUTILS_008));
-			// startOperationTime = Calendar.getInstance().getTimeInMillis();
-			// UtilsProxy.cargarDatosProxy();
-			// UtilsProxy.establecerDatosProxyEnJava();
-			// LOGGER.info(Language.getFormatResCoreGeneral(LOG_COREUTILS_021,
-			// new Object[ ] { Calendar.getInstance().getTimeInMillis() -
-			// startOperationTime }));
+			// Recargamos los datos del proxy.
+			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_008));
+			long startOperationTime = Calendar.getInstance().getTimeInMillis();
+			UtilsProxy.loadProxyConfiguration();
+			LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_021, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 
 			// TODO Recargamos los certificados de confianza.
 			// LOGGER.info(Language.getResCoreGeneral(LOG_COREUTILS_009));
@@ -101,8 +99,8 @@ public final class UtilsCache {
 
 			// Cargamos las TSL.
 			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_010));
-			long startOperationTime = Calendar.getInstance().getTimeInMillis();
-			// TODO TSLManager.getInstance().reloadTSLCache();
+			startOperationTime = Calendar.getInstance().getTimeInMillis();
+			TSLManager.getInstance().reloadTSLCache();
 			LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_023, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 
 			// Recargamos las distintas listas de objetos cacheadas en memoria.
