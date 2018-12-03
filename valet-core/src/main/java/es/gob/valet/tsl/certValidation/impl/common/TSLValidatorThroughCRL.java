@@ -20,36 +20,39 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 03/12/2018.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.PublicKey;
+import java.security.cert.CRLReason;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
-import org.bouncycastle.asn1.x509.CRLReason;
 import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.Extensions;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.commons.utils.UtilsCRL;
+import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsFTP;
 import es.gob.valet.commons.utils.UtilsLDAP;
 import es.gob.valet.commons.utils.UtilsResources;
@@ -68,7 +71,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 03/12/2018.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -641,16 +644,12 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 					if (revocationDate.before(validationDate)) {
 
 						// Tratamos de obtener los motivos de revocación.
-						Set<String> nonCritSet = x509CRLEntry.getNonCriticalExtensionOIDs();
-						if (nonCritSet != null && nonCritSet.contains(Extension.reasonCode.getId())) {
+						CRLReason crlReason = x509CRLEntry.getRevocationReason();
+						if (crlReason != null) {
 
-							// El ultimo byte de la extension reasonCode nos da
-							// la causa de la revocacion.
-							byte[ ] reasonCodeBytes = x509CRLEntry.getExtensionValue(Extension.reasonCode.getId());
-							CRLReason crlReason = CRLReason.getInstance(reasonCodeBytes);
 							// Si la razón es "Eliminado de la CRL" se considera
 							// válido el certificado.
-							if (crlReason.getValue().intValue() == CRLReason.removeFromCRL) {
+							if (crlReason == CRLReason.REMOVE_FROM_CRL) {
 
 								validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_VALID);
 
@@ -660,7 +659,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 								// consideramos inválido.
 								validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_REVOKED);
 								validationResult.setRevocationDate(revocationDate);
-								validationResult.setRevocationReason(crlReason.getValue().intValue());
+								validationResult.setRevocationReason(crlReason.ordinal());
 
 							}
 
@@ -725,10 +724,27 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	public void validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
 
 		// Recuperamos el listado de Distribution Points de tipo CRL.
-		CRLDistPoint crlDps = CRLDistPoint.getInstance(cert.getExtensionValue(Extension.cRLDistributionPoints.getId()));
+		CRLDistPoint crlDps = null;
+		ASN1InputStream dIn = null;
+		try {
+			Extensions extensions = UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions();
+			Extension ext = extensions.getExtension(Extension.cRLDistributionPoints);
+			byte[ ] octs = ext.getExtnValue().getOctets();
+			dIn = new ASN1InputStream(octs);
+			crlDps = CRLDistPoint.getInstance(dIn.readObject());
+		} catch (Exception e1) {
+			crlDps = null;
+		} finally {
+			if (dIn != null) {
+				try {
+					dIn.close();
+				} catch (IOException e) {
+					dIn = null;
+				}
+			}
+		}
 		// Si lo hemos obtenido...
 		if (crlDps != null) {
-
 			// Si la extensión no está vacía...
 			DistributionPoint[ ] crlDpsArray = crlDps.getDistributionPoints();
 			if (crlDpsArray != null && crlDpsArray.length > 0) {

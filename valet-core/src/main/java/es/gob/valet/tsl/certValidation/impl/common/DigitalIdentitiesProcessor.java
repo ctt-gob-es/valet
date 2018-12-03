@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 03/12/2018.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
@@ -51,7 +52,7 @@ import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 /**
  * <p>Class that represents a Digital Identities Processor.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 03/12/2018.
  */
 public class DigitalIdentitiesProcessor {
 
@@ -326,7 +327,7 @@ public class DigitalIdentitiesProcessor {
 				}
 				try {
 					if (!UtilsCertificate.isSelfSigned(cert)) {
-						SubjectKeyIdentifier ski = SubjectKeyIdentifier.getInstance(issuerCert.getExtensionValue(Extension.subjectKeyIdentifier.getId()));
+						SubjectKeyIdentifier ski = SubjectKeyIdentifier.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(issuerCert).getTBSCertificate().getExtensions());
 						validationResult.setIssuerSKIbytes(ski.getKeyIdentifier());
 					}
 				} catch (Exception e) {
@@ -408,34 +409,42 @@ public class DigitalIdentitiesProcessor {
 				// determinar que
 				// estas identidades digitales representan al emisor del
 				// certificado.
-				partialResult = false;
-				for (byte[ ] issuerSKI: x509ski) {
 
-					try {
+				byte[ ] akiBytes = null;
+				try {
 
-						// Obtenemos el AuthorityKeyIdentifier en array de
-						// bytes.
-						AuthorityKeyIdentifier aki = AuthorityKeyIdentifier.getInstance(cert.getExtensionValue(Extension.authorityKeyIdentifier.getId()));
-						if (aki != null) {
-							byte[ ] akiBytes = aki.getKeyIdentifier();
-							// Comparamos los array de bytes.
-							partialResult = Arrays.equals(issuerSKI, akiBytes);
-						}
-
-					} catch (Exception e) {
-						LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL114));
+					// Obtenemos el AuthorityKeyIdentifier en array de
+					// bytes.
+					AuthorityKeyIdentifier aki = AuthorityKeyIdentifier.getInstance(ASN1OctetString.getInstance(cert.getExtensionValue(Extension.authorityKeyIdentifier.getId())).getOctets());
+					if (aki != null) {
+						akiBytes = aki.getKeyIdentifier();
 					}
 
-					// Si se ha encontrado el emisor del certificado y no lo
-					// habíamos
-					// detectado ya, lo indicamos en el resultado.
-					if (partialResult) {
-						// No se considera prueba suficiente para determinar que
-						// este sea
-						// el emisor del certificado.
-						// result = true;
-						validationResult.setIssuerSKIbytes(issuerSKI);
-						break;
+				} catch (Exception e) {
+					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL114));
+				}
+
+				if (akiBytes != null) {
+
+					partialResult = false;
+					for (byte[ ] issuerSKI: x509ski) {
+
+						// Comparamos los arrays...
+						partialResult = Arrays.equals(issuerSKI, akiBytes);
+
+						// Si se ha encontrado el emisor del certificado y no lo
+						// habíamos
+						// detectado ya, lo indicamos en el resultado.
+						if (partialResult) {
+							// No se considera prueba suficiente para determinar
+							// que
+							// este sea
+							// el emisor del certificado.
+							// result = true;
+							validationResult.setIssuerSKIbytes(issuerSKI);
+							break;
+						}
+
 					}
 
 				}

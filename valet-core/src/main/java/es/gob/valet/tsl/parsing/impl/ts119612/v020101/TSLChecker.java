@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/11/2018.
+ * @version 1.2, 03/12/2018.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -43,7 +43,6 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.x509.BasicConstraints;
-import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
@@ -101,7 +100,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSPInformation;
  * <p>Class that represents a TSL Data Checker of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/11/2018.
+ * @version 1.2, 03/12/2018.
  */
 public class TSLChecker extends ATSLChecker {
 
@@ -1926,10 +1925,15 @@ public class TSLChecker extends ATSLChecker {
 	 */
 	private void checkX509v3SubjectKeyIdentifier(X509Certificate x509Certificate) throws TSLMalformedException {
 
+		SubjectKeyIdentifier ski = null;
 		byte[ ] skiBytes = null;
 		try {
-			// Pasamos a array de bytes el Subject Key Identifier.
-			skiBytes = x509Certificate.getExtensionValue(Extension.subjectKeyIdentifier.getId());
+			// Obtenemos la extensión.
+			ski = SubjectKeyIdentifier.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(x509Certificate).getTBSCertificate().getExtensions());
+			if (ski != null) {
+				// Pasamos a array de bytes el Subject Key Identifier.
+				skiBytes = ski.getKeyIdentifier();
+			}
 		} catch (Exception e) {
 			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL098), e);
 		}
@@ -1938,12 +1942,6 @@ public class TSLChecker extends ATSLChecker {
 			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL096));
 
 		} else {
-
-			try {
-				SubjectKeyIdentifier.getInstance(skiBytes);
-			} catch (Exception e) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL098), e);
-			}
 
 			// Extraemos el BitString del Subject Public Key Info.
 			JcaX509CertificateHolder jcaX509cert = null;
@@ -2028,7 +2026,7 @@ public class TSLChecker extends ATSLChecker {
 
 		BasicConstraints localBasicConstraints = null;
 		try {
-			localBasicConstraints = BasicConstraints.getInstance(x509Certificate.getExtensionValue(Extension.basicConstraints.getId()));
+			localBasicConstraints = BasicConstraints.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(x509Certificate).getTBSCertificate().getExtensions());
 		} catch (Exception e) {
 			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL100), e);
 		}

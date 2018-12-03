@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 03/12/2018.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.cert.CRLReason;
 import java.security.cert.CertificateException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -51,7 +52,6 @@ import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
-import org.bouncycastle.asn1.x509.CRLReason;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
 import org.bouncycastle.asn1.x509.Extension;
@@ -93,7 +93,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 03/12/2018.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -1006,7 +1006,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 						// de validación,
 						// o el motivo es eliminado de la CRL,
 						// el certificado es válido.
-						if (revocationDate != null && revocationDate.after(validationDate) || reasonCode >= 0 && reasonCode == CRLReason.removeFromCRL) {
+						if (revocationDate != null && revocationDate.after(validationDate) || reasonCode >= 0 && reasonCode == CRLReason.REMOVE_FROM_CRL.ordinal()) {
 
 							validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_VALID);
 
@@ -1154,7 +1154,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		// la autoridad.
 		AuthorityInformationAccess aia = null;
 		try {
-			aia = AuthorityInformationAccess.getInstance(cert.getExtensionValue(Extension.authorityInfoAccess.getId()));
+			aia = AuthorityInformationAccess.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions());
 		} catch (Exception e) {
 			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL186), e);
 		}

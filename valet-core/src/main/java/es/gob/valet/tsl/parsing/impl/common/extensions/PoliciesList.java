@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 03/12/2018.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -32,23 +32,23 @@ import java.util.List;
 import java.util.Set;
 
 import org.bouncycastle.asn1.x509.CertificatePolicies;
-import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.PolicyInformation;
 
+import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLQualificationEvalProcessException;
-import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 
 /**
  * <p>Class that represents Policy Lists.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 03/12/2018.
  */
 public class PoliciesList implements Serializable {
 
@@ -221,13 +221,11 @@ public class PoliciesList implements Serializable {
 
 				// Obtenemos la extensión que representa los
 				// CertificatePolicies.
-				byte[ ] certPoliciesExtensionByteEncoded = cert.getExtensionValue(Extension.certificatePolicies.getId());
+				CertificatePolicies certPoliciesExtension = CertificatePolicies.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions());
 
 				// Si la extensión no es nula...
-				if (certPoliciesExtensionByteEncoded != null && certPoliciesExtensionByteEncoded.length > 0) {
+				if (certPoliciesExtension != null && certPoliciesExtension.getPolicyInformation() != null && certPoliciesExtension.getPolicyInformation().length > 0) {
 
-					// Parseamos el array de bytes...
-					CertificatePolicies certPoliciesExtension = CertificatePolicies.getInstance(certPoliciesExtensionByteEncoded);
 					// Recorremos y almacenamos los identifiers en un conjunto
 					// (sin repeticiones).
 					Set<String> certIdentifiers = new HashSet<String>();

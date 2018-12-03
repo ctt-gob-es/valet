@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/09/2018.
+ * @version 1.1, 03/12/2018.
  */
 package es.gob.valet.rest.client;
 
@@ -47,7 +47,7 @@ import es.gob.valet.rest.services.ITslRestService;
 /** 
  * <p>Class that implements a client for Valet rest services.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/09/2018.
+ * @version 1.1, 03/12/2018.
  */
 public class ValetClient implements ITslRestService {
 
@@ -67,7 +67,7 @@ public class ValetClient implements ITslRestService {
 	 * @param timeout Limit in seconds the network timeout for connect to Valet rest services.
 	 */
 	public ValetClient(final String urlValetRest, final Integer timeout) {
-		ResteasyClient client = new ResteasyClientBuilder().socketTimeout(timeout, TimeUnit.SECONDS).build();
+		ResteasyClient client = new ResteasyClientBuilder().readTimeout(timeout, TimeUnit.SECONDS).build();
 		ResteasyWebTarget target = client.target(UriBuilder.fromPath(urlValetRest));
 		restService = target.proxy(ITslRestService.class);
 	}

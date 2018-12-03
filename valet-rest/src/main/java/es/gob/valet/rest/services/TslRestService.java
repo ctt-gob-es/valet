@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 26/11/2018.
+ * @version 1.5, 03/12/2018.
  */
 package es.gob.valet.rest.services;
 
@@ -66,7 +66,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 26/11/2018.
+ * @version 1.5, 03/12/2018.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -284,9 +284,9 @@ public class TslRestService implements ITslRestService {
 			// la respuesta del servicio.
 			String msg = null;
 			if (UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
-				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG015, UtilsCertificate.getIssuerCountryOfTheCertificateString(x509cert));
+				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG015, new Object[ ] { UtilsCertificate.getIssuerCountryOfTheCertificateString(x509cert), detectionDate });
 			} else {
-				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG016, tslLocation);
+				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG016, new Object[ ] { tslLocation, detectionDate });
 			}
 			LOGGER.info(msg);
 			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED);
