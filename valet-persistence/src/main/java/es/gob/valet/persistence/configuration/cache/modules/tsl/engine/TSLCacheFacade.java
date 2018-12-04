@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/11/2018.
+ * @version 1.2, 04/12/2018.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.engine;
 
@@ -44,7 +44,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Facade for all the TSL configuration cache objects operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/11/2018.
+ * @version 1.2, 04/12/2018.
  */
 public final class TSLCacheFacade {
 
@@ -193,7 +193,9 @@ public final class TSLCacheFacade {
 			Long tslDataId = tcrco.getTslDataId();
 
 			// Si no es nulo, lo obtenemos de base de datos.
-			result = getTSLDataCacheObject(tslDataId);
+			if (tslDataId != null) {
+				result = getTSLDataCacheObject(tslDataId);
+			}
 
 		}
 

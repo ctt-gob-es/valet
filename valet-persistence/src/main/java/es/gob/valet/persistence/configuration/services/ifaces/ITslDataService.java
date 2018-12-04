@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 29/10/2018.
+ * @version 1.3, 04/12/2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -34,7 +34,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to TslData.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 29/10/2018.
+ * @version 1.3, 04/12/2018.
  */
 public interface ITslDataService {
 
@@ -80,8 +80,25 @@ public interface ITslDataService {
 	/**
 	 * Method that obtains a TSL by country.
 	 * @param tslCountryRegion Parameter that represents the country/region.
+	 * @param loadXmlDocument Flag that indicates if it is necessary to load the XML document
+	 * (<code>true</code>) or not (<code>false</code>).
+	 * @param loadLegibleDocument Flag that indicates if it is necessary to load the legible document
+	 * (<code>true</code>) or not (<code>false</code>).
 	 * @return {@link TslData} an object that represents the TSL obtained.
 	 */
-	TslData getTslByCountryRegion(TslCountryRegion tslCountryRegion);
+	@Transactional
+	TslData getTslByCountryRegion(TslCountryRegion tslCountryRegion, boolean loadXmlDocument, boolean loadLegibleDocument);
+
+	/**
+	 * Method that obtains a TSL by its TSL Location.
+	 * @param tslLocation Parameter that represents the TSL Location to find.
+	 * @param loadXmlDocument Flag that indicates if it is necessary to load the XML document
+	 * (<code>true</code>) or not (<code>false</code>).
+	 * @param loadLegibleDocument Flag that indicates if it is necessary to load the legible document
+	 * (<code>true</code>) or not (<code>false</code>).
+	 * @return {@link TslData} an object that represents the TSL obtained.
+	 */
+	@Transactional
+	TslData getTslByTslLocation(String tslLocation, boolean loadXmlDocument, boolean loadLegibleDocument);
 
 }

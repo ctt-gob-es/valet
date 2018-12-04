@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 29/10/2018.
+ * @version 1.3, 04/12/2018.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -41,7 +41,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer related to TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 29/10/2018.
+ * @version 1.3, 04/12/2018.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -117,10 +117,44 @@ public class TslDataService implements ITslDataService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#getTslByCountryRegion(es.gob.valet.persistence.configuration.model.entity.TslCountryRegion)
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#getTslByCountryRegion(es.gob.valet.persistence.configuration.model.entity.TslCountryRegion, boolean, boolean)
 	 */
-	public TslData getTslByCountryRegion(TslCountryRegion tslCountryRegion) {
-		return repository.findByTslCountryRegion(tslCountryRegion);
+	@Override
+	@Transactional // TODO ¿Es necesario al haberlo puesto ya en la interfaz?
+	public TslData getTslByCountryRegion(TslCountryRegion tslCountryRegion, boolean loadXmlDocument, boolean loadLegibleDocument) {
+		TslData result = repository.findByTslCountryRegion(tslCountryRegion);
+		if (result != null) {
+			if (loadXmlDocument) {
+				@SuppressWarnings("unused")
+				byte byteZero = result.getXmlDocument()[0];
+			}
+			if (loadLegibleDocument && result.getLegibleDocument() != null) {
+				@SuppressWarnings("unused")
+				byte byteZero = result.getLegibleDocument()[0];
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#getTslByTslLocation(java.lang.String, boolean, boolean)
+	 */
+	@Override
+	@Transactional // TODO ¿Es necesario al haberlo puesto ya en la interfaz?
+	public TslData getTslByTslLocation(String tslLocation, boolean loadXmlDocument, boolean loadLegibleDocument) {
+		TslData result = repository.findByUriTslLocation(tslLocation);
+		if (result != null) {
+			if (loadXmlDocument) {
+				@SuppressWarnings("unused")
+				byte byteZero = result.getXmlDocument()[0];
+			}
+			if (loadLegibleDocument && result.getLegibleDocument() != null) {
+				@SuppressWarnings("unused")
+				byte byteZero = result.getLegibleDocument()[0];
+			}
+		}
+		return result;
 	}
 
 }

@@ -137,7 +137,7 @@ public class ApplicationConfig {
 		// configuración
 		// de forma completa.
 		logger.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_005, new Object[ ] { Calendar.getInstance().getTimeInMillis() - cacheInitializationTime }));
-		
+
 		// Cargamos la configuración del proxy.
 		UtilsProxy.loadProxyConfiguration();
 

@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.tsl.access.TSLManager.java.</p>
  * <b>Description:</b><p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 29/11/2018.
+ * @version 1.4, 04/12/2018.
  */
 package es.gob.valet.tsl.access;
 
@@ -68,6 +68,7 @@ import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.impl.TSLValidatorFactory;
 import es.gob.valet.tsl.certValidation.impl.TSLValidatorMappingCalculator;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
+import es.gob.valet.tsl.exceptions.TSLException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
@@ -75,10 +76,10 @@ import es.gob.valet.tsl.exceptions.TSLValidationException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 
-/** 
+/**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 29/11/2018.
+ * @version 1.4, 04/12/2018.
  */
 public final class TSLManager {
 
@@ -194,8 +195,8 @@ public final class TSLManager {
 			TSLDataCacheObject tdco = null;
 			String dateString = date == null ? "Not specified" : date.toString();
 			try {
-				tdco = ConfigurationCacheFacade.tslGetTSLDataFromCountryRegion(countryCode);
-			} catch (TSLCacheException e) {
+				tdco = getTSLDataFromCountryRegion(countryCode);
+			} catch (TSLManagingException e) {
 				throw new TSLManagingException(IValetException.COD_191, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL103, new Object[ ] { countryCode, dateString }), e);
 			}
 
@@ -266,8 +267,8 @@ public final class TSLManager {
 			TSLDataCacheObject tdco = null;
 			String dateString = date == null ? "Not specified" : date.toString();
 			try {
-				tdco = ConfigurationCacheFacade.tslGetTSLDataFromLocation(tslLocation);
-			} catch (TSLCacheException e) {
+				tdco = getTSLDataFromTSLLocation(tslLocation);
+			} catch (TSLManagingException e) {
 				throw new TSLManagingException(IValetException.COD_191, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL103, new Object[ ] { tslLocation, dateString }), e);
 			}
 			// Si lo hemos recuperado...
@@ -404,7 +405,7 @@ public final class TSLManager {
 				Date actualDate = Calendar.getInstance().getTime();
 
 				// Buscamos la TSL de España.
-				TSLDataCacheObject tdco = ConfigurationCacheFacade.tslGetTSLDataFromCountryRegion(UtilsCountryLanguage.ES_COUNTRY_CODE);
+				TSLDataCacheObject tdco = getTSLDataFromCountryRegion(UtilsCountryLanguage.ES_COUNTRY_CODE);
 
 				// Si hemos encontrado la TSL y su fecha de caducidad es
 				// posterior
@@ -438,7 +439,7 @@ public final class TSLManager {
 
 				}
 
-			} catch (TSLCacheException e) {
+			} catch (TSLManagingException e) {
 
 				try {
 					throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { UtilsCertificate.getCertificateIssuerId(cert), cert.getSerialNumber().toString() }), e);
@@ -1454,7 +1455,47 @@ public final class TSLManager {
 
 			try {
 				result = ConfigurationCacheFacade.tslGetTSLDataFromCountryRegion(countryRegionCode);
-			} catch (Exception e) {
+
+				// Si no lo hemos obtenido, puede ser porque no exista,
+				// o porque no se haya cargado el TSL Data en caché.
+				if (result == null) {
+
+					// Intentamos recuperar el TSL Country/Region.
+					TSLCountryRegionCacheObject tcrco = ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(countryRegionCode);
+
+					// Si no es nulo...
+					if (tcrco != null) {
+
+						// Buscamos en base de datos un TSL Data para este.
+						TslCountryRegion tcr = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getTslCountryRegionById(tcrco.getCountryRegionId(), false);
+						TslData tslData = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslByCountryRegion(tcr, true, false);
+
+						// Si lo hemos encontrado significa que hay que añadirlo
+						// a la caché...
+						if (tslData != null) {
+
+							// Contruimos el InputStream asociado al array, y
+							// tratamos de
+							// parsearlo y añadirlo.
+							ByteArrayInputStream bais = new ByteArrayInputStream(tslData.getXmlDocument());
+							ITSLObject tslObject = null;
+							try {
+								tslObject = new TSLObject(tslData.getTslImpl().getSpecification(), tslData.getTslImpl().getVersion());
+								tslObject.buildTSLFromXMLcheckValues(bais);
+							} finally {
+								UtilsResources.safeCloseInputStream(bais);
+							}
+
+							// Lo añadimos en la caché...
+							result = ConfigurationCacheFacade.tslAddUpdateTSLData(tslData, tslObject);
+
+						}
+
+					}
+
+				}
+
+			} catch (TSLException | TSLCacheException e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL168, new Object[ ] { countryRegionCode }), e);
 			}
 
@@ -1478,7 +1519,38 @@ public final class TSLManager {
 
 			try {
 				result = ConfigurationCacheFacade.tslGetTSLDataFromLocation(tslLocation);
-			} catch (TSLCacheException e) {
+
+				// Si no lo hemos obtenido, puede ser porque no exista,
+				// o porque no se haya cargado el TSL Data en caché.
+				if (result == null) {
+
+					// Lo buscamos en base de datos...
+					TslData tslData = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslByTslLocation(tslLocation, true, false);
+
+					// Si lo hemos encontrado significa que hay que añadirlo a
+					// la caché...
+					if (tslData != null) {
+
+						// Contruimos el InputStream asociado al array, y
+						// tratamos de
+						// parsearlo y añadirlo.
+						ByteArrayInputStream bais = new ByteArrayInputStream(tslData.getXmlDocument());
+						ITSLObject tslObject = null;
+						try {
+							tslObject = new TSLObject(tslData.getTslImpl().getSpecification(), tslData.getTslImpl().getVersion());
+							tslObject.buildTSLFromXMLcheckValues(bais);
+						} finally {
+							UtilsResources.safeCloseInputStream(bais);
+						}
+
+						// Lo añadimos en la caché...
+						result = ConfigurationCacheFacade.tslAddUpdateTSLData(tslData, tslObject);
+
+					}
+
+				}
+
+			} catch (TSLException | TSLCacheException e) {
 				throw new TSLManagingException(IValetException.COD_191, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL103, new Object[ ] { tslLocation, "Not specified" }), e);
 			}
 
@@ -1598,21 +1670,27 @@ public final class TSLManager {
 	/**
 	 * Gets the XML that defines the TSL with the input ID.
 	 * @param tslDataId TSL data ID from which gets the XML.
-	 * @return array of bytes that represents the XML of the TSL.
+	 * @return array of bytes that represents the XML of the TSL, or <code>null</code> if it does not exists.
 	 * @throws TSLManagingException In case of some error getting the XML from the data base.
 	 */
 	public byte[ ] getTSLDataXMLDocument(long tslDataId) throws TSLManagingException {
+
+		byte[ ] result = null;
 
 		try {
 
 			// Cargamos el pojo de base de datos.
 			TslData td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslDataById(tslDataId, true, false);
-			// Lo devolvemos.
-			return td.getXmlDocument();
+			// Lo devolvemos si está definida.
+			if (td != null) {
+				result = td.getXmlDocument();
+			}
 
 		} catch (Exception e) {
 			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL175, new Object[ ] { tslDataId }), e);
 		}
+
+		return result;
 
 	}
 
@@ -1695,8 +1773,6 @@ public final class TSLManager {
 				// Añadimos un nuevo TSL Data asociado al país/región.
 				TslData td = addNewTSLDataInDataBase(tcrco.getCountryRegionId(), urlTsl, tslXMLbytes, tslObject);
 
-				updateNewAvaliableTSLData(tcrco);
-
 				// Y ahora lo añadimos en la caché compartida.
 				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
 
@@ -1731,20 +1807,6 @@ public final class TSLManager {
 
 		ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().updateSaveTslCountryRegion(tcr);
 
-	}
-
-	/**
-	 * Method that updates NewValiableTSLData field of tsls in TSLCountryRegionCacheObject.
-	 * @param tcrco TSLCountryRegionCacheObject to check
-	 * @throws TSLManagingException in case of TSL managing error.
-	 */
-	private void updateNewAvaliableTSLData(TSLCountryRegionCacheObject tcrco) throws TSLManagingException {
-		if (tcrco != null) {
-			Long tslDataId = tcrco.getTslDataId();
-			if (tslDataId != null) {
-				updateNewAvaliableTSLData(tslDataId, IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
-			}
-		}
 	}
 
 	/**
@@ -2039,8 +2101,8 @@ public final class TSLManager {
 	/**
 	 * Method to gets Contry/Region  associated with the TSL.
 	 * @param idTslData TSL data identifier to obtain the region / country to which it belongs.
-	 * @return Contry/Region  obtained. 
-	 * @throws TSLManagingException In case of some error obtaining the name of the country/region.	 
+	 * @return Contry/Region  obtained.
+	 * @throws TSLManagingException In case of some error obtaining the name of the country/region.
 	 * */
 	public TSLCountryRegionCacheObject getTSLCountryRegionByIdTslData(Long idTslData) throws TSLManagingException {
 		TSLCountryRegionCacheObject tslcrco = null;
