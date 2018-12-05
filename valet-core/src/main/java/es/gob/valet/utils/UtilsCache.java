@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 05/12/2018.
  */
 package es.gob.valet.utils;
 
@@ -39,7 +39,7 @@ import es.gob.valet.tsl.access.TSLManager;
 /**
  * <p>Utilities class for local cache operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 05/12/2018.
  */
 public final class UtilsCache {
 
@@ -137,7 +137,7 @@ public final class UtilsCache {
 	/**
 	 * Reload all the cached object in differents manager.
 	 */
-	private static void loadAllAdditionalCachedObjectList() {
+	public static void loadAllAdditionalCachedObjectList() {
 
 		// TODO Completar cuando sea necesario.
 

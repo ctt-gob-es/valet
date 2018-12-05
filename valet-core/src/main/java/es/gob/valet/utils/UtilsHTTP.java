@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 05/12/2018.
  */
 package es.gob.valet.utils;
 
@@ -83,7 +83,7 @@ import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 /**
  * <p>Utilities class relating to connections and HTTP/S protocol.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 05/12/2018.
  */
 public final class UtilsHTTP {
 
@@ -248,9 +248,16 @@ public final class UtilsHTTP {
 		CloseableHttpResponse response = null;
 
 		// Creamos un manejador de la conexión.
+		String protocol = method.getURI().getScheme();
 		String host = method.getURI().getHost();
 		int port = method.getURI().getPort();
-		String protocol = method.getURI().getScheme();
+		if (port < 0) {
+			if (HTTP_SCHEME.equalsIgnoreCase(protocol)) {
+				port = NumberConstants.NUM80;
+			} else if (HTTPS_SCHEME.equalsIgnoreCase(protocol)) {
+				port = NumberConstants.NUM443;
+			}
+		}
 
 		// Forzamos a establecer ciertos "Headers".
 		forceSetHttpHeadersInHttpClientMethod(method, false, headersMap);

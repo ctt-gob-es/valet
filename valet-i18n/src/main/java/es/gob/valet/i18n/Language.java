@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 06/11/2018.
+ * @version 1.7, 04/12/2018.
  */
 package es.gob.valet.i18n;
 
@@ -41,7 +41,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
 /**
  * <p>Class that manages the access to the properties files used for generation messages in the plataform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 06/11/2018.
+ * @version 1.7, 04/12/2018.
  */
 public final class Language {
 
@@ -69,6 +69,11 @@ public final class Language {
 	 * Attribute that represents the location of the file that contains the general messages for the rest module.
 	 */
 	private static final String CONTENT_REST_GENERAL_PATH = "valet-rest.general";
+
+	/**
+	 * Attribute that represents the location of the file that contains the tasks messages for the rest module.
+	 */
+	private static final String CONTENT_REST_TASKS_PATH = "valet-rest.tasks";
 
 	/**
 	 * Attribute that represents the location of the file that contains the general messages for the commons-utils module.
@@ -124,6 +129,11 @@ public final class Language {
 	 * Attribute that represents the resource boundle with the general messages for the rest module.
 	 */
 	private static ResourceBundle restGeneral = null;
+
+	/**
+	 * Attribute that represents the resource boundle with the tasks messages for the rest module.
+	 */
+	private static ResourceBundle restTasks = null;
 
 	/**
 	 * Attribute that represents the resource boundle with the general messages for the commons-util module.
@@ -263,6 +273,8 @@ public final class Language {
 
 		restGeneral = ResourceBundle.getBundle(CONTENT_REST_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
 
+		restTasks = ResourceBundle.getBundle(CONTENT_REST_TASKS_PATH, currentLocale, urlClassLoaderMsg);
+
 		commonsUtilGeneral = ResourceBundle.getBundle(CONTENT_COMMONS_UTIL_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
 
 		quartzGeneral = ResourceBundle.getBundle(CONTENT_QUARTZ_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
@@ -317,6 +329,25 @@ public final class Language {
 	 */
 	public static String getResRestGeneral(final String key) {
 		return restGeneral.getString(key);
+	}
+
+	/**
+	 * Gets the tasks message (rest module) with the key and values indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @param values Values for insert in the message.
+	 * @return String with the message well-formed.
+	 */
+	public static String getFormatResRestTasks(final String key, final Object... values) {
+		return new MessageFormat(restTasks.getString(key), currentLocale).format(values);
+	}
+
+	/**
+	 * Gets the tasks message (rest module) with the key indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @return String with the message.
+	 */
+	public static String getResRestTasks(final String key) {
+		return restTasks.getString(key);
 	}
 
 	/**

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 05/12/2018.
  */
 package es.gob.valet.commons.utils.connection.ssl;
 
@@ -50,7 +50,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that represents a custom SSL Sockect Factory for HTTP Client.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 05/12/2018.
  */
 public class ValetSSLSocketFactory implements LayeredConnectionSocketFactory {
 
@@ -111,26 +111,29 @@ public class ValetSSLSocketFactory implements LayeredConnectionSocketFactory {
 		String[ ] actualCipherSuites = sslContext.getSupportedSSLParameters().getCipherSuites();
 		String[ ] supportedCipherSuites = removeCipherSuitesRestricted(actualCipherSuites);
 
-		// Obtenemos los protocolos restringidos.
-		Set<String> restrictedProtocols = getRestrictedProtocols();
-		// Creamos una lista para almacenar los que consideremos válidos.
-		List<String> supportedProtocolsList = new ArrayList<String>();
-		// Recuperamos los protocolos de los que se puede hacer uso...
-		String[ ] actualProtocols = sslContext.getSupportedSSLParameters().getProtocols();
-		if (actualProtocols != null && actualProtocols.length > 1) {
-			// Los recorremos y vamos añadiendo aquellos que no estén
-			// restringidos.
-			for (String protocol: actualProtocols) {
-				if (!restrictedProtocols.contains(protocol)) {
-					supportedProtocolsList.add(protocol);
-				}
-			}
-		}
 		// Pasamos el resultado a un array.
 		String[ ] supportedProtocols = null;
-		if (!supportedProtocolsList.isEmpty()) {
-			supportedProtocols = new String[supportedProtocolsList.size()];
-			supportedProtocols = supportedProtocolsList.toArray(supportedProtocols);
+		// Recuperamos los protocolos de los que se puede hacer uso...
+		String[ ] actualProtocols = sslContext.getSupportedSSLParameters().getProtocols();
+		// Obtenemos los protocolos restringidos.
+		Set<String> restrictedProtocols = getRestrictedProtocols();
+		// Si la lista de restringidos no es vacía...
+		if (restrictedProtocols != null && !restrictedProtocols.isEmpty()) {
+			// Creamos una lista para almacenar los que consideremos válidos.
+			List<String> supportedProtocolsList = new ArrayList<String>();
+			if (actualProtocols != null && actualProtocols.length > 1) {
+				// Los recorremos y vamos añadiendo aquellos que no estén
+				// restringidos.
+				for (String protocol: actualProtocols) {
+					if (!restrictedProtocols.contains(protocol)) {
+						supportedProtocolsList.add(protocol);
+					}
+				}
+			}
+			if (!supportedProtocolsList.isEmpty()) {
+				supportedProtocols = new String[supportedProtocolsList.size()];
+				supportedProtocols = supportedProtocolsList.toArray(supportedProtocols);
+			}
 		}
 
 		return new SSLConnectionSocketFactory(sslContext, supportedProtocols, supportedCipherSuites, new NoopHostnameVerifier());
@@ -161,9 +164,11 @@ public class ValetSSLSocketFactory implements LayeredConnectionSocketFactory {
 						enabledCiphers.add(cipher);
 					}
 				}
+				result = new String[enabledCiphers.size()];
+				enabledCiphers.toArray(result);
+			} else {
+				result = cipherSuites;
 			}
-			result = new String[enabledCiphers.size()];
-			enabledCiphers.toArray(result);
 		} else {
 			result = cipherSuites;
 		}

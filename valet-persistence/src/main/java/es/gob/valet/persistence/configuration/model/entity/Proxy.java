@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 05/12/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -41,7 +41,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>PROXY</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 05/12/2018.
  */
 @Entity
 @Table(name = "PROXY")
@@ -222,7 +222,7 @@ public class Proxy implements Serializable {
 	 * Gets the value of the attribute {@link #addressList}.
 	 * @return the value of the attribute {@link #addressList}.
 	 */
-	@Column(name = "ADDRESS_LIST", nullable = true, precision = NumberConstants.NUM200)
+	@Column(name = "ADDRESS_LIST", nullable = true, precision = NumberConstants.NUM1024)
 	public String getAddressList() {
 		return addressList;
 	}
