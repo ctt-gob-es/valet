@@ -77,9 +77,16 @@ import es.gob.valet.utils.UtilsProxy;
 public class ApplicationConfig {
 
 	/**
-	 * Constant attribute that represents the log4j property that determines the path to the log4j configuration file.
+	 * Constant attribute that represents the key for the property that determines the 
+	 * log4j properties file for the Valet WS Rest deployment.
 	 */
-	private static final String LOG4J_PROPERTY = "log4j.configuration";
+	private static final String LOG4J_PROPERTIESFILE_VALET_REST = "log4j.configuration.valet.rest";
+	
+	/**
+	 * Constant attribute that represents the key for the property that determines the 
+	 * log4j properties file for the Valet Administration Web deployment.
+	 */
+	private static final String LOG4J_PROPERTIESFILE_VALET_WEB = "log4j.configuration.valet.web";
 
 	/**
 	 * Attribute that represents the logger of this class.
@@ -116,7 +123,15 @@ public class ApplicationConfig {
 
 		// Se indica que el fichero de configuración de log4j se recargue cada
 		// cierto periodo de tiempo (10 segundos).
-		DOMConfigurator.configureAndWatch(System.getProperty(LOG4J_PROPERTY), NumberConstants.NUM10000);
+		// En función del desplegable, cogemos el fichero de configuración
+		// que le corresponda.
+		String log4jConfFile = null;
+		if (UtilsDeploymentType.isDeployedServices()) {
+			log4jConfFile = System.getProperty(LOG4J_PROPERTIESFILE_VALET_REST);
+		} else {
+			log4jConfFile = System.getProperty(LOG4J_PROPERTIESFILE_VALET_WEB);
+		}
+		DOMConfigurator.configureAndWatch(log4jConfFile, NumberConstants.NUM10000);
 		// Despues de iniciar la configuración de log4j, iniciamos el logger.
 		logger = Logger.getLogger(ApplicationConfig.class);
 
@@ -191,9 +206,9 @@ public class ApplicationConfig {
 			taskClass = (Class<es.gob.valet.quartz.task.Task>) Class.forName("es.gob.valet.tasks.ReloadCacheTask");
 			ProcessTasksScheduler process = ProcessTasksScheduler.getInstance();
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.MINUTE, 2);
+			cal.add(Calendar.MINUTE, NumberConstants.NUM5);
 			Date initialDate = cal.getTime();
-			IPlanificador planner = new PlanificadorPeriodico(300000l, initialDate, false);
+			IPlanificador planner = new PlanificadorPeriodico(NumberConstants.NUM300000, initialDate, false);
 			process.addOrReplacePlannerInTask("ReloadCache", planner, taskClass, null);
 		} catch (ClassNotFoundException | ValetSchedulerException e) {
 			logger.error("Se produjo un error inicializando la tarea periódica de recarga de la caché.", e);

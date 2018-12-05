@@ -13,18 +13,6 @@
 	
 	<!-- A time/date based rolling appender -->
 	<appender name="VALET-FILE" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="${catalina.base}/logs/valet-server.log"/>
-		<param name="Append" value="true"/>
-		<param name="Threshold" value="INFO"/>
-		<!-- Rollover at midnight each day -->
-		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
-		<layout class="org.apache.log4j.PatternLayout">
-			<!-- The default pattern: Date Priority [Category] Message\n -->
-			<param name="ConversionPattern" value="%d %x %-5p [%c] %m%n"/>
-		</layout>
-	</appender>
-	
-	<appender name="VALET-WEB" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="File" value="${catalina.base}/logs/valet-web.log"/>
 		<param name="Append" value="true"/>
 		<param name="Threshold" value="INFO"/>
@@ -36,15 +24,10 @@
 		</layout>
 	</appender>
 
-	<logger additivity="false" name="Valet-Server">
+	<logger additivity="false" name="Valet-Web">
 		<appender-ref ref="VALET-FILE"/>
 	</logger>
 	
-	<logger additivity="false" name="Valet-Web">
-		<appender-ref ref="VALET-WEB"/>
-	</logger>
-	
-
 	<!-- ================ -->
 	<!-- Limit categories -->
 	<!-- ================ -->
