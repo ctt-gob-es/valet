@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 07/12/2018.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
@@ -37,7 +37,7 @@ import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCac
  * <p>Class that represents a collection that stores the relation between a TSL Location
  * and its information into the configuration cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 07/12/2018.
  */
 public class TSLLocationAndIdRelationCacheObject extends ConfigurationCacheObject {
 
@@ -71,6 +71,12 @@ public class TSLLocationAndIdRelationCacheObject extends ConfigurationCacheObjec
 	 */
 	public final void addUpdateRelation(TSLDataCacheObject tdco) {
 
+		// Si actualmente existe, lo borramos.
+		String key = getTslLocationKeyIgnoringCaseSensitive(tdco.getTslLocationUri());
+		if (key != null) {
+			relationMap.remove(key);
+		}
+
 		// Lo añadimos al map.
 		relationMap.put(tdco.getTslLocationUri(), tdco.getTslDataId());
 
@@ -83,7 +89,46 @@ public class TSLLocationAndIdRelationCacheObject extends ConfigurationCacheObjec
 	 */
 	public final Long getTslDataIdFromLocation(String tslLocation) {
 
-		return relationMap.get(tslLocation);
+		Long result = relationMap.get(tslLocation);
+
+		// Si no lo hemos recuperado puede ser que sea por diferencia
+		// de mayúsculas y minúsculas...
+		if (result == null) {
+
+			String key = getTslLocationKeyIgnoringCaseSensitive(tslLocation);
+			if (key != null) {
+				result = relationMap.get(key);
+			}
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Searchs the input TSL location in the keys already added ignoring case sensitive.
+	 * @param tslLocation TSL location to search.
+	 * @return the input TSL location in the keys already added ignoring case sensitive,
+	 * or <code>null</code> if not is finded.
+	 */
+	private String getTslLocationKeyIgnoringCaseSensitive(String tslLocation) {
+
+		String result = null;
+
+		if (!relationMap.isEmpty()) {
+
+			Set<String> keys = relationMap.keySet();
+			for (String key: keys) {
+				if (key.equalsIgnoreCase(tslLocation)) {
+					result = key;
+					break;
+				}
+			}
+
+		}
+
+		return result;
 
 	}
 

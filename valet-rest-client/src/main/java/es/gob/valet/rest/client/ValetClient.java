@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.rest.client.ValetClient.java.</p>
  * <b>Description:</b><p> Class that implements a client for Valet rest services.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 07/12/2018.
  */
 package es.gob.valet.rest.client;
 
@@ -44,10 +44,10 @@ import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.TslInformationResponse;
 import es.gob.valet.rest.services.ITslRestService;
 
-/** 
+/**
  * <p>Class that implements a client for Valet rest services.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 07/12/2018.
  */
 public class ValetClient implements ITslRestService {
 
@@ -67,7 +67,17 @@ public class ValetClient implements ITslRestService {
 	 * @param timeout Limit in seconds the network timeout for connect to Valet rest services.
 	 */
 	public ValetClient(final String urlValetRest, final Integer timeout) {
-		ResteasyClient client = new ResteasyClientBuilder().readTimeout(timeout, TimeUnit.SECONDS).build();
+		// TODO IMPORTANTE: Hay que establecer una creación del cliente en
+		// función de si
+		// el destino es HTTP o HTTPS, así como dar la posibilidad de usar
+		// proxy.
+		// Incluso se podría configurar almacenes de confianza e identificación
+		// para conexiones segura.
+		// También es posible especificar listado de SNI válidos.
+		// Del mismo modo se debería permitir configurar los algoritmos y
+		// protocolos restringidos
+		// para el cifrado de la conexión segura.
+		ResteasyClient client = new ResteasyClientBuilder().readTimeout(timeout, TimeUnit.SECONDS).disableTrustManager().build();
 		ResteasyWebTarget target = client.target(UriBuilder.fromPath(urlValetRest));
 		restService = target.proxy(ITslRestService.class);
 	}
