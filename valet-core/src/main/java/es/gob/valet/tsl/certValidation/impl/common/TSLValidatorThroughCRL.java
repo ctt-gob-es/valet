@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 17/12/2018.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -71,7 +71,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 17/12/2018.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -385,12 +385,6 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	private boolean checkCRLisValid(X509CRL crl, Date validationDate, boolean checkIssuerOfCRL, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
 
 		boolean result = true;
-
-		// Comprobamos que la fecha de emisión es anterior a la de validación.
-		if (crl.getThisUpdate() != null && crl.getThisUpdate().after(validationDate)) {
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL123, new Object[ ] { validationDate.toString(), crl.getThisUpdate().toString() }));
-			result = false;
-		}
 
 		// Comprobamos que la fecha de próxima actualización es posterior a la
 		// de validación.
