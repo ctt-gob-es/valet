@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 26/11/2018.
+ * @version 1.4, 17/12/2018.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 26/11/2018.
+ * @version 1.4, 17/12/2018.
  */
 public interface IWebGeneralMessages {
 
@@ -336,7 +336,45 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String ERROR_LOAD_TSL_MAPPING = "errorLoadTslMapping";
-	
-	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankIdentifier</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_NOT_BLANK_IDENTIFIER = "errorNotBlankIdentifier";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorDuplicateIdentifier</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_DUPLICATE_IDENTIFIER = "errorDuplicateIdentifier";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankNameApp</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_NOT_BLANK_NAME_APP = "errorNotBlankNameApp";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankRespName</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_NOT_BLANK_RESP_NAME = "errorNotBlankRespName";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankRespSurnames</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_NOT_BLANK_RESP_SURNAMES = "errorNotBlankRespSurnames";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankMail</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_NOT_BLANK_RESP_MAIL = "errorNotBlankMail";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankPhone</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_NOT_BLANK_RESP_PHONE = "errorNotBlankPhone";
+
+
 
 }

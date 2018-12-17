@@ -50,6 +50,15 @@
 	                 	$('#aTslAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionTsl, 'optionReplacement', 'GET', null, true); return false;});
 	                </script>
 				</a></li>
+								<li class="nav-item"><a id="aAppAdmin" class='sidebar-link'
+					href="#"> <span class="icon-holder"> <i
+							class="c-purple-500 ti-layout-tab-window"></i>
+					</span> <span class="title" th:text="#{menu.admin.app}"></span> <script
+							th:inline="javascript">
+	                 	var actionApp = /*[[@{/appadmin}]]*/;
+	                 	$('#aAppAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionApp, 'optionReplacement', 'GET', null, true); return false;});
+	                </script>
+				</a></li>
 				<li class="nav-item dropdown"><a id="aKeystoreAdmin"
 					class='sidebar-link' href="#"> <span class="icon-holder">
 							<i class="c-red-500 ti-key"></i>

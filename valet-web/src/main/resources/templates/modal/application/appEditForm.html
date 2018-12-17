@@ -1,0 +1,163 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="modalEdit">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{table.user.action.edit}"></h4>
+				<button type="button" class="close"
+					onclick="closeModalButton('modalEdit','appForm')"
+					aria-label="Cerrar">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form name="altEditor-form" role="form" id="appForm"
+					th:object="${appform}" th:action="@{/saveapp}" method="post">
+				<input type='hidden' class='primarykey' id="idApplication"
+		th:field="*{idApplication}">
+	<div class="form-group">
+		<label for="identificator" th:text="#{form.app.identificator}"></label>
+		<script th:inline="javascript" type="text/javascript">
+			/*<![CDATA[*/
+			var messageIdent = /*[[#{form.app.identificator.val}]]*/'default';
+			/*]]>*/
+		</script>
+		<span id="identifier_span"
+			class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+		<input onblur="validateField(this,messageIdent);" type="text"
+			id="identificator" th:field="*{identifier}" class="form-control"
+			required></input>
+	</div>
+	<div class="form-group">
+		<label for="name" th:text="#{form.app.name}"></label>
+		<script th:inline="javascript" type="text/javascript">
+			/*<![CDATA[*/
+			var messageName = /*[[#{form.app.name.val}]]*/'default';
+			/*]]>*/
+		</script>
+		<span id="name_span"
+			class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+		<input onblur="validateField(this,messageName);" type="text" id="name"
+			th:field="*{name}" class="form-control" required></input>
+	</div>
+	<!-- Datos de Responsable -->
+	<div class="mT-20">
+		<div class="bgc-white p-20 bd">
+			<h6 class="c-grey-900" th:text="#{form.app.responsible}"></h6>
+			<div class="mT-5">
+				<div class="form-group">
+					<label for="responsibleName" th:text="#{form.app.resp.name}"></label>
+					<script th:inline="javascript" type="text/javascript">
+						/*<![CDATA[*/
+						var messageRespName = /*[[#{form.app.respName.val}]]*/'default';
+						/*]]>*/
+					</script>
+					<span id="responsibleName_span"
+						class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+					<input onblur="validateField(this,messageRespName);" type="text"
+						id="responsibleName" th:field="*{responsibleName}"
+						class="form-control" required></input>
+				</div>
+				<div class="form-group">
+					<label for="responsibleSurnames"
+						th:text="#{form.app.resp.surnames}"></label>
+					<script th:inline="javascript" type="text/javascript">
+						/*<![CDATA[*/
+						var messageResSurnames = /*[[#{form.app.respSurnames.val}]]*/'default';
+						/*]]>*/
+					</script>
+					<span id="responsibleSurnames_span"
+						class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+					<input onblur="validateField(this,messageResSurnames);" type="text"
+						id="responsibleSurnames" th:field="*{responsibleSurnames}"
+						class="form-control" required></input>
+				</div>
+				<div class="form-group">
+					<label for="responsibleMail"
+						th:text="#{form.app.resp.email}"></label>
+					<script th:inline="javascript" type="text/javascript">
+						/*<![CDATA[*/
+						var messageRespMail = /*[[#{form.app.email.val}]]*/'default';
+						/*]]>*/
+					</script>
+					<span id="responsibleMail_span"
+						class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+					<input onblur="validateField(this,messageRespMail);" type="email"
+						id="responsibleMail" th:field="*{responsibleMail}"
+						class="form-control" required></input>
+				</div>
+				<div class="form-group">
+					<label for="responsiblePhone"
+						th:text="#{form.app.resp.phone}"></label>
+					<script th:inline="javascript" type="text/javascript">
+						/*<![CDATA[*/
+						var messageRespPhone = /*[[#{form.app.phone.val}]]*/'default';
+						/*]]>*/
+					</script>
+					<span id="responsiblePhone_span"
+						class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+					<input onblur="validateField(this,messageRespPhone);" type="text" pattern="[0-9]{9}"
+						id="responsiblePhone" th:field="*{responsiblePhone}"
+						class="form-control" required></input>
+				</div>
+			</div>
+		</div>
+	</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default"
+					onclick="closeModalButton('modalEdit','appForm')"
+					th:text="#{form.app.btn.close}"></button>
+				<button type="submit" id="editBtnModal" class="btn btn-primary"
+					th:text="#{form.app.btn.modify}"></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<script th:inline="javascript" type="text/javascript">
+	$( "#editBtnModal" ).click(function( event ) {
+		  event.preventDefault();
+			
+		  var formData = JSON.stringify($("#appForm").serializeJSON());
+			var tbl = $('#appTable').DataTable();
+		  var url = /*[[@{/saveapp}]]*/;
+		  loading();
+		  
+		  $.ajax({
+			  type: "POST",
+			  url: url,
+			  data: formData,
+			  dataType: "json",
+			  contentType : "application/json",
+			  success: function(data){
+				  var errores = JSON.parse(data.error);
+					if(data.error != null){
+						hide();
+						jQuery.each(errores, function(i, val){
+						$('#appForm *').filter('span').each(function(){
+									if (i == $(this).attr('id')){
+										$("#" + i).text(val);
+										$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
+									}
+								});
+						})
+					} else {
+					hide();
+					tbl.row.add($(data.data)).draw(false);
+					 $('#altEditor-modal .modal-body .alert').remove();
+						                    $('#modalEdit').modal('hide');
+					}
+
+			  },
+			  error:function(){
+				  hide();
+				  if (!$('#errorModalEdit').length > 0){
+				  	$('#userFormEditModal').append('<div id="errorModalEdit" class="alert alert-danger" role="alert"><strong>Error inesperado, int\u00E9ntelo mas tarde!</strong></div>');
+				  }
+			  }
+		});
+	});
+</script>

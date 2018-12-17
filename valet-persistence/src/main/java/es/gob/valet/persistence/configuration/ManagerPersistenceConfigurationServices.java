@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 24/10/2018.
+ * @version 1.3, 17/12/2018.
  */
 package es.gob.valet.persistence.configuration;
 
@@ -34,6 +34,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import es.gob.valet.persistence.configuration.services.ifaces.IAlarmService;
+import es.gob.valet.persistence.configuration.services.ifaces.IApplicationValetService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICOperationModeService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICPlannerTypeService;
@@ -55,7 +56,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
  * <p>Manager singleton instance for the use of the persistence services
  * of the configuration scheme.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 24/10/2018.
+ * @version 1.3, 17/12/2018.
  */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -191,6 +192,21 @@ public class ManagerPersistenceConfigurationServices {
 	 */
 	@Autowired
 	private IUserValetService userValetService;
+
+	/**
+	 * Attribute that represents the services for the configuration persistence: ValET Applications.
+	 */
+	@Autowired
+	private IApplicationValetService applicationValetService;
+
+
+	/**
+	 * Gets the value of the attribute {@link #applicationValetService}.
+	 * @return the value of the attribute {@link #applicationValetService}.
+	 */
+	public IApplicationValetService getApplicationValetService() {
+		return applicationValetService;
+	}
 
 	/**
 	 * Gets the value of the attribute {@link #alarmService}.
