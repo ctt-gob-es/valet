@@ -12,6 +12,7 @@
 			<div class="modal-body">
 				<form name="altEditor-form" role="form" id="appForm"
 					th:object="${appform}" th:action="@{/saveapp}" method="post">
+					<div id="errorAddApp" role="alert"></div>
 				<input type='hidden' class='primarykey' id="idApplication"
 		th:field="*{idApplication}">
 	<div class="form-group">

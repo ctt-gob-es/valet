@@ -975,4 +975,36 @@ public interface IPersistenceCacheMessages {
 	 */
 	String CONFIG_KEYSTORE_CACHE_LOG007 = "CONFKEYSTORECACHE007";
 
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFAPPLICATIONCACHE000</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_APPLICATION_CACHE_LOG000 = "CONFAPPLICATIONCACHE000";
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFAPPLICATIONCACHE001</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_APPLICATION_CACHE_LOG001 = "CONFAPPLICATIONCACHE001";
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFAPPLICATIONCACHE002</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_APPLICATION_CACHE_LOG002 = "CONFAPPLICATIONCACHE002";
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFAPPLICATIONCACHE003</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_APPLICATION_CACHE_LOG003 = "CONFAPPLICATIONCACHE003";
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFAPPLICATIONCACHE004</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_APPLICATION_CACHE_LOG004 = "CONFAPPLICATIONCACHE004";
+	/**
+	 * Constant attribute that represents the name of the property <code>CONFAPPLICATIONCACHE005</code> belonging to the
+	 * file messages/valet-persistence/cache_xx_YY.properties.
+	 */
+	String CONFIG_APPLICATION_CACHE_LOG005 = "CONFAPPLICATIONCACHE004";
+	
+
 }

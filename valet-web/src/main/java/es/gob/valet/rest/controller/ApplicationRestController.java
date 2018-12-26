@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 11/12/2018.
+ * @version 1.1, 21/12/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -54,23 +54,23 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
+import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
+import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 import es.gob.valet.persistence.configuration.services.ifaces.IApplicationValetService;
 
 /**
  * <p>Class that manages the REST request related to the Applications administration and JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 11/12/2018.
+ * @version 1.10, 21/12/2018.
  */
 @RestController
 public class ApplicationRestController {
-
 
 	/**
 	 * Constant that represents the parameter 'idApplication'.
 	 */
 	private static final String FIELD_ID_APPLICATION = "idApplication";
-
 
 	/**
 	 * Constant that represents the parameter 'ind'.
@@ -106,6 +106,10 @@ public class ApplicationRestController {
 	 * Constant that represents the parameter 'responsibleMail'.
 	 */
 	private static final String FIELD_RESP_MAIL = "responsibleMail";
+	/**
+	 * Constant that represents the key Json 'errorSaveApp'.
+	 */
+	private static final String KEY_JS_ERROR_SAVE_APP = "errorSaveApp";
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
@@ -118,12 +122,11 @@ public class ApplicationRestController {
 	 * @return String that represents the name of the view to forward.
 	 */
 	@JsonView(DataTablesOutput.View.class)
-	@RequestMapping(path ="/appdatatable", method = RequestMethod.GET)
-	public DataTablesOutput<ApplicationValet> loadApplications(@Valid DataTablesInput input){
+	@RequestMapping(path = "/appdatatable", method = RequestMethod.GET)
+	public DataTablesOutput<ApplicationValet> loadApplications(@Valid DataTablesInput input) {
 		IApplicationValetService appService = ManagerPersistenceConfigurationServices.getInstance().getApplicationValetService();
 		return (DataTablesOutput<ApplicationValet>) appService.getAllApplication(input);
 	}
-
 
 	/**
 	 * Method that maps the save application to the controller and saves it
@@ -131,68 +134,65 @@ public class ApplicationRestController {
 	 *
 	 * @param appForm
 	 *            Object that represents the backing application form.
-
+	
 	 * @return {@link DataTablesOutput<ApplicationValet>}
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/saveapp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody DataTablesOutput<ApplicationValet> saveApp(@RequestBody ApplicationForm appForm){
+	public @ResponseBody DataTablesOutput<ApplicationValet> saveApp(@RequestBody ApplicationForm appForm) {
 		DataTablesOutput<ApplicationValet> dtOutput = new DataTablesOutput<>();
 		IApplicationValetService appService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getApplicationValetService();
 		ApplicationValet appValet = null;
 		JSONObject json = new JSONObject();
-		boolean editing = false;
-		//se comprueba si se está editando o creando una nueva aplicación
-		if(appForm.getIdApplication() != null){
-			//se está editando
+	
+		// se comprueba si se está editando o creando una nueva aplicación
+		if (appForm.getIdApplication() != null) {
+			// se está editando
 			appValet = appService.getApplicationById(appForm.getIdApplication());
-			editing = true;
-		}else{
-			//se crea una nueva aplicación
+		} else {
+			// se crea una nueva aplicación
 			appValet = new ApplicationValet();
-
 		}
 		boolean error = false;
 		List<ApplicationValet> listNewApp = new ArrayList<ApplicationValet>();
-		//validaciones de parámetros de entrada
-		if(UtilsStringChar.isNullOrEmpty(appForm.getIdentifier())){
+		// validaciones de parámetros de entrada
+		if (UtilsStringChar.isNullOrEmpty(appForm.getIdentifier())) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFIER));
 			json.put(FIELD_IDENTIFIER + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFIER));
 			error = true;
-		}else if(!editing && appService.getApplicationByIdentificator(appForm.getIdentifier()) != null){
+		} else if(isDuplicateIdentifier(appForm.getIdentifier(), appValet.getIdentificator())){
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_DUPLICATE_IDENTIFIER));
 			json.put(FIELD_IDENTIFIER + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_DUPLICATE_IDENTIFIER));
 			error = true;
-		}
-
-		if(UtilsStringChar.isNullOrEmpty(appForm.getName())){
+		}				
+		if (UtilsStringChar.isNullOrEmpty(appForm.getName())) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_NAME_APP));
 			json.put(FIELD_NAME + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_NAME_APP));
 			error = true;
 		}
-		if(UtilsStringChar.isNullOrEmpty(appForm.getResponsibleName())){
+		if (UtilsStringChar.isNullOrEmpty(appForm.getResponsibleName())) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_NAME));
 			json.put(FIELD_RESP_NAME + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_NAME));
 			error = true;
 		}
-		if(UtilsStringChar.isNullOrEmpty(appForm.getResponsibleSurnames())){
+		if (UtilsStringChar.isNullOrEmpty(appForm.getResponsibleSurnames())) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_SURNAMES));
 			json.put(FIELD_RESP_SURNAMES + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_SURNAMES));
 			error = true;
 		}
-		if(UtilsStringChar.isNullOrEmpty(appForm.getResponsibleMail())){
+		if (UtilsStringChar.isNullOrEmpty(appForm.getResponsibleMail())) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_MAIL));
 			json.put(FIELD_RESP_MAIL + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_MAIL));
 			error = true;
 		}
-		if(UtilsStringChar.isNullOrEmpty(appForm.getResponsibleMail())){
+		if (UtilsStringChar.isNullOrEmpty(appForm.getResponsibleMail())) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_PHONE));
 			json.put(FIELD_RESP_PHONE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_PHONE));
 			error = true;
 		}
 
-		if(!error){
+		if (!error) {
 			appValet.setIdentificator(appForm.getIdentifier());
 			appValet.setName(appForm.getName());
 			appValet.setResponsibleName(appForm.getResponsibleName());
@@ -201,10 +201,22 @@ public class ApplicationRestController {
 			appValet.setResponsiblePhone(appForm.getResponsiblePhone());
 
 			ApplicationValet newAppValet = null;
-			newAppValet = appService.saveApplicationValet(appValet);
-			listNewApp.add(newAppValet);
-			dtOutput.setData(listNewApp);
+			try {
+				newAppValet = appService.saveApplicationValet(appValet);
+				// se actualiza la caché
+				ConfigurationCacheFacade.applicationAddUpdateApplication(appValet);
+				listNewApp.add(newAppValet);
+				dtOutput.setData(listNewApp);
+			}
+
+			catch (ApplicationCacheException e) {
+				LOGGER.error(Language.getResWebGeneral(e.getErrorDescription()));
+				json.put(KEY_JS_ERROR_SAVE_APP, e.getErrorDescription());
+				listNewApp = StreamSupport.stream(appService.getAllApplication().spliterator(), false).collect(Collectors.toList());
+				dtOutput.setError(json.toString());
+			}
 		} else {
+
 			listNewApp = StreamSupport.stream(appService.getAllApplication().spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 		}
@@ -212,9 +224,6 @@ public class ApplicationRestController {
 		return dtOutput;
 
 	}
-
-
-
 
 	/**
 	 * Method to remove an application.
@@ -230,12 +239,32 @@ public class ApplicationRestController {
 		String result = index;
 		try {
 			ManagerPersistenceConfigurationServices.getInstance().getApplicationValetService().deleteApplicationValet(idApplication);
+			// se elimina también de la caché
+			ConfigurationCacheFacade.applicationRemoveApplication(idApplication);
 		} catch (Exception e) {
 			result = "-1";
 		}
 		return result;
 	}
-
-
+	
+	/**
+	 * Method that validates if there is an application with the same identifier.
+	 * 
+	 * @param newIdentifier Parameter that represents the new identifier of the application.
+	 * @param oldIdentifier Parameter that represents the identifier of the application that is being edited.
+	 * @return true, if there is a registered application with the same identifier.
+	 */
+	private boolean isDuplicateIdentifier(String newIdentifier, String oldIdentifier){
+		boolean result = false;
+		IApplicationValetService appService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getApplicationValetService();
+		//si se está editando la aplicación y se ha cambiado el identificador, o si se crea nueva aplicación, hay que comprobar que no exista una aplicación con el mismo identificador.
+		if((oldIdentifier!=null && !newIdentifier.equals(oldIdentifier)) || oldIdentifier == null){
+			if(appService.getApplicationByIdentificator(newIdentifier) != null){
+			result = true;
+			}
+		}
+		return result;
+		
+	}
 
 }

@@ -1,7 +1,7 @@
 <form name="altEditor-form" role="form" id="appForm"
 	th:object="${appform}" th:action="@{/saveapp}" method="post">
-	<input type='hidden' class='primarykey' id="idApplication"
-		th:field="*{idApplication}">
+	<div id="errorAddApp" role="alert"></div>
+
 	<div class="form-group">
 		<label for="identificator" th:text="#{form.app.identificator}"></label>
 		<script th:inline="javascript" type="text/javascript">

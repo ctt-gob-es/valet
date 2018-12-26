@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 25/11/2018.
+ * @version 1.3, 21/12/2018.
  */
 package es.gob.valet.persistence.configuration.cache.engine;
 
@@ -32,9 +32,13 @@ import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
+import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
+import es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject;
+import es.gob.valet.persistence.configuration.cache.modules.application.engine.ApplicationCacheFacade;
+import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.engine.KeystoreCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
@@ -44,13 +48,14 @@ import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLData
 import es.gob.valet.persistence.configuration.cache.modules.tsl.engine.TSLCache;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.engine.TSLCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
+import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 
 /**
  * <p>Facade for all the configuration cache objects of the configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 25/11/2018.
+ * @version 1.3, 21/12/2018.
  */
 public final class ConfigurationCacheFacade {
 
@@ -388,4 +393,50 @@ public final class ConfigurationCacheFacade {
 
 	}
 
+
+	/**
+	 * Method that reloads an application in the cache.
+	 *
+	 * @param app Application pojo representation.
+	 * @throws ApplicationCacheException In case of some error reloading in the cache.
+	 */
+	public static void applicationAddUpdateApplication(ApplicationValet app) throws ApplicationCacheException{
+		//se comprueba que el parámetro de entrada no sea nulo y que se encuentre definido el identificador
+		if( app == null || app.getIdApplication() == null){
+			throw new ApplicationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG005));
+		} else {
+
+			//se recupera el objeto que representa a la aplicación y que aún no ha sido actualizado
+			ApplicationCacheObject aco = ApplicationCacheFacade.getInstance().getApplicationCacheObject(app.getIdApplication().longValue());
+
+			//se recarga la aplicación de la caché.
+			ApplicationCacheFacade.getInstance().reloadApplication(app.getIdApplication());
+		}
+	}
+
+	/**
+	 * Removes the application specified by the input identifier from the cache.
+	 *
+	 * @param applicationId Application identifier.
+	 * @throws ApplicationCacheException In case of some error working with the cache.
+	 */
+	public static void applicationRemoveApplication(Long applicationId) throws ApplicationCacheException{
+		//se obtiene la aplicación de la caché antes de eliminarla.
+		ApplicationCacheObject aco = applicationGetApplication(applicationId);
+		if(aco != null){
+			ApplicationCacheFacade.getInstance().removeApplication(applicationId);
+		}
+
+	}
+
+	/**
+	 * Gets the application representation from the cache. If it does not exist, try to get from the data base.
+	 *
+	 * @param applicationId Application identifier
+	 * @return A object representation of the application in the caché.
+	 * @throws ApplicationCacheException In case of some error getting the application from the cache.
+	 */
+	public static ApplicationCacheObject applicationGetApplication(long applicationId) throws ApplicationCacheException{
+		return ApplicationCacheFacade.getInstance().getApplicationCacheObject(applicationId);
+	}
 }

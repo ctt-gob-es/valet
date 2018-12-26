@@ -506,7 +506,6 @@ public final class TSLCache extends ConfigurationCache {
 	 */
 	@Override
 	protected boolean checkUpdateCondition(ConfigurationCacheObject cachedCco, ConfigurationCacheObject cco) {
-
 		// Siempre se debe actualizar.
 		return true;
 

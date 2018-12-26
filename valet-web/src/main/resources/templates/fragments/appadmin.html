@@ -106,6 +106,11 @@ var tbl = $('#appTable').DataTable({
 				if(data.error != null){
 					hide();
 					jQuery.each(errores, function(i, val){
+						if(i == "errorSaveApp"){
+							var messageError = val;
+							$('#errorAddApp').html(messageError);
+							$('#errorAddApp').addClass('alert alert-danger');
+					 	 } 	
 					$('#appForm *').filter('span').each(function(){
 								if (i == $(this).attr('id')){
 									$("#" + i).text(val);
