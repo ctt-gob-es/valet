@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>10/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 25/11/2018.
+ * @version 1.4, 26/12/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -29,7 +29,7 @@ import org.apache.commons.codec.binary.Hex;
 /**
  * <p>Class that provides functionality for managing strings and characters.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 25/11/2018.
+ * @version 1.4, 26/12/2018.
  */
 public final class UtilsStringChar {
 
@@ -54,6 +54,11 @@ public final class UtilsStringChar {
 	 * Constant attribute that represents the string to identify the blank space character.
 	 */
 	public static final String SPECIAL_BLANK_SPACE_STRING = String.valueOf(SPECIAL_BLANK_SPACE);
+
+	/**
+	 * Constant attribute that represents the string to identify the line separator character in this system.
+	 */
+	public static final String SPECIAL_SYSTEM_LINE_SEPARATOR_STRING = System.lineSeparator();
 
 	/**
 	 * Constant attribute that represents the char to identify the line break character.

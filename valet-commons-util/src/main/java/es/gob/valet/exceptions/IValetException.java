@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 06/11/2018.
+ * @version 1.4, 26/12/2018.
  */
 package es.gob.valet.exceptions;
 
@@ -29,7 +29,7 @@ package es.gob.valet.exceptions;
  * <p>Interface defining constants codes accepted for
  * the exceptions on the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 06/11/2018.
+ * @version 1.4, 26/12/2018.
  */
 public interface IValetException {
 
@@ -308,5 +308,8 @@ public interface IValetException {
 
 	/** Constant attribute that represents the error code: Commons utilities error. */
 	String COD_200 = "COD_200";
+	
+	/** Constant attribute that represents the error code: EMail error. */
+	String COD_201 = "COD_201";
 
 }

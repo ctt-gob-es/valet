@@ -553,6 +553,13 @@
 				<version>${hibernate.version}</version>
 			</dependency>
 			<!-- Hibernate 5 -->
+			
+			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>javax.mail-api</artifactId>
+				<version>1.6.2</version>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 

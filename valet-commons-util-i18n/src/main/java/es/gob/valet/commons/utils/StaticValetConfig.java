@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 25/11/2018.
+ * @version 1.7, 26/12/2018.
  */
 package es.gob.valet.commons.utils;
 
@@ -39,7 +39,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 25/11/2018.
+ * @version 1.7, 26/12/2018.
  */
 public final class StaticValetConfig {
 
@@ -217,6 +217,36 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents name for property <i>"connection.MaxSize"</i>.
 	 */
 	public static final String CONECTION_MAXSIZE = "connection.MaxSize";
+
+	/**
+	 * Constant attribute that represents name for property <i>"mailServer.issuer"</i>.
+	 */
+	public static final String MAIL_SERVER_ISSUER = "mailServer.issuer";
+
+	/**
+	 * Constant attribute that represents name for property <i>"mailServer.host"</i>.
+	 */
+	public static final String MAIL_SERVER_HOST = "mailServer.host";
+
+	/**
+	 * Constant attribute that represents name for property <i>"mailServer.port"</i>.
+	 */
+	public static final String MAIL_SERVER_PORT = "mailServer.port";
+
+	/**
+	 * Constant attribute that represents name for property <i>"mailServer.useAuthentication"</i>.
+	 */
+	public static final String MAIL_SERVER_USEAUTHENTICATION = "mailServer.useAuthentication";
+
+	/**
+	 * Constant attribute that represents name for property <i>"mailServer.authentication.username"</i>.
+	 */
+	public static final String MAIL_SERVER_AUTHENTICATION_USERNAME = "mailServer.authentication.username";
+
+	/**
+	 * Constant attribute that represents name for property <i>"mailServer.authentication.password"</i>.
+	 */
+	public static final String MAIL_SERVER_AUTHENTICATION_PASSWORD = "mailServer.authentication.password";
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 05/12/2018.
+ * @version 1.5, 26/12/2018.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 05/12/2018.
+ * @version 1.5, 26/12/2018.
  */
 public interface ICoreGeneralMessages {
 
@@ -830,5 +830,95 @@ public interface ICoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	String UTILS_HTTP_014 = "UTILS_HTTP_014";
+
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_000 = "EMAIL_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_001 = "EMAIL_001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_002</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_002 = "EMAIL_002";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_003</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_003 = "EMAIL_003";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_004</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_004 = "EMAIL_004";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_005</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_005 = "EMAIL_005";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_006</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_006 = "EMAIL_006";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_007</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_007 = "EMAIL_007";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_008</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_008 = "EMAIL_008";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_009</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_009 = "EMAIL_009";
+
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_010</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_010 = "EMAIL_010";
+
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_011</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_011 = "EMAIL_011";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_012</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_012 = "EMAIL_012";
+
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_013</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_013 = "EMAIL_013";
+
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_014</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_014 = "EMAIL_014";
 
 }

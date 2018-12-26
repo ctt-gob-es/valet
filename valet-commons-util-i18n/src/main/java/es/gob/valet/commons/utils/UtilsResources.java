@@ -20,13 +20,15 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 26/12/2018.
  */
 package es.gob.valet.commons.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 
 import org.apache.log4j.Logger;
 
@@ -36,7 +38,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides functionality to control resources.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 26/12/2018.
  */
 public final class UtilsResources {
 
@@ -92,6 +94,34 @@ public final class UtilsResources {
 			sb.trimToSize();
 		}
 
+	}
+
+	/**
+	 * Method that handles the closing of a {@link Reader} resource.
+	 * @param br Parameter that represents a {@link Reader} resource.
+	 */
+	public static void safeCloseReader(Reader br) {
+		if (br != null) {
+			try {
+				br.close();
+			} catch (IOException e) {
+				LOGGER.error(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { br.getClass().getName() }), e);
+			}
+		}
+	}
+
+	/**
+	 * Method that handles the closing of a {@link Writer} resource.
+	 * @param wr Parameter that represents a {@link Writer} resource.
+	 */
+	public static void safeCloseWriter(Writer wr) {
+		if (wr != null) {
+			try {
+				wr.close();
+			} catch (IOException e) {
+				LOGGER.error(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { wr.getClass().getName() }), e);
+			}
+		}
 	}
 
 }
