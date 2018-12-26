@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 02/11/2018.
+ * @version 1.2, 26/12/2018.
  */
 package es.gob.valet.controller;
 
@@ -40,7 +40,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 /**
  * <p>Class that manages the requests related to the Users administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 02/11/2018.
+ * @version 1.2, 26/12/2018.
  */
 @Controller
 public class UserController {
@@ -90,6 +90,7 @@ public class UserController {
 		UserFormPassword userFormPassword = new UserFormPassword();
 		if (userValet != null) {
 			userFormPassword.setIdUserValetPass(userValet.getIdUserValet());
+			userFormPassword.setNameUser(userValet.getName());
 		}
 		model.addAttribute("userFormPassword", userFormPassword);
 		return "modal/user/userFormPass.html";

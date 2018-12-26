@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 05/11/2018
+ * @version 1.2, 26/121/2018
  */
 package es.gob.valet.form;
 
@@ -38,7 +38,7 @@ import es.gob.valet.rest.exception.ThenCheckIt;
  * Class that represents the backing form for adding/editing a user.
  * </p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 19/06/2018.
+ * @version 1.2, 26/12/2018.
  */
 public class UserFormPassword {
 
@@ -47,6 +47,12 @@ public class UserFormPassword {
 	 * in the form.
 	 */
 	private Long idUserValetPass = null;
+	
+
+	/**
+	 * Attribute that represents the name of user in the form.
+	 */
+	private String nameUser = null;
 
 	/**
 	 * Attribute that represents the value of the input password of the user in
@@ -150,6 +156,28 @@ public class UserFormPassword {
 	 */
 	public void setOldPassword(String oldPasswordParam) {
 		this.oldPassword = oldPasswordParam;
+	}
+
+
+
+	
+	/**
+	 * Gets the value of the attribute {@link #nameUser}.
+	 * @return the value of the attribute {@link #nameUser}.
+	 */
+	public String getNameUser() {
+		return nameUser;
+	}
+
+
+
+	
+	/**
+	 * Sets the value of the attribute {@link #nameUser}.
+	 * @param nameUserParam The value for the attribute {@link #nameUser}.
+	 */
+	public void setNameUser(String nameUserParam) {
+		this.nameUser = nameUserParam;
 	}
 
 	

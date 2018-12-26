@@ -13,6 +13,10 @@
 					<input type='hidden' class='primarykey' id="idUserValetPass" th:field="*{idUserValetPass}">
 					
 					<div class="form-group">
+						<label for="nameUserId" class="col-form-label" th:text="#{form.user.changePass}"></label>
+						<input id="nameUserId" th:field="*{nameUser}" class="form-control" readonly></input>
+					</div>
+					<div class="form-group">
 						<label for="oldPassword" class="col-form-label" th:text="#{form.user.oldPassword}"></label>
 						<span id="oldPassword_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
 						<input onblur="validateField(this, messageName);" type="password" id="oldPassword" th:field="*{oldPassword}" class="form-control" />
