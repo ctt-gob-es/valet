@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 04/10/2018.
+ * @version 1.1, 27/12/2018.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -34,13 +34,17 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.NumberConstants;
 
 /**
  * <p>Class that maps the <i>CONF_SERVER_MAIL</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 04/10/2018.
+ * @version 1.1, 27/12/2018.
  */
 @Entity
 @Table(name = "CONF_SERVER_MAIL")
@@ -71,6 +75,12 @@ public class ConfServerMail implements Serializable {
 	 */
 	private Long portMail;
 
+	/**
+	 * Attribute that represents a flag that indicates if it is necessary to use
+	 * authentication. 
+	 */
+	private Boolean useAuthenticationMail;
+	
 	/**
 	 * Attribute that represents the user.
 	 */
@@ -150,6 +160,25 @@ public class ConfServerMail implements Serializable {
 	 */
 	public void setPortMail(Long portMailParam) {
 		this.portMail = portMailParam;
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #useAuthenticationMail}.
+	 * @return the value of the attribute {@link #useAuthenticationMail}.
+	 */
+	@Column(name = "USE_AUTHENTICATION_MAIL", nullable = true, precision = NumberConstants.NUM1)
+	@Type(type = "yes_no")
+	@JsonView(DataTablesOutput.View.class)
+	public Boolean getUseAuthenticationMail() {
+		return useAuthenticationMail;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #useAuthenticationMail}.
+	 * @param useAuthenticationMailParam The value for the attribute {@link #useAuthenticationMail}.
+	 */
+	public void setUseAuthenticationMail(Boolean useAuthenticationMailParam) {
+		this.useAuthenticationMail = useAuthenticationMailParam;
 	}
 
 	/**

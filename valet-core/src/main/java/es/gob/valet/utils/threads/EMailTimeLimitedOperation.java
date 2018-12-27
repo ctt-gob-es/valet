@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 26/12/2018.
+ * @version 1.1, 27/12/2018.
  */
 package es.gob.valet.utils.threads;
 
@@ -46,20 +46,23 @@ import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.commons.utils.threads.ATimeLimitedOperation;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
+import es.gob.valet.persistence.exceptions.CipherException;
+import es.gob.valet.persistence.utils.UtilsAESCipher;
 
 /**
  * <p>Class that represents an e-mail sending-operation. In this one all the information
  * is specified to define the e-mail and the necessary functionality is contributed to realize the sending
  * as an independent thread via SMTP server. This thread will be time limited.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 26/12/2018.
+ * @version 1.1, 27/12/2018.
  */
 public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
@@ -129,34 +132,63 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	 */
 	private EMailTimeLimitedOperation() throws EMailException {
 		super();
-		mailServerIssuer = StaticValetConfig.getProperty(StaticValetConfig.MAIL_SERVER_ISSUER);
+		ConfServerMail csm = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getConfServerMailService().getAllConfServerMail();
+		if (csm == null) {
+			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_015));
+		} else {
+			initializeServerMailConfiguration(csm);
+		}
+	}
+
+	/**
+	 * Auxiliar method that sets all the properties needed for the mail server from a data base instance.
+	 * @param csm Object that represents an instance of a mail server in the data base.
+	 * @throws EMailException In case of some error setting the configuration.
+	 */
+	private void initializeServerMailConfiguration(ConfServerMail csm) throws EMailException {
+
+		mailServerIssuer = csm.getIssuerMail();
 		if (!checkEmailAdress(mailServerIssuer)) {
 			LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_000));
 		}
-		mailServerHost = StaticValetConfig.getProperty(StaticValetConfig.MAIL_SERVER_HOST);
+		mailServerHost = csm.getHostMail();
 		if (UtilsStringChar.isNullOrEmptyTrim(mailServerHost)) {
 			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_001));
 		}
 		boolean validPort = true;
-		try {
-			mailServerPort = Integer.parseInt(StaticValetConfig.getProperty(StaticValetConfig.MAIL_SERVER_PORT));
+		Long portLong = csm.getPortMail();
+		if (portLong != null) {
+			mailServerPort = portLong.intValue();
 			validPort = mailServerPort >= 0;
-		} catch (NumberFormatException e) {
+		} else {
 			validPort = false;
 		}
 		if (!validPort) {
 			LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_002));
 			mailServerPort = NumberConstants.NUM25;
 		}
-		try {
-			mailServerAuthUseAuthentication = Boolean.parseBoolean(StaticValetConfig.getProperty(StaticValetConfig.MAIL_SERVER_USEAUTHENTICATION));
-		} catch (Exception e) {
-			LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_003));
-			mailServerAuthUseAuthentication = false;
-		}
+		initializeServerMailConfigurationAuth(csm);
+
+	}
+
+	/**
+	 * Auxiliar method that sets the properties for authentication needed for the mail server from a data base instance.
+	 * @param csm Object that represents an instance of a mail server in the data base.
+	 */
+	private void initializeServerMailConfigurationAuth(ConfServerMail csm) {
+
+		mailServerAuthUseAuthentication = csm.getUseAuthenticationMail() == null ? false : csm.getUseAuthenticationMail().booleanValue();
 		if (mailServerAuthUseAuthentication) {
-			mailServerAuthUserName = StaticValetConfig.getProperty(StaticValetConfig.MAIL_SERVER_AUTHENTICATION_USERNAME);
-			mailServerAuthPassword = StaticValetConfig.getProperty(StaticValetConfig.MAIL_SERVER_AUTHENTICATION_PASSWORD);
+			mailServerAuthUserName = csm.getUserMail();
+			mailServerAuthPassword = csm.getPasswordMail();
+			if (mailServerAuthPassword != null) {
+				try {
+					mailServerAuthPassword = new String(UtilsAESCipher.getInstance().decryptMessage(mailServerAuthPassword));
+				} catch (CipherException e) {
+					LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_003));
+					mailServerAuthPassword = null;
+				}
+			}
 			if (mailServerAuthUserName == null || mailServerAuthPassword == null) {
 				LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_004));
 				mailServerAuthUseAuthentication = false;
@@ -164,6 +196,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 				mailServerAuthPassword = null;
 			}
 		}
+
 	}
 
 	/**

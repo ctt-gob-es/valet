@@ -16,11 +16,11 @@
 
 /**
  * <b>File:</b><p>es.gob.valet.controller.ConfServerMailController.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that manages the requests related to the ConfServerMail administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 27/12/2018.
  */
 package es.gob.valet.controller;
 
@@ -36,7 +36,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailSer
 /**
  * <p>Class that manages the requests related to the ConfServerMail administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 27/12/2018.
  */
 @Controller
 public class ConfServerMailController {
@@ -52,6 +52,8 @@ public class ConfServerMailController {
 		ConfServerMail confServerMail = new ConfServerMail();
 		ConfServerMailForm confServerMailForm = new ConfServerMailForm();
 		IConfServerMailService confServerMailService = ManagerPersistenceConfigurationServices.getInstance().getConfServerMailService();
+		// TODO Al obtener el listado de TODOS los servidores de correo se debe obtener una lista,
+		// no una única instancia, y en consecuencia, mostrar ese listado en la administración.
 		confServerMail = confServerMailService.getAllConfServerMail();
 
 		if (confServerMail != null) {
@@ -59,6 +61,7 @@ public class ConfServerMailController {
 			confServerMailForm.setIssuerMail(confServerMail.getIssuerMail());
 			confServerMailForm.setHostMail(confServerMail.getHostMail());
 			confServerMailForm.setPortMail(confServerMail.getPortMail());
+			confServerMailForm.setUseAuthenticationMail(confServerMail.getUseAuthenticationMail());
 			confServerMailForm.setUserMail(confServerMail.getUserMail());
 			confServerMailForm.setPasswordMail(confServerMail.getPasswordMail());
 		}

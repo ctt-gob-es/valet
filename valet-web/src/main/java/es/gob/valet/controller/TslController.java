@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 29/11/2018.
+ * @version 1.9, 27/12/2018.
  */
 package es.gob.valet.controller;
 
@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.form.ConstantsForm;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
@@ -58,7 +57,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.9, 29/11/2018.
+ *  @version 1.9, 27/12/2018.
  */
 @Controller
 public class TslController {
@@ -66,7 +65,7 @@ public class TslController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	private static final Logger LOGGER = Logger.getLogger(TslController.class);
 
 	/**
 	 * Constant that represents the parameter 'idTslCountryRegionMapping'.

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 06/11/2018.
+ * @version 1.5, 27/12/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -54,7 +54,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -70,7 +69,7 @@ import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 /**
  * <p>Class that manages the REST request related to the Keystore's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 06/11/2018.
+ * @version 1.5, 27/12/2018.
  */
 @RestController
 public class KeystoreRestController {
@@ -78,7 +77,7 @@ public class KeystoreRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	private static final Logger LOGGER = Logger.getLogger(KeystoreRestController.class);
 
 	/**
 	 * Constant that represents the parameter 'idKeystore'.

@@ -238,6 +238,7 @@ CREATE TABLE "CONF_SERVER_MAIL"(
 	"ISSUER_MAIL" Varchar2(200) NOT NULL,
 	"HOST_MAIL" Varchar2(200) NOT NULL,
 	"PORT_MAIL" Number(10,0) NOT NULL,
+	"USE_AUTHENTICATION_MAIL" Char(1),
 	"USER_MAIL" Varchar2(200),
 	"PASSWORD_MAIL" Varchar2(200)
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
@@ -247,6 +248,7 @@ COMMENT ON COLUMN "CONF_SERVER_MAIL"."ID_CONF_SERVER_MAIL" IS 'Identificador de 
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."ISSUER_MAIL" IS 'Valor que representa el emisor del servidor de correo.';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."HOST_MAIL" IS 'Valor que representa el host del servidor de correo.';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."PORT_MAIL" IS 'Valor que representa el puerto del servidor de correo.';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."USE_AUTHENTICATION_MAIL" IS 'Valor que representa si es necesario usar la autenticación para el servidor de correo.';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."USER_MAIL" IS 'Valor que representa el usuario del servidor de correo.';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."PASSWORD_MAIL" IS 'Valor que representa la contraseña del servidor de correo.';
 

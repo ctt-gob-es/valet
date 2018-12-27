@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 28/11/2018.
+ * @version 1.2, 27/12/2018.
  */
 package es.gob.valet.utils;
 
@@ -51,13 +51,15 @@ import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.Proxy;
 import es.gob.valet.persistence.configuration.model.utils.IOperationModeIdConstants;
+import es.gob.valet.persistence.exceptions.CipherException;
+import es.gob.valet.persistence.utils.UtilsAESCipher;
 
 /**
  * <p>Utility class responsible for loading the properties from data base
  * to obtain the data necessary to establish a connection via PROXY. Besides this load will be done in the initialization
  * of the platform, and this class is responsible for setting the data in the virtual machine.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 28/11/2018.
+ * @version 1.2, 27/12/2018.
  */
 public final class UtilsProxy {
 
@@ -288,7 +290,15 @@ public final class UtilsProxy {
 		proxyHost = proxy.getHostProxy() == null ? null : proxy.getHostProxy().trim();
 		proxyPort = proxy.getPortProxy() == null ? NumberConstants.NUM80 : proxy.getPortProxy().intValue();
 		proxyUserName = proxy.getUserProxy() == null ? null : proxy.getUserProxy().trim();
-		proxyUserPass = proxy.getPasswordProxy() == null ? null : proxy.getPasswordProxy().trim();
+		String pwd = proxy.getPasswordProxy();
+		if (pwd != null) {
+			try {
+				pwd = new String(UtilsAESCipher.getInstance().decryptMessage(pwd));
+			} catch (CipherException e) {
+				pwd = null;
+			}
+		}
+		proxyUserPass = pwd;
 		proxyDomain = proxy.getUserDomain() == null ? null : proxy.getUserDomain().trim();
 		proxyWorkstation = null; // TODO ¡¡FALTA EL WORKSTATION!!
 
@@ -298,7 +308,15 @@ public final class UtilsProxy {
 		proxySecureHost = proxy.getHostProxy() == null ? null : proxy.getHostProxy().trim();
 		proxySecurePort = proxy.getPortProxy() == null ? NumberConstants.NUM443 : proxy.getPortProxy().intValue();
 		proxySecureUserName = proxy.getUserProxy() == null ? null : proxy.getUserProxy().trim();
-		proxySecureUserPass = proxy.getPasswordProxy() == null ? null : proxy.getPasswordProxy().trim();
+		String pwdSecure = proxy.getPasswordProxy();
+		if (pwdSecure != null) {
+			try {
+				pwdSecure = new String(UtilsAESCipher.getInstance().decryptMessage(pwdSecure));
+			} catch (CipherException e) {
+				pwdSecure = null;
+			}
+		}
+		proxySecureUserPass = pwdSecure;
 		proxySecureDomain = proxy.getUserDomain() == null ? null : proxy.getUserDomain().trim();
 		proxySecureWorkstation = null; // TODO ¡¡FALTA EL WORKSTATION!!
 

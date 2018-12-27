@@ -16,17 +16,18 @@
 
 /**
  * <b>File:</b><p>es.gob.valet.rest.controller.ConfServerMailRestController.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that manages the REST requests related to the ConfServerMails administration and
+ * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- *@version 1.1, 06/11/2018.
+ * @version 1.2, 27/12/2018.
  */
 package es.gob.valet.rest.controller;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,23 +37,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.gob.valet.form.ConfServerMailForm;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
 import es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailService;
+import es.gob.valet.persistence.utils.UtilsAESCipher;
 
 /**
  * <p>Class that manages the REST requests related to the ConfServerMails administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 27/12/2018.
  */
 @RestController
 public class ConfServerMailRestController {
 
 	/**
+	 * Attribute that represents the object that manages the log of the class.
+	 */
+	private static final Logger LOGGER = Logger.getLogger(ConfServerMailRestController.class);
+
+	/**
 	 * Method that maps the save configuration of server mail web request to the controller and saves
 	 * it in the persistence.
-	 *
 	 * @param confServerMailForm
 	 * Object that represents the backing configuration server mail form.
 	 * @param bindingResult
@@ -76,19 +84,20 @@ public class ConfServerMailRestController {
 				} else {
 					confMail = new ConfServerMail();
 				}
-				BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
-				String pwd = confServerMailForm.getPasswordMail();
-				String hashPwd = bc.encode(pwd);
-
 				confMail.setIssuerMail(confServerMailForm.getIssuerMail());
 				confMail.setHostMail(confServerMailForm.getHostMail());
 				confMail.setPortMail(confServerMailForm.getPortMail());
+				confMail.setUseAuthenticationMail(confServerMailForm.getUseAuthenticationMail());
 				confMail.setUserMail(confServerMailForm.getUserMail());
-				confMail.setPasswordMail(hashPwd);
-
+				String pwd = confServerMailForm.getPasswordMail();
+				if (pwd == null) {
+					confMail.setPasswordMail(null);
+				} else {
+					confMail.setPasswordMail(new String(UtilsAESCipher.getInstance().encryptMessage(pwd)));
+				}
 				result = confServerMailService.saveConfServerMail(confMail);
 			} catch (Exception e) {
-				throw e;
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_MODIFY_PROXY), e);
 			}
 		}
 

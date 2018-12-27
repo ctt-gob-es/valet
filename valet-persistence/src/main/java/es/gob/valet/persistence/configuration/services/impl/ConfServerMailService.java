@@ -57,6 +57,7 @@ public class ConfServerMailService implements IConfServerMailService {
 	 */
 	@Override
 	public ConfServerMail getAllConfServerMail() {
+		//TODO Debería devolver la lista completa.
 		List<ConfServerMail> allConf = repository.findAll();
 		if (!allConf.isEmpty()) {
 			return allConf.get(0) ;

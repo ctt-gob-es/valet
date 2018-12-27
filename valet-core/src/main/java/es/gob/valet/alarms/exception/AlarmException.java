@@ -15,35 +15,53 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.commons.utils.GeneralConstants.java.</p>
- * <b>Description:</b><p>Interface that contains general constants.</p>
+ * <b>File:</b><p>es.gob.valet.alarms.exception.AlarmException.java.</p>
+ * <b>Description:</b><p>Class that represents an exception for the alarms.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>17/07/2018.</p>
+ * <b>Date:</b><p>27/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 27/12/2018.
+ * @version 1.0, 27/12/2018.
  */
-package es.gob.valet.commons.utils;
+package es.gob.valet.alarms.exception;
+
+import es.gob.valet.exceptions.ValetException;
 
 /**
- * <p>Interface that contains general constants.</p>
+ * <p>Class that represents an exception for the alarms.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 27/12/2018.
+ * @version 1.0, 27/12/2018.
  */
-public interface GeneralConstants {
+public class AlarmException extends ValetException {
 
 	/**
-	 * Constant attribute that represents the number to identify the daily planner type.
+	 * Constant attribute that represents the serial version UID.
 	 */
-	Long PLANNING_TYPE_DAYLY = 0L;
+	private static final long serialVersionUID = -4471546884206983588L;
 
 	/**
-	 * Constant attribute that represents the number to identify the periodic planner type.
+	 * Constructor method for the class AlarmException.java.
 	 */
-	Long PLANNING_TYPE_PERIODIC = 1L;
+	public AlarmException() {
+		super();
+	}
 
 	/**
-	 * Constant attribute that represents the number to identify the planner type by date.
+	 * Constructor method for the class AlarmException.java.
+	 * @param errorCode Error code.
+	 * @param errorDesc Description for the error.
 	 */
-	Long PLANNING_TYPE_DATE = 2L;
+	public AlarmException(String errorCode, String errorDesc) {
+		super(errorCode, errorDesc);
+	}
+
+	/**
+	 * Constructor method for the class AlarmException.java.
+	 * @param errorCode Error code.
+	 * @param errorDesc Description for the error.
+	 * @param exception Exception that causes the error.
+	 */
+	public AlarmException(String errorCode, String errorDesc, Exception exception) {
+		super(errorCode, errorDesc, exception);
+	}
 
 }

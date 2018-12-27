@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>16/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 27/12/2018.
  */
 package es.gob.valet.controller;
 
@@ -37,11 +37,13 @@ import es.gob.valet.persistence.configuration.model.entity.COperationMode;
 import es.gob.valet.persistence.configuration.model.entity.Proxy;
 import es.gob.valet.persistence.configuration.services.ifaces.ICOperationModeService;
 import es.gob.valet.persistence.configuration.services.ifaces.IProxyService;
+import es.gob.valet.persistence.exceptions.CipherException;
+import es.gob.valet.persistence.utils.UtilsAESCipher;
 
 /**
  * <p>Class that manages the requests related to the configuration of the Proxy.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 27/12/2018.
  */
 @Controller
 public class ProxyController {
@@ -79,7 +81,15 @@ public class ProxyController {
 		proxyForm.setHost(proxy.getHostProxy());
 		proxyForm.setPort(proxy.getPortProxy());
 		proxyForm.setUser(proxy.getUserProxy());
-		proxyForm.setPassword(proxy.getPasswordProxy());
+		String pwd = proxy.getPasswordProxy();
+		if (pwd != null) {
+			try {
+				pwd = new String(UtilsAESCipher.getInstance().decryptMessage(pwd));
+			} catch (CipherException e) {
+				pwd = null;
+			}
+		}
+		proxyForm.setPassword(pwd);
 		proxyForm.setUserDomain(proxy.getUserDomain());
 		proxyForm.setAddressList(proxy.getAddressList());
 		proxyForm.setIsLocalAddress(proxy.getIsLocalAddress());

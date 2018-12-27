@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 17/12/2018.
+ * @version 1.5, 27/12/2018.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 17/12/2018.
+ * @version 1.5, 27/12/2018.
  */
 public interface IWebGeneralMessages {
 
@@ -318,13 +318,13 @@ public interface IWebGeneralMessages {
 	 * Constant attribute that represents the name of the property <code>errorDownloadTsl</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
-	String ERROR_DOWNLOAD_TSL ="errorDownloadTsl";
+	String ERROR_DOWNLOAD_TSL = "errorDownloadTsl";
 
 	/**
 	 * Constant attribute that represents the name of the property <code>errorDownloadDocLegible</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
-	String ERROR_DOWNLOAD_DOC_LEGIBLE ="errorDownloadDocLegible";
+	String ERROR_DOWNLOAD_DOC_LEGIBLE = "errorDownloadDocLegible";
 
 	/**
 	 * Constant attribute that represents the name of the property <code>errorLoadAddTsl</code> belonging to the
@@ -375,6 +375,10 @@ public interface IWebGeneralMessages {
 	 */
 	String ERROR_NOT_BLANK_RESP_PHONE = "errorNotBlankPhone";
 
-
+	/**
+	 * Constant attribute that represents the name of the property <code>errorModifyServerMail</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_MODIFY_SERVERMAIL = "errorModifyServerMail";
 
 }

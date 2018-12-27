@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 21/12/2018.
+ * @version 1.11, 27/12/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.ApplicationForm;
 import es.gob.valet.i18n.Language;
@@ -62,7 +61,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IApplicationValetS
 /**
  * <p>Class that manages the REST request related to the Applications administration and JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.10, 21/12/2018.
+ * @version 1.11, 27/12/2018.
  */
 @RestController
 public class ApplicationRestController {
@@ -114,7 +113,7 @@ public class ApplicationRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	private static final Logger LOGGER = Logger.getLogger(ApplicationRestController.class);
 
 	/**
 	 * Method that maps the list applications to the controller and forwards the list of applications to the view.

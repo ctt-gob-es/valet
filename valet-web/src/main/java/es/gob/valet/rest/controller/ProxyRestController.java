@@ -20,21 +20,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>16/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 27/12/2018.
  */
 package es.gob.valet.rest.controller;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.ProxyForm;
 import es.gob.valet.i18n.Language;
@@ -43,11 +41,12 @@ import es.gob.valet.persistence.configuration.model.entity.COperationMode;
 import es.gob.valet.persistence.configuration.model.entity.Proxy;
 import es.gob.valet.persistence.configuration.services.ifaces.ICOperationModeService;
 import es.gob.valet.persistence.configuration.services.ifaces.IProxyService;
+import es.gob.valet.persistence.utils.UtilsAESCipher;
 
 /**
  * <p>Class that manages the REST request related to the proxy configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 27/12/2018.
  */
 @RestController
 public class ProxyRestController {
@@ -55,7 +54,7 @@ public class ProxyRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	private static final Logger LOGGER = Logger.getLogger(ProxyRestController.class);
 
 	/**
 	 * Attribute that represents the service object for acceding to ProxyRespository.
@@ -96,9 +95,11 @@ public class ProxyRestController {
 
 			if (!UtilsStringChar.isNullOrEmpty(proxyForm.getPassword())) {
 				String pwd = proxyForm.getPassword();
-				BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
-				String hashPwd = bc.encode(pwd);
-				proxy.setPasswordProxy(hashPwd);
+				if (pwd==null) {
+					proxy.setPasswordProxy(null);
+				} else {
+					proxy.setPasswordProxy(new String(UtilsAESCipher.getInstance().encryptMessage(pwd)));
+				}
 			}
 			if (!UtilsStringChar.isNullOrEmpty(proxyForm.getUserDomain())) {
 				proxy.setUserDomain(proxyForm.getUserDomain());

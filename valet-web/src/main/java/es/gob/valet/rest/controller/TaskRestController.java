@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 25/11/2018.
+ * @version 1.5, 27/12/2018.
  */
 package es.gob.valet.rest.controller;
 
@@ -57,7 +57,7 @@ import es.gob.valet.quartz.scheduler.ValetSchedulerException;
 /**
  * <p>Class that manages the REST request related to the Task's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 25/11/2018.
+ * @version 1.5, 27/12/2018.
  */
 @RestController
 public class TaskRestController {
@@ -65,7 +65,7 @@ public class TaskRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	private static final Logger LOGGER = Logger.getLogger(TaskRestController.class);
 
 	/**
 	 * Constant that represents the format date.
