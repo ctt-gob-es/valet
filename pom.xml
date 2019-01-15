@@ -41,7 +41,8 @@
 		<valet.version.quartz>1.0.0</valet.version.quartz>
 		
 		<!-- Versionado de otras dependencias. -->
-		<spring.version>2.0.0.RELEASE</spring.version>
+		<!-- Se ha subido la versión de 2.0.0 a 2.0.1 para que coincida con spring-data y y spring-rest -->
+		<spring.version>2.0.1.RELEASE</spring.version>
 		<!-- Actualizados spring-data y spring-rest para evitar vulnerabilidad cve-2018-1273 -->
 		<spring.data.version>2.0.1.RELEASE</spring.data.version>
 		<spring.rest.version>2.0.1.RELEASE</spring.rest.version>
