@@ -15,6 +15,6 @@
  ******************************************************************************/
 
 /**
- * Package that provides all exceptions related with the alarms.
+ * Package that defines all the classes that manages the configuration of the alarms.
  */
-package es.gob.valet.alarms.exception;
+package es.gob.valet.alarms.conf;

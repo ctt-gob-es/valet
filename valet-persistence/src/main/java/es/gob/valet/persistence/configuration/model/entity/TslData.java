@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 29/10/2018.
+ * @version 1.3, 24/01/2019.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -28,7 +28,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -53,7 +52,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>TSL_DATA</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 29/10/2018.
+ * @version 1.3, 24/01/2019.
  */
 @Entity
 @Table(name = "TSL_DATA")
@@ -242,7 +241,7 @@ public class TslData implements Serializable {
 	 * @return the value of the attribute {@link #xmlDocument}.
 	 */
 	@Lob
-	@Basic(fetch=FetchType.LAZY, optional = false)
+	@Basic(fetch = FetchType.LAZY, optional = false)
 	@Column(name = "XML_DOCUMENT", nullable = false)
 	@JsonView(DataTablesOutput.View.class)
 	public byte[ ] getXmlDocument() {
@@ -262,7 +261,7 @@ public class TslData implements Serializable {
 	 * @return the value of the attribute {@link #legibleDocument}.
 	 */
 	@Lob()
-	@Basic(fetch=FetchType.LAZY, optional = false)
+	@Basic(fetch = FetchType.LAZY, optional = false)
 	@Column(name = "LEGIBLE_DOCUMENT")
 	@JsonView(DataTablesOutput.View.class)
 	public byte[ ] getLegibleDocument() {

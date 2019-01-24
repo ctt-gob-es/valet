@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 04/12/2018.
+ * @version 1.8, 24/01/2019.
  */
 package es.gob.valet.i18n;
 
@@ -41,7 +41,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
 /**
  * <p>Class that manages the access to the properties files used for generation messages in the plataform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 04/12/2018.
+ * @version 1.8, 24/01/2019.
  */
 public final class Language {
 
@@ -99,6 +99,11 @@ public final class Language {
 	 * Attribute that represents the location of file that contains the TSL messages core module.
 	 */
 	private static final String CONTENT_CORE_TSL_PATH = "valet-core.tsl";
+
+	/**
+	 * Attribute that represents the location of file that contains the TSL messages core module.
+	 */
+	private static final String CONTENT_CORE_TASKS_PATH = "valet-core.tasks";
 
 	/**
 	 * Attribute that represents the location of file that contains the constants messages persistence module.
@@ -159,6 +164,11 @@ public final class Language {
 	 * Attribute that represents the resource boundle with the TSL messages for the core module.
 	 */
 	private static ResourceBundle coreTsl = null;
+
+	/**
+	 * Attribute that represents the resource boundle with the tasks messages for the core module.
+	 */
+	private static ResourceBundle coreTasks = null;
 
 	/**
 	 * Attribute that represents the properties for the locale of the constants from the tables of the configuration schema.
@@ -284,6 +294,8 @@ public final class Language {
 		coreGeneral = ResourceBundle.getBundle(CONTENT_CORE_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
 
 		coreTsl = ResourceBundle.getBundle(CONTENT_CORE_TSL_PATH, currentLocale, urlClassLoaderMsg);
+
+		coreTasks = ResourceBundle.getBundle(CONTENT_CORE_TASKS_PATH, currentLocale, urlClassLoaderMsg);
 
 		persistenceConstants = ResourceBundle.getBundle(CONTENT_PERSISTENCE_CONSTANTS_PATH, currentLocale, urlClassLoaderMsg);
 
@@ -443,6 +455,25 @@ public final class Language {
 	 */
 	public static String getResCoreTsl(final String key) {
 		return coreTsl.getString(key);
+	}
+
+	/**
+	 * Gets the Task message (core module) with the key and values indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @param values Values for insert in the message.
+	 * @return String with the message well-formed.
+	 */
+	public static String getFormatResCoreTasks(final String key, final Object... values) {
+		return new MessageFormat(coreTasks.getString(key), currentLocale).format(values);
+	}
+
+	/**
+	 * Gets the Task message (core module) with the key indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @return String with the message.
+	 */
+	public static String getResCoreTask(final String key) {
+		return coreTasks.getString(key);
 	}
 
 	/**

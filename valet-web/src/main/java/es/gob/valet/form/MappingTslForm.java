@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,24 +14,25 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.form.MappingForm.java.</p>
  * <b>Description:</b><p>Class that represents the backing form for adding/editing the mapping values for a TSL.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/08/2018.</p>
  * @author Gobierno de España.
- *@version 1.2, 30/10/2018
+ *@version 1.3, 24/01/2019.
  */
 package es.gob.valet.form;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-/** 
+/**
  * <p>Class that represents the backing form for adding/editing the mapping values for a TSL</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 24/01/2019.
  */
 public class MappingTslForm {
+
 	/**
 	 *  Attribute that represents the ID of the country/region for this TSL.
 	 */
@@ -39,36 +40,39 @@ public class MappingTslForm {
 
 	/**
 	 *  Attribute that represents the ID of the TslCountryRegionMapping.
-	 */	
+	 */
 	private Long idTslCountryRegionMapping;
+
 	/**
 	 * Attribute that represents the name of the country or region.
 	 */
 	private String nameCountryRegion;
-	
+
 	/**
 	 * Attribute that represents the code of the country or region.
 	 */
 	private String codeCountryRegion;
+
 	/**
 	 * Attribute that represents the identificator for the logical mapping.
 	 */
 	private String mappingIdentificator;
-	
+
 	/**
-	 * Attribute that represents the value for the mapping. 
+	 * Attribute that represents the value for the mapping.
 	 */
 	private String mappingValue;
-	
+
 	/**
 	 * Attribute that represents the association type identifier.
 	 */
 	private Long idMappingType;
-	
+
 	/**
 	 * Attribute that represents index of the row of the selected mapping.
 	 */
 	private String rowIndexMapping;
+
 	/**
 	 * Gets the value of the attribute {@link #idTslCountryRegion}.
 	 * @return the value of the attribute {@link #idTslCountryRegion}.
@@ -77,7 +81,7 @@ public class MappingTslForm {
 	public Long getIdTslCountryRegion() {
 		return idTslCountryRegion;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #idTslCountryRegion}.
 	 * @param idTslCountryRegionParam The value for the attribute {@link #idTslCountryRegion}.
@@ -85,7 +89,7 @@ public class MappingTslForm {
 	public void setIdTslCountryRegion(Long idTslCountryRegionParam) {
 		this.idTslCountryRegion = idTslCountryRegionParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #idTslCountryRegionMapping}.
 	 * @return the value of the attribute {@link #idTslCountryRegionMapping}.
@@ -94,7 +98,7 @@ public class MappingTslForm {
 	public Long getIdTslCountryRegionMapping() {
 		return idTslCountryRegionMapping;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #idTslCountryRegionMapping}.
 	 * @param idTslCountryRegionMappingParam The value for the attribute {@link #idTslCountryRegionMapping}.
@@ -102,7 +106,7 @@ public class MappingTslForm {
 	public void setIdTslCountryRegionMapping(Long idTslCountryRegionMappingParam) {
 		this.idTslCountryRegionMapping = idTslCountryRegionMappingParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #nameCountryRegion}.
 	 * @return the value of the attribute {@link #nameCountryRegion}.
@@ -111,7 +115,7 @@ public class MappingTslForm {
 	public String getNameCountryRegion() {
 		return nameCountryRegion;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #nameCountryRegion}.
 	 * @param nameCountryRegionParam The value for the attribute {@link #nameCountryRegion}.
@@ -119,8 +123,7 @@ public class MappingTslForm {
 	public void setNameCountryRegion(String nameCountryRegionParam) {
 		this.nameCountryRegion = nameCountryRegionParam;
 	}
-	
-	
+
 	/**
 	 * @return the codeCountryRegion
 	 */
@@ -128,7 +131,6 @@ public class MappingTslForm {
 		return codeCountryRegion;
 	}
 
-	
 	/**
 	 * @param codeCountryRegion the codeCountryRegion to set
 	 */
@@ -144,7 +146,7 @@ public class MappingTslForm {
 	public String getMappingIdentificator() {
 		return mappingIdentificator;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #mappingIdentificator}.
 	 * @param mappingIdentificatorParam The value for the attribute {@link #mappingIdentificator}.
@@ -152,7 +154,7 @@ public class MappingTslForm {
 	public void setMappingIdentificator(String mappingIdentificatorParam) {
 		this.mappingIdentificator = mappingIdentificatorParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #mappingValue}.
 	 * @return the value of the attribute {@link #mappingValue}.
@@ -161,9 +163,7 @@ public class MappingTslForm {
 	public String getMappingValue() {
 		return mappingValue;
 	}
-	
-	
-	
+
 	/**
 	 * Sets the value of the attribute {@link #mappingValue}.
 	 * @param mappingValueParam The value for the attribute {@link #mappingValue}.
@@ -171,8 +171,7 @@ public class MappingTslForm {
 	public void setMappingValue(String mappingValueParam) {
 		this.mappingValue = mappingValueParam;
 	}
-	
-	
+
 	/**
 	 * Gets the value of the attribute {@link #rowIndexMapping}.
 	 * @return the value of the attribute {@link #rowIndexMapping}.
@@ -182,7 +181,6 @@ public class MappingTslForm {
 		return rowIndexMapping;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #rowIndexMapping}.
 	 * @param rowIndexMappingParam The value for the attribute {@link #rowIndexMapping}.
@@ -191,7 +189,6 @@ public class MappingTslForm {
 		this.rowIndexMapping = rowIndexMappingParam;
 	}
 
-	
 	/**
 	 * Gets the value of the attribute {@link #idMappingType}.
 	 * @return the value of the attribute {@link #idMappingType}.
@@ -200,7 +197,6 @@ public class MappingTslForm {
 		return idMappingType;
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #idMappingType}.
 	 * @param idMappingTypeParam The value for the attribute {@link #idMappingType}.
@@ -210,13 +206,12 @@ public class MappingTslForm {
 	}
 
 	/**
-	 * 
+	 *
 	 * <p>Class.</p>
 	 * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
 	 * @version 1.0, 12 sept. 2018.
 	 */
 	public interface View {
-	}	
-
+	}
 
 }

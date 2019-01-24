@@ -16,11 +16,11 @@
 
 /**
  * <b>File:</b><p>es.gob.valet.controller.AlarmController.java.</p>
- * <b>Description:</b><p> .</p>
+ * <b>Description:</b><p>Class that manages the requests related to the Alarm administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 24/01/2019.
  */
 package es.gob.valet.controller;
 
@@ -34,6 +34,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import es.gob.valet.form.AlarmForm;
+import es.gob.valet.i18n.Language;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.Alarm;
 import es.gob.valet.persistence.configuration.model.entity.Mail;
@@ -43,7 +44,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IMailService;
 /**
  * <p>Class that manages the requests related to the Alarm administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 24/01/2019.
  */
 @Controller
 public class AlarmController {
@@ -62,6 +63,14 @@ public class AlarmController {
 		IAlarmService alarmService = ManagerPersistenceConfigurationServices.getInstance().getAlarmService();
 		IMailService mailService = ManagerPersistenceConfigurationServices.getInstance().getMailService();
 		alarms = StreamSupport.stream(alarmService.getAllAlarm().spliterator(), false).collect(Collectors.toList());
+
+		// Cambiamos los valores de los tokens de la descripción.
+		if (alarms != null) {
+			for (Alarm alarm: alarms) {
+				alarm.setDescription(Language.getResPersistenceConstants(alarm.getDescription()));
+			}
+		}
+
 		mails = StreamSupport.stream(mailService.getAllMail().spliterator(), false).collect(Collectors.toList());
 
 		model.addAttribute("alarms", alarms);

@@ -100,14 +100,16 @@ Insert into KEYSTORE
 
 -- TABLA ALARM
 
-Insert into ALARM (ID_ALARM, DESCRIPTION)
-  Values ('ALM001', 'No es posible sincronizar la TSL');
-Insert into ALARM (ID_ALARM, DESCRIPTION)
-  Values ('ALM002', 'Error al parsear una TSL');
-Insert into ALARM (ID_ALARM, DESCRIPTION)
-  Values ('ALM003', 'Error al obtener una CRL'); 
-Insert into ALARM (ID_ALARM, DESCRIPTION)
-  Values ('ALM004', 'Error al obtener una respuesta OCSP');
+Insert into ALARM (ID_ALARM, DESCRIPTION, TIME_BLOCK, ACTIVE)
+  Values ('ALM001', 'ALARMDESC001', null, 'Y');
+Insert into ALARM (ID_ALARM, DESCRIPTION, TIME_BLOCK, ACTIVE)
+  Values ('ALM002', 'ALARMDESC002', null, 'Y');
+Insert into ALARM (ID_ALARM, DESCRIPTION, TIME_BLOCK, ACTIVE)
+  Values ('ALM003', 'ALARMDESC003', null, 'Y'); 
+Insert into ALARM (ID_ALARM, DESCRIPTION, TIME_BLOCK, ACTIVE)
+  Values ('ALM004', 'ALARMDESC004', null, 'Y');
+Insert into ALARM (ID_ALARM, DESCRIPTION, TIME_BLOCK, ACTIVE)
+  Values ('ALM005', 'ALARMDESC005', null, 'Y');
 
 
 -- TABLA TASK 

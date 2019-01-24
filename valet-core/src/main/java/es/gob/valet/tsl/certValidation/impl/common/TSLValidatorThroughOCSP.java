@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 24/01/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -75,13 +75,16 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 
+import es.gob.valet.alarms.AlarmsManager;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsProviders;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
@@ -93,7 +96,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 24/01/2019.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -391,6 +394,12 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				result = null;
 			}
 
+			// Si en este punto la respuesta es nula, es
+			// que no la hemos podido obtener o parsear.
+			if (result == null) {
+				AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM004_EVENT_000, new Object[ ] { uri.toString() }));
+			}
+
 		}
 
 		return result;
@@ -571,6 +580,24 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			if (!result && checkIfSignerCertCanSignOCSPResponses(signerCert)) {
 
 				result = checkIfSignerCertIsEqualToSomeDigitalIdentity(signerCert, validationResult, tsp, tslValidator);
+
+			}
+
+			// Llegamos a este punto cuando hemos obtenido el firmante pero no
+			// confiamos en este.
+			if (!result) {
+				String subject = null;
+				String issuer = null;
+				try {
+					X509Certificate x509cert = UtilsCertificate.getX509Certificate(signerCert.getEncoded());
+					subject = UtilsCertificate.getCertificateId(x509cert);
+					issuer = UtilsCertificate.getCertificateIssuerId(x509cert);
+				} catch (CommonUtilsException | IOException e) {
+					subject = null;
+					issuer = null;
+				} finally {
+					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM004_EVENT_001, new Object[ ] { subject, issuer }));
+				}
 
 			}
 

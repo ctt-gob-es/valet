@@ -20,9 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>03/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 24/01/2019.
  */
 package es.gob.valet.persistence.configuration.services.impl;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -36,7 +38,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IPlannerService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Planner.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 24/01/2019.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -53,7 +55,7 @@ public class PlannerService implements IPlannerService {
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IPlannerService#getListPlannersByTask(java.lang.Long)
 	 */
 	@Override
-	public Iterable<Planner> getListPlannersByTask(Long idTask) {
+	public List<Planner> getListPlannersByTask(Long idTask) {
 		return repository.findByTaskIdTask(idTask);
 	}
 

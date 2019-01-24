@@ -15,45 +15,35 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.IPlanner.java.</p>
- * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer related to Planner.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.utils.IPlannerTypeIdConstants.java.</p>
+ * <b>Description:</b><p>Interface that contains all the planner types IDs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>03/10/2018.</p>
+ * <b>Date:</b><p>22/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 24/01/2019.
+ * @version 1.0, 22/01/2019.
  */
-package es.gob.valet.persistence.configuration.services.ifaces;
-
-import java.util.List;
-
-import es.gob.valet.persistence.configuration.model.entity.Planner;
+package es.gob.valet.persistence.configuration.model.utils;
 
 /**
- * <p>Interface that provides communication with the operations of the persistence layer related to Planner.</p>
+ * <p>Interface that contains all the planner types IDs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 24/01/2019.
+ * @version 1.0, 22/01/2019.
  */
-public interface IPlannerService {
+public interface IPlannerTypeIdConstants {
 
 	/**
-	 * Method to obtain the list of planners associated with the task.
-	 * @param idTask Parameter that represents ID of task.
-	 * @return List of planners.
+	 * Constant attribute that represents the ID to identify the Planner Type - Daily.
 	 */
-	List<Planner> getListPlannersByTask(Long idTask);
+	Long PLANNER_TYPE_0_DAILY = 0L;
 
 	/**
-	 * Method that obtains a planner by its identifier.
-	 * @param idPlanner The planner identifier.
-	 * @return {@link Planner} an object that represents the planner.
+	 * Constant attribute that represents the ID to identify the Planner Type - Period.
 	 */
-	Planner getPlannerById(Long idPlanner);
+	Long PLANNER_TYPE_1_PERIOD = 1L;
 
 	/**
-	 * Method that saves planner.
-	 * @param planner Planner to update.
-	 * @return {@link Planner} an object that represents the Planner.
+	 * Constant attribute that represents the ID to identify the Planner Type - ByDate.
 	 */
-	Planner savePlanner(Planner planner);
+	Long PLANNER_TYPE_2_BYDATE = 2L;
 
 }

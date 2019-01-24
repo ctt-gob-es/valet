@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>10/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 26/12/2018.
+ * @version 1.6, 24/01/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -29,7 +29,7 @@ import org.apache.commons.codec.binary.Hex;
 /**
  * <p>Class that provides functionality for managing strings and characters.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 26/12/2018.
+ * @version 1.6, 24/01/2019.
  */
 public final class UtilsStringChar {
 
@@ -159,6 +159,16 @@ public final class UtilsStringChar {
 	 * Constant attribute that represents the string to identify the symbol: <code>,</code>.
 	 */
 	public static final String SYMBOL_COMMA_STRING = String.valueOf(SYMBOL_COMMA);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>.</code>.
+	 */
+	public static final char SYMBOL_DOT = '.';
+
+	/**
+	 * Constant attribute that represents the string to identify the symbol: <code>.</code>.
+	 */
+	public static final String SYMBOL_DOT_STRING = String.valueOf(SYMBOL_DOT);
 
 	/**
 	 * Constant attribute that represents the char to identify the symbol: <code>/</code>.

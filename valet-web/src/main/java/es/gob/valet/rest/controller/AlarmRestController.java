@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 24/01/2019.
  */
 package es.gob.valet.rest.controller;
 
@@ -51,6 +51,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.AlarmForm;
+import es.gob.valet.i18n.Language;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.Alarm;
 import es.gob.valet.persistence.configuration.model.entity.Mail;
@@ -62,7 +63,7 @@ import es.gob.valet.rest.exception.OrderedValidation;
  * <p>Class that manages the REST requests related to the Alarms administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 24/01/2019.
  */
 @RestController
 public class AlarmRestController {
@@ -78,8 +79,22 @@ public class AlarmRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/alarmsdatatable", method = RequestMethod.GET)
 	public DataTablesOutput<Alarm> alarms(@Valid DataTablesInput input) {
+
+		DataTablesOutput<Alarm> result = new DataTablesOutput<Alarm>();
+
 		IAlarmService alarmService = ManagerPersistenceConfigurationServices.getInstance().getAlarmService();
-		return (DataTablesOutput<Alarm>) alarmService.getAllAlarm(input);
+		result = (DataTablesOutput<Alarm>) alarmService.getAllAlarm(input);
+
+		// Cambiamos los valores de los tokens de la descripción.
+		List<Alarm> alarmListToShow = result.getData();
+		if (alarmListToShow != null) {
+			for (Alarm alarm: alarmListToShow) {
+				alarm.setDescription(Language.getResPersistenceConstants(alarm.getDescription()));
+			}
+		}
+
+		return result;
+
 	}
 
 	/**

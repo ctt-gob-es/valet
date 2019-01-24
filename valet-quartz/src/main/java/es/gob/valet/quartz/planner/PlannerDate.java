@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,13 +14,13 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
- * <b>File:</b><p>es.gob.valet.quartz.planner.PlanificadorPorFecha.java.</p>
- * <b>Description:</b><p> Class that defines the information of a planner from a date.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>18/09/2018.</p>
+/**
+ * <b>File:</b><p>es.gob.valet.quartz.planner.PlannerDate.java.</p>
+ * <b>Description:</b><p>Class that defines the information of a planner from a date.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.0, 24/01/2019.
  */
 package es.gob.valet.quartz.planner;
 
@@ -29,13 +29,17 @@ import java.util.Calendar;
 import java.util.Date;
 
 import es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.model.entity.CPlannerType;
+import es.gob.valet.persistence.configuration.model.entity.Planner;
+import es.gob.valet.persistence.configuration.model.utils.IPlannerTypeIdConstants;
 
-/** 
+/**
  * <p>Class that defines the information of a planner from a date.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.0, 24/01/2019.
  */
-public class PlanificadorPorFecha implements IPlanificador, Serializable {
+public class PlannerDate implements IPlanner, Serializable {
 
 	/**
 	 * Class serial version.
@@ -43,60 +47,57 @@ public class PlanificadorPorFecha implements IPlanificador, Serializable {
 	private static final long serialVersionUID = 2997347004798755836L;
 
 	/**
-	 * Attribute that represents the date planner identifier. 
+	 * Attribute that represents the date planner identifier.
 	 */
 	public static final String DATE_PLANNER = "datePlanner";
 
 	/**
 	 * Attribute that represents the object POJO for a planner.
 	 */
-	private static Planner planner;
+	private Planner planner;
 
 	/**
-	 * Constructor method for the class PlanificadorPorFecha.java.
+	 * Constructor method for the class PlannerDate.java.
 	 */
-	private PlanificadorPorFecha() {
+	private PlannerDate() {
 		super();
 	}
 
 	/**
-	 * Constructor method for the class PlanificadorPorFecha.java.
-	 * @param plannerPojo Object POJO that represents the planner. If it is null,
+	 * Constructor method for the class PlannerDate.java.
+	 * @param plannerParam Object POJO that represents the planner. If it is null,
 	 * initializes a date planner that must be executed yesterday.
 	 */
-	public PlanificadorPorFecha(final Planner plannerPojo) {
+	public PlannerDate(final Planner plannerParam) {
 		this();
-		planner = plannerPojo;
+		planner = plannerParam;
 		if (planner == null) {
 
 			planner = new Planner();
-			planner.setHourPeriod(0);
-			planner.setMinutePeriod(0);
-			planner.setSecondPeriod(0);
+			planner.setHourPeriod(0L);
+			planner.setMinutePeriod(0L);
+			planner.setSecondPeriod(0L);
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DAY_OF_MONTH, NumberConstants.NUM_NEG_1);
 			planner.setInitDay(calendar.getTime());
 
-			PlannerType result = new PlannerType();
-			result.setIdPlannerType(Long.valueOf(TIPO_PLAN_PFECHA));
-			result.setTokenName(PLANNER_TYPE02);
-
-			planner.setPlannerType(result);
+			CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(IPlannerTypeIdConstants.PLANNER_TYPE_2_BYDATE);
+			planner.setPlannerType(plannerType);
 
 		}
 	}
 
 	/**
-	 * Constructor method for the class PlanificadorPorFecha.java.
+	 * Constructor method for the class PlannerDate.java.
 	 * @param startDate Initialization date.
 	 */
-	public PlanificadorPorFecha(final Date startDate) {
+	public PlannerDate(final Date startDate) {
 
 		this();
 		planner = new Planner();
-		planner.setHourPeriod(0);
-		planner.setMinutePeriod(0);
-		planner.setSecondPeriod(0);
+		planner.setHourPeriod(0L);
+		planner.setMinutePeriod(0L);
+		planner.setSecondPeriod(0L);
 		if (startDate == null) {
 
 			Calendar calendar = Calendar.getInstance();
@@ -109,20 +110,9 @@ public class PlanificadorPorFecha implements IPlanificador, Serializable {
 
 		}
 
-		PlannerType result = new PlannerType();
-		result.setIdPlannerType(Long.valueOf(TIPO_PLAN_PFECHA));
-		result.setTokenName(PLANNER_TYPE02);
+		CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(IPlannerTypeIdConstants.PLANNER_TYPE_2_BYDATE);
+		planner.setPlannerType(plannerType);
 
-		planner.setPlannerType(result);
-
-	}
-
-	/**
-	 * Gets the start date of the planner.
-	 * @return the start date of the planner.
-	 */
-	public final Date getFecha() {
-		return planner.getInitDay();
 	}
 
 	/**
@@ -134,10 +124,10 @@ public class PlanificadorPorFecha implements IPlanificador, Serializable {
 		boolean result = false;
 
 		try {
-			if (planificador instanceof PlanificadorPorFecha) {
-				PlanificadorPorFecha plannerByDate = (PlanificadorPorFecha) planificador;
+			if (planificador instanceof PlannerDate) {
+				PlannerDate plannerByDate = (PlannerDate) planificador;
 
-				if (plannerByDate.getFecha().equals(this.getFecha())) {
+				if (plannerByDate.planner.getInitDay().equals(this.planner.getInitDay())) {
 
 					result = true;
 
@@ -159,22 +149,22 @@ public class PlanificadorPorFecha implements IPlanificador, Serializable {
 	public final int hashCode() {
 		final int prime = NumberConstants.NUM31;
 		int result = NumberConstants.NUM1;
-		Date fecha = getFecha();
+		Date fecha = planner.getInitDay();
 		result = prime * result + (fecha == null ? 0 : fecha.hashCode());
 		return result;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.quartz.planner.IPlanificador#getNextExecutionInMilliseconds()
+	 * @see es.gob.valet.quartz.planner.IPlanner#getNextExecutionInMilliseconds()
 	 */
 	@Override
 	public final long getNextExecutionInMilliseconds() {
 
 		long result = -1;
-		Date fecha = getFecha();
-		if (fecha != null) {
-			result = fecha.getTime() - System.currentTimeMillis();
+		Date startDate = planner.getInitDay();
+		if (startDate != null) {
+			result = startDate.getTime() - System.currentTimeMillis();
 		}
 		return result;
 
@@ -182,17 +172,15 @@ public class PlanificadorPorFecha implements IPlanificador, Serializable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.quartz.planner.IPlanificador#getNextExecutionDate()
+	 * @see es.gob.valet.quartz.planner.IPlanner#getNextExecutionDate()
 	 */
 	@Override
 	public final Date getNextExecutionDate() {
 
-		Date result = Calendar.getInstance().getTime();
-		Date fecha = getFecha();
-		if (fecha == null || fecha.before(result)) {
-			result = null;
-		} else {
-			result = fecha;
+		Date result = null;
+		Date startDate = planner.getInitDay();
+		if (startDate != null && !startDate.before(Calendar.getInstance().getTime())) {
+			result = startDate;
 		}
 		return result;
 
@@ -200,7 +188,7 @@ public class PlanificadorPorFecha implements IPlanificador, Serializable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.quartz.planner.IPlanificador#getPeriodInMilliSeconds()
+	 * @see es.gob.valet.quartz.planner.IPlanner#getPeriodInMilliSeconds()
 	 */
 	@Override
 	public final long getPeriodInMilliSeconds() {
@@ -209,7 +197,7 @@ public class PlanificadorPorFecha implements IPlanificador, Serializable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.quartz.planner.IPlanificador#getIdentifier()
+	 * @see es.gob.valet.quartz.planner.IPlanner#getIdentifier()
 	 */
 	@Override
 	public final String getIdentifier() {
@@ -223,7 +211,7 @@ public class PlanificadorPorFecha implements IPlanificador, Serializable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.quartz.planner.IPlanificador#setIdentifier(java.lang.Long)
+	 * @see es.gob.valet.quartz.planner.IPlanner#setIdentifier(java.lang.Long)
 	 */
 	public final void setIdentifier(final Long identifier) {
 		planner.setIdPlanner(identifier);
@@ -231,7 +219,7 @@ public class PlanificadorPorFecha implements IPlanificador, Serializable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.quartz.planner.IPlanificador#getNumberOfRepetitions()
+	 * @see es.gob.valet.quartz.planner.IPlanner#getNumberOfRepetitions()
 	 */
 	@Override
 	public final int getNumberOfRepetitions() {
@@ -240,7 +228,7 @@ public class PlanificadorPorFecha implements IPlanificador, Serializable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.quartz.planner.IPlanificador#getPlanner()
+	 * @see es.gob.valet.quartz.planner.IPlanner#getPlanner()
 	 */
 	public final Planner getPlanner() {
 		return planner;

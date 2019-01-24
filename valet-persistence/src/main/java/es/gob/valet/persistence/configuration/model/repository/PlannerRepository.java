@@ -20,9 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>03/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 24/01/2019.
  */
 package es.gob.valet.persistence.configuration.model.repository;
+
+import java.util.List;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -34,7 +36,7 @@ import es.gob.valet.persistence.configuration.model.entity.Planner;
 /**
  * <p>Interface that provides CRUD functionality for the Planner entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 24/01/2019.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -45,7 +47,7 @@ public interface PlannerRepository extends JpaRepository<Planner, Long> {
 	 * @param idTask Parameter that represents ID of task.
 	 * @return List of planners.
 	 */
-	Iterable<Planner> findByTaskIdTask(Long idTask);
+	List<Planner> findByTaskIdTask(Long idTask);
 
 	/**
 	 * Method that obtains from the persistence a Planner identified by its primary key.

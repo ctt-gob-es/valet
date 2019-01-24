@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version  1.9, 27/12/2018.
+ * @version  1.10, 24/01/2019.
  */
 package es.gob.valet.rest.controller;
 
@@ -80,7 +80,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 27/12/2018.
+ * @version 1.10, 24/01/2019.
  */
 @RestController
 public class TslRestController {
@@ -297,8 +297,6 @@ public class TslRestController {
 		JSONObject json = new JSONObject();
 		List<TslData> listTSL = new ArrayList<TslData>();
 
-		TSLDataCacheObject tslCache = null;
-
 		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
 
 		// comprobamos que no se haya dejado vacío el campo del fichero de TSL.
@@ -453,8 +451,9 @@ public class TslRestController {
 						responsible = tslObject.getSchemeInformation().getSchemeOperatorNames().values().iterator().next().get(0);
 					}
 					tslForm.setTslResponsible(responsible);
-					
-					// componemos el nombre del fichero de la implementación XML para
+
+					// componemos el nombre del fichero de la implementación XML
+					// para
 					// que se muestre en administración
 					String filenameTSL = tslObject.getSchemeInformation().getSchemeTerritory() + "-" + tslObject.getSchemeInformation().getTslSequenceNumber() + EXTENSION_XML;
 					tslForm.setAlias(filenameTSL);

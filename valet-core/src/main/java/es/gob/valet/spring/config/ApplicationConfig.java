@@ -20,13 +20,11 @@
  * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 05/12/2018.
+ * @version 1.9, 24/01/2019.
  */
 package es.gob.valet.spring.config;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -44,22 +42,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import es.gob.valet.cache.FactoryCacheValet;
 import es.gob.valet.cache.exceptions.CacheValetException;
 import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsDeploymentType;
 import es.gob.valet.commons.utils.UtilsGrayLog;
 import es.gob.valet.commons.utils.UtilsProviders;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
-import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
-import es.gob.valet.persistence.configuration.model.entity.Planner;
-import es.gob.valet.persistence.configuration.model.entity.Task;
-import es.gob.valet.quartz.planner.IPlanificador;
-import es.gob.valet.quartz.planner.PlanificadorPeriodico;
-import es.gob.valet.quartz.planner.PlanificadorPorFecha;
-import es.gob.valet.quartz.scheduler.ProcessTasksScheduler;
-import es.gob.valet.quartz.scheduler.ValetSchedulerException;
+import es.gob.valet.tasks.HiddenTasksManager;
+import es.gob.valet.tasks.TasksManager;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.utils.UtilsCache;
 import es.gob.valet.utils.UtilsProxy;
@@ -67,7 +58,7 @@ import es.gob.valet.utils.UtilsProxy;
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 05/12/2018.
+ * @version 1.9, 24/01/2019.
  */
 @Configuration
 @EnableAutoConfiguration
@@ -77,13 +68,13 @@ import es.gob.valet.utils.UtilsProxy;
 public class ApplicationConfig {
 
 	/**
-	 * Constant attribute that represents the key for the property that determines the 
+	 * Constant attribute that represents the key for the property that determines the
 	 * log4j properties file for the Valet WS Rest deployment.
 	 */
 	private static final String LOG4J_PROPERTIESFILE_VALET_REST = "log4j.configuration.valet.rest";
-	
+
 	/**
-	 * Constant attribute that represents the key for the property that determines the 
+	 * Constant attribute that represents the key for the property that determines the
 	 * log4j properties file for the Valet Administration Web deployment.
 	 */
 	private static final String LOG4J_PROPERTIESFILE_VALET_WEB = "log4j.configuration.valet.web";
@@ -174,121 +165,17 @@ public class ApplicationConfig {
 		// de forma completa.
 		logger.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_005, new Object[ ] { Calendar.getInstance().getTimeInMillis() - cacheInitializationTime }));
 
-		// Si se trata de una instancia de servicios rest...
-		if (UtilsDeploymentType.isDeployedServices()) {
-
-			// TODO Debería haber una clase de utilidades/manager para la
-			// gestión de tareas.
-			loadServiceTasks(logger);
-
-		}
+		// Inicializamos las tareas ocultas.
+		HiddenTasksManager.reloadHiddenTasks();
 
 		// Si se trata de una instancia de web admin...
 		if (UtilsDeploymentType.isDeployedWebAdmin()) {
 
-			// TODO Debería haber una clase de utilidades/manager para la
-			// gestión de tareas.
-			loadWebAdminTasks(logger);
+			// Cargamos las tareas de la administración.
+			TasksManager.loadTasks();
 
 		}
 
-	}
-
-	/**
-	 *
-	 */
-	private void loadServiceTasks(Logger logger) {
-
-		// TODO Debería haber una clase de utilidades/manager para la gestión de
-		// tareas.
-		Class<es.gob.valet.quartz.task.Task> taskClass;
-		try {
-			taskClass = (Class<es.gob.valet.quartz.task.Task>) Class.forName("es.gob.valet.tasks.ReloadCacheTask");
-			ProcessTasksScheduler process = ProcessTasksScheduler.getInstance();
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.MINUTE, NumberConstants.NUM5);
-			Date initialDate = cal.getTime();
-			IPlanificador planner = new PlanificadorPeriodico(NumberConstants.NUM300000, initialDate, false);
-			process.addOrReplacePlannerInTask("ReloadCache", planner, taskClass, null);
-		} catch (ClassNotFoundException | ValetSchedulerException e) {
-			logger.error("Se produjo un error inicializando la tarea periódica de recarga de la caché.", e);
-		}
-
-	}
-
-	/**
-	 *
-	 */
-	private void loadWebAdminTasks(Logger logger) {
-
-		// TODO Debería haber una clase de utilidades/manager para la gestión de
-		// tareas.
-		List<Task> tasksList = ManagerPersistenceConfigurationServices.getInstance().getTaskService().getAllTask();
-		if (tasksList != null && !tasksList.isEmpty()) {
-
-			ProcessTasksScheduler process = ProcessTasksScheduler.getInstance();
-
-			for (Task task: tasksList) {
-
-				if (task != null && task.getIsEnabled()) {
-
-					task = ManagerPersistenceConfigurationServices.getInstance().getTaskService().getTaskById(task.getIdTask(), true);
-
-					String taskName = Language.getResPersistenceConstants(task.getTokenName());
-					List<Planner> plannerList = task.getPlanners();
-					if (plannerList != null && !plannerList.isEmpty()) {
-
-						try {
-							Class<es.gob.valet.quartz.task.Task> taskClass = (Class<es.gob.valet.quartz.task.Task>) Class.forName(task.getImplementationClass());
-
-							for (Planner planner: plannerList) {
-
-								IPlanificador iplan = getPlannerFromSchedulerConfiguration(planner);
-								process.addOrReplacePlannerInTask(taskName, iplan, taskClass, null);
-
-							}
-						} catch (ClassNotFoundException
-								| ValetSchedulerException e) {
-							logger.error("Se produjo un error inicializando la tarea: " + taskName, e);
-						}
-
-					}
-
-				}
-
-			}
-
-		}
-
-	}
-
-	/**
-	 * Method that obtains a planner through the scheduler configuration.
-	 * @param planner Parameter that represents the information of the planner in the database.
-	 * @return an object that represents the planner.
-	 */
-	private IPlanificador getPlannerFromSchedulerConfiguration(Planner planner) {
-		IPlanificador result = null;
-		Long periodMs = null;
-		switch (planner.getPlannerType().getIdPlannerType().intValue()) {
-			case IPlanificador.TIPO_PLAN_DIARIO:
-				periodMs = UtilsDate.getPeriod(planner.getHourPeriod(), planner.getMinutePeriod(), planner.getSecondPeriod());
-				PlanificadorPeriodico ppDaily = new PlanificadorPeriodico(periodMs, planner.getInitDay(), true);
-				result = (IPlanificador) ppDaily;
-				break;
-			case IPlanificador.TIPO_PLAN_PERIOD:
-				periodMs = UtilsDate.getPeriod(planner.getHourPeriod(), planner.getMinutePeriod(), planner.getSecondPeriod());
-				PlanificadorPeriodico ppPeriod = new PlanificadorPeriodico(periodMs, planner.getInitDay(), false);
-				result = (IPlanificador) ppPeriod;
-				break;
-			case IPlanificador.TIPO_PLAN_PFECHA:
-				PlanificadorPorFecha ppf = new PlanificadorPorFecha(planner.getInitDay());
-				result = (IPlanificador) ppf;
-				break;
-			default:
-				break;
-		}
-		return result;
 	}
 
 	/**

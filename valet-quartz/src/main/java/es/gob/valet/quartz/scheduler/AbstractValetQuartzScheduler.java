@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 24/01/2019.
  */
 package es.gob.valet.quartz.scheduler;
 
@@ -36,12 +36,12 @@ import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
 import es.gob.valet.quartz.job.AbstractValetTaskQuartzJob;
-import es.gob.valet.quartz.planner.IPlanificador;
+import es.gob.valet.quartz.planner.IPlanner;
 
 /**
  * <p>Class that represents an abstract quartz scheduler for valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 24/01/2019.
  */
 public abstract class AbstractValetQuartzScheduler extends AbstractQuartzScheduler {
 
@@ -66,7 +66,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 	 * @return <code>true</code> if the planner has been added/replaced in the task. Otherwise <code>false</code>.
 	 * @throws ValetSchedulerException In case of some error while is adding or updating the task.
 	 */
-	public final boolean addOrReplacePlannerInTask(final String taskNameParam, final IPlanificador planner, final Class<? extends AbstractValetTaskQuartzJob> taskClass, final Map<String, Object> dataForTheTask) throws ValetSchedulerException {
+	public final boolean addOrReplacePlannerInTask(final String taskNameParam, final IPlanner planner, final Class<? extends AbstractValetTaskQuartzJob> taskClass, final Map<String, Object> dataForTheTask) throws ValetSchedulerException {
 
 		boolean result = false;
 

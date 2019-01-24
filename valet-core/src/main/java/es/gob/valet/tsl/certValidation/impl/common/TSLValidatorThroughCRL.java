@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 17/12/2018.
+ * @version 1.3, 24/01/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -51,6 +51,8 @@ import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
+import es.gob.valet.alarms.AlarmsManager;
+import es.gob.valet.commons.utils.UtilsASN1;
 import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsFTP;
@@ -59,7 +61,9 @@ import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
@@ -71,7 +75,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 17/12/2018.
+ * @version 1.3, 24/01/2019.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -155,6 +159,10 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 								LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL254, new Object[ ] { uri }));
 								crl = null;
 							}
+						} else {
+							// Lanzamos la alarma notificando que no se tiene
+							// acceso o no es posible parsear la CRL.
+							AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_000, new Object[ ] { uri.toString() }));
 						}
 
 					} catch (NullPointerException e) {
@@ -471,6 +479,16 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 				}
 
+			}
+
+			// Si hemos llegado a este punto y no se confía en la CRL,
+			// es porque no se confía en su emisor.
+			if (!result) {
+				try {
+					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_001, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+				} catch (CommonUtilsException e) {
+					LOGGER.error(e.getMessage(), e);
+				}
 			}
 
 		}
@@ -825,6 +843,12 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 								// Tratamos de obtener la CRL.
 								crl = downloadCRLFromSupplyPoint(uri, connectionTimeout, readTimeout);
+								if (crl == null) {
+									// Lanzamos la alarma notificando que no se
+									// tiene acceso o no es posible parsear la
+									// CRL.
+									AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_000, new Object[ ] { uri.toString() }));
+								}
 								// Si la CRL es nula o no es válida respecto a
 								// la fecha de validación, la descartamos.
 								if (crl != null && !checkCRLisValid(crl, validationDate, !isTsaCertificate, validationResult, tsp, tslValidator)) {

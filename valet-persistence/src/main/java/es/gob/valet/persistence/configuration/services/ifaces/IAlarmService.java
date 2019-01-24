@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,14 +14,14 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.IAlarmService.java.</p>
  * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer
  * in relation of the Alarm entity.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>2 oct. 2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 24/01/2019.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -32,17 +32,16 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import es.gob.valet.persistence.configuration.model.entity.Alarm;
 
-/** 
+/**
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the Alarm entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 24/01/2019.
  */
 public interface IAlarmService {
 
 	/**
-	 *  Gets the list of alarms.
-	 * 
+	 * Gets the list of alarms.
 	 * @return List of alarms.
 	 */
 	List<Alarm> getAllAlarm();
@@ -55,10 +54,10 @@ public interface IAlarmService {
 	Alarm getAlarmById(String idAlarm);
 
 	/**
-	* Method that saves Alarm.
-	* @param Alarm to update.
-	* @return {@link Alarm} an object that represents the Alarm.
-	*/
+	 * Method that saves Alarm.
+	 * @param alarm Alarm to update.
+	 * @return {@link Alarm} an object that represents the Alarm.
+	 */
 	Alarm saveAlarm(Alarm alarm);
 
 	/**
@@ -69,7 +68,6 @@ public interface IAlarmService {
 
 	/**
 	 * Method that gets the list for the given {@link DataTablesInput}.
-	 * 
 	 * @param input the {@link DataTablesInput} mapped from the Ajax request.
 	 * @return {@link DataTablesOutput}
 	 */

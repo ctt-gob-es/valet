@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 27/12/2018.
+ * @version 1.7, 24/01/2019.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 27/12/2018.
+ * @version 1.7, 24/01/2019.
  */
 public interface ICoreGeneralMessages {
 
@@ -982,5 +982,245 @@ public interface ICoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	String EMAIL_015 = "EMAIL_015";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_000 = "ALARM_MNG_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_001 = "ALARM_MNG_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_002</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_002 = "ALARM_MNG_002";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_003</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_003 = "ALARM_MNG_003";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_004</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_004 = "ALARM_MNG_004";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_005</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_005 = "ALARM_MNG_005";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_006</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_006 = "ALARM_MNG_006";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_007</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_007 = "ALARM_MNG_007";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_008</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_008 = "ALARM_MNG_008";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_009</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_009 = "ALARM_MNG_009";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_010</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_010 = "ALARM_MNG_010";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_011</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_011 = "ALARM_MNG_011";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_012</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_012 = "ALARM_MNG_012";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_013</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_013 = "ALARM_MNG_013";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_014</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_014 = "ALARM_MNG_014";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_015</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_015 = "ALARM_MNG_015";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_016</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_016 = "ALARM_MNG_016";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_017</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_017 = "ALARM_MNG_017";
+
+	/**
+	 * Constant attribute that represents the property key <code>TASK_MNG_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String TASK_MNG_000 = "TASK_MNG_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>TASK_MNG_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String TASK_MNG_001 = "TASK_MNG_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>TASK_MNG_002</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String TASK_MNG_002 = "TASK_MNG_002";
+
+	/**
+	 * Constant attribute that represents the property key <code>TASK_MNG_003</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String TASK_MNG_003 = "TASK_MNG_003";
+
+	/**
+	 * Constant attribute that represents the property key <code>TASK_MNG_004</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String TASK_MNG_004 = "TASK_MNG_004";
+
+	/**
+	 * Constant attribute that represents the property key <code>HIDDEN_TASK_MNG_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HIDDEN_TASK_MNG_000 = "HIDDEN_TASK_MNG_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>HIDDEN_TASK_MNG_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HIDDEN_TASK_MNG_001 = "HIDDEN_TASK_MNG_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>HIDDEN_TASK_MNG_002</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HIDDEN_TASK_MNG_002 = "HIDDEN_TASK_MNG_002";
+
+	/**
+	 * Constant attribute that represents the property key <code>HIDDEN_TASK_MNG_003</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HIDDEN_TASK_MNG_003 = "HIDDEN_TASK_MNG_003";
+
+	/**
+	 * Constant attribute that represents the property key <code>HIDDEN_TASK_MNG_004</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HIDDEN_TASK_MNG_004 = "HIDDEN_TASK_MNG_004";
+
+	/**
+	 * Constant attribute that represents the property key <code>HIDDEN_TASK_MNG_005</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HIDDEN_TASK_MNG_005 = "HIDDEN_TASK_MNG_005";
+
+	/**
+	 * Constant attribute that represents the property key <code>HIDDEN_TASK_MNG_006</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HIDDEN_TASK_MNG_006 = "HIDDEN_TASK_MNG_006";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM001_EVENT_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALM001_EVENT_000 = "ALM001_EVENT_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM002_EVENT_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALM002_EVENT_000 = "ALM002_EVENT_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM002_EVENT_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALM002_EVENT_001 = "ALM002_EVENT_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM003_EVENT_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALM003_EVENT_000 = "ALM003_EVENT_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM003_EVENT_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALM003_EVENT_001 = "ALM003_EVENT_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM004_EVENT_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALM004_EVENT_000 = "ALM004_EVENT_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM004_EVENT_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALM004_EVENT_001 = "ALM004_EVENT_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM005_EVENT_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALM005_EVENT_000 = "ALM005_EVENT_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM005_EVENT_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALM005_EVENT_001 = "ALM005_EVENT_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM005_EVENT_002</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALM005_EVENT_002 = "ALM005_EVENT_002";
 
 }

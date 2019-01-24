@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 /**
- * Package that provides all exceptions related with the alarms.
+ * Package that defines all the classes related with the tasks management, and the tasks that are common
+ * for administration and services.
  */
-package es.gob.valet.alarms.exception;
+package es.gob.valet.tasks;

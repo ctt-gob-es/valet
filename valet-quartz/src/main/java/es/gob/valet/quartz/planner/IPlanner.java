@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,55 +14,41 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
- * <b>File:</b><p>es.gob.valet.quartz.planner.IPlanificador.java.</p>
+/**
+ * <b>File:</b><p>es.gob.valet.quartz.planner.IPlanner.java.</p>
  * <b>Description:</b><p> Interface that defines the methods for the planners.</p>
-  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>18/09/2018.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.0, 24/01/2019.
  */
 package es.gob.valet.quartz.planner;
 
 import java.util.Date;
 
+import es.gob.valet.persistence.configuration.model.entity.Planner;
 
-/** 
+/**
  * <p>Interface that defines the methods for the planners.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.0, 24/01/2019.
  */
-public interface IPlanificador {
+public interface IPlanner {
 
 	/**
 	 * Constant attribute that represents the number to identify the daily planner type.
 	 */
-	int TIPO_PLAN_DIARIO = 0;
+	int PLANNER_TYPE_DIARY = 0;
 
 	/**
 	 * Constant attribute that represents the number to identify the periodic planner type.
 	 */
-	int TIPO_PLAN_PERIOD = 1;
+	int PLANNER_TYPE_PERIOD = 1;
 
 	/**
 	 * Constant attribute that represents the number to identify the planner type by date.
 	 */
-	int TIPO_PLAN_PFECHA = 2;
-
-	/**
-	 * Constant attribute that represents the key value for the planner type 'Diario'.
-	 */
-	String PLANNER_TYPE00 = "PLANNER_TYPE00";
-
-	/**
-	 * Constant attribute that represents the key value for the planner type 'Periódico'.
-	 */
-	String PLANNER_TYPE01 = "PLANNER_TYPE01";
-
-	/**
-	 * Constant attribute that represents the key value for the planner type 'Por Fecha'.
-	 */
-	String PLANNER_TYPE02 = "PLANNER_TYPE02";
+	int PLANNER_TYPE_DATE = 2;
 
 	/**
 	 * Method that obtain the milliseconds necessary for the next execution. The method returns a negative number

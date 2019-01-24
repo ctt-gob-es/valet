@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 24/01/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -36,7 +36,7 @@ import java.util.TimeZone;
  * <p>Class that provides methods for managing dates.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI
  * certificates and electronic signature.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 24/01/2019.
  */
 public class UtilsDate {
 
@@ -335,19 +335,19 @@ public class UtilsDate {
 	}
 
 	/**
-	 * Method that obtains the current date and hour of the system.
+	 * Method that obtains the current date and time of the system.
 	 * @param formato Parameter that represents the format used to obtain the date.
-	 * @return the current date and hour of the system.
+	 * @return the current date and hour of the system in the input format.
 	 */
-	public static String getFechaSistema(String formato) {
-		String fechaSistema = null;
+	public static String getSystemDate(String formato) {
+		String systemDate = null;
 		try {
 			UtilsDate serClsFecha = new UtilsDate();
-			fechaSistema = serClsFecha.toString(formato);
+			systemDate = serClsFecha.toString(formato);
 		} catch (Exception e) {
-			fechaSistema = "FECHA KO";
+			systemDate = "FECHA KO";
 		}
-		return fechaSistema;
+		return systemDate;
 	}
 
 	/**
@@ -507,7 +507,7 @@ public class UtilsDate {
 						}
 						datestate = 1;
 						break;
-					// Verificación 4: El año debe tener 4 cifras (0000-9999)
+						// Verificación 4: El año debe tener 4 cifras (0000-9999)
 					case 1:
 						yearStr = str.substring(charidx, charidx + NumberConstants.NUM4);
 						year = Integer.parseInt(yearStr);
@@ -517,7 +517,7 @@ public class UtilsDate {
 						}
 						datestate = 2;
 						break;
-					// Verificación 5: El mes debe tener 2 cifras (01-12)
+						// Verificación 5: El mes debe tener 2 cifras (01-12)
 					case 2:
 						monthStr = str.substring(charidx, charidx + 2);
 						if (!monthStr.startsWith("Z") && !monthStr.startsWith("-") && !monthStr.startsWith("+")) {
@@ -531,7 +531,7 @@ public class UtilsDate {
 						}
 						datestate = NumberConstants.NUM3;
 						break;
-					// Verificación 6: El día debe tener 2 cifras (01-31)
+						// Verificación 6: El día debe tener 2 cifras (01-31)
 					case NumberConstants.NUM3:
 						dayStr = str.substring(charidx, charidx + 2);
 						if (!dayStr.startsWith("Z") && !dayStr.startsWith("-") && !dayStr.startsWith("+")) {
@@ -545,7 +545,7 @@ public class UtilsDate {
 						}
 						datestate = NumberConstants.NUM4;
 						break;
-					// Verificación 7: La hora debe tener 2 cifras (00-23)
+						// Verificación 7: La hora debe tener 2 cifras (00-23)
 					case NumberConstants.NUM4:
 						hourStr = str.substring(charidx, charidx + 2);
 						if (!hourStr.startsWith("Z") && !hourStr.startsWith("-") && !hourStr.startsWith("+")) {
@@ -559,7 +559,7 @@ public class UtilsDate {
 						}
 						datestate = NumberConstants.NUM5;
 						break;
-					// Verificación 8: El minuto debe tener 2 cifras (00-59)
+						// Verificación 8: El minuto debe tener 2 cifras (00-59)
 					case NumberConstants.NUM5:
 						minuteStr = str.substring(charidx, charidx + 2);
 						if (!minuteStr.startsWith("Z") && !minuteStr.startsWith("-") && !minuteStr.startsWith("+")) {
@@ -573,7 +573,7 @@ public class UtilsDate {
 						}
 						datestate = NumberConstants.NUM6;
 						break;
-					// Verificación 9: El segundo debe tener 2 cifras (00-59)
+						// Verificación 9: El segundo debe tener 2 cifras (00-59)
 					case NumberConstants.NUM6:
 						secondStr = str.substring(charidx, charidx + 2);
 						if (!secondStr.startsWith("Z") && !secondStr.startsWith("-") && !secondStr.startsWith("+")) {
@@ -587,10 +587,10 @@ public class UtilsDate {
 						}
 						datestate = NumberConstants.NUM7;
 						break;
-					// Verificación 10: La timeZone horaria debe tener 1
-					// carácter
-					// válido
-					// ('+', '-', o 'Z')
+						// Verificación 10: La timeZone horaria debe tener 1
+						// carácter
+						// válido
+						// ('+', '-', o 'Z')
 					case NumberConstants.NUM7:
 						timezonechar = str.charAt(charidx);
 						if (timezonechar != 'Z' && timezonechar != '+' && timezonechar != '-') {
@@ -599,10 +599,10 @@ public class UtilsDate {
 						charidx++;
 						datestate = NumberConstants.NUM8;
 						break;
-					// Verificación 11: La hora que va tras la timeZone horaria
-					// debe
-					// tener 2 cifras (00-23) si y sólo si
-					// la timeZone horaria no tiene el carácter 'Z'
+						// Verificación 11: La hora que va tras la timeZone horaria
+						// debe
+						// tener 2 cifras (00-23) si y sólo si
+						// la timeZone horaria no tiene el carácter 'Z'
 					case NumberConstants.NUM8:
 						if (timezonechar == '+' || timezonechar == '-') {
 							timezonehour = Integer.parseInt(str.substring(charidx, charidx + 2));
@@ -621,10 +621,10 @@ public class UtilsDate {
 						}
 						datestate = NumberConstants.NUM9;
 						break;
-					// Verificación 13: El minuto que va tras la timeZone
-					// horaria
-					// debe tener 2 cifras (00-59) si y sólo si
-					// la timeZone horaria no tiene el carácter 'Z'
+						// Verificación 13: El minuto que va tras la timeZone
+						// horaria
+						// debe tener 2 cifras (00-59) si y sólo si
+						// la timeZone horaria no tiene el carácter 'Z'
 					case NumberConstants.NUM9:
 						if (timezonechar == '+' || timezonechar == '-') {
 							if (str.charAt(charidx) == '\'') {
@@ -644,35 +644,35 @@ public class UtilsDate {
 						break wloop;
 				}
 			}
-			// Verificación 14: El día debe ser válido para el mes obtenido
-			if (yearStr != null && monthStr != null && dayStr != null) {
+		// Verificación 14: El día debe ser válido para el mes obtenido
+		if (yearStr != null && monthStr != null && dayStr != null) {
 
-				// Mes con 28 o 29 días
-				if (month == 2) {
-					GregorianCalendar gc = new GregorianCalendar();
-					// Año bisiesto
-					if (gc.isLeapYear(year)) {
-						if (day > NumberConstants.NUM29) {
-							return null;
-						}
-					}
-					// Año no bisiesto
-					else {
-						if (day > NumberConstants.NUM28) {
-							return null;
-						}
+			// Mes con 28 o 29 días
+			if (month == 2) {
+				GregorianCalendar gc = new GregorianCalendar();
+				// Año bisiesto
+				if (gc.isLeapYear(year)) {
+					if (day > NumberConstants.NUM29) {
+						return null;
 					}
 				}
-				// Meses con 30 días
-				else if ((month == NumberConstants.NUM4 || month == NumberConstants.NUM6 || month == NumberConstants.NUM9 || month == NumberConstants.NUM11) && day > NumberConstants.NUM30) {
-					return null;
+				// Año no bisiesto
+				else {
+					if (day > NumberConstants.NUM28) {
+						return null;
+					}
 				}
 			}
-			// Verificación 15: El número de campos rescatados debe ser al menos
-			// 2
-			if (datestate < 2) {
+			// Meses con 30 días
+			else if ((month == NumberConstants.NUM4 || month == NumberConstants.NUM6 || month == NumberConstants.NUM9 || month == NumberConstants.NUM11) && day > NumberConstants.NUM30) {
 				return null;
 			}
+		}
+		// Verificación 15: El número de campos rescatados debe ser al menos
+		// 2
+		if (datestate < 2) {
+			return null;
+		}
 		}
 		// Si se produce alguna excepción durante el proceso de asignación de
 		// fechas entendemos que la date no está bien formada

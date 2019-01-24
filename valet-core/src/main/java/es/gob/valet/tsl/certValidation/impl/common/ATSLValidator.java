@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 24/01/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -36,12 +36,15 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
+import es.gob.valet.alarms.AlarmsManager;
 import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsOCSP;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
@@ -62,7 +65,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.Qualifications;
  * <p>Abstract class that represents a TSL validator with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 24/01/2019.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -279,6 +282,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 					// El certificado ha sido detectado pero no validado.
 					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL204, new Object[ ] { validationResult.getTSPName(), validationResult.getTSPServiceNameForDetect() }));
+					// Lanzamos la alarma correspondiente...
+					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM001_UNKNOWN_REV_STATUS, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM001_EVENT_000, new Object[ ] { validationResult.getTslCountryRegionCode(), validationResult.getTSPName(), validationResult.getTSPServiceNameForDetect() }));
 
 				} else {
 

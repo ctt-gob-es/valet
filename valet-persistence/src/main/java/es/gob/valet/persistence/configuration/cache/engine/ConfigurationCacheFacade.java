@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 21/12/2018.
+ * @version 1.4, 24/01/2019.
  */
 package es.gob.valet.persistence.configuration.cache.engine;
 
@@ -55,7 +55,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Facade for all the configuration cache objects of the configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 21/12/2018.
+ * @version 1.4, 24/01/2019.
  */
 public final class ConfigurationCacheFacade {
 
@@ -393,23 +393,24 @@ public final class ConfigurationCacheFacade {
 
 	}
 
-
 	/**
 	 * Method that reloads an application in the cache.
 	 *
 	 * @param app Application pojo representation.
 	 * @throws ApplicationCacheException In case of some error reloading in the cache.
 	 */
-	public static void applicationAddUpdateApplication(ApplicationValet app) throws ApplicationCacheException{
-		//se comprueba que el parámetro de entrada no sea nulo y que se encuentre definido el identificador
-		if( app == null || app.getIdApplication() == null){
+	public static void applicationAddUpdateApplication(ApplicationValet app) throws ApplicationCacheException {
+		// se comprueba que el parámetro de entrada no sea nulo y que se
+		// encuentre definido el identificador
+		if (app == null || app.getIdApplication() == null) {
 			throw new ApplicationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG005));
 		} else {
 
-			//se recupera el objeto que representa a la aplicación y que aún no ha sido actualizado
-			ApplicationCacheObject aco = ApplicationCacheFacade.getInstance().getApplicationCacheObject(app.getIdApplication().longValue());
+			// se recupera el objeto que representa a la aplicación y que aún no
+			// ha sido actualizado
+			ApplicationCacheFacade.getInstance().getApplicationCacheObject(app.getIdApplication().longValue());
 
-			//se recarga la aplicación de la caché.
+			// se recarga la aplicación de la caché.
 			ApplicationCacheFacade.getInstance().reloadApplication(app.getIdApplication());
 		}
 	}
@@ -420,10 +421,10 @@ public final class ConfigurationCacheFacade {
 	 * @param applicationId Application identifier.
 	 * @throws ApplicationCacheException In case of some error working with the cache.
 	 */
-	public static void applicationRemoveApplication(Long applicationId) throws ApplicationCacheException{
-		//se obtiene la aplicación de la caché antes de eliminarla.
+	public static void applicationRemoveApplication(Long applicationId) throws ApplicationCacheException {
+		// se obtiene la aplicación de la caché antes de eliminarla.
 		ApplicationCacheObject aco = applicationGetApplication(applicationId);
-		if(aco != null){
+		if (aco != null) {
 			ApplicationCacheFacade.getInstance().removeApplication(applicationId);
 		}
 
@@ -436,7 +437,7 @@ public final class ConfigurationCacheFacade {
 	 * @return A object representation of the application in the caché.
 	 * @throws ApplicationCacheException In case of some error getting the application from the cache.
 	 */
-	public static ApplicationCacheObject applicationGetApplication(long applicationId) throws ApplicationCacheException{
+	public static ApplicationCacheObject applicationGetApplication(long applicationId) throws ApplicationCacheException {
 		return ApplicationCacheFacade.getInstance().getApplicationCacheObject(applicationId);
 	}
 }

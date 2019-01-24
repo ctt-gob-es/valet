@@ -40,4 +40,11 @@ import es.gob.valet.persistence.configuration.model.entity.CPlannerType;
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public interface CPlannerTypeRepository extends JpaRepository<CPlannerType, Long> {
 
+	/**
+	 * Method that obtains from the persistence a CPlannerType identified by its identifier.
+	 * @param idPlannerType Long that represents the identifier of the CPlannerType in the persistence.
+	 * @return Object that represents a CPlannerType from the persistence.
+	 */
+	CPlannerType findByIdPlannerType(Long idPlannerType);
+
 }

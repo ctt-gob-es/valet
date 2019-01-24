@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 27/12/2018.
+ * @version 1.10, 24/01/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -39,7 +39,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 27/12/2018.
+ * @version 1.10, 24/01/2019.
  */
 public final class StaticValetConfig {
 
@@ -57,6 +57,12 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents the name of properties file.
 	 */
 	public static final String STATIC_VALET_FILENAME = "staticValetConfig.properties";
+
+	/**
+	 * Constant attribute that represents the key for the property that indicates the identificator
+	 * name for this instance.
+	 */
+	public static final String INSTANCE_NAME_ID = "instance.name.id";
 
 	/**
 	 * Constant attribute that represents the key for the property that indicates the implementation

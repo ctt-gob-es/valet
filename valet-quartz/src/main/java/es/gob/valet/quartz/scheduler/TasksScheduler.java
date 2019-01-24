@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,64 +14,63 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
- * <b>File:</b><p>es.gob.valet.quartz.task.HiddenTasksScheduler.java.</p>
- * <b>Description:</b><p> Class that represents the scheduler that control the hidden tasks (or system tasks).
- * This scheduler is not clustered.</p>
+/**
+ * <b>File:</b><p>es.gob.valet.quartz.scheduler.TasksScheduler.java.</p>
+ * <b>Description:</b><p> Class that implements the scheduler for the processes tasks of the
+ * management asynchronous processes module.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>18/09/2018.</p>
+ * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.0, 24/01/2019.
  */
-package es.gob.valet.quartz.task;
+package es.gob.valet.quartz.scheduler;
 
-import es.gob.valet.quartz.scheduler.AbstractValetNonClusteredQuartzScheduler;
-
-/** 
- * <p>Class that represents the scheduler that control the hidden tasks (or system tasks).
- * This scheduler is not clustered.</p>
+/**
+ * <p>Class that implements the scheduler for the processes tasks of the
+ * management asynchronous processes module.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.0, 24/01/2019.
  */
-public final class HiddenTasksScheduler extends AbstractValetNonClusteredQuartzScheduler {
-
-	/**
-	 * Constant attribute that represents the name of the group for the scheduler.
-	 */
-	private static final String SCHEDULER_GROUP = "HIDDEN_TASKS_GROUP_PLANIFICATION_MODULE";
+public final class TasksScheduler extends AbstractValetNonClusteredQuartzScheduler {
 
 	/**
 	 * Attribute that represents the singleton of the class.
 	 */
-	private static HiddenTasksScheduler singleton;
+	private static TasksScheduler singleton;
+
+	/**
+	 * Constant attribute that represents the name of the group for the scheduler.
+	 */
+	private static final String SCHEDULER_GROUP = "TASKS_GROUP_PLANIFICATION_MODULE";
 
 	/**
 	 * Method that returns the singleton of the class.
 	 * @return Singleton of the class.
 	 */
-	public static HiddenTasksScheduler getInstance() {
+	public static TasksScheduler getInstance() {
 
-		if (HiddenTasksScheduler.singleton == null) {
-			HiddenTasksScheduler.singleton = new HiddenTasksScheduler();
+		if (TasksScheduler.singleton == null) {
+			TasksScheduler.singleton = new TasksScheduler();
 		}
-		return HiddenTasksScheduler.singleton;
+		return TasksScheduler.singleton;
 
 	}
 
 	/**
-	 * Constructor method for the class HiddenTasksScheduler.java.
+	 * Constructor method for the class TasksScheduler.java.
 	 */
-	private HiddenTasksScheduler() {
+	private TasksScheduler() {
 		startScheduler();
 	}
 
 	/**
+	 *
 	 * {@inheritDoc}
 	 * @see es.gob.valet.quartz.scheduler.AbstractQuartzScheduler#getSchedulerGroup()
 	 */
 	@Override
 	protected String getSchedulerGroup() {
-		return HiddenTasksScheduler.SCHEDULER_GROUP;
+		return TasksScheduler.SCHEDULER_GROUP;
 	}
 
 }

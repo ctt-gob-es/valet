@@ -15,45 +15,45 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.persistence.configuration.services.ifaces.IPlanner.java.</p>
- * <b>Description:</b><p>Interface that provides communication with the operations of the persistence layer related to Planner.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants.java.</p>
+ * <b>Description:</b><p>Interface that contains all the IDs of the alarms.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>03/10/2018.</p>
+ * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 24/01/2019.
+ * @version 1.0, 24/01/2019.
  */
-package es.gob.valet.persistence.configuration.services.ifaces;
-
-import java.util.List;
-
-import es.gob.valet.persistence.configuration.model.entity.Planner;
+package es.gob.valet.persistence.configuration.model.utils;
 
 /**
- * <p>Interface that provides communication with the operations of the persistence layer related to Planner.</p>
+ * <p>Interface that contains all the IDs of the alarms.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 24/01/2019.
+ * @version 1.0, 24/01/2019.
  */
-public interface IPlannerService {
+public interface IAlarmIdConstants {
 
 	/**
-	 * Method to obtain the list of planners associated with the task.
-	 * @param idTask Parameter that represents ID of task.
-	 * @return List of planners.
+	 * Constant attribute that represents the ID for the Alarm 001: Unknown revocation status for a certificate.
 	 */
-	List<Planner> getListPlannersByTask(Long idTask);
+	String ALM001_UNKNOWN_REV_STATUS = "ALM001";
 
 	/**
-	 * Method that obtains a planner by its identifier.
-	 * @param idPlanner The planner identifier.
-	 * @return {@link Planner} an object that represents the planner.
+	 * Constant attribute that represents the ID for the Alarm 002: Error while trying to get/parse a TSL.
 	 */
-	Planner getPlannerById(Long idPlanner);
+	String ALM002_ERROR_GETTING_PARSING_TSL = "ALM002";
 
 	/**
-	 * Method that saves planner.
-	 * @param planner Planner to update.
-	 * @return {@link Planner} an object that represents the Planner.
+	 * Constant attribute that represents the ID for the Alarm 003:Error getting/using a CRL.
 	 */
-	Planner savePlanner(Planner planner);
+	String ALM003_ERROR_GETTING_USING_CRL = "ALM003";
+
+	/**
+	 * Constant attribute that represents the ID for the Alarm 004: Error getting/using a OCSP response.
+	 */
+	String ALM004_ERROR_GETTING_USING_OCSP = "ALM004";
+
+	/**
+	 * Constant attribute that represents the ID for the Alarm 005: New TSL version detected.
+	 */
+	String ALM005_NEW_TSL_DETECTED = "ALM005";
 
 }
