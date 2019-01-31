@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 03/12/2018.
+ * @version 1.6, 31/01/2019.
  */
 package es.gob.valet.rest.services;
 
@@ -68,7 +68,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 03/12/2018.
+ * @version 1.6, 31/01/2019.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -616,7 +616,7 @@ public class TslRestService implements ITslRestService {
 			// Si el estado es revocado, devolvemos la razón y fecha.
 			if (tslRevocationStatus.getRevocationStatus().intValue() == ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
 				tslRevocationStatus.setRevocationReason(tslValidatorResult.getRevocationReason());
-				tslRevocationStatus.setRevocationDate(new UtilsDate(tslValidatorResult.getRevocationDate()).toString(UtilsDate.FORMAT_DATE_TIME_STANDARD));
+				tslRevocationStatus.setRevocationDate(tslValidatorResult.getRevocationDate());
 			}
 		}
 		// Si es CRL...
@@ -626,7 +626,7 @@ public class TslRestService implements ITslRestService {
 			// Si el estado es revocado, devolvemos la razón y fecha.
 			if (tslRevocationStatus.getRevocationStatus().intValue() == ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
 				tslRevocationStatus.setRevocationReason(tslValidatorResult.getRevocationReason());
-				tslRevocationStatus.setRevocationDate(new UtilsDate(tslValidatorResult.getRevocationDate()).toString(UtilsDate.FORMAT_DATE_TIME_STANDARD));
+				tslRevocationStatus.setRevocationDate(tslValidatorResult.getRevocationDate());
 			}
 		}
 

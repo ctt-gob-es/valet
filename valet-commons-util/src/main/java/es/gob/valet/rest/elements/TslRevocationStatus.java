@@ -25,6 +25,7 @@
 package es.gob.valet.rest.elements;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>Class that represents structure of a TSL revocation status.</p>
@@ -86,7 +87,7 @@ public class TslRevocationStatus implements Serializable {
 	/**
 	 * Attribute that represents the revocation date of the certificate.
 	 */
-	private String revocationDate;
+	private Date revocationDate;
 
 	/**
 	 * Gets the value of the attribute {@link #revocationStatus}.
@@ -238,7 +239,7 @@ public class TslRevocationStatus implements Serializable {
 	 * Gets the value of the attribute {@link #revocationDate}.
 	 * @return the value of the attribute {@link #revocationDate}.
 	 */
-	public final String getRevocationDate() {
+	public final Date getRevocationDate() {
 		return revocationDate;
 	}
 
@@ -246,7 +247,7 @@ public class TslRevocationStatus implements Serializable {
 	 * Sets the value of the attribute {@link #revocationDate}.
 	 * @param revocationDateParam The value for the attribute {@link #revocationDate}.
 	 */
-	public final void setRevocationDate(String revocationDateParam) {
+	public final void setRevocationDate(Date revocationDateParam) {
 		this.revocationDate = revocationDateParam;
 	}
 
