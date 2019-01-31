@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 31/01/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.ts119612.v020101;
 
@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.rest.services.ITslMappingConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorOtherConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.impl.TSLValidatorMappingCalculator;
@@ -51,7 +52,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.AdditionalServiceInformat
  * <p>Class that represents a TSL Validator implementation for the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 31/01/2019.
  */
 public class TSLValidator extends ATSLValidator {
 
@@ -350,10 +351,10 @@ public class TSLValidator extends ATSLValidator {
 			// - Si el certificado se encuentra (o no) en un SSCD/QSCD.
 			// - Que el certificado haya sido emitido para una "legal person" o
 			// para ESIG, ESEAL o WSA.
-			result = TSLValidatorMappingCalculator.MAPPING_VALUE_YES.equals(mappingQualifiedCert) && !TSLValidatorMappingCalculator.MAPPING_VALUE_UNKNOWN.equals(mappingQscd);
+			result = ITslMappingConstants.MAPPING_VALUE_YES.equals(mappingQualifiedCert) && !ITslMappingConstants.MAPPING_VALUE_UNKNOWN.equals(mappingQscd);
 			if (result) {
-				result = TSLValidatorMappingCalculator.MAPPING_VALUE_CLASSIFICATION_LEGALPERSON.equals(mappingClassification) || TSLValidatorMappingCalculator.MAPPING_VALUE_CLASSIFICATION_ESIG.equals(mappingClassification);
-				result = result || TSLValidatorMappingCalculator.MAPPING_VALUE_CLASSIFICATION_ESEAL.equals(mappingClassification) || TSLValidatorMappingCalculator.MAPPING_VALUE_CLASSIFICATION_WSA.equals(mappingClassification);
+				result = ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_LEGALPERSON.equals(mappingClassification) || ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG.equals(mappingClassification);
+				result = result || ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL.equals(mappingClassification) || ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA.equals(mappingClassification);
 			}
 
 		} catch (TSLValidationException e) {
