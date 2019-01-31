@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 10/09/2018.
+ * @version 1.2, 31/01/2019.
  */
 package es.gob.valet.rest.elements;
 
@@ -30,7 +30,7 @@ import java.util.Date;
 /**
  * <p>Class that represents structure of a TSL information request.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
- * @version 1.1, 10/09/2018.
+ * @version 1.2, 31/01/2019.
  */
 public class TslInformation implements Serializable {
 
@@ -38,6 +38,11 @@ public class TslInformation implements Serializable {
 	 * Constant attribute that represents the serial version UID.
 	 */
 	private static final long serialVersionUID = 2705319222271442661L;
+
+	/**
+	 * Attribute that represents the ETSI specification and its version that implements the TSL.
+	 */
+	private String etsiSpecificationAndVersion;
 
 	/**
 	 * Attribute that represents the country region in TSL information.
@@ -70,6 +75,22 @@ public class TslInformation implements Serializable {
 	private byte[ ] tslXmlData;
 
 	/**
+	 * Gets the value of the attribute {@link #etsiSpecificationAndVersion}.
+	 * @return the value of the attribute {@link #etsiSpecificationAndVersion}.
+	 */
+	public final String getEtsiSpecificationAndVersion() {
+		return etsiSpecificationAndVersion;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #etsiSpecificationAndVersion}.
+	 * @param etsiSpecificationAndVersionParam The value for the attribute {@link #etsiSpecificationAndVersion}.
+	 */
+	public final void setEtsiSpecificationAndVersion(String etsiSpecificationAndVersionParam) {
+		this.etsiSpecificationAndVersion = etsiSpecificationAndVersionParam;
+	}
+
+	/**
 	 * Gets the value of the attribute {@link #countryRegion}.
 	 * @return the value of the attribute {@link #countryRegion}.
 	 */
@@ -79,10 +100,10 @@ public class TslInformation implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #countryRegion}.
-	 * @param countryRegionP The value for the attribute {@link #countryRegion}.
+	 * @param countryRegionParam The value for the attribute {@link #countryRegion}.
 	 */
-	public void setCountryRegion(final String countryRegionP) {
-		this.countryRegion = countryRegionP;
+	public void setCountryRegion(final String countryRegionParam) {
+		this.countryRegion = countryRegionParam;
 	}
 
 	/**
@@ -95,10 +116,10 @@ public class TslInformation implements Serializable {
 
 	/**
 	 * Sets the value of the attribute {@link #sequenceNumber}.
-	 * @param sequenceNumberP The value for the attribute {@link #sequenceNumber}.
+	 * @param sequenceNumberParam The value for the attribute {@link #sequenceNumber}.
 	 */
-	public void setSequenceNumber(final Integer sequenceNumberP) {
-		this.sequenceNumber = sequenceNumberP;
+	public void setSequenceNumber(final Integer sequenceNumberParam) {
+		this.sequenceNumber = sequenceNumberParam;
 	}
 
 	/**

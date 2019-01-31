@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,14 +14,14 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.tsl.parsing.impl.common.TSLObject.java.</p>
  * <b>Description:</b><p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -47,17 +47,16 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.TSLBuilderFactory;
 import es.gob.valet.tsl.parsing.impl.TSLCheckerFactory;
 
-
-/** 
+/**
  * <p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 public class TSLObject implements ITSLObject {
 
 	/**
-	 * Constant attribute that represents the serial version UID. 
+	 * Constant attribute that represents the serial version UID.
 	 */
 	private static final long serialVersionUID = -1157512627219419369L;
 
@@ -293,13 +292,13 @@ public class TSLObject implements ITSLObject {
 	public final void checkTSLValues() throws TSLMalformedException {
 		getTSLChecker().checkTSLValues(false, fullTSLxml);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#buildTSLFromXMLcheckValues(java.io.InputStream)
 	 */
 	@Override
-	public final void buildTSLFromXMLcheckValues(InputStream isParam) throws TSLArgumentException ,TSLParsingException ,TSLMalformedException {
+	public final void buildTSLFromXMLcheckValues(InputStream isParam) throws TSLArgumentException, TSLParsingException, TSLMalformedException {
 		buildTSLFromXMLcheckValues(isParam, true);
 	}
 
@@ -326,10 +325,7 @@ public class TSLObject implements ITSLObject {
 			// Comprobamos que los valores establecidos son los correctos.
 			getTSLChecker().checkTSLValues(checkSignature, fullTSLxml);
 
-		} catch (TSLParsingException e) {
-			restoreBackup = true;
-			throw e;
-		} catch (TSLMalformedException e) {
+		} catch (TSLParsingException | TSLMalformedException e) {
 			restoreBackup = true;
 			throw e;
 		} finally {

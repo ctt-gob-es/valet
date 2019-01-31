@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -33,9 +33,11 @@ import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SchemaTypeLoader;
 import org.apache.xmlbeans.XmlBeans;
@@ -71,9 +73,14 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * <p>Abstract class that represents a TSL data checker with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 public abstract class ATSLChecker implements ITSLChecker {
+
+	/**
+	 * Attribute that represents the object that manages the log of the class.
+	 */
+	private static final Logger LOGGER = Logger.getLogger(ATSLChecker.class);
 
 	/**
 	 * Constant attribute that represents the token name for the Scheme Type Field.
@@ -858,16 +865,68 @@ public abstract class ATSLChecker implements ITSLChecker {
 	 */
 	private void checkTSPService(TSPService tspService) throws TSLMalformedException {
 
-		// Comprobamos la información del servicio.
-		checkTSPServiceInformation(tspService.getServiceInformation());
+		// Nos quedamos con el nombre del servicio para temas de logging.
+		String serviceName = getServiceName(tspService.getServiceInformation());
 
-		// Comprobamos la información histórica.
-		if (tspService.isThereSomeServiceHistory()) {
-			List<ServiceHistoryInstance> servHistoryList = tspService.getAllServiceHistory();
-			for (ServiceHistoryInstance serviceHistoryInstance: servHistoryList) {
-				checkTSPServiceHistoryInstance(serviceHistoryInstance);
+		try {
+
+			// Comprobamos la información del servicio.
+			checkTSPServiceInformation(tspService.getServiceInformation());
+
+			// Comprobamos la información histórica.
+			if (tspService.isThereSomeServiceHistory()) {
+				List<ServiceHistoryInstance> servHistoryList = tspService.getAllServiceHistory();
+				for (ServiceHistoryInstance serviceHistoryInstance: servHistoryList) {
+					// Se decide que ante cualquier fallo evaluando un servicio
+					// histórico
+					// este se marque como NO usable.
+					try {
+						checkTSPServiceHistoryInstance(serviceHistoryInstance);
+					} catch (TSLMalformedException e) {
+
+						// Tratamos de obtener el nombre del servicio histórico.
+						String serviceHistoryInstanceName = getServiceName(serviceHistoryInstance);
+
+						// Marcamos el servicio histórico como NO usable.
+						serviceHistoryInstance.setServiceValidAndUsable(false);
+
+						// Lo indicamos en el log como warning.
+						LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL261, new Object[ ] { serviceName, serviceHistoryInstanceName, e.getMessage() }));
+
+					}
+				}
+			}
+
+		} catch (TSLMalformedException e) {
+
+			// Marcamos el servicio como NO usable.
+			tspService.getServiceInformation().setServiceValidAndUsable(false);
+
+			// Lo indicamos en el log como warning.
+			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL262, new Object[ ] { serviceName, e.getMessage() }));
+
+		}
+
+	}
+
+	/**
+	 * Auxiliar method that tries to get the name of the input service.
+	 * @param shi Service History Instance with the information to check.
+	 * @return the name of the input service or <code>null</code> if was not
+	 * possible to obtain.
+	 */
+	private String getServiceName(ServiceHistoryInstance shi) {
+
+		String result = null;
+
+		if (shi != null && shi.isThereSomeServiceName()) {
+			result = shi.getServiceNameInLanguage(Locale.UK.getLanguage());
+			if (UtilsStringChar.isNullOrEmptyTrim(result)) {
+				result = shi.getServiceNames().values().iterator().next();
 			}
 		}
+
+		return result;
 
 	}
 
@@ -948,10 +1007,11 @@ public abstract class ATSLChecker implements ITSLChecker {
 	 */
 	private void checkTSPServiceInformationNames(ServiceInformation tspServiceInformation) throws TSLMalformedException {
 
-		if (!tspServiceInformation.isThereSomeServiceName()) {
+		if (tspServiceInformation.isThereSomeServiceName()) {
+			checkTSPServiceInformationNamesValues(tspServiceInformation);
+		} else {
 			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_NAMES }));
 		}
-		checkTSPServiceInformationNamesValues(tspServiceInformation);
 
 	}
 
@@ -1357,35 +1417,35 @@ public abstract class ATSLChecker implements ITSLChecker {
 	 * @param fullTSLxml Byte array that represents the full TSL xml to check the signature.
 	 * @return X509 certificate that sign the TSL.
 	 * @throws TSLMalformedException In case of some error getting the signing certificates from
-	 * the TSL signature. 
+	 * the TSL signature.
 	 */
 	protected X509Certificate getSigningCertificate(byte[ ] fullTSLxml) throws TSLMalformedException {
-		
-		X509Certificate result = null; 
-		
+
+		X509Certificate result = null;
+
 		try {
 			// Construimos la estructura/modelo xades.
 			AOTreeModel model = new AOXAdESSigner().getSignersStructure(fullTSLxml, true);
 			// A través del nodo raíz extraemos los certificados firmantes.
 			AOTreeNode signatureNode = (AOTreeNode) AOTreeModel.getChild(model.getRoot(), 0);
-			X509Certificate [] certsArray = ((AOSimpleSignInfo) signatureNode.getUserObject()).getCerts();
+			X509Certificate[ ] certsArray = ((AOSimpleSignInfo) signatureNode.getUserObject()).getCerts();
 			// Si no es nulo, nos quedamos con el primero.
-			if (certsArray!=null && certsArray.length>0 && certsArray[0]!=null) {
+			if (certsArray != null && certsArray.length > 0 && certsArray[0] != null) {
 				result = certsArray[0];
 			}
 		} catch (AOInvalidFormatException e) {
 			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL257), e);
 		}
-		
+
 		// Si no lo hemos encontrado lanzamos excepción.
 		if (result == null) {
 			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL257));
 		}
 
 		return result;
-		
+
 	}
-	
+
 	/**
 	 * Generic method to parse a XML input stream or XML node to the indicated Document Class through
 	 * XMLBeans. To avoid problems with class loaders (in case of different Documents with same name and

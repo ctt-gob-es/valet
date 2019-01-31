@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 10/09/2018.
+ * @version 1.2, 31/01/2019.
  */
 package es.gob.valet.rest.elements;
 
@@ -29,7 +29,7 @@ import java.io.Serializable;
 /**
  * <p>Class that represents structure of a TSL revocation status.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
- * @version 1.1, 10/09/2018.
+ * @version 1.2, 31/01/2019.
  */
 public class TslRevocationStatus implements Serializable {
 
@@ -64,19 +64,9 @@ public class TslRevocationStatus implements Serializable {
 	private Boolean dpAia;
 
 	/**
-	 * Attribute that represents the TSP service name in TSL revocation status.
+	 * Attribute that represents the TSP Service Information which has validated the certificate.
 	 */
-	private String tspServiceName;
-
-	/**
-	 * Attribute that represents the TSP service type in TSL revocation status.
-	 */
-	private String tspServiceType;
-
-	/**
-	 * Attribute that represents the TSP service status in TSL revocation status.
-	 */
-	private String tspServiceStatus;
+	private TspServiceInformation tspServiceInformation;
 
 	/**
 	 * Attribute that represents the evidence type in TSL revocation status.
@@ -87,14 +77,14 @@ public class TslRevocationStatus implements Serializable {
 	 * Attribute that represents the evidence in TSL revocation status.
 	 */
 	private byte[ ] evidence;
-	
+
 	/**
-	 * Attribute that represents the revocation reason of the certificate. 
+	 * Attribute that represents the revocation reason of the certificate.
 	 */
 	private Integer revocationReason;
-	
+
 	/**
-	 * Attribute that represents the revocation date of the certificate. 
+	 * Attribute that represents the revocation date of the certificate.
 	 */
 	private String revocationDate;
 
@@ -179,51 +169,19 @@ public class TslRevocationStatus implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #tspServiceName}.
-	 * @return the value of the attribute {@link #tspServiceName}.
+	 * Gets the value of the attribute {@link #tspServiceInformation}.
+	 * @return the value of the attribute {@link #tspServiceInformation}.
 	 */
-	public final String getTspServiceName() {
-		return tspServiceName;
+	public final TspServiceInformation getTspServiceInformation() {
+		return tspServiceInformation;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #tspServiceName}.
-	 * @param tspServiceNameP The value for the attribute {@link #tspServiceName}.
+	 * Sets the value of the attribute {@link #tspServiceInformation}.
+	 * @param tspServiceInformationParam The value for the attribute {@link #tspServiceInformation}.
 	 */
-	public final void setTspServiceName(final String tspServiceNameP) {
-		this.tspServiceName = tspServiceNameP;
-	}
-
-	/**
-	 * Gets the value of the attribute {@link #tspServiceType}.
-	 * @return the value of the attribute {@link #tspServiceType}.
-	 */
-	public final String getTspServiceType() {
-		return tspServiceType;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #tspServiceType}.
-	 * @param tspServiceTypeP The value for the attribute {@link #tspServiceType}.
-	 */
-	public final void setTspServiceType(final String tspServiceTypeP) {
-		this.tspServiceType = tspServiceTypeP;
-	}
-
-	/**
-	 * Gets the value of the attribute {@link #tspServiceStatus}.
-	 * @return the value of the attribute {@link #tspServiceStatus}.
-	 */
-	public final String getTspServiceStatus() {
-		return tspServiceStatus;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #tspServiceStatus}.
-	 * @param tspServiceStatusP The value for the attribute {@link #tspServiceStatus}.
-	 */
-	public final void setTspServiceStatus(final String tspServiceStatusP) {
-		this.tspServiceStatus = tspServiceStatusP;
+	public final void setTspServiceInformation(TspServiceInformation tspServiceInformationParam) {
+		this.tspServiceInformation = tspServiceInformationParam;
 	}
 
 	/**
@@ -259,7 +217,7 @@ public class TslRevocationStatus implements Serializable {
 			this.evidence = evidenceParam.clone();
 		}
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #revocationReason}.
 	 * @return the value of the attribute {@link #revocationReason}.
@@ -267,7 +225,7 @@ public class TslRevocationStatus implements Serializable {
 	public final Integer getRevocationReason() {
 		return revocationReason;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #revocationReason}.
 	 * @param revocationReasonParam The value for the attribute {@link #revocationReason}.
@@ -275,7 +233,7 @@ public class TslRevocationStatus implements Serializable {
 	public final void setRevocationReason(Integer revocationReasonParam) {
 		this.revocationReason = revocationReasonParam;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #revocationDate}.
 	 * @return the value of the attribute {@link #revocationDate}.
@@ -283,7 +241,7 @@ public class TslRevocationStatus implements Serializable {
 	public final String getRevocationDate() {
 		return revocationDate;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute {@link #revocationDate}.
 	 * @param revocationDateParam The value for the attribute {@link #revocationDate}.

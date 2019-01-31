@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/10/2018.
+ * @version 1.1, 31/01/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -35,7 +35,7 @@ import java.util.Set;
  * <p>Class that provides methods to get or check the country codes and
  * language codes supported by this java version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/10/2018.
+ * @version 1.1, 31/01/2019.
  */
 public final class UtilsCountryLanguage {
 
@@ -73,6 +73,16 @@ public final class UtilsCountryLanguage {
 	 * Constant attribute that represents the region name 'United Kingdom' for the code 'UK'.
 	 */
 	private static final String UK_COUNTRY_NAME = "United Kingdom";
+
+	/**
+	 * Constant attribute that represents the region code 'LI' for 'Liechtenstein'.
+	 */
+	private static final String LI_COUNTRY_CODE = "LI";
+
+	/**
+	 * Constant attribute that represents the region name 'Liechtenstein' for the code 'LI'.
+	 */
+	private static final String LI_COUNTRY_NAME = "Liechtenstein";
 
 	/**
 	 * Constant attribute that represents the region code 'ES' for 'Spain'.
@@ -113,6 +123,7 @@ public final class UtilsCountryLanguage {
 		additionalCountryRegionNames.put(EU_REGION_CODE, EU_REGION_NAME);
 		additionalCountryRegionNames.put(EL_COUNTRY_CODE, EL_COUNTRY_NAME);
 		additionalCountryRegionNames.put(UK_COUNTRY_CODE, UK_COUNTRY_NAME);
+		additionalCountryRegionNames.put(LI_COUNTRY_CODE, LI_COUNTRY_NAME);
 
 	}
 
@@ -149,6 +160,7 @@ public final class UtilsCountryLanguage {
 			countryCodes.add(EU_REGION_CODE);
 			countryCodes.add(EL_COUNTRY_CODE);
 			countryCodes.add(UK_COUNTRY_CODE);
+			countryCodes.add(LI_COUNTRY_CODE);
 
 		}
 

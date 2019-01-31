@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 10/09/2018.
+ * @version 1.2, 31/01/2019.
  */
 package es.gob.valet.rest.elements;
 
@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * <p>Class that represents structure of a certificated detected in TSL.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
- * @version 1.1, 10/09/2018.
+ * @version 1.2, 31/01/2019.
  */
 public class CertDetectedInTSL implements Serializable {
 
@@ -45,19 +45,9 @@ public class CertDetectedInTSL implements Serializable {
 	private String tspName;
 
 	/**
-	 * Attribute that represents the TSP service name in certificated detected in TSL.
+	 * Attribute that represents the TSP Service Information which has detected the certificate.
 	 */
-	private String tspServiceName;
-
-	/**
-	 * Attribute that represents the TSP service type in certificated detected in TSL.
-	 */
-	private String tspServiceType;
-
-	/**
-	 * Attribute that represents the TSP service status in certificated detected in TSL.
-	 */
-	private String tspServiceStatus;
+	private TspServiceInformation tspServiceInformation;
 
 	/**
 	 * Attribute that represents the certificate information in certificated detected in TSL.
@@ -86,51 +76,19 @@ public class CertDetectedInTSL implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #tspServiceName}.
-	 * @return the value of the attribute {@link #tspServiceName}.
+	 * Gets the value of the attribute {@link #tspServiceInformation}.
+	 * @return the value of the attribute {@link #tspServiceInformation}.
 	 */
-	public String getTspServiceName() {
-		return tspServiceName;
+	public final TspServiceInformation getTspServiceInformation() {
+		return tspServiceInformation;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #tspServiceName}.
-	 * @param tspServiceNameP The value for the attribute {@link #tspServiceName}.
+	 * Sets the value of the attribute {@link #tspServiceInformation}.
+	 * @param tspServiceInformationParam The value for the attribute {@link #tspServiceInformation}.
 	 */
-	public void setTspServiceName(final String tspServiceNameP) {
-		this.tspServiceName = tspServiceNameP;
-	}
-
-	/**
-	 * Gets the value of the attribute {@link #tspServiceType}.
-	 * @return the value of the attribute {@link #tspServiceType}.
-	 */
-	public String getTspServiceType() {
-		return tspServiceType;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #tspServiceType}.
-	 * @param tspServiceTypeP The value for the attribute {@link #tspServiceType}.
-	 */
-	public void setTspServiceType(final String tspServiceTypeP) {
-		this.tspServiceType = tspServiceTypeP;
-	}
-
-	/**
-	 * Gets the value of the attribute {@link #tspServiceStatus}.
-	 * @return the value of the attribute {@link #tspServiceStatus}.
-	 */
-	public String getTspServiceStatus() {
-		return tspServiceStatus;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #tspServiceStatus}.
-	 * @param tspServiceStatusP The value for the attribute {@link #tspServiceStatus}.
-	 */
-	public void setTspServiceStatus(final String tspServiceStatusP) {
-		this.tspServiceStatus = tspServiceStatusP;
+	public final void setTspServiceInformation(TspServiceInformation tspServiceInformationParam) {
+		this.tspServiceInformation = tspServiceInformationParam;
 	}
 
 	/**

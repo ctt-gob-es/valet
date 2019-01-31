@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.ts119612.v020101;
 
@@ -44,14 +44,14 @@ import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
 import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
 import es.gob.valet.tsl.parsing.ifaces.ITSLOIDs;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
-import es.gob.valet.tsl.parsing.impl.common.TSPService;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.extensions.AdditionalServiceInformation;
 
 /**
  * <p>Class that represents a TSL Validator implementation for the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 public class TSLValidator extends ATSLValidator {
 
@@ -62,7 +62,7 @@ public class TSLValidator extends ATSLValidator {
 
 	/**
 	 * Constructor method for the class TSLValidator.java.
-	 * @param tslObject
+	 * @param tslObject Object that represents the TSL to use.
 	 */
 	public TSLValidator(ITSLObject tslObject) {
 		super(tslObject);
@@ -143,10 +143,10 @@ public class TSLValidator extends ATSLValidator {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.impl.common.ATSLValidator#checkIfTSPServiceAdditionalServiceInformationExtensionsDetectCert(es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult, es.gob.valet.tsl.parsing.impl.common.TSPService)
+	 * @see es.gob.valet.tsl.certValidation.impl.common.ATSLValidator#checkIfTSPServiceAdditionalServiceInformationExtensionsDetectCert(es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult, es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance)
 	 */
 	@Override
-	protected Boolean checkIfTSPServiceAdditionalServiceInformationExtensionsDetectCert(TSLValidatorResult validationResult, TSPService tspService) {
+	protected Boolean checkIfTSPServiceAdditionalServiceInformationExtensionsDetectCert(TSLValidatorResult validationResult, ServiceHistoryInstance shi) {
 
 		// Inicialmente consideramos que no se han definido extensiones
 		// AdditionalServiceInformation.
@@ -158,7 +158,7 @@ public class TSLValidator extends ATSLValidator {
 
 		// Recuperamos la lista de extensiones del servicio, y si no es nula ni
 		// vacía, continuamos.
-		List<IAnyTypeExtension> extensionsList = tspService.getServiceInformation().getServiceInformationExtensions();
+		List<IAnyTypeExtension> extensionsList = shi.getServiceInformationExtensions();
 		if (extensionsList != null && !extensionsList.isEmpty()) {
 
 			// Recorremos la lista buscando aquellas que sean de tipo
@@ -428,23 +428,23 @@ public class TSLValidator extends ATSLValidator {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.impl.common.ATSLValidator#checkIfTSPServiceTypeIsCRLCompatible(es.gob.valet.tsl.parsing.impl.common.TSPService, boolean)
+	 * @see es.gob.valet.tsl.certValidation.impl.common.ATSLValidator#checkIfTSPServiceTypeIsCRLCompatible(es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance, boolean)
 	 */
 	@Override
-	public boolean checkIfTSPServiceTypeIsCRLCompatible(TSPService tspService, boolean isCertQualified) {
+	public boolean checkIfTSPServiceTypeIsCRLCompatible(ServiceHistoryInstance shi, boolean isCertQualified) {
 
 		boolean result = false;
 
 		// Si el certificado es cualificado (qualified)...
 		if (isCertQualified) {
 
-			result = tspService.getServiceInformation().getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL_QC);
+			result = shi.getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL_QC);
 
 		}
 		// Si no es cualificado...
 		else {
 
-			result = tspService.getServiceInformation().getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL);
+			result = shi.getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL);
 
 		}
 
@@ -454,23 +454,23 @@ public class TSLValidator extends ATSLValidator {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.impl.common.ATSLValidator#checkIfTSPServiceTypeIsOCSPCompatible(es.gob.valet.tsl.parsing.impl.common.TSPService, boolean)
+	 * @see es.gob.valet.tsl.certValidation.impl.common.ATSLValidator#checkIfTSPServiceTypeIsOCSPCompatible(es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance, boolean)
 	 */
 	@Override
-	public boolean checkIfTSPServiceTypeIsOCSPCompatible(TSPService tspService, boolean isCertQualified) {
+	public boolean checkIfTSPServiceTypeIsOCSPCompatible(ServiceHistoryInstance shi, boolean isCertQualified) {
 
 		boolean result = false;
 
 		// Si el certificado es cualificado (qualified)...
 		if (isCertQualified) {
 
-			result = tspService.getServiceInformation().getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP_QC);
+			result = shi.getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP_QC);
 
 		}
 		// Si no es cualificado...
 		else {
 
-			result = tspService.getServiceInformation().getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP);
+			result = shi.getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP);
 
 		}
 

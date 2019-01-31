@@ -57,6 +57,8 @@ import es.gob.valet.rest.elements.ResultTslInfVal;
 import es.gob.valet.rest.elements.TslInformation;
 import es.gob.valet.rest.elements.TslInformationResponse;
 import es.gob.valet.rest.elements.TslRevocationStatus;
+import es.gob.valet.rest.elements.TspServiceHistoryInf;
+import es.gob.valet.rest.elements.TspServiceInformation;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.impl.common.ATSLValidator;
@@ -298,6 +300,7 @@ public class TslRestService implements ITslRestService {
 			// Completamos los datos básicos en la respuesta.
 			ResultTslInfVal resultTslInfVal = new ResultTslInfVal();
 			TslInformation tslInformation = new TslInformation();
+			tslInformation.setEtsiSpecificationAndVersion(tslValidatorResult.getTslEtsiSpecificationAndVersion());
 			tslInformation.setCountryRegion(tslValidatorResult.getTslCountryRegionCode());
 			tslInformation.setSequenceNumber(tslValidatorResult.getTslSequenceNumber());
 			tslInformation.setTslLocation(tsldco.getTslLocationUri());
@@ -334,9 +337,34 @@ public class TslRestService implements ITslRestService {
 					// para ambos casos.
 					CertDetectedInTSL certDetectedInTsl = new CertDetectedInTSL();
 					certDetectedInTsl.setTspName(tslValidatorResult.getTSPName());
-					certDetectedInTsl.setTspServiceName(tslValidatorResult.getTSPServiceNameForDetect());
-					certDetectedInTsl.setTspServiceType(tslValidatorResult.getTSPServiceForDetect().getServiceInformation().getServiceTypeIdentifier().toString());
-					certDetectedInTsl.setTspServiceStatus(tslValidatorResult.getTSPServiceForDetect().getServiceInformation().getServiceStatus().toString());
+
+					// Creamos el objeto que define la información del
+					// TSP-Service.
+					TspServiceInformation tspServiceInformation = new TspServiceInformation();
+					tspServiceInformation.setTspServiceName(tslValidatorResult.getTSPServiceNameForDetect());
+					tspServiceInformation.setTspServiceType(tslValidatorResult.getTSPServiceForDetect().getServiceInformation().getServiceTypeIdentifier().toString());
+					tspServiceInformation.setTspServiceStatus(tslValidatorResult.getTSPServiceForDetect().getServiceInformation().getServiceStatus().toString());
+					tspServiceInformation.setTspServiceStatusStartingDate(tslValidatorResult.getTSPServiceForDetect().getServiceInformation().getServiceStatusStartingTime());
+
+					// Si se ha hecho uso de la información del histórico del
+					// servicio...
+					if (tslValidatorResult.getTSPServiceHistoryInformationInstanceNameForDetect() != null) {
+
+						// Creamos el objeto que representa la información del
+						// histórico del servicio.
+						TspServiceHistoryInf tspServiceHistoryInf = new TspServiceHistoryInf();
+						tspServiceHistoryInf.setTspServiceName(tslValidatorResult.getTSPServiceHistoryInformationInstanceNameForDetect());
+						tspServiceHistoryInf.setTspServiceType(tslValidatorResult.getTSPServiceHistoryInformationInstanceForDetect().getServiceTypeIdentifier().toString());
+						tspServiceHistoryInf.setTspServiceStatus(tslValidatorResult.getTSPServiceHistoryInformationInstanceForDetect().getServiceStatus().toString());
+						tspServiceHistoryInf.setTspServiceStatusStartingDate(tslValidatorResult.getTSPServiceHistoryInformationInstanceForDetect().getServiceStatusStartingTime());
+						// Lo asignamos a la información del servicio.
+						tspServiceInformation.setTspServiceHistoryInf(tspServiceHistoryInf);
+
+					}
+
+					// Lo establecemos en la información de detección del
+					// certificado.
+					certDetectedInTsl.setTspServiceInformation(tspServiceInformation);
 
 					// Si se ha solicitado obtener información del
 					// certificado...
@@ -551,9 +579,33 @@ public class TslRestService implements ITslRestService {
 		tslRevocationStatus.setDpAia(ATSLValidator.TSP_SERVICE_NAME_FOR_DIST_POINT.equals(tslValidatorResult.getTSPServiceNameForValidate()));
 		// Si no ha sido por el DP / AIA, es por un servicio...
 		if (!tslRevocationStatus.getDpAia()) {
-			tslRevocationStatus.setTspServiceName(tslValidatorResult.getTSPServiceNameForValidate());
-			tslRevocationStatus.setTspServiceType(tslValidatorResult.getTSPServiceForValidate().getServiceInformation().getServiceTypeIdentifier().toString());
-			tslRevocationStatus.setTspServiceStatus(tslValidatorResult.getTSPServiceForValidate().getServiceInformation().getServiceStatus().toString());
+
+			// Creamos el objeto que define la información del TSP-Service.
+			TspServiceInformation tspServiceInformation = new TspServiceInformation();
+			tspServiceInformation.setTspServiceName(tslValidatorResult.getTSPServiceNameForValidate());
+			tspServiceInformation.setTspServiceType(tslValidatorResult.getTSPServiceForValidate().getServiceInformation().getServiceTypeIdentifier().toString());
+			tspServiceInformation.setTspServiceStatus(tslValidatorResult.getTSPServiceForValidate().getServiceInformation().getServiceStatus().toString());
+			tspServiceInformation.setTspServiceStatusStartingDate(tslValidatorResult.getTSPServiceForValidate().getServiceInformation().getServiceStatusStartingTime());
+
+			// Si se ha hecho uso de la información del histórico del
+			// servicio...
+			if (tslValidatorResult.getTSPServiceHistoryInformationInstanceNameForValidate() != null) {
+
+				// Creamos el objeto que representa la información del
+				// histórico del servicio.
+				TspServiceHistoryInf tspServiceHistoryInf = new TspServiceHistoryInf();
+				tspServiceHistoryInf.setTspServiceName(tslValidatorResult.getTSPServiceHistoryInformationInstanceNameForValidate());
+				tspServiceHistoryInf.setTspServiceType(tslValidatorResult.getTSPServiceHistoryInformationInstanceForValidate().getServiceTypeIdentifier().toString());
+				tspServiceHistoryInf.setTspServiceStatus(tslValidatorResult.getTSPServiceHistoryInformationInstanceForValidate().getServiceStatus().toString());
+				tspServiceHistoryInf.setTspServiceStatusStartingDate(tslValidatorResult.getTSPServiceHistoryInformationInstanceForValidate().getServiceStatusStartingTime());
+				// Lo asignamos a la información del servicio.
+				tspServiceInformation.setTspServiceHistoryInf(tspServiceHistoryInf);
+
+			}
+
+			// Lo establecemos en la información de revocación del certificado.
+			tslRevocationStatus.setTspServiceInformation(tspServiceInformation);
+
 		}
 
 		// En función del tipo de evidencia...

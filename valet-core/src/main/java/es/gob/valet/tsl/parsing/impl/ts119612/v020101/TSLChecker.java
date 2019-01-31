@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/12/2018.
+ * @version 1.3, 31/01/2019.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -100,7 +100,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSPInformation;
  * <p>Class that represents a TSL Data Checker of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/12/2018.
+ * @version 1.3, 31/01/2019.
  */
 public class TSLChecker extends ATSLChecker {
 
@@ -1285,22 +1285,19 @@ public class TSLChecker extends ATSLChecker {
 			// Si se ha detectado que es de tipo CA/QC, hay que comprobar
 			// que al menos existe la extensión AdditionalServiceInformation
 			// en el servicio.
-			// TODO: Se elimina esta comprobación para los servicios históricos,
-			// ya que de momento no se usan.
-			// if (valueOK && sti.equals(ITSLCommonURIs.TSL_SERVICETYPE_CA_QC)
-			// &&
-			// !checkIfIsDefinedSomeExtensionTypeInTSPService(serviceHistoryInstance,
-			// IAnyTypeExtension.IMPL_ADDITIONAL_SERVICE_INFORMATION)) {
-			// throw new TSLMalformedException(IValetException.COD_187,
-			// Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL237, new
-			// Object[ ] {
-			// serviceHistoryInstance.getServiceNameInLanguage(Locale.UK.getLanguage())
-			// }));
-			// LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL237,
-			// new Object[ ] {
-			// serviceHistoryInstance.getServiceNameInLanguage(Locale.UK.getLanguage())
-			// }));
-			// }
+			if (valueOK && sti.equals(ITSLCommonURIs.TSL_SERVICETYPE_CA_QC) && !checkIfIsDefinedSomeExtensionTypeInTSPService(serviceHistoryInstance, IAnyTypeExtension.IMPL_ADDITIONAL_SERVICE_INFORMATION)) {
+
+				// TODO Se cambia la propagación de la excepción por el error
+				// por un warning en el log, ya que si no se relaja esta
+				// comprobación, muchas TSL serían rechazadas.
+				// throw new TSLMalformedException(IValetException.COD_187,
+				// Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL237, new
+				// Object[ ] {
+				// serviceHistoryInstance.getServiceNameInLanguage(Locale.UK.getLanguage())
+				// }));
+				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL237, new Object[ ] { serviceHistoryInstance.getServiceNameInLanguage(Locale.UK.getLanguage()) }));
+
+			}
 
 			// Para certificados no cualificados.
 			valueOK = valueOK || isServiceTypeForNonQualifiedCerts(sti);
@@ -1367,18 +1364,20 @@ public class TSLChecker extends ATSLChecker {
 				try {
 					checkDigitalIdsListInServiceHistoryInstance(diList);
 				} catch (TSLMalformedException e) {
-					LOGGER.warn(e.getErrorDescription());
-					LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICEDIGITALIDENTITY }));
+
 					// TODO: Se suaviza esta comprobación para evitar que no se
-					// carguen algunas
-					// TSL, teniendo en cuenta que aún no se hace uso de la
-					// información histórica
-					// de los servicios.
+					// carguen algunas TSL, y se hará uso de toda la información
+					// de identidades digitales disponibles aunque esto no sea
+					// del todo correcto.
 					// throw new TSLMalformedException(IValetException.COD_187,
 					// Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020,
 					// new Object[ ] {
 					// ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICEDIGITALIDENTITY
 					// }), e);
+
+					LOGGER.warn(e.getErrorDescription());
+					LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICEDIGITALIDENTITY }));
+
 				}
 
 			}
@@ -1510,15 +1509,16 @@ public class TSLChecker extends ATSLChecker {
 		}
 
 		if (!isValid) {
-			// TODO: Se ha relajado la comprobación del estado en el histórico,
-			// ya que no estamos haciendo uso de este y actualmente (04/07/2016)
-			// hay múltiples TSL que no lo definen adecuadamente.
-			// throw new TSLMalformedException(IValetException.COD_187,
-			// Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020,
+			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_STATUS }));
+			// TODO De momento no se relaja esta comprobación, ya que el
+			// estado del servicio es imprescindible para un tratamiento
+			// correcto.
+			// En caso de querer relajarse, se debe lanzar el siguiente
+			// warning en vez de la anterior excepción.
+			// LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL229,
 			// new Object[ ] {
-			// ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_STATUS }));
-			// En su lugar se pone un warning.
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL229, new Object[ ] { serviceHistoryInstance.getServiceNameInLanguage(Locale.UK.getLanguage()), serviceType, serviceStatus }));
+			// serviceHistoryInstance.getServiceNameInLanguage(Locale.UK.getLanguage()),
+			// serviceType, serviceStatus }));
 		}
 
 	}

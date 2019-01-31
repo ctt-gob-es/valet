@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 25/11/2018.
+ * @version 1.3, 31/01/2019.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 25/11/2018.
+ * @version 1.3, 31/01/2019.
  */
 public interface ICoreTslMessages {
 
@@ -697,10 +697,12 @@ public interface ICoreTslMessages {
 	 */
 	String LOGMTSL122 = "logMTSL122";
 
-//	/**
-//	 * Constant attribute that represents the name of the property <code>logMTSL123</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
-//	 */
-//	String LOGMTSL123 = "logMTSL123";
+	// /**
+	// * Constant attribute that represents the name of the property
+	// <code>logMTSL123</code> belonging to the file
+	// messages/valet-core/tsl_xx_YY.properties.
+	// */
+	// String LOGMTSL123 = "logMTSL123";
 
 	/**
 	 * Constant attribute that represents the name of the property <code>logMTSL124</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
@@ -1421,10 +1423,26 @@ public interface ICoreTslMessages {
 	 * Constant attribute that represents the name of the property <code>logMTSL258</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	String LOGMTSL258 = "logMTSL258";
+
 	/**
 	 * Constant attribute that represents the name of the property <code>logMTSL259</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	String LOGMTSL259 = "logMTSL259";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL260</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL260 = "logMTSL260";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL261</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL261 = "logMTSL261";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL262</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL262 = "logMTSL262";
 
 	// /**
 	// * Constant attribute that represents the name of the property

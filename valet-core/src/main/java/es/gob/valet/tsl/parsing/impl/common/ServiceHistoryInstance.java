@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -39,7 +39,7 @@ import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
  * <p>Class that defines a TSP Service History Information with all its information
  * not dependent of the specification or TSL version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 public class ServiceHistoryInstance implements Serializable {
 
@@ -80,6 +80,11 @@ public class ServiceHistoryInstance implements Serializable {
 	 * Attribute that represents a list with all the extensions associated to this Service Information.
 	 */
 	private List<IAnyTypeExtension> serviceInformationExtensions = null;
+
+	/**
+	 * Attribute that represents a flag to indicate if this service instance is valid and usable.
+	 */
+	private boolean serviceValidAndUsable = true;
 
 	/**
 	 * Constructor method for the class ServiceHistoryInstance.java.
@@ -222,6 +227,22 @@ public class ServiceHistoryInstance implements Serializable {
 	 */
 	public final boolean isThereSomeServiceInformationExtension() {
 		return !serviceInformationExtensions.isEmpty();
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #serviceValidAndUsable}.
+	 * @return the value of the attribute {@link #serviceValidAndUsable}.
+	 */
+	public final boolean isServiceValidAndUsable() {
+		return serviceValidAndUsable;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #serviceValidAndUsable}.
+	 * @param serviceValidAndUsableParam The value for the attribute {@link #serviceValidAndUsable}.
+	 */
+	public final void setServiceValidAndUsable(boolean serviceValidAndUsableParam) {
+		this.serviceValidAndUsable = serviceValidAndUsableParam;
 	}
 
 }

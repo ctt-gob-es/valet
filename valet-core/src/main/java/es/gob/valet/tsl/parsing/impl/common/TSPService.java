@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -33,7 +33,7 @@ import java.util.List;
  * <p>Class that defines a TSP Service with all its information not dependent
  * of the specification or TSL version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 public class TSPService implements Serializable {
 
@@ -78,7 +78,8 @@ public class TSPService implements Serializable {
 	}
 
 	/**
-	 * Gets an array of service information about the history of the TSP.
+	 * Gets a list of service information about the history of the TSP
+	 * ordered by service status starting time, from news to older.
 	 * @return List of service information about the history of the TSP.
 	 * <code>null</code> if there is not.
 	 */
@@ -99,7 +100,30 @@ public class TSPService implements Serializable {
 	public final void addNewServiceHistory(ServiceHistoryInstance shi) {
 
 		if (shi != null) {
-			shiList.add(shi);
+
+			// Nos aseguramos que se añade de forma ordenada por fecha
+			// de más reciente a más antigua.
+			// Si es el primero, lo añadimos simplemente.
+			if (shiList.isEmpty()) {
+				shiList.add(shi);
+			}
+			// Si no, vamos recorriendo los existentes hasta encontrar
+			// uno cuya fecha sea anterior, y se coloca en esa posición.
+			else {
+				boolean alreadyAdded = false;
+				for (int index = 0; !alreadyAdded && index < shiList.size(); index++) {
+					if (shiList.get(index).getServiceStatusStartingTime().before(shi.getServiceStatusStartingTime())) {
+						shiList.add(index, shi);
+						alreadyAdded = true;
+					}
+				}
+				// Si aún no lo hemos añadido es que hay que hacerlo
+				// al final.
+				if (!alreadyAdded) {
+					shiList.add(shi);
+				}
+			}
+
 		}
 
 	}

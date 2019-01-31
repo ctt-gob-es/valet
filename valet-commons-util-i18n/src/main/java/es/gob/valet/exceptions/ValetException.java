@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 18/10/2018.
+ * @version 1.3, 31/01/2019.
  */
 package es.gob.valet.exceptions;
 
@@ -33,7 +33,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class for encapsulate exceptions thrown by the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 18/10/2018.
+ * @version 1.3, 31/01/2019.
  */
 public class ValetException extends Exception implements IValetException {
 
@@ -78,7 +78,12 @@ public class ValetException extends Exception implements IValetException {
 		super(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
 		errorCode = errorCodeParam;
 		errorDesc = errorDescParam;
-		LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
+		// Solamente en trace escribimos el mensaje y la excepción, por si es
+		// controlada
+		// posteriormente para ocultarla pero es necesario tenerla en cuenta
+		// para
+		// desarrollo.
+		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
 	}
 
 	/**
@@ -92,7 +97,12 @@ public class ValetException extends Exception implements IValetException {
 		errorCode = errorCodeParam;
 		errorDesc = errorDescParam;
 		exception = exceptionParam;
-		LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
+		// Solamente en trace escribimos el mensaje y la excepción, por si es
+		// controlada
+		// posteriormente para ocultarla pero es necesario tenerla en cuenta
+		// para
+		// desarrollo.
+		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
 	}
 
 	/**

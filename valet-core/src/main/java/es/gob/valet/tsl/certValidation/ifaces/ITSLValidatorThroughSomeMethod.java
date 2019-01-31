@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 package es.gob.valet.tsl.certValidation.ifaces;
 
@@ -32,13 +32,14 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.tsl.certValidation.impl.common.ATSLValidator;
 import es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
 import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 
 /**
  * <p>Interface that represents a certificate validation using TSL through some specific method.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 public interface ITSLValidatorThroughSomeMethod {
 
@@ -47,9 +48,10 @@ public interface ITSLValidatorThroughSomeMethod {
 	 * @param cert Certificate X509v3 to validate its revocation.
 	 * @param validationDate Validation date to check the certificate status revocation.
 	 * @param tspService TSL - TSP Service from which extract the information to validate the certificate.
+	 * @param shi TSL - TSP Service History Instance from which extract the information to validate the certificate.
 	 * @param validationResult Object where must be stored the validation result data.
 	 */
-	void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, TSLValidatorResult validationResult);
+	void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, ServiceHistoryInstance shi, TSLValidatorResult validationResult);
 
 	/**
 	 * Method that searchs if some of the input revocation values are verified by the input service, and
@@ -58,10 +60,10 @@ public interface ITSLValidatorThroughSomeMethod {
 	 * @param basicOcspResponse Basic OCSP response to check if it is compatible with the TSL.
 	 * @param crl CRL to check if is compatible with the TSL to check the revocation status of the certificate.
 	 * @param validationDate Validation date to check the certificate status revocation.
-	 * @param tspService TSL - TSP Service from which extract the information to validate the certificate.
+	 * @param shi TSL - TSP Service History Information from which extract the information to validate the certificate.
 	 * @param validationResult Object where must be stored the validation result data.
 	 */
-	void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, TSPService tspService, TSLValidatorResult validationResult);
+	void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult);
 
 	/**
 	 * Method that validates the input x509 v3 certificate using the distribution point information on it.

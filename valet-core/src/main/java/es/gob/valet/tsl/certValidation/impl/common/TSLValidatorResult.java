@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -38,12 +38,13 @@ import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 import es.gob.valet.tsl.exceptions.TSLValidationException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
 
 /**
  * <p>Class that represents a TSL validation result.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 public class TSLValidatorResult implements ITSLValidatorResult {
 
@@ -113,6 +114,16 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	private TSPService tspServiceForDetect = null;
 
 	/**
+	 * Attribute that represents the name of the TSP Service History-Information used for detect the certificate.
+	 */
+	private String tspServiceHistoryInformationInstanceNameForDetect = null;
+
+	/**
+	 * Attribute that represents the TSP Service History-Information used for detect the certificate.
+	 */
+	private ServiceHistoryInstance tspServiceHistoryInformationInstanceForDetect = null;
+
+	/**
 	 * Attribute that represents the name of the TSP Service used for validate the certificate.
 	 */
 	private String tspServiceNameForValidate = null;
@@ -121,6 +132,16 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 * Attribute that represents the TSP Service used for validate the certificate.
 	 */
 	private TSPService tspServiceForValidate = null;
+
+	/**
+	 * Attribute that represents the name of the TSP Service History-Information used for validate the certificate.
+	 */
+	private String tspServiceHistoryInformationInstanceNameForValidate = null;
+
+	/**
+	 * Attribute that represents the TSP Service History-Information used for validate the certificate.
+	 */
+	private ServiceHistoryInstance tspServiceHistoryInformationInstanceForValidate = null;
 
 	/**
 	 * Attribute that represents the mapping that indicates the type of the certificate.
@@ -366,6 +387,40 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 
 	/**
 	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#getTSPServiceHistoryInformationInstanceNameForDetect()
+	 */
+	@Override
+	public String getTSPServiceHistoryInformationInstanceNameForDetect() {
+		return tspServiceHistoryInformationInstanceNameForDetect;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #tspServiceHistoryInformationInstanceNameForDetect}.
+	 * @param tspServiceHistoryInformationInstanceNameForDetectParam The value for the attribute {@link #tspServiceHistoryInformationInstanceNameForDetect}.
+	 */
+	public final void setTSPServiceHistoryInformationInstanceNameForDetect(String tspServiceHistoryInformationInstanceNameForDetectParam) {
+		this.tspServiceHistoryInformationInstanceNameForDetect = tspServiceHistoryInformationInstanceNameForDetectParam;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#getTSPServiceHistoryInformationInstanceForDetect()
+	 */
+	@Override
+	public ServiceHistoryInstance getTSPServiceHistoryInformationInstanceForDetect() {
+		return tspServiceHistoryInformationInstanceForDetect;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #tspServiceHistoryInformationInstanceForDetect}.
+	 * @param tspServiceHistoryInformationInstanceForDetectParam The value for the attribute {@link #tspServiceHistoryInformationInstanceForDetect}.
+	 */
+	public final void setTSPServiceHistoryInformationInstanceForDetect(ServiceHistoryInstance tspServiceHistoryInformationInstanceForDetectParam) {
+		this.tspServiceHistoryInformationInstanceForDetect = tspServiceHistoryInformationInstanceForDetectParam;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#getTSPServiceNameForValidate()
 	 */
 	@Override
@@ -379,6 +434,40 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 */
 	public final void setTSPServiceNameForValidate(String tspServiceNameForValidateParam) {
 		this.tspServiceNameForValidate = tspServiceNameForValidateParam;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#getTSPServiceHistoryInformationInstanceNameForValidate()
+	 */
+	@Override
+	public String getTSPServiceHistoryInformationInstanceNameForValidate() {
+		return tspServiceHistoryInformationInstanceNameForValidate;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #tspServiceHistoryInformationInstanceNameForValidate}.
+	 * @param tspServiceHistoryInformationInstanceNameForValidateParam The value for the attribute {@link #tspServiceHistoryInformationInstanceNameForValidate}.
+	 */
+	public final void setTspServiceHistoryInformationInstanceNameForValidate(String tspServiceHistoryInformationInstanceNameForValidateParam) {
+		this.tspServiceHistoryInformationInstanceNameForValidate = tspServiceHistoryInformationInstanceNameForValidateParam;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#getTSPServiceHistoryInformationInstanceForValidate()
+	 */
+	@Override
+	public ServiceHistoryInstance getTSPServiceHistoryInformationInstanceForValidate() {
+		return tspServiceHistoryInformationInstanceForValidate;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #tspServiceHistoryInformationInstanceForValidate}.
+	 * @param tspServiceHistoryInformationInstanceForValidateParam The value for the attribute {@link #tspServiceHistoryInformationInstanceForValidate}.
+	 */
+	public final void setTspServiceHistoryInformationInstanceForValidate(ServiceHistoryInstance tspServiceHistoryInformationInstanceForValidateParam) {
+		this.tspServiceHistoryInformationInstanceForValidate = tspServiceHistoryInformationInstanceForValidateParam;
 	}
 
 	/**
@@ -642,6 +731,10 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 		setTSPServiceForDetect(null);
 		setTSPServiceNameForValidate(null);
 		setTSPServiceForValidate(null);
+		setTSPServiceHistoryInformationInstanceNameForDetect(null);
+		setTSPServiceHistoryInformationInstanceForDetect(null);
+		setTspServiceHistoryInformationInstanceNameForValidate(null);
+		setTspServiceHistoryInformationInstanceForValidate(null);
 		setMappingType(ITSLValidatorResult.MAPPING_TYPE_UNKNOWN);
 		setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_OTHER_UNKNOWN);
 		setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_UNKNOWN);

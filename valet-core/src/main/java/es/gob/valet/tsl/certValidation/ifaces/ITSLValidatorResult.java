@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 package es.gob.valet.tsl.certValidation.ifaces;
 
@@ -33,12 +33,13 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.tsl.certValidation.impl.common.TSLCertificateExtensionAnalyzer;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
 
 /**
  * <p>Interface that represents a validation result using TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 31/01/2019.
  */
 public interface ITSLValidatorResult {
 
@@ -177,6 +178,20 @@ public interface ITSLValidatorResult {
 	TSPService getTSPServiceForDetect();
 
 	/**
+	 * Gets the name of the TSP Service History-Information which has detected the certificate.
+	 * @return the name of the TSP Service History-Information which has detected the certificate,
+	 * or <code>null</code> if the certificate has not been detected.
+	 */
+	String getTSPServiceHistoryInformationInstanceNameForDetect();
+
+	/**
+	 * Gets the TSP Service History-Information which has detected the certificate.
+	 * @return TSP Service History-Information which has detected the certificate, or
+	 * <code>null</code> if the certificate has not been detected.
+	 */
+	ServiceHistoryInstance getTSPServiceHistoryInformationInstanceForDetect();
+
+	/**
 	 * Gets the name of the TSP Service which has validate the certificate.
 	 * @return the name of the TSP Service which has validate the certificate, or <code>null</code> if
 	 * the certificate has not been validated.
@@ -189,6 +204,20 @@ public interface ITSLValidatorResult {
 	 * the certificate has not been validated.
 	 */
 	TSPService getTSPServiceForValidate();
+
+	/**
+	 * Gets the name of the TSP Service History-Information which has validate the certificate.
+	 * @return the name of the TSP Service History-Information which has validate the
+	 * certificate, or <code>null</code> if the certificate has not been validated.
+	 */
+	String getTSPServiceHistoryInformationInstanceNameForValidate();
+
+	/**
+	 * Gets the TSP Service History-Information which has validate the certificate.
+	 * @return the TSP Service History-Information which has validate the certificate,
+	 * or <code>null</code> if the certificate has not been validated.
+	 */
+	ServiceHistoryInstance getTSPServiceHistoryInformationInstanceForValidate();
 
 	/**
 	 * Constant attribute that represents the value for a mapping certificate type unknown.

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version  1.10, 24/01/2019.
+ * @version 1.11, 31/01/2019.
  */
 package es.gob.valet.rest.controller;
 
@@ -80,7 +80,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.10, 24/01/2019.
+ * @version 1.11, 31/01/2019.
  */
 @RestController
 public class TslRestController {
@@ -267,7 +267,7 @@ public class TslRestController {
 			}
 
 		} catch (TSLManagingException e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }), e);
 			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL_WEB));
 			listTSL = StreamSupport.stream(tslDataService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
