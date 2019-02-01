@@ -20,17 +20,21 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 31/01/2019.
+ * @version 1.3, 01/02/2019.
  */
 package es.gob.valet.rest.elements;
 
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import es.gob.valet.commons.utils.UtilsDate;
+
 /**
  * <p>Class that represents structure of a TSL information request.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
- * @version 1.2, 31/01/2019.
+ * @version 1.3, 01/02/2019.
  */
 public class TslInformation implements Serializable {
 
@@ -62,11 +66,13 @@ public class TslInformation implements Serializable {
 	/**
 	 * Attribute that represents the issued date in TSL information.
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = UtilsDate.FORMAT_DATE_TIME_JSON)
 	private Date issued;
 
 	/**
 	 * Attribute that represents the next update date in TSL information.
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = UtilsDate.FORMAT_DATE_TIME_JSON)
 	private Date nextUpdate;
 
 	/**

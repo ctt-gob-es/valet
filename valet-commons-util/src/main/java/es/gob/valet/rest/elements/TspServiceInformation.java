@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>29/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 29/01/2019.
+ * @version 1.1, 01/02/2019.
  */
 package es.gob.valet.rest.elements;
 
@@ -29,7 +29,7 @@ import java.io.Serializable;
 /**
  * <p>Class that represents the structure of a TSP Service Information.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 29/01/2019.
+ * @version 1.1, 01/02/2019.
  */
 public class TspServiceInformation extends TspServiceHistoryInf implements Serializable {
 
@@ -63,7 +63,7 @@ public class TspServiceInformation extends TspServiceHistoryInf implements Seria
 	 * Checks if the service history information has been used and it is defined.
 	 * @return <code>true</code> if there is service history information, otherwise <code>false</code>.
 	 */
-	public boolean isUsedServiceHistoryInf() {
+	public boolean checkIfThereIsServiceHistoryInf() {
 		return tspServiceHistoryInf != null;
 	}
 

@@ -165,10 +165,10 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificate(java.security.cert.X509Certificate, java.util.Date, es.gob.valet.tsl.parsing.impl.common.TSPService, es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificate(java.security.cert.X509Certificate, java.util.Date, es.gob.valet.tsl.parsing.impl.common.TSPService, es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance, boolean, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
 	 */
 	@Override
-	public void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, ServiceHistoryInstance shi, TSLValidatorResult validationResult) {
+	public void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, ServiceHistoryInstance shi, boolean isHistoricServiceInf, TSLValidatorResult validationResult) {
 
 		// Obtenemos los datos que identificarán al firmante de la respuesta
 		// OCSP.
@@ -248,7 +248,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 						// Si se ha determinado un estado, guardamos la
 						// información
 						// del servicio.
-						if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
+						if (isHistoricServiceInf && !validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
 							validationResult.setTspServiceHistoryInformationInstanceForValidate(shi);
 						}
 

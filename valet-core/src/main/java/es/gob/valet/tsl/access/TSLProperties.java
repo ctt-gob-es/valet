@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/11/2018.
+ * @version 1.2, 01/02/2019.
  */
 package es.gob.valet.tsl.access;
 
@@ -42,7 +42,7 @@ import es.gob.valet.i18n.messages.ICoreTslMessages;
 /**
  * <p>Class that provides access to the differents properties associated to the TSL operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/11/2018.
+ * @version 1.2, 01/02/2019.
  */
 public final class TSLProperties {
 
@@ -332,6 +332,30 @@ public final class TSLProperties {
 
 				}
 
+			}
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Gets the value for the timegap for the validation date in the service 'DetectCertInTslInfoAndValidation'.
+	 * @return the value for the timegap for the validation date in the service 'DetectCertInTslInfoAndValidation'.
+	 * If there is some proble recovering it, then is returned the default value 30000.
+	 */
+	public static int getServiceDetectCertInTslInfoAndValidationParamValDateTimeGap() {
+
+		int result = NumberConstants.NUM30000;
+
+		String timeGap = StaticValetConfig.getProperty(StaticValetConfig.TSL_SERVICE_DETECTCERTINTSLINFOANDVALIDATION_VALIDATIONDATE_TIMEGAPALLOWED);
+		if (!UtilsStringChar.isNullOrEmptyTrim(timeGap)) {
+
+			try {
+				result = Integer.parseInt(timeGap);
+			} catch (NumberFormatException e) {
+				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_SERVICE_DETECTCERTINTSLINFOANDVALIDATION_VALIDATIONDATE_TIMEGAPALLOWED, NumberConstants.NUM30000 }), e);
 			}
 
 		}

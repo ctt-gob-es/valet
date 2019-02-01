@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.10, 24/01/2019.
+ * @version 1.11, 01/02/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -39,7 +39,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.10, 24/01/2019.
+ * @version 1.11, 01/02/2019.
  */
 public final class StaticValetConfig {
 
@@ -188,6 +188,12 @@ public final class StaticValetConfig {
 	 * for a certificate qualified to 'NO'.
 	 */
 	public static final String TSL_MAPPING_CERTQUALIFIED_NO = "tsl.mapping.certQualified.NO";
+	
+	/**
+	 * Constant attribute that represents the key for the property that indicates the timgap allowed for the input
+	 * parameter in the service 'detectCertInTslInfoAndValidation' that represents the validation date.
+	 */
+	public static final String TSL_SERVICE_DETECTCERTINTSLINFOANDVALIDATION_VALIDATIONDATE_TIMEGAPALLOWED = "tsl.service.detectCertInTslInfoAndValidation.validationDate.timeGapAllowed";
 
 	/**
 	 * Constant attribute that represents name for property <i>"graylog.enabled"</i>.

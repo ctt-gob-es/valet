@@ -109,10 +109,10 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificate(java.security.cert.X509Certificate, java.util.Date, es.gob.valet.tsl.parsing.impl.common.TSPService, es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificate(java.security.cert.X509Certificate, java.util.Date, es.gob.valet.tsl.parsing.impl.common.TSPService, es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance, boolean, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
 	 */
 	@Override
-	public void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, ServiceHistoryInstance shi, TSLValidatorResult validationResult) {
+	public void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, ServiceHistoryInstance shi, boolean isHistoricServiceInf, TSLValidatorResult validationResult) {
 
 		// Obtenemos los datos que identificarán al emisor de la CRL.
 		extractCRLIssuerData(shi);
@@ -194,7 +194,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 					searchCertInCRL(cert, validationDate, crl, validationResult);
 					// Si se ha determinado un estado, guardamos la información
 					// del servicio.
-					if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
+					if (isHistoricServiceInf && !validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
 						validationResult.setTspServiceHistoryInformationInstanceForValidate(shi);
 					}
 
@@ -428,12 +428,16 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 			// Si ya detectamos el certificado a validar en la TSL, y tenemos
 			// el servicio que representa a su emisor, comprobamos si es el
-			// mismo emisor de la CRL.
-			if (validationResult.getTSPServiceHistoryInformationInstanceForDetect() != null) {
+			// mismo emisor de la CRL. Primero miramos si es histórico.
+			ServiceHistoryInstance shi = validationResult.getTSPServiceHistoryInformationInstanceForDetect();
+			if (shi == null && validationResult.getTSPServiceForDetect()!=null) {
+				shi = validationResult.getTSPServiceForDetect().getServiceInformation();
+			}
+			if (shi != null) {
 
 				// Construimos un procesador de identidad digital con
 				// este.
-				DigitalIdentitiesProcessor dipAux = new DigitalIdentitiesProcessor(validationResult.getTSPServiceHistoryInformationInstanceForDetect().getAllDigitalIdentities());
+				DigitalIdentitiesProcessor dipAux = new DigitalIdentitiesProcessor(shi.getAllDigitalIdentities());
 
 				// Lo usamos para tratar de verificar la CRL.
 				result = checkCRLisValidWithDigitalIdentitiesProcessor(crl, dipAux);
@@ -469,7 +473,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 						// Primero, en función de la fecha indicada, comprobamos
 						// si tenemos que hacer uso de este servicio o de alguno
 						// de sus históricos.
-						ServiceHistoryInstance shi = null;
+						shi = null;
 						if (tspService.getServiceInformation().getServiceStatusStartingTime().before(validationDate)) {
 
 							if (tspService.getServiceInformation().isServiceValidAndUsable()) {

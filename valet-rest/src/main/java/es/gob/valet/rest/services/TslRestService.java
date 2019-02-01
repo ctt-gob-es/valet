@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 31/01/2019.
+ * @version 1.7, 01/02/2019.
  */
 package es.gob.valet.rest.services;
 
@@ -60,6 +60,7 @@ import es.gob.valet.rest.elements.TslRevocationStatus;
 import es.gob.valet.rest.elements.TspServiceHistoryInf;
 import es.gob.valet.rest.elements.TspServiceInformation;
 import es.gob.valet.tsl.access.TSLManager;
+import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.impl.common.ATSLValidator;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
@@ -68,7 +69,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 31/01/2019.
+ * @version 1.7, 01/02/2019.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -140,17 +141,51 @@ public class TslRestService implements ITslRestService {
 		// si es que se proporciona.
 		Date detectionDateAux = null;
 		if (allIsOk) {
-			if (!UtilsStringChar.isNullOrEmptyTrim(detectionDate)) {
+
+			// Si no es nula, hay que parsearla y comprobar que no sobrepasa
+			// hacia el futuro respecto al intervalo permitido.
+			if (detectionDate != null) {
+
 				try {
-					detectionDateAux = UtilsDate.transformDate(detectionDate.trim(), UtilsDate.FORMAT_DATE_TIME_STANDARD);
+
+					// Parseamos la fecha.
+					detectionDateAux = UtilsDate.transformDate(detectionDate, UtilsDate.FORMAT_DATE_TIME_JSON);
+
+					// Calculamos la fecha límite.
+					int timeGapInMilliseconds = TSLProperties.getServiceDetectCertInTslInfoAndValidationParamValDateTimeGap();
+					Calendar limitDateCal = Calendar.getInstance();
+					limitDateCal.add(Calendar.MILLISECOND, timeGapInMilliseconds);
+					Date limitDate = limitDateCal.getTime();
+
+					// Comparamos la fecha respecto a la límite.
+					// Si la fecha límite es anterior a la fecha de validación,
+					// devolvemos
+					// error en los parámetros de entrada.
+					if (limitDate.before(detectionDateAux)) {
+
+						allIsOk = false;
+						String errorMsg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG006, new Object[ ] { detectionDate });
+						LOGGER.error(errorMsg);
+						result = new DetectCertInTslInfoAndValidationResponse();
+						result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+						result.setDescription(errorMsg);
+
+					}
+
 				} catch (ParseException e) {
+
 					allIsOk = false;
-					LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG006, new Object[ ] { detectionDate }));
+					String errorMsg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG033, new Object[ ] { detectionDate, UtilsDate.FORMAT_DATE_TIME_JSON });
+					LOGGER.error(errorMsg);
 					result = new DetectCertInTslInfoAndValidationResponse();
 					result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
-					result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG006, new Object[ ] { detectionDate }));
+					result.setDescription(errorMsg);
+
 				}
-			} else {
+
+			}
+			// Se establece la fecha actual como fecha de validación.
+			else {
 				detectionDateAux = Calendar.getInstance().getTime();
 			}
 		}
@@ -173,6 +208,7 @@ public class TslRestService implements ITslRestService {
 		}
 
 		return result;
+
 	}
 
 	/**
@@ -770,6 +806,7 @@ public class TslRestService implements ITslRestService {
 			ITSLObject tslObject = (ITSLObject) tsldco.getTslObject();
 
 			TslInformation tslInformation = new TslInformation();
+			tslInformation.setEtsiSpecificationAndVersion(tslObject.getSpecification() + UtilsStringChar.SPECIAL_BLANK_SPACE_STRING + tslObject.getSpecificationVersion());
 			tslInformation.setCountryRegion(tslObject.getSchemeInformation().getSchemeTerritory());
 			tslInformation.setSequenceNumber(tsldco.getSequenceNumber());
 			tslInformation.setTslLocation(tsldco.getTslLocationUri());

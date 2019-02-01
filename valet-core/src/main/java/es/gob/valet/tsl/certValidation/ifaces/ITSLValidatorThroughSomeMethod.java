@@ -49,9 +49,11 @@ public interface ITSLValidatorThroughSomeMethod {
 	 * @param validationDate Validation date to check the certificate status revocation.
 	 * @param tspService TSL - TSP Service from which extract the information to validate the certificate.
 	 * @param shi TSL - TSP Service History Instance from which extract the information to validate the certificate.
+	 * @param isHistoricServiceInf Flag that indicates if the input Service Information is from an Historic Service (<code>true</code>)
+	 * or not (<code>false</code>).
 	 * @param validationResult Object where must be stored the validation result data.
 	 */
-	void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, ServiceHistoryInstance shi, TSLValidatorResult validationResult);
+	void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, ServiceHistoryInstance shi, boolean isHistoricServiceInf, TSLValidatorResult validationResult);
 
 	/**
 	 * Method that searchs if some of the input revocation values are verified by the input service, and

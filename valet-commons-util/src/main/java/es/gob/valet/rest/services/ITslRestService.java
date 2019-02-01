@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 26/11/2018.
+ * @version 1.2, 01/02/2019.
  */
 package es.gob.valet.rest.services;
 
@@ -31,6 +31,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.TslInformationResponse;
@@ -38,7 +39,7 @@ import es.gob.valet.rest.elements.TslInformationResponse;
 /**
  * <p>Interface that represents the TSL restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 26/11/2018.
+ * @version 1.2, 01/02/2019.
  */
 public interface ITslRestService {
 
@@ -108,7 +109,7 @@ public interface ITslRestService {
 	 * @param delegatedApp Delegated application identifier.
 	 * @param tslLocation TSL location to use. It could be <code>null</code>.
 	 * @param certificate Certificate to detect (byte[] in Base64 encoded).
-	 * @param detectionDate Date to use to detect and validate the input certificate. Format: {@code dd/MM/yyyy HH:mm:ss}.
+	 * @param detectionDate Date to use to detect and validate the input certificate. Format: {@value UtilsDate#FORMAT_DATE_TIME_JSON} .
 	 * @param getInfo Flag that indicates if it is necessary to get the certificate information in response.
 	 * @param checkRevStatus Flag that indicates if it is necessary to check the revocation status of the input certificate.
 	 * @param returnRevocationEvidence Flag that indicates if it is necessary to return the revocation evidence (only if {@code checkRevocationStatus} is <code>true</code>).

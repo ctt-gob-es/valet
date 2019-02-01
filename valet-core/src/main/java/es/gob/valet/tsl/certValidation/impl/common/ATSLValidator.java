@@ -505,8 +505,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 				if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
 					validationResult.setTSPServiceNameForValidate(TSP_SERVICE_NAME_FOR_DIST_POINT);
 					validationResult.setTSPServiceForValidate(validationResult.getTSPServiceForDetect());
-					validationResult.setTspServiceHistoryInformationInstanceNameForValidate(TSP_SERVICE_NAME_FOR_DIST_POINT);
-					validationResult.setTspServiceHistoryInformationInstanceForValidate(validationResult.getTSPServiceHistoryInformationInstanceForDetect());
+					if (validationResult.getTSPServiceHistoryInformationInstanceForDetect() != null) {
+						validationResult.setTspServiceHistoryInformationInstanceNameForValidate(TSP_SERVICE_NAME_FOR_DIST_POINT);
+						validationResult.setTspServiceHistoryInformationInstanceForValidate(validationResult.getTSPServiceHistoryInformationInstanceForDetect());
+					}
 				}
 				// Si no es así, hay que tratar de hacerlo mediante los
 				// servicios de la TSL (siempre y cuando no sea un certificado
@@ -542,7 +544,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 						if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
 							assignTSPServiceNameForValidateToResult(validationResult, tspService);
 							validationResult.setTSPServiceForValidate(tspService);
-							assignTSPServiceHistoryInformationNameForValidateToResult(validationResult, validationResult.getTSPServiceHistoryInformationInstanceForValidate());
+							if (validationResult.getTSPServiceHistoryInformationInstanceForValidate() != null) {
+								assignTSPServiceHistoryInformationNameForValidateToResult(validationResult, validationResult.getTSPServiceHistoryInformationInstanceForValidate());
+							}
 						}
 
 					}
@@ -572,6 +576,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// si tenemos que hacer uso de este servicio o de alguno
 		// de sus históricos.
 		ServiceHistoryInstance shi = null;
+		boolean isHistoricServiceInf = false;
 		if (tspService.getServiceInformation().getServiceStatusStartingTime().before(validationDate)) {
 
 			if (tspService.getServiceInformation().isServiceValidAndUsable()) {
@@ -587,6 +592,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					if (shiFromList.getServiceStatusStartingTime().before(validationDate)) {
 						if (shiFromList.isServiceValidAndUsable()) {
 							shi = shiFromList;
+							isHistoricServiceInf = true;
 						}
 						break;
 					}
@@ -599,7 +605,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// Si hemos encontrado al menos uno, intentamos detectar el certificado
 		// con esa información de servicio.
 		if (shi != null) {
-			detectCertificateWithTSPServiceHistoryInstance(cert, isTsaCertificate, validationDate, validationResult, shi);
+			detectCertificateWithTSPServiceHistoryInstance(cert, isTsaCertificate, validationDate, validationResult, shi, isHistoricServiceInf);
 		}
 
 	}
@@ -612,10 +618,12 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * @param validationDate Validation date to check the certificate status revocation.
 	 * @param validationResult Object where is stored the validation result data.
 	 * @param shi Trust Service Provider Service History-Information to use for detect the input certificate.
+	 * @param isHistoricServiceInf Flag that indicates if the input Service Information is from an Historic Service (<code>true</code>)
+	 * or not (<code>false</code>).
 	 * @throws TSLQualificationEvalProcessException In case of some error evaluating the Criteria List of a Qualification
 	 * Extension over the input certificate, and being critical that Qualification Extension.
 	 */
-	private void detectCertificateWithTSPServiceHistoryInstance(X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, ServiceHistoryInstance shi) throws TSLQualificationEvalProcessException {
+	private void detectCertificateWithTSPServiceHistoryInstance(X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, ServiceHistoryInstance shi, boolean isHistoricServiceInf) throws TSLQualificationEvalProcessException {
 
 		// Obtenemos el tipo del servicio.
 		String tspServiceType = shi.getServiceTypeIdentifier().toString();
@@ -654,9 +662,12 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// Se establece el resultado según el estado del servicio.
 					setStatusResultInAccordanceWithTSPServiceCurrentStatus(shi.getServiceStatus().toString(), shi.getServiceStatusStartingTime(), validationDate, validationResult);
 
-					// Guardamos la información del servicio histórico usado.
-					assignTSPServiceHistoryInformationNameForDetectToResult(validationResult, shi);
-					validationResult.setTSPServiceHistoryInformationInstanceForDetect(shi);
+					// Si se trata de un servicio histórico, guardamos la información 
+					// de este.
+					if (isHistoricServiceInf) {
+						assignTSPServiceHistoryInformationNameForDetectToResult(validationResult, shi);
+						validationResult.setTSPServiceHistoryInformationInstanceForDetect(shi);
+					}
 
 				}
 
@@ -751,8 +762,11 @@ public abstract class ATSLValidator implements ITSLValidator {
 						setStatusResultInAccordanceWithTSPServiceCurrentStatus(shi.getServiceStatus().toString(), shi.getServiceStatusStartingTime(), validationDate, validationResult);
 						// Guardamos la información del servicio histórico
 						// usado.
-						assignTSPServiceHistoryInformationNameForDetectToResult(validationResult, shi);
-						validationResult.setTSPServiceHistoryInformationInstanceForDetect(shi);
+						if (isHistoricServiceInf) {
+							assignTSPServiceHistoryInformationNameForDetectToResult(validationResult, shi);
+							validationResult.setTSPServiceHistoryInformationInstanceForDetect(shi);
+						}
+						
 					}
 
 				}
@@ -1197,6 +1211,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// si tenemos que hacer uso de este servicio o de alguno
 		// de sus históricos.
 		ServiceHistoryInstance shi = null;
+		boolean isHistoricServiceInf = false;
 		if (tspService.getServiceInformation().getServiceStatusStartingTime().before(validationDate)) {
 
 			shi = tspService.getServiceInformation();
@@ -1210,6 +1225,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					if (shiFromList.getServiceStatusStartingTime().before(validationDate)) {
 						if (shiFromList.isServiceValidAndUsable()) {
 							shi = shiFromList;
+							isHistoricServiceInf = true;
 						}
 						break;
 					}
@@ -1222,7 +1238,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// Si hemos encontrado al menos uno, intentamos detectar el certificado
 		// con esa información de servicio.
 		if (shi != null) {
-			validateCertificateWithTSPServiceHistoryInstance(cert, validationDate, isCertQualified, validationResult, tspService, shi);
+			validateCertificateWithTSPServiceHistoryInstance(cert, validationDate, isCertQualified, validationResult, tspService, shi, isHistoricServiceInf);
 		}
 
 	}
@@ -1235,8 +1251,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * @param validationResult Object where is stored the validation result data.
 	 * @param tspService Trust Service Provider Service to use for validate the status of the input certificate.
 	 * @param shi Trust Service Provider Service History Instance to use for validate the status of the input certificate.
+	 * @param isHistoricServiceInf Flag that indicates if the input Service Information is from an Historic Service (<code>true</code>)
+	 * or not (<code>false</code>).
 	 */
-	private void validateCertificateWithTSPServiceHistoryInstance(X509Certificate cert, Date validationDate, boolean isCertQualified, TSLValidatorResult validationResult, TSPService tspService, ServiceHistoryInstance shi) {
+	private void validateCertificateWithTSPServiceHistoryInstance(X509Certificate cert, Date validationDate, boolean isCertQualified, TSLValidatorResult validationResult, TSPService tspService, ServiceHistoryInstance shi, boolean isHistoricServiceInf) {
 
 		// Comprobamos que el estado del servicio es OK,
 		// y que su fecha de comienzo del estado es anterior
@@ -1263,7 +1281,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// ha detectado un tipo válido.
 			if (tslValidatorMethod != null) {
 
-				tslValidatorMethod.validateCertificate(cert, validationDate, tspService, shi, validationResult);
+				tslValidatorMethod.validateCertificate(cert, validationDate, tspService, shi, isHistoricServiceInf, validationResult);
 
 			}
 
@@ -1674,7 +1692,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 				if (validationResult.getRevocationValueBasicOCSPResponse() != null || validationResult.getRevocationValueCRL() != null) {
 					assignTSPServiceNameForValidateToResult(validationResult, tspService);
 					validationResult.setTSPServiceForValidate(tspService);
-					assignTSPServiceHistoryInformationNameForValidateToResult(validationResult, validationResult.getTSPServiceHistoryInformationInstanceForValidate());
+					if (validationResult.getTSPServiceHistoryInformationInstanceForValidate() != null) {
+						assignTSPServiceHistoryInformationNameForValidateToResult(validationResult, validationResult.getTSPServiceHistoryInformationInstanceForValidate());
+					}
 					LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL220));
 				}
 
@@ -1701,6 +1721,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// si tenemos que hacer uso de este servicio o de alguno
 		// de sus históricos.
 		ServiceHistoryInstance shi = null;
+		boolean isHistoricServiceInf = false;
 		if (tspService.getServiceInformation().getServiceStatusStartingTime().before(validationDate)) {
 
 			if (tspService.getServiceInformation().isServiceValidAndUsable()) {
@@ -1716,6 +1737,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					if (shiFromList.getServiceStatusStartingTime().before(validationDate)) {
 						if (shiFromList.isServiceValidAndUsable()) {
 							shi = shiFromList;
+							isHistoricServiceInf = true;
 						}
 						break;
 					}
@@ -1730,7 +1752,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			searchCompatibleRevocationValuesInTSPService(cert, validationDate, isCertQualified, validationResult, shi, basicOcspResponse, crl);
 			// Si hemos detectado el servicio histórico que valida
 			// los elementos de revocación, lo almacenamos.
-			if (validationResult.getRevocationValueBasicOCSPResponse() != null || validationResult.getRevocationValueCRL() != null) {
+			if (isHistoricServiceInf && validationResult.getRevocationValueBasicOCSPResponse() != null || validationResult.getRevocationValueCRL() != null) {
 				validationResult.setTspServiceHistoryInformationInstanceForValidate(shi);
 			}
 
