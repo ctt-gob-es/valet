@@ -15,6 +15,6 @@
  ******************************************************************************/
 
 /**
- * Package that provides all the exceptions for the configuration cache layer for the applications.
+ * Package that provides all the elements/items for the configuration cache layer for the applications.
  */
-package es.gob.valet.persistence.configuration.cache.modules.application.exceptions;
+package es.gob.valet.persistence.configuration.cache.modules.application.elements;

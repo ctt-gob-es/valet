@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 24/01/2019.
+ * @version 1.5, 04/02/2019.
  */
 package es.gob.valet.persistence.configuration.cache.engine;
 
@@ -55,7 +55,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Facade for all the configuration cache objects of the configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 24/01/2019.
+ * @version 1.5, 04/02/2019.
  */
 public final class ConfigurationCacheFacade {
 
@@ -344,8 +344,17 @@ public final class ConfigurationCacheFacade {
 		endTime = Calendar.getInstance().getTimeInMillis();
 		LOGGER.info(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG052, new Object[ ] { Long.toString(endTime - initTime) }));
 
-		// La caché de TSL debe inicializarse desde el Core debido a
-		// dependencias.
+		// Se inicializan todas las aplicaciones en la caché
+		// compartida...
+		LOGGER.info(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG013));
+		initTime = Calendar.getInstance().getTimeInMillis();
+		try {
+			getApplicationCacheFacade().initializeAllApplications(inLoadingCache);
+		} catch (Exception e) {
+			LOGGER.error(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG014), e);
+		}
+		endTime = Calendar.getInstance().getTimeInMillis();
+		LOGGER.info(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG040, new Object[ ] { Long.toString(endTime - initTime) }));
 
 	}
 
@@ -394,24 +403,27 @@ public final class ConfigurationCacheFacade {
 	}
 
 	/**
+	 * Gets the unique instance for the Application cache configuration facade.
+	 * @return the unique instance for the Application cache configuration facade.
+	 */
+	private static ApplicationCacheFacade getApplicationCacheFacade() {
+		return ApplicationCacheFacade.getInstance();
+	}
+
+	/**
 	 * Method that reloads an application in the cache.
 	 *
-	 * @param app Application pojo representation.
+	 * @param av Application pojo representation.
 	 * @throws ApplicationCacheException In case of some error reloading in the cache.
 	 */
-	public static void applicationAddUpdateApplication(ApplicationValet app) throws ApplicationCacheException {
+	public static void applicationAddUpdateApplication(ApplicationValet av) throws ApplicationCacheException {
 		// se comprueba que el parámetro de entrada no sea nulo y que se
 		// encuentre definido el identificador
-		if (app == null || app.getIdApplication() == null) {
+		if (av == null || av.getIdApplication() == null) {
 			throw new ApplicationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG005));
 		} else {
-
-			// se recupera el objeto que representa a la aplicación y que aún no
-			// ha sido actualizado
-			ApplicationCacheFacade.getInstance().getApplicationCacheObject(app.getIdApplication().longValue());
-
-			// se recarga la aplicación de la caché.
-			ApplicationCacheFacade.getInstance().reloadApplication(app.getIdApplication());
+			// Se realiza la recarga.
+			getApplicationCacheFacade().addUpdateApplication(av);
 		}
 	}
 
@@ -425,7 +437,7 @@ public final class ConfigurationCacheFacade {
 		// se obtiene la aplicación de la caché antes de eliminarla.
 		ApplicationCacheObject aco = applicationGetApplication(applicationId);
 		if (aco != null) {
-			ApplicationCacheFacade.getInstance().removeApplication(applicationId);
+			getApplicationCacheFacade().removeApplication(applicationId);
 		}
 
 	}

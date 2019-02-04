@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/12/2018.
+ * @version 1.1, 04/02/2018.
  */
 package es.gob.valet.persistence.configuration.cache.modules.application.engine;
 
@@ -38,7 +38,7 @@ import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 /**
  * <p>Class to handle the Application configuration cache .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/12/2018.
+ * @version 1.1, 04/02/2018.
  */
 public final class ApplicationCache extends ConfigurationCache {
 
@@ -93,20 +93,19 @@ public final class ApplicationCache extends ConfigurationCache {
 	/**
 	 * Method that adds an application to the caché. This method aso will check that wheter the application already exists in the cache.
 	 *
-	 * @param app Parameter that represents the application pojo object from the data base.
+	 * @param av Parameter that represents the application pojo object from the data base.
 	 * @param inLoadingCache Flag that indicates if the operation must be executed on the loading auxiliar cache.
 	 * @return Updated/added {@link ApplicationCacheObject}
 	 * @throws ApplicationCacheException In case of some error adding in the cache the application.
 	 */
-	public ApplicationCacheObject addApplication(ApplicationValet app, boolean inLoadingCache) throws ApplicationCacheException {
+	public ApplicationCacheObject addApplication(ApplicationValet av, boolean inLoadingCache) throws ApplicationCacheException {
 		// si el parámetro de entrada es nulo, lanzamos excepción
-		if (app == null) {
+		if (av == null) {
 			throw new ApplicationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG004));
 		} else {
-			ApplicationCacheObject aco = new ApplicationCacheObject(app);
+			ApplicationCacheObject aco = new ApplicationCacheObject(av);
 			aco = addApplication(aco, inLoadingCache);
 			return aco;
-
 		}
 	}
 
@@ -118,7 +117,7 @@ public final class ApplicationCache extends ConfigurationCache {
 	 * @return Updated/added {@link ApplicationCacheObject}.
 	 * @throws ApplicationCacheException In case of some error adding in the cache the application.
 	 */
-	public ApplicationCacheObject addApplication(ApplicationCacheObject aco, boolean inLoadingCache) throws ApplicationCacheException {
+	private ApplicationCacheObject addApplication(ApplicationCacheObject aco, boolean inLoadingCache) throws ApplicationCacheException {
 		ApplicationCacheObject result = null;
 		// si el parámetro de entrada es nulo, lanzamos excepción
 		if (aco == null) {
@@ -251,14 +250,14 @@ public final class ApplicationCache extends ConfigurationCache {
 	 * @param inLoadingCache Flag that indicates if the operation must be executed on the loadin auxiliar cache.
 	 * @throws ApplicationCacheException In case of some error removing form cache the application.
 	 */
-	public void removeApplication(long applicationId, boolean inLoadingCache) throws ApplicationCacheException{
-		//se contruye la ruta en la caché
-		String [] pathRelationIdPath = new String[NumberConstants.NUM3];
+	public void removeApplication(long applicationId, boolean inLoadingCache) throws ApplicationCacheException {
+		// se contruye la ruta en la caché
+		String[ ] pathRelationIdPath = new String[NumberConstants.NUM3];
 		pathRelationIdPath[0] = PATH_BASE;
 		pathRelationIdPath[1] = PATH_BY_ID;
 		pathRelationIdPath[2] = String.valueOf(applicationId);
 
-		//se obtiene la ruta de la aplicación
+		// se obtiene la ruta de la aplicación
 		String appPath = null;
 		try {
 			appPath = getStringFromPath(pathRelationIdPath, inLoadingCache);
@@ -266,15 +265,15 @@ public final class ApplicationCache extends ConfigurationCache {
 			throw new ApplicationCacheException(IValetException.COD_191, e.getErrorDescription(), e);
 		}
 
-		//si no existe, tampoco existe la aplicación
-		if (appPath != null){
+		// si no existe, tampoco existe la aplicación
+		if (appPath != null) {
 			// Se construye la ruta de la aplicación.
 			String[ ] path = new String[NumberConstants.NUM3];
 			path[0] = PATH_BASE;
 			path[1] = PATH_BY_IDENTIFIER;
 			path[2] = String.valueOf(appPath);
 
-			//eliminamos la relación y la aplicación
+			// eliminamos la relación y la aplicación
 			try {
 				clearObjectPathFromConfigurationCache(pathRelationIdPath, inLoadingCache);
 				clearObjectPathFromConfigurationCache(path, inLoadingCache);
@@ -285,19 +284,18 @@ public final class ApplicationCache extends ConfigurationCache {
 		}
 	}
 
-
 	/**
 	 * This method remove all the applications from the cache.
 	 *
 	 * @param inLoadingCache Flag that indicates if the operation must be executed on the loadin auxiliar cache.
 	 * @throws ApplicationCacheException In case of some error while is cleaning the applications cache.
 	 */
-	public void clearApplicationCache (boolean inLoadingCache) throws ApplicationCacheException{
-		//se construye la ruta en la caché
-		String[] path  = new String[NumberConstants.NUM1];
+	public void clearApplicationCache(boolean inLoadingCache) throws ApplicationCacheException {
+		// se construye la ruta en la caché
+		String[ ] path = new String[NumberConstants.NUM1];
 		path[0] = PATH_BASE;
 
-		//se eliminan todas las aplicaciones de la caché.
+		// se eliminan todas las aplicaciones de la caché.
 		try {
 			clearNodePathFromConfigurationCache(path, inLoadingCache);
 		} catch (ConfigurationCacheException e) {

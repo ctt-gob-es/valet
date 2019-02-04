@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,7 +14,7 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject.java.</p>
  * <b>Description:</b><p>Class that represents an application in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
@@ -33,7 +33,7 @@ import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCac
 import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 
-/** 
+/**
  * <p>Class that represents an application in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 17/12/2018.
@@ -44,6 +44,7 @@ public class ApplicationCacheObject extends ConfigurationCacheObject {
 	 * Attribute that represents the serial version UID.
 	 */
 	private static final long serialVersionUID = -3645579138794227401L;
+
 	/**
 	 * Attribute that represents the application ID.
 	 */
@@ -58,6 +59,7 @@ public class ApplicationCacheObject extends ConfigurationCacheObject {
 	 * Attribute that represents the name of the application.
 	 */
 	private String name = null;
+
 	/**
 	 * Attribute that represents the name of the responsible of the application.
 	 */
@@ -79,7 +81,7 @@ public class ApplicationCacheObject extends ConfigurationCacheObject {
 	private String responsibleMail = null;
 
 	/**
-	 * 
+	 *
 	 * Constructor method for the class ApplicationCacheObject.java.
 	 */
 	private ApplicationCacheObject() {
@@ -151,6 +153,7 @@ public class ApplicationCacheObject extends ConfigurationCacheObject {
 		aco.setResponsibleMail(responsibleMail);
 		aco.setResponsiblePhone(responsiblePhone);
 		return aco;
+
 	}
 
 	/**
@@ -248,7 +251,6 @@ public class ApplicationCacheObject extends ConfigurationCacheObject {
 	public void setResponsibleSurnames(String responsibleSurnamesParam) {
 		this.responsibleSurnames = responsibleSurnamesParam;
 	}
-
 
 	/**
 	 * Gets the value of the attribute {@link #responsibleMail}.

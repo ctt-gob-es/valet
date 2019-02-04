@@ -20,9 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 19/12/2018.
+ * @version 1.1, 04/02/2018.
  */
 package es.gob.valet.persistence.configuration.cache.modules.application.engine;
+
+import java.util.List;
 
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject;
@@ -32,7 +34,7 @@ import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 /**
  * <p>Facade for all the applications configuration cache objects operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19/12/2018.
+ * @version 1.1, 04/02/2018.
  */
 public final class ApplicationCacheFacade {
 
@@ -110,12 +112,12 @@ public final class ApplicationCacheFacade {
 
 	/**
 	 * Adds or update the application in the configuration cache.
-	 * @param aco Object reprensentation of the application in the configuration cache.
+	 * @param av Parameter that represents the application pojo object from the data base.
 	 * @return Application cache object added/updated in the configuration cache.
 	 * @throws ApplicationCacheException In case of some error adding/updating the application in the cache.
 	 */
-	public ApplicationCacheObject addUpdateApplication(ApplicationCacheObject aco) throws ApplicationCacheException{
-		return ApplicationCache.getInstance().addApplication(aco, false);
+	public ApplicationCacheObject addUpdateApplication(ApplicationValet av) throws ApplicationCacheException {
+		return ApplicationCache.getInstance().addApplication(av, false);
 	}
 
 	/**
@@ -144,10 +146,33 @@ public final class ApplicationCacheFacade {
 	 * @return A object representation of the application in the clustered cache. <code>null</code> if it does not exist.
 	 * @throws ApplicationCacheException In case of some error reloading the applicatin from the cache.
 	 */
-	public ApplicationCacheObject reloadApplication(long appId) throws ApplicationCacheException{
+	public ApplicationCacheObject reloadApplication(long appId) throws ApplicationCacheException {
 		removeApplication(appId);
 		return getApplicationCacheObject(appId);
 	}
 
+	/**
+	 * Load all the applications in the cache.
+	 * @param inLoadingCache Flag that indicates if the operation must be executed on the loading auxiliar cache.
+	 * @throws ApplicationCacheException In case of some error adding the applications in the clustered cache.
+	 */
+	public void initializeAllApplications(boolean inLoadingCache) throws ApplicationCacheException {
+
+		// Obtenemos de base de datos todas las aplicaciones.
+		List<ApplicationValet> appList = ManagerPersistenceConfigurationServices.getInstance().getApplicationValetService().getAllApplication();
+
+		// Si la lista de aplicaciones no es nula ni vacía...
+		if (appList != null && !appList.isEmpty()) {
+
+			// Recorremos y vamos añadiendo las aplicaciones en la caché.
+			for (ApplicationValet av: appList) {
+
+				ApplicationCache.getInstance().addApplication(av, inLoadingCache);
+
+			}
+
+		}
+
+	}
 
 }

@@ -20,9 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>10/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 10/12/2018.
+ * @version 1.1, 04/02/2018.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
+
+import java.util.List;
 
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -32,7 +34,7 @@ import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 10/12/2018.
+ * @version 1.1, 04/02/2018.
  */
 public interface IApplicationValetService {
 
@@ -68,8 +70,7 @@ public interface IApplicationValetService {
 	 * Method that gets all the applications from the persistence.
 	 * @return a {@link Iterable<ApplicationValet>} with the information of all applications.
 	 */
-	Iterable<ApplicationValet> getAllApplication();
-
+	List<ApplicationValet> getAllApplication();
 
 	/**
 	 * Method that gets the list for the given {@link DataTablesInput}.
