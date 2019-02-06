@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 31/01/2019.
+ * @version 1.3, 06/02/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -66,7 +66,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.Qualifications;
  * <p>Abstract class that represents a TSL validator with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 31/01/2019.
+ * @version 1.3, 06/02/2019.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -662,7 +662,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// Se establece el resultado según el estado del servicio.
 					setStatusResultInAccordanceWithTSPServiceCurrentStatus(shi.getServiceStatus().toString(), shi.getServiceStatusStartingTime(), validationDate, validationResult);
 
-					// Si se trata de un servicio histórico, guardamos la información 
+					// Si se trata de un servicio histórico, guardamos la
+					// información
 					// de este.
 					if (isHistoricServiceInf) {
 						assignTSPServiceHistoryInformationNameForDetectToResult(validationResult, shi);
@@ -766,7 +767,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							assignTSPServiceHistoryInformationNameForDetectToResult(validationResult, shi);
 							validationResult.setTSPServiceHistoryInformationInstanceForDetect(shi);
 						}
-						
+
 					}
 
 				}
@@ -1619,7 +1620,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// es el firmante de la respuesta OCSP o de alguna de las CRL.
 		// Si hemos obtenido el servicio con el que se detecta al certificado a
 		// validar...
-		if (validationResult.getTSPServiceHistoryInformationInstanceForDetect() != null) {
+		if (validationResult.getTSPServiceForDetect() != null) {
+
+			ServiceHistoryInstance shiForDetect = validationResult.getTSPServiceHistoryInformationInstanceForDetect() == null ? validationResult.getTSPServiceForDetect().getServiceInformation() : validationResult.getTSPServiceHistoryInformationInstanceForDetect();
 
 			ITSLValidatorThroughSomeMethod tslValidatorMethod = null;
 			// Primero lo intentamos mediante respuestas OCSP (si las hay).
@@ -1628,7 +1631,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// Creamos el validador.
 				tslValidatorMethod = new TSLValidatorThroughOCSP();
 				// Ejecutamos la comprobación.
-				tslValidatorMethod.searchRevocationValueCompatible(cert, basicOcspResponse, crl, validationDate, validationResult.getTSPServiceHistoryInformationInstanceForDetect(), validationResult);
+				tslValidatorMethod.searchRevocationValueCompatible(cert, basicOcspResponse, crl, validationDate, shiForDetect, validationResult);
 
 			}
 
@@ -1639,7 +1642,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// Creamos el validador.
 				tslValidatorMethod = new TSLValidatorThroughCRL();
 				// Ejecutamos la comprobación.
-				tslValidatorMethod.searchRevocationValueCompatible(cert, basicOcspResponse, crl, validationDate, validationResult.getTSPServiceHistoryInformationInstanceForDetect(), validationResult);
+				tslValidatorMethod.searchRevocationValueCompatible(cert, basicOcspResponse, crl, validationDate, shiForDetect, validationResult);
 
 			}
 

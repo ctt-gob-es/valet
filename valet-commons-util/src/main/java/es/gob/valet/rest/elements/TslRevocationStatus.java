@@ -20,21 +20,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 01/02/2019.
+ * @version 1.4, 06/02/2019.
  */
 package es.gob.valet.rest.elements;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import es.gob.valet.commons.utils.UtilsDate;
+import es.gob.valet.rest.elements.json.ByteArrayB64;
+import es.gob.valet.rest.elements.json.DateString;
 
 /**
  * <p>Class that represents structure of a TSL revocation status.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
- * @version 1.3, 01/02/2019.
+ * @version 1.4, 06/02/2019.
  */
 public class TslRevocationStatus implements Serializable {
 
@@ -81,7 +79,7 @@ public class TslRevocationStatus implements Serializable {
 	/**
 	 * Attribute that represents the evidence in TSL revocation status.
 	 */
-	private byte[ ] evidence;
+	private ByteArrayB64 evidence;
 
 	/**
 	 * Attribute that represents the revocation reason of the certificate.
@@ -91,8 +89,7 @@ public class TslRevocationStatus implements Serializable {
 	/**
 	 * Attribute that represents the revocation date of the certificate.
 	 */
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = UtilsDate.FORMAT_DATE_TIME_JSON)
-	private Date revocationDate;
+	private DateString revocationDate;
 
 	/**
 	 * Gets the value of the attribute {@link #revocationStatus}.
@@ -210,7 +207,7 @@ public class TslRevocationStatus implements Serializable {
 	 * Gets the value of the attribute {@link #evidence}.
 	 * @return the value of the attribute {@link #evidence}.
 	 */
-	public final byte[ ] getEvidence() {
+	public final ByteArrayB64 getEvidence() {
 		return evidence;
 	}
 
@@ -218,10 +215,8 @@ public class TslRevocationStatus implements Serializable {
 	 * Sets the value of the attribute {@link #evidence}.
 	 * @param evidenceParam The value for the attribute {@link #evidence}.
 	 */
-	public final void setEvidence(final byte[ ] evidenceParam) {
-		if (evidenceParam != null) {
-			this.evidence = evidenceParam.clone();
-		}
+	public final void setEvidence(final ByteArrayB64 evidenceParam) {
+		this.evidence = evidenceParam;
 	}
 
 	/**
@@ -244,7 +239,7 @@ public class TslRevocationStatus implements Serializable {
 	 * Gets the value of the attribute {@link #revocationDate}.
 	 * @return the value of the attribute {@link #revocationDate}.
 	 */
-	public final Date getRevocationDate() {
+	public final DateString getRevocationDate() {
 		return revocationDate;
 	}
 
@@ -252,7 +247,7 @@ public class TslRevocationStatus implements Serializable {
 	 * Sets the value of the attribute {@link #revocationDate}.
 	 * @param revocationDateParam The value for the attribute {@link #revocationDate}.
 	 */
-	public final void setRevocationDate(Date revocationDateParam) {
+	public final void setRevocationDate(DateString revocationDateParam) {
 		this.revocationDate = revocationDateParam;
 	}
 

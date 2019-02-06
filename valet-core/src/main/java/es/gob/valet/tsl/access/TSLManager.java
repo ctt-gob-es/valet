@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 04/12/2018.
+ * @version 1.5, 06/02/2019.
  */
 package es.gob.valet.tsl.access;
 
@@ -79,7 +79,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 04/12/2018.
+ * @version 1.5, 06/02/2019.
  */
 public final class TSLManager {
 
@@ -598,10 +598,12 @@ public final class TSLManager {
 	 * @param validationDate Validation date to check.
 	 * @param crls Array with the revocation values to analyze of type CRL.
 	 * @param ocsps Array with the revocation values to analyze of type BasicOCSPResponse.
+	 * @param calculateMappings Flag that indicates if it is necessary to calculate the mappings associated if the certificate
+	 * has been detected (<code>true</code>) or not (<code>false</code>).
 	 * @return TSL validation result, with all the collected information.
 	 * @throws TSLManagingException In case of some error getting the TSL information from the cache, or using that to validate the certificate.
 	 */
-	public ITSLValidatorResult validateX509withTSLandRevocationValues(X509Certificate cert, Date validationDate, X509CRL[ ] crls, BasicOCSPResp[ ] ocsps) throws TSLManagingException {
+	public ITSLValidatorResult validateX509withTSLandRevocationValues(X509Certificate cert, Date validationDate, X509CRL[ ] crls, BasicOCSPResp[ ] ocsps, boolean calculateMappings) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
@@ -616,7 +618,7 @@ public final class TSLManager {
 
 		// Si hemos recuperado una TSL...
 		if (tslObject != null) {
-			result = validateX509withRevocationValues(cert, validationDateToUse, crls, ocsps, tslObject);
+			result = validateX509withRevocationValues(cert, validationDateToUse, crls, ocsps, tslObject, calculateMappings);
 		}
 
 		return result;
@@ -630,10 +632,12 @@ public final class TSLManager {
 	 * @param crls Array with the revocation values to analyze of type CRL.
 	 * @param ocspResponses Array with the revocation values to analyze of type BasicOCSPResponse.
 	 * @param tslLocation URI string representation of the TSL location where to obtain it.
+	 * @param calculateMappings Flag that indicates if it is necessary to calculate the mappings associated if the certificate
+	 * has been detected (<code>true</code>) or not (<code>false</code>).
 	 * @return TSL validation result, with all the collected information.
 	 * @throws TSLManagingException In case of some error getting the TSL information from the cache, or using that to validate the certificate.
 	 */
-	public ITSLValidatorResult validateX509withTSLLocationAndRevocationValues(X509Certificate cert, Date date, X509CRL[ ] crls, BasicOCSPResp[ ] ocspResponses, String tslLocation) throws TSLManagingException {
+	public ITSLValidatorResult validateX509withTSLLocationAndRevocationValues(X509Certificate cert, Date date, X509CRL[ ] crls, BasicOCSPResp[ ] ocspResponses, String tslLocation, boolean calculateMappings) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
@@ -648,7 +652,7 @@ public final class TSLManager {
 
 		// Si hemos recuperado una TSL...
 		if (tslObject != null) {
-			result = validateX509withRevocationValues(cert, validationDateToUse, crls, ocspResponses, tslObject);
+			result = validateX509withRevocationValues(cert, validationDateToUse, crls, ocspResponses, tslObject, calculateMappings);
 		}
 
 		return result;
@@ -662,10 +666,12 @@ public final class TSLManager {
 	 * @param crls Array with the revocation values to analyze of type CRL.
 	 * @param ocspResponses Array with the revocation values to analyze of type BasicOCSPResponse.
 	 * @param tslObject TSL object representation to use.
+	 * @param calculateMappings Flag that indicates if it is necessary to calculate the mappings associated if the certificate
+	 * has been detected (<code>true</code>) or not (<code>false</code>).
 	 * @return TSL validation result, with all the collected information.
 	 * @throws TSLManagingException In case of some error verifying the revocation values.
 	 */
-	private ITSLValidatorResult validateX509withRevocationValues(X509Certificate cert, Date date, X509CRL[ ] crls, BasicOCSPResp[ ] ocspResponses, TSLObject tslObject) throws TSLManagingException {
+	private ITSLValidatorResult validateX509withRevocationValues(X509Certificate cert, Date date, X509CRL[ ] crls, BasicOCSPResp[ ] ocspResponses, TSLObject tslObject, boolean calculateMappings) throws TSLManagingException {
 
 		// Obtenemos el resultado de comprobar si las evidencias de revocación
 		// OCSP y/o CRL
@@ -677,7 +683,9 @@ public final class TSLManager {
 		ITSLValidatorResult result = verifiesRevocationValuesForX509withTSL(cert, crls, ocspResponses, tslObject, date);
 
 		// Calculamos los mapeos si procede.
-		calculateMappingsForCertificateAndSetInResult(cert, tslObject, result);
+		if (calculateMappings) {
+			calculateMappingsForCertificateAndSetInResult(cert, tslObject, result);
+		}
 
 		return result;
 

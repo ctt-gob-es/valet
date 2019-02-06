@@ -20,21 +20,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 01/02/2019.
+ * @version 1.4, 06/02/2019.
  */
 package es.gob.valet.rest.elements;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import es.gob.valet.commons.utils.UtilsDate;
+import es.gob.valet.rest.elements.json.ByteArrayB64;
+import es.gob.valet.rest.elements.json.DateString;
 
 /**
  * <p>Class that represents structure of a TSL information request.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
- * @version 1.3, 01/02/2019.
+ * @version 1.4, 06/02/2019.
  */
 public class TslInformation implements Serializable {
 
@@ -66,19 +64,17 @@ public class TslInformation implements Serializable {
 	/**
 	 * Attribute that represents the issued date in TSL information.
 	 */
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = UtilsDate.FORMAT_DATE_TIME_JSON)
-	private Date issued;
+	private DateString issued;
 
 	/**
 	 * Attribute that represents the next update date in TSL information.
 	 */
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = UtilsDate.FORMAT_DATE_TIME_JSON)
-	private Date nextUpdate;
+	private DateString nextUpdate;
 
 	/**
 	 * Attribute that represents the xml data in TSL information.
 	 */
-	private byte[ ] tslXmlData;
+	private ByteArrayB64 tslXmlData;
 
 	/**
 	 * Gets the value of the attribute {@link #etsiSpecificationAndVersion}.
@@ -148,7 +144,7 @@ public class TslInformation implements Serializable {
 	 * Gets the value of the attribute {@link #issued}.
 	 * @return the value of the attribute {@link #issued}.
 	 */
-	public Date getIssued() {
+	public DateString getIssued() {
 		return issued;
 	}
 
@@ -156,7 +152,7 @@ public class TslInformation implements Serializable {
 	 * Sets the value of the attribute {@link #issued}.
 	 * @param issuedParam The value for the attribute {@link #issued}.
 	 */
-	public void setIssued(final Date issuedParam) {
+	public void setIssued(final DateString issuedParam) {
 		this.issued = issuedParam;
 	}
 
@@ -164,7 +160,7 @@ public class TslInformation implements Serializable {
 	 * Gets the value of the attribute {@link #nextUpdate}.
 	 * @return the value of the attribute {@link #nextUpdate}.
 	 */
-	public Date getNextUpdate() {
+	public DateString getNextUpdate() {
 		return nextUpdate;
 	}
 
@@ -172,7 +168,7 @@ public class TslInformation implements Serializable {
 	 * Sets the value of the attribute {@link #nextUpdate}.
 	 * @param nextUpdateParam The value for the attribute {@link #nextUpdate}.
 	 */
-	public void setNextUpdate(final Date nextUpdateParam) {
+	public void setNextUpdate(final DateString nextUpdateParam) {
 		this.nextUpdate = nextUpdateParam;
 	}
 
@@ -180,7 +176,7 @@ public class TslInformation implements Serializable {
 	 * Gets the value of the attribute {@link #tslXmlData}.
 	 * @return the value of the attribute {@link #tslXmlData}.
 	 */
-	public byte[ ] getTslXmlData() {
+	public ByteArrayB64 getTslXmlData() {
 		return tslXmlData;
 	}
 
@@ -188,7 +184,7 @@ public class TslInformation implements Serializable {
 	 * Sets the value of the attribute {@link #tslXmlData}.
 	 * @param tslXmlDataParam The value for the attribute {@link #tslXmlData}.
 	 */
-	public void setTslXmlData(final byte[ ] tslXmlDataParam) {
+	public void setTslXmlData(final ByteArrayB64 tslXmlDataParam) {
 		this.tslXmlData = tslXmlDataParam;
 	}
 

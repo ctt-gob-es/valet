@@ -20,21 +20,18 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>29/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 01/02/2019.
+ * @version 1.2, 06/02/2019.
  */
 package es.gob.valet.rest.elements;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import es.gob.valet.commons.utils.UtilsDate;
+import es.gob.valet.rest.elements.json.DateString;
 
 /**
  * <p>Class that represents the structure of a TSP Service History Information.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 01/02/2019.
+ * @version 1.2, 06/02/2019.
  */
 public class TspServiceHistoryInf implements Serializable {
 
@@ -61,8 +58,7 @@ public class TspServiceHistoryInf implements Serializable {
 	/**
 	 * Attribute that represents the TSP service status starting date.
 	 */
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = UtilsDate.FORMAT_DATE_TIME_JSON)
-	private Date tspServiceStatusStartingDate;
+	private DateString tspServiceStatusStartingDate;
 
 	/**
 	 * Gets the value of the attribute {@link #tspServiceName}.
@@ -116,7 +112,7 @@ public class TspServiceHistoryInf implements Serializable {
 	 * Gets the value of the attribute {@link #tspServiceStatusStartingDate}.
 	 * @return the value of the attribute {@link #tspServiceStatusStartingDate}.
 	 */
-	public final Date getTspServiceStatusStartingDate() {
+	public final DateString getTspServiceStatusStartingDate() {
 		return tspServiceStatusStartingDate;
 	}
 
@@ -124,7 +120,7 @@ public class TspServiceHistoryInf implements Serializable {
 	 * Sets the value of the attribute {@link #tspServiceStatusStartingDate}.
 	 * @param tspServiceStatusStartingDateParam The value for the attribute {@link #tspServiceStatusStartingDate}.
 	 */
-	public final void setTspServiceStatusStartingDate(Date tspServiceStatusStartingDateParam) {
+	public final void setTspServiceStatusStartingDate(DateString tspServiceStatusStartingDateParam) {
 		this.tspServiceStatusStartingDate = tspServiceStatusStartingDateParam;
 	}
 

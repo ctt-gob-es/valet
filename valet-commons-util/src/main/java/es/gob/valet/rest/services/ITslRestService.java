@@ -20,9 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 01/02/2019.
+ * @version 1.3, 06/02/2019.
  */
 package es.gob.valet.rest.services;
+
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -35,11 +37,13 @@ import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.TslInformationResponse;
+import es.gob.valet.rest.elements.json.ByteArrayB64;
+import es.gob.valet.rest.elements.json.DateString;
 
 /**
  * <p>Interface that represents the TSL restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 01/02/2019.
+ * @version 1.3, 06/02/2019.
  */
 public interface ITslRestService {
 
@@ -94,6 +98,16 @@ public interface ITslRestService {
 	String PARAM_GET_TSL_XML_DATA = "getTslXmlData";
 
 	/**
+	 * Constant attribute that represents the token parameter 'crlsByteArray'.
+	 */
+	String PARAM_CRLS_BYTE_ARRAY = "crlsByteArray";
+
+	/**
+	 * Constant attribute that represents the token parameter 'basicOcspResponsesByteArray'.
+	 */
+	String PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY = "basicOcspResponsesByteArray";
+
+	/**
 	 * Constant attribute that represents the token parameter 'detectCertInTslInfoAndValidation'.
 	 */
 	String SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION = "detectCertInTslInfoAndValidation";
@@ -108,11 +122,15 @@ public interface ITslRestService {
 	 * @param application Application identifier.
 	 * @param delegatedApp Delegated application identifier.
 	 * @param tslLocation TSL location to use. It could be <code>null</code>.
-	 * @param certificate Certificate to detect (byte[] in Base64 encoded).
-	 * @param detectionDate Date to use to detect and validate the input certificate. Format: {@value UtilsDate#FORMAT_DATE_TIME_JSON} .
+	 * @param certByteArrayB64 Certificate to detect (byte[] in Base64 encoded).
+	 * @param detectionDate Date to use to detect and validate the input certificate. Format: {@value UtilsDate#FORMAT_DATE_TIME_JSON}.
 	 * @param getInfo Flag that indicates if it is necessary to get the certificate information in response.
 	 * @param checkRevStatus Flag that indicates if it is necessary to check the revocation status of the input certificate.
 	 * @param returnRevocationEvidence Flag that indicates if it is necessary to return the revocation evidence (only if {@code checkRevocationStatus} is <code>true</code>).
+	 * @param crlsByteArrayB64List List of byte arrays (in base 64) that represents the CRL to use to validate the certificate. <code>null</code> if there is not.
+	 * If this is defined, then {@code checkRevStatus} is considered <code>true</code>.
+	 * @param basicOcspResponsesByteArrayB64List List of byte arrays (in base 64) that represents the Basic OCSP responses to use to validate the certificate. <code>null</code> if there is not.
+	 * If this is defined, then {@code checkRevStatus} is considered <code>true</code>.
 	 * @return Structure with detected certificate in TSL and revocation status.
 	 * @throws ValetRestException If some error is produced in the execution of the service.
 	 */
@@ -120,7 +138,7 @@ public interface ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) String application, @FormParam(PARAM_DELEGATED_APP) String delegatedApp, @FormParam(PARAM_TSL_LOCATION) String tslLocation, @FormParam(PARAM_CERTIFICATE) String certificate, @FormParam(PARAM_DETECTION_DATE) String detectionDate, @FormParam(PARAM_GET_INFO) Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) Boolean returnRevocationEvidence) throws ValetRestException;
+	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) String application, @FormParam(PARAM_DELEGATED_APP) String delegatedApp, @FormParam(PARAM_TSL_LOCATION) String tslLocation, @FormParam(PARAM_CERTIFICATE) ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) DateString detectionDate, @FormParam(PARAM_GET_INFO) Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List) throws ValetRestException;
 
 	/**
 	 * Method that returns the TSL information.

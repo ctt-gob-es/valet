@@ -20,14 +20,16 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 01/02/2019.
+ * @version 1.4, 06/02/2019.
  */
 package es.gob.valet.rest.client;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.NotFoundException;
@@ -39,17 +41,18 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
-import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.TslInformationResponse;
+import es.gob.valet.rest.elements.json.ByteArrayB64;
+import es.gob.valet.rest.elements.json.DateString;
 import es.gob.valet.rest.services.ITslRestService;
 
 /**
  * <p>Class that implements a client for Valet rest services.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 01/02/2019.
+ * @version 1.4, 06/02/2019.
  */
 public class ValetClient {
 
@@ -89,27 +92,42 @@ public class ValetClient {
 	 * @param application Application identifier.
 	 * @param delegatedApp Delegated application identifier.
 	 * @param tslLocation TSL location to use. It could be <code>null</code>.
-	 * @param certificate Certificate to detect (byte[] in Base64 encoded).
+	 * @param certByteArray Certificate to detect (byte[] encoded).
 	 * @param detectionDate Date to use to detect and validate the input certificate.
 	 * @param getInfo Flag that indicates if it is necessary to get the certificate information in response.
 	 * @param checkRevStatus Flag that indicates if it is necessary to check the revocation status of the input certificate.
 	 * @param returnRevocationEvidence Flag that indicates if it is necessary to return the revocation evidence (only if {@code checkRevocationStatus} is <code>true</code>).
+	 * @param crlsByteArrayList List of CRLs in byte array to use like revocation evidences. It could be <code>null</code>.
+	 * @param basicOcspResponsesByteArrayList List of Basic OCSP Responses in byte array to use like revocation evidences. It could be <code>null</code>.
 	 * @return Structure with detected certificate in TSL and revocation status.
 	 * @throws ValetRestException If some error is produced in the execution of the service.
 	 */
-	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(final String application, final String delegatedApp, final String tslLocation, final String certificate, final Date detectionDate, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevocationEvidence) throws ValetRestException {
+	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(final String application, final String delegatedApp, final String tslLocation, final byte[ ] certByteArray, final Date detectionDate, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevocationEvidence, final List<byte[ ]> crlsByteArrayList, final List<byte[ ]> basicOcspResponsesByteArrayList) throws ValetRestException {
 		LOGGER.info("Starting call to \'detectCertInTslInfoAndValidation\' method at Valet rest service.");
 
 		DetectCertInTslInfoAndValidationResponse response = null;
 		if (restService != null) {
 
-			String detectionDateString = null;
-			if (detectionDate != null) {
-				detectionDateString = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_JSON, detectionDate);
+			DateString dateString = new DateString(detectionDate);
+
+			List<ByteArrayB64> crlsByteArrayB64List = null;
+			if (crlsByteArrayList != null && !crlsByteArrayList.isEmpty()) {
+				crlsByteArrayB64List = new ArrayList<ByteArrayB64>();
+				for (byte[ ] crlByteArray: crlsByteArrayList) {
+					crlsByteArrayB64List.add(new ByteArrayB64(crlByteArray));
+				}
+			}
+
+			List<ByteArrayB64> basicOcspResponsesByteArrayB64List = null;
+			if (basicOcspResponsesByteArrayList != null && !basicOcspResponsesByteArrayList.isEmpty()) {
+				basicOcspResponsesByteArrayB64List = new ArrayList<ByteArrayB64>();
+				for (byte[ ] basicOcspRespByteArray: basicOcspResponsesByteArrayList) {
+					basicOcspResponsesByteArrayB64List.add(new ByteArrayB64(basicOcspRespByteArray));
+				}
 			}
 
 			try {
-				response = restService.detectCertInTslInfoAndValidation(application, delegatedApp, tslLocation, certificate, detectionDateString, getInfo, checkRevStatus, returnRevocationEvidence);
+				response = restService.detectCertInTslInfoAndValidation(application, delegatedApp, tslLocation, new ByteArrayB64(certByteArray), dateString, getInfo, checkRevStatus, returnRevocationEvidence, crlsByteArrayB64List, basicOcspResponsesByteArrayB64List);
 			} catch (ProcessingException e) {
 				if (e.getCause().getClass().equals(UnknownHostException.class)) {
 					throw new ValetRestUnknownHostException(IValetException.COD_193, "Error trying to connect to Valet rest services. Unknown host. The address of the host could not be determined.");

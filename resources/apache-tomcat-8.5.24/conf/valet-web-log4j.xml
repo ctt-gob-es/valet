@@ -32,8 +32,18 @@
 	<!-- Limit categories -->
 	<!-- ================ -->
 	
+	<!-- Categoria general de vaLET -->
+	<category name="es.gob.valet">
+		<priority value="DEBUG"/>
+	</category>
+	
 	<!-- Limit the org.apache category to INFO as its DEBUG is verbose -->
 	<category name="org.apache">
+		<priority value="INFO"/>
+	</category>
+	
+	<!-- Limit the org.hibernate category to INFO as its DEBUG is verbose -->
+	<category name="org.hibernate">
 		<priority value="INFO"/>
 	</category>
 	
@@ -42,10 +52,7 @@
 		<priority value="INFO"/>
 	</category>
 		
-	<!-- Categoria general de vaLET -->
-	<category name="es.gob.valet">
-		<priority value="DEBUG"/>
-	</category>
+
 		 
 	<!-- ======================= -->
 	<!-- Setup the Root category -->

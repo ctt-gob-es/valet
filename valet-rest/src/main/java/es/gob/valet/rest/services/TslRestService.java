@@ -20,16 +20,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 01/02/2019.
+ * @version 1.8, 06/02/2019.
  */
 package es.gob.valet.rest.services;
 
 import java.io.IOException;
 import java.security.cert.CRLException;
+import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -39,9 +42,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPException;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 
+import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -59,6 +65,8 @@ import es.gob.valet.rest.elements.TslInformationResponse;
 import es.gob.valet.rest.elements.TslRevocationStatus;
 import es.gob.valet.rest.elements.TspServiceHistoryInf;
 import es.gob.valet.rest.elements.TspServiceInformation;
+import es.gob.valet.rest.elements.json.ByteArrayB64;
+import es.gob.valet.rest.elements.json.DateString;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
@@ -69,7 +77,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 01/02/2019.
+ * @version 1.8, 06/02/2019.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -81,7 +89,7 @@ public class TslRestService implements ITslRestService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.rest.services.ITslRestService#detectCertInTslInfoAndValidation(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean)
+	 * @see es.gob.valet.rest.services.ITslRestService#detectCertInTslInfoAndValidation(java.lang.String, java.lang.String, java.lang.String, es.gob.valet.rest.elements.json.ByteArrayB64, es.gob.valet.rest.elements.json.DateString, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.util.List, java.util.List)
 	 */
 	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
 	// because Restful needs not final access methods.
@@ -90,12 +98,12 @@ public class TslRestService implements ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocation, @FormParam(PARAM_CERTIFICATE) final String certificate, @FormParam(PARAM_DETECTION_DATE) final String detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence) throws ValetRestException {
+	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocation, @FormParam(PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List) throws ValetRestException {
 		// CHECKSTYLE:ON
 
 		// Indicamos la recepción del servicio junto con los parámetros de
 		// entrada.
-		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG001, new Object[ ] { application, delegatedApp, tslLocation, certificate, detectionDate, getInfo, checkRevStatus, returnRevocationEvidence }));
+		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG001, new Object[ ] { application, delegatedApp, tslLocation, certByteArrayB64, detectionDate, getInfo, checkRevStatus, returnRevocationEvidence }));
 
 		// Inicialmente consideramos que todo es OK para proceder.
 		boolean allIsOk = true;
@@ -104,7 +112,7 @@ public class TslRestService implements ITslRestService {
 		DetectCertInTslInfoAndValidationResponse result = null;
 
 		// Comprobamos los parámetros obligatorios de entrada.
-		String resultCheckParams = checkParamsDetectCertInTslInfoAndValidationResponse(application, certificate, getInfo, checkRevStatus, returnRevocationEvidence);
+		String resultCheckParams = checkParamsDetectCertInTslInfoAndValidationResponse(application, certByteArrayB64.getByteArray(), getInfo, checkRevStatus, returnRevocationEvidence);
 		if (resultCheckParams != null) {
 			allIsOk = false;
 			LOGGER.error(resultCheckParams);
@@ -117,7 +125,7 @@ public class TslRestService implements ITslRestService {
 		X509Certificate x509cert = null;
 		if (allIsOk) {
 			try {
-				x509cert = UtilsCertificate.getX509Certificate(Base64.decodeBase64(certificate));
+				x509cert = UtilsCertificate.getX509Certificate(certByteArrayB64.getByteArray());
 			} catch (CommonUtilsException e) {
 				allIsOk = false;
 				LOGGER.error(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG012));
@@ -130,11 +138,15 @@ public class TslRestService implements ITslRestService {
 		// El parámetro 'returnRevocationEvidence' solo puede ser true
 		// si 'checkRevStatus' es también true.
 		if (allIsOk && returnRevocationEvidence && !checkRevStatus) {
-			allIsOk = false;
-			LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG004));
-			result = new DetectCertInTslInfoAndValidationResponse();
-			result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
-			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG004));
+			boolean thereIsSomeRevocationEvidence = crlsByteArrayB64List != null && !crlsByteArrayB64List.isEmpty();
+			thereIsSomeRevocationEvidence = thereIsSomeRevocationEvidence || basicOcspResponsesByteArrayB64List != null && !basicOcspResponsesByteArrayB64List.isEmpty();
+			if (!checkRevStatus && !thereIsSomeRevocationEvidence) {
+				allIsOk = false;
+				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG004));
+				result = new DetectCertInTslInfoAndValidationResponse();
+				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG004));
+			}
 		}
 
 		// Comprobamos que el formato de la fecha sea adecuado,
@@ -149,7 +161,7 @@ public class TslRestService implements ITslRestService {
 				try {
 
 					// Parseamos la fecha.
-					detectionDateAux = UtilsDate.transformDate(detectionDate, UtilsDate.FORMAT_DATE_TIME_JSON);
+					detectionDateAux = detectionDate.getDate();
 
 					// Calculamos la fecha límite.
 					int timeGapInMilliseconds = TSLProperties.getServiceDetectCertInTslInfoAndValidationParamValDateTimeGap();
@@ -190,12 +202,69 @@ public class TslRestService implements ITslRestService {
 			}
 		}
 
+		// Si todo es OK y se han recibido CRLs...
+		X509CRL[ ] crlArray = null;
+		if (allIsOk && crlsByteArrayB64List != null && !crlsByteArrayB64List.isEmpty()) {
+
+			// Tratamos de parsearlas.
+			try {
+				List<X509CRL> crlList = new ArrayList<X509CRL>();
+				for (ByteArrayB64 crlByteArrayB64: crlsByteArrayB64List) {
+					if (crlByteArrayB64.getByteArray() != null) {
+						crlList.add(UtilsCRL.buildX509CRLfromByteArray(crlByteArrayB64.getByteArray()));
+					}
+				}
+				if (!crlList.isEmpty()) {
+					crlArray = crlList.toArray(new X509CRL[0]);
+				}
+			} catch (CommonUtilsException e) {
+
+				allIsOk = false;
+				String errorMsg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG034);
+				LOGGER.error(errorMsg);
+				result = new DetectCertInTslInfoAndValidationResponse();
+				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setDescription(errorMsg);
+
+			}
+
+		}
+
+		// Si todo es OK y se han recibido respuestas OCSP básicas...
+		BasicOCSPResp[ ] basicOcspRespArray = null;
+		if (allIsOk && basicOcspResponsesByteArrayB64List != null && !basicOcspResponsesByteArrayB64List.isEmpty()) {
+
+			// Tratamos de parsearlas.
+			try {
+				List<BasicOCSPResp> basicOcspRespList = new ArrayList<BasicOCSPResp>();
+				for (ByteArrayB64 basicOcspResponsesByteArrayB64: basicOcspResponsesByteArrayB64List) {
+					if (basicOcspResponsesByteArrayB64 != null) {
+						OCSPResp ocspResp = new OCSPResp(basicOcspResponsesByteArrayB64.getByteArray());
+						basicOcspRespList.add((BasicOCSPResp) ocspResp.getResponseObject());
+					}
+				}
+				if (!basicOcspRespList.isEmpty()) {
+					basicOcspRespArray = basicOcspRespList.toArray(new BasicOCSPResp[0]);
+				}
+			} catch (IOException | OCSPException e) {
+
+				allIsOk = false;
+				String errorMsg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG035);
+				LOGGER.error(errorMsg);
+				result = new DetectCertInTslInfoAndValidationResponse();
+				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setDescription(errorMsg);
+
+			}
+
+		}
+
 		// Si todo ha ido bien, continuamos con el proceso de ejecución del
 		// servicio.
 		if (allIsOk) {
 
 			try {
-				result = executeServiceDetectCertInTslInfoAndValidation(application, delegatedApp, tslLocation, x509cert, detectionDateAux, getInfo.booleanValue(), checkRevStatus.booleanValue(), returnRevocationEvidence);
+				result = executeServiceDetectCertInTslInfoAndValidation(application, delegatedApp, tslLocation, x509cert, detectionDateAux, getInfo.booleanValue(), checkRevStatus.booleanValue(), returnRevocationEvidence, crlArray, basicOcspRespArray);
 			} catch (TSLManagingException e) {
 				result = new DetectCertInTslInfoAndValidationResponse();
 				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
@@ -214,13 +283,13 @@ public class TslRestService implements ITslRestService {
 	/**
 	 * Method that checks required parameters for {@link es.gob.valet.rest.services.TslRestService#detectCertInTslInfoAndValidation} method.
 	 * @param application Application identifier.
-	 * @param certificate certificate Certificate to detect (byte[] in Base64 encoded).
+	 * @param certByteArray Certificate to detect (byte[]).
 	 * @param getInfo Flag that indicates if it is necessary to get the certificate information in response.
 	 * @param checkRevStatus Check revocation status Flag that indicates if it is necessary to check the revocation status of the input certificate.
 	 * @param returnRevoEvid Flag that indicates if it is necessary to return the revocation evidence (only if {@code checkRevocationStatus} is <code>true</code>).
 	 * @return {@link String} with the parameter that not are correctly defined, otherwise <code>null</code>.
 	 */
-	private String checkParamsDetectCertInTslInfoAndValidationResponse(final String application, final String certificate, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevoEvid) {
+	private String checkParamsDetectCertInTslInfoAndValidationResponse(final String application, final byte[ ] certByteArray, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevoEvid) {
 
 		StringBuffer result = new StringBuffer();
 		result.append(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG003, new Object[ ] { ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }));
@@ -235,7 +304,7 @@ public class TslRestService implements ITslRestService {
 			result.append(UtilsStringChar.SYMBOL_CLOSE_BRACKET_STRING);
 		}
 
-		if (UtilsStringChar.isNullOrEmptyTrim(certificate)) {
+		if (certByteArray == null) {
 			checkError = true;
 			result.append(UtilsStringChar.EMPTY_STRING);
 			result.append(UtilsStringChar.SYMBOL_OPEN_BRACKET_STRING);
@@ -283,12 +352,16 @@ public class TslRestService implements ITslRestService {
 	 * @param getInfo Flag that indicates if it is necessary to get the certificate information in response.
 	 * @param checkRevStatus Flag that indicates if it is necessary to check the revocation status of the input certificate.
 	 * @param returnRevocationEvidence Flag that indicates if it is necessary to return the revocation evidence (only if {@code checkRevStatus} is <code>true</code>).
+	 * @param crlArray List of {@link X509CRL} that could be used like revocation evidence. It could be <code>null</code>.
+	 * If this is defined, then {@code checkRevStatus} is considered <code>true</code>.
+	 * @param basicOcspRespArray List of {@link BasicOCSPResp} that could be used like revocation evidence. It could be <code>null</code>.
+	 * If this is defined, then {@code checkRevStatus} is considered <code>true</code>.
 	 * @return Structure of DetectCertInTslInfoAndValidationResponse.
 	 * @throws TSLManagingException In case of some error detecting or validating the certificate with the TSL.
 	 * @throws IOException In case of some error decoding a Basic OCSP Response.
 	 * @throws CRLException Incase of some error decoding a CRL.
 	 */
-	private DetectCertInTslInfoAndValidationResponse executeServiceDetectCertInTslInfoAndValidation(String application, String delegatedApp, String tslLocation, X509Certificate x509cert, Date detectionDate, boolean getInfo, boolean checkRevStatus, Boolean returnRevocationEvidence) throws TSLManagingException, CRLException, IOException {
+	private DetectCertInTslInfoAndValidationResponse executeServiceDetectCertInTslInfoAndValidation(String application, String delegatedApp, String tslLocation, X509Certificate x509cert, Date detectionDate, boolean getInfo, boolean checkRevStatus, Boolean returnRevocationEvidence, X509CRL[ ] crlArray, BasicOCSPResp[ ] basicOcspRespArray) throws TSLManagingException, CRLException, IOException {
 
 		// Inicializamos el resultado a devolver.
 		DetectCertInTslInfoAndValidationResponse result = new DetectCertInTslInfoAndValidationResponse();
@@ -296,10 +369,21 @@ public class TslRestService implements ITslRestService {
 		// En función de si se ha especificado un TSLLocation o no, se intenta
 		// detectar el certificado.
 		ITSLValidatorResult tslValidatorResult = null;
-		if (UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
-			tslValidatorResult = TSLManager.getInstance().validateX509withTSL(x509cert, detectionDate, checkRevStatus, getInfo);
-		} else {
-			tslValidatorResult = TSLManager.getInstance().validateX509withTSL(x509cert, tslLocation, detectionDate, checkRevStatus, getInfo);
+		// Si disponemos de evidencias de revocación a usar...
+		if (crlArray != null && crlArray.length > 0 || basicOcspRespArray != null && basicOcspRespArray.length > 0) {
+			if (UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
+				tslValidatorResult = TSLManager.getInstance().validateX509withTSLandRevocationValues(x509cert, detectionDate, crlArray, basicOcspRespArray, getInfo);
+			} else {
+				tslValidatorResult = TSLManager.getInstance().validateX509withTSLLocationAndRevocationValues(x509cert, detectionDate, crlArray, basicOcspRespArray, tslLocation, getInfo);
+			}
+		}
+		// Si no tenemos evidencias de revocación a usar...
+		else {
+			if (UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
+				tslValidatorResult = TSLManager.getInstance().validateX509withTSL(x509cert, detectionDate, checkRevStatus, getInfo);
+			} else {
+				tslValidatorResult = TSLManager.getInstance().validateX509withTSL(x509cert, tslLocation, detectionDate, checkRevStatus, getInfo);
+			}
 		}
 
 		// Si el resultado es nulo, significa que no se ha encontrado TSL
@@ -340,8 +424,8 @@ public class TslRestService implements ITslRestService {
 			tslInformation.setCountryRegion(tslValidatorResult.getTslCountryRegionCode());
 			tslInformation.setSequenceNumber(tslValidatorResult.getTslSequenceNumber());
 			tslInformation.setTslLocation(tsldco.getTslLocationUri());
-			tslInformation.setIssued(tslValidatorResult.getTslIssueDate());
-			tslInformation.setNextUpdate(tslValidatorResult.getTslNextUpdate());
+			tslInformation.setIssued(new DateString(tslValidatorResult.getTslIssueDate()));
+			tslInformation.setNextUpdate(new DateString(tslValidatorResult.getTslNextUpdate()));
 			tslInformation.setTslXmlData(null);
 			resultTslInfVal.setTslInformation(tslInformation);
 			result.setResultTslInfVal(resultTslInfVal);
@@ -380,7 +464,7 @@ public class TslRestService implements ITslRestService {
 					tspServiceInformation.setTspServiceName(tslValidatorResult.getTSPServiceNameForDetect());
 					tspServiceInformation.setTspServiceType(tslValidatorResult.getTSPServiceForDetect().getServiceInformation().getServiceTypeIdentifier().toString());
 					tspServiceInformation.setTspServiceStatus(tslValidatorResult.getTSPServiceForDetect().getServiceInformation().getServiceStatus().toString());
-					tspServiceInformation.setTspServiceStatusStartingDate(tslValidatorResult.getTSPServiceForDetect().getServiceInformation().getServiceStatusStartingTime());
+					tspServiceInformation.setTspServiceStatusStartingDate(new DateString(tslValidatorResult.getTSPServiceForDetect().getServiceInformation().getServiceStatusStartingTime()));
 
 					// Si se ha hecho uso de la información del histórico del
 					// servicio...
@@ -392,7 +476,7 @@ public class TslRestService implements ITslRestService {
 						tspServiceHistoryInf.setTspServiceName(tslValidatorResult.getTSPServiceHistoryInformationInstanceNameForDetect());
 						tspServiceHistoryInf.setTspServiceType(tslValidatorResult.getTSPServiceHistoryInformationInstanceForDetect().getServiceTypeIdentifier().toString());
 						tspServiceHistoryInf.setTspServiceStatus(tslValidatorResult.getTSPServiceHistoryInformationInstanceForDetect().getServiceStatus().toString());
-						tspServiceHistoryInf.setTspServiceStatusStartingDate(tslValidatorResult.getTSPServiceHistoryInformationInstanceForDetect().getServiceStatusStartingTime());
+						tspServiceHistoryInf.setTspServiceStatusStartingDate(new DateString(tslValidatorResult.getTSPServiceHistoryInformationInstanceForDetect().getServiceStatusStartingTime()));
 						// Lo asignamos a la información del servicio.
 						tspServiceInformation.setTspServiceHistoryInf(tspServiceHistoryInf);
 
@@ -436,7 +520,7 @@ public class TslRestService implements ITslRestService {
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
 								tslRevocationStatus.setIsFromServStat(Boolean.FALSE);
-								addRevocationInfoInResult(tslRevocationStatus, tslValidatorResult);
+								addRevocationInfoInResult(tslRevocationStatus, tslValidatorResult, returnRevocationEvidence);
 								break;
 
 							case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED:
@@ -445,7 +529,7 @@ public class TslRestService implements ITslRestService {
 								tslRevocationStatus.setRevocationDesc(msg);
 								tslRevocationStatus.setIsFromServStat(tslValidatorResult.getTSPServiceNameForDetect().equals(tslValidatorResult.getTSPServiceNameForValidate()));
 								if (!tslRevocationStatus.getIsFromServStat()) {
-									addRevocationInfoInResult(tslRevocationStatus, tslValidatorResult);
+									addRevocationInfoInResult(tslRevocationStatus, tslValidatorResult, returnRevocationEvidence);
 								}
 								break;
 
@@ -602,10 +686,11 @@ public class TslRestService implements ITslRestService {
 	 * Add the revocation information in the result.
 	 * @param tslRevocationStatus TSL revocation status information to return.
 	 * @param tslValidatorResult TSL validation process result to analyze.
+	 * @param returnRevocationEvidence Flag that indicates if it is necessary to return the revocation evidence (only if {@code checkRevStatus} is <code>true</code>).
 	 * @throws IOException In case of some error decoding a Basic OCSP Response.
 	 * @throws CRLException Incase of some error decoding a CRL.
 	 */
-	private void addRevocationInfoInResult(TslRevocationStatus tslRevocationStatus, ITSLValidatorResult tslValidatorResult) throws IOException, CRLException {
+	private void addRevocationInfoInResult(TslRevocationStatus tslRevocationStatus, ITSLValidatorResult tslValidatorResult, boolean returnRevocationEvidence) throws IOException, CRLException {
 
 		// Establecemos la URL de donde se haya obtenido la evidencia de
 		// revocación.
@@ -621,7 +706,7 @@ public class TslRestService implements ITslRestService {
 			tspServiceInformation.setTspServiceName(tslValidatorResult.getTSPServiceNameForValidate());
 			tspServiceInformation.setTspServiceType(tslValidatorResult.getTSPServiceForValidate().getServiceInformation().getServiceTypeIdentifier().toString());
 			tspServiceInformation.setTspServiceStatus(tslValidatorResult.getTSPServiceForValidate().getServiceInformation().getServiceStatus().toString());
-			tspServiceInformation.setTspServiceStatusStartingDate(tslValidatorResult.getTSPServiceForValidate().getServiceInformation().getServiceStatusStartingTime());
+			tspServiceInformation.setTspServiceStatusStartingDate(new DateString(tslValidatorResult.getTSPServiceForValidate().getServiceInformation().getServiceStatusStartingTime()));
 
 			// Si se ha hecho uso de la información del histórico del
 			// servicio...
@@ -633,7 +718,7 @@ public class TslRestService implements ITslRestService {
 				tspServiceHistoryInf.setTspServiceName(tslValidatorResult.getTSPServiceHistoryInformationInstanceNameForValidate());
 				tspServiceHistoryInf.setTspServiceType(tslValidatorResult.getTSPServiceHistoryInformationInstanceForValidate().getServiceTypeIdentifier().toString());
 				tspServiceHistoryInf.setTspServiceStatus(tslValidatorResult.getTSPServiceHistoryInformationInstanceForValidate().getServiceStatus().toString());
-				tspServiceHistoryInf.setTspServiceStatusStartingDate(tslValidatorResult.getTSPServiceHistoryInformationInstanceForValidate().getServiceStatusStartingTime());
+				tspServiceHistoryInf.setTspServiceStatusStartingDate(new DateString(tslValidatorResult.getTSPServiceHistoryInformationInstanceForValidate().getServiceStatusStartingTime()));
 				// Lo asignamos a la información del servicio.
 				tspServiceInformation.setTspServiceHistoryInf(tspServiceHistoryInf);
 
@@ -647,22 +732,26 @@ public class TslRestService implements ITslRestService {
 		// En función del tipo de evidencia...
 		// Si es OCSP...
 		if (tslValidatorResult.getRevocationValueBasicOCSPResponse() != null) {
-			tslRevocationStatus.setEvidenceType(ITslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_OCSP);
-			tslRevocationStatus.setEvidence(tslValidatorResult.getRevocationValueBasicOCSPResponse().getEncoded());
+			if (returnRevocationEvidence) {
+				tslRevocationStatus.setEvidenceType(ITslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_OCSP);
+				tslRevocationStatus.setEvidence(new ByteArrayB64(tslValidatorResult.getRevocationValueBasicOCSPResponse().getEncoded()));
+			}
 			// Si el estado es revocado, devolvemos la razón y fecha.
 			if (tslRevocationStatus.getRevocationStatus().intValue() == ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
 				tslRevocationStatus.setRevocationReason(tslValidatorResult.getRevocationReason());
-				tslRevocationStatus.setRevocationDate(tslValidatorResult.getRevocationDate());
+				tslRevocationStatus.setRevocationDate(new DateString(tslValidatorResult.getRevocationDate()));
 			}
 		}
 		// Si es CRL...
 		else if (tslValidatorResult.getRevocationValueCRL() != null) {
-			tslRevocationStatus.setEvidenceType(ITslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_CRL);
-			tslRevocationStatus.setEvidence(tslValidatorResult.getRevocationValueCRL().getEncoded());
+			if (returnRevocationEvidence) {
+				tslRevocationStatus.setEvidenceType(ITslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_CRL);
+				tslRevocationStatus.setEvidence(new ByteArrayB64(tslValidatorResult.getRevocationValueCRL().getEncoded()));
+			}
 			// Si el estado es revocado, devolvemos la razón y fecha.
 			if (tslRevocationStatus.getRevocationStatus().intValue() == ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
 				tslRevocationStatus.setRevocationReason(tslValidatorResult.getRevocationReason());
-				tslRevocationStatus.setRevocationDate(tslValidatorResult.getRevocationDate());
+				tslRevocationStatus.setRevocationDate(new DateString(tslValidatorResult.getRevocationDate()));
 			}
 		}
 
@@ -810,10 +899,10 @@ public class TslRestService implements ITslRestService {
 			tslInformation.setCountryRegion(tslObject.getSchemeInformation().getSchemeTerritory());
 			tslInformation.setSequenceNumber(tsldco.getSequenceNumber());
 			tslInformation.setTslLocation(tsldco.getTslLocationUri());
-			tslInformation.setIssued(tsldco.getIssueDate());
-			tslInformation.setNextUpdate(tsldco.getNextUpdateDate());
+			tslInformation.setIssued(new DateString(tsldco.getIssueDate()));
+			tslInformation.setNextUpdate(new DateString(tsldco.getNextUpdateDate()));
 			if (getTslXmlData) {
-				tslInformation.setTslXmlData(TSLManager.getInstance().getTSLDataXMLDocument(tsldco.getTslDataId()));
+				tslInformation.setTslXmlData(new ByteArrayB64(TSLManager.getInstance().getTSLDataXMLDocument(tsldco.getTslDataId())));
 			}
 			result.setTslInformation(tslInformation);
 

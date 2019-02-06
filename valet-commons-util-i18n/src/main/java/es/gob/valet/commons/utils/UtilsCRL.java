@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 06/02/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -43,7 +43,10 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.log4j.Logger;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.CRLNumber;
 import org.bouncycastle.asn1.x509.Extension;
@@ -61,7 +64,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Utilities class that provides functionality to manage and work with X.509 CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 06/02/2019.
  */
 public final class UtilsCRL {
 
@@ -498,7 +501,11 @@ public final class UtilsCRL {
 					try {
 
 						// Obtenemos el CRL Number.
-						CRLNumber crlNumber = CRLNumber.getInstance(crl.getExtensionValue(Extension.cRLNumber.getId()));
+						byte[ ] crlNumberExtValByteArray = crl.getExtensionValue(Extension.cRLNumber.getId());
+						ASN1InputStream ais = new ASN1InputStream(crlNumberExtValByteArray);
+						DEROctetString dos = (DEROctetString) ais.readObject();
+						CRLNumber crlNumber = new CRLNumber(ASN1Integer.getInstance(dos.getOctets()).getPositiveValue());
+						UtilsResources.safeCloseInputStream(ais);
 
 						// Si aún no hemos encontrado ninguna, cogemos esta
 						// mismo.
