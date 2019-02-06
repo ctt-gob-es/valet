@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 06/02/2019.
+ * @version 1.3, 06/02/2019.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the rest module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 06/02/2019.
+ * @version 1.3, 06/02/2019.
  */
 public interface IRestGeneralMessages {
 
@@ -242,5 +242,17 @@ public interface IRestGeneralMessages {
 	 * file messages/valet-rest/general_xx_YY.properties.
 	 */
 	String REST_LOG035 = "REST035";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>REST036</code> belonging to the
+	 * file messages/valet-rest/general_xx_YY.properties.
+	 */
+	String REST_LOG036 = "REST036";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>REST037</code> belonging to the
+	 * file messages/valet-rest/general_xx_YY.properties.
+	 */
+	String REST_LOG037 = "REST037";
 
 }

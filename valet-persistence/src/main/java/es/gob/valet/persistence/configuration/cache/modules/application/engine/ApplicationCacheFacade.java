@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 04/02/2018.
+ * @version 1.2, 06/02/2018.
  */
 package es.gob.valet.persistence.configuration.cache.modules.application.engine;
 
@@ -34,7 +34,7 @@ import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 /**
  * <p>Facade for all the applications configuration cache objects operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 04/02/2018.
+ * @version 1.2, 06/02/2018.
  */
 public final class ApplicationCacheFacade {
 
@@ -89,18 +89,20 @@ public final class ApplicationCacheFacade {
 	/**
 	 * Gets the application representation from the clustered cache. If it does not exist, try to get form the database.
 	 *
-	 * @param applicationIdentifier Application identifier.
+	 * @param applicationIdentifier Application identificator.
+	 * @param checkDataBase Flag that indicates if, in case of the application to find is not defined in the cache, this method
+	 * must check if it is defined in the data base (<code>true</code>), or not (<code>false</code>).
 	 * @return A object representation of the application in the clustered cache. <code>null</code> if it does not exist.
 	 * @throws ApplicationCacheException In case of some error getting the application form the clustered cache.
 	 */
-	public ApplicationCacheObject getApplicationCacheObject(String applicationIdentifier) throws ApplicationCacheException {
+	public ApplicationCacheObject getApplicationCacheObject(String applicationIdentifier, boolean checkDataBase) throws ApplicationCacheException {
 		ApplicationCacheObject result = null;
 
 		// se intenta recuperar de caché
 		result = ApplicationCache.getInstance().getApplication(applicationIdentifier, false);
 
 		// si no existe, se obtiene de la base de datos
-		if (result == null) {
+		if (result == null && checkDataBase) {
 			ApplicationValet app = ManagerPersistenceConfigurationServices.getInstance().getApplicationValetService().getApplicationByIdentificator(applicationIdentifier);
 			// si existe en base de datos, se incluye en la caché
 			if (app != null) {

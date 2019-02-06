@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 04/02/2019.
+ * @version 1.6, 06/02/2019.
  */
 package es.gob.valet.persistence.configuration.cache.engine;
 
@@ -55,7 +55,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Facade for all the configuration cache objects of the configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 04/02/2019.
+ * @version 1.6, 06/02/2019.
  */
 public final class ConfigurationCacheFacade {
 
@@ -444,12 +444,24 @@ public final class ConfigurationCacheFacade {
 
 	/**
 	 * Gets the application representation from the cache. If it does not exist, try to get from the data base.
-	 *
 	 * @param applicationId Application identifier
-	 * @return A object representation of the application in the caché.
+	 * @return A object representation of the application in the cache.
 	 * @throws ApplicationCacheException In case of some error getting the application from the cache.
 	 */
 	public static ApplicationCacheObject applicationGetApplication(long applicationId) throws ApplicationCacheException {
 		return ApplicationCacheFacade.getInstance().getApplicationCacheObject(applicationId);
 	}
+	
+	/**
+	 * Gets the application representation from the cache. If it does not exist, try to get from the data base.
+	 * @param app Application identificator.
+	 * @param checkDataBase Flag that indicates if, in case of the application to find is not defined in the cache, this method
+	 * must check if it is defined in the data base (<code>true</code>), or not (<code>false</code>).
+	 * @return A object representation of the application in the cache.
+	 * @throws ApplicationCacheException In case of some error getting the application from the cache.
+	 */
+	public static ApplicationCacheObject applicationGetApplication(String app, boolean checkDataBase) throws ApplicationCacheException {
+		return ApplicationCacheFacade.getInstance().getApplicationCacheObject(app, checkDataBase);
+	}
+	
 }

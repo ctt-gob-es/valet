@@ -56,6 +56,9 @@ import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IRestGeneralMessages;
+import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
+import es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject;
+import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.rest.elements.CertDetectedInTSL;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
@@ -101,9 +104,17 @@ public class TslRestService implements ITslRestService {
 	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocation, @FormParam(PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List) throws ValetRestException {
 		// CHECKSTYLE:ON
 
+		// Si no se ha especificado la aplicación delegada, establecemos el
+		// token 'NOT_SPECIFIED'.
+		String delegatedAppAux = delegatedApp == null ? "NOT_SPECIFIED" : delegatedApp;
+
+		// Miramos el número de CRLs y OCSPs recibidos para el log.
+		int numCRLs = crlsByteArrayB64List == null ? 0 : crlsByteArrayB64List.size();
+		int numOCSPs = basicOcspResponsesByteArrayB64List == null ? 0 : basicOcspResponsesByteArrayB64List.size();
+
 		// Indicamos la recepción del servicio junto con los parámetros de
 		// entrada.
-		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG001, new Object[ ] { application, delegatedApp, tslLocation, certByteArrayB64, detectionDate, getInfo, checkRevStatus, returnRevocationEvidence }));
+		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG001, new Object[ ] { application, delegatedAppAux, tslLocation, certByteArrayB64, detectionDate, getInfo, checkRevStatus, returnRevocationEvidence, numCRLs, numOCSPs }));
 
 		// Inicialmente consideramos que todo es OK para proceder.
 		boolean allIsOk = true;
@@ -119,6 +130,30 @@ public class TslRestService implements ITslRestService {
 			result = new DetectCertInTslInfoAndValidationResponse();
 			result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
 			result.setDescription(resultCheckParams);
+		}
+
+		// Se comprueba que la aplicación recibida se encuentra entre las
+		// dadas de alta en la plataforma.
+		if (allIsOk) {
+
+			ApplicationCacheObject aco = null;
+			try {
+				aco = ConfigurationCacheFacade.applicationGetApplication(application, false);
+			} catch (ApplicationCacheException e) {
+				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG036, new Object[ ] { application }), e);
+			}
+
+			if (aco == null) {
+
+				allIsOk = false;
+				String errorMsg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG037, new Object[ ] { application });
+				LOGGER.error(errorMsg);
+				result = new DetectCertInTslInfoAndValidationResponse();
+				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setDescription(errorMsg);
+
+			}
+
 		}
 
 		// Comprobamos que se parsea correctamente el certificado a detectar.
@@ -264,7 +299,7 @@ public class TslRestService implements ITslRestService {
 		if (allIsOk) {
 
 			try {
-				result = executeServiceDetectCertInTslInfoAndValidation(application, delegatedApp, tslLocation, x509cert, detectionDateAux, getInfo.booleanValue(), checkRevStatus.booleanValue(), returnRevocationEvidence, crlArray, basicOcspRespArray);
+				result = executeServiceDetectCertInTslInfoAndValidation(application, delegatedAppAux, tslLocation, x509cert, detectionDateAux, getInfo.booleanValue(), checkRevStatus.booleanValue(), returnRevocationEvidence, crlArray, basicOcspRespArray);
 			} catch (TSLManagingException e) {
 				result = new DetectCertInTslInfoAndValidationResponse();
 				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
@@ -771,9 +806,13 @@ public class TslRestService implements ITslRestService {
 	public TslInformationResponse getTslInformation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_COUNTRY_REGION_CODE) final String countryRegionCode, @FormParam(PARAM_TSL_LOCATION) final String tslLocation, @FormParam(PARAM_GET_TSL_XML_DATA) final Boolean getTslXmlData) throws ValetRestException {
 		// CHECKSTYLE:ON
 
+		// Si no se ha especificado la aplicación delegada, establecemos el
+		// token 'NOT_SPECIFIED'.
+		String delegatedAppAux = delegatedApp == null ? "NOT_SPECIFIED" : delegatedApp;
+
 		// Indicamos la recepción del servicio junto con los parámetros de
 		// entrada.
-		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG002, new Object[ ] { application, delegatedApp, countryRegionCode, tslLocation, getTslXmlData }));
+		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG002, new Object[ ] { application, delegatedAppAux, countryRegionCode, tslLocation, getTslXmlData }));
 
 		// Inicialmente consideramos que todo es OK para proceder.
 		boolean allIsOk = true;
@@ -791,6 +830,30 @@ public class TslRestService implements ITslRestService {
 			result.setDescription(resultCheckParams);
 		}
 
+		// Se comprueba que la aplicación recibida se encuentra entre las
+		// dadas de alta en la plataforma.
+		if (allIsOk) {
+
+			ApplicationCacheObject aco = null;
+			try {
+				aco = ConfigurationCacheFacade.applicationGetApplication(application, false);
+			} catch (ApplicationCacheException e) {
+				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG036, new Object[ ] { application }), e);
+			}
+
+			if (aco == null) {
+
+				allIsOk = false;
+				String errorMsg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG037, new Object[ ] { application });
+				LOGGER.error(errorMsg);
+				result = new TslInformationResponse();
+				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setDescription(errorMsg);
+
+			}
+
+		}
+
 		// Comprobamos los parámetros opcionales.
 		// Sólo se debe especificar el país/región o la localización de la TSL.
 		if (allIsOk && countryRegionCode != null && tslLocation != null) {
@@ -806,7 +869,7 @@ public class TslRestService implements ITslRestService {
 		if (allIsOk) {
 
 			try {
-				result = executeServiceGetTslInformation(application, delegatedApp, countryRegionCode, tslLocation, getTslXmlData);
+				result = executeServiceGetTslInformation(application, delegatedAppAux, countryRegionCode, tslLocation, getTslXmlData);
 			} catch (TSLManagingException e) {
 				result = new TslInformationResponse();
 				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
