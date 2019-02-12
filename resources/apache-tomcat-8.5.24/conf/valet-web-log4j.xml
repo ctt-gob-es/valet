@@ -24,8 +24,24 @@
 		</layout>
 	</appender>
 
+	<!-- A time/date based rolling appender -->
+	<appender name="VALET-AUDIT-FILE" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${catalina.base}/logs/valet-audit-web.log"/>
+		<param name="Append" value="true"/>
+		<param name="Threshold" value="INFO"/>
+		<!-- Rollover at midnight each day -->
+		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<!-- The default pattern: Date Priority [Category] Message\n -->
+			<param name="ConversionPattern" value="%m%n"/>
+		</layout>
+	</appender>
+
 	<logger additivity="false" name="Valet-Web">
 		<appender-ref ref="VALET-FILE"/>
+	</logger>
+	<logger additivity="false" name="Valet-Audit">
+		<appender-ref ref="VALET-AUDIT-FILE"/>
 	</logger>
 	
 	<!-- ================ -->
@@ -34,7 +50,7 @@
 	
 	<!-- Categoria general de vaLET -->
 	<category name="es.gob.valet">
-		<priority value="DEBUG"/>
+		<priority value="INFO"/>
 	</category>
 	
 	<!-- Limit the org.apache category to INFO as its DEBUG is verbose -->

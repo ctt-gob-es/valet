@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 06/02/2019.
+ * @version 1.9, 12/02/2019.
  */
 package es.gob.valet.rest.services;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -35,11 +36,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
@@ -47,6 +50,11 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import es.gob.valet.audit.EventsCollector;
+import es.gob.valet.audit.IEventsCollectorConstants;
 import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsDate;
@@ -80,7 +88,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 06/02/2019.
+ * @version 1.9, 12/02/2019.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -89,6 +97,12 @@ public class TslRestService implements ITslRestService {
 	 * Attribute that represents the object that manages the log of the class.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(TslRestService.class);
+
+	/**
+	 * Attribute that represents the HTTP Servlet Request.
+	 */
+	@Context
+	private HttpServletRequest httpServletRequest;
 
 	/**
 	 * {@inheritDoc}
@@ -103,6 +117,10 @@ public class TslRestService implements ITslRestService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocation, @FormParam(PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List) throws ValetRestException {
 		// CHECKSTYLE:ON
+
+		// Añadimos la información NDC al log y obtenemos un número único
+		// para la transacción.
+		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION);
 
 		// Si no se ha especificado la aplicación delegada, establecemos el
 		// token 'NOT_SPECIFIED'.
@@ -299,6 +317,10 @@ public class TslRestService implements ITslRestService {
 		if (allIsOk) {
 
 			try {
+				// Si se ha comprobado que todos los parámetros son correctos,
+				// abrimos la transacción
+				// en auditoría.
+				EventsCollector.openTransaction(auditTransNumber, IEventsCollectorConstants.SERVICE_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION_ID, extractRequestByteArray());
 				result = executeServiceDetectCertInTslInfoAndValidation(application, delegatedAppAux, tslLocation, x509cert, detectionDateAux, getInfo.booleanValue(), checkRevStatus.booleanValue(), returnRevocationEvidence, crlArray, basicOcspRespArray);
 			} catch (TSLManagingException e) {
 				result = new DetectCertInTslInfoAndValidationResponse();
@@ -306,11 +328,61 @@ public class TslRestService implements ITslRestService {
 				result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG009, new Object[ ] { ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }));
 				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG010, new Object[ ] { ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }), e);
 			} catch (Exception e) {
+				LoggingInformationNDC.unregisterNdcInf();
 				throw new ValetRestException(IValetException.COD_200, Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG011, new Object[ ] { ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }), e);
 			}
 
 		}
 
+		// Calculamos la representación en bytes del resultado, y si la
+		// obtenemos
+		// correctamente, cerramos la transacción.
+		byte[ ] resultByteArray = buildResultByteArray(result);
+		if (resultByteArray != null) {
+			EventsCollector.closeTransaction(auditTransNumber, resultByteArray);
+		}
+
+		// Limpiamos la información NDC.
+		LoggingInformationNDC.unregisterNdcInf();
+
+		return result;
+
+	}
+
+	/**
+	 * Gets the byte array that represents the request.
+	 * @return byte array that represents the request.
+	 * @throws JsonProcessingException In case of some error extracting the byte array that represents the input request parameters.
+	 *
+	 */
+	private byte[ ] extractRequestByteArray() throws JsonProcessingException {
+
+		byte[ ] result = null;
+		ObjectMapper om = new ObjectMapper();
+		try {
+			result = om.writeValueAsBytes(httpServletRequest.getParameterMap());
+		} catch (JsonProcessingException e) {
+			LOGGER.error(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG039));
+			throw e;
+		}
+		return result;
+
+	}
+
+	/**
+	 * Gets the byte array that represents the JSon response.
+	 * @param resultObjectService Object that represents the result object of the service.
+	 * @return the byte array that represents the JSon response.
+	 */
+	private byte[ ] buildResultByteArray(Serializable resultObjectService) {
+
+		byte[ ] result = null;
+		ObjectMapper om = new ObjectMapper();
+		try {
+			result = om.writeValueAsBytes(resultObjectService);
+		} catch (JsonProcessingException e) {
+			LOGGER.error(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG038), e);
+		}
 		return result;
 
 	}
@@ -806,6 +878,9 @@ public class TslRestService implements ITslRestService {
 	public TslInformationResponse getTslInformation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_COUNTRY_REGION_CODE) final String countryRegionCode, @FormParam(PARAM_TSL_LOCATION) final String tslLocation, @FormParam(PARAM_GET_TSL_XML_DATA) final Boolean getTslXmlData) throws ValetRestException {
 		// CHECKSTYLE:ON
 
+		// Generamos el identificador de transacción.
+		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_GET_TSL_INFORMATION);
+
 		// Si no se ha especificado la aplicación delegada, establecemos el
 		// token 'NOT_SPECIFIED'.
 		String delegatedAppAux = delegatedApp == null ? "NOT_SPECIFIED" : delegatedApp;
@@ -869,17 +944,34 @@ public class TslRestService implements ITslRestService {
 		if (allIsOk) {
 
 			try {
+				// Si se ha comprobado que todos los parámetros son correctos,
+				// abrimos la transacción
+				// en auditoría.
+				EventsCollector.openTransaction(auditTransNumber, IEventsCollectorConstants.SERVICE_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION_ID, extractRequestByteArray());
 				result = executeServiceGetTslInformation(application, delegatedAppAux, countryRegionCode, tslLocation, getTslXmlData);
+
 			} catch (TSLManagingException e) {
 				result = new TslInformationResponse();
 				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
 				result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG009, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION }));
 				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG010, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION }), e);
 			} catch (Exception e) {
+				LoggingInformationNDC.unregisterNdcInf();
 				throw new ValetRestException(IValetException.COD_200, Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG011, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION }), e);
 			}
 
 		}
+
+		// Calculamos la representación en bytes del resultado, y si la
+		// obtenemos
+		// correctamente, cerramos la transacción.
+		byte[ ] resultByteArray = buildResultByteArray(result);
+		if (resultByteArray != null) {
+			EventsCollector.closeTransaction(auditTransNumber, resultByteArray);
+		}
+
+		// Limpiamos la información NDC.
+		LoggingInformationNDC.unregisterNdcInf();
 
 		return result;
 	}

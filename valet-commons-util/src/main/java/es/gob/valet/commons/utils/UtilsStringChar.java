@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>10/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 24/01/2019.
+ * @version 1.8, 12/02/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -29,7 +29,7 @@ import org.apache.commons.codec.binary.Hex;
 /**
  * <p>Class that provides functionality for managing strings and characters.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 24/01/2019.
+ * @version 1.8, 12/02/2019.
  */
 public final class UtilsStringChar {
 
@@ -199,6 +199,26 @@ public final class UtilsStringChar {
 	 * Constant attribute that represents the string to identify the symbol: <code>\</code>.
 	 */
 	public static final String SYMBOL_ESCAPED_BACKSLASH_STRING = String.valueOf(SYMBOL_ESCAPED_BACKSLASH);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>[</code>.
+	 */
+	public static final char SYMBOL_OPEN_SQUARE_BRACKET = '[';
+
+	/**
+	 * Constant attribute that represents the string to identify the symbol: <code>[</code>.
+	 */
+	public static final String SYMBOL_OPEN_SQUARE_BRACKET_STRING = String.valueOf(SYMBOL_OPEN_SQUARE_BRACKET);
+
+	/**
+	 * Constant attribute that represents the char to identify the symbol: <code>]</code>.
+	 */
+	public static final char SYMBOL_CLOSE_SQUARE_BRACKET = ']';
+
+	/**
+	 * Constant attribute that represents the string to identify the symbol: <code>]</code>.
+	 */
+	public static final String SYMBOL_CLOSE_SQUARE_BRACKET_STRING = String.valueOf(SYMBOL_CLOSE_SQUARE_BRACKET);
 
 	/**
 	 * Constant attribute that represents the char to identify the symbol: <code>(</code>.

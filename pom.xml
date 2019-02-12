@@ -92,8 +92,8 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<plugin.javadoc.skip>false</plugin.javadoc.skip>
-				<plugin.source.skip>false</plugin.source.skip>
+				<plugin.javadoc.skip>true</plugin.javadoc.skip>
+				<plugin.source.skip>true</plugin.source.skip>
 				<maven.compiler.debug>false</maven.compiler.debug>
 				<maven.test.skip>false</maven.test.skip>
 			</properties>
