@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 18/02/2019.
  */
 package es.gob.valet.tsl.certValidation.ifaces;
 
@@ -36,12 +36,13 @@ import es.gob.valet.tsl.exceptions.TSLValidationException;
 /**
  * <p>Interface that represents a TSL validator regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 18/02/2019.
  */
 public interface ITSLValidator {
 
 	/**
 	 * Validate the status of the input certificate with the information of the TSL.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert Certificate X509 v3 to validate.
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -52,11 +53,12 @@ public interface ITSLValidator {
 	 * @throws TSLArgumentException In case of the input certificate was <code>null</code>.
 	 * @throws TSLValidationException In case of some error validating the certificate with the TSL.
 	 */
-	ITSLValidatorResult validateCertificateWithTSL(X509Certificate cert, boolean isTsaCertificate, Date validationDate, boolean checkStatusRevocation) throws TSLArgumentException, TSLValidationException;
+	ITSLValidatorResult validateCertificateWithTSL(String auditTransNumber, X509Certificate cert, boolean isTsaCertificate, Date validationDate, boolean checkStatusRevocation) throws TSLArgumentException, TSLValidationException;
 
 	/**
 	 * Verifies the revocation values for the input certificate with the information of the TSL, and then, use these
 	 * to check the revocation status of the certificate.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert Certificate X509 v3 to validate.
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -67,6 +69,6 @@ public interface ITSLValidator {
 	 * @throws TSLArgumentException In case of the input certificate, or the revocation values were <code>null</code>.
 	 * @throws TSLValidationException In case of some error verifying the revocation values.
 	 */
-	ITSLValidatorResult verifiesRevocationValuesForX509withTSL(X509Certificate cert, boolean isTsaCertificate, X509CRL[ ] crls, BasicOCSPResp[ ] ocsps, Date validationDate) throws TSLArgumentException, TSLValidationException;
+	ITSLValidatorResult verifiesRevocationValuesForX509withTSL(String auditTransNumber, X509Certificate cert, boolean isTsaCertificate, X509CRL[ ] crls, BasicOCSPResp[ ] ocsps, Date validationDate) throws TSLArgumentException, TSLValidationException;
 
 }

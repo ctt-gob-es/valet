@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 06/02/2019.
+ * @version 1.4, 18/02/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -37,6 +37,9 @@ import org.apache.log4j.Logger;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.alarms.AlarmsManager;
+import es.gob.valet.audit.access.IEventsCollectorConstants;
+import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
+import es.gob.valet.audit.utils.CommonsTslAuditTraces;
 import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsOCSP;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -66,7 +69,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.Qualifications;
  * <p>Abstract class that represents a TSL validator with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 06/02/2019.
+ * @version 1.4, 18/02/2019.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -112,10 +115,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidator#validateCertificateWithTSL(java.security.cert.X509Certificate, boolean, java.util.Date, boolean)
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidator#validateCertificateWithTSL(java.lang.String, java.security.cert.X509Certificate, boolean, java.util.Date, boolean)
 	 */
 	@Override
-	public ITSLValidatorResult validateCertificateWithTSL(X509Certificate cert, boolean isTsaCertificate, Date validationDate, boolean checkStatusRevocation) throws TSLArgumentException, TSLValidationException {
+	public ITSLValidatorResult validateCertificateWithTSL(String auditTransNumber, X509Certificate cert, boolean isTsaCertificate, Date validationDate, boolean checkStatusRevocation) throws TSLArgumentException, TSLValidationException {
 
 		// Comprobamos que el certificado de entrada no sea nulo.
 		if (cert == null) {
@@ -143,7 +146,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		} else {
 
 			// Si no es una lista de listas, continuamos con la validación.
-			validateCertificate(cert, isTsaCertificate, validationDate, checkStatusRevocation, result);
+			validateCertificate(auditTransNumber, cert, isTsaCertificate, validationDate, checkStatusRevocation, result);
 
 		}
 
@@ -186,6 +189,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 	/**
 	 * Validates the input certificate knowing this TSL is not list of lists.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert Certificate X509 v3 to validate.
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -195,7 +199,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * @param validationResult Object where stores the validation result data.
 	 * @throws TSLValidationException If there is some error or inconsistency in the certificate validation.
 	 */
-	private void validateCertificate(X509Certificate cert, boolean isTsaCertificate, Date validationDate, boolean checkStatusRevocation, TSLValidatorResult validationResult) throws TSLValidationException {
+	private void validateCertificate(String auditTransNumber, X509Certificate cert, boolean isTsaCertificate, Date validationDate, boolean checkStatusRevocation, TSLValidatorResult validationResult) throws TSLValidationException {
 
 		// Comprobamos que el "Status Determination Approach" no sea
 		// "delinquent" o equivalente.
@@ -223,7 +227,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 					// Validamos el certificado respecto al TSP.
 					try {
-						validateCertificateWithTSP(cert, isTsaCertificate, validationDate, validationResult, tsp, checkStatusRevocation);
+						validateCertificateWithTSP(auditTransNumber, cert, isTsaCertificate, validationDate, validationResult, tsp, checkStatusRevocation);
 					} catch (TSLQualificationEvalProcessException e) {
 
 						// Si se produce esta excepción, significa que se
@@ -254,6 +258,12 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 				}
 
+			}
+
+			// Si no ha sido detectado el certificado, lo indicamos en
+			// auditoría.
+			if (!validationResult.hasBeenDetectedTheCertificate()) {
+				CommonsTslAuditTraces.addTslCertDetected(auditTransNumber, false, null, null, null, null);
 			}
 
 		}
@@ -398,6 +408,23 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 */
 	private void assignTSPNameToResult(TSLValidatorResult validationResult, TrustServiceProvider tsp) {
 
+		String tspName = getTSPName(tsp);
+
+		if (tspName != null) {
+			validationResult.setTSPName(tspName);
+		}
+
+	}
+
+	/**
+	 * Auxiliar method to extract a TSP name from the TSP provider.
+	 * @param tsp TSP provider from which extracts the name.
+	 * @return TSP name from the TSP provider.
+	 */
+	private String getTSPName(TrustServiceProvider tsp) {
+
+		String result = null;
+
 		// Verificamos que haya algún nombre asignado al TSP.
 		if (tsp.getTspInformation().isThereSomeName()) {
 
@@ -407,7 +434,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Si lo hemos obtenido, asignamos el nombre al resultado.
 			if (tspNamesEnglish != null && !tspNamesEnglish.isEmpty()) {
 
-				validationResult.setTSPName(tspNamesEnglish.get(0));
+				result = tspNamesEnglish.get(0);
 
 			} else {
 
@@ -418,7 +445,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// Si lo hemos obtenido, asignamos el nombre al resultado.
 				if (tspNamesEnglish != null && !tspNamesEnglish.isEmpty()) {
 
-					validationResult.setTSPName(tspNamesEnglish.get(0));
+					result = tspNamesEnglish.get(0);
 
 				}
 
@@ -426,10 +453,13 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 		}
 
+		return result;
+
 	}
 
 	/**
 	 * Tries to validate the input certificate with the input Trust Service Provider information.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert Certificate X509 v3 to validate.
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -441,11 +471,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * @throws TSLQualificationEvalProcessException In case of some error evaluating the Criteria List of a Qualification
 	 * Extension over the input certificate, and being critical that Qualification Extension.
 	 */
-	private void validateCertificateWithTSP(X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, boolean checkStatusRevocation) throws TSLQualificationEvalProcessException {
+	private void validateCertificateWithTSP(String auditTransNumber, X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, boolean checkStatusRevocation) throws TSLQualificationEvalProcessException {
 
 		// TODO: Aún no se hace nada con las extensiones del TSP. No se
-		// identifica
-		// ninguna.
+		// identifica ninguna.
 		// doSomethingWithTSPExtensions();
 
 		// Obtenemos la lista de servicios.
@@ -473,6 +502,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// Y el servicio.
 					validationResult.setTSPServiceForDetect(tspService);
 
+					// Auditoría: Certificado detectado.
+					CommonsTslAuditTraces.addTslCertDetected(auditTransNumber, true, validationResult.getTslCountryRegionCode(), getTSPName(tsp), validationResult.getTSPServiceNameForDetect(), validationResult.getTSPServiceHistoryInformationInstanceNameForDetect());
+
 					// Si el estado no es desconocido, significa que ya se ha
 					// determinado la validez del certificado,
 					// por lo que asignamos el mismo nombre de servicio al
@@ -483,15 +515,18 @@ public abstract class ATSLValidator implements ITSLValidator {
 						validationResult.setTSPServiceForValidate(validationResult.getTSPServiceForDetect());
 						validationResult.setTspServiceHistoryInformationInstanceNameForValidate(validationResult.getTSPServiceHistoryInformationInstanceNameForDetect());
 						validationResult.setTspServiceHistoryInformationInstanceForValidate(validationResult.getTSPServiceHistoryInformationInstanceForDetect());
+						// Indicamos que se considera validado por el servicio
+						// en auditoría.
+						CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, true, validationResult.getResult(), true, false, null, null, null, null);
 					}
 
 				}
 
 			}
 
-			// Si el certificado ha sido detectado pero el estado es
-			// desconocido aún y se debe comprobar su estado de revocación...
-			if (validationResult.hasBeenDetectedTheCertificateWithUnknownState() && checkStatusRevocation) {
+			// Si hay que comprobar el estado de revocación y aún no se ha
+			// determinado...
+			if (checkStatusRevocation && validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
 
 				// Tratamos de validar el estado de revocación mediante los
 				// puntos de distribución
@@ -509,6 +544,16 @@ public abstract class ATSLValidator implements ITSLValidator {
 						validationResult.setTspServiceHistoryInformationInstanceNameForValidate(TSP_SERVICE_NAME_FOR_DIST_POINT);
 						validationResult.setTspServiceHistoryInformationInstanceForValidate(validationResult.getTSPServiceHistoryInformationInstanceForDetect());
 					}
+					// Indicamos en auditoría la información del elemento de
+					// revocación usado según haya sido OCSP o CRL.
+					if (validationResult.getRevocationValueBasicOCSPResponse() != null) {
+						CommonsCertificatesAuditTraces.addCertValidatedWithBasicOcspResponseTrace(auditTransNumber, validationResult.getRevocationValueURL(), validationResult.getRevocationValueBasicOCSPResponse());
+					} else {
+						CommonsCertificatesAuditTraces.addCertValidatedWithCRLTrace(auditTransNumber, validationResult.getRevocationValueURL(), validationResult.getRevocationValueCRL());
+					}
+					// Indicamos en auditoría que hemos obtenido el resultado
+					// mediante DP/AIA.
+					CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, true, validationResult.getResult(), false, true, null, null, null, null);
 				}
 				// Si no es así, hay que tratar de hacerlo mediante los
 				// servicios de la TSL (siempre y cuando no sea un certificado
@@ -547,10 +592,27 @@ public abstract class ATSLValidator implements ITSLValidator {
 							if (validationResult.getTSPServiceHistoryInformationInstanceForValidate() != null) {
 								assignTSPServiceHistoryInformationNameForValidateToResult(validationResult, validationResult.getTSPServiceHistoryInformationInstanceForValidate());
 							}
+							// Indicamos en auditoría la información del
+							// elemento de revocación usado según haya sido OCSP
+							// o CRL.
+							if (validationResult.getRevocationValueBasicOCSPResponse() != null) {
+								CommonsCertificatesAuditTraces.addCertValidatedWithBasicOcspResponseTrace(auditTransNumber, validationResult.getRevocationValueURL(), validationResult.getRevocationValueBasicOCSPResponse());
+							} else {
+								CommonsCertificatesAuditTraces.addCertValidatedWithCRLTrace(auditTransNumber, validationResult.getRevocationValueURL(), validationResult.getRevocationValueCRL());
+							}
+							// Indicamos en auditoría que hemos obtenido el
+							// resultado
+							// mediante un servicio.
+							CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, true, validationResult.getResult(), false, false, validationResult.getTslCountryRegionCode(), getTSPName(tsp), validationResult.getTSPServiceNameForValidate(), validationResult.getTSPServiceHistoryInformationInstanceNameForValidate());
 						}
 
 					}
 
+				}
+
+				// Si el estado de revocación es desconocido...
+				if (validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
+					CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, false, null, null, null, null, null, null, null);
 				}
 
 			}
@@ -1346,10 +1408,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidator#verifiesRevocationValuesForX509withTSL(java.security.cert.X509Certificate, boolean, java.security.cert.X509CRL[], org.bouncycastle.cert.ocsp.BasicOCSPResp[], java.util.Date)
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidator#verifiesRevocationValuesForX509withTSL(java.lang.String, java.security.cert.X509Certificate, boolean, java.security.cert.X509CRL[], org.bouncycastle.cert.ocsp.BasicOCSPResp[], java.util.Date)
 	 */
 	@Override
-	public ITSLValidatorResult verifiesRevocationValuesForX509withTSL(X509Certificate cert, boolean isTsaCertificate, X509CRL[ ] crls, BasicOCSPResp[ ] ocsps, Date validationDate) throws TSLArgumentException, TSLValidationException {
+	public ITSLValidatorResult verifiesRevocationValuesForX509withTSL(String auditTransNumber, X509Certificate cert, boolean isTsaCertificate, X509CRL[ ] crls, BasicOCSPResp[ ] ocsps, Date validationDate) throws TSLArgumentException, TSLValidationException {
 
 		// Comprobamos que el certificado de entrada no sea nulo.
 		if (cert == null) {
@@ -1415,7 +1477,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		} else {
 
 			// Si no es una lista de listas, continuamos con la búsqueda.
-			searchRevocationValuesForCertificateAccordingTSL(cert, isTsaCertificate, basicOcspResponse, crlSelected, validationDate, result);
+			searchRevocationValuesForCertificateAccordingTSL(auditTransNumber, cert, isTsaCertificate, basicOcspResponse, crlSelected, validationDate, result);
 
 		}
 
@@ -1446,6 +1508,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	/**
 	 * Search if the input certificate is detected by the TSL and then, if some of the revocation values
 	 * are valid to check the revocation status of the certificate.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to analyze and that must be checked its revocation status.
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -1455,7 +1518,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * @param validationResult Object in which stores the validation result data.
 	 * @throws TSLValidationException In case of the TSL has an invalid status determination approach.
 	 */
-	private void searchRevocationValuesForCertificateAccordingTSL(X509Certificate cert, boolean isTsaCertificate, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, TSLValidatorResult validationResult) throws TSLValidationException {
+	private void searchRevocationValuesForCertificateAccordingTSL(String auditTransNumber, X509Certificate cert, boolean isTsaCertificate, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, TSLValidatorResult validationResult) throws TSLValidationException {
 
 		// Comprobamos que el "Status Determination Approach" no sea
 		// "delinquent" o equivalente.
@@ -1484,7 +1547,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// Comprobamos si detectamos el certificado con los
 					// servicios del TSP.
 					try {
-						detectCertificateWithTSP(cert, isTsaCertificate, validationDate, validationResult, tsp);
+						detectCertificateWithTSP(auditTransNumber, cert, isTsaCertificate, validationDate, validationResult, tsp);
 					} catch (TSLQualificationEvalProcessException e) {
 
 						// Si se produce esta excepción, significa que se
@@ -1507,19 +1570,39 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 					}
 
-					// Si el certificado ha sido detectado pero el estado es
-					// desconocido aún...
-					if (validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
+					// Si el certificado ha sido detectado...
+					if (validationResult.hasBeenDetectedTheCertificate()) {
 
-						// Solo si tenemos una respuesta OCSP y/o una CRL,
-						// procedemos a analizar
-						// los valores de revocación en la TSL.
-						if (basicOcspResponse != null || crl != null) {
+						// Pero el estado es desconocido aún...
+						if (validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
 
-							// Comprobamos entre los distintos servicios CRL y
-							// OCSP del TSP, si alguno detecta
-							// alguno de los valores de revocación.
-							searchCompatibleRevocationValuesInTSP(cert, basicOcspResponse, crl, validationDate, validationResult, tsp);
+							// Solo si tenemos una respuesta OCSP y/o una CRL,
+							// procedemos a analizar
+							// los valores de revocación en la TSL.
+							if (basicOcspResponse != null || crl != null) {
+
+								// Comprobamos entre los distintos servicios CRL
+								// y
+								// OCSP del TSP, si alguno detecta
+								// alguno de los valores de revocación.
+								searchCompatibleRevocationValuesInTSP(auditTransNumber, cert, basicOcspResponse, crl, validationDate, validationResult, tsp);
+
+								// En función de si hemos validado el
+								// certificado, escribimos en auditoría.
+								if (validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
+									CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, false, null, null, null, null, null, null, null);
+								} else {
+									CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, true, validationResult.getResult(), false, false, validationResult.getTslCountryRegionCode(), getTSPName(tsp), validationResult.getTSPServiceNameForValidate(), validationResult.getTSPServiceHistoryInformationInstanceNameForValidate());
+								}
+
+							}
+
+						}
+						// En caso contrario es que viene determinado por el
+						// estado del servicio...
+						else {
+
+							CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, true, validationResult.getResult(), true, false, null, null, null, null);
 
 						}
 
@@ -1531,6 +1614,12 @@ public abstract class ATSLValidator implements ITSLValidator {
 						assignTSPNameToResult(validationResult, tsp);
 					}
 
+				}
+
+				// Si no ha sido detectado el certificado, lo indicamos en
+				// auditoría.
+				if (!validationResult.hasBeenDetectedTheCertificate()) {
+					CommonsTslAuditTraces.addTslCertDetected(auditTransNumber, false, null, null, null, null);
 				}
 
 			}
@@ -1545,6 +1634,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 	/**
 	 * Tries to detect the input certificate with the TSP information.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to check if it is detected by the input TSP.
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -1554,7 +1644,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * @throws TSLQualificationEvalProcessException In case of some error evaluating the Criteria List of a Qualification
 	 * Extension over the input certificate, and being critical that Qualification Extension.
 	 */
-	private void detectCertificateWithTSP(X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp) throws TSLQualificationEvalProcessException {
+	private void detectCertificateWithTSP(String auditTransNumber, X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp) throws TSLQualificationEvalProcessException {
 
 		// TODO: Aún no se hace nada con las extensiones del TSP.
 		// No se identifica ninguna.
@@ -1585,6 +1675,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// Guardamos el servicio usado.
 					validationResult.setTSPServiceForDetect(tspService);
 
+					// Auditoría: Certificado detectado.
+					CommonsTslAuditTraces.addTslCertDetected(auditTransNumber, true, validationResult.getTslCountryRegionCode(), getTSPName(tsp), validationResult.getTSPServiceNameForDetect(), validationResult.getTSPServiceHistoryInformationInstanceNameForDetect());
+
 					// Si el estado no es desconocido, significa que ya se ha
 					// determinado la validez del certificado,
 					// por lo que asignamos el mismo nombre de servicio al
@@ -1595,6 +1688,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 						validationResult.setTSPServiceForValidate(tspService);
 						validationResult.setTspServiceHistoryInformationInstanceNameForValidate(validationResult.getTSPServiceHistoryInformationInstanceNameForDetect());
 						validationResult.setTspServiceHistoryInformationInstanceForValidate(validationResult.getTSPServiceHistoryInformationInstanceForDetect());
+						// Indicamos que se considera validado por el servicio
+						// en auditoría.
+						CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, true, validationResult.getResult(), true, false, null, null, null, null);
 					}
 
 				}
@@ -1607,6 +1703,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 	/**
 	 * Search in the input TSP some service that verifies some of the input revocation values.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to check if it is detected by the input TSP.
 	 * @param basicOcspResponse Basic OCSP response to check if it is compatible with the TSL. It can be <code>null</code>.
 	 * @param crl CRL to check if is compatible with the TSL to check the revocation status of the certificate. It can be <code>null</code>.
@@ -1614,7 +1711,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * @param validationResult Object in which is stored the validation result data.
 	 * @param tsp Trust Service Provider that must check if detect the input certificate.
 	 */
-	private void searchCompatibleRevocationValuesInTSP(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp) {
+	private void searchCompatibleRevocationValuesInTSP(String auditTransNumber, X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp) {
 
 		// Primero comprobamos si el mismo emisor que identifica al certificado
 		// es el firmante de la respuesta OCSP o de alguna de las CRL.
@@ -1703,6 +1800,13 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 			}
 
+		}
+
+		// Incluimos en auditoría las evidencias usadas.
+		if (validationResult.getRevocationValueBasicOCSPResponse() != null) {
+			CommonsCertificatesAuditTraces.addCertValidatedWithBasicOcspResponseTrace(auditTransNumber, IEventsCollectorConstants.FIELD_VALUE_FROM_REQUEST, validationResult.getRevocationValueBasicOCSPResponse());
+		} else if (validationResult.getRevocationValueCRL() != null) {
+			CommonsCertificatesAuditTraces.addCertValidatedWithCRLTrace(auditTransNumber, IEventsCollectorConstants.FIELD_VALUE_FROM_REQUEST, validationResult.getRevocationValueCRL());
 		}
 
 	}

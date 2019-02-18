@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 06/02/2019.
+ * @version 1.6, 18/02/2019.
  */
 package es.gob.valet.tsl.access;
 
@@ -40,6 +40,8 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
+import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
+import es.gob.valet.audit.utils.CommonsTslAuditTraces;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsCountryLanguage;
 import es.gob.valet.commons.utils.UtilsDate;
@@ -62,6 +64,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
+import es.gob.valet.rest.elements.json.DateString;
 import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
@@ -79,7 +82,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 06/02/2019.
+ * @version 1.6, 18/02/2019.
  */
 public final class TSLManager {
 
@@ -292,6 +295,7 @@ public final class TSLManager {
 	/**
 	 * Tries to detect the input X509v3 certificate searching a valid TSL for it, and using this for the detection process.
 	 * Then returns the validation/detection result. If no TSL is finded for the certificate, then returns <code>null</code>.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to detect.
 	 * @param date Date that must cover the TSL to obtain. If this parameter is <code>null</code>, then search
 	 * the more updated TSL with that TSL location.
@@ -299,7 +303,7 @@ public final class TSLManager {
 	 * <code>null</code>.
 	 * @throws TSLManagingException If there is some error with the cache or validating the certificate with the TSL.
 	 */
-	public ITSLValidatorResult detectX509andGetMappingInfoWithTSL(X509Certificate cert, Date date) throws TSLManagingException {
+	public ITSLValidatorResult detectX509andGetMappingInfoWithTSL(String auditTransNumber, X509Certificate cert, Date date) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
@@ -308,7 +312,7 @@ public final class TSLManager {
 
 		// Si hemos encontrado una TSL, continuamos.
 		if (tslObject != null) {
-			result = validateX509withTSL(cert, date, false, true, tslObject);
+			result = validateX509withTSL(auditTransNumber, cert, date, false, true, tslObject);
 		}
 
 		return result;
@@ -318,6 +322,7 @@ public final class TSLManager {
 	/**
 	 * Tries to detect the input X509v3 certificate searching a valid TSL for it, and using this for the detection process.
 	 * Then returns the validation/detection result. If no TSL is finded for the certificate, then returns <code>null</code>.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to detect.
 	 * @param tslLocation URI string representation of the TSL location where to obtain it.
 	 * @param date Date that must cover the TSL to obtain. If this parameter is <code>null</code>, then search
@@ -326,7 +331,7 @@ public final class TSLManager {
 	 * <code>null</code>.
 	 * @throws TSLManagingException If there is some error with the cache or validating the certificate with the TSL.
 	 */
-	public ITSLValidatorResult detectX509andGetMappingInfoWithTSL(X509Certificate cert, String tslLocation, Date date) throws TSLManagingException {
+	public ITSLValidatorResult detectX509andGetMappingInfoWithTSL(String auditTransNumber, X509Certificate cert, String tslLocation, Date date) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
@@ -335,7 +340,7 @@ public final class TSLManager {
 
 		// Si hemos encontrado una TSL, continuamos.
 		if (tslObject != null) {
-			result = validateX509withTSL(cert, date, false, true, tslObject);
+			result = validateX509withTSL(auditTransNumber, cert, date, false, true, tslObject);
 		}
 
 		return result;
@@ -346,6 +351,7 @@ public final class TSLManager {
 	 * Tries to detect the input X509v3 certificate searching a valid TSL for it, and using this for the detection process.
 	 * Then returns the mapping info associated to it. If no TSL is finded for the certificate, or the certificate is not detected,
 	 * then returns <code>null</code>.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to detect.
 	 * @param tslLocation URI string representation of the TSL location where to obtain it.
 	 * @param date Date that must cover the TSL to obtain. If this parameter is <code>null</code>, then search
@@ -354,7 +360,7 @@ public final class TSLManager {
 	 * Otherwise <code>null</code>.
 	 * @throws TSLManagingException If there is some error with the cache or detecting the certificate with the TSL.
 	 */
-	public Map<String, String> getInfoMappingCertFromTSL(X509Certificate cert, String tslLocation, Date date) throws TSLManagingException {
+	public Map<String, String> getInfoMappingCertFromTSL(String auditTransNumber, X509Certificate cert, String tslLocation, Date date) throws TSLManagingException {
 
 		// Inicializamos el resultado.
 		Map<String, String> result = null;
@@ -364,9 +370,9 @@ public final class TSLManager {
 		ITSLValidatorResult tslValResult = null;
 		// En función de si disponemos del TSL Location...
 		if (UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
-			tslValResult = detectX509andGetMappingInfoWithTSL(cert, date);
+			tslValResult = detectX509andGetMappingInfoWithTSL(auditTransNumber, cert, date);
 		} else {
-			tslValResult = detectX509andGetMappingInfoWithTSL(cert, tslLocation, date);
+			tslValResult = detectX509andGetMappingInfoWithTSL(auditTransNumber, cert, tslLocation, date);
 		}
 
 		// Si hemos obtenido resultado y el certificado ha sido detectado...
@@ -387,12 +393,13 @@ public final class TSLManager {
 	 * Then returns the mapping info associated to it. If no TSL is finded for the certificate (and actual date),
 	 * or the certificate is not detected, then returns <code>null</code>.
 	 * If the mapping 'certClassification' is not obtained, then tries to get from the certificate attributes/extension.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to detect. If this is <code>null</code>, then this method returns <code>null</code>.
 	 * @return Map with the mapping info obtained from the TSL and the input certificate if it has been detected.
 	 * Otherwise <code>null</code>.
 	 * @throws TSLManagingException If there is some error getting the mapping from the inout certificate.
 	 */
-	public Map<String, String> getFullInfoMappingCertFromSpainLastTSLAndFromCertItSelf(X509Certificate cert) throws TSLManagingException {
+	public Map<String, String> getFullInfoMappingCertFromSpainLastTSLAndFromCertItSelf(String auditTransNumber, X509Certificate cert) throws TSLManagingException {
 
 		// Inicializamos el resultado.
 		Map<String, String> result = null;
@@ -415,7 +422,7 @@ public final class TSLManager {
 					// Inicializamos el resultado de detectar el certificado y
 					// obtener
 					// mapeos.
-					ITSLValidatorResult tslValResult = detectX509andGetMappingInfoWithTSL(cert, actualDate);
+					ITSLValidatorResult tslValResult = detectX509andGetMappingInfoWithTSL(auditTransNumber, cert, actualDate);
 
 					// Si hemos obtenido resultado y el certificado ha sido
 					// detectado...
@@ -459,6 +466,7 @@ public final class TSLManager {
 	/**
 	 * Tries to validate the input X509v3 certificate searching a valid TSL for it, and using this for the validation process.
 	 * Then returns the validation result. If no TSL is finded for the certificate, then returns <code>null</code>.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to validate.
 	 * @param date Date that must cover the TSL to obtain. If this parameter is <code>null</code>, then search
 	 * the more updated TSL with that TSL location.
@@ -470,16 +478,30 @@ public final class TSLManager {
 	 * <code>null</code>.
 	 * @throws TSLManagingException If there is some error with the cache or validating the certificate with the TSL.
 	 */
-	public ITSLValidatorResult validateX509withTSL(X509Certificate cert, Date date, boolean checkStatusRevocation, boolean calculateMappings) throws TSLManagingException {
+	public ITSLValidatorResult validateX509withTSL(String auditTransNumber, X509Certificate cert, Date date, boolean checkStatusRevocation, boolean calculateMappings) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
 		// Primero buscamos una TSL para el certificado.
 		TSLObject tslObject = getTSLFromTheCountry(cert, date);
 
-		// Si hemos encontrado una TSL, continuamos.
-		if (tslObject != null) {
-			result = validateX509withTSL(cert, date, checkStatusRevocation, calculateMappings, tslObject);
+		// Si no hemos encontrado una TSL, lo indicamos en auditoría...
+		if (tslObject == null) {
+
+			// Añadimos la traza de auditoría indicando que no se ha encontrado.
+			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, false, null, null, null, null);
+
+		} else {
+
+			// Añadimos la traza de auditoría indicando que ha encontrado
+			// junto con la información asociada.
+			DateString tslIssued = new DateString(tslObject.getSchemeInformation().getListIssueDateTime());
+			DateString tslNextUpdate = new DateString(tslObject.getSchemeInformation().getNextUpdate());
+			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, true, tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber(), tslIssued, tslNextUpdate);
+
+			// Continuamos el proceso...
+			result = validateX509withTSL(auditTransNumber, cert, date, checkStatusRevocation, calculateMappings, tslObject);
+
 		}
 
 		return result;
@@ -489,6 +511,7 @@ public final class TSLManager {
 	/**
 	 * Tries to validate the input X509v3 certificate searching a valid TSL for it, and using this for the validation process.
 	 * Then returns the validation result. If no TSL is finded for the certificate, then returns <code>null</code>.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to validate.
 	 * @param tslLocation URI string representation of the TSL location where to obtain it.
 	 * @param date Date that must cover the TSL to obtain. If this parameter is <code>null</code>, then search
@@ -501,16 +524,30 @@ public final class TSLManager {
 	 * <code>null</code>.
 	 * @throws TSLManagingException If there is some error with the cache or validating the certificate with the TSL.
 	 */
-	public ITSLValidatorResult validateX509withTSL(X509Certificate cert, String tslLocation, Date date, boolean checkStatusRevocation, boolean calculateMappings) throws TSLManagingException {
+	public ITSLValidatorResult validateX509withTSL(String auditTransNumber, X509Certificate cert, String tslLocation, Date date, boolean checkStatusRevocation, boolean calculateMappings) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
 		// Primero buscamos una TSL para el certificado.
 		TSLObject tslObject = getTSLfromTSLLocation(tslLocation, date);
 
-		// Si hemos encontrado una TSL, continuamos.
-		if (tslObject != null) {
-			result = validateX509withTSL(cert, date, checkStatusRevocation, calculateMappings, tslObject);
+		// Si no hemos encontrado una TSL, lo indicamos en auditoría...
+		if (tslObject == null) {
+
+			// Añadimos la traza de auditoría indicando que no se ha encontrado.
+			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, false, null, null, null, null);
+
+		} else {
+
+			// Añadimos la traza de auditoría indicando que ha encontrado
+			// junto con la información asociada.
+			DateString tslIssued = new DateString(tslObject.getSchemeInformation().getListIssueDateTime());
+			DateString tslNextUpdate = new DateString(tslObject.getSchemeInformation().getNextUpdate());
+			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, true, tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber(), tslIssued, tslNextUpdate);
+
+			// Continuamos el proceso...
+			result = validateX509withTSL(auditTransNumber, cert, date, checkStatusRevocation, calculateMappings, tslObject);
+
 		}
 
 		return result;
@@ -519,6 +556,7 @@ public final class TSLManager {
 
 	/**
 	 * Tries to validate the input X509v3 certificate with.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to validate.
 	 * @param validationDate Validation date to check.
 	 * @param checkStatusRevocation Flag that indicates if only try to detect the input certificate (<code>false</code>)
@@ -529,7 +567,7 @@ public final class TSLManager {
 	 * @return TSL validation result, with all the collected information.
 	 * @throws TSLManagingException If there is some error with the cache or validating the certificate with the TSL.
 	 */
-	private ITSLValidatorResult validateX509withTSL(X509Certificate cert, Date validationDate, boolean checkStatusRevocation, boolean calculateMappings, TSLObject tslObject) throws TSLManagingException {
+	private ITSLValidatorResult validateX509withTSL(String auditTransNumber, X509Certificate cert, Date validationDate, boolean checkStatusRevocation, boolean calculateMappings, TSLObject tslObject) throws TSLManagingException {
 
 		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL199, new Object[ ] { tslObject.getSchemeInformation().getTslVersionIdentifier(), tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }));
 
@@ -546,12 +584,12 @@ public final class TSLManager {
 
 		// Almacenamos en una variable si el certificado está orientado a
 		// sellado de tiempo.
-		boolean isTsaCertificate = checkIfCertificateIsForTSA(cert);
+		boolean isTsaCertificate = checkIfCertificateIsForTSA(auditTransNumber, cert);
 
 		// Ejecutamos la validación del certificado con el validador construido
 		// para la fecha indicada.
 		try {
-			result = tslValidator.validateCertificateWithTSL(cert, isTsaCertificate, validationDateToUse, checkStatusRevocation);
+			result = tslValidator.validateCertificateWithTSL(auditTransNumber, cert, isTsaCertificate, validationDateToUse, checkStatusRevocation);
 		} catch (TSLArgumentException e) {
 			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
 		} catch (TSLValidationException e) {
@@ -562,7 +600,7 @@ public final class TSLManager {
 		// y el certificado ha sido detectado,
 		// calculamos los mapeos asociados.
 		if (calculateMappings) {
-			calculateMappingsForCertificateAndSetInResult(cert, tslObject, result);
+			calculateMappingsForCertificateAndSetInResult(auditTransNumber, cert, tslObject, result);
 		}
 
 		return result;
@@ -571,12 +609,13 @@ public final class TSLManager {
 
 	/**
 	 * Checks if the input certificate has the key purpose for id-kp-timestamping.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 Certificate to check.
 	 * @return <code>true</code> if the input certificate has the key purpose for id-kp-timestamping,
 	 * otherwise <code>false</code>.
 	 * @throws TSLManagingException In case of some error getting the keyPurpose list from the input certificate.
 	 */
-	private boolean checkIfCertificateIsForTSA(X509Certificate cert) throws TSLManagingException {
+	private boolean checkIfCertificateIsForTSA(String auditTransNumber, X509Certificate cert) throws TSLManagingException {
 
 		try {
 			boolean result = UtilsCertificate.hasCertKeyPurposeTimeStamping(cert);
@@ -585,6 +624,8 @@ public final class TSLManager {
 			} else {
 				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL201));
 			}
+			// Añadimos la traza de auditoría...
+			CommonsCertificatesAuditTraces.addCertIsTsaCert(auditTransNumber, result);
 			return result;
 		} catch (CommonUtilsException e) {
 			throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL195), e);
@@ -594,6 +635,7 @@ public final class TSLManager {
 
 	/**
 	 * Method that uses the revocation values to validate the input certificate according the TSL associated to the certificate country.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to validate.
 	 * @param validationDate Validation date to check.
 	 * @param crls Array with the revocation values to analyze of type CRL.
@@ -603,7 +645,7 @@ public final class TSLManager {
 	 * @return TSL validation result, with all the collected information.
 	 * @throws TSLManagingException In case of some error getting the TSL information from the cache, or using that to validate the certificate.
 	 */
-	public ITSLValidatorResult validateX509withTSLandRevocationValues(X509Certificate cert, Date validationDate, X509CRL[ ] crls, BasicOCSPResp[ ] ocsps, boolean calculateMappings) throws TSLManagingException {
+	public ITSLValidatorResult validateX509withTSLandRevocationValues(String auditTransNumber, X509Certificate cert, Date validationDate, X509CRL[ ] crls, BasicOCSPResp[ ] ocsps, boolean calculateMappings) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
@@ -616,9 +658,23 @@ public final class TSLManager {
 		// Primero buscamos una TSL para el certificado.
 		TSLObject tslObject = getTSLFromTheCountry(cert, validationDateToUse);
 
-		// Si hemos recuperado una TSL...
-		if (tslObject != null) {
-			result = validateX509withRevocationValues(cert, validationDateToUse, crls, ocsps, tslObject, calculateMappings);
+		// Si no hemos encontrado una TSL, lo indicamos en auditoría...
+		if (tslObject == null) {
+
+			// Añadimos la traza de auditoría indicando que no se ha encontrado.
+			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, false, null, null, null, null);
+
+		} else {
+
+			// Añadimos la traza de auditoría indicando que ha encontrado
+			// junto con la información asociada.
+			DateString tslIssued = new DateString(tslObject.getSchemeInformation().getListIssueDateTime());
+			DateString tslNextUpdate = new DateString(tslObject.getSchemeInformation().getNextUpdate());
+			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, true, tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber(), tslIssued, tslNextUpdate);
+
+			// Continuamos el proceso...
+			result = validateX509withRevocationValues(auditTransNumber, cert, validationDateToUse, crls, ocsps, tslObject, calculateMappings);
+
 		}
 
 		return result;
@@ -627,6 +683,7 @@ public final class TSLManager {
 
 	/**
 	 * Method that uses the revocation values to validate the input certificate according the TSL associated to the input URL location.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to validate.
 	 * @param date Validation date to check.
 	 * @param crls Array with the revocation values to analyze of type CRL.
@@ -637,7 +694,7 @@ public final class TSLManager {
 	 * @return TSL validation result, with all the collected information.
 	 * @throws TSLManagingException In case of some error getting the TSL information from the cache, or using that to validate the certificate.
 	 */
-	public ITSLValidatorResult validateX509withTSLLocationAndRevocationValues(X509Certificate cert, Date date, X509CRL[ ] crls, BasicOCSPResp[ ] ocspResponses, String tslLocation, boolean calculateMappings) throws TSLManagingException {
+	public ITSLValidatorResult validateX509withTSLLocationAndRevocationValues(String auditTransNumber, X509Certificate cert, Date date, X509CRL[ ] crls, BasicOCSPResp[ ] ocspResponses, String tslLocation, boolean calculateMappings) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
@@ -650,9 +707,23 @@ public final class TSLManager {
 		// Primero buscamos una TSL para el certificado.
 		TSLObject tslObject = getTSLfromTSLLocation(tslLocation, validationDateToUse);
 
-		// Si hemos recuperado una TSL...
-		if (tslObject != null) {
-			result = validateX509withRevocationValues(cert, validationDateToUse, crls, ocspResponses, tslObject, calculateMappings);
+		// Si no hemos encontrado una TSL, lo indicamos en auditoría...
+		if (tslObject == null) {
+
+			// Añadimos la traza de auditoría indicando que no se ha encontrado.
+			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, false, null, null, null, null);
+
+		} else {
+
+			// Añadimos la traza de auditoría indicando que ha encontrado
+			// junto con la información asociada.
+			DateString tslIssued = new DateString(tslObject.getSchemeInformation().getListIssueDateTime());
+			DateString tslNextUpdate = new DateString(tslObject.getSchemeInformation().getNextUpdate());
+			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, true, tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber(), tslIssued, tslNextUpdate);
+
+			// Continuamos el proceso...
+			result = validateX509withRevocationValues(auditTransNumber, cert, validationDateToUse, crls, ocspResponses, tslObject, calculateMappings);
+
 		}
 
 		return result;
@@ -661,6 +732,7 @@ public final class TSLManager {
 
 	/**
 	 * Method that uses the revocation values to validate the input certificate according the input TSL.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to validate.
 	 * @param date Validation date to check.
 	 * @param crls Array with the revocation values to analyze of type CRL.
@@ -671,7 +743,7 @@ public final class TSLManager {
 	 * @return TSL validation result, with all the collected information.
 	 * @throws TSLManagingException In case of some error verifying the revocation values.
 	 */
-	private ITSLValidatorResult validateX509withRevocationValues(X509Certificate cert, Date date, X509CRL[ ] crls, BasicOCSPResp[ ] ocspResponses, TSLObject tslObject, boolean calculateMappings) throws TSLManagingException {
+	private ITSLValidatorResult validateX509withRevocationValues(String auditTransNumber, X509Certificate cert, Date date, X509CRL[ ] crls, BasicOCSPResp[ ] ocspResponses, TSLObject tslObject, boolean calculateMappings) throws TSLManagingException {
 
 		// Obtenemos el resultado de comprobar si las evidencias de revocación
 		// OCSP y/o CRL
@@ -680,11 +752,11 @@ public final class TSLManager {
 		// la TSL correspondiente y se detecta el tipo de certificado dentro de
 		// esta.
 		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL199, new Object[ ] { tslObject.getSchemeInformation().getTslVersionIdentifier(), tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }));
-		ITSLValidatorResult result = verifiesRevocationValuesForX509withTSL(cert, crls, ocspResponses, tslObject, date);
+		ITSLValidatorResult result = verifiesRevocationValuesForX509withTSL(auditTransNumber, cert, crls, ocspResponses, tslObject, date);
 
 		// Calculamos los mapeos si procede.
 		if (calculateMappings) {
-			calculateMappingsForCertificateAndSetInResult(cert, tslObject, result);
+			calculateMappingsForCertificateAndSetInResult(auditTransNumber, cert, tslObject, result);
 		}
 
 		return result;
@@ -694,6 +766,7 @@ public final class TSLManager {
 	/**
 	 * Tries to verify that the input revocation values that are associated to the input X509v3 Certificate, are compatible
 	 * with the TSL indentified by the input location.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate that must match with the revocation values.
 	 * @param crls Array with the revocation values to analyze of type CRL.
 	 * @param ocsps Array with the revocation values to analyze of type BasicOCSPResponse.
@@ -703,7 +776,7 @@ public final class TSLManager {
 	 * @return validation result object representation.
 	 * @throws TSLManagingException If there is some error with the cache or verifying the revocation values.
 	 */
-	private ITSLValidatorResult verifiesRevocationValuesForX509withTSL(X509Certificate cert, X509CRL[ ] crls, BasicOCSPResp[ ] ocsps, ITSLObject tslObject, Date date) throws TSLManagingException {
+	private ITSLValidatorResult verifiesRevocationValuesForX509withTSL(String auditTransNumber, X509Certificate cert, X509CRL[ ] crls, BasicOCSPResp[ ] ocsps, ITSLObject tslObject, Date date) throws TSLManagingException {
 
 		ITSLValidatorResult result = null;
 
@@ -721,13 +794,13 @@ public final class TSLManager {
 
 			// Almacenamos en una variable si el certificado está orientado a
 			// sellado de tiempo.
-			boolean isTsaCertificate = checkIfCertificateIsForTSA(cert);
+			boolean isTsaCertificate = checkIfCertificateIsForTSA(auditTransNumber, cert);
 
 			// Ejecutamos la validación del certificado con el validador
 			// construido
 			// para la fecha indicada.
 			try {
-				result = tslValidator.verifiesRevocationValuesForX509withTSL(cert, isTsaCertificate, crls, ocsps, validationDateToUse);
+				result = tslValidator.verifiesRevocationValuesForX509withTSL(auditTransNumber, cert, isTsaCertificate, crls, ocsps, validationDateToUse);
 			} catch (TSLArgumentException e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
 			} catch (TSLValidationException e) {
@@ -743,11 +816,12 @@ public final class TSLManager {
 	/**
 	 * Calculates the mapping for the input certificate and set these in the result. If there is some
 	 * error parsing any mapping, then this is not returned.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate from which extracts the mapping information values.
 	 * @param tslObject TSL object representation to use.
 	 * @param tslValidationResult TSL validation result in which store the result mappings.
 	 */
-	private void calculateMappingsForCertificateAndSetInResult(X509Certificate cert, TSLObject tslObject, ITSLValidatorResult tslValidationResult) {
+	private void calculateMappingsForCertificateAndSetInResult(String auditTransNumber, X509Certificate cert, TSLObject tslObject, ITSLValidatorResult tslValidationResult) {
 
 		// Si el resultado no es nulo,
 		// y el certificado ha sido detectado,
@@ -765,7 +839,7 @@ public final class TSLManager {
 				LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL150), e);
 			}
 			// Los calculamos y establecemos en el resultado.
-			calculateMappingsForCertificateAndSetInResult(cert, tslCrmcoSet, tslValidationResult);
+			calculateMappingsForCertificateAndSetInResult(auditTransNumber, cert, tslCrmcoSet, tslValidationResult);
 
 		}
 
@@ -774,11 +848,12 @@ public final class TSLManager {
 	/**
 	 * Calculates the mapping for the input certificate and set these in the result. If there is some
 	 * error parsing any mapping, then this is not returned.
+	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate from which extracts the mapping information values.
 	 * @param tslCrmcoSet Set of mapping cached object representations to analyze.
 	 * @param tslValidationResult TSL validation result where store the result mappings.
 	 */
-	private void calculateMappingsForCertificateAndSetInResult(X509Certificate cert, Set<TSLCountryRegionMappingCacheObject> tslCrmcoSet, ITSLValidatorResult tslValidationResult) {
+	private void calculateMappingsForCertificateAndSetInResult(String auditTransNumber, X509Certificate cert, Set<TSLCountryRegionMappingCacheObject> tslCrmcoSet, ITSLValidatorResult tslValidationResult) {
 
 		// Iniciamos un map donde se almacenarán los pares <NombreMapeo,
 		// ValorMapeo>.
@@ -794,6 +869,8 @@ public final class TSLManager {
 		}
 		// Guardamos los mapeos calculados en el resultado de la validación.
 		tslValidationResult.setMappings(mappings);
+		// Lo indicamos en auditoría.
+		CommonsCertificatesAuditTraces.addCertMappingFieldsTrace(auditTransNumber, mappings);
 
 	}
 

@@ -18,18 +18,18 @@
  * <b>File:</b><p>es.gob.valet.audit.AuditField.java.</p>
  * <b>Description:</b><p>Class that represents an audit field (id and value).</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>12/02/2019.</p>
+ * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 12/02/2019.
+ * @version 1.0, 18/02/2019.
  */
-package es.gob.valet.audit;
+package es.gob.valet.audit.access;
 
 import java.io.Serializable;
 
 /**
  * <p>Class that represents an audit field (id and value).</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 12/02/2019.
+ * @version 1.0, 18/02/2019.
  */
 public class AuditField implements Serializable {
 
@@ -39,9 +39,9 @@ public class AuditField implements Serializable {
 	private static final long serialVersionUID = -812635779074666389L;
 
 	/**
-	 * Attribute that represents the field identifier.
+	 * Attribute that represents the field name.
 	 */
-	private String fieldId = null;
+	private String fieldName = null;
 
 	/**
 	 * Attribute that represents the field value.
@@ -57,29 +57,29 @@ public class AuditField implements Serializable {
 
 	/**
 	 * Constructor method for the class AuditField.java.
-	 * @param id Identifier for the field.
+	 * @param name Name for the field.
 	 * @param value Value for the field.
 	 */
-	public AuditField(String id, String value) {
+	public AuditField(String name, String value) {
 		this();
-		setFieldId(id);
+		setFieldName(name);
 		setFieldValue(value);
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #fieldId}.
-	 * @return the value of the attribute {@link #fieldId}.
+	 * Gets the value of the attribute {@link #fieldName}.
+	 * @return the value of the attribute {@link #fieldName}.
 	 */
-	public final String getFieldId() {
-		return fieldId;
+	public final String getFieldName() {
+		return fieldName;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #fieldId}.
-	 * @param id The value for the attribute {@link #fieldId}.
+	 * Sets the value of the attribute {@link #fieldName}.
+	 * @param name The value for the attribute {@link #fieldName}.
 	 */
-	public final void setFieldId(String id) {
-		this.fieldId = id;
+	public final void setFieldName(String name) {
+		this.fieldName = name;
 	}
 
 	/**

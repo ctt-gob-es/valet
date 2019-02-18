@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 25/11/2018.
+ * @version 1.4, 18/02/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -37,7 +37,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -61,7 +60,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 25/11/2018.
+ * @version 1.4, 18/02/2019.
  */
 public final class UtilsCertificate {
 
@@ -76,11 +75,6 @@ public final class UtilsCertificate {
 	 * Constant that represents a "X.509" Certificate type.
 	 */
 	public static final String X509_TYPE = "X.509";
-
-	/**
-	 * Constant that represents the format date.
-	 */
-	private static final String FORMAT_DATE = "dd/MM/yyyy HH:mm:ss";
 
 	/**
 	 * Creates a X509Certificate given its content.
@@ -216,8 +210,7 @@ public final class UtilsCertificate {
 		String validFrom = null;
 		if (x509Certificate != null && x509Certificate.getNotBefore() != null) {
 			Date validFromDate = x509Certificate.getNotBefore();
-			SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
-			validFrom = sdf.format(validFromDate);
+			validFrom = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, validFromDate);
 		}
 		return validFrom;
 	}
@@ -231,9 +224,7 @@ public final class UtilsCertificate {
 		String validTo = null;
 		if (x509Certificate != null && x509Certificate.getNotAfter() != null) {
 			Date validToDate = x509Certificate.getNotAfter();
-			SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
-			validTo = sdf.format(validToDate);
-
+			validTo = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, validToDate);
 		}
 		return validTo;
 	}

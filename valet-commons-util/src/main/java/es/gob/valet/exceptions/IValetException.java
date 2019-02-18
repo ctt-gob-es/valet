@@ -1,4 +1,4 @@
-/* 
+/*
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,22 +14,22 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/** 
+/**
  * <b>File:</b><p>es.gob.valet.exceptions.IValetException.java.</p>
  * <b>Description:</b><p> Interface defining constants codes accepted for
  * the exceptions on the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 26/12/2018.
+ * @version 1.5, 18/02/2019.
  */
 package es.gob.valet.exceptions;
 
-/** 
+/**
  * <p>Interface defining constants codes accepted for
  * the exceptions on the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 26/12/2018.
+ * @version 1.5, 18/02/2019.
  */
 public interface IValetException {
 
@@ -78,8 +78,8 @@ public interface IValetException {
 	//	/** Constant attribute that represents the error code: Error validating certificate status. */
 	//	String COD_057 = "COD_057";
 	//
-		/** Constant attribute that represents the error code: Failed to get info of the certificate. */
-		String COD_058 = "COD_058";
+	/** Constant attribute that represents the error code: Failed to get info of the certificate. */
+	String COD_058 = "COD_058";
 	//
 	//	/** Constant attribute that represents the error code: Error validating the CRL. */
 	//	String COD_060 = "COD_060";
@@ -179,13 +179,13 @@ public interface IValetException {
 	//
 	//	/** Constant attribute that represents the error code: Error initializing the TreeCache. */
 	//	String COD_152 = "COD_152";
-	
+
 	/** Constant attribute that represents the error code: Cache can not be stopped because has not been created yet. */
 	String COD_153 = "COD_153";
-	
+
 	/** Constant attribute that represents the error code: Error getting / setting some type of object in the Cache. */
 	String COD_154 = "COD_154";
-	
+
 	/** Constant attribute that represents the error code: The path on which you plan to store some object in the Cache is badly constructed. */
 	String COD_155 = "COD_155";
 	//
@@ -257,13 +257,13 @@ public interface IValetException {
 	//
 	//	/** Constant attribute that represents the error code: Error in the Signing Policies TreeCache. */
 	//	String COD_181 = "COD_181";
-	
+
 	/** Constant attribute that represents the error code: Error managing an valET Scheduler. */
 	String COD_184 = "COD_184";
-	
+
 	/** Constant attribute that represents the error code: Error managing an valET Task. */
 	String COD_185 = "COD_185";
-	
+
 	//	/** Constant attribute that represents the error code: Error managing an Afirma configuration object. */
 	//	String COD_186 = "COD_186";
 
@@ -278,28 +278,28 @@ public interface IValetException {
 	//
 	/** Constant attribute that represents the error code: Error managing Keystore. */
 	String COD_190 = "COD_190";
-	
+
 	/** Constant attribute that represents the error code: Error in the Configuration Cache. */
 	String COD_191 = "COD_191";
-	
+
 	//	/** Constant attribute that represents the error code: Error with a SSL+SNI connection. */
 	//	String COD_192 = "COD_192";
 
 	/** Constant attribute that represents the error code: Unknown host. */
 	String COD_193 = "COD_193";
-	
+
 	/** Constant attribute that represents the error code: Network connection timeout. */
 	String COD_194 = "COD_194";
-	
+
 	/** Constant attribute that represents the error code: Connection refused. */
 	String COD_195 = "COD_195";
-	
+
 	/** Constant attribute that represents the error code: Connection no available.	*/
 	String COD_196 = "COD_196";
-	
+
 	/** Constant attribute that represents the error code: Not found. */
 	String COD_197 = "COD_197";
-	
+
 	/** Constant attribute that represents the error code: Generic error. */
 	String COD_198 = "COD_198";
 
@@ -308,8 +308,11 @@ public interface IValetException {
 
 	/** Constant attribute that represents the error code: Commons utilities error. */
 	String COD_200 = "COD_200";
-	
+
 	/** Constant attribute that represents the error code: EMail error. */
 	String COD_201 = "COD_201";
+
+	/** Constant attribute that represents the error code: Audit trace error. */
+	String COD_202 = "COD_202";
 
 }

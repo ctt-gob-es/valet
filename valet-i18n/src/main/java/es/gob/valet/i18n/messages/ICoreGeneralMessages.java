@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 12/02/2019.
+ * @version 1.10, 18/02/2019.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 12/02/2019.
+ * @version 1.10, 18/02/2019.
  */
 public interface ICoreGeneralMessages {
 
@@ -1224,15 +1224,27 @@ public interface ICoreGeneralMessages {
 	String ALM005_EVENT_002 = "ALM005_EVENT_002";
 
 	/**
-	 * Constant attribute that represents the property key <code>EVENTS_COLLECTOR_000</code> belonging to the
+	 * Constant attribute that represents the property key <code>CSAT_000</code> belonging to the
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
-	String EVENTS_COLLECTOR_000 = "EVENTS_COLLECTOR_000";
+	String CSAT_000 = "CSAT_000";
 
 	/**
-	 * Constant attribute that represents the property key <code>EVENTS_COLLECTOR_001</code> belonging to the
+	 * Constant attribute that represents the property key <code>CSAT_001</code> belonging to the
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
-	String EVENTS_COLLECTOR_001 = "EVENTS_COLLECTOR_001";
+	String CSAT_001 = "CSAT_001";
+
+	/**
+	 * Constant attribute that represents the property key <code>CSAT_002</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String CSAT_002 = "CSAT_002";
+
+	/**
+	 * Constant attribute that represents the property key <code>CCAT_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String CCAT_000 = "CCAT_000";
 
 }

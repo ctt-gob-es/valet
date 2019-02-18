@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 06/02/2019.
+ * @version 1.4, 18/02/2019.
  */
 package es.gob.valet.rest.services;
 
@@ -43,7 +43,7 @@ import es.gob.valet.rest.elements.json.DateString;
 /**
  * <p>Interface that represents the TSL restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 06/02/2019.
+ * @version 1.4, 18/02/2019.
  */
 public interface ITslRestService {
 
@@ -126,7 +126,7 @@ public interface ITslRestService {
 	 * @param detectionDate Date to use to detect and validate the input certificate. Format: {@value UtilsDate#FORMAT_DATE_TIME_JSON}.
 	 * @param getInfo Flag that indicates if it is necessary to get the certificate information in response.
 	 * @param checkRevStatus Flag that indicates if it is necessary to check the revocation status of the input certificate.
-	 * @param returnRevocationEvidence Flag that indicates if it is necessary to return the revocation evidence (only if {@code checkRevocationStatus} is <code>true</code>).
+	 * @param returnRevocationEvidence Flag that indicates if it is necessary to return the revocation evidence (only if {@code checkRevStatus} is <code>true</code>).
 	 * @param crlsByteArrayB64List List of byte arrays (in base 64) that represents the CRL to use to validate the certificate. <code>null</code> if there is not.
 	 * If this is defined, then {@code checkRevStatus} is considered <code>true</code>.
 	 * @param basicOcspResponsesByteArrayB64List List of byte arrays (in base 64) that represents the Basic OCSP responses to use to validate the certificate. <code>null</code> if there is not.
