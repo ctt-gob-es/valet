@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/02/2019.
+ * @version 1.1, 21/02/2019.
  */
 package es.gob.valet.audit.utils;
 
@@ -28,17 +28,27 @@ import java.io.IOException;
 import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.security.auth.x500.X500Principal;
+
 import org.apache.log4j.Logger;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.ocsp.ResponderID;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.CRLNumber;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.audit.access.EventsCollector;
 import es.gob.valet.audit.access.IEventsCollectorConstants;
 import es.gob.valet.commons.utils.CryptographicConstants;
+import es.gob.valet.commons.utils.UtilsASN1;
+import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsCrypto;
 import es.gob.valet.commons.utils.UtilsDate;
@@ -46,11 +56,12 @@ import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.rest.elements.json.DateString;
 
 /**
  * <p>Class that provides methods for registering the most commons audit traces associated to the certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/02/2019.
+ * @version 1.1, 21/02/2019.
  */
 public final class CommonsCertificatesAuditTraces {
 
@@ -68,8 +79,8 @@ public final class CommonsCertificatesAuditTraces {
 	static {
 		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_ISSUER_COUNTRY, IEventsCollectorConstants.FIELD_NAME_CERT_ISSUER, IEventsCollectorConstants.FIELD_NAME_CERT_SUBJECT, IEventsCollectorConstants.FIELD_NAME_CERT_SERIAL_NUMBER, IEventsCollectorConstants.FIELD_NAME_CERT_VALID_FROM, IEventsCollectorConstants.FIELD_NAME_CERT_VALID_TO });
 		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_ISTSA, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_ISTSA });
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_URL, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HA, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HASH });
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_CRL_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_URL, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HA, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HASH });
+		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_URL, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HA, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HASH, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_NONCE, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_PRODUCEDAT, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_RESPID });
+		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_CRL_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_URL, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HA, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HASH, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_ISSUER, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_CRLNUMBER, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_ISSUEDDATE, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_NEXTUPDATEDATE });
 		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_MAPPING_FIELDS, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_FIELDS });
 	}
 
@@ -137,15 +148,111 @@ public final class CommonsCertificatesAuditTraces {
 		// Si no es nula, calculamos el hash de la evidencia.
 		String hashAlgorithm = null;
 		String hashRevEvidInBase64 = null;
+		String nonceStringB64 = null;
+		String producedAtString = null;
+		String responderId = null;
 		if (revocationValueBasicOCSPResponse != null) {
 			try {
+
+				// Calculamos el hash de la respuesta.
 				hashRevEvidInBase64 = UtilsCrypto.calculateDigestReturnB64String(CryptographicConstants.HASH_ALGORITHM_SHA512, revocationValueBasicOCSPResponse.getEncoded(), null);
 				hashAlgorithm = CryptographicConstants.HASH_ALGORITHM_SHA512;
+
+				// Obtenemos la extensión nonce.
+				nonceStringB64 = getNonceB64StringFromBasicOcspResponse(revocationValueBasicOCSPResponse);
+
+				// Obtenemos la fecha de generación de la respuesta.
+				producedAtString = getProducedAtFormattedFromBasicOcspReponse(revocationValueBasicOCSPResponse);
+
+				// Obtenemos el responderId si está definido.
+				responderId = getResponderIdCanonicalizedFromBasicOcspResponse(revocationValueBasicOCSPResponse);
+
 			} catch (CommonUtilsException | IOException e) {
 				LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CCAT_000), e);
 			}
 		}
-		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO, revocationValueURL, hashAlgorithm, hashRevEvidInBase64);
+		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO, revocationValueURL, hashAlgorithm, hashRevEvidInBase64, nonceStringB64, producedAtString, responderId);
+
+	}
+
+	/**
+	 * Get nonce from the Basic OCSP Response in B64 String.
+	 * @param basicOCSPResponse Basic OCSP Response to analyze.
+	 * @return nonce from the Basic OCSP Response in B64 String. <code>null</code> if it is not defined.
+	 * @throws CommonUtilsException In case of some error computing the hash.
+	 */
+	private static String getNonceB64StringFromBasicOcspResponse(BasicOCSPResp basicOCSPResponse) throws CommonUtilsException {
+
+		// Inicializamos la variable donde se almacena el resultado a devolver.
+		String result = null;
+
+		Extension nonceExtension = basicOCSPResponse.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
+		// Si no es nula...
+		if (nonceExtension != null) {
+			// Obtenemos su valor.
+			byte[ ] responseNonce = nonceExtension.getExtnValue().getOctets();
+			// Si no es nulo...
+			if (responseNonce != null) {
+				// Lo pasamos a Base64.
+				result = UtilsCrypto.calculateDigestReturnB64String(CryptographicConstants.HASH_ALGORITHM_SHA512, responseNonce, null);
+			}
+		}
+
+		// Devolvemos el resultado.
+		return result;
+
+	}
+
+	/**
+	 * Gets the 'Produced At' date from the basic OCSP response.
+	 * @param basicOCSPResponse Basic OCSP Response to analyze.
+	 * @return the 'Produced At' date from the basic OCSP response. <code>null</code> if it is not defined.
+	 */
+	private static String getProducedAtFormattedFromBasicOcspReponse(BasicOCSPResp basicOCSPResponse) {
+
+		// Inicializamos la variable donde se almacena el resultado a devolver.
+		String result = null;
+
+		Date producedAt = basicOCSPResponse.getProducedAt();
+		if (producedAt != null) {
+			result = new DateString(producedAt).getDateString();
+		}
+
+		// Devolvemos el resultado.
+		return result;
+
+	}
+
+	/**
+	 * Gets the ResponderId canonicalized from the basic OCSP response.
+	 * @param basicOCSPResponse Basic OCSP Response to analyze.
+	 * @return the ResponderId canonicalized from the basic OCSP response. <code>null</code> if it is not defined.
+	 * @throws IOException In case of some error getting the X500Name encoded.
+	 * @throws CommonUtilsException In case of some error parsing to String the X500Name.
+	 */
+	private static String getResponderIdCanonicalizedFromBasicOcspResponse(BasicOCSPResp basicOCSPResponse) throws CommonUtilsException, IOException {
+
+		// Inicializamos la variable donde se almacena el resultado a devolver.
+		String result = null;
+
+		if (basicOCSPResponse.getResponderId() != null) {
+			ResponderID respId = basicOCSPResponse.getResponderId().toASN1Primitive();
+			if (respId != null) {
+				X500Name respIdX500Name = respId.getName();
+				if (respIdX500Name != null) {
+					result = respIdX500Name.toString();
+					if (UtilsStringChar.isNullOrEmptyTrim(result)) {
+						result = UtilsASN1.toString(new X500Principal(respIdX500Name.getEncoded()));
+					}
+					if (!UtilsStringChar.isNullOrEmpty(result)) {
+						result = UtilsCertificate.canonicalizarIdCertificado(result);
+					}
+				}
+			}
+		}
+
+		// Devolvemos el resultado.
+		return result;
 
 	}
 
@@ -160,15 +267,39 @@ public final class CommonsCertificatesAuditTraces {
 		// Si no es nula, calculamos el hash de la evidencia.
 		String hashAlgorithm = null;
 		String hashRevEvidInBase64 = null;
+		String crlIssuer = null;
+		String crlNumber = null;
+		String crlIssuedDate = null;
+		String crlIssuedNextUpdate = null;
 		if (revocationValueCRL != null) {
 			try {
+
+				// Obtenemos el hash de la evidencia.
 				hashRevEvidInBase64 = UtilsCrypto.calculateDigestReturnB64String(CryptographicConstants.HASH_ALGORITHM_SHA512, revocationValueCRL.getEncoded(), null);
 				hashAlgorithm = CryptographicConstants.HASH_ALGORITHM_SHA512;
-			} catch (CommonUtilsException | CRLException e) {
+
+				// Obtenemos el emisor de la CRL.
+				crlIssuer = UtilsCertificate.canonicalizarIdCertificado(UtilsASN1.toString(revocationValueCRL.getIssuerX500Principal()));
+
+				// Obtenemos el número de la CRL.
+				CRLNumber crlNumberX509 = UtilsCRL.getCRLNumber(revocationValueCRL);
+				crlNumber = crlNumberX509.getCRLNumber().toString();
+
+				// Obtenemos la fecha de emisión.
+				if (revocationValueCRL.getThisUpdate() != null) {
+					crlIssuedDate = new DateString(revocationValueCRL.getThisUpdate()).getDateString();
+				}
+
+				// Obtenemos la fecha de próxima actualización.
+				if (revocationValueCRL.getNextUpdate() != null) {
+					crlIssuedNextUpdate = new DateString(revocationValueCRL.getNextUpdate()).getDateString();
+				}
+
+			} catch (CommonUtilsException | CRLException | IOException e) {
 				LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CCAT_000), e);
 			}
 		}
-		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO, revocationValueURL, hashAlgorithm, hashRevEvidInBase64);
+		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_CRL_INFO, revocationValueURL, hashAlgorithm, hashRevEvidInBase64, crlIssuer, crlNumber, crlIssuedDate, crlIssuedNextUpdate);
 
 	}
 

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/02/2019.
+ * @version 1.1, 21/02/2019.
  */
 package es.gob.valet.audit.access;
 
@@ -31,7 +31,7 @@ import es.gob.valet.commons.utils.NumberConstants;
  * <p>Interface that defines all the public constants needed to work with
  * audit transactions.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/02/2019.
+ * @version 1.1, 21/02/2019.
  */
 public interface IEventsCollectorConstants {
 
@@ -231,6 +231,41 @@ public interface IEventsCollectorConstants {
 	 * Constant attribute that represents the field name 'CERT_REVEVID_HASH'.
 	 */
 	String FIELD_NAME_CERT_REVEVID_HASH = "CERT_REVEVID_HASH";
+
+	/**
+	 * Constant attribute that represents the field name 'CERT_REVEVID_OCSP_NONCE'.
+	 */
+	String FIELD_NAME_CERT_REVEVID_OCSP_NONCE = "CERT_REVEVID_OCSP_NONCE";
+
+	/**
+	 * Constant attribute that represents the field name 'CERT_REVEVID_OCSP_RESPID'.
+	 */
+	String FIELD_NAME_CERT_REVEVID_OCSP_RESPID = "CERT_REVEVID_OCSP_RESPID";
+
+	/**
+	 * Constant attribute that represents the field name 'CERT_REVEVID_OCSP_PRODUCEDAT'.
+	 */
+	String FIELD_NAME_CERT_REVEVID_OCSP_PRODUCEDAT = "CERT_REVEVID_OCSP_PRODUCEDAT";
+
+	/**
+	 * Constant attribute that represents the field name 'CERT_REVEVID_CRL_ISSUER'.
+	 */
+	String FIELD_NAME_CERT_REVEVID_CRL_ISSUER = "CERT_REVEVID_CRL_ISSUER";
+
+	/**
+	 * Constant attribute that represents the field name 'CERT_REVEVID_CRL_NUMBER'.
+	 */
+	String FIELD_NAME_CERT_REVEVID_CRL_CRLNUMBER = "CERT_REVEVID_CRL_NUMBER";
+
+	/**
+	 * Constant attribute that represents the field name 'CERT_REVEVID_CRL_ISSUED'.
+	 */
+	String FIELD_NAME_CERT_REVEVID_CRL_ISSUEDDATE = "CERT_REVEVID_CRL_ISSUED";
+
+	/**
+	 * Constant attribute that represents the field name 'CERT_REVEVID_CRL_NEXTUPDATE'.
+	 */
+	String FIELD_NAME_CERT_REVEVID_CRL_NEXTUPDATEDATE = "CERT_REVEVID_CRL_NEXTUPDATE";
 
 	/**
 	 * Constant attribute that represents the constant value field 'CERT_FIELDS'.

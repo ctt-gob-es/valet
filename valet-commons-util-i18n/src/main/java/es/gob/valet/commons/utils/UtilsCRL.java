@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/02/2019.
+ * @version 1.2, 21/02/2019.
  */
 package es.gob.valet.commons.utils;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.CRLException;
@@ -64,7 +65,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Utilities class that provides functionality to manage and work with X.509 CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/02/2019.
+ * @version 1.2, 21/02/2019.
  */
 public final class UtilsCRL {
 
@@ -501,11 +502,7 @@ public final class UtilsCRL {
 					try {
 
 						// Obtenemos el CRL Number.
-						byte[ ] crlNumberExtValByteArray = crl.getExtensionValue(Extension.cRLNumber.getId());
-						ASN1InputStream ais = new ASN1InputStream(crlNumberExtValByteArray);
-						DEROctetString dos = (DEROctetString) ais.readObject();
-						CRLNumber crlNumber = new CRLNumber(ASN1Integer.getInstance(dos.getOctets()).getPositiveValue());
-						UtilsResources.safeCloseInputStream(ais);
+						CRLNumber crlNumber = getCRLNumber(crl);
 
 						// Si aún no hemos encontrado ninguna, cogemos esta
 						// mismo.
@@ -535,6 +532,35 @@ public final class UtilsCRL {
 
 				}
 
+			}
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Gets the CRLNumber from a X.509 CRL.
+	 * @param crl X.509 CRL to analyze.
+	 * @return CRLNumber from the input X.509 CRL. <code>null</code> if the input parameter is <code>null</code>.
+	 * @throws IOException In case of some error extracting the information from the X.509 CRL.
+	 */
+	public static CRLNumber getCRLNumber(X509CRL crl) throws IOException {
+
+		CRLNumber result = null;
+
+		if (crl != null) {
+
+			byte[ ] crlNumberExtValByteArray = crl.getExtensionValue(Extension.cRLNumber.getId());
+			ASN1InputStream ais = new ASN1InputStream(crlNumberExtValByteArray);
+			try {
+				DEROctetString dos = (DEROctetString) ais.readObject();
+				result = new CRLNumber(ASN1Integer.getInstance(dos.getOctets()).getPositiveValue());
+			} catch (IOException e) {
+				throw e;
+			} finally {
+				UtilsResources.safeCloseInputStream(ais);
 			}
 
 		}
