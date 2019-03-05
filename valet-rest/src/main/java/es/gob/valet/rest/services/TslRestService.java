@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.10, 18/02/2019.
+ * @version 1.11, 05/03/2019.
  */
 package es.gob.valet.rest.services;
 
@@ -90,7 +90,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.10, 18/02/2019.
+ * @version 1.11, 05/03/2019.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -126,7 +126,7 @@ public class TslRestService implements ITslRestService {
 
 		// Si no se ha especificado la aplicación delegada, establecemos el
 		// token 'NOT_SPECIFIED'.
-		String delegatedAppAux = delegatedApp == null ? "NOT_SPECIFIED" : delegatedApp;
+		String delegatedAppAux = delegatedApp == null ? IEventsCollectorConstants.FIELD_VALUE_DELAPPID_NOTSPECIFIED : delegatedApp;
 
 		// Miramos el número de CRLs y OCSPs recibidos para el log.
 		int numCRLs = crlsByteArrayB64List == null ? 0 : crlsByteArrayB64List.size();
@@ -904,7 +904,7 @@ public class TslRestService implements ITslRestService {
 
 		// Si no se ha especificado la aplicación delegada, establecemos el
 		// token 'NOT_SPECIFIED'.
-		String delegatedAppAux = delegatedApp == null ? "NOT_SPECIFIED" : delegatedApp;
+		String delegatedAppAux = delegatedApp == null ? IEventsCollectorConstants.FIELD_VALUE_DELAPPID_NOTSPECIFIED : delegatedApp;
 
 		// Indicamos la recepción del servicio junto con los parámetros de
 		// entrada.

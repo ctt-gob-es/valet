@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/02/2019.
+ * @version 1.1, 05/03/2019.
  */
 package es.gob.valet.audit.utils;
 
@@ -43,7 +43,7 @@ import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 /**
  * <p>Class that provides methods for registering the most commons audit traces associated to the services of the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/02/2019.
+ * @version 1.1, 05/03/2019.
  */
 public final class CommonsServicesAuditTraces {
 
@@ -61,7 +61,7 @@ public final class CommonsServicesAuditTraces {
 	static {
 		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_SERVICE_START_RS, new String[ ] { IEventsCollectorConstants.FIELD_NAME_APPID, IEventsCollectorConstants.FIELD_NAME_DELAPPID });
 		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_SERVICE_END_RS, new String[ ] { IEventsCollectorConstants.FIELD_NAME_RS_RES_CODE, IEventsCollectorConstants.FIELD_NAME_RS_RES_DESC });
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_SERVICE_DCITIV_PARAMS, new String[ ] { IEventsCollectorConstants.FIELD_NAME_RS_PARAM_GETINFO, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_CHECKREVSTATUS, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_RETREVEVID, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_CRLS, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_OCSPS, });
+		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_SERVICE_DCITIV_PARAMS, new String[ ] { IEventsCollectorConstants.FIELD_NAME_RS_PARAM_GETINFO, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_CHECKREVSTATUS, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_RETREVEVID, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_CRLS, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_OCSPS });
 	}
 
 	/**

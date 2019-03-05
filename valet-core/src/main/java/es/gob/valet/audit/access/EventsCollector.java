@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/02/2019.
+ * @version 1.1, 05/03/2019.
  */
 package es.gob.valet.audit.access;
 
@@ -40,7 +40,7 @@ import es.gob.valet.rest.elements.json.DateString;
  * <p>Class that represents an audit events collector. This class must be
  * used to register all the audit traces occurred in the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/02/2019.
+ * @version 1.1, 05/03/2019.
  */
 public final class EventsCollector {
 
@@ -55,11 +55,6 @@ public final class EventsCollector {
 	private static final Logger AUDIT_LOGGER = Logger.getLogger(AUDIT_LOGGER_NAME);
 
 	/**
-	 * Constant attribute that represents the token used to indicate the transaction identifier in the event file.
-	 */
-	private static final String TRANSACTION_IDENTIFIER_TOKEN = "ID";
-
-	/**
 	 * Constants attribute that represents the separator used in the event file for separating the field identifier and value.
 	 */
 	private static final char TOKEN_SEPARATOR = UtilsStringChar.SYMBOL_EQUAL;
@@ -68,36 +63,6 @@ public final class EventsCollector {
 	 * Constants that represents the separator used in the event file for separating of audit fields.
 	 */
 	private static final char SEPARATOR = UtilsStringChar.SYMBOL_SEMICOLON;
-
-	/**
-	 * Constant attribute that represents the token used to indicate the open transaction trace.
-	 */
-	private static final String OPEN_TRACE_TOKEN = "open";
-
-	/**
-	 * Constant attribute that represents the token used to indicate the close transaction trace.
-	 */
-	private static final String CLOSE_TRACE_TOKEN = "close";
-
-	/**
-	 * Constant attribute that represents the token used to indicate the service identifier in the event file.
-	 */
-	private static final String SERVICE_IDENTIFIER_TOKEN = "SV";
-
-	/**
-	 * Constant attribute that represents the token used to indicate the operation identifier in the event file.
-	 */
-	private static final String OPERATION_IDENTIFIER_TOKEN = "OP";
-
-	/**
-	 * Constant attribute that represents the token used to indicate the message hash algorithm identifier in the event file.
-	 */
-	private static final String MESSAGE_HASH_ALGORITHM_IDENTIFIER_TOKEN = "HA";
-
-	/**
-	 * Constant attribute that represents the token used to indicate the message hash identifier in the event file.
-	 */
-	private static final String MESSAGE_HASH_IDENTIFIER_TOKEN = "MH";
 
 	/**
 	 * Constructor method for the class EventsCollector.java.
@@ -294,7 +259,7 @@ public final class EventsCollector {
 		StringBuilder traceSb = new StringBuilder();
 
 		// Siempre se añade el identificador de transacción.
-		traceSb.append(TRANSACTION_IDENTIFIER_TOKEN).append(TOKEN_SEPARATOR).append(transactionId).append(SEPARATOR);
+		traceSb.append(IEventsCollectorConstants.FIELD_NAME_ID).append(TOKEN_SEPARATOR).append(transactionId).append(SEPARATOR);
 
 		// Según la operación...
 		switch (operationId) {
@@ -302,29 +267,28 @@ public final class EventsCollector {
 			// Si se trata de apertura de traza, indicamos el servicio,
 			// el nombre de la operación 'open', y el hash de la petición.
 			case IEventsCollectorConstants.OPERATION_SERVICE_OPEN_TRACE:
-				traceSb.append(SERVICE_IDENTIFIER_TOKEN).append(TOKEN_SEPARATOR).append(serviceId).append(SEPARATOR);
-				traceSb.append(OPERATION_IDENTIFIER_TOKEN).append(TOKEN_SEPARATOR).append(OPEN_TRACE_TOKEN).append(SEPARATOR);
+				traceSb.append(IEventsCollectorConstants.FIELD_NAME_SV).append(TOKEN_SEPARATOR).append(serviceId).append(SEPARATOR);
+				traceSb.append(IEventsCollectorConstants.FIELD_NAME_OP).append(TOKEN_SEPARATOR).append(IEventsCollectorConstants.FIELD_VALUE_OPEN_TRACE).append(SEPARATOR);
 				if (messageHashInBase64 != null) {
-					traceSb.append(MESSAGE_HASH_ALGORITHM_IDENTIFIER_TOKEN).append(TOKEN_SEPARATOR).append(hashAlgorithmApplied).append(SEPARATOR);
-					traceSb.append(MESSAGE_HASH_IDENTIFIER_TOKEN).append(TOKEN_SEPARATOR).append(messageHashInBase64).append(SEPARATOR);
+					traceSb.append(IEventsCollectorConstants.FIELD_NAME_HA).append(TOKEN_SEPARATOR).append(hashAlgorithmApplied).append(SEPARATOR);
+					traceSb.append(IEventsCollectorConstants.FIELD_NAME_HM).append(TOKEN_SEPARATOR).append(messageHashInBase64).append(SEPARATOR);
 				}
 				break;
 
 			// Si se trata de apertura de traza, indicamos el nombre de la
-			// operación
-			// 'close', y el hash de la respuesta.
+			// operación 'close', y el hash de la respuesta.
 			case IEventsCollectorConstants.OPERATION_SERVICE_CLOSE_TRACE:
-				traceSb.append(OPERATION_IDENTIFIER_TOKEN).append(TOKEN_SEPARATOR).append(CLOSE_TRACE_TOKEN).append(SEPARATOR);
+				traceSb.append(IEventsCollectorConstants.FIELD_NAME_OP).append(TOKEN_SEPARATOR).append(IEventsCollectorConstants.FIELD_VALUE_CLOSE_TRACE).append(SEPARATOR);
 				if (messageHashInBase64 != null) {
-					traceSb.append(MESSAGE_HASH_ALGORITHM_IDENTIFIER_TOKEN).append(TOKEN_SEPARATOR).append(hashAlgorithmApplied).append(SEPARATOR);
-					traceSb.append(MESSAGE_HASH_IDENTIFIER_TOKEN).append(TOKEN_SEPARATOR).append(messageHashInBase64).append(SEPARATOR);
+					traceSb.append(IEventsCollectorConstants.FIELD_NAME_HA).append(TOKEN_SEPARATOR).append(hashAlgorithmApplied).append(SEPARATOR);
+					traceSb.append(IEventsCollectorConstants.FIELD_NAME_HM).append(TOKEN_SEPARATOR).append(messageHashInBase64).append(SEPARATOR);
 				}
 				break;
 
 			// Si no es ni apertura ni cierre, simplemente indicamos
 			// la operación.
 			default:
-				traceSb.append(OPERATION_IDENTIFIER_TOKEN).append(TOKEN_SEPARATOR).append(operationId).append(SEPARATOR);
+				traceSb.append(IEventsCollectorConstants.FIELD_NAME_OP).append(TOKEN_SEPARATOR).append(operationId).append(SEPARATOR);
 				break;
 		}
 

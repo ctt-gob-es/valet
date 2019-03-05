@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 21/02/2019.
+ * @version 1.2, 05/03/2019.
  */
 package es.gob.valet.audit.access;
 
@@ -31,7 +31,7 @@ import es.gob.valet.commons.utils.NumberConstants;
  * <p>Interface that defines all the public constants needed to work with
  * audit transactions.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 21/02/2019.
+ * @version 1.2, 05/03/2019.
  */
 public interface IEventsCollectorConstants {
 
@@ -68,59 +68,59 @@ public interface IEventsCollectorConstants {
 	/**
 	 * Constant attribute that represents the operation for show parameters of the Rest Service: detectCertInTslInfoAndValidation.
 	 */
-	int OPERATION_SERVICE_DCITIV_PARAMS = NumberConstants.NUM9;
+	int OPERATION_SERVICE_DCITIV_PARAMS = NumberConstants.NUM4;
 
 	/**
 	 * Constant attribute that represents the operation to show the information about the input certificate.
 	 */
-	int OPERATION_CERT_INFO = NumberConstants.NUM4;
+	int OPERATION_CERT_INFO = NumberConstants.NUM5;
 
 	/**
 	 * Constant attribute that represents the operation to show the information about the input certificate.
 	 */
-	int OPERATION_CERT_ISTSA = NumberConstants.NUM8;
+	int OPERATION_CERT_ISTSA = NumberConstants.NUM6;
 
 	/**
 	 * Constant attribute that represents the operation to show the information about the basic ocsp
 	 * response used to validate the certificate.
 	 */
-	int OPERATION_CERT_BASICOCSPRESP_INFO = NumberConstants.NUM12;
+	int OPERATION_CERT_BASICOCSPRESP_INFO = NumberConstants.NUM7;
 
 	/**
 	 * Constant attribute that represents the operation to show the information about the CRL used to validate
 	 * the certificate.
 	 */
-	int OPERATION_CERT_CRL_INFO = NumberConstants.NUM13;
+	int OPERATION_CERT_CRL_INFO = NumberConstants.NUM8;
 
 	/**
 	 * Constant attribute that represents the operation to show the mapping fields obtained for a specific certificate.
 	 */
-	int OPERATION_CERT_MAPPING_FIELDS = NumberConstants.NUM14;
+	int OPERATION_CERT_MAPPING_FIELDS = NumberConstants.NUM9;
 
 	/**
 	 * Constant attribute that represents the operation to show the TSL Location used to choose a TSL.
 	 */
-	int OPERATION_TSL_TSLLOCATION = NumberConstants.NUM5;
+	int OPERATION_TSL_TSLLOCATION = NumberConstants.NUM10;
 
 	/**
 	 * Constant attribute that represents the operation to show the TSL Country/Region used to choose a TSL.
 	 */
-	int OPERATION_TSL_COUNTRY_REGION = NumberConstants.NUM6;
+	int OPERATION_TSL_COUNTRY_REGION = NumberConstants.NUM11;
 
 	/**
 	 * Constant attribute that represents the operation to show if the TSL has been finded and its information.
 	 */
-	int OPERATION_TSL_FINDED = NumberConstants.NUM7;
+	int OPERATION_TSL_FINDED = NumberConstants.NUM12;
 
 	/**
 	 * Constant attribute that represents the operation to show if the certificate has been detected in the TSL.
 	 */
-	int OPERATION_TSL_CERT_DETECTED = NumberConstants.NUM10;
+	int OPERATION_TSL_CERT_DETECTED = NumberConstants.NUM13;
 
 	/**
 	 * Constant attribute that represents the operation to show if the certificate has been validated with the TSL.
 	 */
-	int OPERATION_TSL_CERT_VALIDATED = NumberConstants.NUM11;
+	int OPERATION_TSL_CERT_VALIDATED = NumberConstants.NUM14;
 
 	/**
 	 * Constant attribute that represents the code for the rest service result: 'OK'.
@@ -131,6 +131,31 @@ public interface IEventsCollectorConstants {
 	 * Constant attribute that represents the code for the rest service result: 'ERROR'.
 	 */
 	String RESULT_CODE_SERVICE_ERROR = "ERROR";
+
+	/**
+	 * Constant attribute that represents the field name 'ID'.
+	 */
+	String FIELD_NAME_ID = "ID";
+	
+	/**
+	 * Constant attribute that represents the field name 'SV'.
+	 */
+	String FIELD_NAME_SV = "SV";
+
+	/**
+	 * Constant attribute that represents the field name 'OP'.
+	 */
+	String FIELD_NAME_OP = "OP";
+
+	/**
+	 * Constant attribute that represents the field name 'HA'.
+	 */
+	String FIELD_NAME_HA = "HA";
+
+	/**
+	 * Constant attribute that represents the field name 'HM'.
+	 */
+	String FIELD_NAME_HM = "HM";
 
 	/**
 	 * Constant attribute that represents the field name 'APPID'.
@@ -371,5 +396,20 @@ public interface IEventsCollectorConstants {
 	 * Constant attribute that represents the constant value field 'FROM_REQUEST'.
 	 */
 	String FIELD_VALUE_FROM_REQUEST = "FROM_REQUEST";
+
+	/**
+	 * Constant attribute that represents the constant value field 'open'.
+	 */
+	String FIELD_VALUE_OPEN_TRACE = "open";
+
+	/**
+	 * Constant attribute that represents the constant value field 'close'.
+	 */
+	String FIELD_VALUE_CLOSE_TRACE = "close";
+
+	/**
+	 * Constant attribute that represents the constant value field 'NOT_SPECIFIED'.
+	 */
+	String FIELD_VALUE_DELAPPID_NOTSPECIFIED = "NOT_SPECIFIED";
 
 }
