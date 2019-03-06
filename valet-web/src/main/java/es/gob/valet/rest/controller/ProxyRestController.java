@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>16/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 27/12/2018.
+ * @version 1.4, 06/03/2019.
  */
 package es.gob.valet.rest.controller;
 
@@ -42,11 +42,12 @@ import es.gob.valet.persistence.configuration.model.entity.Proxy;
 import es.gob.valet.persistence.configuration.services.ifaces.ICOperationModeService;
 import es.gob.valet.persistence.configuration.services.ifaces.IProxyService;
 import es.gob.valet.persistence.utils.UtilsAESCipher;
+import es.gob.valet.utils.UtilsProxy;
 
 /**
  * <p>Class that manages the REST request related to the proxy configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 27/12/2018.
+ * @version 1.4, 06/03/2019.
  */
 @RestController
 public class ProxyRestController {
@@ -95,7 +96,7 @@ public class ProxyRestController {
 
 			if (!UtilsStringChar.isNullOrEmpty(proxyForm.getPassword())) {
 				String pwd = proxyForm.getPassword();
-				if (pwd==null) {
+				if (pwd == null) {
 					proxy.setPasswordProxy(null);
 				} else {
 					proxy.setPasswordProxy(new String(UtilsAESCipher.getInstance().encryptMessage(pwd)));
@@ -110,8 +111,10 @@ public class ProxyRestController {
 
 			proxy.setIsLocalAddress(proxyForm.getIsLocalAddress());
 
-			// se guarda en la base de datos
+			// Se guarda en la base de datos.
 			proxyService.saveProxy(proxy);
+			// Se actualiza la configuración de las utilidades del proxy.
+			UtilsProxy.loadProxyConfiguration();
 			LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.INFO_MODIFY_PROXY_OK));
 			proxyFormUpdated.setMsgOk(Language.getResWebGeneral(IWebGeneralMessages.INFO_MODIFY_PROXY_OK));
 		} catch (Exception e) {
@@ -120,7 +123,6 @@ public class ProxyRestController {
 				proxyFormUpdated = new ProxyForm();
 			}
 			proxyFormUpdated.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_MODIFY_PROXY_WEB));
-
 		}
 
 		return proxyFormUpdated;

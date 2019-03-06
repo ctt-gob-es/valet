@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 24/01/2019.
+ * @version 1.4, 06/03/2019.
  */
 package es.gob.valet.tasks;
 
@@ -61,7 +61,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 24/01/2019.
+ * @version 1.4, 06/03/2019.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
@@ -233,7 +233,10 @@ public class FindNewTSLRevisionsTask extends Task {
 					// Existe una nueva versión de la TSL.
 					TSLManager.getInstance().updateNewAvaliableTSLData(tsldco.getTslDataId(), IFindNewTslRevisionsTaskConstants.NEW_TSL_AVAILABLE);
 					TSLManager.getInstance().updateLastNewAvaliableTSLFindData(tsldco.getTslDataId(), Calendar.getInstance().getTime());
+					LOGGER.warn(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_002, tslCountryRegion, distributionPoint, sequenceNumberNewTsl, sequenceNumber));
 					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM005_NEW_TSL_DETECTED, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM005_EVENT_000, new Object[ ] { tslCountryRegion, distributionPoint, sequenceNumberNewTsl, sequenceNumber }));
+				} else {
+					LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_003, tslCountryRegion, sequenceNumber, distributionPoint));
 				}
 
 			} else {
