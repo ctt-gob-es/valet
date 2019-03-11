@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.12, 12/02/2019.
+ * @version 1.13, 11/03/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -39,7 +39,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.12, 12/02/2019.
+ * @version 1.13, 11/03/2019.
  */
 public final class StaticValetConfig {
 
@@ -215,6 +215,11 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents name for property <i>"graylog.destination.port"</i>.
 	 */
 	public static final String GRAYLOG_DESTINATION_PORT = "graylog.destination.port";
+
+	/**
+	 * Constant attribute that represents name for property <i>"graylog.maxLevelTraceAllowed"</i>.
+	 */
+	public static final String GRAYLOG_MAX_LEVEL_TRACE_ALLOWED = "graylog.maxLevelTraceAllowed";
 
 	/**
 	 * Constant attribute that represents name for property <i>"graylog.field."</i>.

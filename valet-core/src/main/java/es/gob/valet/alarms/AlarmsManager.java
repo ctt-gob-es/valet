@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/01/2019.
+ * @version 1.1, 11/03/2019.
  */
 package es.gob.valet.alarms;
 
@@ -38,6 +38,7 @@ import es.gob.valet.alarms.conf.AlarmsConfiguration;
 import es.gob.valet.alarms.exception.AlarmException;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsDate;
+import es.gob.valet.commons.utils.UtilsGrayLog;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
@@ -53,7 +54,7 @@ import es.gob.valet.utils.threads.EMailTimeLimitedOperation;
  * the general manager of alarms module and provides the necessary logic interface
  * for the other modules can interact with this one.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/01/2019.
+ * @version 1.1, 11/03/2019.
  */
 public final class AlarmsManager {
 
@@ -94,6 +95,9 @@ public final class AlarmsManager {
 
 		// Comprobamos que los parámetros de entrada son correctos.
 		if (checkParametersBeforeRegisterAlarm(alarmId, alarmMsg)) {
+
+			// Registramos la alarma en GrayLog si así está configurado.
+			UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, alarmId, null, alarmMsg);
 
 			// Comprobamos si la alarma está habilitada...
 			if (AlarmsConfiguration.getInstance().isAlarmEnabled(alarmId)) {

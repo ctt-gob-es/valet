@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 05/12/2018.
+ * @version 1.2, 11/03/2019.
  */
 package es.gob.valet.utils;
 
@@ -83,7 +83,7 @@ import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 /**
  * <p>Utilities class relating to connections and HTTP/S protocol.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 05/12/2018.
+ * @version 1.2, 11/03/2019.
  */
 public final class UtilsHTTP {
 
@@ -219,7 +219,7 @@ public final class UtilsHTTP {
 
 			// Si se produce algún error en la conexión, lo notificamos por
 			// GrayLog.
-			UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, UtilsGrayLog.TOKEN_VALUE_EVENT_CODE_ERROR_CON, uriString, e.getMessage());
+			UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, UtilsGrayLog.TOKEN_VALUE_CODERROR_ERROR_CON, uriString, e.getMessage());
 			// Relanzamos la excepción.
 			throw e;
 
@@ -659,7 +659,7 @@ public final class UtilsHTTP {
 
 			// Si se produce algún error en la conexión, lo notificamos por
 			// GrayLog.
-			UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, UtilsGrayLog.TOKEN_VALUE_EVENT_CODE_ERROR_CON, uriString, e.getMessage());
+			UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, UtilsGrayLog.TOKEN_VALUE_CODERROR_ERROR_CON, uriString, e.getMessage());
 			// Relanzamos la excepción.
 			throw new CommonUtilsException(IValetException.COD_200, e.getMessage(), e);
 

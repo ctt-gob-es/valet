@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 11/03/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -53,7 +53,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Utilities class relating to connections and LDAP protocol.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 11/03/2019.
  */
 public final class UtilsLDAP {
 
@@ -165,7 +165,7 @@ public final class UtilsLDAP {
 		// // Si se produce algún error en la conexión, lo notificamos por
 		// // GrayLog.
 		// UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR,
-		// UtilsGrayLog.TOKEN_VALUE_EVENT_CODE_ERROR_CON, "ldap://" + urlServer
+		// UtilsGrayLog.TOKEN_VALUE_CODERROR_ERROR_CON, "ldap://" + urlServer
 		// + ":" + defaultPort, e.getMessage());
 		// // Relanzamos la excepción.
 		// throw new CommonUtilsException(IValetException.COD_200,
@@ -262,7 +262,7 @@ public final class UtilsLDAP {
 		} catch (LDAPException e) {
 			// Si se produce algún error en la conexión, lo notificamos por
 			// GrayLog.
-			UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, UtilsGrayLog.TOKEN_VALUE_EVENT_CODE_ERROR_CON, "ldap://" + urlServer + ":" + defaultPort, e.getMessage());
+			UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, UtilsGrayLog.TOKEN_VALUE_CODERROR_ERROR_CON, "ldap://" + urlServer + ":" + defaultPort, e.getMessage());
 			// Relanzamos la excepción.
 			throw new CommonUtilsException(IValetException.COD_200, Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_LDAP_000, new Object[ ] { urlServer, defaultPort }), e);
 		}

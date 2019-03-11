@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 24/01/2019.
+ * @version 1.10, 11/03/2019.
  */
 package es.gob.valet.spring.config;
 
@@ -58,7 +58,7 @@ import es.gob.valet.utils.UtilsProxy;
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 24/01/2019.
+ * @version 1.10, 11/03/2019.
  */
 @Configuration
 @EnableAutoConfiguration
@@ -175,6 +175,9 @@ public class ApplicationConfig {
 			TasksManager.loadTasks();
 
 		}
+		
+		// Escribimos en GrayLog el mensaje que indica que la plataforma a inicializado.
+		UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, UtilsGrayLog.TOKEN_VALUE_CODERROR_INITIALIZATION, UtilsGrayLog.getHostName(), Language.getFormatResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_007, UtilsGrayLog.getHostName(), cacheInitializationTime));
 
 	}
 

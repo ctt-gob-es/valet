@@ -20,11 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 11/03/2019.
  */
 package es.gob.valet.commons.utils;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.Properties;
@@ -37,48 +39,14 @@ import biz.paluch.logging.gelf.intern.GelfMessage;
 import biz.paluch.logging.gelf.intern.GelfSender;
 import biz.paluch.logging.gelf.intern.sender.GelfUDPSender;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 
 /**
  * <p>Utilities class for the use of GrayLog.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 11/03/2019.
  */
 public final class UtilsGrayLog {
-
-	/**
-	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_000</code> belonging to the file commonUtils/general_xx_YY.properties.
-	 */
-	private static final String UTILS_GRAYLOG_000 = "UTILS_GRAYLOG_000";
-
-	/**
-	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_001</code> belonging to the file commonUtils/general_xx_YY.properties.
-	 */
-	private static final String UTILS_GRAYLOG_001 = "UTILS_GRAYLOG_001";
-
-	/**
-	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_002</code> belonging to the file commonUtils/general_xx_YY.properties.
-	 */
-	private static final String UTILS_GRAYLOG_002 = "UTILS_GRAYLOG_002";
-
-	/**
-	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_003</code> belonging to the file commonUtils/general_xx_YY.properties.
-	 */
-	private static final String UTILS_GRAYLOG_003 = "UTILS_GRAYLOG_003";
-
-	/**
-	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_004</code> belonging to the file commonUtils/general_xx_YY.properties.
-	 */
-	private static final String UTILS_GRAYLOG_004 = "UTILS_GRAYLOG_004";
-
-	/**
-	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_005</code> belonging to the file commonUtils/general_xx_YY.properties.
-	 */
-	private static final String UTILS_GRAYLOG_005 = "UTILS_GRAYLOG_005";
-
-	/**
-	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_006</code> belonging to the file commonUtils/general_xx_YY.properties.
-	 */
-	private static final String UTILS_GRAYLOG_006 = "UTILS_GRAYLOG_006";
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
@@ -86,54 +54,64 @@ public final class UtilsGrayLog {
 	private static final Logger LOGGER = Logger.getLogger(UtilsGrayLog.class);
 
 	/**
-	 * Constant attribute that represents the token key 'EVENT_CODE' for a Gray Log Message Field.
+	 * Constant attribute that represents the token key 'cod_error' for a Gray Log Message Field.
 	 */
-	private static final String TOKEN_KEY_EVENT_CODE = "EVENT_CODE";
+	private static final String TOKEN_KEY_COD_ERROR = "cod_error";
 
 	/**
 	 * Constant attribute that represents the token key 'RESOURCE_INFO' for a Gray Log Message Field.
 	 */
-	private static final String TOKEN_KEY_RESOURCE_INFO = "RESOURCE_INFO";
+	private static final String TOKEN_KEY_RESOURCE_INFO = "resource_info";
 
 	/**
 	 * Constant attribute that represents the token key 'MESSAGE' for a Gray Log Message Field.
 	 */
-	private static final String TOKEN_KEY_MESSAGE = "MESSAGE";
+	private static final String TOKEN_KEY_MESSAGE = "message";
+
+	/**
+	 * Constant attribute that represents the token key 'source' for a Gray Log Message Field.
+	 */
+	private static final String TOKEN_KEY_SOURCE = "source";
 
 	/**
 	 * Constant attribute that represents the event code 'ERROR_CON'.
 	 */
-	public static final String TOKEN_VALUE_EVENT_CODE_ERROR_CON = "ERROR_CON";
+	public static final String TOKEN_VALUE_CODERROR_ERROR_CON = "ERROR_CON";
 
 	/**
 	 * Constant attribute that represents the event code 'INITIALIZATION'.
 	 */
-	public static final String TOKEN_VALUE_EVENT_CODE_INITIALIZATION = "INITIALIZATION";
+	public static final String TOKEN_VALUE_CODERROR_INITIALIZATION = "INITIALIZATION";
+
+	/**
+	 * Constant attribute that represents the event code 'UNKNOWN'.
+	 */
+	public static final String TOKEN_VALUE_UNKNWON = "UNKNOWN";
 
 	/**
 	 * Constant attribute that represents the level FATAL for the GrayLogger.
 	 */
-	public static final int LEVEL_FATAL = 0;
+	public static final int LEVEL_FATAL = 2;
 
 	/**
 	 * Constant attribute that represents the level ERROR for the GrayLogger.
 	 */
-	public static final int LEVEL_ERROR = 1;
+	public static final int LEVEL_ERROR = 3;
 
 	/**
 	 * Constant attribute that represents the level WARN for the GrayLogger.
 	 */
-	public static final int LEVEL_WARN = 2;
+	public static final int LEVEL_WARN = 4;
 
 	/**
 	 * Constant attribute that represents the level INFO for the GrayLogger.
 	 */
-	public static final int LEVEL_INFO = 3;
+	public static final int LEVEL_INFO = 6;
 
 	/**
 	 * Constant attribute that represents the level DEBUG for the GrayLogger.
 	 */
-	public static final int LEVEL_DEBUG = 4;
+	public static final int LEVEL_DEBUG = 7;
 
 	/**
 	 * Flag that indicates if the configuration of Gray Log has been initialized (with or without errors).
@@ -161,10 +139,20 @@ public final class UtilsGrayLog {
 	private static int grayLogPort = -1;
 
 	/**
+	 * Attribute that represents the maximum level of traces allowed for GrayLog messages.
+	 */
+	private static int maxLevelTraceAllowed = LEVEL_ERROR;
+
+	/**
 	 * Attribute that represents the set of static declared fields to use in the
 	 * messages to Gray Log.
 	 */
 	private static Map<String, String> grayLogDeclaredFields = null;
+
+	/**
+	 * Attribute that represents the source host name from which the messages are sended.
+	 */
+	private static String grayLogSourceHostName = null;
 
 	/**
 	 * Attribute that represents the Gray Log Messages Sender.
@@ -189,19 +177,21 @@ public final class UtilsGrayLog {
 
 			loadGrayLogServerHost();
 			loadGrayLogServerPort();
+			loadGrayLogMaximumLevelTracesAllowed();
 			loadGrayLogMessagesSender();
 			loadGrayLogDeclaredFields();
+			loadGrayLogSourceHostName();
 
 			if (initializationError) {
 				grayLogEnabled = false;
-				LOGGER.error(Language.getResCommonsUtilGeneral(UTILS_GRAYLOG_004));
+				LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_004));
 			} else {
-				LOGGER.info(Language.getResCommonsUtilGeneral(UTILS_GRAYLOG_005));
+				LOGGER.info(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_005));
 			}
 
 		} else {
 
-			LOGGER.info(Language.getResCommonsUtilGeneral(UTILS_GRAYLOG_006));
+			LOGGER.info(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_006));
 
 		}
 
@@ -238,6 +228,18 @@ public final class UtilsGrayLog {
 	}
 
 	/**
+	 * Load the maximum level of traces allowed for the Gray Log messages.
+	 */
+	private static void loadGrayLogMaximumLevelTracesAllowed() {
+		int result = LEVEL_ERROR;
+		String maxLevelTraceAllowedString = StaticValetConfig.getProperty(StaticValetConfig.GRAYLOG_MAX_LEVEL_TRACE_ALLOWED);
+		if (!UtilsStringChar.isNullOrEmptyTrim(maxLevelTraceAllowedString)) {
+			result = Integer.parseInt(maxLevelTraceAllowedString);
+		}
+		maxLevelTraceAllowed = result;
+	}
+
+	/**
 	 * Load the Gray Log message sender manager.
 	 */
 	private static void loadGrayLogMessagesSender() {
@@ -254,7 +256,7 @@ public final class UtilsGrayLog {
 			} catch (IOException e) {
 				grayLogMessageSender = null;
 				initializationError = true;
-				LOGGER.error(Language.getResCommonsUtilGeneral(UTILS_GRAYLOG_001), e);
+				LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_001), e);
 			}
 
 		}
@@ -282,6 +284,34 @@ public final class UtilsGrayLog {
 	}
 
 	/**
+	 * Load the hostname to add as source field in the GrayLog messages.
+	 */
+	private static void loadGrayLogSourceHostName() {
+
+		// Se calcula el hostname para informar el campo "source".
+		try {
+
+			InetAddress ip = InetAddress.getLocalHost();
+			grayLogSourceHostName = ip.getHostName();
+
+		} catch (UnknownHostException e) {
+
+			LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_007), e);
+			grayLogSourceHostName = TOKEN_VALUE_UNKNWON;
+
+		}
+
+	}
+
+	/**
+	 * Gets the HostName used to identify this instance in GrayLog.
+	 * @return the HostName used to identify this instance in GrayLog.
+	 */
+	public static String getHostName() {
+		return grayLogSourceHostName;
+	}
+
+	/**
 	 * This method only works if the Gray Log has been initialized and is enabled in the configuration.
 	 * Writes a event-message and send to the GrayLog Server with the following structure/fields:
 	 *     EVENT_CODE=[{eventCode}];RESOURCE_INFO=[{resourceInfo}];MESSAGE=[{message}]
@@ -294,13 +324,13 @@ public final class UtilsGrayLog {
 	 * 			<li>{@link UtilsGrayLog#LEVEL_DEBUG}</li>
 	 * 		</ul>
 	 * If it is specified another value, then this method do nothing.
-	 * @param eventCode Event code for the event message. If this is <code>null</code> or empty, or not is defined,
+	 * @param errorCode Error code for the event message. If this is <code>null</code> or empty, or not is defined,
 	 * then this method do nothing.
 	 * @param resourceInfo Additional info for the event-message. It could be <code>null</code> or empty.
 	 * @param message Message to add in the event-message. If this is <code>null</code> or empty, or not is defined,
 	 * then this method do nothing.
 	 */
-	public static void writeMessageInGrayLog(int level, String eventCode, String resourceInfo, String message) {
+	public static void writeMessageInGrayLog(int level, String errorCode, String resourceInfo, String message) {
 
 		// Si no está inicializado, forzamos su carga.
 		if (!initialized) {
@@ -310,31 +340,37 @@ public final class UtilsGrayLog {
 		// Si el GrayLog está habilitado en el sistema...
 		if (grayLogEnabled) {
 
-			// Si ni el código de evento ni el mensaje son cadenas nulas o
-			// vacías...
-			if (!UtilsStringChar.isNullOrEmptyTrim(eventCode) && !UtilsStringChar.isNullOrEmptyTrim(message)) {
+			// Si el nivel del mensaje es menor o igual al permitido...
+			if (level <= maxLevelTraceAllowed) {
 
-				GelfMessage gm = new GelfMessage();
-				gm.setShortMessage(message);
-				String fullMessage = getParsedEventMessageForGrayLog(eventCode, resourceInfo, message);
-				gm.setFullMessage(fullMessage);
-				gm.setJavaTimestamp(Calendar.getInstance().getTimeInMillis());
-				gm.setLevel(String.valueOf(level));
-				gm.addField(TOKEN_KEY_EVENT_CODE, eventCode);
-				gm.addField(TOKEN_KEY_RESOURCE_INFO, resourceInfo);
-				gm.addField(TOKEN_KEY_MESSAGE, message);
-				gm.addFields(grayLogDeclaredFields);
-				grayLogMessageSender.sendMessage(gm);
+				// Si ni el código de evento ni el mensaje son cadenas nulas o
+				// vacías...
+				if (!UtilsStringChar.isNullOrEmptyTrim(errorCode) && !UtilsStringChar.isNullOrEmptyTrim(message)) {
 
-			} else {
+					GelfMessage gm = new GelfMessage();
+					gm.setShortMessage(message);
+					String fullMessage = getParsedEventMessageForGrayLog(errorCode, resourceInfo, message);
+					gm.setFullMessage(fullMessage);
+					gm.setJavaTimestamp(Calendar.getInstance().getTimeInMillis());
+					gm.setLevel(String.valueOf(level));
+					gm.addField(TOKEN_KEY_COD_ERROR, errorCode);
+					gm.addField(TOKEN_KEY_RESOURCE_INFO, resourceInfo);
+					gm.addField(TOKEN_KEY_MESSAGE, message);
+					gm.addFields(grayLogDeclaredFields);
+					gm.addField(TOKEN_KEY_SOURCE, grayLogSourceHostName);
+					grayLogMessageSender.sendMessage(gm);
 
-				LOGGER.warn(Language.getFormatResCommonsUtilGeneral(UTILS_GRAYLOG_003, new Object[ ] { eventCode, message }));
+				} else {
+
+					LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_003, new Object[ ] { errorCode, message }));
+
+				}
 
 			}
 
 		} else {
 
-			LOGGER.debug(Language.getResCommonsUtilGeneral(UTILS_GRAYLOG_002));
+			LOGGER.debug(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_002));
 
 		}
 
@@ -350,9 +386,9 @@ public final class UtilsGrayLog {
 	private static String getParsedEventMessageForGrayLog(String eventCode, String resourceInfo, String message) {
 
 		if (UtilsStringChar.isNullOrEmptyTrim(resourceInfo)) {
-			return Language.getFormatResCommonsUtilGeneral(UTILS_GRAYLOG_000, new Object[ ] { eventCode, UtilsStringChar.EMPTY_STRING, message });
+			return Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_000, new Object[ ] { eventCode, UtilsStringChar.EMPTY_STRING, message });
 		} else {
-			return Language.getFormatResCommonsUtilGeneral(UTILS_GRAYLOG_000, new Object[ ] { eventCode, resourceInfo, message });
+			return Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_000, new Object[ ] { eventCode, resourceInfo, message });
 		}
 
 	}
