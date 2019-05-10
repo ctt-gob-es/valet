@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 10/05/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -52,7 +52,7 @@ import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 /**
  * <p>Class that represents a Digital Identities Processor.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 10/05/2019.
  */
 public class DigitalIdentitiesProcessor {
 
@@ -462,18 +462,17 @@ public class DigitalIdentitiesProcessor {
 	 * @param cert X509v3 certificate to check.
 	 * @return <code>true</code> if the certificate is some of the identities, otherwise <code>false</code>.
 	 */
-	public final boolean checkIfTSADigitalIdentitiesMatchesCertificate(java.security.cert.X509Certificate cert) {
+	public final boolean checkIfDigitalIdentitiesMatchesCertificate(java.security.cert.X509Certificate cert) {
 
-		// Por defecto, indicamos que no se detecta el certificado de sello de
-		// tiempo.
+		// Por defecto, indicamos que no se detecta el certificado.
 		boolean result = false;
 
 		// Comprobamos primero los certificados X509v3.
-		for (X509Certificate certTsa: x509certList) {
+		for (X509Certificate certDI: x509certList) {
 
 			// Comprobamos si se trata del mismo certificado.
 			try {
-				result = UtilsCertificate.equals(cert, certTsa);
+				result = UtilsCertificate.equals(cert, certDI);
 				if (result) {
 					break;
 				}
@@ -483,7 +482,7 @@ public class DigitalIdentitiesProcessor {
 
 		}
 
-		// Consideramos que para identificar el certificado de una TSA, no nos
+		// Consideramos que para identificar el certificado, no nos
 		// valen el resto de identidades digitales,
 		// tiene que coincidir exactamente con alguno de los certificados
 		// declarados.

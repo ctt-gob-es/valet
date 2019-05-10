@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 10/05/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -44,7 +44,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSPService;
 /**
  * <p>Class that represents a TSL validation result.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 10/05/2019.
  */
 public class TSLValidatorResult implements ITSLValidatorResult {
 
@@ -77,6 +77,12 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 * Attribute that represents the result of the validation, initially not detected.
 	 */
 	private int result = ITSLValidatorResult.RESULT_NOT_DETECTED;
+
+	/**
+	 * Attribute that represents a flag to determine ig the result has been obtained from a
+	 * TSL-Service Status.
+	 */
+	private Boolean isResultFromServiceStatus = null;
 
 	/**
 	 * Attribute that represents an extension analyzer for the certificate to validate.
@@ -298,6 +304,23 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 */
 	public final void setResult(int resultParam) {
 		this.result = resultParam;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#isResultFromServiceStatus()
+	 */
+	@Override
+	public Boolean isResultFromServiceStatus() {
+		return isResultFromServiceStatus;
+	}
+
+	/**
+	 * Sets the flag that determines if the result has been obtained from a TSL-Service status.
+	 * @param isResultFromServiceStatusParam flag that determines if the result has been obtained from a TSL-Service status.
+	 */
+	public void setResultFromServiceStatus(Boolean isResultFromServiceStatusParam) {
+		this.isResultFromServiceStatus = isResultFromServiceStatusParam;
 	}
 
 	/**
@@ -723,6 +746,7 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	public final void resetAllData() {
 
 		setResult(ITSLValidatorResult.RESULT_NOT_DETECTED);
+		setResultFromServiceStatus(null);
 		setRevocationDate(null);
 		setRevocationReason(-1);
 		setEuropean(false);

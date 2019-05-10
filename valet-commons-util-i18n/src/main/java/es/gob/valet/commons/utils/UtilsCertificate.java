@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 18/02/2019.
+ * @version 1.5, 10/05/2019.
  */
 package es.gob.valet.commons.utils;
 
@@ -60,7 +60,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 18/02/2019.
+ * @version 1.5, 10/05/2019.
  */
 public final class UtilsCertificate {
 
@@ -331,6 +331,55 @@ public final class UtilsCertificate {
 	}
 
 	/**
+	 * Gets the country specified in the subject name of the input certificate.
+	 * @param x509cert X509 Certificate to analyze to obtain the country of its subject name.
+	 * @return String with the representation of the country of the subject certificate.
+	 * in ISO 3166-1. <code>null</code> in case of some error or the country is not defined.
+	 */
+	public static String getSubjectCountryOfTheCertificateString(X509Certificate x509cert) {
+
+		String result = null;
+
+		if (x509cert != null) {
+
+			result = getRDNFirstValueFromX500Principal(x509cert.getSubjectX500Principal(), X509ObjectIdentifiers.countryName);
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Gets the country specified in the subject name of the input certificate if it is a CA certificate, or from
+	 * the issuer if it is a end certificate.
+	 * @param x509cert X509 Certificate to analyze to obtain the country.
+	 * @return String with the representation of the country of the certificate.
+	 * in ISO 3166-1. <code>null</code> in case of some error or the country is not defined.
+	 */
+	public static String getCountryOfTheCertificateString(X509Certificate x509cert) {
+
+		String result = null;
+
+		if (x509cert != null) {
+
+			if (isCA(x509cert)) {
+
+				result = getSubjectCountryOfTheCertificateString(x509cert);
+
+			} else {
+
+				result = getIssuerCountryOfTheCertificateString(x509cert);
+
+			}
+
+		}
+
+		return result;
+
+	}
+
+	/**
 	 * Gets the RDN First ocurrence value with the OID indicated from the input X500Name.
 	 * @param x500Name X.500 Name to analyze.
 	 * @param rdnAsn1ObjectIdentifier Object Identifier that represents the RDN to search.
@@ -420,6 +469,18 @@ public final class UtilsCertificate {
 		}
 
 		return result;
+
+	}
+
+	/**
+	 * Checks if the input certificate is a CA (it has the flag in the basic constraint).
+	 * @param cert X509v3 certificate that must be checked.
+	 * @return <code>true</code> if the input certificate has the BasicConstraint extension
+	 * with the CA flag, otherwise <code>false</code> (including if the input is <code>null</code>).
+	 */
+	public static boolean isCA(X509Certificate cert) {
+
+		return cert != null && cert.getBasicConstraints() != -1;
 
 	}
 

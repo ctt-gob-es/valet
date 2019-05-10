@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 31/01/2019.
+ * @version 1.3, 10/05/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.ts119612.v020101;
 
@@ -52,7 +52,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.AdditionalServiceInformat
  * <p>Class that represents a TSL Validator implementation for the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 31/01/2019.
+ * @version 1.3, 10/05/2019.
  */
 public class TSLValidator extends ATSLValidator {
 
@@ -386,10 +386,10 @@ public class TSLValidator extends ATSLValidator {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.impl.common.ATSLValidator#setStatusResultInAccordanceWithTSPServiceCurrentStatus(java.lang.String, java.util.Date, java.util.Date, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
+	 * @see es.gob.valet.tsl.certValidation.impl.common.ATSLValidator#setStatusResultInAccordanceWithTSPServiceCurrentStatus(boolean, java.lang.String, java.util.Date, java.util.Date, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
 	 */
 	@Override
-	protected void setStatusResultInAccordanceWithTSPServiceCurrentStatus(String serviceStatus, Date serviceStatusStartingTime, Date validationDate, TSLValidatorResult validationResult) {
+	protected void setStatusResultInAccordanceWithTSPServiceCurrentStatus(boolean isCACert, String serviceStatus, Date serviceStatusStartingTime, Date validationDate, TSLValidatorResult validationResult) {
 
 		// Solo tenemos en cuenta el Servicio si su estado comenzó de forma
 		// anterior
@@ -408,10 +408,23 @@ public class TSLValidator extends ATSLValidator {
 			// que se detecta el certificado.
 			if (statusOK) {
 
-				// Se establece el estado a detectado (desconocido), ya que
-				// ahora habría que
-				// buscar la forma de comprobar el estado de revocación.
-				validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_UNKNOWN);
+				// Si se trata de una CA, al haberse encontrado directamente en
+				// la TSL,
+				// se considera que su estado de revocación es OK.
+				if (isCACert) {
+
+					validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_VALID);
+
+				}
+				// Al ser tipo final, se establece el estado a detectado
+				// (desconocido), ya que
+				// ahora habría que buscar la forma de comprobar el estado de
+				// revocación.
+				else {
+
+					validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_UNKNOWN);
+
+				}
 
 			} else if (statusChainNotValid) {
 

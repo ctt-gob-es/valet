@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.11, 05/03/2019.
+ * @version 1.12, 10/05/2019.
  */
 package es.gob.valet.rest.services;
 
@@ -90,7 +90,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.11, 05/03/2019.
+ * @version 1.12, 10/05/2019.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -520,7 +520,7 @@ public class TslRestService implements ITslRestService {
 
 			String msg = null;
 			if (UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
-				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG013, UtilsCertificate.getIssuerCountryOfTheCertificateString(x509cert));
+				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG013, UtilsCertificate.getCountryOfTheCertificateString(x509cert));
 			} else {
 				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG014, tslLocation);
 			}
@@ -534,7 +534,7 @@ public class TslRestService implements ITslRestService {
 			// la respuesta del servicio.
 			String msg = null;
 			if (UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
-				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG015, new Object[ ] { UtilsCertificate.getIssuerCountryOfTheCertificateString(x509cert), detectionDate });
+				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG015, new Object[ ] { UtilsCertificate.getCountryOfTheCertificateString(x509cert), detectionDate });
 			} else {
 				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG016, new Object[ ] { tslLocation, detectionDate });
 			}
@@ -632,6 +632,7 @@ public class TslRestService implements ITslRestService {
 						// Asignamos el resultado de comprobación de estado de
 						// revocación.
 						tslRevocationStatus.setRevocationStatus(tslValidatorResult.getResult());
+						tslRevocationStatus.setIsFromServStat(tslValidatorResult.isResultFromServiceStatus());
 
 						// En función del resultado (sabemos que ha sido
 						// detectado)...
@@ -640,14 +641,12 @@ public class TslRestService implements ITslRestService {
 								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG021);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
-								tslRevocationStatus.setIsFromServStat(null);
 								break;
 
 							case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_VALID:
 								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG022);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
-								tslRevocationStatus.setIsFromServStat(Boolean.FALSE);
 								addRevocationInfoInResult(tslRevocationStatus, tslValidatorResult, returnRevocationEvidence);
 								break;
 
@@ -655,7 +654,6 @@ public class TslRestService implements ITslRestService {
 								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG023);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
-								tslRevocationStatus.setIsFromServStat(tslValidatorResult.getTSPServiceNameForDetect().equals(tslValidatorResult.getTSPServiceNameForValidate()));
 								if (!tslRevocationStatus.getIsFromServStat()) {
 									addRevocationInfoInResult(tslRevocationStatus, tslValidatorResult, returnRevocationEvidence);
 								}
@@ -665,21 +663,18 @@ public class TslRestService implements ITslRestService {
 								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG024);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
-								tslRevocationStatus.setIsFromServStat(Boolean.TRUE);
 								break;
 
 							case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED_SERVICESTATUS:
 								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG025);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
-								tslRevocationStatus.setIsFromServStat(Boolean.TRUE);
 								break;
 
 							case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_CERTCHAIN_NOTVALID_SERVICESTATUS:
 								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG026);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
-								tslRevocationStatus.setIsFromServStat(Boolean.TRUE);
 								break;
 							default:
 								break;

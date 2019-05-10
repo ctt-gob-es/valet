@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 21/02/2019.
+ * @version 1.2, 10/05/2019.
  */
 package es.gob.valet.audit.utils;
 
@@ -61,7 +61,7 @@ import es.gob.valet.rest.elements.json.DateString;
 /**
  * <p>Class that provides methods for registering the most commons audit traces associated to the certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 21/02/2019.
+ * @version 1.2, 10/05/2019.
  */
 public final class CommonsCertificatesAuditTraces {
 
@@ -77,7 +77,7 @@ public final class CommonsCertificatesAuditTraces {
 	private static Map<Integer, String[ ]> operationFieldsNamesMap = new ConcurrentHashMap<Integer, String[ ]>();
 
 	static {
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_ISSUER_COUNTRY, IEventsCollectorConstants.FIELD_NAME_CERT_ISSUER, IEventsCollectorConstants.FIELD_NAME_CERT_SUBJECT, IEventsCollectorConstants.FIELD_NAME_CERT_SERIAL_NUMBER, IEventsCollectorConstants.FIELD_NAME_CERT_VALID_FROM, IEventsCollectorConstants.FIELD_NAME_CERT_VALID_TO });
+		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_ISCA, IEventsCollectorConstants.FIELD_NAME_CERT_COUNTRY, IEventsCollectorConstants.FIELD_NAME_CERT_ISSUER, IEventsCollectorConstants.FIELD_NAME_CERT_SUBJECT, IEventsCollectorConstants.FIELD_NAME_CERT_SERIAL_NUMBER, IEventsCollectorConstants.FIELD_NAME_CERT_VALID_FROM, IEventsCollectorConstants.FIELD_NAME_CERT_VALID_TO });
 		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_ISTSA, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_ISTSA });
 		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_URL, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HA, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HASH, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_NONCE, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_PRODUCEDAT, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_RESPID });
 		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_CRL_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_URL, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HA, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HASH, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_ISSUER, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_CRLNUMBER, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_ISSUEDDATE, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_NEXTUPDATEDATE });
@@ -107,7 +107,8 @@ public final class CommonsCertificatesAuditTraces {
 	 */
 	public static void addCertInfoOperationTrace(String transactionId, X509Certificate cert) {
 
-		String certIssuerCountry = UtilsCertificate.getIssuerCountryOfTheCertificateString(cert);
+		String certIsCA = Boolean.toString(UtilsCertificate.isCA(cert));
+		String certCountry = UtilsCertificate.getCountryOfTheCertificateString(cert);
 		String certIssuer = null;
 		try {
 			certIssuer = UtilsCertificate.getCertificateIssuerId(cert);
@@ -123,7 +124,7 @@ public final class CommonsCertificatesAuditTraces {
 		String certSerialNumber = cert.getSerialNumber().toString();
 		String certValidFrom = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_JSON, cert.getNotBefore());
 		String certValidTo = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_JSON, cert.getNotAfter());
-		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_INFO, certIssuerCountry, certIssuer, certSubject, certSerialNumber, certValidFrom, certValidTo);
+		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_INFO, certIsCA, certCountry, certIssuer, certSubject, certSerialNumber, certValidFrom, certValidTo);
 
 	}
 

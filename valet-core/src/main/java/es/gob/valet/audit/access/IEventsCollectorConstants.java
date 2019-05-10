@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 05/03/2019.
+ * @version 1.3, 10/05/2019.
  */
 package es.gob.valet.audit.access;
 
@@ -31,7 +31,7 @@ import es.gob.valet.commons.utils.NumberConstants;
  * <p>Interface that defines all the public constants needed to work with
  * audit transactions.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 05/03/2019.
+ * @version 1.3, 10/05/2019.
  */
 public interface IEventsCollectorConstants {
 
@@ -136,7 +136,7 @@ public interface IEventsCollectorConstants {
 	 * Constant attribute that represents the field name 'ID'.
 	 */
 	String FIELD_NAME_ID = "ID";
-	
+
 	/**
 	 * Constant attribute that represents the field name 'SV'.
 	 */
@@ -208,9 +208,14 @@ public interface IEventsCollectorConstants {
 	String FIELD_NAME_RS_PARAM_GET_XML_DATA = "RS_PARAM_GETXMLDATA";
 
 	/**
-	 * Constant attribute that represents the field name 'CERT_ISSUER_COUNTRY'.
+	 * Constant attribute that represents the field name 'CERT_ISCA'.
 	 */
-	String FIELD_NAME_CERT_ISSUER_COUNTRY = "CERT_ISSUER_COUNTRY";
+	String FIELD_NAME_CERT_ISCA = "CERT_ISCA";
+
+	/**
+	 * Constant attribute that represents the field name 'CERT_COUNTRY'.
+	 */
+	String FIELD_NAME_CERT_COUNTRY = "CERT_COUNTRY";
 
 	/**
 	 * Constant attribute that represents the field name 'CERT_ISSUER'.

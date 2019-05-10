@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 18/02/2019.
+ * @version 1.7, 10/05/2019.
  */
 package es.gob.valet.tsl.access;
 
@@ -82,7 +82,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 18/02/2019.
+ * @version 1.7, 10/05/2019.
  */
 public final class TSLManager {
 
@@ -136,9 +136,9 @@ public final class TSLManager {
 
 		TSLObject tslObject = getTSLFromTheCountry(x509Cert, date);
 		if (tslObject == null) {
-			LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL238, new Object[ ] { UtilsCertificate.getIssuerCountryOfTheCertificateString(x509Cert), date }));
+			LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL238, new Object[ ] { UtilsCertificate.getCountryOfTheCertificateString(x509Cert), date }));
 		} else {
-			LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL239, new Object[ ] { UtilsCertificate.getIssuerCountryOfTheCertificateString(x509Cert), date, tslObject.getSchemeInformation().getTslSequenceNumber() }));
+			LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL239, new Object[ ] { UtilsCertificate.getCountryOfTheCertificateString(x509Cert), date, tslObject.getSchemeInformation().getTslSequenceNumber() }));
 			result = true;
 		}
 
@@ -162,9 +162,10 @@ public final class TSLManager {
 		// Si el certificado no es nulo...
 		if (x509Cert != null) {
 
-			// Obtenemos el código del país/región asociada al emisor del
-			// certificado.
-			String countryCode = UtilsCertificate.getIssuerCountryOfTheCertificateString(x509Cert);
+			// Obtenemos el código del país/región asociada al
+			// certificado en función de si es una CA (del subject)
+			// o un certificado final (emisor).
+			String countryCode = UtilsCertificate.getCountryOfTheCertificateString(x509Cert);
 			// Si no lo hemos obtenido... mensaje.
 			if (UtilsStringChar.isNullOrEmptyTrim(countryCode)) {
 				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL102));
@@ -586,10 +587,14 @@ public final class TSLManager {
 		// sellado de tiempo.
 		boolean isTsaCertificate = checkIfCertificateIsForTSA(auditTransNumber, cert);
 
+		// Guardamos en una variable si el certificado se corresponde
+		// con el certificado de una CA.
+		boolean isCACert = isTsaCertificate ? false : UtilsCertificate.isCA(cert);
+
 		// Ejecutamos la validación del certificado con el validador construido
 		// para la fecha indicada.
 		try {
-			result = tslValidator.validateCertificateWithTSL(auditTransNumber, cert, isTsaCertificate, validationDateToUse, checkStatusRevocation);
+			result = tslValidator.validateCertificateWithTSL(auditTransNumber, cert, isCACert, isTsaCertificate, validationDateToUse, checkStatusRevocation);
 		} catch (TSLArgumentException e) {
 			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
 		} catch (TSLValidationException e) {
@@ -796,11 +801,15 @@ public final class TSLManager {
 			// sellado de tiempo.
 			boolean isTsaCertificate = checkIfCertificateIsForTSA(auditTransNumber, cert);
 
+			// Guardamos en una variable si el certificado se corresponde
+			// con el certificado de una CA.
+			boolean isCACert = isTsaCertificate ? false : UtilsCertificate.isCA(cert);
+
 			// Ejecutamos la validación del certificado con el validador
 			// construido
 			// para la fecha indicada.
 			try {
-				result = tslValidator.verifiesRevocationValuesForX509withTSL(auditTransNumber, cert, isTsaCertificate, crls, ocsps, validationDateToUse);
+				result = tslValidator.verifiesRevocationValuesForX509withTSL(auditTransNumber, cert, isCACert, isTsaCertificate, crls, ocsps, validationDateToUse);
 			} catch (TSLArgumentException e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
 			} catch (TSLValidationException e) {
