@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 31/01/2019.
+ * @version 1.5, 13/05/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -76,7 +76,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 31/01/2019.
+ * @version 1.5, 13/05/2019.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -430,7 +430,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			// el servicio que representa a su emisor, comprobamos si es el
 			// mismo emisor de la CRL. Primero miramos si es histórico.
 			ServiceHistoryInstance shi = validationResult.getTSPServiceHistoryInformationInstanceForDetect();
-			if (shi == null && validationResult.getTSPServiceForDetect()!=null) {
+			if (shi == null && validationResult.getTSPServiceForDetect() != null) {
 				shi = validationResult.getTSPServiceForDetect().getServiceInformation();
 			}
 			if (shi != null) {
@@ -778,10 +778,14 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificateUsingDistributionPoints(java.security.cert.X509Certificate, boolean, java.util.Date, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult, es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider, es.gob.valet.tsl.certValidation.impl.common.ATSLValidator)
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificateUsingDistributionPoints(java.security.cert.X509Certificate, boolean, boolean, java.util.Date, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult, es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider, es.gob.valet.tsl.certValidation.impl.common.ATSLValidator)
 	 */
 	@Override
-	public void validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
+	public boolean validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
+
+		// Inicialmente se considera que no se ha conseguido comprobar el estado
+		// de revocación del certificado.
+		boolean result = false;
 
 		// Recuperamos el listado de Distribution Points de tipo CRL.
 		CRLDistPoint crlDps = null;
@@ -899,7 +903,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 								}
 								// Si la CRL es nula o no es válida respecto a
 								// la fecha de validación, la descartamos.
-								if (crl != null && !checkCRLisValid(crl, validationDate, !isTsaCertificate, validationResult, tsp, tslValidator)) {
+								if (crl != null && !checkCRLisValid(crl, validationDate, !isTsaCertificate && !isCACert, validationResult, tsp, tslValidator)) {
 									crl = null;
 								}
 								// Si no es nula, guardamos la URI.
@@ -930,6 +934,10 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 					validationResult.setRevocationValueURL(uriSelected);
 					// Buscamos el certificado dentro de esta.
 					searchCertInCRL(cert, validationDate, crl, validationResult);
+					// Indicamos que se ha determinado el resultado según el DP.
+					validationResult.setResultFromServiceStatus(Boolean.FALSE);
+					validationResult.setResultFromDPorAIA(Boolean.TRUE);
+					result = true;
 
 				}
 
@@ -944,6 +952,8 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL185));
 
 		}
+
+		return result;
 
 	}
 

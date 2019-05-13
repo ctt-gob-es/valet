@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 10/05/2019.
+ * @version 1.6, 13/05/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -71,7 +71,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.Qualifications;
  * <p>Abstract class that represents a TSL validator with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 10/05/2019.
+ * @version 1.6, 13/05/2019.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -172,7 +172,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	/**
 	 * Validates the input certificate knowing this TSL is a List of Lists.
 	 * @param cert Certificate X509 v3 to validate.
-	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated 
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -195,7 +195,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * Validates the input certificate knowing this TSL is not list of lists.
 	 * @param auditTransNumber Audit transaction number.
 	 * @param cert Certificate X509 v3 to validate.
-	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated 
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -256,10 +256,11 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 					}
 
-					// Si el certificado se ha detectado, almacenamos el nombre
-					// del TSP usado.
+					// Si el certificado se ha detectado, almacenamos el TSP
+					// usado
+					// y su nombre.
 					if (validationResult.hasBeenDetectedTheCertificate()) {
-						assignTSPNameToResult(validationResult, tsp);
+						assignTSPandNameToResult(validationResult, tsp);
 					}
 
 				}
@@ -408,11 +409,13 @@ public abstract class ATSLValidator implements ITSLValidator {
 	protected abstract boolean checkIfStatusDeterminationApproachIsDelinquentOrEquivalent(String statusDeterminationApproach);
 
 	/**
-	 * Method that assign the TSP name to the validation result.
+	 * Method that assign the TSP and its name to the validation result.
 	 * @param validationResult Object where stores the validation result data.
 	 * @param tsp Trust Service Provider to use for validate the status of the input certificate.
 	 */
-	private void assignTSPNameToResult(TSLValidatorResult validationResult, TrustServiceProvider tsp) {
+	private void assignTSPandNameToResult(TSLValidatorResult validationResult, TrustServiceProvider tsp) {
+
+		validationResult.setTSP(tsp);
 
 		String tspName = getTSPName(tsp);
 
@@ -467,7 +470,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * Tries to validate the input certificate with the input Trust Service Provider information.
 	 * @param auditTransNumber Audit transaction number.
 	 * @param cert Certificate X509 v3 to validate.
-	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated 
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -520,6 +523,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
 						LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL215));
 						validationResult.setResultFromServiceStatus(Boolean.TRUE);
+						validationResult.setResultFromDPorAIA(Boolean.FALSE);
 						validationResult.setTSPServiceNameForValidate(validationResult.getTSPServiceNameForDetect());
 						validationResult.setTSPServiceForValidate(validationResult.getTSPServiceForDetect());
 						validationResult.setTspServiceHistoryInformationInstanceNameForValidate(validationResult.getTSPServiceHistoryInformationInstanceNameForDetect());
@@ -533,20 +537,21 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 			}
 
-			// Si hay que comprobar el estado de revocación, aún no se ha
-			// determinado y no se trata de un certificado de CA...
-			if (checkStatusRevocation && validationResult.hasBeenDetectedTheCertificateWithUnknownState() && !isCACert) {
+			// Si hay que comprobar el estado de revocación y aún no se ha
+			// determinado o se trata de un certificado detectado de CA no
+			// root...
+			if (checkStatusRevocation && (validationResult.hasBeenDetectedTheCertificateWithUnknownState() || validationResult.hasBeenDetectedTheCertificate() && isCACert && !UtilsCertificate.isSelfSigned(cert))) {
 
 				// Tratamos de validar el estado de revocación mediante los
 				// puntos de distribución
 				// establecidos en el propio certificado.
 				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL216));
-				validateCertificateUsingDistributionPoints(cert, isTsaCertificate, validationDate, validationResult, tsp);
+				validateCertificateUsingDistributionPoints(cert, isCACert, isTsaCertificate, validationDate, validationResult, tsp);
 
 				// Si el estado no es desconocido, significa que ya se ha
 				// determinado la validez del certificado haciendo uso del
 				// DistributionPoint, por lo que lo indicamos en el resultado.
-				if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
+				if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState() && validationResult.isResultFromDPorAIA()) {
 					validationResult.setResultFromServiceStatus(Boolean.FALSE);
 					validationResult.setTSPServiceNameForValidate(TSP_SERVICE_NAME_FOR_DIST_POINT);
 					validationResult.setTSPServiceForValidate(validationResult.getTSPServiceForDetect());
@@ -567,8 +572,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 				}
 				// Si no es así, hay que tratar de hacerlo mediante los
 				// servicios de la TSL (siempre y cuando no sea un certificado
-				// de sello de tiempo)
-				else if (!isTsaCertificate) {
+				// de sello de tiempo ni de CA)
+				else if (!isTsaCertificate && !isCACert) {
 
 					LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL217));
 
@@ -635,7 +640,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	/**
 	 * Tries to detect the input certificate with the input Trust Service Provider Service information.
 	 * @param cert Certificate X509 v3 to detect.
-	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated 
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -688,7 +693,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	/**
 	 * Tries to detect the input certificate with the input Trust Service Provider Service History Information.
 	 * @param cert Certificate X509 v3 to detect.
-	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated 
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -760,54 +765,61 @@ public abstract class ATSLValidator implements ITSLValidator {
 			if (checkIfTSPServiceTypeIsCAQC(tspServiceType) || checkIfTSPServiceTypeIsCAPKC(tspServiceType) || checkIfTSPServiceTypeIsNationalRootCAQC(tspServiceType)) {
 
 				// Comprobamos si dicho servicio identifica al certificado...
-				// Si es una CA, comprobamos en sus identidades digitales que coincida con alguna de las declaradas, si no,
+				// Si es una CA, comprobamos en sus identidades digitales que
+				// coincida con alguna de las declaradas, si no,
 				// que alguna de estas sea la emisora del certificado.
 				if (checkIfCADigitalIdentitiesVerifyCertificateAndSetItInResult(shi.getAllDigitalIdentities(), cert, isCACert, validationResult)) {
 
 					// Creamos una bandera que indica si de momento hemos
 					// detectado el certificado.
 					Boolean detectedCert = null;
-					
+
 					// Si se trata de una TSL de un miembro europeo y de una CA
 					// para certificados "qualified"...
 					if (checkIfTSLisFromEuropeanMember() && (checkIfTSPServiceTypeIsCAQC(tspServiceType) || checkIfTSPServiceTypeIsNationalRootCAQC(tspServiceType))) {
 
 						// Si es el certificado de una CA...
 						if (isCACert) {
-							
+
 							// La consideramos detectada y cualificada.
 							detectedCert = Boolean.TRUE;
 							validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_QUALIFIED);
-							
-						} 
+
+						}
 						// Si es un tipo final...
 						else {
-							
+
 							// Comprobamos que los valores de las extensiones
 							// AdditionalServiceInformation concuerdan con
 							// los del certificado. Esto depende de la
 							// especificación.
 							detectedCert = checkIfTSPServiceAdditionalServiceInformationExtensionsDetectCert(validationResult, shi);
 
-							// Si se ha obtenido null, es porque no está definida la
+							// Si se ha obtenido null, es porque no está
+							// definida la
 							// extensión
 							// AdditionalServiceInformation, en cuyo caso
 							// consideramos que el
-							// certificado NO es cualificado (al menos de momento).
+							// certificado NO es cualificado (al menos de
+							// momento).
 							if (detectedCert == null) {
 
-								// TODO Según se indica en la especificación y así
+								// TODO Según se indica en la especificación y
+								// así
 								// confirma MINETUR,
-								// la extensión AdditionalServiceInformation debe
+								// la extensión AdditionalServiceInformation
+								// debe
 								// ser obligatoria (cumplirla) en este caso.
-								// Por consenso con Dirección de Proyecto se permite
+								// Por consenso con Dirección de Proyecto se
+								// permite
 								// su relajación.
 								// Lo informamos en un mensaje de log.
 								LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL247));
 								validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED);
 
 							}
-							// Si se ha encontrado la extensión, y el certificado
+							// Si se ha encontrado la extensión, y el
+							// certificado
 							// encaja con su
 							// definición, entonces lo consideramos cualificado.
 							else if (detectedCert.booleanValue()) {
@@ -818,18 +830,20 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 							// Por último, si está definida la extensión pero el
 							// certificado no encaja
-							// con su definición, consideramos que desconocemos si
+							// con su definición, consideramos que desconocemos
+							// si
 							// es cualificado o no.
 
 							// Comprobamos en la extensión qualifications si se
 							// // detecta el tipo de certificado.
 							boolean detectedInQualificationsExtension = checkIfTSPServiceQualificationsExtensionsDetectCert(cert, validationResult, shi);
 
-							// Concluimos si consideramos detectado el certificado
+							// Concluimos si consideramos detectado el
+							// certificado
 							// en función del valor que ya tuviera y el obtenido
 							// analizando la extensión Qualifications.
 							detectedCert = detectedCert == null ? detectedInQualificationsExtension : detectedCert || detectedInQualificationsExtension;
-							
+
 						}
 
 					}
@@ -910,7 +924,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * on the result.
 	 * @param digitalIdentitiesList List of CA digital identities.
 	 * @param cert X509v3 certificate to check.
-	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated 
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param validationResult Object where is stored the validation result data.
 	 * @return <code>true</code> if the certificate is issued by some of the input identities, otherwise <code>false</code>.
@@ -938,13 +952,14 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Si se ha encontrado el certificado, lo indicamos en el
 			// log.
 			if (result) {
-				
+
 				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL213));
-				
-				// Además, si el certificado es de CA y autoemitido, podemos definir
+
+				// Además, si el certificado es de CA y autoemitido, podemos
+				// definir
 				// las propiedades de su emisor (él mismo).
 				if (isCACert && UtilsCertificate.isSelfSigned(cert)) {
-					
+
 					validationResult.setIssuerCert(cert);
 					validationResult.setIssuerPublicKey(cert.getPublicKey());
 					try {
@@ -952,9 +967,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 					} catch (CommonUtilsException e) {
 						LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL182));
 					}
-					
+
 				}
-				
+
 			}
 
 		} else {
@@ -1311,7 +1326,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 	/**
 	 * Sets the status result according to the service status.
-	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated 
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param serviceStatus TSP Service Status URI string to analyze.
 	 * @param serviceStatusStartingTime TSP Service Status starting time.
@@ -1570,7 +1585,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * are valid to check the revocation status of the certificate.
 	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to analyze and that must be checked its revocation status.
-	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated 
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -1670,10 +1685,11 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 					}
 
-					// Si el certificado se ha detectado, almacenamos el nombre
-					// del TSP usado.
+					// Si el certificado se ha detectado, almacenamos el TSP
+					// usado
+					// y su nombre.
 					if (validationResult.hasBeenDetectedTheCertificate()) {
-						assignTSPNameToResult(validationResult, tsp);
+						assignTSPandNameToResult(validationResult, tsp);
 					}
 
 				}
@@ -1698,7 +1714,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * Tries to detect the input certificate with the TSP information.
 	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to check if it is detected by the input TSP.
-	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated 
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
@@ -1979,26 +1995,27 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * Validates the certificate revocation status using the distribution points set on it. First try
 	 * the OCSP distribution points, and then the CRL distribution points.
 	 * @param cert X509v3 Certificate to validate.
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
+	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param validationDate Validation date to check the certificate status revocation.
 	 * @param validationResult Object in which is stored the validation result data.
 	 * @param tsp Trust Service Provider to use for checks the issuer of the CRL/OCSP Response.
 	 */
-	private void validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp) {
+	private void validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp) {
 
 		// Creamos un validador mediante OCSP para analizar los distribution
-		// points de este tipo.
+		// points de este tipo (AIA).
 		ITSLValidatorThroughSomeMethod tslValidatorMethod = new TSLValidatorThroughOCSP();
-		tslValidatorMethod.validateCertificateUsingDistributionPoints(cert, isTsaCertificate, validationDate, validationResult, tsp, this);
+		boolean certValidated = tslValidatorMethod.validateCertificateUsingDistributionPoints(cert, isCACert, isTsaCertificate, validationDate, validationResult, tsp, this);
 
 		// Si aún no se ha podido verificar el estado de revocación del
-		// certificado, lo intentamos
-		// con los de tipo CRL.
-		if (validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
+		// certificado, lo intentamos con los de tipo CRL.
+		if (validationResult.hasBeenDetectedTheCertificateWithUnknownState() || !certValidated && isCACert && !UtilsCertificate.isSelfSigned(cert)) {
 
 			tslValidatorMethod = new TSLValidatorThroughCRL();
-			tslValidatorMethod.validateCertificateUsingDistributionPoints(cert, isTsaCertificate, validationDate, validationResult, tsp, this);
+			tslValidatorMethod.validateCertificateUsingDistributionPoints(cert, isCACert, isTsaCertificate, validationDate, validationResult, tsp, this);
 
 		}
 

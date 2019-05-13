@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 31/01/2019.
+ * @version 1.4, 13/05/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -97,7 +97,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 31/01/2019.
+ * @version 1.4, 13/05/2019.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -1000,8 +1000,13 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	 * been obtained the Basic OCSP Response.
 	 * @param timeIntervalAllowed Time interval allowed (in seconds) for the OCSP response.
 	 * @param validationResult Object where must be stored the validation result data.
+	 * @return Flag that indicates if the OCSP response includes the single response for the input
+	 * certificate Id (<code>true</code>), or not (<code>false</code>).
 	 */
-	private void checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate, BasicOCSPResp basicOcspResponse, String uri, int timeIntervalAllowed, TSLValidatorResult validationResult) {
+	private boolean checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate, BasicOCSPResp basicOcspResponse, String uri, int timeIntervalAllowed, TSLValidatorResult validationResult) {
+
+		// Inicialmente consideramos el resultado como que no se ha encontrado.
+		boolean result = false;
 
 		try {
 
@@ -1028,13 +1033,15 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			validationResult.setRevocationValueURL(uri);
 
 			// Comprobamos el estado de revocación del certificado.
-			checkCertificateInOCSPResponse(validationDate, singleResponse, timeIntervalAllowed, validationResult);
+			result = checkCertificateInOCSPResponse(validationDate, singleResponse, timeIntervalAllowed, validationResult);
 
 		} catch (Exception e) {
 
 			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL142), e);
 
 		}
+
+		return result;
 
 	}
 
@@ -1044,8 +1051,13 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	 * @param singleResponse Single Response from the basic OCSP response to analyze.
 	 * @param timeIntervalAllowed Time interval allowed (in seconds) for the OCSP response.
 	 * @param validationResult Object where must be stored the validation result data.
+	 * @result Flag that indicates if the input single response is allowed in the time interval and date
+	 * (<code>true</code>) or not (<code>false</code>).
 	 */
-	private void checkCertificateInOCSPResponse(Date validationDate, SingleResp singleResponse, int timeIntervalAllowed, TSLValidatorResult validationResult) {
+	private boolean checkCertificateInOCSPResponse(Date validationDate, SingleResp singleResponse, int timeIntervalAllowed, TSLValidatorResult validationResult) {
+
+		// Inicialmente consideramos que no lo cumple.
+		boolean result = false;
 
 		try {
 
@@ -1114,11 +1126,15 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 				}
 
+				result = true;
+
 			}
 
 		} catch (Exception e) {
 			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL142), e);
 		}
+
+		return result;
 
 	}
 
@@ -1222,10 +1238,14 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificateUsingDistributionPoints(java.security.cert.X509Certificate, boolean, java.util.Date, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult, es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider, es.gob.valet.tsl.certValidation.impl.common.ATSLValidator)
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificateUsingDistributionPoints(java.security.cert.X509Certificate, boolean, boolean, java.util.Date, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult, es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider, es.gob.valet.tsl.certValidation.impl.common.ATSLValidator)
 	 */
 	@Override
-	public void validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
+	public boolean validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
+
+		// Inicialmente se considera que no se ha conseguido comprobar el estado
+		// de revocación del certificado.
+		boolean result = false;
 
 		// Recuperamos la información de acceso a los servicios disponibles en
 		// la autoridad.
@@ -1239,6 +1259,16 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		// Si la información recuperada no es nula, y al menos hay un
 		// elemento...
 		if (aia != null && aia.getAccessDescriptions() != null && aia.getAccessDescriptions().length > 0) {
+
+			// Si ha llegado aquí y es una CA, no es raíz, pero lo comprobamos
+			// igual.
+			// En ese caso hay que intentar buscar el emisor de la SubCA dentro
+			// del mismo TSP.
+			if (isCACert && !UtilsCertificate.isSelfSigned(cert)) {
+
+				searchAndSetIssuerCertFromTSPforSubCACert(cert, validationDate, validationResult, tslValidator, tsp);
+
+			}
 
 			// Creamos el CertificateID que se usará en las peticiones OCSP.
 			CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(), validationResult.getIssuerSubjectName(), validationResult.getIssuerPublicKey());
@@ -1314,6 +1344,107 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 			}
 
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Method that search the issuer of the input certificate (intermediate CA) in the same Trust Service Provider
+	 * in which has been detected.
+	 * @param cert X509 Certificate to analyze that represents a intermediate CA.
+	 * @param validationDate Validation date to take as reference.
+	 * @param validationResult Object where must be stored the validation result data.
+	 * @param tslValidator TSL validator to verify if some TSP service is accomplished with the qualified (or not) certificate to check the OCSP Response.
+	 * @param tsp Trust Service Provider to use for checks the issuer of the OCSP Response.
+	 */
+	private void searchAndSetIssuerCertFromTSPforSubCACert(X509Certificate cert, Date validationDate, TSLValidatorResult validationResult, ATSLValidator tslValidator, TrustServiceProvider tsp) {
+
+		// Inicialmente no lo hemos encontrado.
+		boolean issuerFinded = false;
+
+		// Obtenemos la lista de servicios.
+		List<TSPService> tspServiceList = tsp.getAllTSPServices();
+
+		// Si la lista no es nula ni vacía...
+		if (tspServiceList != null && !tspServiceList.isEmpty()) {
+
+			// La vamos recorriendo mientras no se termine y no se haya
+			// detectado el emisor del certificado.
+			for (int index = 0; index < tspServiceList.size() && !issuerFinded; index++) {
+
+				// Almacenamos en una variable el servicio a analizar en esta
+				// vuelta.
+				TSPService tspService = tspServiceList.get(index);
+
+				// Primero, en función de la fecha indicada, comprobamos
+				// si tenemos que hacer uso de este servicio o de alguno
+				// de sus históricos.
+				ServiceHistoryInstance shi = null;
+				if (tspService.getServiceInformation().getServiceStatusStartingTime().before(validationDate)) {
+
+					if (tspService.getServiceInformation().isServiceValidAndUsable()) {
+						shi = tspService.getServiceInformation();
+					}
+
+				} else {
+
+					if (tspService.isThereSomeServiceHistory()) {
+
+						List<ServiceHistoryInstance> shiList = tspService.getAllServiceHistory();
+						for (ServiceHistoryInstance shiFromList: shiList) {
+							if (shiFromList.getServiceStatusStartingTime().before(validationDate)) {
+								if (shiFromList.isServiceValidAndUsable()) {
+									shi = shiFromList;
+								}
+								break;
+							}
+						}
+
+					}
+
+				}
+
+				// Si hemos encontrado al menos uno...
+				if (shi != null) {
+
+					// Obtenemos el tipo del servicio.
+					String tspServiceType = shi.getServiceTypeIdentifier().toString();
+
+					// Comprobamos si el servicio es de tipo CA (certificados
+					// cualificados o no).
+					if (tslValidator.checkIfTSPServiceTypeIsCAQC(tspServiceType) || tslValidator.checkIfTSPServiceTypeIsCAPKC(tspServiceType) || tslValidator.checkIfTSPServiceTypeIsNationalRootCAQC(tspServiceType)) {
+
+						// Comprobamos si dicho servicio representa al emisor
+						// del certificado...
+						List<DigitalID> digitalIdentitiesList = shi.getAllDigitalIdentities();
+
+						// Si la lista de identidades no es nula ni vacía...
+						if (digitalIdentitiesList != null && !digitalIdentitiesList.isEmpty()) {
+
+							// Creamos el procesador de identidades digitales.
+							DigitalIdentitiesProcessor dipCAService = new DigitalIdentitiesProcessor(digitalIdentitiesList);
+
+							// Procesamos el certificado a validar y modificamos
+							// el resultado si
+							// fuera necesario.
+							issuerFinded = dipCAService.checkIfCertificateIsIssuedBySomeIdentity(cert, validationResult);
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		if (issuerFinded) {
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL264));
+		} else {
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL265));
 		}
 
 	}

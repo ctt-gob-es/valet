@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 13/05/2019.
  */
 package es.gob.valet.tsl.certValidation.ifaces;
 
@@ -39,7 +39,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Interface that represents a certificate validation using TSL through some specific method.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 13/05/2019.
  */
 public interface ITSLValidatorThroughSomeMethod {
 
@@ -70,13 +70,16 @@ public interface ITSLValidatorThroughSomeMethod {
 	/**
 	 * Method that validates the input x509 v3 certificate using the distribution point information on it.
 	 * @param cert Certificate X509v3 to validate its revocation.
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
+	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param validationDate Validation date to check the certificate status revocation.
 	 * @param validationResult Object where must be stored the validation result data.
 	 * @param tsp Trust Service Provider to use for checks the issuer of the CRL/OCSP Response.
 	 * @param tslValidator TSL validator to verify if some TSP service is accomplished with the qualified (or not) certificate to check the CRL/OCSP Response.
+	 * @return Flag that indicates if the certificate has been validated (<code>true</code>) or not (<code>false</code>).
 	 */
-	void validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator);
+	boolean validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator);
 
 }

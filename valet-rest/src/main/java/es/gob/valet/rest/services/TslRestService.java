@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.12, 10/05/2019.
+ * @version 1.13, 13/05/2019.
  */
 package es.gob.valet.rest.services;
 
@@ -83,14 +83,13 @@ import es.gob.valet.rest.elements.json.DateString;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
-import es.gob.valet.tsl.certValidation.impl.common.ATSLValidator;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.12, 10/05/2019.
+ * @version 1.13, 13/05/2019.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -820,7 +819,7 @@ public class TslRestService implements ITslRestService {
 		tslRevocationStatus.setUrl(tslValidatorResult.getRevocationValueURL());
 		// Consultamos si se ha obtenido mediante el DistributionPoint / AIA del
 		// certificado.
-		tslRevocationStatus.setDpAia(ATSLValidator.TSP_SERVICE_NAME_FOR_DIST_POINT.equals(tslValidatorResult.getTSPServiceNameForValidate()));
+		tslRevocationStatus.setDpAia(tslValidatorResult.isResultFromDPorAIA());
 		// Si no ha sido por el DP / AIA, es por un servicio...
 		if (!tslRevocationStatus.getDpAia()) {
 

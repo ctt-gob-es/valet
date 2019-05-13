@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 10/05/2019.
+ * @version 1.3, 13/05/2019.
  */
 package es.gob.valet.tsl.certValidation.ifaces;
 
@@ -35,11 +35,12 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.tsl.certValidation.impl.common.TSLCertificateExtensionAnalyzer;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
+import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 
 /**
  * <p>Interface that represents a validation result using TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 10/05/2019.
+ * @version 1.3, 13/05/2019.
  */
 public interface ITSLValidatorResult {
 
@@ -144,6 +145,13 @@ public interface ITSLValidatorResult {
 	Boolean isResultFromServiceStatus();
 
 	/**
+	 * Checks if the validation result value is obtained from a DP or AIA.
+	 * @return <code>null</code> if the certificate has not been detected or its status is unknown. <code>true</code>
+	 * if the status has been determined by a DP or AIA, otherwise <code>false</code>.
+	 */
+	Boolean isResultFromDPorAIA();
+
+	/**
 	 * Checks if the result is different of {@link ITSLValidatorResult#RESULT_NOT_DETECTED}.
 	 * @return <code>true</code> if the result is different of {@link ITSLValidatorResult#RESULT_NOT_DETECTED},
 	 * otherwise <code>false</code>.
@@ -169,6 +177,13 @@ public interface ITSLValidatorResult {
 	 * the certificate has not been detected.
 	 */
 	String getTSPName();
+
+	/**
+	 * Gets the TSP which has detected the certificate.
+	 * @return TSP which has detected the certificate, or <code>null</code> if
+	 * the certificate has not been detected.
+	 */
+	TrustServiceProvider getTSP();
 
 	/**
 	 * Gets the name of the TSP Service which has detected the certificate.

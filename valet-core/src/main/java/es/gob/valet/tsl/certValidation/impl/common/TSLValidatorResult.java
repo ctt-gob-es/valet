@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 10/05/2019.
+ * @version 1.3, 13/05/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -40,11 +40,12 @@ import es.gob.valet.tsl.exceptions.TSLValidationException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
+import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 
 /**
  * <p>Class that represents a TSL validation result.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 10/05/2019.
+ * @version 1.3, 13/05/2019.
  */
 public class TSLValidatorResult implements ITSLValidatorResult {
 
@@ -79,10 +80,16 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	private int result = ITSLValidatorResult.RESULT_NOT_DETECTED;
 
 	/**
-	 * Attribute that represents a flag to determine ig the result has been obtained from a
+	 * Attribute that represents a flag to determine if the result has been obtained from a
 	 * TSL-Service Status.
 	 */
 	private Boolean isResultFromServiceStatus = null;
+
+	/**
+	 * Attribute that represents a flag to determine if the result has been obtained from a
+	 * Distribution Point or the Authority Information Access Extension.
+	 */
+	private Boolean isResultFromDPorAIA = null;
 
 	/**
 	 * Attribute that represents an extension analyzer for the certificate to validate.
@@ -108,6 +115,11 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 * Attribute that represents the name of the TSP that has detected the certificate.
 	 */
 	private String tspName = null;
+
+	/**
+	 * Attribute that represents the TSP that has detected the certificate.
+	 */
+	private TrustServiceProvider tsp = null;
 
 	/**
 	 * Attribute that represents the name of the TSP Service used for detect the certificate.
@@ -325,6 +337,23 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 
 	/**
 	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#isResultFromDPorAIA()
+	 */
+	@Override
+	public final Boolean isResultFromDPorAIA() {
+		return isResultFromDPorAIA;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #isResultFromDPorAIA}.
+	 * @param isResultFromDPorAIAParam The value for the attribute {@link #isResultFromDPorAIA}.
+	 */
+	public final void setResultFromDPorAIA(Boolean isResultFromDPorAIAParam) {
+		this.isResultFromDPorAIA = isResultFromDPorAIAParam;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#hasBeenDetectedTheCertificate()
 	 */
 	@Override
@@ -373,6 +402,23 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 */
 	public final void setTSPName(String tspNameParam) {
 		this.tspName = tspNameParam;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult#getTSP()
+	 */
+	@Override
+	public final TrustServiceProvider getTSP() {
+		return tsp;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #tsp}.
+	 * @param tspParam The value for the attribute {@link #tsp}.
+	 */
+	public final void setTSP(TrustServiceProvider tspParam) {
+		this.tsp = tspParam;
 	}
 
 	/**
@@ -747,6 +793,7 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 
 		setResult(ITSLValidatorResult.RESULT_NOT_DETECTED);
 		setResultFromServiceStatus(null);
+		setResultFromDPorAIA(null);
 		setRevocationDate(null);
 		setRevocationReason(-1);
 		setEuropean(false);
