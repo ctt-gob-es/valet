@@ -49,8 +49,8 @@ public class SpringBootWebApplication extends SpringBootServletInitializer {
 
 	/**
 	 * Main method for running the Spring Boot application.
-	 * @param args
-	 * @throws Exception
+	 * @param args Arguments no needed.
+	 * @throws Exception In case of some error initializating the SpringFrameWork.
 	 */
 	public static void main(String[ ] args) throws Exception {
 		SpringApplication.run(SpringBootWebApplication.class, args);
