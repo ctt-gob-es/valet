@@ -20,12 +20,9 @@
 						type='hidden' id="idCountryRegionEd"
 						th:field="*{idTslCountryRegion}"></input>
 					<div class="form-group col-md-4">
-						<label for="idAssociationType" th:text="#{form.newMapping.type}"></label>
-						<select id="idAssociationType" class="form-control"
-							th:field="*{idMappingType}">
-							<option th:each="ta: ${listTypes}" th:value="${ta.idConstant}"
-								th:text="${ta.value}"
-								th:selected="${mappingtslform.idMappingType == ta.idConstant}"></option>
+						<label for="idMappingType" th:text="#{form.newMapping.type}"></label>
+						<select id="idMappingType" name="idMappingType" class="form-control" th:field="*{idMappingType}" onchange="showMappingTypeValueField();">
+							<option th:each="ta: ${listTypes}" th:value="${ta.idConstant}" th:text="${ta.value}" th:selected="${mappingtslform.idMappingType == ta.idConstant}"></option>
 						</select>
 					</div>
 					<div class="form-group col-md-12">
@@ -35,16 +32,24 @@
 							th:field="*{mappingIdentificator}" readonly></input>
 						<div style="clear: both;"></div>
 					</div>
-					<div class="form-group col-md-12">
-						<label for="idValueEd" th:text="#{form.newMapping.value}"></label>
-						<span id="mappingValue_spanEdit"
+					<div id="idDivMappingFreeValueEd" class="form-group col-md-12" th:attr="style=${mappingtslform.idMappingType == 4 ? 'display:block' : 'display:none'}">
+						<label for="idFreeValueEd" th:text="#{form.newMapping.value}"></label> <span
+							id="mappingValue_span"
 							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
-						<input type="text" id="idValueEd" class="form-control"
-							th:field="*{mappingValue}"
-							onchange="cleanSpan('mappingValue_spanEdit');"></input>
+						<input type="text" id="idFreeValueEd" class="form-control"
+							th:field="*{mappingFreeValue}"
+							onchange="cleanSpan('mappingValue_span');"></input>
 						<div style="clear: both;"></div>
 					</div>
-
+					<div id="idDivMappingSimpleValueEd" class="form-group col-md-12" th:attr="style=${mappingtslform.idMappingType == 0 ? 'display:block' : 'display:none'}">
+						<label for="idSimpleValue" th:text="#{form.newMapping.value}"></label> <span
+							id="mappingValue_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+						<select id="idSimpleValueEd" class="form-control"
+							th:field="*{mappingSimpleValue}">
+							<option th:each="asv: ${listAssocSimpleValues}" th:value="${asv.idConstant}" th:text="${asv.value}" th:selected="${mappingtslform.mappingSimpleValue == asv.idConstant}"></option>
+						</select>
+					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -58,6 +63,16 @@
 	</div>
 </div>
 <script th:inline="javascript">
+function showMappingTypeValueField() {
+	var mappingTypeValue = $("#idMappingType").val();
+    if (mappingTypeValue == "4") {
+        $("#idDivMappingFreeValueEd").prop("style", "display:block");
+		$("#idDivMappingSimpleValueEd").prop("style", "display:none");
+    } else if (mappingTypeValue == "0") {
+		$("#idDivMappingFreeValueEd").prop("style", "display:none");
+        $("#idDivMappingSimpleValueEd").prop("style", "display:block");
+    }
+}
 //método para editar mapeo
 function modifyMapping() {
 	var actionSaveMapping = /*[[@{/modifymappingtsl}]]*/;

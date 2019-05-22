@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 06/03/2019.
+ * @version 1.8, 22/05/2019.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 06/03/2019.
+ * @version 1.8, 22/05/2019.
  */
 public interface IWebGeneralMessages {
 
@@ -374,5 +374,101 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String ERROR_MODIFY_SERVERMAIL = "errorModifyServerMail";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.CertVersion</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_CERTVERSION = "mapping.simple.CertVersion";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.Subject</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_SUBJECT = "mapping.simple.Subject";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.Issuer</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_ISSUER = "mapping.simple.Issuer";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.SerialNumber</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_SERIALNUMBER = "mapping.simple.SerialNumber";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.SigAlgName</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_SIGALGNAME = "mapping.simple.SigAlgName";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.SigAlgOID</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_SIGALGOID = "mapping.simple.SigAlgOID";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.ValidFrom</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_VALIDFROM = "mapping.simple.ValidFrom";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.ValidTo</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_VALIDTO = "mapping.simple.ValidTo";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.CertPolInfoOIDs</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_EXTENSION_CERTPOLINFOOIDS = "mapping.simple.extension.CertPolInfoOIDs";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.QcStatOIDs</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_EXTENSION_QCSTATOIDS = "mapping.simple.extension.QcStatOIDs";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.QcStatEuTypeOIDs</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_EXTENSION_QCSTATEUTYPEOIDS = "mapping.simple.extension.QcStatEuTypeOIDs";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.SubjectAltName</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_EXTENSION_SUBJECTALTNAME = "mapping.simple.extension.SubjectAltName";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.BasicConstraintsIsCA</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_EXTENSION_BASICCONSTRAINTISCA = "mapping.simple.extension.BasicConstraintsIsCA";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.KeyUsage</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_EXTENSION_KEYUSAGE = "mapping.simple.extension.KeyUsage";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT = "mapping.simple.extension.CRLDistPoint";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_EXTENSION_AIA = "mapping.simple.extension.AIA";
 
 }

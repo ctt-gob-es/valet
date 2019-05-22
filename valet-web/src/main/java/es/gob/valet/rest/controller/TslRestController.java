@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.11, 31/01/2019.
+ * @version 1.12, 22/05/2019.
  */
 package es.gob.valet.rest.controller;
 
@@ -68,6 +68,7 @@ import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLData
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
+import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
@@ -80,7 +81,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.11, 31/01/2019.
+ * @version 1.12, 22/05/2019.
  */
 @RestController
 public class TslRestController {
@@ -510,9 +511,10 @@ public class TslRestController {
 
 	/**
 	 * Method that creates a new mapping for the indicated TSL.
-	 * @param idTslCountryRegion Parameter that represents a country/region identifier.
+	 * @param codeCountryRegion Parameter that represents a country/region identifier.
 	 * @param mappingIdentificator Parameter that represents the identificator for the logical mapping.
-	 * @param mappingValue Parameter that represents the value for the mapping.
+	 * @param mappingFreeValue Parameter that represents the value for the mapping (free type).
+	 * @param mappingSimpleValue Parameter that represents the value for the mapping (simple type).
 	 * @param idMappingType Parameter that represents the association type for the mapping.
 	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
 	 * @throws IOException If the method fails.
@@ -520,7 +522,7 @@ public class TslRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/savemappingtsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> saveMappingTsl(@RequestParam(FIELD_CODE_COUNTRY_REGION) String codeCountryRegion, @RequestParam("mappingIdentificator") String mappingIdentificator, @RequestParam("mappingValue") String mappingValue, @RequestParam("idMappingType") Long idMappingType) throws IOException {
+	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> saveMappingTsl(@RequestParam(FIELD_CODE_COUNTRY_REGION) String codeCountryRegion, @RequestParam("mappingIdentificator") String mappingIdentificator, @RequestParam("mappingFreeValue") String mappingFreeValue, @RequestParam("mappingSimpleValue") String mappingSimpleValue, @RequestParam("idMappingType") Long idMappingType) throws IOException {
 
 		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<>();
 
@@ -536,6 +538,18 @@ public class TslRestController {
 			json.put(FIELD_MAPPING_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
 			error = true;
 		}
+		// IAssociationTypeIdConstants
+		String mappingValue = null;
+		if (idMappingType != null) {
+
+			if (idMappingType.equals(IAssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION)) {
+				mappingValue = mappingSimpleValue;
+			} else if (idMappingType.equals(IAssociationTypeIdConstants.ID_FREE_ASSOCIATION)) {
+				mappingValue = mappingFreeValue;
+			}
+
+		}
+
 		if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
 			json.put(FIELD_MAPPING_VALUE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
@@ -575,7 +589,9 @@ public class TslRestController {
 	 * Method to modify the value of an identifier.
 	 * @param idTslCountryRegionMapping  Parameter that represents the ID of the mapping.
 	 * @param idTslCountryRegion  Parameter that represents the ID of the country/region.
-	 * @param mappingValue Parameter that represents the new value for the mapping.
+	 * @param mappingIdentificator Parameter that represents the identificator for the logical mapping.
+	 * @param mappingFreeValue Parameter that represents the value for the mapping (free type).
+	 * @param mappingSimpleValue Parameter that represents the value for the mapping (simple type).
 	 * @param idMappingType Parameter that represents the type of association.
 	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
 	 * @throws IOException If the method fails.
@@ -583,14 +599,22 @@ public class TslRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/modifymappingtsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> modifyMappingTsl(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam(FIELD_ID_COUNTRY_REGION) Long idTslCountryRegion, @RequestParam("mappingIdentificator") String mappingIdentificator, @RequestParam("mappingValue") String mappingValue, @RequestParam("idMappingType") Long idMappingType) throws IOException {
+	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> modifyMappingTsl(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam(FIELD_ID_COUNTRY_REGION) Long idTslCountryRegion, @RequestParam("mappingIdentificator") String mappingIdentificator, @RequestParam("mappingFreeValue") String mappingFreeValue, @RequestParam("mappingSimpleValue") String mappingSimpleValue, @RequestParam("idMappingType") Long idMappingType) throws IOException {
 
 		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<>();
 		boolean error = false;
 		JSONObject json = new JSONObject();
 		List<TslCountryRegionMapping> listTslCountryRegionMapping = new ArrayList<TslCountryRegionMapping>();
 
-		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
+		String mappingValue = null;
+		if (idMappingType != null) {
+			if (idMappingType.equals(IAssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION)) {
+				mappingValue = mappingSimpleValue;
+			} else if (idMappingType.equals(IAssociationTypeIdConstants.ID_FREE_ASSOCIATION)) {
+				mappingValue = mappingFreeValue;
+			}
+		}
+
 		if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
 			json.put(FIELD_MAPPING_VALUE + "_spanEdit", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
@@ -614,6 +638,7 @@ public class TslRestController {
 			}
 
 		} else {
+			ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
 			listTslCountryRegionMapping = StreamSupport.stream(tslCountryRegionMappingService.getAllMappingByIdCountry(idTslCountryRegion).spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 		}

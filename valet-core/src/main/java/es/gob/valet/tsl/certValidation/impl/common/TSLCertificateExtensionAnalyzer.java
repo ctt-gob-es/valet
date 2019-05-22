@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 28/11/2018.
+ * @version 1.2, 22/05/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -47,7 +47,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLOIDs;
 /**
  * <p>Utilities wrapper for analyze the extensions defined in a specific X509v3 certificate.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 28/11/2018.
+ * @version 1.2, 22/05/2019.
  */
 public class TSLCertificateExtensionAnalyzer {
 
@@ -106,6 +106,29 @@ public class TSLCertificateExtensionAnalyzer {
 	}
 
 	/**
+	 * Constructor method for the class TSLCertificateExtensionAnalyzer.java.
+	 * @param cert X509v3 Certificate (Bouncy Castle Provider implementation) to analyze.
+	 * @throws TSLCertificateValidationException If the input certificate is <code>null</code>, or there is
+	 * some error extracting its information.
+	 */
+	public TSLCertificateExtensionAnalyzer(Certificate cert) throws TSLCertificateValidationException {
+
+		this();
+
+		// Si la entrada es nula lanzamos excepción.
+		if (cert == null) {
+			throw new TSLCertificateValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL243));
+		}
+
+		// Almacenamos el certificado.
+		certBc = cert;
+
+		// Extraemos y analizamos las extensiones que pueda tener.
+		analyzeCertificateExtensions();
+
+	}
+
+	/**
 	 * Auxiliar method that analyzes and extracts all the certificate
 	 * extension information.
 	 * @throws TSLCertificateValidationException In case of some error working with the QcStatements
@@ -133,6 +156,7 @@ public class TSLCertificateExtensionAnalyzer {
 
 				QCStatement qcStatement = QCStatement.getInstance(qcStatements.getObjectAt(index));
 				String qcStatementOid = qcStatement.getStatementId().getId();
+				qcStatementsOids.add(qcStatementOid);
 				// Analizamos si se trata del EuType, en cuyo caso obtenemos
 				// la información que contenga.
 				if (ITSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE.getId().equals(qcStatementOid)) {
@@ -221,6 +245,14 @@ public class TSLCertificateExtensionAnalyzer {
 	}
 
 	/**
+	 * Gets the value of the attribute {@link #qcStatementsOids}.
+	 * @return the value of the attribute {@link #qcStatementsOids}.
+	 */
+	public final List<String> getQcStatementsOids() {
+		return qcStatementsOids;
+	}
+
+	/**
 	 * Checks if the certificate has some QcStatement extension.
 	 * @return <code>true</code> if the certificate has some QcStatement extension,
 	 * otherwise <code>false</code>.
@@ -265,6 +297,14 @@ public class TSLCertificateExtensionAnalyzer {
 	}
 
 	/**
+	 * Gets the value of the attribute {@link #qcStatementExtEuTypeOids}.
+	 * @return the value of the attribute {@link #qcStatementExtEuTypeOids}.
+	 */
+	public final List<String> getQcStatementExtEuTypeOids() {
+		return qcStatementExtEuTypeOids;
+	}
+
+	/**
 	 * Checks if the certificate has the QcStatement EuType extension.
 	 * @return <code>true</code> if the certificate has the QcStatement EuType extension,
 	 * otherwise <code>false</code>.
@@ -281,6 +321,14 @@ public class TSLCertificateExtensionAnalyzer {
 	 */
 	public final boolean hasQcStatementEuTypeExtensionOid(String qcStatementEuTypeOid) {
 		return isThereSomeQcStatementEuTypeExtension() ? qcStatementExtEuTypeOids.contains(qcStatementEuTypeOid) : false;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #policyInformationsOids}.
+	 * @return the value of the attribute {@link #policyInformationsOids}.
+	 */
+	public final List<String> getPolicyInformationsOids() {
+		return policyInformationsOids;
 	}
 
 	/**

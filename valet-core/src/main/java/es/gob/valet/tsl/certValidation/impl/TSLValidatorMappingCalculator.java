@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 22/05/2019.
  */
 package es.gob.valet.tsl.certValidation.impl;
 
@@ -53,7 +53,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLOIDs;
  * <p>This class offers static methods to extract mappings of a certificate
  * validated through a TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 22/05/2019.
  */
 public final class TSLValidatorMappingCalculator {
 
@@ -420,24 +420,16 @@ public final class TSLValidatorMappingCalculator {
 
 		String result = null;
 
-		// TODO Pendiente de hacer el wrapper.
-		result = fieldToExtract;
-
-		// // Extraemos el valor del campo del certificado.
-		// String value = wrappedCert.getValorCampo(fieldToExtract);
-		//
-		// // Si no es nulo ni vacío...
-		// if (!UtilsStringChar.isNullOrEmpty(value)) {
-		//
-		// // Intentamos escapar el valor.
-		// try {
-		// result = UtilsRFC2253.getInstance().unscape(value);
-		// } catch (IOException e) {
-		// // Si no, lo dejamos tal cual.
-		// result = value;
-		// }
-		//
-		// }
+		if (wrappedCert!=null && !UtilsStringChar.isNullOrEmpty(fieldToExtract)) {
+			
+			try {
+				int certInfoToExtract = Integer.parseInt(fieldToExtract);
+				result = wrappedCert.getCertificateInfo(certInfoToExtract);
+			} catch (NumberFormatException e) {
+				result = null;
+			}
+			
+		}
 
 		return result;
 
