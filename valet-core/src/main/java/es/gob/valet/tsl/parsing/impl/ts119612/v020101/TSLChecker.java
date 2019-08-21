@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 31/01/2019.
+ * @version 1.4, 21/08/2019.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -78,6 +78,7 @@ import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
@@ -100,7 +101,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSPInformation;
  * <p>Class that represents a TSL Data Checker of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 31/01/2019.
+ * @version 1.4, 21/08/2019.
  */
 public class TSLChecker extends ATSLChecker {
 
@@ -478,7 +479,7 @@ public class TSLChecker extends ATSLChecker {
 			List<TSLPointer> tslPointers = getTSLObject().getSchemeInformation().getPointersToOtherTSL();
 			for (TSLPointer tslPointer: tslPointers) {
 
-				if (ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS.equals(tslPointer.getTSLLocation().toString())) {
+				if (TSLManager.getInstance().getSetOfURLStringThatRepresentsEuLOTL().contains(tslPointer.getTSLLocation().toString())) {
 
 					// Si lo hemos encontrado, hemos terminado.
 					return;
@@ -488,7 +489,7 @@ public class TSLChecker extends ATSLChecker {
 			}
 
 			// Si llegamos aquí, es que no hemos encontrado la URI.
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL087, new Object[ ] { ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS }));
+			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL087, new Object[ ] { TSLManager.getInstance().getSetOfURLStringThatRepresentsEuLOTLinString() }));
 
 		}
 

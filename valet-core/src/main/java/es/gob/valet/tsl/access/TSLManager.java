@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 10/05/2019.
+ * @version 1.8, 21/08/2019.
  */
 package es.gob.valet.tsl.access;
 
@@ -29,11 +29,13 @@ import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -42,6 +44,7 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
+import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsCountryLanguage;
 import es.gob.valet.commons.utils.UtilsDate;
@@ -76,13 +79,14 @@ import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.exceptions.TSLValidationException;
+import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 10/05/2019.
+ * @version 1.8, 21/08/2019.
  */
 public final class TSLManager {
 
@@ -100,6 +104,18 @@ public final class TSLManager {
 	 * Attribute that represents the unique instance of this class (singleton).
 	 */
 	private static TSLManager instance = null;
+
+	/**
+	 * Attribute that represents a set of URL (String format) that represents the official
+	 * european list of trusted lists. 
+	 */
+	private Set<String> setOfURLStringThatRepresentsEuLOTL = new TreeSet<String>();
+	
+	/**
+	 * Attribute that represents a set of URL (String format) that represents the official
+	 * european list of trusted lists splitted by commas.
+	 */
+	private String setOfURLStringThatRepresentsEuLOTLinString = null;
 
 	/**
 	 * Constructor method for the class TSLManager.java.
@@ -2297,6 +2313,65 @@ public final class TSLManager {
 		}
 		return result;
 
+	}
+
+	/**
+	 * Gets the set of URL (String format) that represents the official
+	 * european list of trusted lists.
+	 * @return set of URL (String format) that represents the official
+	 * european list of trusted lists.
+	 */
+	public Set<String> getSetOfURLStringThatRepresentsEuLOTL() {
+		
+		// Si aún no se ha inicializado...
+		if (setOfURLStringThatRepresentsEuLOTL.isEmpty()) {
+			
+			// Como mínimo añadimos las dos URL conocidas a fecha de 20/08/2019:
+			// - https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml
+			setOfURLStringThatRepresentsEuLOTL.add(ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_1);
+			setOfURLStringThatRepresentsEuLOTLinString = ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_1;
+			// - https://ec.europa.eu/tools/lotl/eu-lotl.xml			
+			setOfURLStringThatRepresentsEuLOTL.add(ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_2);
+			setOfURLStringThatRepresentsEuLOTLinString += UtilsStringChar.SYMBOL_COMMA_STRING;
+			setOfURLStringThatRepresentsEuLOTLinString += UtilsStringChar.SPECIAL_BLANK_SPACE_STRING;
+			setOfURLStringThatRepresentsEuLOTLinString += ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_2;
+			
+			// Ahora recolectamos las establecidas en la configuración estática, y añadimos aquellas que 
+			// no estén ya.
+			Properties props = StaticValetConfig.getProperties(StaticValetConfig.TSL_EU_LOTL_PREFIX);
+			if (props!=null && !props.isEmpty()) {
+				Collection<Object> urlStringColl = props.values();
+				for (Object urlStringObject: urlStringColl) {
+					if (urlStringObject != null) {
+						String urlString = ((String)urlStringObject).trim();
+						if (!UtilsStringChar.isNullOrEmpty(urlString) && !setOfURLStringThatRepresentsEuLOTL.contains(urlString)) {
+							setOfURLStringThatRepresentsEuLOTL.add(urlString);
+							setOfURLStringThatRepresentsEuLOTLinString += UtilsStringChar.SYMBOL_COMMA_STRING;
+							setOfURLStringThatRepresentsEuLOTLinString += UtilsStringChar.SPECIAL_BLANK_SPACE_STRING;
+							setOfURLStringThatRepresentsEuLOTLinString += urlString;
+						}
+					}
+				}
+			}
+			
+		}
+		
+		// Devolvemos el conjunto de URL que reconocen la lista de las TSL europeas...
+		return setOfURLStringThatRepresentsEuLOTL;
+		
+	}
+	
+	
+	/**
+	 * Gets the set of URL (String format) that represents the official
+	 * european list of trusted lists splitted by commas.
+	 * @return set of URL (String format) that represents the official
+	 * european list of trusted lists splitted by commas.
+	 */
+	public String getSetOfURLStringThatRepresentsEuLOTLinString() {
+		
+		return setOfURLStringThatRepresentsEuLOTLinString;
+		
 	}
 
 }

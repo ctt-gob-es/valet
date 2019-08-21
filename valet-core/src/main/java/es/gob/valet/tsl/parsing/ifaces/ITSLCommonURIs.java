@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 21/08/2019.
  */
 package es.gob.valet.tsl.parsing.ifaces;
 
@@ -29,7 +29,7 @@ package es.gob.valet.tsl.parsing.ifaces;
  * <p>Interface that contains the string representation of the differents URI used
  * in the XML implementations of the TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 21/08/2019.
  */
 public interface ITSLCommonURIs {
 
@@ -1165,6 +1165,11 @@ public interface ITSLCommonURIs {
 	/**
 	 * Constant attribute that represents the URI to the EU list of the lists.
 	 */
-	String TSL_EU_LIST_OF_THE_LISTS = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml";
+	String TSL_EU_LIST_OF_THE_LISTS_1 = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml";
+
+	/**
+	 * Constant attribute that represents the URI to the EU list of the lists.
+	 */
+	String TSL_EU_LIST_OF_THE_LISTS_2 = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
 
 }
