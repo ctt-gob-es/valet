@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 13/05/2019.
+ * @version 1.7, 27/09/2019.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -71,7 +71,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.Qualifications;
  * <p>Abstract class that represents a TSL validator with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 13/05/2019.
+ * @version 1.7, 27/09/2019.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -1669,7 +1669,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 								if (validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
 									CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, false, null, null, null, null, null, null, null);
 								} else {
-									CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, true, validationResult.getResult(), false, false, validationResult.getTslCountryRegionCode(), getTSPName(tsp), validationResult.getTSPServiceNameForValidate(), validationResult.getTSPServiceHistoryInformationInstanceNameForValidate());
+									validationResult.setResultFromServiceStatus(Boolean.FALSE);
+									validationResult.setResultFromDPorAIA(Boolean.FALSE);									
+									CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, true, validationResult.getResult(), validationResult.isResultFromServiceStatus(), validationResult.isResultFromDPorAIA(), validationResult.getTslCountryRegionCode(), getTSPName(tsp), validationResult.getTSPServiceNameForValidate(), validationResult.getTSPServiceHistoryInformationInstanceNameForValidate());
 								}
 
 							}
@@ -1678,8 +1680,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 						// En caso contrario es que viene determinado por el
 						// estado del servicio...
 						else {
-
-							CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, true, validationResult.getResult(), true, false, null, null, null, null);
+							validationResult.setResultFromServiceStatus(Boolean.TRUE);
+							validationResult.setResultFromDPorAIA(Boolean.FALSE);
+							CommonsTslAuditTraces.addTslCertValidated(auditTransNumber, true, validationResult.getResult(), validationResult.isResultFromServiceStatus(), validationResult.isResultFromDPorAIA(), validationResult.getTslCountryRegionCode(), getTSPName(tsp), validationResult.getTSPServiceNameForValidate(), validationResult.getTSPServiceHistoryInformationInstanceNameForValidate());
 
 						}
 
