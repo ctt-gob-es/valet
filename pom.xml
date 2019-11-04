@@ -20,14 +20,15 @@
 		<built.by>@Firma Team</built.by>
 		<valet.version>${project.version}</valet.version>
 		<valet.project.name>valET</valet.project.name>
-		
+
 		<!-- Propiedades relativas a la configuración Java. -->
-		<java.1.8.home>C:\Program Files\Java\jdk1.8.0_131</java.1.8.home>
+		<java.1.8.home>C:\Java\jdk1.8.0_131</java.1.8.home>
 		<java.1.8.version>1.8.0_131</java.1.8.version>
-		<!-- Para la correcta ejecución maven, establecer la variable java.1.8.home hacia la ruta absoluta de donde se disponga la jdk -->
+		<!-- Para la correcta ejecución maven, establecer la variable java.1.8.home 
+			hacia la ruta absoluta de donde se disponga la jdk -->
 		<java.home>${java.1.8.home}</java.home>
 		<java.version>${java.1.8.version}</java.version>
-		
+
 		<!-- Versionado de módulos propios de valET. -->
 		<valet.version.commons-util>1.0.0</valet.version.commons-util>
 		<valet.version.commons-util-i18n>1.0.0</valet.version.commons-util-i18n>
@@ -39,15 +40,18 @@
 		<valet.version.rest-client>1.0.0</valet.version.rest-client>
 		<valet.version.cache>1.0.0</valet.version.cache>
 		<valet.version.quartz>1.0.0</valet.version.quartz>
-		
+		<valet.version.standalone.statistics>1.0.0</valet.version.standalone.statistics>
+
 		<!-- Versionado de otras dependencias. -->
-		<!-- Se ha subido la versión de 2.0.0 a 2.0.1 para que coincida con spring-data y y spring-rest -->
-		<spring.version>2.0.1.RELEASE</spring.version>
-		<!-- Actualizados spring-data y spring-rest para evitar vulnerabilidad cve-2018-1273 -->
+		<!-- Se ha subido la versión de 2.0.0 a 2.0.1 para que coincida con spring-data 
+			y y spring-rest -->
+		<spring.version>2.0.0.RELEASE</spring.version>
+		<!-- Actualizados spring-data y spring-rest para evitar vulnerabilidad 
+			cve-2018-1273 -->
 		<spring.data.version>2.0.1.RELEASE</spring.data.version>
 		<spring.rest.version>2.0.1.RELEASE</spring.rest.version>
 		<hibernate.version>5.2.13.Final</hibernate.version>
-		
+
 	</properties>
 
 	<!-- Listado de módulos dependientes del parent. -->
@@ -62,13 +66,15 @@
 		<module>valet-quartz</module>
 		<module>valet-commons-util-i18n</module>
 		<module>valet-rest-client</module>
+		<module>valet-standalone-statistics</module>
 	</modules>
-	
+
 	<!-- Definición de perfiles de construcción maven. -->
 	<profiles>
 
 		<!-- Perfil para desarrollo. -->
-		<!-- Este perfil compila con opción debug y no genera ni el javadoc ni los fuentes. -->
+		<!-- Este perfil compila con opción debug y no genera ni el javadoc ni 
+			los fuentes. -->
 		<!-- No se ejecutan los tests. -->
 		<profile>
 			<id>develop-Oracle</id>
@@ -80,9 +86,18 @@
 				<plugin.source.skip>true</plugin.source.skip>
 				<maven.compiler.debug>true</maven.compiler.debug>
 				<maven.test.skip>true</maven.test.skip>
+				<!-- Database connection properties -->
+				<db.dialect.oracle>org.hibernate.dialect.Oracle10gDialect</db.dialect.oracle>
+				<db.show.sql>false</db.show.sql>
+				<db.connection.statistics.url>jdbc:oracle:oci:@localhost:1521:afirma</db.connection.statistics.url>
+				<db.connection.statistics.driver>oracle-driver</db.connection.statistics.driver>
+				<db.datasource.statistics.user>VALET_STATISTICSDWOWNER</db.datasource.statistics.user>
+				<db.datasource.statistics.password>12345</db.datasource.statistics.password>
+
+
 			</properties>
 		</profile>
-		
+
 		<!-- Perfil para producción. -->
 		<!-- Este perfil compila SIN opción debug y genera el javadoc y los fuentes. -->
 		<!-- Se ejecutan los tests. -->
@@ -254,8 +269,8 @@
 		</pluginManagement>
 	</build>
 
-	<!-- Definición de versiones concretas de dependencias que podrán ser usadas en los distintos módulos
-	sin necesidad de especificar en estos la versión. -->
+	<!-- Definición de versiones concretas de dependencias que podrán ser usadas 
+		en los distintos módulos sin necesidad de especificar en estos la versión. -->
 	<dependencyManagement>
 		<dependencies>
 			<!-- Módulos de vaLET -->
@@ -300,11 +315,11 @@
 				<version>${valet.version.rest}</version>
 			</dependency>
 			<!-- Módulos de vaLET -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>javax.servlet</groupId> -->
-<!-- 				<artifactId>servlet-api</artifactId> -->
-<!-- 				<version>2.5</version> -->
-<!-- 			</dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>javax.servlet</groupId> -->
+			<!-- <artifactId>servlet-api</artifactId> -->
+			<!-- <version>2.5</version> -->
+			<!-- </dependency> -->
 			<dependency>
 				<groupId>org.apache.xmlbeans</groupId>
 				<artifactId>xmlbeans-afirma</artifactId>
@@ -322,51 +337,51 @@
 				<version>119612v020101</version>
 			</dependency>
 			<dependency>
-			  <groupId>es.gob.afirma</groupId>
-			  <artifactId>afirma-crypto-validation</artifactId>
-			  <version>1.6.2</version>
-			  <exclusions>
-			      <exclusion>
-			            <artifactId>afirma-crypto-cms</artifactId>
-			            <groupId>es.gob.afirma</groupId>
-			      </exclusion>
-			      <exclusion>
-			            <artifactId>afirma-crypto-cades</artifactId>
-			            <groupId>es.gob.afirma</groupId>
-			      </exclusion>
-			      <exclusion>
-			            <artifactId>afirma-crypto-pdf</artifactId>
-			            <groupId>es.gob.afirma</groupId>
-			      </exclusion>
-			      <exclusion>
-			            <artifactId>afirma-crypto-ooxml</artifactId>
-			            <groupId>es.gob.afirma</groupId>
-			      </exclusion>
-			      <exclusion>
-			            <artifactId>afirma-crypto-odf</artifactId>
-			            <groupId>es.gob.afirma</groupId>
-			      </exclusion>
-			      <exclusion>
-			            <artifactId>afirma-crypto-core-pkcs7-tsp</artifactId>
-			            <groupId>es.gob.afirma</groupId>
-			      </exclusion>
-			      <exclusion>
-			            <artifactId>afirma-lib-jmimemagic</artifactId>
-			            <groupId>es.gob.afirma.lib</groupId>
-			      </exclusion>
-			      <exclusion>
-			            <artifactId>afirma-lib-itext</artifactId>
-			            <groupId>es.gob.afirma.lib</groupId>
-			      </exclusion>
-			      <exclusion>
-			            <artifactId>core</artifactId>
-			            <groupId>com.madgag.spongycastle</groupId>
-			      </exclusion>
-			      <exclusion>
-			            <artifactId>prov</artifactId>
-			            <groupId>com.madgag.spongycastle</groupId>
-			      </exclusion>
-			  </exclusions>
+				<groupId>es.gob.afirma</groupId>
+				<artifactId>afirma-crypto-validation</artifactId>
+				<version>1.6.2</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>afirma-crypto-cms</artifactId>
+						<groupId>es.gob.afirma</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>afirma-crypto-cades</artifactId>
+						<groupId>es.gob.afirma</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>afirma-crypto-pdf</artifactId>
+						<groupId>es.gob.afirma</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>afirma-crypto-ooxml</artifactId>
+						<groupId>es.gob.afirma</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>afirma-crypto-odf</artifactId>
+						<groupId>es.gob.afirma</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>afirma-crypto-core-pkcs7-tsp</artifactId>
+						<groupId>es.gob.afirma</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>afirma-lib-jmimemagic</artifactId>
+						<groupId>es.gob.afirma.lib</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>afirma-lib-itext</artifactId>
+						<groupId>es.gob.afirma.lib</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>core</artifactId>
+						<groupId>com.madgag.spongycastle</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>prov</artifactId>
+						<groupId>com.madgag.spongycastle</groupId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
@@ -389,39 +404,39 @@
 				<version>1.11</version>
 			</dependency>
 			<dependency>
-			    <groupId>commons-io</groupId>
-			    <artifactId>commons-io</artifactId>
-			    <version>2.6</version>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.6</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.apache.commons</groupId>
-			    <artifactId>commons-text</artifactId>
-			    <version>1.4</version>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-text</artifactId>
+				<version>1.4</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.apache.httpcomponents</groupId>
-			    <artifactId>httpclient</artifactId>
-			    <version>4.5.6</version>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.5.6</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.samba.jcifs</groupId>
-			    <artifactId>jcifs</artifactId>
-			    <version>1.3.14-kohsuke-1</version>
+				<groupId>org.samba.jcifs</groupId>
+				<artifactId>jcifs</artifactId>
+				<version>1.3.14-kohsuke-1</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.bouncycastle</groupId>
-			    <artifactId>bcprov-jdk15on</artifactId>
-			    <version>1.60</version>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk15on</artifactId>
+				<version>1.60</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.bouncycastle</groupId>
-			    <artifactId>bcmail-jdk15on</artifactId>
-			    <version>1.60</version>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcmail-jdk15on</artifactId>
+				<version>1.60</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.bouncycastle</groupId>
-			    <artifactId>bcpkix-jdk15on</artifactId>
-			    <version>1.60</version>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcpkix-jdk15on</artifactId>
+				<version>1.60</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss.spec.javax.ws.rs</groupId>
@@ -474,20 +489,20 @@
 				<version>2.0.1.Final</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.eclipse</groupId>
-			    <artifactId>yasson</artifactId>
-			    <version>1.0.2</version>
-			    <scope>compile</scope>
+				<groupId>org.eclipse</groupId>
+				<artifactId>yasson</artifactId>
+				<version>1.0.2</version>
+				<scope>compile</scope>
 			</dependency>
 			<dependency>
-			    <groupId>javax.json</groupId>
-			    <artifactId>javax.json-api</artifactId>
-			    <version>1.1.3</version>
+				<groupId>javax.json</groupId>
+				<artifactId>javax.json-api</artifactId>
+				<version>1.1.3</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.glassfish</groupId>
-			    <artifactId>javax.json</artifactId>
-			    <version>1.1.3</version>
+				<groupId>org.glassfish</groupId>
+				<artifactId>javax.json</artifactId>
+				<version>1.1.3</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-beanutils</groupId>
@@ -530,18 +545,18 @@
 				<artifactId>thymeleaf-extras-springsecurity4</artifactId>
 				<version>3.0.2.RELEASE</version>
 			</dependency>
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.springframework.boot</groupId> -->
-<!-- 				<artifactId>spring-boot-starter-tomcat</artifactId> -->
-<!-- 				<version>${spring.version}</version> -->
-<!-- 			</dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>org.springframework.boot</groupId> -->
+			<!-- <artifactId>spring-boot-starter-tomcat</artifactId> -->
+			<!-- <version>${spring.version}</version> -->
+			<!-- </dependency> -->
 			<!-- Spring Boot 2 -->
 			<dependency>
 				<groupId>com.github.darrachequesne</groupId>
 				<artifactId>spring-data-jpa-datatables</artifactId>
 				<version>5.0.0</version>
 			</dependency>
-			
+
 			<!-- Hibernate 5 -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -559,24 +574,24 @@
 				<version>${hibernate.version}</version>
 			</dependency>
 			<!-- Hibernate 5 -->
-			
+
 			<dependency>
 				<groupId>javax.mail</groupId>
 				<artifactId>javax.mail-api</artifactId>
 				<version>1.6.2</version>
 			</dependency>
-			
+
 		</dependencies>
 	</dependencyManagement>
 
 	<!-- Dependencias que se incluirán en todos los módulos. -->
 	<dependencies>
-<!-- 		<dependency> -->
-<!-- 			<groupId>junit</groupId> -->
-<!-- 			<artifactId>junit</artifactId> -->
-<!-- 			<version>3.8.1</version> -->
-<!-- 			<scope>test</scope> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>junit</groupId> -->
+		<!-- <artifactId>junit</artifactId> -->
+		<!-- <version>3.8.1</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
 	</dependencies>
 
 

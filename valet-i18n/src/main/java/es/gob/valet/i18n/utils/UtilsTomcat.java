@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 11/09/2018.
+ * @version 1.1, 31/10/2019.
  */
 package es.gob.valet.i18n.utils;
 
@@ -29,14 +29,14 @@ import java.io.File;
 /** 
  * <p>Class with tomcat utilities.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 11/09/2018.
+ * @version 1.1, 31/10/2019.
  */
 public final class UtilsTomcat {
 
 	/**
 	 * Constant attribute that represents the name of messages directory inside configuration directory.
 	 */
-	private static final String TOMCAT_CONF_DIR = "tomcat.config.path";
+	public static final String TOMCAT_CONF_DIR = "tomcat.config.path";
 
 	/**
 	 * Constructor method for the class UtilsTomcat.java.
@@ -51,6 +51,7 @@ public final class UtilsTomcat {
 	public static String getTomcatConfigDir() {
 		return System.getProperty(TOMCAT_CONF_DIR);
 	}
+
 
 	/**
 	 * Auxiliar method to create an absolute path to a file.

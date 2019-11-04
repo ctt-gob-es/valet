@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+	version="2.1">
+	<persistence-unit name="valet-standalone-statistics-persistence">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<mapping-file>META-INF/standalone-statistics-orm.xml</mapping-file>
+		<shared-cache-mode>NONE</shared-cache-mode>
+		<properties>
+			<property name="hibernate.dialect" value="${db.dialect}"/>
+			<property name="show_sql" value ="${db.show.sql}"/>
+			<property name="format_sql" value ="${db.show.sql}"/>
+			<property name="hibernate.connection.url" value="${db.connection.statistics.url}"/>
+			<property name="hibernate.connection.username" value="${db.datasource.statistics.user}"/>
+			<property name="hibernate.connection.password" value="${db.datasource.statistics.password}"/>
+			<property name="hibernate.connection.driver_class" value="${db.connection.statistics.driver}"/>
+		</properties>
+	</persistence-unit>
+</persistence>

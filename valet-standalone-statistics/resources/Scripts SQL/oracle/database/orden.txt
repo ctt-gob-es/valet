@@ -1,0 +1,19 @@
+Orden de ejecución de scripts de Instalación desde cero del Modelo Datawarehouse de ValET. 
+
+1) creaTablespaces.sql
+	(Usuario: SYS)
+
+2) creaTablas_*.sql
+	(Usuario: VALET_STATISTICSDWOWNER)
+
+3) creaSecuencias.sql
+	(Usuario: VALET_STATISTICSDWOWNER)
+	
+4) creaUsuario.sql
+	(Usuario: SYS)
+
+5) creaSinonimos.sql
+	(Usuario: VALET_STATISTICSDW)
+
+6) insertaValores.sql
+	(Usuario: VALET_STATISTICSDWOWNER)
