@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	<persistence-unit-metadata>
+		<persistence-unit-defaults>
+			<access>PROPERTY</access>
+		</persistence-unit-defaults>
+	</persistence-unit-metadata>
+	<package>es.gob.valet.statistics.persistence.pojo</package>
+	<entity class="DimApplicationPOJO">
+		<named-query name="findDimApplication">
+			<query>
+				<![CDATA[
+					SELECT DA
+					FROM DimApplicationPOJO DA
+					where UPPER(DA.identificator)= UPPER(:identificator)
+				 ]]>
+			</query>
+		</named-query>
+		<attributes>
+			<id name="idApplication">
+				<column name="APPLICATIONPK" />
+				<generated-value strategy="SEQUENCE" generator="APPLICATIONPK_SEQ_GEN" />
+				<sequence-generator name="APPLICATIONPK_SEQ_GEN"
+					sequence-name="APPLICATIONPK_SEQ" allocation-size="0" />
+			</id>
+		</attributes>
+	</entity>
+	<entity class="DimDatePOJO">
+		<named-query name="removeDimDates">
+			<query>
+				<![CDATA[
+						DELETE FROM DimDatePOJO
+					 ]]>
+			</query>
+		</named-query>
+		<named-query name="findDate">
+			<query>
+				<![CDATA[
+					SELECT DD
+					FROM DimDatePOJO DD
+					where DD.idDate = :datePk
+				 ]]>
+			</query>
+		</named-query>
+		<named-query name="findDateByDayMonthYear">
+			<query>
+				<![CDATA[
+					SELECT DD
+					FROM DimDatePOJO DD
+					where DD.year = :year
+					and DD.month = :month
+					and DD.day = :day
+				 ]]>
+			</query>
+		</named-query>
+		<attributes>
+			<id name="idDate">
+				<column name="DATEPK" />
+				<generated-value strategy="SEQUENCE" generator="DATEPK_SEQ_GEN" />
+				<sequence-generator name="DATEPK_SEQ_GEN"
+					sequence-name="DATEPK_SEQ" allocation-size="0" />
+			</id>
+		</attributes>
+	</entity>
+	<entity class="CCodResultsPOJO">
+		<named-query name="findCodeResult">
+			<query>
+				<![CDATA[
+					SELECT DR 
+					FROM CCodResultsPOJO DR 
+					WHERE DR.resultDescription = :resultDescription
+				]]>
+			</query>
+		</named-query>
+		<attributes>
+			<id name="codResultPk">
+				<column name="CODRESULTPK" />
+			</id>
+		</attributes>
+	</entity>
+	<entity class="CServiceTypesPOJO">
+		<named-query name="findServiceType">
+			<query>
+				<![CDATA[
+					SELECT CST 
+					FROM CServiceTypesPOJO CST
+					WHERE CST.serviceTypePk = :serviceTypePk 
+				]]>
+			</query>
+		</named-query>
+		<attributes>
+			<id name="serviceTypePk">
+				<column name="SERVICETYPEPK" />
+			</id>
+		</attributes>
+	</entity>
+	<entity class="DimNodePOJO">
+		<named-query name="findDimNodeByFilename">
+			<query>
+				<![CDATA[
+					SELECT DD
+					FROM DimNodePOJO DD
+					where DD.filename = :filename
+				 ]]>
+			</query>
+		</named-query>
+		<attributes>
+			<id name="nodePk">
+				<column name="NODEPK" />
+				<generated-value strategy="SEQUENCE" generator="NODEPK_SEQ_GEN" />
+				<sequence-generator name="NODEPK_SEQ_GEN"
+					sequence-name="NODEPK_SEQ" allocation-size="0" />
+			</id>
+		</attributes>
+	</entity>
+	<entity class="FctTransactionPOJO">
+		<named-query name="removeFctTransaction">
+			<query>
+				<![CDATA[
+						DELETE FROM FctTransactionPOJO
+					 ]]>
+			</query>
+		</named-query>
+		<named-query name="removeTransactionsByNode">
+			<query>
+		<![CDATA[
+					DELETE FROM FctTransactionPOJO FTP 
+					WHERE FTP.node.nodePk = :idNode
+				]]>
+		</query>
+		</named-query>
+		<attributes>
+			<id name="transactionPk">
+				<column name="TRANSACTIONPK" />
+				<generated-value strategy="SEQUENCE" generator="TRANSACTIONPK_SEQ_GEN" />
+				<sequence-generator name="TRANSACTIONPK_SEQ_GEN"
+					sequence-name="TRANSACTIONPK_SEQ" allocation-size="0" />
+			</id>
+		</attributes>
+	</entity>
+	<entity class="FctValidationPOJO">
+	<named-query name="removeValidationsByNode">
+			<query>
+		<![CDATA[
+					DELETE FROM FctValidationPOJO FVP 
+					WHERE FVP.node.nodePk = :idNode
+				]]>
+		</query>
+		</named-query>
+		<attributes>
+			<id name="validationPK">
+				<column name="VALIDATIONPK" />
+				<generated-value strategy="SEQUENCE" generator="VALIDATIONPK_SEQ_GEN" />
+				<sequence-generator name="VALIDATIONPK_SEQ_GEN"
+					sequence-name="VALIDATIONPK_SEQ" allocation-size="0" />
+			</id>
+		</attributes>
+	</entity>
+</entity-mappings>
