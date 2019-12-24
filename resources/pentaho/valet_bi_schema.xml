@@ -1,0 +1,74 @@
+<Schema name="valet_bi_schema" description="Schema for the valet platform" measuresCaption="Schema for the valet platform">
+  <Dimension type="TimeDimension" visible="true" highCardinality="false" name="CreationTime" caption="Creation Time" description="Creation Time">
+    <Hierarchy name="Date Hierarchy" visible="true" hasAll="true" primaryKey="DATEPK" description="Date Hierarchy">
+      <Table name="DIM_DATES">
+      </Table>
+      <Level name="Year" visible="true" table="DIM_DATES" column="NYEAR" type="Numeric" uniqueMembers="false" levelType="TimeYears" hideMemberIf="Never" description="Year">
+      </Level>
+      <Level name="Month" visible="true" table="DIM_DATES" column="NMONTH" type="Numeric" uniqueMembers="false" levelType="TimeMonths" hideMemberIf="Never" description="Month">
+      </Level>
+	  <Level name="Day" visible="true" table="DIM_DATES" column="NDAY" type="Numeric" uniqueMembers="false" levelType="TimeDays" hideMemberIf="Never" description="Day">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Results" description="Transaction results">
+    <Hierarchy name="Result Hierarchy" visible="true" hasAll="true" primaryKey="CODRESULTPK" description="Hierarchy for transaction results">
+      <Table name="C_CODRESULTS">
+      </Table>
+      <Level name="Result" visible="true" table="C_CODRESULTS" column="DESCRIPTION" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never" description="Result description">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Services" caption="Service" description="valet services">
+    <Hierarchy name="Services_Hierarchy" visible="true" hasAll="true" primaryKey="SERVICETYPEPK" description="valet service hierarchy">
+      <Table name="C_SERVICETYPES">
+      </Table>
+      <Level name="ServiceName" visible="true" table="C_SERVICETYPES" column="DESCRIPTION" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never" description="Service Name">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Applications" description="Application dimension">
+    <Hierarchy name="Application Hierarchy" visible="true" hasAll="true" primaryKey="APPLICATIONPK" description="Hierarchy for application dimension">
+      <Table name="DIM_APPLICATIONS">
+      </Table>
+      <Level name="IDENTIFICATOR" visible="true" table="DIM_APPLICATIONS" column="IDENTIFICATOR" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never" description="Application identifier">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Delegate Applications" description="Application dimension">
+    <Hierarchy name="Application Hierarchy" visible="true" hasAll="true" primaryKey="APPLICATIONPK" description="Hierarchy for application dimension">
+      <Table name="DIM_APPLICATIONS">
+      </Table>
+      <Level name="IDENTIFICATOR" visible="true" table="DIM_APPLICATIONS" column="IDENTIFICATOR" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never" description="Application identifier">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Cube name="transactions" caption="Number of transactions of the valet service" visible="true" description="Number of transactions of the valet service" cache="true" enabled="true">
+    <Table name="FCT_TRANSACTIONS">
+    </Table>
+    <DimensionUsage source="CreationTime" name="DIM_DATES" caption="Creation Time" visible="true" foreignKey="ID_DATE">
+    </DimensionUsage>
+    <DimensionUsage source="Services" name="C_SERVICETYPES" visible="true" foreignKey="ID_SERVICE_TYPE" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Applications" name="DIM_APPLICATIONS" visible="true" foreignKey="ID_APPLICATION" highCardinality="false">
+    </DimensionUsage>
+	<DimensionUsage source="Delegate Applications" name="DIMDELEGATE_APPLICATIONS" visible="true" foreignKey="ID_DELEGATED_APPLICATION" highCardinality="false">
+    </DimensionUsage>
+	<DimensionUsage source="Results" name="C_CODRESULTS" visible="true" foreignKey="ID_CODRESULT" highCardinality="false">
+    </DimensionUsage>
+    <Measure name="Transactions" column="MATCHES" datatype="Numeric" aggregator="sum" description="Number of transactions" visible="true">
+    </Measure>
+  </Cube>
+  <Cube name="validations" caption="Number of validations of the valet service" visible="true" description="Number of validations of the valet service" cache="true" enabled="true">
+    <Table name="FCT_VALIDATIONS">
+    </Table>
+    <DimensionUsage source="CreationTime" name="DIM_DATES" caption="Creation Time" visible="true" foreignKey="ID_DATE">
+    </DimensionUsage>
+    <DimensionUsage source="Applications" name="DIM_APPLICATIONS" visible="true" foreignKey="ID_APPLICATION" highCardinality="false">
+    </DimensionUsage>
+	<DimensionUsage source="Delegate Applications" name="DIMDELEGATE_APPLICATIONS" visible="true" foreignKey="ID_DELEGATED_APPLICATION" highCardinality="false">
+    </DimensionUsage>
+    <Measure name="Validations" column="MATCHES" datatype="Numeric" aggregator="sum" description="Number of validations" visible="true">
+    </Measure>
+  </Cube>
+</Schema>
