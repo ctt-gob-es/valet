@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 import org.json.JSONObject;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -79,7 +79,7 @@ public class UserRestController {
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/usersdatatable", method = RequestMethod.GET)
-	public DataTablesOutput<UserValet> users(@Valid DataTablesInput input) {
+	public DataTablesOutput<UserValet> users(@NotEmpty DataTablesInput input) {
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		return (DataTablesOutput<UserValet>) userService.getAllUser(input);
 

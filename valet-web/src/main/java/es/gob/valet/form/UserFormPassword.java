@@ -24,7 +24,8 @@
  */
 package es.gob.valet.form;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -58,7 +59,7 @@ public class UserFormPassword {
 	 * Attribute that represents the value of the input password of the user in
 	 * the form.
 	 */
-	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.user.password.notempty}")
+	@NotNull(groups = CheckItFirst.class, message = "{form.valid.user.password.notempty}")
 	@Size(min = NumberConstants.NUM7, max = NumberConstants.NUM30, groups = ThenCheckIt.class)
 	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "{form.valid.user.password.noPattern}", groups = ThenCheckIt.class)
 	private String password = UtilsStringChar.EMPTY_STRING;
@@ -67,7 +68,7 @@ public class UserFormPassword {
 	 * Attribute that represents the value of the input password of the user in
 	 * the form.
 	 */
-	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.user.confirmPassword.notempty}")
+	@NotNull(groups = CheckItFirst.class, message = "{form.valid.user.confirmPassword.notempty}")
 	@Size(min = NumberConstants.NUM7, max = NumberConstants.NUM30, groups = ThenCheckIt.class)
 	private String confirmPassword = UtilsStringChar.EMPTY_STRING;
 
@@ -75,7 +76,7 @@ public class UserFormPassword {
 	/**
 	 * Attribute that represents the value of the current password.
 	 */
-	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.user.oldPassword.notempty}")
+	@NotNull(groups = CheckItFirst.class, message = "{form.valid.user.oldPassword.notempty}")
 	private String oldPassword = UtilsStringChar.EMPTY_STRING;
 
 

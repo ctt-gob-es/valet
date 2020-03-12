@@ -24,7 +24,8 @@
  */
 package es.gob.valet.form;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import es.gob.valet.commons.utils.NumberConstants;
@@ -50,7 +51,7 @@ public class UserFormEdit {
 	 * Attribute that represents the value of the input name of the user in the
 	 * form.
 	 */
-	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.user.name.notempty}")
+	@NotNull(groups = CheckItFirst.class, message = "{form.valid.user.name.notempty}")
 	@Size(min = 1, max = NumberConstants.NUM15, groups = ThenCheckIt.class)
 	private String nameEdit = UtilsStringChar.EMPTY_STRING;
 
@@ -58,7 +59,7 @@ public class UserFormEdit {
 	 * Attribute that represents the value of the input surnames of the user in
 	 * the form.
 	 */
-	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.user.surnames.notempty}")
+	@NotNull(groups = CheckItFirst.class, message = "{form.valid.user.surnames.notempty}")
 	@Size(min = 1, max = NumberConstants.NUM30, groups = ThenCheckIt.class)
 	private String surnamesEdit = UtilsStringChar.EMPTY_STRING;
 
@@ -66,7 +67,7 @@ public class UserFormEdit {
 	 * Attribute that represents the value of the input username of the user in
 	 * the form.
 	 */
-	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.user.login.notempty}")
+	@NotNull(groups = CheckItFirst.class, message = "{form.valid.user.login.notempty}")
 	@Size(min = NumberConstants.NUM5, max = NumberConstants.NUM30, groups = ThenCheckIt.class)
 	private String loginEdit = UtilsStringChar.EMPTY_STRING;
 
@@ -74,7 +75,7 @@ public class UserFormEdit {
 	 * Attribute that represents the value of the input email of the user in the
 	 * form.
 	 */
-	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.user.email.notempty}")
+	@NotNull(groups = CheckItFirst.class, message = "{form.valid.user.email.notempty}")
 	@Size(min = NumberConstants.NUM3, max = NumberConstants.NUM255, groups = ThenCheckIt.class)
 	private String emailEdit = UtilsStringChar.EMPTY_STRING;
 

@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -184,7 +184,7 @@ public class TslRestController {
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/tsldatatable", method = RequestMethod.GET)
-	public DataTablesOutput<TslData> loadTslDataTable(@Valid DataTablesInput input) {
+	public DataTablesOutput<TslData> loadTslDataTable(@NotEmpty DataTablesInput input) {
 		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
 		return tslDataService.getAllTsl(input);
 

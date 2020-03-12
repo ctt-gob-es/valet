@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -122,7 +122,7 @@ public class ApplicationRestController {
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/appdatatable", method = RequestMethod.GET)
-	public DataTablesOutput<ApplicationValet> loadApplications(@Valid DataTablesInput input) {
+	public DataTablesOutput<ApplicationValet> loadApplications(@NotEmpty DataTablesInput input) {
 		IApplicationValetService appService = ManagerPersistenceConfigurationServices.getInstance().getApplicationValetService();
 		return (DataTablesOutput<ApplicationValet>) appService.getAllApplication(input);
 	}

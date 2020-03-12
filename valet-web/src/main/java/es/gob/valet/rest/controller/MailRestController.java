@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +80,7 @@ public class MailRestController {
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/mailsdatatable", method = RequestMethod.GET)
-	public DataTablesOutput<Mail> mails(@Valid DataTablesInput input) {
+	public DataTablesOutput<Mail> mails(@NotEmpty DataTablesInput input) {
 		return (DataTablesOutput<Mail>) mailService.getAllMail(input);
 	}
 

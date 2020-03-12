@@ -24,10 +24,6 @@
  */
 package es.gob.valet.form;
 
-import javax.validation.constraints.NotBlank;
-
-import es.gob.valet.rest.exception.CheckItFirst;
-
 /** 
  * <p>Class that represents the backing form for adding/editing a alarm.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>

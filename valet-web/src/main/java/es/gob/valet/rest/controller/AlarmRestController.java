@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 import org.json.JSONObject;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -78,7 +79,7 @@ public class AlarmRestController {
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/alarmsdatatable", method = RequestMethod.GET)
-	public DataTablesOutput<Alarm> alarms(@Valid DataTablesInput input) {
+	public DataTablesOutput<Alarm> alarms(@NotEmpty DataTablesInput input) {
 
 		DataTablesOutput<Alarm> result = new DataTablesOutput<Alarm>();
 

@@ -24,7 +24,8 @@
  */
 package es.gob.valet.form;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import es.gob.valet.rest.exception.CheckItFirst;
@@ -43,7 +44,7 @@ public class MailForm {
 	 */
 	private Long idMail;
 
-	@NotBlank(groups = CheckItFirst.class, message = "{form.valid.mail.emailAddress.notempty}")
+	@NotNull(groups = CheckItFirst.class, message = "{form.valid.mail.emailAddress.notempty}")
 	@Size(min = 3, max = 200, groups = ThenCheckIt.class)
 	private String emailAddress;
 
