@@ -110,6 +110,7 @@ setlocal
 
 set "JAVA_HOME=C:\Program Files\Java\jdk1.8.0_131"
 set "JAVA_OPTS=%JAVA_OPTS% -Dtomcat.config.path=%CATALINA_HOME%/conf/"
+set "JAVA_OPTS=%JAVA_OPTS% -Dvalet.config.path=%CATALINA_HOME%/conf/"
 set "JAVA_OPTS=%JAVA_OPTS% -Dlog4j.configuration.valet.rest=%CATALINA_HOME%/conf/valet-rest-log4j.xml 
 set "JAVA_OPTS=%JAVA_OPTS% -Dlog4j.configuration.valet.web=%CATALINA_HOME%/conf/valet-web-log4j.xml 
 set "JAVA_OPTS=%JAVA_OPTS% -Dspring.config.location=%CATALINA_HOME%/conf/application.properties"

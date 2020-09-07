@@ -37,6 +37,12 @@ public final class UtilsTomcat {
 	 * Constant attribute that represents the name of messages directory inside configuration directory.
 	 */
 	public static final String TOMCAT_CONF_DIR = "tomcat.config.path";
+	
+	/**
+	 * Constant attribute representing the name of the message directory within the configuration directory for VAlet
+	 */
+	public static final String VALET_CONF_DIR = "valet.config.path";
+	
 
 	/**
 	 * Constructor method for the class UtilsTomcat.java.
@@ -52,6 +58,15 @@ public final class UtilsTomcat {
 		return System.getProperty(TOMCAT_CONF_DIR);
 	}
 
+	
+
+	/**
+	 * Method that returns the value of the system property jboss.server.config.dir.
+	 * @return Value of the system property jboss.server.config.dir. Null if not exist.
+	 */
+	public static String getValetConfigDir() {
+		return System.getProperty(VALET_CONF_DIR);
+	}
 
 	/**
 	 * Auxiliar method to create an absolute path to a file.
