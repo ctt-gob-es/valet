@@ -61,7 +61,7 @@ public abstract class AbstractValetNonClusteredQuartzScheduler extends AbstractV
 	 */
 	@Override
 	protected final String getPathPropertiesFile() {
-		return UtilsTomcat.createAbsolutePath(UtilsTomcat.getTomcatConfigDir(), AbstractValetNonClusteredQuartzScheduler.NOCLUSTERQTZ_FILE);
+		return UtilsTomcat.createAbsolutePath(UtilsTomcat.getValetConfigDir(), AbstractValetNonClusteredQuartzScheduler.NOCLUSTERQTZ_FILE);
 	}
 
 	/**
