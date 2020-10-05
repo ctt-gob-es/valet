@@ -215,7 +215,7 @@ public final class Language {
 		// Preparamos el URLClassLoader que hará referencia
 		// al directorio de los mensajes de logs dentro de la configuración.
 		try {
-			final File configDirFile = new File(UtilsTomcat.createAbsolutePath(UtilsTomcat.getTomcatConfigDir(), MSG_DIRECTORY));
+			final File configDirFile = new File(UtilsTomcat.createAbsolutePath(UtilsTomcat.getValetConfigDir(), MSG_DIRECTORY));
 			urlClassLoaderMsg = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
 
 				/**
