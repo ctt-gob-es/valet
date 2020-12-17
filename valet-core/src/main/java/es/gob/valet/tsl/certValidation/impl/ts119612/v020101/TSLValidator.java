@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 10/05/2019.
+ * @version  1.4, 15/12/2020.
  */
 package es.gob.valet.tsl.certValidation.impl.ts119612.v020101;
 
@@ -52,7 +52,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.AdditionalServiceInformat
  * <p>Class that represents a TSL Validator implementation for the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 10/05/2019.
+ * @version 1.4, 15/12/2020.
  */
 public class TSLValidator extends ATSLValidator {
 
@@ -380,6 +380,7 @@ public class TSLValidator extends ATSLValidator {
 		boolean result = serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_GRANTED) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_RECOGNISEDATNATIONALLEVEL);
 		result = result || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_UNDERSUPERVISION) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONINCESSATION);
 		result = result || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITED) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SETBYNATIONALLAW);
+		result = result || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN);
 		return result;
 
 	}
@@ -401,8 +402,7 @@ public class TSLValidator extends ATSLValidator {
 			boolean statusChainNotValid = serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONCEASED) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONCEASED);
 
 			boolean statusRevoked = serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONREVOKED) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONREVOKED);
-			statusRevoked = statusRevoked || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDATNATIONALLEVEL);
-			statusRevoked = statusRevoked || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDBYNATIONALLAW);
+			statusRevoked = statusRevoked || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDBYNATIONALLAW) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDATNATIONALLEVEL);
 
 			// Si el estado del servicio es OK, establecemos
 			// que se detecta el certificado.

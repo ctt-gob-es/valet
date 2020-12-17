@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 27/09/2019.
+ * @version 1.8, 15/12/2020.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -57,6 +57,7 @@ import es.gob.valet.tsl.exceptions.TSLArgumentException;
 import es.gob.valet.tsl.exceptions.TSLQualificationEvalProcessException;
 import es.gob.valet.tsl.exceptions.TSLValidationException;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
+import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
@@ -71,7 +72,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.Qualifications;
  * <p>Abstract class that represents a TSL validator with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 27/09/2019.
+ * @version 1.8, 15/12/2020.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -685,7 +686,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// Si hemos encontrado al menos uno, intentamos detectar el certificado
 		// con esa información de servicio.
 		if (shi != null) {
-			detectCertificateWithTSPServiceHistoryInstance(cert, isCACert, isTsaCertificate, validationDate, validationResult, shi, isHistoricServiceInf);
+			detectCertificateWithTSPServiceHistoryInstance(cert, isCACert, isTsaCertificate, validationDate, validationResult, tspService, shi, isHistoricServiceInf);
 		}
 
 	}
@@ -699,13 +700,14 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * (<code>true</code>) or not (<code>false</code>).
 	 * @param validationDate Validation date to check the certificate status revocation.
 	 * @param validationResult Object where is stored the validation result data.
+	 * @param tspService Trust Service Provider Service to use for detect the input certificate.
 	 * @param shi Trust Service Provider Service History-Information to use for detect the input certificate.
 	 * @param isHistoricServiceInf Flag that indicates if the input Service Information is from an Historic Service (<code>true</code>)
 	 * or not (<code>false</code>).
 	 * @throws TSLQualificationEvalProcessException In case of some error evaluating the Criteria List of a Qualification
 	 * Extension over the input certificate, and being critical that Qualification Extension.
 	 */
-	private void detectCertificateWithTSPServiceHistoryInstance(X509Certificate cert, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, ServiceHistoryInstance shi, boolean isHistoricServiceInf) throws TSLQualificationEvalProcessException {
+	private void detectCertificateWithTSPServiceHistoryInstance(X509Certificate cert, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TSPService tspService, ServiceHistoryInstance shi, boolean isHistoricServiceInf) throws TSLQualificationEvalProcessException {
 
 		// Obtenemos el tipo del servicio.
 		String tspServiceType = shi.getServiceTypeIdentifier().toString();
@@ -848,9 +850,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 					}
 
-					// Si se trata de una CA/PKC, sabemos que es un certificado
+					// Si se trata de una CA/PKC, o el estado del servicio es  "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn" sabemos que es un certificado
 					// "non qualified".
-					if (checkIfTSPServiceTypeIsCAPKC(tspServiceType)) {
+					if (checkIfTSPServiceTypeIsCAPKC(tspServiceType) || isWithdrawnBeforeDateOfIssue(cert, tspService)) {
 
 						validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED);
 
@@ -2023,5 +2025,18 @@ public abstract class ATSLValidator implements ITSLValidator {
 		}
 
 	}
+	
+	/**
+	 * Method that checks if the TSP service have "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn" status
+	 * in date of issue of the certificate.
+	 * @param cert certificate to check date of issue.
+	 * @param tspService service to be checked.
+	 * @return
+	 */
+	private boolean isWithdrawnBeforeDateOfIssue(X509Certificate cert, TSPService tspService) {
+		return !cert.getNotBefore().before(tspService.getServiceInformation().getServiceStatusStartingTime()) && tspService.getServiceInformation().getServiceStatus().toString().equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN);
+		
+	}
+
 
 }

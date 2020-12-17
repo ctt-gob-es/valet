@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.13, 13/05/2019.
+ * @version 1.14, 17/12/2020.
  */
 package es.gob.valet.rest.services;
 
@@ -89,7 +89,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.13, 13/05/2019.
+ * @version 1.14, 17/12/2020.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -946,7 +946,7 @@ public class TslRestService implements ITslRestService {
 
 		// Comprobamos los parámetros opcionales.
 		// Sólo se debe especificar el país/región o la localización de la TSL.
-		if (allIsOk && countryRegionCode != null && tslLocation != null) {
+		if (allIsOk && ( (UtilsStringChar.isNullOrEmpty(countryRegionCode) && UtilsStringChar.isNullOrEmpty(tslLocation)) || (!UtilsStringChar.isNullOrEmpty(countryRegionCode) && !UtilsStringChar.isNullOrEmpty(tslLocation)))) {
 			allIsOk = false;
 			LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG005));
 			result = new TslInformationResponse();
