@@ -49,6 +49,9 @@ $(document).ready(function() {
 	//declaración de la tabla de mapeo
 	var tblMapping = $('#mappingTable').DataTable({
 		dom: 'Bfrtip',
+		columnDefs: [
+	        {className: "text-center", targets: [4]}
+	    ],
 		responsive : true,
 		altEditor: true,
  		buttons: [{text: btnAddMapping, 
@@ -100,7 +103,7 @@ $(document).ready(function() {
 					        { "data": "associationType.tokenName",  "width": "20%"},
 					        { "data": "idTslCountryRegionMapping",  "width": "10%",
 					        	"render": function(data, type, row){	
-					        		return '<button class="c-green-500 ti-pencil-alt" id="editMappingTsl"  onclick="editMapping('+data+');" alt='+btnEditMappingAlt+' title='+btnEditMappingAlt+'></button>&nbsp;<button class="c-red-500 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);" alt='+btnDelMappingAlt+' title='+btnDelMappingAlt+'></button>';
+					        		return '<a class="c-green-700 ti-pencil-alt" id="editMappingTsl"  onclick="editMapping('+data+');" alt='+btnEditMappingAlt+' title='+btnEditMappingAlt+'></a>&nbsp;&nbsp;&nbsp;<a class="c-red-700 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);" alt='+btnDelMappingAlt+' title='+btnDelMappingAlt+'></a>';
 					        		
 					        	}
 					        }

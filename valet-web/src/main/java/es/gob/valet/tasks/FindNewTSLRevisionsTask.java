@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 06/03/2019.
+ * @version 1.5, 24/03/2021.
  */
 package es.gob.valet.tasks;
 
@@ -61,7 +61,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 06/03/2019.
+ * @version 1.5, 24/03/2021.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
@@ -108,9 +108,16 @@ public class FindNewTSLRevisionsTask extends Task {
 						TSLDataCacheObject tsldco = TSLManager.getInstance().getTSLDataFromCountryRegion(tslCountryRegion);
 						// Si está definida...
 						if (tsldco != null) {
-
-							// Comprobamos si existe alguna actualización.
-							checkIfExistsNewVersionForTSL(tsldco, tslCountryRegion, lastTslImpl);
+							// se comprueba, si no existe fecha de nueva
+							// actualización, como ocurre con la TSL de Reino
+							// Unido al no publicarse más, no se tiene en cuenta
+							// en la tarea.
+							if (tsldco.getNextUpdateDate() != null) {
+								// Comprobamos si existe alguna actualización.
+								checkIfExistsNewVersionForTSL(tsldco, tslCountryRegion, lastTslImpl);
+							} else {
+								LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_004, new Object[ ] { tslCountryRegion }));
+							}
 
 						}
 
@@ -186,7 +193,6 @@ public class FindNewTSLRevisionsTask extends Task {
 		int sequenceNumberNewTsl = -1;
 		// Obtenemos la URI de donde descargar la TSL.
 		String distributionPoint = tsldco.getTslLocationUri();
-
 		try {
 
 			// Si la TSL no está marcada ya como disponible, la analizamos...
@@ -203,7 +209,7 @@ public class FindNewTSLRevisionsTask extends Task {
 				// Creamos un objeto que representará la TSL descargada.
 				ITSLObject tslObject = new TSLObject(actualTslImpl.getSpecification(), actualTslImpl.getVersion());
 				try {
-					tslObject.buildTSLFromXMLcheckValues(bais, false);
+					tslObject.buildTSLFromXMLcheckValues(bais, false, false);
 				} catch (Exception e) {
 
 					// Si no la hemos conseguido parsear, lo intentamos con la
@@ -211,12 +217,11 @@ public class FindNewTSLRevisionsTask extends Task {
 					// especificación disponible (siempre que no fuera esta
 					// ya)...
 					if (lastTslImpl != null && !actualTslImpl.getIdTSLImpl().equals(lastTslImpl.getIdTSLImpl())) {
-
 						LOGGER.warn(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_000, new Object[ ] { actualTslImpl.getSpecification(), actualTslImpl.getVersion(), lastTslImpl.getSpecification(), lastTslImpl.getVersion() }));
 						tslObject = new TSLObject(lastTslImpl.getSpecification(), lastTslImpl.getVersion());
 						UtilsResources.safeCloseInputStream(bais);
 						bais = new ByteArrayInputStream(fullTSLxml);
-						tslObject.buildTSLFromXMLcheckValues(bais, false);
+						tslObject.buildTSLFromXMLcheckValues(bais, false, false);
 
 					} else {
 

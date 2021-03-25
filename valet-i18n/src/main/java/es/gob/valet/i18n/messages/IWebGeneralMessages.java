@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 22/05/2019.
+ * @version 1.9, 24/03/2021.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 22/05/2019.
+ * @version 1.9, 24/03/2021.
  */
 public interface IWebGeneralMessages {
 
@@ -76,6 +76,11 @@ public interface IWebGeneralMessages {
 	String INFO_NOT_UPDATE_FILE_IMPL_TSL = "infoNotUpdateFileTsl";
 
 	/**
+	 * Constant attribute that represents the name of the property <code>infoEmptyFileImplTsl</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String INFO_EMPTY_FILE_IMPL_TSL = "infoEmptyFileImplTsl";
+	/**
 	 * Constant attribute that represents the name of the property <code>errorIdentificatorDuplicate</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
@@ -116,7 +121,18 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String ERROR_SAVE_TSL_WEB = "errorSaveTslWeb";
-
+	/**
+	 * Constant attribute that represents the name of the property <code>errorUpdateImplTsl</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_UPDATE_IMPL_TSL = "errorUpdateImplTsl";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorUpdateImplTslWeb</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_UPDATE_IMPL_TSL_WEB = "errorUpdateImplTslWeb";
+	
+	
 	/**
 	 * Constant attribute that represents the name of the property <code>errorEditTsl</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
@@ -145,6 +161,11 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String ERROR_NOT_BLANK_ALIAS = "errorNotBlankAlias";
+	/**
+	 * Constant attribute that represents the name of the property <code>errorExistAlias</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_EXIST_ALIAS = "errorExistAlias";
 
 	/**
 	 * Constant attribute that represents the name of the property <code>errorSpecialCharAlias</code> belonging to the
@@ -235,6 +256,11 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String TASK_FIND_NEW_TSL_REV_LOG_003 = "task.findNewTslRev.LOG003";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG004</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_LOG_004 = "task.findNewTslRev.LOG004";
 
 	/**
 	 * Constant attribute that represents the name of the property <code>errorUpdateTask</code> belonging to the

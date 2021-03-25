@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 27/12/2018.
+ * @version 1.6, 24/03/2021.
  */
 package es.gob.valet.rest.controller;
 
@@ -69,7 +69,7 @@ import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 /**
  * <p>Class that manages the REST request related to the Keystore's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 27/12/2018.
+ * @version 1.6, 24/03/2021.
  */
 @RestController
 public class KeystoreRestController {
@@ -160,7 +160,7 @@ public class KeystoreRestController {
 
 			// se comprueba que se han indicado todos los campos obligatorios
 
-			if (alias == null || alias.isEmpty()) {
+			if (UtilsStringChar.isNullOrEmpty(alias)) {
 				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
 				json.put(FIELD_ALIAS + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
 				error = true;
@@ -184,6 +184,15 @@ public class KeystoreRestController {
 					}
 
 				}
+				
+				//se comprueba que no exista un alias igual registrado en el sistema
+				SystemCertificate sc = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, Long.valueOf(idKeystore));
+			if(sc != null){
+				String msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXIST_ALIAS, new Object[ ] { alias });
+				LOGGER.error(msgError);
+				json.put(FIELD_ALIAS + "_span", msgError);
+				error = true;
+			}
 
 			}
 			if (certificateFile == null || certificateFile.getSize() == 0 || certificateFile.getBytes() == null || certificateFile.getBytes().length == 0) {

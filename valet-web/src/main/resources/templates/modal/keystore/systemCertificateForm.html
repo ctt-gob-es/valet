@@ -5,9 +5,10 @@
 	
 
 	<div class="form-group col-md-8">
-		<label for="idAlias" th:text="#{form.addCertificate.alias}"></label> <span
-			id="alias_span"
-			class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span><input
+		<label for="idAlias" th:text="#{form.addCertificate.alias}"></label> 
+		<span id="alias_span"
+			class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+			<input
 			type="text" id="idAlias" class="form-control" th:field="*{alias}"
 			onchange="cleanSpan('alias_span');"></input>
 	</div>
@@ -15,7 +16,7 @@
 	<div class="form-group col-md-12">
 		<label for="fileCertificateId" th:text="#{form.addCertificate.file}"></label>
 		<span id="certificateFile_span"
-			class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+			class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
 		<div id="customFile" class="form-group col-md-8">
 			<input type="file" class="custom-file-input" id="fileCertificateId"
 				th:field="*{certificateFile}" aria-describedby="fileHelp"

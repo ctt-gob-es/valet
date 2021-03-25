@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 24/01/2019.
+ * @version 1.4, 24/03/2021.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -52,7 +52,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>TSL_DATA</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 24/01/2019.
+ * @version 1.4, 24/03/2021.
  */
 @Entity
 @Table(name = "TSL_DATA")
@@ -166,7 +166,7 @@ public class TslData implements Serializable {
 	 * Gets the value of the attribute {@link #responsible}.
 	 * @return the value of the attribute {@link #responsible}.
 	 */
-	@Column(name = "RESPONSIBLE", unique = true, nullable = false, length = NumberConstants.NUM128)
+	@Column(name = "RESPONSIBLE", unique = true, nullable = true, length = NumberConstants.NUM128)
 	@JsonView(DataTablesOutput.View.class)
 	public String getResponsible() {
 		return responsible;

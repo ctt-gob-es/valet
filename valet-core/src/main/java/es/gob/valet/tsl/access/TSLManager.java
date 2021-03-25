@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 21/08/2019.
+ * @version 1.9, 24/03/2021.
  */
 package es.gob.valet.tsl.access;
 
@@ -86,7 +86,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 21/08/2019.
+ * @version 1.9, 24/03/2021.
  */
 public final class TSLManager {
 
@@ -1002,7 +1002,7 @@ public final class TSLManager {
 					bais = new ByteArrayInputStream(td.getXmlDocument());
 
 					// Finalmente contruimos la TSL y la chequeamos.
-					result.buildTSLFromXMLcheckValues(bais);
+					result.buildTSLFromXMLcheckValuesCache(bais);
 
 				} finally {
 
@@ -2264,8 +2264,24 @@ public final class TSLManager {
 					UtilsResources.safeCloseInputStream(bais);
 				}
 
+				
+				//se almacena el número de secuencia para comprobar si la nueva es más actual.
+				//se comprueba si hay que indicar que hay versión disponible o no
+				int sequenceOld = td.getSequenceNumber();
+				int sequenceNew = tslObject.getSchemeInformation().getTslSequenceNumber();
+				if (sequenceNew >= sequenceOld) {
+					// No Existe una nueva versión de la TSL.
+					td.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
+					td.setLastNewTSLAvailableFind(null);
+				}else{
+					// No Existe una nueva versión de la TSL.
+					td.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NEW_TSL_AVAILABLE);
+					td.setLastNewTSLAvailableFind(Calendar.getInstance().getTime());
+				}
+					
+
 				// se actualiza el número de secuencia
-				td.setSequenceNumber(tslObject.getSchemeInformation().getTslSequenceNumber());
+				td.setSequenceNumber(sequenceNew);
 
 				// se actualiza el responsable
 				String responsible = TOKEN_UNKNOWN;
@@ -2288,6 +2304,8 @@ public final class TSLManager {
 
 				// Asignamos y actualizamos el fichero con la nueva TSL.
 				td.setXmlDocument(tslXMLbytes);
+				
+			
 
 				// Se actualiza la TSL en la base de datos.
 				td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().saveTSL(td);

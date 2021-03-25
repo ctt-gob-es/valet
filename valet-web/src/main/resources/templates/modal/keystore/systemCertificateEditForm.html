@@ -24,7 +24,7 @@
 						<div class="form-group col-md-12">
 							<label for="aliasId" th:text="#{form.editCertificate.alias}"></label>
 							<span id="alias_span"
-								class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
 							<input type="text" id="aliasId" class="form-control"
 								style="overflow: hidden" th:field="*{alias}" required
 								pattern=".{3,15}"></input>
@@ -99,7 +99,7 @@ function updateSystemCertificate() {
 						$('#systemCertificateEditForm *').filter('span').each(function(){
 								if (i == $(this).attr('id')){
 									$("#" + i).text(val);
-									$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
+									$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
 								}
 							});
 				  })

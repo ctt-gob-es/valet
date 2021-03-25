@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.12, 22/05/2019.
+ * @version 1.13, 24/03/2021.
  */
 package es.gob.valet.rest.controller;
 
@@ -81,7 +81,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.12, 22/05/2019.
+ * @version 1.13, 24/03/2021.
  */
 @RestController
 public class TslRestController {
@@ -403,8 +403,9 @@ public class TslRestController {
 		// se comprueba si se ha actualizado la implementación de TSL, si es así
 		// se obtiene los nuevos datos
 		if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
-			// se muestra mensaje indicando que no se ha actualizado
-			LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.INFO_NOT_UPDATE_FILE_IMPL_TSL));
+			// se muestra mensaje indicando que se ha introducido el fichero.
+			error = true;
+			json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.INFO_EMPTY_FILE_IMPL_TSL));
 		} else {
 
 			tslXMLbytes = implTslFile.getBytes();
@@ -466,15 +467,21 @@ public class TslRestController {
 				}
 
 			} catch (Exception e) {
-				// throw new TSLManagingException(IValetException.COD_187,
-				// Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
+				String msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL, new Object[ ] { e.getMessage() });
+				
+				LOGGER.error(msgError);
+				json.put(FIELD_IMPL_TSL_FILE  + "_span",Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL_WEB));
+				error = true;
+
 			} finally {
 				UtilsResources.safeCloseInputStream(bais);
 			}
 
-			if (error) {
-				tslForm.setError(json.toString());
-			}
+			
+		}
+		
+		if (error) {
+			tslForm.setError(json.toString());
 		}
 
 		return tslForm;

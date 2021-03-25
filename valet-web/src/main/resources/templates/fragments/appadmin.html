@@ -39,6 +39,9 @@ var addTemplate = /*[[@{/addapp}]]*/;
 var actionSave = /*[[@{/saveapp}]]*/;
 var tbl = $('#appTable').DataTable({
 	dom: 'Bfrtip',
+	columnDefs: [
+        {className: "text-center", targets: [6]}
+    ],
 	select:'single',
 	responsive: true, 
 	altEditor: true,
@@ -78,7 +81,7 @@ var tbl = $('#appTable').DataTable({
 		 }},
 		 {"data": "idApplication",  "width": "10%",
 	        	"render": function(data, type, row){	
-	        		return '<button class="c-green-500 ti-pencil-alt" id="editApp"  onclick="editApp('+data+');" alt='+btnEditApp+' title='+btnEditApp+'></button>&nbsp;<button class="c-red-500 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmApp('+data+',this);" alt='+btnDelApp+' title='+btnDelApp+'></button>';
+	        		return '<a class="c-green-700 ti-pencil-alt" id="editApp"  onclick="editApp('+data+');" alt='+btnEditApp+' title='+btnEditApp+'></a>&nbsp;&nbsp;&nbsp;<a class="c-red-700 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmApp('+data+',this);" alt='+btnDelApp+' title='+btnDelApp+'></a>';
 	        		
 	        	}
 	        }
@@ -114,7 +117,7 @@ var tbl = $('#appTable').DataTable({
 					$('#appForm *').filter('span').each(function(){
 								if (i == $(this).attr('id')){
 									$("#" + i).text(val);
-									$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
+									$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
 								}
 							});
 					})

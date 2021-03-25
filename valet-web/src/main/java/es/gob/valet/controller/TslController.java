@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.10, 22/05/2019.
+ * @version 1.11, 24/03/2021.
  */
 package es.gob.valet.controller;
 
@@ -59,7 +59,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.10, 22/05/2019.
+ *  @version 1.11, 24/03/2021.
  */
 @Controller
 public class TslController {
@@ -130,32 +130,36 @@ public class TslController {
 
 			TSLDataCacheObject tsldco = TSLManager.getInstance().getTSLDataCacheObject(idTslData);
 			TSLCountryRegionCacheObject tslcrco = TSLManager.getInstance().getTSLCountryRegionByIdTslData(idTslData);
-			ITSLObject tslObject = (ITSLObject) tsldco.getTslObject();
 
-			// se van obtiendo los datos a mostrar en el formulario
-			tslForm.setIdTslData(idTslData);
-			tslForm.setCountryName(tslcrco.getName());
-			tslForm.setCountry(tslcrco.getCountryRegionId());
-			tslForm.setSpecification(tslObject.getSpecification());
-			tslForm.setVersion(tslObject.getSpecificationVersion());
-			tslForm.setSequenceNumber(tslObject.getSchemeInformation().getTslSequenceNumber());
-			tslForm.setUrlTsl(tsldco.getTslLocationUri());
-			tslForm.setTslName(TSLManager.getInstance().getTSLSchemeName(idTslData));
-			tslForm.setTslResponsible(TSLManager.getInstance().getTSLSchemeOperatorName(idTslData));
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-			tslForm.setIssueDate(sdf.format(tsldco.getIssueDate()));
-			tslForm.setExpirationDate(sdf.format(tsldco.getNextUpdateDate()));
+			if (tsldco != null) {
+				ITSLObject tslObject = (ITSLObject) tsldco.getTslObject();
 
-			if (TSLManager.getInstance().getTSLLegibleDocument(idTslData) != null) {
-				tslForm.setIsLegible(true);
-			} else {
-				tslForm.setIsLegible(false);
+				// se van obtiendo los datos a mostrar en el formulario
+				tslForm.setIdTslData(idTslData);
+				tslForm.setCountryName(tslcrco.getName());
+				tslForm.setCountry(tslcrco.getCountryRegionId());
+				tslForm.setSpecification(tslObject.getSpecification());
+				tslForm.setVersion(tslObject.getSpecificationVersion());
+				tslForm.setSequenceNumber(tslObject.getSchemeInformation().getTslSequenceNumber());
+				tslForm.setUrlTsl(tsldco.getTslLocationUri());
+				tslForm.setTslName(TSLManager.getInstance().getTSLSchemeName(idTslData));
+				tslForm.setTslResponsible(TSLManager.getInstance().getTSLSchemeOperatorName(idTslData));
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+				tslForm.setIssueDate(sdf.format(tsldco.getIssueDate()));
+				tslForm.setExpirationDate(sdf.format(tsldco.getNextUpdateDate()));
+
+				if (TSLManager.getInstance().getTSLLegibleDocument(idTslData) != null) {
+					tslForm.setIsLegible(true);
+				} else {
+					tslForm.setIsLegible(false);
+				}
+				// componemos el nombre del fichero de la implementación XML
+				// para
+				// que se muestre en administración
+				String filenameTSL = tslcrco.getCode() + "-" + tsldco.getSequenceNumber() + EXTENSION_XML;
+				tslForm.setAlias(filenameTSL);
 			}
-			// componemos el nombre del fichero de la implementación XML para
-			// que se muestre en administración
-			String filenameTSL = tslcrco.getCode() + "-" + tsldco.getSequenceNumber() + EXTENSION_XML;
-			tslForm.setAlias(filenameTSL);
-
+			
 		} catch (TSLManagingException e) {
 			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_LOAD_EDIT_TSL, new Object[ ] { e.getMessage() }));
 		}

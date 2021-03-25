@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 10/05/2019.
+ * @version 1.6, 24/03/2021.
  */
 package es.gob.valet.commons.utils;
 
@@ -60,7 +60,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 10/05/2019.
+ * @version 1.7, 24/03/2021.
  */
 public final class UtilsCertificate {
 
@@ -88,7 +88,10 @@ public final class UtilsCertificate {
 			return (X509Certificate) CertificateFactory.getInstance(X509_TYPE).generateCertificate(is);
 		} catch (CertificateException e) {
 			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
-		} finally {
+		} catch (Exception e){
+			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
+		} 
+		finally {
 			UtilsResources.safeCloseInputStream(is);
 		}
 	}

@@ -68,7 +68,7 @@
 			<h6 class="c-grey-900" th:text="#{form.editTsl.implementation}"></h6>
 			<div class="mT-5">
 				<div class="form-row">
-					<div th:text="${tslform.alias}+ #{form.editTsl.extensionTsl}"
+					<div id="idFileName" th:text="${tslform.alias}"
 						class="col-form-label"></div>
 				</div>
 				<div class="text-right  mrg-top-30">
@@ -87,7 +87,7 @@
 				<!-- formulario para subir nueva implementación TSL -->
 				<div id="updateTslDiv" style="display: none;">
 					<span id="implTslFile_span"
-						class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill"></span>
+						class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
 					<div class="mT-10">
 						<label for="fileId" th:text="#{form.editTsl.updateTsl}"></label>
 						<div id="customFile" class="form-group col-md-12">
@@ -203,6 +203,7 @@ function closeUpdateLegDoc() {
 function updateImplFile() {
 	var updateImplFile =  /*[[@{/updateimplfile}]]*/;
 	var idTsl = idTslData;
+	
 	var formDataEdit = new FormData(document.forms["tslFormEdit"]);
 	$.ajax(updateImplFile, {
 		data :formDataEdit,
@@ -210,22 +211,27 @@ function updateImplFile() {
 		processData : false,
         type:'POST',
         success: function(data){
+        	
     		// Se oculta la capa 'cargando...'
     		hide();
 			var errores = JSON.parse(data.error);
 						 if (data.error != null){
+							 
 						  jQuery.each(errores, function(i, val) {
 						  	$('#tslFormEdit *').filter('span').each(function(){
 
 									if (i == $(this).attr('id')){
 										$("#" + i).text(val);
-										$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
+										$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
 									}
 								});
 								})
 						 } else{
 	
 						 closeUpdateTsl();
+						 
+					
+								$('#idFileName').val(data.alias);		 
     		$('#sequenceNumberId').val(data.sequenceNumber);
     		$('#nameTslId').val(data.tslName);
     		$('#tslResponsibleId').val(data.tslResponsible);

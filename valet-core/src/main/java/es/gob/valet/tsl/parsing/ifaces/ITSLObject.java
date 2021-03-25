@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 24/03/2021.
  */
 package es.gob.valet.tsl.parsing.ifaces;
 
@@ -41,7 +41,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Interface that represents a TSL object regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 24/03/2021.
  */
 public interface ITSLObject extends Serializable {
 
@@ -147,6 +147,17 @@ public interface ITSLObject extends Serializable {
 	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
 	 */
 	void buildTSLFromXMLcheckValues(InputStream is) throws TSLArgumentException, TSLParsingException, TSLMalformedException;
+	/**
+	 * Method that builds the TSL data from a input XML. This process overwrites
+	 * the actual information of the object, but if there is some error parsing the XML,
+	 * no data will be changed. When the data is parsed, then is checked if it has
+	 * the correct values as the specification and version requires.
+	 * @param is InputStream Input Stream of the XML (TSL representation).
+	 * @throws TSLArgumentException In case of the input parameter is <code>null</code>.
+	 * @throws TSLParsingException In case of some error parsing the XML input stream.
+	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
+	 */
+	void buildTSLFromXMLcheckValuesCache(InputStream is) throws TSLArgumentException, TSLParsingException, TSLMalformedException;
 
 	/**
 	 * Method that builds the TSL data from a input XML. This process overwrites
@@ -159,7 +170,7 @@ public interface ITSLObject extends Serializable {
 	 * @throws TSLParsingException In case of some error parsing the XML input stream.
 	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
 	 */
-	void buildTSLFromXMLcheckValues(InputStream is, boolean checkSignature) throws TSLArgumentException, TSLParsingException, TSLMalformedException;
+	void buildTSLFromXMLcheckValues(InputStream is, boolean checkSignature, boolean cache) throws TSLArgumentException, TSLParsingException, TSLMalformedException;
 
 	/**
 	 * Method that check that the data of the TSL is correct as the specification and version requires.

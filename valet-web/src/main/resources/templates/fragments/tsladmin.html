@@ -43,6 +43,9 @@ var btnShowMapping =  /*[[#{table.tsl.mapeo.alt}]]*/;
 
 var tbl = $('#tslTable').DataTable({
 	dom: 'Bfrtip',
+	columnDefs: [
+        {className: "text-center", targets: [6]}
+    ],
 	select: 'single',
 	responsive : true,
 	altEditor: true,
@@ -83,7 +86,7 @@ var tbl = $('#tslTable').DataTable({
 		return moment(data).format("DD-MM-YYYY HH:mm");}},
         { "data": "tslCountryRegion.countryRegionCode", "width": "10%", 
         	"render": function(data, type, row){		
-        		return '<button class="c-green-500 ti-list" id="loadMap" onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'></button>';
+        		return '<a onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'>	<span class="c-green-900 ti-list"></span></a>';
         	}
         } 
         ]
@@ -127,7 +130,7 @@ var tbl = $('#tslTable').DataTable({
 						  	$('#tslForm *').filter('span').each(function(){
 								if (i == $(this).attr('id')){
 									$("#" + i).text(val);
-									$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
+									$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
 								}
 							});
 					  })

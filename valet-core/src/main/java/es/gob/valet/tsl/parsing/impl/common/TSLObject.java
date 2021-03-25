@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 24/03/2021.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -30,6 +30,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.w3.x2000.x09.xmldsig.SignatureType;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -51,10 +52,14 @@ import es.gob.valet.tsl.parsing.impl.TSLCheckerFactory;
  * <p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 24/03/2021.
  */
 public class TSLObject implements ITSLObject {
 
+	/**
+	 * Attribute that represents the object that manages the log of the class.
+	 */
+	private static final Logger LOGGER = Logger.getLogger(TSLObject.class);
 	/**
 	 * Constant attribute that represents the serial version UID.
 	 */
@@ -299,7 +304,16 @@ public class TSLObject implements ITSLObject {
 	 */
 	@Override
 	public final void buildTSLFromXMLcheckValues(InputStream isParam) throws TSLArgumentException, TSLParsingException, TSLMalformedException {
-		buildTSLFromXMLcheckValues(isParam, true);
+		buildTSLFromXMLcheckValues(isParam, true, false);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#buildTSLFromXMLcheckValues(java.io.InputStream)
+	 */
+	@Override
+	public final void buildTSLFromXMLcheckValuesCache(InputStream isParam) throws TSLArgumentException, TSLParsingException, TSLMalformedException {
+		buildTSLFromXMLcheckValues(isParam, true, true);
 	}
 
 	/**
@@ -307,7 +321,7 @@ public class TSLObject implements ITSLObject {
 	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#buildTSLFromXMLcheckValues(java.io.InputStream, boolean)
 	 */
 	@Override
-	public final void buildTSLFromXMLcheckValues(InputStream is, boolean checkSignature) throws TSLArgumentException, TSLParsingException, TSLMalformedException {
+	public final void buildTSLFromXMLcheckValues(InputStream is, boolean checkSignature, boolean cache) throws TSLArgumentException, TSLParsingException, TSLMalformedException {
 
 		// Almacenamos una "copia de seguridad" de los actuales datos,
 		// para que en caso de error, los podamos restaurar.
@@ -317,27 +331,39 @@ public class TSLObject implements ITSLObject {
 		List<TrustServiceProvider> backupTrustServiceProviderList = trustServiceProviderList;
 		SignatureType backupSignature = signature;
 		boolean restoreBackup = false;
-
+		String msgError = new String();
+		String countryTSL = new String();
 		try {
 
 			// Construimos la TSL a partir del XML.
 			fullTSLxml = getTSLBuilder().buildTSLFromXML(is);
 			// Comprobamos que los valores establecidos son los correctos.
-			getTSLChecker().checkTSLValues(checkSignature, fullTSLxml);
+			if(schemeInformation != null){
+				countryTSL = schemeInformation.getSchemeTerritory();
+				getTSLChecker().checkTSLValues(checkSignature, fullTSLxml);
+			}
+			
+			
 
 		} catch (TSLParsingException | TSLMalformedException e) {
 			restoreBackup = true;
-			throw e;
+			msgError = Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL266, new Object[] {countryTSL, e.getErrorDescription()});
+			if (!cache) {
+				throw e;
+			}
 		} finally {
 			// Si hubiera que restaurar los datos originales debido a un fallo
 			// en el parseo
 			// o en la comprobación de los valores...
-			if (restoreBackup) {
+			if (restoreBackup && !cache) {
 				tslTag = backupTslTag;
 				tslID = backupTslID;
 				schemeInformation = backupSchemeInformation;
 				trustServiceProviderList = backupTrustServiceProviderList;
 				signature = backupSignature;
+			}
+			if (cache && !UtilsStringChar.isNullOrEmpty(msgError)) {
+				LOGGER.warn(msgError);
 			}
 		}
 
