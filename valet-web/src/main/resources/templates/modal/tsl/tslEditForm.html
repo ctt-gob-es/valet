@@ -202,7 +202,8 @@ function closeUpdateLegDoc() {
 //actualiza el formulario de edición de TSL
 function updateImplFile() {
 	var updateImplFile =  /*[[@{/updateimplfile}]]*/;
-	var idTsl = idTslData;
+	
+	var idTsl = $("#idTslData").val();
 	
 	var formDataEdit = new FormData(document.forms["tslFormEdit"]);
 	$.ajax(updateImplFile, {
