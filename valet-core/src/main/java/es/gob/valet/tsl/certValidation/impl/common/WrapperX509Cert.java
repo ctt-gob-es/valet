@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 22/05/2019.
+ * @version 1.2, 07/04/2021.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -32,6 +32,9 @@ import java.util.List;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
@@ -54,7 +57,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
  * <p>Wrapper class for a X.509v3 Certificate. This class provides methods to
  * calculate/extract some information of the certificate.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 22/05/2019.
+ * @version 1.2, 07/04/2021.
  */
 public class WrapperX509Cert {
 
@@ -137,6 +140,36 @@ public class WrapperX509Cert {
 	 * Constant attribute that represents the identifier to obtain the certificate info: Authority Information Access.
 	 */
 	public static final int INFOCERT_AUTHORITY_INFORMATION_ACCESS = NumberConstants.NUM15;
+
+	/**
+	 * Constant attribute that represents the identifier to obtain the certificate info: Surname.
+	 */
+	public static final int INFOCERT_SURNAME = NumberConstants.NUM16;
+
+	/**
+	 * Constant attribute that represents the identifier to obtain the certificate info: Common Name.
+	 */
+	public static final int INFOCERT_COMMON_NAME = NumberConstants.NUM17;
+
+	/**
+	 * Constant attribute that represents the identifier to obtain the certificate info: Given Name.
+	 */
+	public static final int INFOCERT_GIVEN_NAME = NumberConstants.NUM18;
+
+	/**
+	 * Constant attribute that represents the identifier to obtain the certificate info: Country.
+	 */
+	public static final int INFOCERT_COUNTRY = NumberConstants.NUM19;
+
+	/**
+	 * Constant attribute that represents the identifier to obtain the certificate info: Pseudonym.
+	 */
+	public static final int INFOCERT_PSEUDONYM = NumberConstants.NUM20;
+
+	/**
+	 * Constant attribute that represents the identifier to obtain the certificate info: Serial Number
+	 */
+	public static final int INFOCERT_SUBJECT_SERIAL_NUMBER = NumberConstants.NUM21;
 
 	/**
 	 * Attribute that represents the X.509 Certificate (Java).
@@ -680,12 +713,104 @@ public class WrapperX509Cert {
 			case INFOCERT_AUTHORITY_INFORMATION_ACCESS:
 				result = getExtensionAuthorityInformationAccess();
 				break;
+			case INFOCERT_SURNAME:
+				result = getSurname();
+				break;
+			case INFOCERT_COMMON_NAME:
+				result = getCommonName();
+				break;
+			case INFOCERT_GIVEN_NAME:
+				result = getGivenName();
+				break;
+			case INFOCERT_COUNTRY:
+				result = getCountry();
+				break;
+			case INFOCERT_PSEUDONYM:
+				result = getPseudonym();
+				break;
+			case INFOCERT_SUBJECT_SERIAL_NUMBER:
+				result = getSubjectSerieNumber();
+				break;
 			default:
 				break;
 		}
 
 		return result;
 
+	}
+
+	/**
+	 * Gets the serie number of the certificate.
+	 * @return
+	 */
+	private String getSubjectSerieNumber() {
+		String result = null;
+		if (x509CertBC != null) {
+			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
+			result = IETFUtils.valueToString(x500name.getRDNs(BCStyle.SERIALNUMBER)[0].getFirst().getValue());
+		}
+		return result;
+	}
+
+	/**
+	 * Gets the pseudonym of the certificate.
+	 * @return
+	 */
+	private String getPseudonym() {
+		String result = null;
+		if (x509CertBC != null) {
+			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
+			result = IETFUtils.valueToString(x500name.getRDNs(BCStyle.PSEUDONYM)[0].getFirst().getValue());
+		}
+		return result;
+	}
+
+	/**
+	 * Gets the given name of the certificate.
+	 * @return
+	 */
+	private String getGivenName() {
+		String result = null;
+		if (x509CertBC != null) {
+			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
+			result = IETFUtils.valueToString(x500name.getRDNs(BCStyle.GIVENNAME)[0].getFirst().getValue());
+		}
+		return result;
+	}
+
+	/**
+	 * Gets the common name of the certificate.
+	 * @return
+	 */
+	private String getCommonName() {
+		String result = null;
+		if (x509CertBC != null) {
+			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
+			result = IETFUtils.valueToString(x500name.getRDNs(BCStyle.CN)[0].getFirst().getValue());
+		}
+		return result;
+	}
+
+	/**
+	 * Gets the country of the certificate.
+	 * @return
+	 */
+	private String getCountry() {
+		String result = null;
+		if (x509CertBC != null) {
+			result = UtilsCertificate.getCountryOfTheCertificateString(x509Cert);
+		}
+		return result;
+	}
+
+	private String getSurname() {
+		String result = null;
+		if (x509CertBC != null) {
+			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
+			result = IETFUtils.valueToString(x500name.getRDNs(BCStyle.SURNAME)[0].getFirst().getValue());
+		}
+
+		return result;
 	}
 
 }

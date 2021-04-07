@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 11/03/2019.
+ * @version 1.2, 07/04/2021.
  */
 package es.gob.valet.commons.utils;
 
@@ -44,7 +44,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Utilities class for the use of GrayLog.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 11/03/2019.
+ * @version 1.2, 07/04/2021.
  */
 public final class UtilsGrayLog {
 
@@ -358,7 +358,10 @@ public final class UtilsGrayLog {
 					gm.addField(TOKEN_KEY_MESSAGE, message);
 					gm.addFields(grayLogDeclaredFields);
 					gm.addField(TOKEN_KEY_SOURCE, grayLogSourceHostName);
-					grayLogMessageSender.sendMessage(gm);
+
+					if (grayLogMessageSender != null) {
+						grayLogMessageSender.sendMessage(gm);
+					}
 
 				} else {
 

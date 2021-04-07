@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 24/03/2021.
+ * @version 1.10, 07/04/2021.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 24/03/2021.
+ * @version 1.10, 07/04/2021.
  */
 public interface IWebGeneralMessages {
 
@@ -486,15 +486,47 @@ public interface IWebGeneralMessages {
 	String MAPPING_SIMPLE_EXTENSION_KEYUSAGE = "mapping.simple.extension.KeyUsage";
 
 	/**
-	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.</code> belonging to the
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.CRLDistPoint</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT = "mapping.simple.extension.CRLDistPoint";
 
 	/**
-	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.</code> belonging to the
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.AIA</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String MAPPING_SIMPLE_EXTENSION_AIA = "mapping.simple.extension.AIA";
 
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.general.subject.surname</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME = "mapping.simple.general.subject.surname";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.general.subject.commonName</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME = "mapping.simple.general.subject.commonName";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.extension.ExtendedKeyUsage</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME = "mapping.simple.general.subject.givenName";
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.general.subject.country</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY = "mapping.simple.general.subject.country";
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.general.subject.pseudonym</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM = "mapping.simple.general.subject.pseudonym";
+	/**
+	 * Constant attribute that represents the name of the property <code>mapping.simple.general.subject.serialNumber</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER = "mapping.simple.general.subject.serialNumber";
 }

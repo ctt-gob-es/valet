@@ -78,7 +78,7 @@ $(document).ready(function() {
  			    "iTotalRecords": "totalElements",
 		        "iTotalDisplayRecords": "numberOfElements",
 				"processing": false,
-				"serverSide": true,
+				"serverSide": false,
 				"ajax": {
 			        "url": actionOpenMapping,
 			        "dataSrc" : "data",
@@ -97,13 +97,13 @@ $(document).ready(function() {
 				          }
 				        },
 				        "columns": [
-				        	{ "data": "tslCountryRegion.idTslCountryRegion","visible": false},
+				        	{ "data": "idTslCountryRegionMapping","visible": false},
 					        { "data": "mappingIdentificator",  "width": "35%" },
 					        { "data": "mappingValue",  "width": "35%"}, 
-					        { "data": "associationType.tokenName",  "width": "20%"},
+					        { "data": "associationType",  "width": "20%"},
 					        { "data": "idTslCountryRegionMapping",  "width": "10%",
 					        	"render": function(data, type, row){	
-					        		return '<a class="c-green-700 ti-pencil-alt" id="editMappingTsl"  onclick="editMapping('+data+');" alt='+btnEditMappingAlt+' title='+btnEditMappingAlt+'></a>&nbsp;&nbsp;&nbsp;<a class="c-red-700 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);" alt='+btnDelMappingAlt+' title='+btnDelMappingAlt+'></a>';
+					        		return '<a class="c-green-700 ti-pencil-alt" id="editMappingTsl"  onclick="editMapping('+data+', this);" alt='+btnEditMappingAlt+' title='+btnEditMappingAlt+'></a>&nbsp;&nbsp;&nbsp;<a class="c-red-700 ti-trash" id="deleteMappingTsl"  onclick="deleteConfirmMappingTsl('+data+',this);" alt='+btnDelMappingAlt+' title='+btnDelMappingAlt+'></a>';
 					        		
 					        	}
 					        }
@@ -121,11 +121,14 @@ $(document).ready(function() {
 
 
 //Función para cargar el modal de editar con los valores del mapeo seleccionado
-function editMapping(idTslCountryRegionMapping) {
+function editMapping(idTslCountryRegionMapping, element) {
 	var loadMapping = /*[[@{/loadmappingbyid}]]*/
 	var idCRM= idTslCountryRegionMapping;
+	var index = element.parentNode.parentNode.rowIndex;
+	var indexRow = index -1;
+	
 	$.ajax(loadMapping,{
-		data:$.param({'idTslCountryRegionMapping':idCRM}),
+		data:$.param({'idTslCountryRegionMapping':idCRM, 'rowIndexMapping':indexRow}),
         type:'GET',
         success: function(data){
     		// Se oculta la capa 'cargando...'
@@ -148,7 +151,8 @@ function editMapping(idTslCountryRegionMapping) {
 function deleteConfirmMappingTsl(idTslCountryRegionMapping,  element) {
 	var loadConfirmDelete = /*[[@{/loadconfirmdelete}]]*/
 	var idCRM= idTslCountryRegionMapping;
-	var rowIndex = element.parentNode.parentNode.rowIndex;
+	var index= element.parentNode.parentNode.rowIndex;
+	var rowIndex = index -1;
 	var codCountry =  $("#idCodeCountry").val();
 	$.ajax(loadConfirmDelete,{
 			data:$.param({'idTslCountryRegionMapping':idCRM, 'rowindex':rowIndex, 'codeRegionCountry':codCountry}),

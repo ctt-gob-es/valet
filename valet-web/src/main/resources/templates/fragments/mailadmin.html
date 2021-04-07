@@ -67,7 +67,7 @@ $(document).ready(function() {
 	    "iTotalRecords": "totalElements",
         "iTotalDisplayRecords": "numberOfElements",
 	    
-		"processing": true,
+		"processing": false,
 	    "serverSide": true,
 		"ajax": {
 	        "url": getmails,
@@ -128,7 +128,7 @@ $(document).ready(function() {
 		});
 });	
 
-//Control del botón para guardar un correo
+//Control del botï¿½n para guardar un correo
 $( "#mailBtn" ).click(function( event ) {
 	
   var tblMail = $('#mailTable').DataTable();

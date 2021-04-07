@@ -54,7 +54,7 @@ var tbl = $('#tslTable').DataTable({
 		  {extend: 'selected',text: btnDelTsl,name: 'delete'}],
 	  		"iTotalRecords": "totalElements",
       		"iTotalDisplayRecords": "numberOfElements",
-  			"processing": true,
+  			"processing": false,
     		"serverSide": true,
 			"ajax": {
       			  	"url": getTsls,
@@ -218,7 +218,11 @@ var tbl = $('#tslTable').DataTable({
 
 });	//	
 
-	
+
+//si se selecciona otra TSL se oculta la tabla de mapeo
+tbl.on( 'select', function ( e, dt, type, indexes ) {
+            $("#tableMapping").hide();
+        } );
 
 });// documentReady
 

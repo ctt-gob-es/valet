@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.13, 24/03/2021.
+ * @version 1.14, 07/04/2021.
  */
 package es.gob.valet.rest.controller;
 
@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -47,6 +46,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,21 +59,22 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
+import es.gob.valet.dto.MappingDTO;
+import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
-import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
-import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.tsl.access.TSLManager;
+import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
@@ -81,7 +82,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.13, 24/03/2021.
+ * @version 1.14, 07/04/2021.
  */
 @RestController
 public class TslRestController {
@@ -115,11 +116,6 @@ public class TslRestController {
 	 * Constant that represents the parameter 'idTslCountryRegionMapping'.
 	 */
 	private static final String FIELD_ID_COUNTRY_REGION_MAPPING = "idTslCountryRegionMapping";
-
-	/**
-	 * Constant that represents the parameter 'idTslCountryRegion'.
-	 */
-	private static final String FIELD_ID_COUNTRY_REGION = "idTslCountryRegion";
 
 	/**
 	 * Constant that represents the parameter 'codeCountryRegion'.
@@ -175,6 +171,15 @@ public class TslRestController {
 	 * Constant that represents the key Json 'errorSaveTsl'.
 	 */
 	private static final String KEY_JS_ERROR_SAVE_TSL = "errorSaveTsl";
+	/**
+	 * Constant that represents the key Json 'errorSaveMapping'.
+	 */
+	private static final String KEY_JS_ERROR_SAVE_MAPPING = "errorSaveMapping";
+
+	/**
+	 * Constant that represents the parameter "ASSOCIATION_TYPE01".
+	 */
+	private static final String ASSOCIATION_TYPE_SIMPLE = "ASSOCIATION_TYPE01";
 
 	/**
 	 * Method that maps the list users web requests to the controller and
@@ -468,24 +473,25 @@ public class TslRestController {
 
 			} catch (Exception e) {
 				String msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL, new Object[ ] { e.getMessage() });
-				
+
 				LOGGER.error(msgError);
-				json.put(FIELD_IMPL_TSL_FILE  + "_span",Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL_WEB));
+				json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL_WEB));
 				error = true;
 
 			} finally {
 				UtilsResources.safeCloseInputStream(bais);
 			}
 
-			
 		}
-		
+
 		if (error) {
 			tslForm.setError(json.toString());
 		}
 
 		return tslForm;
 	}
+
+	
 
 	/**
 	 * Method to load the datatable with all the mappings corresponding to the selected TSL .
@@ -494,27 +500,121 @@ public class TslRestController {
 	 */
 	@RequestMapping(path = "/loadmapping", method = RequestMethod.GET)
 	@JsonView(DataTablesOutput.View.class)
-	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> loadMapping(@RequestParam("id") Long idCountryRegion) {
-		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<TslCountryRegionMapping>();
+	public @ResponseBody DataTablesOutput<MappingDTO> loadMappingDTO(@RequestParam("id") Long idCountryRegion) {
+		DataTablesOutput<MappingDTO> dtOutput = new DataTablesOutput<MappingDTO>();
+		List<MappingDTO> listMappingDTO = new ArrayList<MappingDTO>();
 		List<TslCountryRegionMapping> listMapping = new ArrayList<TslCountryRegionMapping>();
 		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
-		Map<Long, String> mapAssociationType = loadAssociationType();
+
 		if (idCountryRegion != null) {
 			// obtenemos todos los mapeos de ese pais
 			listMapping = tslCountryRegionMappingService.getAllMappingByIdCountry(idCountryRegion);
-			List<TslCountryRegionMapping> listMappingLanguage = new ArrayList<TslCountryRegionMapping>();
+
+			List<MappingDTO> listMappingLanguage = new ArrayList<MappingDTO>();
 			for (TslCountryRegionMapping tcrm: listMapping) {
-				CAssociationType cat = tcrm.getAssociationType();
-				cat.setTokenName(mapAssociationType.get(tcrm.getAssociationType().getIdAssociationType()));
-				tcrm.setAssociationType(cat);
-				listMappingLanguage.add(tcrm);
+				MappingDTO mapping = new MappingDTO(tcrm.getIdTslCountryRegionMapping(), tcrm.getTslCountryRegion().getIdTslCountryRegion(), tcrm.getMappingIdentificator(), Language.getResPersistenceConstants(tcrm.getAssociationType().getTokenName()));
+
+				if (tcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE)) {
+					mapping.setMappingValue(getValueMapping(tcrm.getMappingValue()));
+				} else {
+					mapping.setMappingValue(tcrm.getMappingValue());
+				}
+				listMappingLanguage.add(mapping);
 			}
 			dtOutput.setData(listMappingLanguage);
+		} else {
+			dtOutput.setData(listMappingDTO);
 		}
 
-		dtOutput.setData(listMapping);
 		return dtOutput;
 	}
+
+	/**
+	 * 
+	 * @param infoCertCode
+	 * @return
+	 */
+	private String getValueMapping(String infoCertCode) {
+		Integer code = Integer.valueOf(infoCertCode);
+
+		String result = null;
+
+		switch (code) {
+			case WrapperX509Cert.INFOCERT_CERT_VERSION:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_CERTVERSION);
+				break;
+			case WrapperX509Cert.INFOCERT_SUBJECT:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SUBJECT);
+				break;
+			case WrapperX509Cert.INFOCERT_ISSUER:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_ISSUER);
+				break;
+			case WrapperX509Cert.INFOCERT_SERIAL_NUMBER:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SERIALNUMBER);
+				break;
+			case WrapperX509Cert.INFOCERT_SIGALG_NAME:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGNAME);
+				break;
+			case WrapperX509Cert.INFOCERT_SIGALG_OID:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGOID);
+				break;
+			case WrapperX509Cert.INFOCERT_VALID_FROM:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDFROM);
+				break;
+			case WrapperX509Cert.INFOCERT_VALID_TO:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDTO);
+				break;
+			case WrapperX509Cert.INFOCERT_CERTPOL_INFO_OIDS:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CERTPOLINFOOIDS);
+				break;
+			case WrapperX509Cert.INFOCERT_QC_STATEMENTS_OIDS:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATOIDS);
+				break;
+			case WrapperX509Cert.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATEUTYPEOIDS);
+				break;
+			case WrapperX509Cert.INFOCERT_SUBJECT_ALT_NAME:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_SUBJECTALTNAME);
+				break;
+			case WrapperX509Cert.INFOCERT_IS_CA:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_BASICCONSTRAINTISCA);
+				break;
+			case WrapperX509Cert.INFOCERT_KEY_USAGE:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_KEYUSAGE);
+				break;
+			case WrapperX509Cert.INFOCERT_CRL_DISTRIBUTION_POINTS:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT);
+				break;
+			case WrapperX509Cert.INFOCERT_AUTHORITY_INFORMATION_ACCESS:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_AIA);
+				break;
+			case WrapperX509Cert.INFOCERT_SURNAME:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME);
+				break;
+			case WrapperX509Cert.INFOCERT_COMMON_NAME:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME);
+				break;
+			case WrapperX509Cert.INFOCERT_GIVEN_NAME:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME);
+				break;
+			case WrapperX509Cert.INFOCERT_COUNTRY:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY);
+				break;
+			case WrapperX509Cert.INFOCERT_PSEUDONYM:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM);
+				break;
+			case WrapperX509Cert.INFOCERT_SUBJECT_SERIAL_NUMBER:
+				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER);
+				break;
+			default:
+				break;
+		}
+
+		return result;
+
+	}
+
+	
 
 	/**
 	 * Method that creates a new mapping for the indicated TSL.
@@ -529,18 +629,16 @@ public class TslRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/savemappingtsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> saveMappingTsl(@RequestParam(FIELD_CODE_COUNTRY_REGION) String codeCountryRegion, @RequestParam("mappingIdentificator") String mappingIdentificator, @RequestParam("mappingFreeValue") String mappingFreeValue, @RequestParam("mappingSimpleValue") String mappingSimpleValue, @RequestParam("idMappingType") Long idMappingType) throws IOException {
+	public @ResponseBody DataTablesOutput<MappingDTO> saveMappingTsl(@RequestParam(FIELD_CODE_COUNTRY_REGION) String codeCountryRegion, @RequestParam("mappingIdentificator") String mappingIdentificator, @RequestParam("mappingFreeValue") String mappingFreeValue, @RequestParam("mappingSimpleValue") String mappingSimpleValue, @RequestParam("idMappingType") Long idMappingType) throws IOException {
 
-		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<>();
+		DataTablesOutput<MappingDTO> dtOutput = new DataTablesOutput<>();
 
 		boolean error = false;
 
 		JSONObject json = new JSONObject();
-		List<TslCountryRegionMapping> listTslCountryRegionMapping = new ArrayList<TslCountryRegionMapping>();
+		List<MappingDTO> listTslCountryRegionMapping = new ArrayList<MappingDTO>();
 
-		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
-
-		if (mappingIdentificator == null || mappingIdentificator.isEmpty() || mappingIdentificator.length() != mappingIdentificator.trim().length()) {
+		if (mappingIdentificator == null || mappingIdentificator.isEmpty()) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
 			json.put(FIELD_MAPPING_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
 			error = true;
@@ -576,13 +674,19 @@ public class TslRestController {
 
 				TslCountryRegionMapping tslCRMNew = TSLManager.getInstance().addNewMappingToCountryRegion(codeCountryRegion, mappingIdentificator, null, mappingValue, idMappingType);
 
+				MappingDTO mapping = new MappingDTO(tslCRMNew.getIdTslCountryRegionMapping(), tslCRMNew.getTslCountryRegion().getIdTslCountryRegion(), mappingIdentificator, Language.getResPersistenceConstants(tslCRMNew.getAssociationType().getTokenName()));
+				if (tslCRMNew.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE)) {
+					mapping.setMappingValue(getValueMapping(tslCRMNew.getMappingValue()));
+				} else {
+					mapping.setMappingValue(tslCRMNew.getMappingValue());
+				}
 				// lo añade a una lista de Mapeos
-				listTslCountryRegionMapping.add(tslCRMNew);
+				listTslCountryRegionMapping.add(mapping);
 				dtOutput.setData(listTslCountryRegionMapping);
 
 			} else {
-				TSLCountryRegionCacheObject tslcrco = TSLManager.getInstance().getTSLCountryRegionCacheObject(codeCountryRegion);
-				listTslCountryRegionMapping = StreamSupport.stream(tslCountryRegionMappingService.getAllMappingByIdCountry(tslcrco.getCountryRegionId()).spliterator(), false).collect(Collectors.toList());
+				List<MappingDTO> listMappingOld = getListMappingDTOByCountryRegion(codeCountryRegion);
+				listTslCountryRegionMapping = StreamSupport.stream(listMappingOld.spliterator(), false).collect(Collectors.toList());
 				dtOutput.setError(json.toString());
 			}
 		} catch (Exception e) {
@@ -590,6 +694,35 @@ public class TslRestController {
 		}
 		dtOutput.setData(listTslCountryRegionMapping);
 		return dtOutput;
+	}
+
+	/**
+	 * Method that obtains the list of maps by country or region code.
+	 * 
+	 * @param codeCountryRegion Country or region code.
+	 * @return List of mappings associated with the indicated country / region. If an error occurs, it returns the empty list.
+	 * @throws TSLManagingException If de method fails.
+	 */
+
+	private List<MappingDTO> getListMappingDTOByCountryRegion(String codeCountryRegion) throws TSLManagingException {
+		ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
+
+		List<MappingDTO> listMapping = new ArrayList<MappingDTO>();
+
+		TSLCountryRegionCacheObject tslcrco = TSLManager.getInstance().getTSLCountryRegionCacheObject(codeCountryRegion);
+		List<TslCountryRegionMapping> listTslCountryRegionMappingOld = tslCountryRegionMappingService.getAllMappingByIdCountry(tslcrco.getCountryRegionId());
+
+		for (TslCountryRegionMapping tslcrm: listTslCountryRegionMappingOld) {
+			MappingDTO mappingDto = new MappingDTO(tslcrm.getIdTslCountryRegionMapping(), tslcrm.getTslCountryRegion().getIdTslCountryRegion(), tslcrm.getMappingIdentificator(), Language.getResPersistenceConstants(tslcrm.getAssociationType().getTokenName()));
+			if (tslcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE)) {
+				mappingDto.setMappingValue(getValueMapping(tslcrm.getMappingValue()));
+			} else {
+				mappingDto.setMappingValue(tslcrm.getMappingValue());
+			}
+			listMapping.add(mappingDto);
+		}
+
+		return listMapping;
 	}
 
 	/**
@@ -602,55 +735,56 @@ public class TslRestController {
 	 * @param idMappingType Parameter that represents the type of association.
 	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
 	 * @throws IOException If the method fails.
+	 * @throws TSLManagingException 
 	 */
 	@JsonView(DataTablesOutput.View.class)
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/modifymappingtsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody DataTablesOutput<TslCountryRegionMapping> modifyMappingTsl(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam(FIELD_ID_COUNTRY_REGION) Long idTslCountryRegion, @RequestParam("mappingIdentificator") String mappingIdentificator, @RequestParam("mappingFreeValue") String mappingFreeValue, @RequestParam("mappingSimpleValue") String mappingSimpleValue, @RequestParam("idMappingType") Long idMappingType) throws IOException {
-
-		DataTablesOutput<TslCountryRegionMapping> dtOutput = new DataTablesOutput<>();
+	@RequestMapping(value = "/modifymappingtsl", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody DataTablesOutput<MappingDTO> modifyMappingTsl(@RequestBody MappingTslForm mappingTslForm) throws IOException, TSLManagingException {
+		DataTablesOutput<MappingDTO> dtOutput = new DataTablesOutput<>();
 		boolean error = false;
 		JSONObject json = new JSONObject();
-		List<TslCountryRegionMapping> listTslCountryRegionMapping = new ArrayList<TslCountryRegionMapping>();
-
-		String mappingValue = null;
-		if (idMappingType != null) {
-			if (idMappingType.equals(IAssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION)) {
-				mappingValue = mappingSimpleValue;
-			} else if (idMappingType.equals(IAssociationTypeIdConstants.ID_FREE_ASSOCIATION)) {
-				mappingValue = mappingFreeValue;
+		List<MappingDTO> listTslCountryRegionMapping = new ArrayList<MappingDTO>();
+		TslCountryRegionMapping tslCRMNew = null;
+		try {
+			String mappingValue = null;
+			if (mappingTslForm.getIdMappingType() != null) {
+				if (mappingTslForm.getIdMappingType().equals(IAssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION)) {
+					mappingValue = mappingTslForm.getMappingSimpleValue();
+				} else if (mappingTslForm.getIdMappingType().equals(IAssociationTypeIdConstants.ID_FREE_ASSOCIATION)) {
+					mappingValue = mappingTslForm.getMappingFreeValue();
+				}
 			}
-		}
 
-		if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
-			json.put(FIELD_MAPPING_VALUE + "_spanEdit", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
-			error = true;
-		}
+			if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
+				json.put(FIELD_MAPPING_VALUE + "_spanEdit", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
+				error = true;
+			}
 
-		if (idTslCountryRegionMapping == null) {
-			error = true;
+			if (mappingTslForm.getIdTslCountryRegionMapping() == null) {
+				error = true;
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_MAPPING));
+			}
+
+			if (!error) {
+				tslCRMNew = TSLManager.getInstance().updateTSLCountryRegionMapping(mappingTslForm.getIdTslCountryRegionMapping(), mappingTslForm.getMappingIdentificator(), null, mappingValue, mappingTslForm.getIdMappingType());
+				// se actualiza la lista de mapeo
+				listTslCountryRegionMapping = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
+				dtOutput.setData(listTslCountryRegionMapping);
+
+			} else {
+				List<MappingDTO> listTslCountryRegionMappingOld = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());	
+				listTslCountryRegionMapping = StreamSupport.stream(listTslCountryRegionMappingOld.spliterator(), false).collect(Collectors.toList());
+				dtOutput.setError(json.toString());
+
+			}
+		} catch (Exception e) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_MAPPING));
-		}
-
-		if (!error) {
-			TslCountryRegionMapping tslCRMNew;
-			try {
-				tslCRMNew = TSLManager.getInstance().updateTSLCountryRegionMapping(idTslCountryRegionMapping, mappingIdentificator, null, mappingValue, idMappingType);
-				// lo añade a una lista de Mapeos
-				listTslCountryRegionMapping.add(tslCRMNew);
-			} catch (TSLManagingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		} else {
-			ITslCountryRegionMappingService tslCountryRegionMappingService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService();
-			listTslCountryRegionMapping = StreamSupport.stream(tslCountryRegionMappingService.getAllMappingByIdCountry(idTslCountryRegion).spliterator(), false).collect(Collectors.toList());
+			json.put(KEY_JS_ERROR_SAVE_MAPPING, Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_MAPPING));
+			listTslCountryRegionMapping = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
 			dtOutput.setError(json.toString());
 		}
-
-		dtOutput.setData(listTslCountryRegionMapping);
+	
 		return dtOutput;
 	}
 
@@ -694,20 +828,5 @@ public class TslRestController {
 		return index;
 	}
 
-	/**
-	 * Method to load the types of associations in the table by applying multi-language.
-	 * @return Map that contains the types of associations with multi-language.
-	 */
-	private Map<Long, String> loadAssociationType() {
-		Map<Long, String> mapAssociationType = new HashMap<Long, String>();
-		// obtenemos los tipos de planificadores.
-		ICAssociationTypeService cAssociationTypeService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCAssociationTypeService();
-		List<CAssociationType> listCAssociationType = cAssociationTypeService.getAllAssociationType();
-		for (CAssociationType associationType: listCAssociationType) {
-			mapAssociationType.put(associationType.getIdAssociationType(), Language.getResPersistenceConstants(associationType.getTokenName()));
-		}
-		return mapAssociationType;
-
-	}
 
 }

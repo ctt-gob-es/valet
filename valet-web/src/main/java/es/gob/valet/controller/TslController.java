@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.11, 24/03/2021.
+ * @version 1.12, 07/04/2021.
  */
 package es.gob.valet.controller;
 
@@ -59,7 +59,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.11, 24/03/2021.
+ *  @version 1.12, 07/04/2021.
  */
 @Controller
 public class TslController {
@@ -73,6 +73,11 @@ public class TslController {
 	 * Constant that represents the parameter 'idTslCountryRegionMapping'.
 	 */
 	private static final String FIELD_ID_COUNTRY_REGION_MAPPING = "idTslCountryRegionMapping";
+
+	/**
+	 * Constant that represents the parameter 'rowIndexMapping'.
+	 */
+	private static final String FIELD_ROW_INDEX_MAPPING = "rowIndexMapping";
 	/**
 	 * Constant that represents the extension XML.
 	 */
@@ -159,7 +164,7 @@ public class TslController {
 				String filenameTSL = tslcrco.getCode() + "-" + tsldco.getSequenceNumber() + EXTENSION_XML;
 				tslForm.setAlias(filenameTSL);
 			}
-			
+
 		} catch (TSLManagingException e) {
 			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_LOAD_EDIT_TSL, new Object[ ] { e.getMessage() }));
 		}
@@ -209,7 +214,7 @@ public class TslController {
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "/loadmappingbyid", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public String loadMappingById(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, Model model) {
+	public String loadMappingById(@RequestParam(FIELD_ID_COUNTRY_REGION_MAPPING) Long idTslCountryRegionMapping, @RequestParam(FIELD_ROW_INDEX_MAPPING) String rowIndexMapping, Model model) {
 		// TSLCountryRegionMappingCacheObject tslcrmco;
 		MappingTslForm mappingTslForm = new MappingTslForm();
 		TslCountryRegionMapping tslcrmco = ManagerPersistenceConfigurationServices.getInstance().getTslCountryRegionMappingService().getTslCountryRegionMappingById(idTslCountryRegionMapping);
@@ -228,7 +233,8 @@ public class TslController {
 			mappingTslForm.setMappingSimpleValue(tslcrmco.getMappingValue());
 		}
 		mappingTslForm.setIdTslCountryRegion(tslcrmco.getTslCountryRegion().getIdTslCountryRegion());
-
+		mappingTslForm.setCodeCountryRegion(tslcrmco.getTslCountryRegion().getCountryRegionCode());
+		mappingTslForm.setRowIndexMapping(rowIndexMapping);
 		// se cargan los tipos de asociaciones
 		List<ConstantsForm> associationTypes = loadAssociationType();
 		model.addAttribute("listTypes", associationTypes);
@@ -307,6 +313,12 @@ public class TslController {
 		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_CERT_VERSION).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_CERTVERSION)));
 		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SUBJECT).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SUBJECT)));
 		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_ISSUER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_ISSUER)));
+		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_COMMON_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME)));
+		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_GIVEN_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME)));
+		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SURNAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME)));
+		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_COUNTRY).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY)));
+		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SUBJECT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER)));
+		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_PSEUDONYM).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM)));
 		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SERIALNUMBER)));
 		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SIGALG_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGNAME)));
 		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SIGALG_OID).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGOID)));
@@ -320,6 +332,7 @@ public class TslController {
 		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_KEY_USAGE).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_KEYUSAGE)));
 		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_CRL_DISTRIBUTION_POINTS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT)));
 		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_AUTHORITY_INFORMATION_ACCESS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_AIA)));
+		
 
 		return result;
 
