@@ -72,4 +72,15 @@ public class WebAdminController {
 		model.addAttribute("listkeystore", listKeystores);
 		return "inicio.html";
 	}
+	
+	/**
+	 * Method that maps the invalid session request.
+	* @param model Holder object for model attributes.
+	 * @return String that represents the name of the view to forward.
+	 */
+	@RequestMapping(value = "invalidSession")
+	public String invalid(Model model) {
+		return "invalidSession.html";
+	}
+
 }

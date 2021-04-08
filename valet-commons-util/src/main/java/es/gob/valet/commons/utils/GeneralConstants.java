@@ -45,5 +45,10 @@ public interface GeneralConstants {
 	 * Constant attribute that represents the number to identify the planner type by date.
 	 */
 	Long PLANNING_TYPE_DATE = 2L;
+	
+	/**
+	 * Constant attribute that represents the Afirma Logger name.
+	 */
+	public static final String LOGGER_NAME_AFIRMA_LOG = "Afirma-Server";
 
 }

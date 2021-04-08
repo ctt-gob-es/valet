@@ -24,6 +24,7 @@
  */
 package es.gob.valet.spring.config;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,6 +33,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import es.gob.valet.commons.utils.GeneralConstants;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.service.impl.UserDetailServiceImpl;
 
 /** 
@@ -43,10 +47,21 @@ import es.gob.valet.service.impl.UserDetailServiceImpl;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	/**
+	 * Attribute that represents the object that manages the log of the class.
+	 */
+	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_AFIRMA_LOG);
+
+	
+	/**
 	 * Attribute that represents the injected service for user authentication. 
 	 */
 	@Autowired
     private UserDetailServiceImpl userDetailsService;
+	
+	/**
+	 * Constant that represents the name of the cookie for session tracking. 
+	 */
+	public static final String SESSION_TRACKING_COOKIE_NAME = "JSESSIONID";
 	
 	/**
 	 * {@inheritDoc}
@@ -54,36 +69,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	 */
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
-        
+		try { 
       http
         .authorizeRequests()
-        	.antMatchers("/css/**", "/images/**", "/js/**", "/fonts/**", "/fonts/icons/themify/**", "/fonts/fontawesome/**", "/less/**")
-        	.permitAll() // Enable css, images and js when logged out
-        	.and()
+        .antMatchers("/css/**", "/images/**", "/js/**", "/fonts/**", "/fonts/icons/themify/**", "/fonts/fontawesome/**", "/less/**", "/invalidSession")
+        .permitAll() // Enable css, images and js when logged out
+        .and()
         .authorizeRequests()
-          	.antMatchers("/", "add", "delete/{id}", "edit/{id}", "save", "users")
-            .permitAll()
-            .anyRequest()
-            .authenticated()
-            .and()
+        .antMatchers("/", "add", "delete/{id}", "edit/{id}", "save", "users")
+        .permitAll()
+        .anyRequest()
+        .authenticated()
+        .and()
         .formLogin()
-            .loginPage("/")
-            .defaultSuccessUrl("/inicio")
-            .permitAll()
-            .and()
-        .logout()
-            .permitAll()
-            .and()
+        .loginPage("/")
+        .defaultSuccessUrl("/inicio")
+        .permitAll()
+        .and()
+        .logout().invalidateHttpSession(false).deleteCookies(SESSION_TRACKING_COOKIE_NAME).clearAuthentication(true).logoutSuccessUrl("/")
+        .permitAll()
+        .and()
         .httpBasic()
-        	.and()
+       	.and()
         .csrf()
-        	.disable()			//Disable CSRF
+        .disable()			//Disable CSRF
         .sessionManagement()
-	        .sessionFixation().migrateSession()
-	    	.maximumSessions(1)
-	    	.maxSessionsPreventsLogin(false)
-	    	.expiredUrl("/login.html"); 
-
+	    .sessionFixation().migrateSession()
+	  	.maximumSessions(1)
+	   	.maxSessionsPreventsLogin(false)
+	   	.expiredUrl("/") 
+	   	.and()
+		.invalidSessionUrl("/invalidSession");
+		} catch (Exception e) {
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_WEB_SECURITY_001));
+		}
     }
        
     /**

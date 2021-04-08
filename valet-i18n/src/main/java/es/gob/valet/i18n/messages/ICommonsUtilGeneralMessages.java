@@ -206,6 +206,11 @@ public interface ICommonsUtilGeneralMessages {
 	 * file messages/valet-commons-util/general_xx_YY.properties.
 	 */
 	String UTILS_GRAYLOG_007 = "UTILS_GRAYLOG_007";
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_GRAYLOG_008</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_GRAYLOG_008 = "UTILS_GRAYLOG_008";
 
 	/**
 	 * Constant attribute that represents the property key <code>UTILS_LDAP_000</code> belonging to the

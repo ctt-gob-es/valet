@@ -182,7 +182,7 @@ public final class UtilsGrayLog {
 			loadGrayLogDeclaredFields();
 			loadGrayLogSourceHostName();
 
-			if (initializationError) {
+			if (!initializationError) {
 				grayLogEnabled = false;
 				LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_004));
 			} else {
@@ -361,6 +361,8 @@ public final class UtilsGrayLog {
 
 					if (grayLogMessageSender != null) {
 						grayLogMessageSender.sendMessage(gm);
+					}else{
+						LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_008));
 					}
 
 				} else {

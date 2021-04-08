@@ -33,6 +33,11 @@ package es.gob.valet.i18n.messages;
  */
 public interface IWebGeneralMessages {
 
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorWebSecurity001</code> belonging to the file messages/webAdmin/afirma_xx_YY.properties.
+	 */
+	String ERROR_WEB_SECURITY_001 = "errorWebSecurity001";
 	/**
 	 * Constant attribute that represents the name of the property <code>errorNotNullFileImplTsl</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
