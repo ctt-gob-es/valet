@@ -83,7 +83,13 @@ var tbl = $('#tslTable').DataTable({
         { "data": "issueDate","width": "25%", "render": function(data, type, row){
 		return moment(data).format("DD-MM-YYYY HH:mm");}},
         { "data": "expirationDate", "width": "25%", "render": function(data, type, row){
-		return moment(data).format("DD-MM-YYYY HH:mm");}},
+        	if(data != null){
+        		return moment(data).format("DD-MM-YYYY HH:mm");} else {
+			return '<p></p>';
+				}
+				}
+        	},
+		
         { "data": "tslCountryRegion.countryRegionCode", "width": "10%", 
         	"render": function(data, type, row){		
         		return '<a onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'>	<span class="c-green-900 ti-list"></span></a>';

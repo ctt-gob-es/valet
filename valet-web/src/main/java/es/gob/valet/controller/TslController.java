@@ -151,7 +151,10 @@ public class TslController {
 				tslForm.setTslResponsible(TSLManager.getInstance().getTSLSchemeOperatorName(idTslData));
 				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 				tslForm.setIssueDate(sdf.format(tsldco.getIssueDate()));
-				tslForm.setExpirationDate(sdf.format(tsldco.getNextUpdateDate()));
+				if(tsldco.getNextUpdateDate() != null){
+					tslForm.setExpirationDate(sdf.format(tsldco.getNextUpdateDate()));
+				}
+				
 
 				if (TSLManager.getInstance().getTSLLegibleDocument(idTslData) != null) {
 					tslForm.setIsLegible(true);
