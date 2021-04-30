@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 06/02/2019.
+ * @version 1.5, 18/04/2021.
  */
 package es.gob.valet.rest.client;
 
@@ -28,6 +28,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +42,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
+import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
@@ -52,7 +54,7 @@ import es.gob.valet.rest.services.ITslRestService;
 /**
  * <p>Class that implements a client for Valet rest services.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 06/02/2019.
+ * @version 1.6, 18/04/2021.
  */
 public class ValetClient {
 
@@ -126,8 +128,28 @@ public class ValetClient {
 				}
 			}
 
+			//Parche realizado al haber problema cuando se envia una url en un servicio rest, se comprueba si tslLocation viene entre comillas, de no ser así se les añade y se codifica Base64
+			String tslLocationB4 = null;
+			
+			if(!UtilsStringChar.isNullOrEmpty(tslLocation)){
+				String tslLocationTmp = tslLocation;
+				String quotes = "\"";
+				//se comprueba si tiene comillas, sino las tiene se le incluye
+				if(!tslLocation.startsWith(quotes)){
+					tslLocationTmp = quotes+tslLocationTmp;
+				}
+				if(!tslLocation.endsWith(quotes)){
+					tslLocationTmp = tslLocationTmp+quotes;
+				}
+				
+				tslLocationB4 =Base64.getEncoder().encodeToString(tslLocationTmp.getBytes());
+			}
+			
+			
+					
+			
 			try {
-				response = restService.detectCertInTslInfoAndValidation(application, delegatedApp, tslLocation, new ByteArrayB64(certByteArray), dateString, getInfo, checkRevStatus, returnRevocationEvidence, crlsByteArrayB64List, basicOcspResponsesByteArrayB64List);
+				response = restService.detectCertInTslInfoAndValidation(application, delegatedApp, tslLocationB4, new ByteArrayB64(certByteArray), dateString, getInfo, checkRevStatus, returnRevocationEvidence, crlsByteArrayB64List, basicOcspResponsesByteArrayB64List);
 			} catch (ProcessingException e) {
 				if (e.getCause().getClass().equals(UnknownHostException.class)) {
 					throw new ValetRestUnknownHostException(IValetException.COD_193, "Error trying to connect to Valet rest services. Unknown host. The address of the host could not be determined.");
@@ -169,7 +191,27 @@ public class ValetClient {
 
 			try {
 				if (restService != null) {
-					response = restService.getTslInformation(application, delegatedApp, countryRegionCode, tslLocation, getTslXmlData);
+					
+					//Parche realizado al haber problema cuando se envia una url en un servicio rest, se comprueba si tslLocation viene entre comillas, de no ser así se les añade y se codifica Base64
+					String tslLocationB4 = null;
+					
+					if(!UtilsStringChar.isNullOrEmpty(tslLocation)){
+						String tslLocationTmp = tslLocation;
+						String quotes = "\"";
+						//se comprueba si tiene comillas, sino las tiene se le incluye
+						if(!tslLocation.startsWith(quotes)){
+							tslLocationTmp = quotes+tslLocationTmp;
+						}
+						if(!tslLocation.endsWith(quotes)){
+							tslLocationTmp = tslLocationTmp+quotes;
+						}
+						
+						tslLocationB4 =Base64.getEncoder().encodeToString(tslLocationTmp.getBytes());
+					}
+					
+						
+					
+					response = restService.getTslInformation(application, delegatedApp, countryRegionCode, tslLocationB4, getTslXmlData);
 				}
 			} catch (ProcessingException e) {
 				if (e.getCause().getClass().equals(UnknownHostException.class)) {

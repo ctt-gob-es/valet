@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.14, 17/12/2020.
+ * @version 1.15, 18/04/2021.
  */
 package es.gob.valet.rest.services;
 
@@ -31,6 +31,7 @@ import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -89,7 +90,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.14, 17/12/2020.
+ * @version 1.15, 18/04/2021.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -116,7 +117,7 @@ public class TslRestService implements ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocation, @FormParam(PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List) throws ValetRestException {
+	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List) throws ValetRestException {
 		// CHECKSTYLE:ON
 
 		// Añadimos la información NDC al log y obtenemos un número único
@@ -131,6 +132,19 @@ public class TslRestService implements ITslRestService {
 		int numCRLs = crlsByteArrayB64List == null ? 0 : crlsByteArrayB64List.size();
 		int numOCSPs = basicOcspResponsesByteArrayB64List == null ? 0 : basicOcspResponsesByteArrayB64List.size();
 
+
+		// tslLocation si no es nulo o vacío viene codificado en Base64, se
+		// decodifica.
+		String tslLocation = null;
+		if (!UtilsStringChar.isNullOrEmpty(tslLocationB64)) {
+
+			// se decodifica
+			byte[ ] tslLocationBytes = Base64.getDecoder().decode(tslLocationB64);
+			String tslLocationTmp = new String(tslLocationBytes);
+			tslLocation = tslLocationTmp.replace("\"", "");
+
+		}
+		
 		// Indicamos la recepción del servicio junto con los parámetros de
 		// entrada.
 		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG001, new Object[ ] { application, delegatedAppAux, tslLocation, certByteArrayB64, detectionDate, getInfo, checkRevStatus, returnRevocationEvidence, numCRLs, numOCSPs }));
@@ -890,7 +904,7 @@ public class TslRestService implements ITslRestService {
 	@Path("/getTslInformation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public TslInformationResponse getTslInformation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_COUNTRY_REGION_CODE) final String countryRegionCode, @FormParam(PARAM_TSL_LOCATION) final String tslLocation, @FormParam(PARAM_GET_TSL_XML_DATA) final Boolean getTslXmlData) throws ValetRestException {
+	public TslInformationResponse getTslInformation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_COUNTRY_REGION_CODE) final String countryRegionCode, @FormParam(PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(PARAM_GET_TSL_XML_DATA) final Boolean getTslXmlData) throws ValetRestException {
 		// CHECKSTYLE:ON
 
 		// Generamos el identificador de transacción.
@@ -900,6 +914,18 @@ public class TslRestService implements ITslRestService {
 		// token 'NOT_SPECIFIED'.
 		String delegatedAppAux = delegatedApp == null ? IEventsCollectorConstants.FIELD_VALUE_DELAPPID_NOTSPECIFIED : delegatedApp;
 
+		// tslLocation si no es nulo o vacío viene codificado en Base64, se
+		// decodifica.
+		String tslLocation = null;
+		if (!UtilsStringChar.isNullOrEmpty(tslLocationB64)) {
+
+			// se decodifica
+			byte[ ] tslLocationBytes = Base64.getDecoder().decode(tslLocationB64);
+			String tslLocationTmp = new String(tslLocationBytes);
+			tslLocation = tslLocationTmp.replace("\"", "");
+
+		}
+		
 		// Indicamos la recepción del servicio junto con los parámetros de
 		// entrada.
 		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG002, new Object[ ] { application, delegatedAppAux, countryRegionCode, tslLocation, getTslXmlData }));
@@ -1050,6 +1076,8 @@ public class TslRestService implements ITslRestService {
 		// En función de si tenemos el código de región/país o
 		// el TSLLocation, buscamos la TSL.
 		TSLDataCacheObject tsldco = null;
+
+	
 		if (UtilsStringChar.isNullOrEmptyTrim(countryRegionCode)) {
 			CommonsTslAuditTraces.addTslLocationOperationTrace(auditTransNumber, tslLocation, getTslXmlData);
 			tsldco = TSLManager.getInstance().getTSLDataFromTSLLocation(tslLocation);
