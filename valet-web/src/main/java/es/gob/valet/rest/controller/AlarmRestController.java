@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 24/01/2019.
+ * @version 1.4, 25/05/2021.
  */
 package es.gob.valet.rest.controller;
 
@@ -64,7 +64,7 @@ import es.gob.valet.rest.exception.OrderedValidation;
  * <p>Class that manages the REST requests related to the Alarms administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 24/01/2019.
+ * @version 1.4, 25/05/2021.
  */
 @RestController
 public class AlarmRestController {
@@ -124,7 +124,8 @@ public class AlarmRestController {
 				alarm = alarmService.getAlarmById(alarmForm.getIdAlarm());
 				alarm.setIdAlarm(alarmForm.getIdAlarm());
 				alarm.setTimeBlock(alarmForm.getTimeBlock());
-				alarm.setActive(alarmForm.getActive());
+				boolean active = alarmForm.getActive() == null? Boolean.FALSE : Boolean.TRUE;
+				alarm.setActive(active);
 				List<Mail> mails = splitMails(alarmForm.getMailsConcat());
 				alarm.setMails(mails);
 

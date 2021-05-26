@@ -147,7 +147,7 @@ $(document).ready(function() {
         		} else if (data == true){
 					return 'Si';
 				} else {
-					return '';
+					return 'No';
 				}
 	          }
 			},
@@ -214,7 +214,6 @@ $( "#alarmBtn" ).click(function( event ) {
 	  
 	  var formData = JSON.stringify($("#newAlarmForm").serializeJSON());
 	  var url = /*[[@{/savealarm}]]*/;
-	  
 	  loading();
 	  if ($('#newAlarmForm')[0].checkValidity() === false) {
 		  hide();

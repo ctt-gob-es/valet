@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.15, 18/04/2021.
+ * @version 1.16, 25/05/2021.
  */
 package es.gob.valet.rest.services;
 
@@ -90,7 +90,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.15, 18/04/2021.
+ * @version 1.16, 25/05/2021.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -155,8 +155,9 @@ public class TslRestService implements ITslRestService {
 		// Creamos el objeto que representa la respuesta.
 		DetectCertInTslInfoAndValidationResponse result = null;
 
+		
 		// Comprobamos los parámetros obligatorios de entrada.
-		String resultCheckParams = checkParamsDetectCertInTslInfoAndValidationResponse(application, certByteArrayB64.getByteArray(), getInfo, checkRevStatus, returnRevocationEvidence);
+		String resultCheckParams = checkParamsDetectCertInTslInfoAndValidationResponse(application, certByteArrayB64, getInfo, checkRevStatus, returnRevocationEvidence);
 		if (resultCheckParams != null) {
 			allIsOk = false;
 			LOGGER.error(resultCheckParams);
@@ -415,7 +416,7 @@ public class TslRestService implements ITslRestService {
 	 * @param returnRevoEvid Flag that indicates if it is necessary to return the revocation evidence (only if {@code checkRevocationStatus} is <code>true</code>).
 	 * @return {@link String} with the parameter that not are correctly defined, otherwise <code>null</code>.
 	 */
-	private String checkParamsDetectCertInTslInfoAndValidationResponse(final String application, final byte[ ] certByteArray, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevoEvid) {
+	private String checkParamsDetectCertInTslInfoAndValidationResponse(final String application, final ByteArrayB64 certByteArray, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevoEvid) {
 
 		StringBuffer result = new StringBuffer();
 		result.append(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG003, new Object[ ] { ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }));
