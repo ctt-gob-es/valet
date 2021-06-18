@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 18/04/2021.
+ * @version 1.6, 07/06/2021.
  */
 package es.gob.valet.rest.client;
 
@@ -47,6 +47,7 @@ import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.TslInformationResponse;
+import es.gob.valet.rest.elements.TslInformationVersionsResponse;
 import es.gob.valet.rest.elements.json.ByteArrayB64;
 import es.gob.valet.rest.elements.json.DateString;
 import es.gob.valet.rest.services.ITslRestService;
@@ -54,7 +55,7 @@ import es.gob.valet.rest.services.ITslRestService;
 /**
  * <p>Class that implements a client for Valet rest services.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 18/04/2021.
+ * @version 1.7, 07/06/2021.
  */
 public class ValetClient {
 
@@ -235,5 +236,45 @@ public class ValetClient {
 
 		return response;
 	}
+	
+	/**
+	 * Method that returns the versions of the TSLs registered in valET.
+	 * @return Structure with a map that relates the TSL with the registered version.
+	 * @throws throws TSLManagingException If some error is produced in the execution of the service.
+	 */
+	public TslInformationVersionsResponse getTslInfoVersions() throws ValetRestException {
+		LOGGER.info("Starting call to \'getTslInfoVersions\' method at Valet rest service.");
+
+		TslInformationVersionsResponse response = null;
+		if (restService != null) {
+
+			try {
+				if (restService != null) {
+
+					response = restService.getTslInfoVersions();
+				}
+			} catch (ProcessingException e) {
+				if (e.getCause().getClass().equals(UnknownHostException.class)) {
+					throw new ValetRestUnknownHostException(IValetException.COD_193, "Error trying to connect to Valet rest services. Unknown host. The address of the host could not be determined.");
+				} else if (e.getCause().getClass().equals(SocketTimeoutException.class)) {
+					throw new ValetRestTimeoutException(IValetException.COD_194, "Error trying to connect to Valet rest services. Network connection timeout. The service didn't response after seconds configured as 'timeout'.");
+				} else if (e.getCause().getClass().equals(ConnectException.class)) {
+					throw new ValetRestConnectionRefusedException(IValetException.COD_195, "Error trying to connect to Valet rest services. Connection refused. Error occurred while attempting to connect a socket to a remote address and port.");
+				} else {
+					// If child exception of ProcessingException is unknown
+					throw new ValetRestException(IValetException.COD_196, "Error trying to connect to Valet rest services. Connection no available. There are internal processing errors on the server.");
+				}
+			} catch (NotFoundException e) {
+				throw new ValetRestHostNotFoundException(IValetException.COD_197, "Error trying to connect to Valet rest services. Not found. The resource requested by client was not found on the server.");
+			} catch (Exception e) {
+				throw new ValetRestException(IValetException.COD_198, "Error trying to connect to Valet rest services. Connection no available.", e);
+			}
+		} else {
+			System.out.println("Conexión no válida");
+		}
+
+		return response;
+	}
+
 
 }

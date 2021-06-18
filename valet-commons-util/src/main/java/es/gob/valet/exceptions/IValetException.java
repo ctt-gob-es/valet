@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 18/02/2019.
+ * @version 1.6, 07/06/2021.
  */
 package es.gob.valet.exceptions;
 
@@ -29,7 +29,7 @@ package es.gob.valet.exceptions;
  * <p>Interface defining constants codes accepted for
  * the exceptions on the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 18/02/2019.
+ * @version 1.6, 07/06/2021.
  */
 public interface IValetException {
 
@@ -314,5 +314,8 @@ public interface IValetException {
 
 	/** Constant attribute that represents the error code: Audit trace error. */
 	String COD_202 = "COD_202";
+
+	/** Constant attribute that represents the error code: Error getting the list of versions of the enabled TSLs.	*/
+	String COD_203 = "COD_203";
 
 }

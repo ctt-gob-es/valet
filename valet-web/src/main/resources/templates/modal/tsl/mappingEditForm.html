@@ -22,6 +22,7 @@
 						th:field="*{idTslCountryRegionMapping}"></input> <input
 						type='hidden' id="idCountryRegionEd"
 						th:field="*{idTslCountryRegion}"></input>
+						<input type='hidden' id="indexRowMapping" th:field="*{rowIndexMapping}" />
 
 					<div class="form-group col-md-4">
 						<label for="idMappingType" th:text="#{form.newMapping.type}"></label>
@@ -88,7 +89,8 @@ function showMappingTypeValueField() {
 }
 //método para editar mapeo
 function modifyMapping() {
-var index =  $("#indexRow").val();
+
+var index =  $("#indexRowMapping").val();
 	var actionSaveMapping = /*[[@{/modifymappingtsl}]]*/;
 	var formDataMapping =JSON.stringify($("#mappingTslEditForm").serializeJSON());
 	var tblMapping = $('#mappingTable').DataTable();
@@ -98,6 +100,7 @@ var index =  $("#indexRow").val();
 		 contentType:"application/json",
 		type : 'POST',
 		success: function(data){
+		
 			var errores = JSON.parse(data.error);
 			if (data.error != null){
 					 	hide();
@@ -117,7 +120,19 @@ var index =  $("#indexRow").val();
 
 			  }else{
 //se añade nuevo valor
-			 tblMapping.row.add($(data.data)).draw(false);
+			
+			 if(index != null){
+				
+				 var row = tblMapping.row(data.rowIndexHeader).data();
+	
+				 var valueMapping = data.data[0].mappingValue;
+					row.mappingValue= valueMapping;
+				
+					$('#mappingTable').dataTable().fnUpdate(valueMapping,index,2,false);
+			 }else{
+			  tblMapping.row.add($(data.data)).draw(false);
+			 }
+			 
 			  $('#modalEditMapping').modal('hide');
 				$("#mappingTslEditForm")[0].reset();
   

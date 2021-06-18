@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.16, 25/05/2021.
+ * @version 1.17, 07/06/2021.
  */
 package es.gob.valet.rest.services;
 
@@ -76,6 +76,7 @@ import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.ResultTslInfVal;
 import es.gob.valet.rest.elements.TslInformation;
 import es.gob.valet.rest.elements.TslInformationResponse;
+import es.gob.valet.rest.elements.TslInformationVersionsResponse;
 import es.gob.valet.rest.elements.TslRevocationStatus;
 import es.gob.valet.rest.elements.TspServiceHistoryInf;
 import es.gob.valet.rest.elements.TspServiceInformation;
@@ -90,7 +91,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.16, 25/05/2021.
+ * @version 1.17, 07/06/2021.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -132,7 +133,6 @@ public class TslRestService implements ITslRestService {
 		int numCRLs = crlsByteArrayB64List == null ? 0 : crlsByteArrayB64List.size();
 		int numOCSPs = basicOcspResponsesByteArrayB64List == null ? 0 : basicOcspResponsesByteArrayB64List.size();
 
-
 		// tslLocation si no es nulo o vacío viene codificado en Base64, se
 		// decodifica.
 		String tslLocation = null;
@@ -144,7 +144,7 @@ public class TslRestService implements ITslRestService {
 			tslLocation = tslLocationTmp.replace("\"", "");
 
 		}
-		
+
 		// Indicamos la recepción del servicio junto con los parámetros de
 		// entrada.
 		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG001, new Object[ ] { application, delegatedAppAux, tslLocation, certByteArrayB64, detectionDate, getInfo, checkRevStatus, returnRevocationEvidence, numCRLs, numOCSPs }));
@@ -155,7 +155,6 @@ public class TslRestService implements ITslRestService {
 		// Creamos el objeto que representa la respuesta.
 		DetectCertInTslInfoAndValidationResponse result = null;
 
-		
 		// Comprobamos los parámetros obligatorios de entrada.
 		String resultCheckParams = checkParamsDetectCertInTslInfoAndValidationResponse(application, certByteArrayB64, getInfo, checkRevStatus, returnRevocationEvidence);
 		if (resultCheckParams != null) {
@@ -926,7 +925,7 @@ public class TslRestService implements ITslRestService {
 			tslLocation = tslLocationTmp.replace("\"", "");
 
 		}
-		
+
 		// Indicamos la recepción del servicio junto con los parámetros de
 		// entrada.
 		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG002, new Object[ ] { application, delegatedAppAux, countryRegionCode, tslLocation, getTslXmlData }));
@@ -973,7 +972,7 @@ public class TslRestService implements ITslRestService {
 
 		// Comprobamos los parámetros opcionales.
 		// Sólo se debe especificar el país/región o la localización de la TSL.
-		if (allIsOk && ( (UtilsStringChar.isNullOrEmpty(countryRegionCode) && UtilsStringChar.isNullOrEmpty(tslLocation)) || (!UtilsStringChar.isNullOrEmpty(countryRegionCode) && !UtilsStringChar.isNullOrEmpty(tslLocation)))) {
+		if (allIsOk && ((UtilsStringChar.isNullOrEmpty(countryRegionCode) && UtilsStringChar.isNullOrEmpty(tslLocation)) || (!UtilsStringChar.isNullOrEmpty(countryRegionCode) && !UtilsStringChar.isNullOrEmpty(tslLocation)))) {
 			allIsOk = false;
 			LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG005));
 			result = new TslInformationResponse();
@@ -1078,7 +1077,6 @@ public class TslRestService implements ITslRestService {
 		// el TSLLocation, buscamos la TSL.
 		TSLDataCacheObject tsldco = null;
 
-	
 		if (UtilsStringChar.isNullOrEmptyTrim(countryRegionCode)) {
 			CommonsTslAuditTraces.addTslLocationOperationTrace(auditTransNumber, tslLocation, getTslXmlData);
 			tsldco = TSLManager.getInstance().getTSLDataFromTSLLocation(tslLocation);
@@ -1125,6 +1123,46 @@ public class TslRestService implements ITslRestService {
 		// Devolvemos el resultado.
 		return result;
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @throws ValetRestException 
+	 * @see es.gob.valet.rest.services.ITslRestService#getTslInfoVersions()
+	 */
+	@Override
+	@POST
+	@Path("/getTslInfoVersions")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TslInformationVersionsResponse getTslInfoVersions() throws ValetRestException {
+		// Se inicia el resultado a devolver
+		TslInformationVersionsResponse result = null;
+		// Generamos el identificador de transacción.
+		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS);
+
+		try {
+			Map<String, Integer> tslCountryVersion = TSLManager.getInstance().getTslInfoVersions();
+			result = new TslInformationVersionsResponse();
+			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_TSLINFOVERSIONS_OK);
+			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG040, new Object[ ] {tslCountryVersion.size() }));
+			result.setTslVersionsMap(tslCountryVersion);
+		} catch (TSLManagingException e) {
+			result = new TslInformationVersionsResponse();
+			result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
+			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG009, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS }));
+			CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, result.getDescription());
+			// Calculamos la representación en bytes del resultado, y si la
+			// obtenemos correctamente, cerramos la transacción.
+			byte[ ] resultByteArray = buildResultByteArray(result);
+			CommonsServicesAuditTraces.addCloseTransactionTrace(auditTransNumber, resultByteArray);
+			LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG010, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS }), e);
+		} catch (Exception e) {
+			CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, e.getMessage());
+			LoggingInformationNDC.unregisterNdcInf();
+			throw new ValetRestException(IValetException.COD_200, Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG011, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS }), e);
+		}
+		//devolvemos el resultado
+		return result;
 	}
 
 }

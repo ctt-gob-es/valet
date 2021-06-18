@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 18/02/2019.
+ * @version 1.5, 07/06/2021.
  */
 package es.gob.valet.rest.services;
 
@@ -37,13 +37,14 @@ import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.TslInformationResponse;
+import es.gob.valet.rest.elements.TslInformationVersionsResponse;
 import es.gob.valet.rest.elements.json.ByteArrayB64;
 import es.gob.valet.rest.elements.json.DateString;
 
 /**
  * <p>Interface that represents the TSL restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 18/02/2019.
+ * @version 1.5, 07/06/2021.
  */
 public interface ITslRestService {
 
@@ -118,6 +119,11 @@ public interface ITslRestService {
 	String SERVICENAME_GET_TSL_INFORMATION = "getTslInformation";
 
 	/**
+	 * Constant attribute that represents the token parameter 'getTslInfoVersions'.
+	 */
+	String SERVICENAME_GET_TSL_INFORMATION_VERSIONS = "getTslInfoVersions";
+
+	/**
 	 * Method that returns the information and revocation status of the input certificate extracted from a TSL.
 	 * @param application Application identifier.
 	 * @param delegatedApp Delegated application identifier.
@@ -155,5 +161,15 @@ public interface ITslRestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	TslInformationResponse getTslInformation(@FormParam(PARAM_APPLICATION) String application, @FormParam(PARAM_DELEGATED_APP) String delegatedApp, @FormParam(PARAM_COUNTRY_REGION_CODE) String countryRegionCode, @FormParam(PARAM_TSL_LOCATION) String tslLocation, @FormParam(PARAM_GET_TSL_XML_DATA) Boolean getTslXmlData) throws ValetRestException;
+
+	/**
+	 * Method that returns the versions of the TSLs registered in valET.
+	 * @return Structure with a map that relates the TSL with the registered version.
+	 * @throws throws TSLManagingException If some error is produced in the execution of the service.
+	 */
+	@POST
+	@Path("/getTslInfoVersions")
+	@Produces(MediaType.APPLICATION_JSON)
+	TslInformationVersionsResponse getTslInfoVersions() throws ValetRestException;
 
 }

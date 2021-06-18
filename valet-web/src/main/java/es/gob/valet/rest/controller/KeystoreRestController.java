@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 24/03/2021.
+ * @version 1.7, 07/06/2021.
  */
 package es.gob.valet.rest.controller;
 
@@ -31,6 +31,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -65,11 +66,12 @@ import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
+import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
 
 /**
  * <p>Class that manages the REST request related to the Keystore's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 24/03/2021.
+ * @version 1.7, 07/06/2021.
  */
 @RestController
 public class KeystoreRestController {
@@ -154,7 +156,7 @@ public class KeystoreRestController {
 		JSONObject json = new JSONObject();
 		List<SystemCertificate> listCertificates = new ArrayList<SystemCertificate>();
 		// se obtiene el keystore
-		
+
 		Keystore keystore = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(Long.valueOf(idKeystore), false);
 		try {
 
@@ -164,7 +166,9 @@ public class KeystoreRestController {
 				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
 				json.put(FIELD_ALIAS + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
 				error = true;
-			} else {
+			}
+			
+			if(!error){
 				// se comprueba que no contenga caracteres especiales
 				String listChar = StaticValetConfig.getProperty(StaticValetConfig.LIST_CHARACTER_SPECIAL);
 				if (!listChar.isEmpty()) {
@@ -184,15 +188,18 @@ public class KeystoreRestController {
 					}
 
 				}
-				
-				//se comprueba que no exista un alias igual registrado en el sistema
-				SystemCertificate sc = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, Long.valueOf(idKeystore));
-			if(sc != null){
-				String msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXIST_ALIAS, new Object[ ] { alias });
-				LOGGER.error(msgError);
-				json.put(FIELD_ALIAS + "_span", msgError);
-				error = true;
 			}
+			
+			if(!error){
+				// se comprueba que no exista un alias igual registrado en el
+				// sistema
+				SystemCertificate sc = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, Long.valueOf(idKeystore));
+				if (sc != null) {
+					String msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXIST_ALIAS, new Object[ ] { alias });
+					LOGGER.error(msgError);
+					json.put(FIELD_ALIAS + "_span", msgError);
+					error = true;
+				}
 
 			}
 			if (certificateFile == null || certificateFile.getSize() == 0 || certificateFile.getBytes() == null || certificateFile.getBytes().length == 0) {
@@ -202,22 +209,25 @@ public class KeystoreRestController {
 			}
 
 			if (!error) {
-				
+
 				IKeystoreFacade keyStoreFacade = KeystoreFactory.getKeystoreInstance(Long.valueOf(idKeystore));
 				certificateFileBytes = certificateFile.getBytes();
 				// se obtiene X509Certificate
 				X509Certificate certToAdd = UtilsCertificate.getX509Certificate(certificateFileBytes);
 
 				// Lo añade al keystore.
-				// TODO En el último parámetro se debería especificar el estado del certificado.
+				// TODO En el último parámetro se debería especificar el estado
+				// del certificado.
 				keyStoreFacade.storeCertificate(alias, certToAdd, null, null);
-				
+
 				SystemCertificate newSystemCert = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, Long.valueOf(idKeystore));
 
 				listCertificates.add(newSystemCert);
 				dtOutput.setData(listCertificates);
 
-			} else {
+			} 
+			
+			if(error){
 				listCertificates = StreamSupport.stream(ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
 				dtOutput.setError(json.toString());
 			}
@@ -227,7 +237,7 @@ public class KeystoreRestController {
 			listCertificates = StreamSupport.stream(ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 		}
-
+		dtOutput.setData(listCertificates);
 		return dtOutput;
 	}
 
@@ -297,7 +307,8 @@ public class KeystoreRestController {
 				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
 				json.put(FIELD_ALIAS + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
 				error = true;
-			} else {
+			}
+			if (!error) {
 				// se comprueba que no contenga caracteres especiales
 				String listChar = StaticValetConfig.getProperty(StaticValetConfig.LIST_CHARACTER_SPECIAL);
 				if (!listChar.isEmpty()) {
@@ -317,32 +328,67 @@ public class KeystoreRestController {
 					}
 
 				}
-
 			}
 
 			if (!error) {
 				// obtengo el keystore
 				IKeystoreFacade keyStoreFacade = KeystoreFactory.getKeystoreInstance(idKeystore);
-				SystemCertificate oldCert = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateById(idSystemCertificate);
+				ISystemCertificateService sysCerService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService();
+				SystemCertificate oldCert = sysCerService.getSystemCertificateById(idSystemCertificate);
 
-				// Actualiza el alias del certificado
-				keyStoreFacade.updateCertificateAlias(oldCert.getAlias(), alias);
+				if (!oldCert.getAlias().equals(alias)) {
+					// hay que comprobar que no exista en bbdd un alias igual
+					// Comprobamos que no está incluido ese alias en el
+					// keystore seleccionado
+					boolean duplicate = false;
 
-				// se añade a la lista de certificados,
-				SystemCertificate newCert = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, idKeystore);
-				listSystemCertificate.add(newCert);
-				dtOutput.setData(listSystemCertificate);
+					List<SystemCertificate> certificates = (List<SystemCertificate>) sysCerService.getAllByKeystore(oldCert.getKeystore());
 
-				// Importación correcta
-				LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.INFO_CERTIFICATE_UPDATED, new Object[ ] { alias }));
+					if (certificates != null && !certificates.isEmpty()) {
+						Iterator<SystemCertificate> certificatesIt = certificates.iterator();
+						while (!duplicate && certificatesIt.hasNext()) {
+							SystemCertificate certPojo = certificatesIt.next();
+							if (certPojo != null && certPojo.getAlias() != null) {
+								duplicate = certPojo.getAlias().equals(alias);
+							}
+						}
+					}
+					if (!duplicate) {
+						// Actualiza el alias del certificado
+						keyStoreFacade.updateCertificateAlias(oldCert.getAlias(), alias);
 
-			} else {
-				// si ha ocurrido un error, se deja la lista de certificados tal
+						// se añade a la lista de certificados,
+						SystemCertificate newCert = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, idKeystore);
+						listSystemCertificate.add(newCert);
+						dtOutput.setData(listSystemCertificate);
+
+						
+					}else{
+						String msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXIST_ALIAS, new Object[ ] { alias });
+						LOGGER.error(msgError);
+						json.put(FIELD_ALIAS + "_span", msgError);
+						error = true;
+						
+						
+					}
+				} else {
+					// se deja la lista tal cual
+					Keystore keystore = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(idKeystore, false);
+					listSystemCertificate = StreamSupport.stream(ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
+				}
+
+			} 
+			
+			if(error){
+				// si ha ocurrido un error, se deja la lista de certificados
+				// tal
 				// y como estaba.
 				Keystore keystore = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(idKeystore, false);
 				listSystemCertificate = StreamSupport.stream(ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
 				dtOutput.setError(json.toString());
 			}
+			
+
 		} catch (Exception e) {
 			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_CERTIFICATE, new Object[ ] { e.getMessage() }));
 			json.put(KEY_JS_ERROR_UPDATE_CERTIFICATE, Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_CERTIFICATE_WEB));

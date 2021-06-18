@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 24/03/2021.
+ * @version 1.7, 07/06/2021.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 24/03/2021.
+ * @version 1.7, 07/06/2021.
  */
 public interface ICoreTslMessages {
 
@@ -1464,6 +1464,16 @@ public interface ICoreTslMessages {
 	 */
 	String LOGMTSL266 = "logMTSL266";
 
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL267</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL267 = "logMTSL267";
+
+
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL268</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL268 = "logMTSL268";
 	// /**
 	// * Constant attribute that represents the name of the property
 	// <code>resultVal00</code> belonging to the file

@@ -5,12 +5,11 @@
 	
 
 	<div class="form-group col-md-8">
-		<label for="idAlias" th:text="#{form.addCertificate.alias}"></label> 
+		<label for="aliasId" th:text="#{form.addCertificate.alias}"></label> 
 		<span id="alias_span"
 			class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
 			<input
-			type="text" id="idAlias" class="form-control" th:field="*{alias}"
-			onchange="cleanSpan('alias_span');"></input>
+			type="text" id="aliasId" class="form-control" th:field="*{alias}"></input>
 	</div>
 
 	<div class="form-group col-md-12">
@@ -47,11 +46,5 @@
 
 			});
 	
-	//función para limpiar mensajes de error en el modal
-	function cleanMsgError() {
-		$("#errorAddKeystore").removeClass('alert alert-danger');
-		$('#errorAddKeystore').html('');
-		cleanSpan('alias_span');
-		cleanSpan('certificateFile_span');
-	}
+
 </script>

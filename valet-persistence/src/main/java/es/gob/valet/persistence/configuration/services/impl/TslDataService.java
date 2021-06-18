@@ -20,9 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 04/12/2018.
+ * @version 1.4,  07/06/2021.
  */
 package es.gob.valet.persistence.configuration.services.impl;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -32,6 +34,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.repository.TslDataRepository;
@@ -41,7 +44,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer related to TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 04/12/2018.
+ * @version 1.4,  07/06/2021.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -155,6 +158,15 @@ public class TslDataService implements ITslDataService {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#getTslCountryVersionAvailable()
+	 */
+	@Override
+	public List<TslCountryVersionDTO> getTslCountryVersionAvailable() {
+		return repository.findTslCountryVersionAvailable();
 	}
 
 }

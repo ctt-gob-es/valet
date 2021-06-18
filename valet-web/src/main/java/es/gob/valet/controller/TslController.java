@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.12, 07/04/2021.
+ * @version 1.13, 07/06/2021.
  */
 package es.gob.valet.controller;
 
@@ -59,7 +59,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.12, 07/04/2021.
+ *  @version 1.13, 07/06/2021.
  */
 @Controller
 public class TslController {
@@ -82,6 +82,14 @@ public class TslController {
 	 * Constant that represents the extension XML.
 	 */
 	private static final String EXTENSION_XML = ".xml";
+	/**
+	 * Constant that represents the parameter 'key'.
+	 */
+	private static final String FIELD_MAPPING_KEY = "key";
+	/**
+	 * Constant that represents the parameter 'value'.
+	 */
+	private static final String FIELD_MAPPING_VALUE = "value";
 
 	/**
 	 * Method that maps the list TSLs to the controller and forwards the list of TSLs to the view.
@@ -238,6 +246,7 @@ public class TslController {
 		mappingTslForm.setIdTslCountryRegion(tslcrmco.getTslCountryRegion().getIdTslCountryRegion());
 		mappingTslForm.setCodeCountryRegion(tslcrmco.getTslCountryRegion().getCountryRegionCode());
 		mappingTslForm.setRowIndexMapping(rowIndexMapping);
+	
 		// se cargan los tipos de asociaciones
 		List<ConstantsForm> associationTypes = loadAssociationType();
 		model.addAttribute("listTypes", associationTypes);

@@ -20,22 +20,26 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 04/12/2018.
+ * @version 1.3, 07/06/2021.
  */
 package es.gob.valet.persistence.configuration.model.repository;
+
+import java.util.List;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 
 /**
  * <p>Interface that provides CRUD functionality for the TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 04/12/2018.
+ * @version 1.3,  07/06/2021.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -61,5 +65,12 @@ public interface TslDataRepository extends JpaRepository<TslData, Long> {
 	 * @return Object that represents a TslData from the persistence.
 	 */
 	TslData findByUriTslLocation(String uriTslLocation);
+	
+	/**
+	 * Method to obtain the list of information about the version of each registered TSL that is enabled.
+	 * @return Object that represents a list of TslCountryVersionDTO.
+	 */
+	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO(tsl.sequenceNumber, c.countryRegionCode) FROM TslData tsl, TslCountryRegion c WHERE tsl.tslCountryRegion.idTslCountryRegion = c.idTslCountryRegion and tsl.newTSLAvailable = 'Y'")
+	List<TslCountryVersionDTO> findTslCountryVersionAvailable();
 
 }

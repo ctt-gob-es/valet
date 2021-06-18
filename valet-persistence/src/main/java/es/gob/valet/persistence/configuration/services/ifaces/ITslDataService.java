@@ -20,21 +20,24 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 04/12/2018.
+ * @version 1.4, 07/06/2021.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
+
+import java.util.List;
 
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to TslData.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 04/12/2018.
+ * @version 1.4, 07/06/2021.
  */
 public interface ITslDataService {
 
@@ -75,6 +78,7 @@ public interface ITslDataService {
 	 * Method that removes a TSL from the system.
 	 * @param idTslData Parameter that represent the ID of the TSL to delete.
 	 */
+	@Transactional
 	void deleteTslData(Long idTslData);
 
 	/**
@@ -100,5 +104,12 @@ public interface ITslDataService {
 	 */
 	@Transactional
 	TslData getTslByTslLocation(String tslLocation, boolean loadXmlDocument, boolean loadLegibleDocument);
+	
+	
+	/**
+	 * Method to obtain the list of information about the version of each registered TSL that is enabled.
+	 * @return Object that represents a list of TslCountryVersionDTO.
+	 */
+	List<TslCountryVersionDTO> getTslCountryVersionAvailable();
 
 }

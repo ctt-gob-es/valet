@@ -26,6 +26,7 @@ package es.gob.valet.persistence.configuration.cache.modules.tsl.engine;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.TreeSet;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
@@ -396,6 +397,19 @@ public final class TSLCacheFacade {
 
 			}
 
+		} else {
+			// Recuperamos la información del país/región.
+			TSLCountryRegionCacheObject tcrco = getTSLCountryRegionCacheObject(countryRegionCode);
+			// Si la hemos obtenido...
+						if (tcrco != null) {
+
+							// Lo eliminamos si es que ya existe.
+							tcrco.setMappingSet( new TreeSet<TSLCountryRegionMappingCacheObject>());
+
+							// Actualizamos el país/región en la caché.
+							TSLCache.getInstance().addTSLCountryRegion(tcrco, false);
+
+						}
 		}
 
 	}

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 25/11/2018.
+ * @version 1.4, 07/06/2021.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -28,13 +28,14 @@ import java.util.List;
 
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegionMapping entity .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 25/11/2018.
+ * @version 1.4, 07/06/2021.
  */
 public interface ITslCountryRegionMappingService {
 
@@ -79,5 +80,13 @@ public interface ITslCountryRegionMappingService {
 	 * @return true, if it exists.
 	 */
 	boolean existIdentificator(String identificator, Long idTslCountryRegion);
+	
+
+	/**
+	 * Method that removes a country/region Mapping.
+	 * @param codeCRM Long that represents CountryRegion identifier.
+	 */
+	@Transactional
+	void deleteTslCountryRegionMappingByCountry(Long idCRM);
 
 }

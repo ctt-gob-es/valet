@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 24/03/2021.
+ * @version 1.10, 07/06/2021.
  */
 package es.gob.valet.tsl.access;
 
@@ -60,12 +60,14 @@ import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCoun
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionMappingCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
+import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.rest.elements.json.DateString;
 import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
@@ -86,7 +88,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 24/03/2021.
+ * @version 1.10, 07/06/2021.
  */
 public final class TSLManager {
 
@@ -110,7 +112,7 @@ public final class TSLManager {
 	 * european list of trusted lists. 
 	 */
 	private Set<String> setOfURLStringThatRepresentsEuLOTL = new TreeSet<String>();
-	
+
 	/**
 	 * Attribute that represents a set of URL (String format) that represents the official
 	 * european list of trusted lists splitted by commas.
@@ -1326,6 +1328,24 @@ public final class TSLManager {
 	}
 
 	/**
+	 * Method that removes all the mappings associated with a country.
+	 * @param countryRegionCode  Attribute that represents the country/region code for a TSL (ISO 3166).
+	 * @throws TSLManagingException In case of some error remove all the mapping information about the specified country/region.
+	 */
+	public void deleteAllMappingFromCountryRegion(Long idCountryRegion, String countryRegionCode) throws TSLManagingException {
+
+		try {
+			// Lo borramos de base de datos.
+			ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService().deleteTslCountryRegionMappingByCountry(idCountryRegion);
+			// Lo borramos de la caché.
+
+			ConfigurationCacheFacade.tslRemoveMappingFromCountryRegion(countryRegionCode, null);
+		} catch (Exception e) {
+			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL268, new Object[ ] { countryRegionCode }), e);
+		}
+	}
+
+	/**
 	 * Gets a country/region mapping information from the cache.
 	 * @param countryRegionCode Country/Region code representation.
 	 * @param mappingId Country/Region Mapping ID to get.
@@ -2123,6 +2143,7 @@ public final class TSLManager {
 	public void removeTSLData(String countryRegionCode, Long tslDataId) throws TSLManagingException {
 
 		String crc = null;
+		Long idCountryRegion = null;
 		try {
 			ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
 			// Calculamos el valor del Country/Region code.
@@ -2140,10 +2161,18 @@ public final class TSLManager {
 				}
 			} else {
 				crc = countryRegionCode;
+
 			}
 
 			// Si hemos obtenido el Country/Region code, continuamos...
 			if (crc != null) {
+				ITslCountryRegionService countryRegionService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService();
+				if (countryRegionService != null) {
+					TslCountryRegion countryRegion = countryRegionService.getTslCountryRegionByCode(crc, false);
+					if (countryRegion != null) {
+						idCountryRegion = countryRegion.getIdTslCountryRegion();
+					}
+				}
 
 				// Lo eliminamos de base de datos.
 				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().deleteTslData(tslDataId);
@@ -2151,6 +2180,11 @@ public final class TSLManager {
 				// Lo eliminamos de la caché compartida.
 				ConfigurationCacheFacade.tslRemoveTSLDataFromCountryRegion(crc);
 
+				// Lo eliminamos el mapeo de base de datos.
+				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService().deleteTslCountryRegionMappingByCountry(idCountryRegion);
+
+				// Lo eliminamos el mapeo la caché compartida.
+				ConfigurationCacheFacade.tslRemoveMappingFromCountryRegion(crc, null);
 			}
 
 		} catch (Exception e) {
@@ -2264,21 +2298,21 @@ public final class TSLManager {
 					UtilsResources.safeCloseInputStream(bais);
 				}
 
-				
-				//se almacena el número de secuencia para comprobar si la nueva es más actual.
-				//se comprueba si hay que indicar que hay versión disponible o no
+				// se almacena el número de secuencia para comprobar si la nueva
+				// es más actual.
+				// se comprueba si hay que indicar que hay versión disponible o
+				// no
 				int sequenceOld = td.getSequenceNumber();
 				int sequenceNew = tslObject.getSchemeInformation().getTslSequenceNumber();
 				if (sequenceNew >= sequenceOld) {
 					// No Existe una nueva versión de la TSL.
 					td.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
 					td.setLastNewTSLAvailableFind(null);
-				}else{
+				} else {
 					// No Existe una nueva versión de la TSL.
 					td.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NEW_TSL_AVAILABLE);
 					td.setLastNewTSLAvailableFind(Calendar.getInstance().getTime());
 				}
-					
 
 				// se actualiza el número de secuencia
 				td.setSequenceNumber(sequenceNew);
@@ -2304,8 +2338,6 @@ public final class TSLManager {
 
 				// Asignamos y actualizamos el fichero con la nueva TSL.
 				td.setXmlDocument(tslXMLbytes);
-				
-			
 
 				// Se actualiza la TSL en la base de datos.
 				td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().saveTSL(td);
@@ -2315,7 +2347,7 @@ public final class TSLManager {
 
 			}
 			// Punto de distribución
-			if (UtilsStringChar.isNullOrEmpty(urlTsl)) {
+			if (!UtilsStringChar.isNullOrEmpty(urlTsl)) {
 				updateDistributionPointTSLData(tslDataId, urlTsl);
 			}
 
@@ -2340,28 +2372,30 @@ public final class TSLManager {
 	 * european list of trusted lists.
 	 */
 	public Set<String> getSetOfURLStringThatRepresentsEuLOTL() {
-		
+
 		// Si aún no se ha inicializado...
 		if (setOfURLStringThatRepresentsEuLOTL.isEmpty()) {
-			
+
 			// Como mínimo añadimos las dos URL conocidas a fecha de 20/08/2019:
-			// - https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml
+			// -
+			// https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml
 			setOfURLStringThatRepresentsEuLOTL.add(ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_1);
 			setOfURLStringThatRepresentsEuLOTLinString = ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_1;
-			// - https://ec.europa.eu/tools/lotl/eu-lotl.xml			
+			// - https://ec.europa.eu/tools/lotl/eu-lotl.xml
 			setOfURLStringThatRepresentsEuLOTL.add(ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_2);
 			setOfURLStringThatRepresentsEuLOTLinString += UtilsStringChar.SYMBOL_COMMA_STRING;
 			setOfURLStringThatRepresentsEuLOTLinString += UtilsStringChar.SPECIAL_BLANK_SPACE_STRING;
 			setOfURLStringThatRepresentsEuLOTLinString += ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_2;
-			
-			// Ahora recolectamos las establecidas en la configuración estática, y añadimos aquellas que 
+
+			// Ahora recolectamos las establecidas en la configuración estática,
+			// y añadimos aquellas que
 			// no estén ya.
 			Properties props = StaticValetConfig.getProperties(StaticValetConfig.TSL_EU_LOTL_PREFIX);
-			if (props!=null && !props.isEmpty()) {
+			if (props != null && !props.isEmpty()) {
 				Collection<Object> urlStringColl = props.values();
 				for (Object urlStringObject: urlStringColl) {
 					if (urlStringObject != null) {
-						String urlString = ((String)urlStringObject).trim();
+						String urlString = ((String) urlStringObject).trim();
 						if (!UtilsStringChar.isNullOrEmpty(urlString) && !setOfURLStringThatRepresentsEuLOTL.contains(urlString)) {
 							setOfURLStringThatRepresentsEuLOTL.add(urlString);
 							setOfURLStringThatRepresentsEuLOTLinString += UtilsStringChar.SYMBOL_COMMA_STRING;
@@ -2371,15 +2405,15 @@ public final class TSLManager {
 					}
 				}
 			}
-			
+
 		}
-		
-		// Devolvemos el conjunto de URL que reconocen la lista de las TSL europeas...
+
+		// Devolvemos el conjunto de URL que reconocen la lista de las TSL
+		// europeas...
 		return setOfURLStringThatRepresentsEuLOTL;
-		
+
 	}
-	
-	
+
 	/**
 	 * Gets the set of URL (String format) that represents the official
 	 * european list of trusted lists splitted by commas.
@@ -2387,9 +2421,41 @@ public final class TSLManager {
 	 * european list of trusted lists splitted by commas.
 	 */
 	public String getSetOfURLStringThatRepresentsEuLOTLinString() {
-		
+
 		return setOfURLStringThatRepresentsEuLOTLinString;
-		
+
 	}
 
+	/**
+	 * Method that obtains information about the version of each enabled TSL registered in valET.
+	 * @return {@link Map} with all countries/regions codes and versions of eeach enabled TSL.
+	 * <code>null</code> id there is not.
+	 * @throws TSLManagingException In case of some error getting all information.
+	 */
+	public Map<String, Integer> getTslInfoVersions() throws TSLManagingException {
+
+		Map<String, Integer> result = null;
+
+		// se obtiene de bbdd la relacion código pais/region - version de las
+		// TSLs habilitadas.
+		List<TslCountryVersionDTO> tslCountryVersionList = null;
+		try {
+			tslCountryVersionList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslCountryVersionAvailable();
+		} catch (Exception e) {
+			throw new TSLManagingException(IValetException.COD_203, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL267), e);
+		}
+
+		// Si el listado no es nulo ni vacío,
+		// extraemos el código de cada país/region y la version
+		if (tslCountryVersionList != null && !tslCountryVersionList.isEmpty()) {
+			result = new HashMap<String, Integer>();
+			for (TslCountryVersionDTO tslcv: tslCountryVersionList) {
+				result.put(tslcv.getCountryRegionCode(), tslcv.getSequenceNumber());
+			}
+
+		}
+
+		return result;
+
+	}
 }

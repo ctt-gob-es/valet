@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 11/02/2019.
+ * @version 1.2, 07/06/2021.
  */
 package es.gob.valet.rest.services;
 
@@ -29,7 +29,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Interface that defines the constants for the result status of the services.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 11/02/2019.
+ * @version 1.2, 07/06/2021.
  */
 public interface ITslRestServiceStatusResult {
 
@@ -152,5 +152,16 @@ public interface ITslRestServiceStatusResult {
 	 * information has been collected.
 	 */
 	int STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_COLLECTED_REVSTATUS_COLLECTED = NumberConstants.NUM31;
+	
+	/**
+	 * Constant attribute that represents the value for the result status service
+	 * 'getTslInfoVersions' the service has been executed successfully.
+	 */
+	int STATUS_SERVICE_TSLINFOVERSIONS_OK = NumberConstants.NUM32;
+	/**
+	 * Constant attribute that represents the value for the result status service
+	 * 'getTslInfoVersions' an error occurred while running the service.
+	 */
+	int STATUS_SERVICE_TSLINFOVERSIONS_ERROR = NumberConstants.NUM33;
 
 }
