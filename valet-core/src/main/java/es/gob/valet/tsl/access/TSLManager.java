@@ -54,6 +54,7 @@ import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.IRestGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
@@ -373,16 +374,16 @@ public final class TSLManager {
 	 * @param auditTransNumber Audit transaction number.
 	 * @param cert X509v3 certificate to detect.
 	 * @param tslLocation URI string representation of the TSL location where to obtain it.
-	 * @param date Date that must cover the TSL to obtain. If this parameter is <code>null</code>, then search
-	 * the more updated TSL with that TSL location.
 	 * @return Map with the mapping info obtained from the TSL and the input certificate if it has been detected.
 	 * Otherwise <code>null</code>.
 	 * @throws TSLManagingException If there is some error with the cache or detecting the certificate with the TSL.
 	 */
-	public Map<String, String> getInfoMappingCertFromTSL(String auditTransNumber, X509Certificate cert, String tslLocation, Date date) throws TSLManagingException {
+	public Map<String, String> getInfoMappingCertFromTSL(String auditTransNumber, X509Certificate cert, String tslLocation) throws TSLManagingException {
 
 		// Inicializamos el resultado.
 		Map<String, String> result = null;
+		
+		Date date = cert.getNotBefore();
 
 		// Inicializamos el resultado de detectar el certificado y obtener
 		// mapeos.
@@ -427,21 +428,21 @@ public final class TSLManager {
 
 			try {
 
-				// Obtenemos la fecha actual.
-				Date actualDate = Calendar.getInstance().getTime();
 
 				// Buscamos la TSL de España.
 				TSLDataCacheObject tdco = getTSLDataFromCountryRegion(UtilsCountryLanguage.ES_COUNTRY_CODE);
 
 				// Si hemos encontrado la TSL y su fecha de caducidad es
 				// posterior
-				// a la fecha actual...
-				if (tdco != null && tdco.getNextUpdateDate().after(actualDate)) {
+				// a la fecha de emisión 
+				
+				Date dateIssue = cert.getNotBefore();
+				if (tdco != null && tdco.getNextUpdateDate().after(dateIssue)) {
 
 					// Inicializamos el resultado de detectar el certificado y
 					// obtener
 					// mapeos.
-					ITSLValidatorResult tslValResult = detectX509andGetMappingInfoWithTSL(auditTransNumber, cert, actualDate);
+					ITSLValidatorResult tslValResult = detectX509andGetMappingInfoWithTSL(auditTransNumber, cert, dateIssue);
 
 					// Si hemos obtenido resultado y el certificado ha sido
 					// detectado...
@@ -686,6 +687,7 @@ public final class TSLManager {
 
 			// Añadimos la traza de auditoría indicando que no se ha encontrado.
 			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, false, null, null, null, null);
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL269));
 
 		} else {
 
@@ -694,8 +696,8 @@ public final class TSLManager {
 			DateString tslIssued = new DateString(tslObject.getSchemeInformation().getListIssueDateTime());
 			DateString tslNextUpdate = new DateString(tslObject.getSchemeInformation().getNextUpdate());
 			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, true, tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber(), tslIssued, tslNextUpdate);
-
-			// Continuamos el proceso...
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL279));
+			// Continuamos el proceso...			
 			result = validateX509withRevocationValues(auditTransNumber, cert, validationDateToUse, crls, ocsps, tslObject, calculateMappings);
 
 		}

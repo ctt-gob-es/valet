@@ -503,8 +503,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// vuelta.
 				TSPService tspService = tspServiceList.get(index);
 
-				// Tratamos de detectar el certificado respecto al servicio...
-				detectCertificateWithTSPService(cert, isCACert, isTsaCertificate, validationDate, validationResult, tspService);
+				// Tratamos de detectar el certificado respecto al servicio y la fecha de emisión del certificado
+				detectCertificateWithTSPService(cert, isCACert, isTsaCertificate, cert.getNotBefore(), validationResult, tspService);
 
 				// Si el certificado se ha detectado...
 				if (validationResult.hasBeenDetectedTheCertificate()) {
@@ -546,7 +546,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// Tratamos de validar el estado de revocación mediante los
 				// puntos de distribución
 				// establecidos en el propio certificado.
-				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL216));
+				LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL216, new Object[] {validationDate.toString()}));
 				validateCertificateUsingDistributionPoints(cert, isCACert, isTsaCertificate, validationDate, validationResult, tsp);
 
 				// Si el estado no es desconocido, significa que ya se ha
@@ -658,6 +658,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// de sus históricos.
 		ServiceHistoryInstance shi = null;
 		boolean isHistoricServiceInf = false;
+		
 		if (tspService.getServiceInformation().getServiceStatusStartingTime().before(validationDate)) {
 
 			if (tspService.getServiceInformation().isServiceValidAndUsable()) {
@@ -716,27 +717,28 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// en cuenta
 		// tan solo los servicios de tipo TSA.
 		if (isTsaCertificate) {
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL274));
 
 			// Comprobamos si el servicio es de tipo TSA (cualificado o no).
 			if (checkIfTSPServiceTypeIsTSAQualified(tspServiceType) || checkIfTSPServiceTypeIsTSANonQualified(tspServiceType)) {
-
 				// Comprobamos si dicho servicio identifica al certificado...
 				if (checkIfDigitalIdentitiesMatchesCertificate(shi.getAllDigitalIdentities(), cert, isTsaCertificate)) {
-
+					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL275, new Object[] {tspService.getServiceInformation().getServiceTypeIdentifier().toString()}));
 					// Establecemos la clasificación a sello de tiempo.
 					validationResult.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_TSA);
 
 					// Establecemos su tipo.
 					// Si es una TSA "qualified"...
 					if (checkIfTSPServiceTypeIsTSAQualified(tspServiceType)) {
-
 						validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_QUALIFIED);
+						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL276, new Object[] {tspService.getServiceInformation().getServiceTypeIdentifier().toString()}));
 
 					}
 					// Si no...
 					else if (checkIfTSPServiceTypeIsTSANonQualified(tspServiceType)) {
 
 						validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED);
+						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL277, new Object[] {tspService.getServiceInformation().getServiceTypeIdentifier().toString()}));
 
 					}
 
@@ -750,6 +752,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// información
 					// de este.
 					if (isHistoricServiceInf) {
+						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL278));
 						assignTSPServiceHistoryInformationNameForDetectToResult(validationResult, shi);
 						validationResult.setTSPServiceHistoryInformationInstanceForDetect(shi);
 					}
@@ -782,7 +785,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 						// Si es el certificado de una CA...
 						if (isCACert) {
-
+							LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL284));
 							// La consideramos detectada y cualificada.
 							detectedCert = Boolean.TRUE;
 							validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_QUALIFIED);
@@ -825,7 +828,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							// encaja con su
 							// definición, entonces lo consideramos cualificado.
 							else if (detectedCert.booleanValue()) {
-
+								LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL285));
 								validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_QUALIFIED);
 
 							}
@@ -853,9 +856,12 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// Si se trata de una CA/PKC, o el estado del servicio es  "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn" sabemos que es un certificado
 					// "non qualified".
 					if (checkIfTSPServiceTypeIsCAPKC(tspServiceType) || isWithdrawnBeforeDateOfIssue(cert, tspService)) {
-
+						if(checkIfTSPServiceTypeIsCAPKC(tspServiceType)){
+							LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL286));
+						}else {
+							LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL287));
+						}
 						validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED);
-
 					}
 
 					// Si finalmente hemos detectado el certificado, o es una
@@ -1512,6 +1518,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Obtenemos la respuesta OCSP acorde al certificado a validar.
 			try {
 				basicOcspResponse = UtilsOCSP.getOCSPResponse(cert, ocsps, validationDate);
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL270));
 			} catch (Exception e) {
 				throw new TSLValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL178), e);
 			}
@@ -1526,6 +1533,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// de la cadena de certificación)y que sea acorde a la fecha
 			// de validación o posterior.
 			crlSelected = UtilsCRL.getCRLforCertificate(cert, crls, validationDate);
+			if(crlSelected!= null){
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL271));
+			}
 
 		}
 
@@ -1612,6 +1622,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// doSomethingWithSchemeExtensions();
 
 			// Recuperamos la lista de TSP y vamos analizando uno a uno.
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL271));
 			List<TrustServiceProvider> tspList = tsl.getTrustServiceProviderList();
 			// Si la lista no es nula ni vacía...
 			if (tspList != null && !tspList.isEmpty()) {
@@ -1622,11 +1633,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 					// Almacenamos en una variable el TSP a tratar.
 					TrustServiceProvider tsp = tspList.get(index);
-
 					// Comprobamos si detectamos el certificado con los
 					// servicios del TSP.
 					try {
-						detectCertificateWithTSP(auditTransNumber, cert, isCACert, isTsaCertificate, validationDate, validationResult, tsp);
+						detectCertificateWithTSP(auditTransNumber, cert, isCACert, isTsaCertificate, cert.getNotBefore(), validationResult, tsp);
 					} catch (TSLQualificationEvalProcessException e) {
 
 						// Si se produce esta excepción, significa que se
@@ -1659,7 +1669,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							// procedemos a analizar
 							// los valores de revocación en la TSL.
 							if (basicOcspResponse != null || crl != null) {
-
+								LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL280));
 								// Comprobamos entre los distintos servicios CRL
 								// y
 								// OCSP del TSP, si alguno detecta
@@ -1737,10 +1747,11 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 		// Obtenemos la lista de servicios.
 		List<TSPService> tspServiceList = tsp.getAllTSPServices();
-
+		
+		
 		// Si la lista no es nula ni vacía...
 		if (tspServiceList != null && !tspServiceList.isEmpty()) {
-
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL272));
 			// La vamos recorriendo mientras no se termine y no se haya
 			// detectado el certificado.
 			for (int index = 0; index < tspServiceList.size() && !validationResult.hasBeenDetectedTheCertificate(); index++) {
@@ -1809,7 +1820,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			ITSLValidatorThroughSomeMethod tslValidatorMethod = null;
 			// Primero lo intentamos mediante respuestas OCSP (si las hay).
 			if (basicOcspResponse != null) {
-
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL281));
 				// Creamos el validador.
 				tslValidatorMethod = new TSLValidatorThroughOCSP();
 				// Ejecutamos la comprobación.
@@ -1820,7 +1831,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Si no hemos obtenido resultado, lo intentamos con las CRL,
 			// si es que las hay.
 			if (validationResult.getRevocationValueBasicOCSPResponse() == null && crl != null) {
-
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL282));
 				// Creamos el validador.
 				tslValidatorMethod = new TSLValidatorThroughCRL();
 				// Ejecutamos la comprobación.

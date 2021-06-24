@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 13/05/2019.
+ * @version 1.6, 22/06/2021.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -76,7 +76,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 13/05/2019.
+ * @version 1.6, 22/06/2021.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -533,9 +533,10 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			// es porque no se confía en su emisor.
 			if (!result) {
 				try {
+					LOGGER.debug( Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
 					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_001, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
 				} catch (CommonUtilsException e) {
-					LOGGER.error(e.getMessage(), e);
+					LOGGER.error( Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));
 				}
 			}
 
@@ -896,6 +897,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 								// Tratamos de obtener la CRL.
 								crl = downloadCRLFromSupplyPoint(uri, connectionTimeout, readTimeout);
 								if (crl == null) {
+									LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL292));
 									// Lanzamos la alarma notificando que no se
 									// tiene acceso o no es posible parsear la
 									// CRL.

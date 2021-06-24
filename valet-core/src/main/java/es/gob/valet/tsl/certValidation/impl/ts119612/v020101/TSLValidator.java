@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version  1.4, 15/12/2020.
+ * @version  1.5, 22/06/2021.
  */
 package es.gob.valet.tsl.certValidation.impl.ts119612.v020101;
 
@@ -52,7 +52,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.AdditionalServiceInformat
  * <p>Class that represents a TSL Validator implementation for the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 15/12/2020.
+ * @version 1.5, 22/06/2021.
  */
 public class TSLValidator extends ATSLValidator {
 
@@ -414,6 +414,7 @@ public class TSLValidator extends ATSLValidator {
 				if (isCACert) {
 
 					validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_VALID);
+					LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL288));
 
 				}
 				// Al ser tipo final, se establece el estado a detectado
@@ -423,16 +424,18 @@ public class TSLValidator extends ATSLValidator {
 				else {
 
 					validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_UNKNOWN);
-
+					LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL289));
 				}
 
 			} else if (statusChainNotValid) {
 
 				validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID_SERVICESTATUS);
+				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL290));
 
 			} else if (statusRevoked) {
 
 				validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_REVOKED_SERVICESTATUS);
+				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL291));
 
 			}
 

@@ -120,7 +120,7 @@ public class TslRestService implements ITslRestService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List) throws ValetRestException {
 		// CHECKSTYLE:ON
-
+		long startOperationTime = Calendar.getInstance().getTimeInMillis();
 		// Añadimos la información NDC al log y obtenemos un número único
 		// para la transacción.
 		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION);
@@ -343,6 +343,7 @@ public class TslRestService implements ITslRestService {
 				// obtenemos correctamente, cerramos la transacción.
 				byte[ ] resultByteArray = buildResultByteArray(result);
 				CommonsServicesAuditTraces.addCloseTransactionTrace(auditTransNumber, resultByteArray);
+				;
 			} catch (TSLManagingException e) {
 				result = new DetectCertInTslInfoAndValidationResponse();
 				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
@@ -363,7 +364,7 @@ public class TslRestService implements ITslRestService {
 
 		// Limpiamos la información NDC.
 		LoggingInformationNDC.unregisterNdcInf();
-
+		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG041, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		return result;
 
 	}
@@ -590,7 +591,7 @@ public class TslRestService implements ITslRestService {
 
 					// Lo marcamos en la respuesta.
 					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG018);
-					LOGGER.info(msg);
+					//LOGGER.info(msg);
 					result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED);
 					result.setDescription(msg);
 
@@ -906,7 +907,7 @@ public class TslRestService implements ITslRestService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public TslInformationResponse getTslInformation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_COUNTRY_REGION_CODE) final String countryRegionCode, @FormParam(PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(PARAM_GET_TSL_XML_DATA) final Boolean getTslXmlData) throws ValetRestException {
 		// CHECKSTYLE:ON
-
+		long startOperationTime = Calendar.getInstance().getTimeInMillis();
 		// Generamos el identificador de transacción.
 		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_GET_TSL_INFORMATION);
 
@@ -1014,7 +1015,7 @@ public class TslRestService implements ITslRestService {
 			}
 
 		}
-
+		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG042, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		// Limpiamos la información NDC.
 		LoggingInformationNDC.unregisterNdcInf();
 
@@ -1135,16 +1136,17 @@ public class TslRestService implements ITslRestService {
 	@Path("/getTslInfoVersions")
 	@Produces(MediaType.APPLICATION_JSON)
 	public TslInformationVersionsResponse getTslInfoVersions() throws ValetRestException {
+		long startOperationTime = Calendar.getInstance().getTimeInMillis();
 		// Se inicia el resultado a devolver
 		TslInformationVersionsResponse result = null;
 		// Generamos el identificador de transacción.
 		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS);
-
+		LOGGER.info(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG043));
 		try {
 			Map<String, Integer> tslCountryVersion = TSLManager.getInstance().getTslInfoVersions();
 			result = new TslInformationVersionsResponse();
 			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_TSLINFOVERSIONS_OK);
-			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG040, new Object[ ] {tslCountryVersion.size() }));
+			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG040, new Object[ ] { tslCountryVersion.size() }));
 			result.setTslVersionsMap(tslCountryVersion);
 		} catch (TSLManagingException e) {
 			result = new TslInformationVersionsResponse();
@@ -1161,7 +1163,8 @@ public class TslRestService implements ITslRestService {
 			LoggingInformationNDC.unregisterNdcInf();
 			throw new ValetRestException(IValetException.COD_200, Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG011, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS }), e);
 		}
-		//devolvemos el resultado
+		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG044, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
+		// devolvemos el resultado
 		return result;
 	}
 
