@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 24/03/2021.
+ * @version 1.3, 28/06/2021.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -52,7 +52,7 @@ import es.gob.valet.tsl.parsing.impl.TSLCheckerFactory;
  * <p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 24/03/2021.
+ * @version 1.3, 28/06/2021
  */
 public class TSLObject implements ITSLObject {
 
@@ -332,14 +332,12 @@ public class TSLObject implements ITSLObject {
 		SignatureType backupSignature = signature;
 		boolean restoreBackup = false;
 		String msgError = new String();
-		String countryTSL = new String();
 		try {
 
 			// Construimos la TSL a partir del XML.
 			fullTSLxml = getTSLBuilder().buildTSLFromXML(is);
 			// Comprobamos que los valores establecidos son los correctos.
 			if(schemeInformation != null){
-				countryTSL = schemeInformation.getSchemeTerritory();
 				getTSLChecker().checkTSLValues(checkSignature, fullTSLxml);
 			}
 			
@@ -347,7 +345,7 @@ public class TSLObject implements ITSLObject {
 
 		} catch (TSLParsingException | TSLMalformedException e) {
 			restoreBackup = true;
-			msgError = Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL266, new Object[] {countryTSL, e.getErrorDescription()});
+			msgError = Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL266, new Object[] {e.getErrorDescription()});
 			if (!cache) {
 				throw e;
 			}

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 25/11/2018.
+ * @version 1.3, 28/06/2021.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -39,7 +39,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionS
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for TslCountryRegion.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 25/11/2018.
+ * @version 1.3, 28/06/2021.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -99,7 +99,7 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 	@Transactional // TODO: ¿es necesario si ya está puesta esta anotación en la
 	// interfaz?
 	public List<TslCountryRegion> getAllTslCountryRegion(boolean loadMappings) {
-		List<TslCountryRegion> result = repository.findAll();
+		List<TslCountryRegion> result = repository.findAllByOrderByCountryRegionCodeAsc();
 		if (result != null && !result.isEmpty() && loadMappings) {
 			for (TslCountryRegion tslCountryRegion: result) {
 				tslCountryRegion.getListTslCountryRegionMapping().size();

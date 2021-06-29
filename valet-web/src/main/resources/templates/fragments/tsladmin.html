@@ -44,7 +44,8 @@ var btnShowMapping =  /*[[#{table.tsl.mapeo.alt}]]*/;
 var tbl = $('#tslTable').DataTable({
 	dom: 'Bfrtip',
 	columnDefs: [
-        {className: "text-center", targets: [6]}
+        {className: "text-center", targets: [6], 
+		order:[ 2, "asc" ]}
     ],
 	select: 'single',
 	responsive : true,
@@ -75,6 +76,7 @@ var tbl = $('#tslTable').DataTable({
             }
           }
         },
+        "order" : [ 2, 'asc' ],
 	"columns": [
         { "data": "idTslData","visible": false},
         { "data": "tslCountryRegion.idTslCountryRegion", "visible":false},

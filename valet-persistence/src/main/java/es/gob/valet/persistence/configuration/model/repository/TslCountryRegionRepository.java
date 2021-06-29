@@ -20,9 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 28/06/2021.
  */
 package es.gob.valet.persistence.configuration.model.repository;
+
+import java.util.List;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -34,7 +36,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 /**
  * <p>Interface that provides CRUD functionality for the TslCountryRegion entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 28/06/2021.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -53,5 +55,11 @@ public interface TslCountryRegionRepository extends JpaRepository<TslCountryRegi
 	 * @return Object that represents a country/region from the persistence.
 	 */
 	TslCountryRegion findByCountryRegionCode(String countryRegionCode);
+	
+	/**
+	 * Returns the list of all countries ordered by their code.
+	 * @return All countries ordered by their country/region name.
+	 */
+	List<TslCountryRegion> findAllByOrderByCountryRegionCodeAsc();
 
 }

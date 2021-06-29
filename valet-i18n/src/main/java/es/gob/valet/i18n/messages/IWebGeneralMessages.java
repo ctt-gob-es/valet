@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.10, 07/04/2021.
+ * @version 1.11, 28/06/2021.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.10, 07/04/2021.
+ * @version 1.11, 28/06/2021.
  */
 public interface IWebGeneralMessages {
 
@@ -266,7 +266,51 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String TASK_FIND_NEW_TSL_REV_LOG_004 = "task.findNewTslRev.LOG004";
-
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG005</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_LOG_005 = "task.findNewTslRev.LOG005";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG006</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_LOG_006 = "task.findNewTslRev.LOG006";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG007</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_LOG_007 = "task.findNewTslRev.LOG007";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG008</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_LOG_008 = "task.findNewTslRev.LOG008";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG009</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_LOG_009 = "task.findNewTslRev.LOG009";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG010</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_LOG_010 = "task.findNewTslRev.LOG010";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG011</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_LOG_011 = "task.findNewTslRev.LOG011";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG012</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_LOG_012 = "task.findNewTslRev.LOG012";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG012</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_FIND_NEW_TSL_REV_LOG_013 = "task.findNewTslRev.LOG013";
 	/**
 	 * Constant attribute that represents the name of the property <code>errorUpdateTask</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
