@@ -157,11 +157,11 @@ public interface ITslRestServiceStatusResult {
 	 * Constant attribute that represents the value for the result status service
 	 * 'getTslInfoVersions' the service has been executed successfully.
 	 */
-	int STATUS_SERVICE_TSLINFOVERSIONS_OK = NumberConstants.NUM32;
+	int STATUS_SERVICE_TSLINFOVERSIONS_OK = NumberConstants.NUM0;
 	/**
 	 * Constant attribute that represents the value for the result status service
 	 * 'getTslInfoVersions' an error occurred while running the service.
 	 */
-	int STATUS_SERVICE_TSLINFOVERSIONS_ERROR = NumberConstants.NUM33;
+	int STATUS_SERVICE_TSLINFOVERSIONS_ERROR = NumberConstants.NUM1;
 
 }
