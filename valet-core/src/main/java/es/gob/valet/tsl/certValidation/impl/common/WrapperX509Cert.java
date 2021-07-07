@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 07/04/2021.
+ * @version 1.3, 06/07/2021.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -32,6 +32,7 @@ import java.util.List;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
@@ -57,7 +58,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
  * <p>Wrapper class for a X.509v3 Certificate. This class provides methods to
  * calculate/extract some information of the certificate.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 07/04/2021.
+ * @version 1.3, 06/07/2021.
  */
 public class WrapperX509Cert {
 
@@ -747,7 +748,13 @@ public class WrapperX509Cert {
 		String result = null;
 		if (x509CertBC != null) {
 			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
-			result = IETFUtils.valueToString(x500name.getRDNs(BCStyle.SERIALNUMBER)[0].getFirst().getValue());
+			RDN[ ] rndArray = x500name.getRDNs(BCStyle.SERIALNUMBER);
+			if (rndArray != null && rndArray.length > 0) {
+				if (rndArray[0].getFirst() != null) {
+					result = IETFUtils.valueToString(rndArray[0].getFirst().getValue());
+				}
+			}
+
 		}
 		return result;
 	}
@@ -760,7 +767,12 @@ public class WrapperX509Cert {
 		String result = null;
 		if (x509CertBC != null) {
 			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
-			result = IETFUtils.valueToString(x500name.getRDNs(BCStyle.PSEUDONYM)[0].getFirst().getValue());
+			RDN[ ] rndArray = x500name.getRDNs(BCStyle.PSEUDONYM);
+			if (rndArray != null && rndArray.length > 0) {
+				if (rndArray[0].getFirst() != null) {
+					result = IETFUtils.valueToString(rndArray[0].getFirst().getValue());
+				}
+			}
 		}
 		return result;
 	}
@@ -773,7 +785,12 @@ public class WrapperX509Cert {
 		String result = null;
 		if (x509CertBC != null) {
 			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
-			result = IETFUtils.valueToString(x500name.getRDNs(BCStyle.GIVENNAME)[0].getFirst().getValue());
+			RDN[ ] rndArray = x500name.getRDNs(BCStyle.GIVENNAME);
+			if (rndArray != null && rndArray.length > 0) {
+				if (rndArray[0].getFirst() != null) {
+					result = IETFUtils.valueToString(rndArray[0].getFirst().getValue());
+				}
+			}
 		}
 		return result;
 	}
@@ -786,7 +803,12 @@ public class WrapperX509Cert {
 		String result = null;
 		if (x509CertBC != null) {
 			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
-			result = IETFUtils.valueToString(x500name.getRDNs(BCStyle.CN)[0].getFirst().getValue());
+			RDN[ ] rndArray = x500name.getRDNs(BCStyle.CN);
+			if (rndArray != null && rndArray.length > 0) {
+				if (rndArray[0].getFirst() != null) {
+					result = IETFUtils.valueToString(rndArray[0].getFirst().getValue());
+				}
+			}
 		}
 		return result;
 	}
@@ -803,11 +825,21 @@ public class WrapperX509Cert {
 		return result;
 	}
 
+	/**
+	 * Gets the surname of the certificate.
+	 * @return
+	 */
 	private String getSurname() {
 		String result = null;
 		if (x509CertBC != null) {
 			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
-			result = IETFUtils.valueToString(x500name.getRDNs(BCStyle.SURNAME)[0].getFirst().getValue());
+			RDN[ ] rndArray = x500name.getRDNs(BCStyle.SURNAME);
+			if (rndArray != null && rndArray.length > 0) {
+				if (rndArray[0].getFirst() != null) {
+
+					result = IETFUtils.valueToString(rndArray[0].getFirst().getValue());
+				}
+			}
 		}
 
 		return result;

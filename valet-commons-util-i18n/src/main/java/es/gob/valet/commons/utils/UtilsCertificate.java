@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 24/03/2021.
+ * @version 1.8, 06/07/2021.
  */
 package es.gob.valet.commons.utils;
 
@@ -60,7 +60,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 24/03/2021.
+ * @version 1.8, 06/07/2021.
  */
 public final class UtilsCertificate {
 
@@ -85,7 +85,13 @@ public final class UtilsCertificate {
 	public static X509Certificate getX509Certificate(byte[ ] certificate) throws CommonUtilsException {
 		InputStream is = new ByteArrayInputStream(certificate);
 		try {
-			return (X509Certificate) CertificateFactory.getInstance(X509_TYPE).generateCertificate(is);
+			X509Certificate x509 = (X509Certificate) CertificateFactory.getInstance(X509_TYPE).generateCertificate(is);
+			if(x509 != null){
+				return x509;
+			}else{
+				throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000));
+			}
+			
 		} catch (CertificateException e) {
 			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
 		} catch (Exception e){
