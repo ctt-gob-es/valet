@@ -184,18 +184,6 @@ public final class StaticValetConfig {
 	public static final String TSL_MAPPING_CERTCLASSIFICATION_TSA = "tsl.mapping.certClassification.TSA";
 
 	/**
-	 * Constant attribute that represents the key for the property that indicates the set of values recognized
-	 * for a certificate qualified to 'YES'.
-	 */
-	public static final String TSL_MAPPING_CERTQUALIFIED_YES = "tsl.mapping.certQualified.YES";
-
-	/**
-	 * Constant attribute that represents the key for the property that indicates the set of values recognized
-	 * for a certificate qualified to 'NO'.
-	 */
-	public static final String TSL_MAPPING_CERTQUALIFIED_NO = "tsl.mapping.certQualified.NO";
-
-	/**
 	 * Constant attribute that represents the key for the property that indicates the timgap allowed for the input
 	 * parameter in the service 'detectCertInTslInfoAndValidation' that represents the validation date.
 	 */

@@ -281,29 +281,6 @@ public final class TSLProperties {
 
 	}
 
-	/**
-	 * Gets the set of values from the logical field 'clasificacion' associated to
-	 * the logical field 'certQualified' for the mapping YES.
-	 * @return Set of values from the logical field 'clasificacion' associated to
-	 * the logical field 'certQualified' for the mapping YES.
-	 */
-	public static Set<Integer> getClassificationSetForCertQualifiedYES() {
-
-		return getClassificationSet(StaticValetConfig.TSL_MAPPING_CERTQUALIFIED_YES);
-
-	}
-
-	/**
-	 * Gets the set of values from the logical field 'clasificacion' associated to
-	 * the logical field 'certQualified' for the mapping NO.
-	 * @return Set of values from the logical field 'clasificacion' associated to
-	 * the logical field 'certQualified' for the mapping NO.
-	 */
-	public static Set<Integer> getClassificationSetForCertQualifiedNO() {
-
-		return getClassificationSet(StaticValetConfig.TSL_MAPPING_CERTQUALIFIED_NO);
-
-	}
 
 	/**
 	 * Gets the set of values from the logical field 'clasificacion' associated to

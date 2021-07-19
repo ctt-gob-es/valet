@@ -717,7 +717,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// en cuenta
 		// tan solo los servicios de tipo TSA.
 		if (isTsaCertificate) {
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL274));
+			//LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL274));
 
 			// Comprobamos si el servicio es de tipo TSA (cualificado o no).
 			if (checkIfTSPServiceTypeIsTSAQualified(tspServiceType) || checkIfTSPServiceTypeIsTSANonQualified(tspServiceType)) {
