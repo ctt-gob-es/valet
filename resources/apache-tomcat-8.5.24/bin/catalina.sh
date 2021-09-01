@@ -108,7 +108,6 @@
 # -----------------------------------------------------------------------------
 
 JAVA_HOME="C:\Java_64\jdk1.8.0_131"
-JAVA_OPTS="$JAVA_OPTS -Dtomcat.config.path=$CATALINA_HOME/conf/"
 JAVA_OPTS="$JAVA_OPTS -Dvalet.config.path=[PROPERTIES SETTING FOLDER PATH]/"
 JAVA_OPTS="$JAVA_OPTS -Dlog4j.configuration.valet.rest=[PROPERTIES SETTING FOLDER PATH]/valet-rest-log4j.xml"
 JAVA_OPTS="$JAVA_OPTS -Dlog4j.configuration.valet.web=[PROPERTIES SETTING FOLDER PATH]/valet-web-log4j.xml"

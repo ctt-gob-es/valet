@@ -52,10 +52,6 @@
 			<groupId>es.gob.valet</groupId>
 			<artifactId>valet-commons-util</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>es.gob.valet</groupId>
-			<artifactId>valet-i18n</artifactId>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

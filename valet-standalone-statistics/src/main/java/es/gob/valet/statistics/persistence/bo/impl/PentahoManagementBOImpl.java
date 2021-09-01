@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/10/2019.
+ * @version 1.1, 01/09/2021.
  */
 package es.gob.valet.statistics.persistence.bo.impl;
 
@@ -34,8 +34,10 @@ import javax.persistence.EntityTransaction;
 
 import org.apache.log4j.Logger;
 
-import es.gob.valet.i18n.Language;
+
 import es.gob.valet.statistics.ValetStatisticsException;
+import es.gob.valet.statistics.i18n.Language;
+import es.gob.valet.statistics.i18n.StandaloneStatisticsLogConstants;
 import es.gob.valet.statistics.persistence.bo.interfaz.IPentahoManagementBO;
 import es.gob.valet.statistics.persistence.dto.TransactionDTO;
 import es.gob.valet.statistics.persistence.dto.ValidationDTO;
@@ -47,12 +49,11 @@ import es.gob.valet.statistics.persistence.pojo.DimDatePOJO;
 import es.gob.valet.statistics.persistence.pojo.DimNodePOJO;
 import es.gob.valet.statistics.persistence.pojo.FctTransactionPOJO;
 import es.gob.valet.statistics.persistence.pojo.FctValidationPOJO;
-import es.gob.valet.statistics.tools.StandaloneStatisticsLogConstants;
 
 /** 
  * <p>Class that implements all the operations related with de database schema.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/10/2019.
+ * @version 1.1, 01/09/2021.
  */
 public final class PentahoManagementBOImpl implements IPentahoManagementBO {
 

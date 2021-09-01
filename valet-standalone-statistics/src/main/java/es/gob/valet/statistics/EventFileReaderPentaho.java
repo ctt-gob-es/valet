@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/10/2019.
+ * @version 1.1, 01/09/2021.
  */
 package es.gob.valet.statistics;
 
@@ -40,17 +40,17 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.i18n.Language;
+import es.gob.valet.statistics.i18n.Language;
+import es.gob.valet.statistics.i18n.StandaloneStatisticsLogConstants;
 import es.gob.valet.statistics.persistence.bo.impl.PentahoManagementBOImpl;
 import es.gob.valet.statistics.persistence.bo.interfaz.IPentahoManagementBO;
 import es.gob.valet.statistics.persistence.dto.TransactionDTO;
 import es.gob.valet.statistics.persistence.dto.ValidationDTO;
-import es.gob.valet.statistics.tools.StandaloneStatisticsLogConstants;
 
 /** 
  * <p>Class for reading the event file and registering the information contained in this file in the Pentaho database schemas .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/10/2019.
+ * @version 1.1, 01/09/2021.
  */
 public final class EventFileReaderPentaho {
 

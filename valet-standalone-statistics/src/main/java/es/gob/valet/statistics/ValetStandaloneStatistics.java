@@ -20,14 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/10/2019.
+ * @version 1.1, 01/09/2021.
  */
 package es.gob.valet.statistics;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -37,15 +36,14 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.utils.UtilsTomcat;
+import es.gob.valet.statistics.i18n.Language;
+import es.gob.valet.statistics.i18n.StandaloneStatisticsLogConstants;
 import es.gob.valet.statistics.tools.FileLogFilter;
-import es.gob.valet.statistics.tools.StandaloneStatisticsLogConstants;
 
 /** 
  * <p>Main class of the module ValET Standalone Statistics.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/10/2019.
+ * @version 1.1, 01/09/2021.
  */
 public final class ValetStandaloneStatistics {
 
@@ -67,14 +65,11 @@ public final class ValetStandaloneStatistics {
 	 * Attribute that represents the property key used to indicate the event file base name.
 	 */
 	private static final String BASE_NAME_PROPERTY_KEY = "valet.lanzador.baseName";
-	/**
-	 * Attribute that represents the path to message file property.
-	 */
-	private static final String MESSAGE_PROPERTY_PATH = "/messages/Language.properties";
+
 	/**
 	 * Attribute that represents the path to launcher file property.
 	 */
-	private static final String LAUNCHER_PROPERTY_PATH = "/lanzador.properties";
+	private static final String LAUNCHER_PROPERTY_PATH = "/configuration/lanzador.properties";
 
 	/**
 	 * Attribute that represents the path to the file to read.
@@ -105,7 +100,6 @@ public final class ValetStandaloneStatistics {
 	 */
 	public static void main(String[ ] args) throws ValetStatisticsException {
 		dateStart = new Date();
-		loadMessage();
 		loadProperties();
 
 		System.getProperties();
@@ -174,19 +168,6 @@ public final class ValetStandaloneStatistics {
 		
 		
 		
-	}
-
-	/**
-	 * Sets the system property {@link UtilsJBoss#PROP_JBOSS_SERVER_CONFIG_DIR} with the path to folder that contains the messages folder.
-	 * This system property is required for the afirma6-i18n module.
-	 */
-	private static void loadMessage() {
-		URL resource = ValetStandaloneStatistics.class.getResource(MESSAGE_PROPERTY_PATH);
-		if (resource != null) {
-			// System.setProperty(UtilsJBoss.PROP_JBOSS_SERVER_CONFIG_DIR, new
-			// File(resource.getPath()).getParentFile().getParentFile().getAbsolutePath());
-			System.setProperty(UtilsTomcat.TOMCAT_CONF_DIR, new File(resource.getPath()).getParentFile().getParentFile().getAbsolutePath());
-		}
 	}
 
 	/**
