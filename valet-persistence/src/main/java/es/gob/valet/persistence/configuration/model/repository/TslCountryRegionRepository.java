@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 28/06/2021.
+ * @version 1.3, 30/08/2021.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -29,6 +29,7 @@ import java.util.List;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
@@ -36,7 +37,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 /**
  * <p>Interface that provides CRUD functionality for the TslCountryRegion entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 28/06/2021.
+ * @version 1.3, 30/08/2021.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -61,5 +62,13 @@ public interface TslCountryRegionRepository extends JpaRepository<TslCountryRegi
 	 * @return All countries ordered by their country/region name.
 	 */
 	List<TslCountryRegion> findAllByOrderByCountryRegionCodeAsc();
+	
+	
+	/**
+	 * Method to obtain the list of codes of the countries of the TSLs stored in the system.
+	 * @return Object that represents a list of country code.
+	 */
+	@Query("SELECT c.countryRegionCode FROM TslCountryRegion c")
+	List<String> findAllByOrder();
 
 }

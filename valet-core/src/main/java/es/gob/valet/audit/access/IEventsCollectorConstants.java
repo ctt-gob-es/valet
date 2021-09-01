@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.3, 10/05/2019.
+ * @version 1.4, 30/08/2021.
  */
 package es.gob.valet.audit.access;
 
@@ -31,7 +31,7 @@ import es.gob.valet.commons.utils.NumberConstants;
  * <p>Interface that defines all the public constants needed to work with
  * audit transactions.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 10/05/2019.
+ * @version 1.4, 30/08/2021.
  */
 public interface IEventsCollectorConstants {
 
@@ -44,6 +44,10 @@ public interface IEventsCollectorConstants {
 	 * Constant attribute that represents the id for the rest service: Detect Certificate in TSL and Validate.
 	 */
 	int SERVICE_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION_ID = 2;
+	/**
+	 * Constant attribute that represents the id for the rest service: Get TSL Info Versions.
+	 */
+	int SERVICE_GET_TSL_INFO_VERSIONS_ID = 3;
 
 	/**
 	 * Constant attribute that represents the oepration to open a new trace/transaction.

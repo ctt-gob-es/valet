@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 25/11/2018.
+ * @version 1.3, 30/08/2021.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -33,7 +33,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer.</p>
  * <b>Project:</b><p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegion entity.</p>
- * @version 1.2, 25/11/2018.
+ * @version 1.3, 30/08/2021.
  */
 public interface ITslCountryRegionService {
 
@@ -72,6 +72,14 @@ public interface ITslCountryRegionService {
 	 */
 	@Transactional
 	List<TslCountryRegion> getAllTslCountryRegion(boolean loadMappings);
+	
+	
+	/**
+	 * Gets all the TSL Country Region from the data base.
+	 * @return List with all code the TSL Country Region data representation from the data base.
+	 */
+	@Transactional
+	List<String> getAllCodeTslCountryRegion();
 
 	/**
 	 * Updates/Saves the input TSL Country Region in the data base.

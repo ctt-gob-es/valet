@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 30/08/2021.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the cache module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 30/08/2021.
  */
 public interface ICacheGeneralMessages {
 
@@ -134,6 +134,11 @@ public interface ICacheGeneralMessages {
 	 * file messages/valet-cache/general_xx_YY.properties.
 	 */
 	String CACHE_IMPL_017 = "CACHE_IMPL_017";
+	/**
+	 * Constant attribute that represents the property key <code>CACHE_IMPL_018</code> belonging to the
+	 * file messages/valet-cache/general_xx_YY.properties.
+	 */
+	String CACHE_IMPL_018 = "CACHE_IMPL_018";
 
 	/**
 	 * Constant attribute that represents the property key <code>CACHE_IMPL_JCM_001</code> belonging to the

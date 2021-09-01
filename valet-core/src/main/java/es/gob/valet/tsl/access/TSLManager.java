@@ -20,14 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.10, 07/06/2021.
+ * @version 1.11, 30/08/2021.
  */
 package es.gob.valet.tsl.access;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -54,7 +53,6 @@ import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
-import es.gob.valet.i18n.messages.IRestGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
@@ -89,7 +87,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.10, 07/06/2021.
+ * @version 1.11, 30/08/2021.
  */
 public final class TSLManager {
 
@@ -1182,23 +1180,13 @@ public final class TSLManager {
 
 		// Obtenemos de base de datos el listado de países y regiones dados de
 		// alta.
-		List<TslCountryRegion> tslcrList = null;
 		try {
-			tslcrList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getAllTslCountryRegion(false);
+			result = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getAllCodeTslCountryRegion();
 		} catch (Exception e) {
 			throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL160), e);
 		}
 
-		// Si el listado no es nulo ni vacío,
-		// extraemos el código de cada país/region.
-		if (tslcrList != null && !tslcrList.isEmpty()) {
 
-			result = new ArrayList<String>(tslcrList.size());
-			for (TslCountryRegion tslcr: tslcrList) {
-				result.add(tslcr.getCountryRegionCode());
-			}
-
-		}
 
 		return result;
 

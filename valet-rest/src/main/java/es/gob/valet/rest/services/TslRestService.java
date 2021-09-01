@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.17, 07/06/2021.
+ * @version 1.18, 30/08/2021.
  */
 package es.gob.valet.rest.services;
 
@@ -91,7 +91,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.17, 07/06/2021.
+ * @version 1.18, 30/08/2021.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -100,6 +100,18 @@ public class TslRestService implements ITslRestService {
 	 * Attribute that represents the object that manages the log of the class.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(TslRestService.class);
+	
+	
+	/**
+	 * Attribute that represents the identifier of the application that will be used for auditing in the 'getTslInformation' service
+	 */
+	private static final String INTERNAL_TASK_APP = "APP_INTERNAL_TASK";
+	
+	/**
+	 * Attribute that represents the identifier of the delegated application that will be used for auditing in the 'getTslInformation' service
+	 */
+	private static final String INTERNAL_TASK_DELEGATE_APP = "DELAPP_INTERNAL_TASK";
+	
 
 	/**
 	 * Attribute that represents the HTTP Servlet Request.
@@ -343,7 +355,6 @@ public class TslRestService implements ITslRestService {
 				// obtenemos correctamente, cerramos la transacción.
 				byte[ ] resultByteArray = buildResultByteArray(result);
 				CommonsServicesAuditTraces.addCloseTransactionTrace(auditTransNumber, resultByteArray);
-				;
 			} catch (TSLManagingException e) {
 				result = new DetectCertInTslInfoAndValidationResponse();
 				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
@@ -1143,11 +1154,17 @@ public class TslRestService implements ITslRestService {
 		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS);
 		LOGGER.info(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG043));
 		try {
+			//Se abre la transacción de auditoría
+			CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, IEventsCollectorConstants.SERVICE_GET_TSL_INFO_VERSIONS_ID, extractRequestByteArray());
+			CommonsServicesAuditTraces.addStartRSTrace(auditTransNumber, INTERNAL_TASK_APP, INTERNAL_TASK_DELEGATE_APP);
 			Map<String, Integer> tslCountryVersion = TSLManager.getInstance().getTslInfoVersions();
 			result = new TslInformationVersionsResponse();
 			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_TSLINFOVERSIONS_OK);
 			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG040, new Object[ ] { tslCountryVersion.size() }));
 			result.setTslVersionsMap(tslCountryVersion);
+			//se calcula la representación en bytes del resultado, y si la obtenemos correctamente, cerramos la transacción.
+			byte[ ] resultByteArray = buildResultByteArray(result);
+			CommonsServicesAuditTraces.addCloseTransactionTrace(auditTransNumber, resultByteArray);
 		} catch (TSLManagingException e) {
 			result = new TslInformationVersionsResponse();
 			result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
@@ -1165,6 +1182,8 @@ public class TslRestService implements ITslRestService {
 		}
 		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG044, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		// devolvemos el resultado
+		//Limpiamos la información NDC.
+		LoggingInformationNDC.unregisterNdcInf();
 		return result;
 	}
 
