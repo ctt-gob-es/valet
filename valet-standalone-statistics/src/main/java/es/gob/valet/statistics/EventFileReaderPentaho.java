@@ -108,6 +108,16 @@ public final class EventFileReaderPentaho {
 	private static final String COD_OP_13 = IPentahoManagementBO.TOKEN_OP + IPentahoManagementBO.TOKEN_SEPARATOR + NumberConstants.NUM13;
 
 	/**
+	 * Attribute that represents the text 'OP=close'. 
+	 */
+	private static final String COD_OP_CLOSE = IPentahoManagementBO.TOKEN_OP + IPentahoManagementBO.TOKEN_SEPARATOR + IPentahoManagementBO.CLOSE_TRACE_TOKEN;
+	
+	/**
+	 * Attribute representing the value 'UNDEFINED' result code.
+	 */
+	private static final String COD_RESULT_UNDEFINED = "UNDEFINED";
+
+	/**
 	 * Attribute that represents the transactions map. The key is a Transaction Object. The value is the number of transactions with the same.
 	 * @see es.gob.valet.statistics.TransactionDTO#equals(Object o)
 	 */
@@ -118,7 +128,7 @@ public final class EventFileReaderPentaho {
 	 * @see es.gob.valet.statistics.ValidationDTO#equals(Object o)
 	 */
 	private static Map<ValidationDTO, Integer> validationMap = new HashMap<ValidationDTO, Integer>();
-	
+
 	/**
 	 * Attribute that represents the list of pending transactions.
 	 */
@@ -137,7 +147,6 @@ public final class EventFileReaderPentaho {
 	 * Attribute that represents the List of transactions of service:'DetectCertInTslInfoAndValidation'.
 	 */
 	private static List<ValidationDTO> validationsList = new ArrayList<ValidationDTO>();
-
 
 	/**
 	 * Constructor method for the class EventFileReaderPentaho.java.
@@ -170,8 +179,8 @@ public final class EventFileReaderPentaho {
 		fillTransactionMap();
 		// se calcula el número de transacciones agrupadas
 		calculateNumberTransactions();
-		
-		//se calcula el número de transacciones de validación agrupadas
+
+		// se calcula el número de transacciones de validación agrupadas
 		calculateNumberValidations();
 
 		// si queda alguna transacción en la lista de transacciones pendientes,
@@ -229,6 +238,9 @@ public final class EventFileReaderPentaho {
 				} else if (line.contains(COD_OP_3)) {
 					LOGGER.trace(Language.getResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG021));
 					closeTransaction(line);
+				} else if (line.contains(COD_OP_CLOSE)) {
+					LOGGER.trace(Language.getResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG021));
+					closeTransaction(line);
 				}
 				line = reader.readLine();
 			}
@@ -278,7 +290,6 @@ public final class EventFileReaderPentaho {
 		// se le incluye la fecha del log
 		entry.setDate(logDate);
 
-		
 		pendingTransactionMap.put(transactionId, entry);
 		LOGGER.trace(Language.getResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG011));
 	}
@@ -295,26 +306,25 @@ public final class EventFileReaderPentaho {
 		Long transactionId = Long.valueOf(transactionIdString);
 
 		TransactionDTO transactionDTO = pendingTransactionMap.get(transactionId);
-		
+
 		ValidationDTO pendingValidationDTO = new ValidationDTO();
 		pendingValidationDTO.setTransactionId(transactionDTO.getTransactionId());
 		pendingValidationDTO.setApplication(transactionDTO.getApplication());
 		pendingValidationDTO.setDelegatedApplication(transactionDTO.getDelegatedApplication());
 		pendingValidationDTO.setDate(transactionDTO.getDate());
-		
-		//se obtiene la información de las TSL
+
+		// se obtiene la información de las TSL
 		String country = infoTransaction.remove(IPentahoManagementBO.TOKEN_COUNTRY);
 		String tspName = infoTransaction.remove(IPentahoManagementBO.TOKEN_TSP_NAME);
 		String tspService = infoTransaction.remove(IPentahoManagementBO.TOKEN_TSP_SERVICE);
 		String tspServiceHistoric = infoTransaction.remove(IPentahoManagementBO.TOKEN_TSP_SERVICE_HIST);
-		
+
 		pendingValidationDTO.setCountry(country);
 		pendingValidationDTO.setTspName(tspName);
 		pendingValidationDTO.setTspService(tspService);
 		pendingValidationDTO.setTspServiceHistoric(tspServiceHistoric);
-		
+
 		pendingValidationMap.put(transactionId, pendingValidationDTO);
-		
 
 	}
 
@@ -379,12 +389,12 @@ public final class EventFileReaderPentaho {
 			transactionsList.add(entry);
 		}
 	}
-	
+
 	/**
 	 * Method to calculate the number of transactions of service:'DetectCertInTslInfoAndValidation'.
 	 */
-	private static void calculateNumberValidations(){
-		for (Map.Entry<ValidationDTO, Integer> mapEntry: validationMap.entrySet()){
+	private static void calculateNumberValidations() {
+		for (Map.Entry<ValidationDTO, Integer> mapEntry: validationMap.entrySet()) {
 			ValidationDTO entry = mapEntry.getKey();
 			entry.setNumValidations(mapEntry.getValue());
 			validationsList.add(entry);
@@ -410,36 +420,51 @@ public final class EventFileReaderPentaho {
 
 			TransactionDTO pendingTransactionDto = pendingTransactionMap.get(transactionId);
 
-			if (pendingTransactionDto == null) {
-				String error = Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG015, new Object[ ] { transactionIdString });
-				LOGGER.error(error);
+			if (pendingTransactionDto != null ) {
+				if (line.contains(COD_OP_3)) {
+					String codResult = infoTransaction.remove(IPentahoManagementBO.TOKEN_RESULT);
+					pendingTransactionDto.setCodResult(codResult);
 
-			} else {
-				String codResult = infoTransaction.remove(IPentahoManagementBO.TOKEN_RESULT);
-				pendingTransactionDto.setCodResult(codResult);
+					pendingTransactionMap.remove(transactionId);
 
-				pendingTransactionMap.remove(transactionId);
-
-				// increment number of transactions of the same type
-				if (transactionMap.containsKey(pendingTransactionDto)) {
-					Integer numberOfTransactionsForEntry = transactionMap.get(pendingTransactionDto);
-					transactionMap.put(pendingTransactionDto, numberOfTransactionsForEntry + 1);
-					LOGGER.trace(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG016, new Object[ ] { pendingTransactionDto, numberOfTransactionsForEntry }));
-				} else {
-					transactionMap.put(pendingTransactionDto, 1);
+					// increment number of transactions of the same type
+					if (transactionMap.containsKey(pendingTransactionDto)) {
+						Integer numberOfTransactionsForEntry = transactionMap.get(pendingTransactionDto);
+						transactionMap.put(pendingTransactionDto, numberOfTransactionsForEntry + 1);
+						LOGGER.trace(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG016, new Object[ ] { pendingTransactionDto, numberOfTransactionsForEntry }));
+					} else {
+						transactionMap.put(pendingTransactionDto, 1);
+					}
+				} else if (line.contains(COD_OP_CLOSE)){
+		
+					if(pendingTransactionDto.getService().equals(NumberConstants.NUM3_LONG)){
+						//se trata de una transacción del servicio 'getTslVersionInfo'
+						pendingTransactionDto.setCodResult(COD_RESULT_UNDEFINED);
+						// increment number of transactions of the same type
+						if (transactionMap.containsKey(pendingTransactionDto)) {
+							Integer numberOfTransactionsForEntry = transactionMap.get(pendingTransactionDto);			
+							transactionMap.put(pendingTransactionDto, numberOfTransactionsForEntry + 1);
+							LOGGER.trace(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG016, new Object[ ] { pendingTransactionDto, numberOfTransactionsForEntry }));
+						} else {
+							transactionMap.put(pendingTransactionDto, 1);
+						}
+						pendingTransactionMap.remove(transactionId);
+					}
+					
 				}
 			}
-			
-			//se comprueba si esta transacción es de validación
+
+			// se comprueba si esta transacción es de validación
 			ValidationDTO pendingValidationDto = pendingValidationMap.get(transactionId);
-			if(pendingValidationDto != null){
-				if(validationMap.containsKey(pendingValidationDto)){
+			if (pendingValidationDto != null) {
+				if (validationMap.containsKey(pendingValidationDto)) {
 					Integer numberOfValidationsForEntry = validationMap.get(pendingValidationDto);
-					validationMap.put(pendingValidationDto, numberOfValidationsForEntry+1);
-				}else{
+					validationMap.put(pendingValidationDto, numberOfValidationsForEntry + 1);
+				} else {
 					validationMap.put(pendingValidationDto, 1);
 				}
 			}
+
 		} catch (Exception e) {
 			String msgError = Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG017, new Object[ ] { transactionIdString, e.getMessage() });
 			throw new ValetStatisticsException(msgError, e);
@@ -454,13 +479,11 @@ public final class EventFileReaderPentaho {
 	private static void persistTransactionsList() throws ValetStatisticsException {
 		try {
 			PentahoManagementBOImpl.getInstance().saveTransactions(transactionsList, validationsList, dateStart, logFilename);
-			
+
 		} catch (Exception e) {
 			throw new ValetStatisticsException(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG009, new Object[ ] { e.getMessage() }));
 		}
 
 	}
-	
-
 
 }

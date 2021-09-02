@@ -75,6 +75,10 @@ public interface NumberConstants {
 	 * Constant attribute that represents the number 3.
 	 */
 	int NUM3 = 3;
+	/**
+	 * Constant attribute that represents the number 3 (type long).
+	 */
+	long NUM3_LONG = 3l;
 
 	/**
 	 * Constant attribute that represents the number 4.
