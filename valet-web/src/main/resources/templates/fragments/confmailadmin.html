@@ -5,54 +5,63 @@
 		<div class="bgc-white p-20 bd">
 			<div class="mT-30">
 				<form id="newConfServerMailForm" th:object="${confServerMailForm}" th:action="@{/saveconfservermail}" method="post">
+				
+				<div id="messageUpdateCSMId" role="alert"></div>
 					<input type='hidden' id="idConfServerMail" th:field="*{idConfServerMail}">
 					
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<label for="issuerMailForm" th:text="#{form.confServerMail.issuer}"></label> 
-							<input type="email" class="form-control" id="issuerMailForm" th:field="*{issuerMail}" required>
+							<span id="issuerMail_span"
+								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+							<input type="email" class="form-control" id="issuerMailForm" th:field="*{issuerMail}">
 						</div>
 					</div>
 					
 					<div class="form-row">
 						<div class="form-group col-md-8">
-							<label for="hostMailForm" th:text="#{form.confServerMail.host}"></label> 
-							<input type="text" class="form-control" id="hostMailForm" th:field="*{hostMail}" required>
+							<label for="hostMailForm" th:text="#{form.confServerMail.host}"></label>
+							<span
+								id="hostMail_span"
+								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
+							<input type="text" class="form-control" id="hostMailForm" th:field="*{hostMail}">
 						</div>
 						<div class="form-group col-md-4">
 							<label for="portMailForm" th:text="#{form.confServerMail.port}"></label> 
-							<input type="number" class="form-control" id="portMailForm" th:field="*{portMail}" required>
+							<span
+								id="portMail_span"
+								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+							<input type="number" class="form-control" id="portMailForm" th:field="*{portMail}">
 						</div>
 					</div>
 					
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<label for="useAuthenticationMailForm" th:text="#{form.confServerMail.useAuthentication}"></label> 
-							<input type="checkbox" id="userAuthenticationMailForm" th:field="*{useAuthenticationMail}" checked>
+							<input type="checkbox" id="userAuthenticationMailForm" th:field="*{useAuthenticationMail}"  onclick="changeUseAuthentication();">
 						</div>
 					</div>
 					
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<label for="userMailForm" th:text="#{form.confServerMail.user}"></label> 
-							<input type="text" class="form-control" id="userMailForm" th:field="*{userMail}">
+							<span
+								id="userMail_span"
+								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+							<input type="text" class="form-control" id="userMailForm" th:field="*{userMail}" th:readonly="${noAuthentication}">
 						</div>
 					</div>
 					
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<label for="passwordMailForm" th:text="#{form.confServerMail.password}"></label> 
-							<input type="password" class="form-control" id="passwordMailForm" th:field="*{passwordMail}">
+							<input type="password" class="form-control" id="passwordMailForm" th:field="*{passwordMail}"  th:readonly="${noAuthentication}"/>
+							<input type='hidden' id="idNewPassword" th:field="*{newPassword}">
 						</div>
 					</div>
 					
 					<button id="saveBtn" type="submit" class="btn btn-primary" 
 						th:utext="#{button.save}">
-					</button>
-					
-					<button id="cleanBtn" class="btn btn-primary" 
-						onclick="cleanForm('#newConfServerMailForm');"
-						th:utext="#{button.cleanForm}">
 					</button>
 					
 				</form>
@@ -63,74 +72,107 @@
 
 <script th:inline="javascript">
 
-$( "#saveBtn" ).click(function( event ) {
+$(document).ready(
+		function() {
+		var existPw = $("#idNewPassword").val();
+		var cryptoPassword = /*[[#{form.confServerMail.edit.password}]]*/;
+		if(existPw ==='true'){
+		document.getElementById('passwordMailForm').value=cryptoPassword;
+	}
+		
+		});
+		
+	
+		 
+		 
+//función para activar o desactivar los campos usuario/password 
+function changeUseAuthentication(){
+			var cryptoPassword = /*[[#{form.confServerMail.edit.password}]]*/;
+			
+			if(document.getElementById('userAuthenticationMailForm').checked){
+				document.getElementById('userMailForm').readOnly = false;
+				document.getElementById('passwordMailForm').readOnly = false;	
+				
+			if($("#passwordMailForm").val() != null && $("#passwordMailForm").val() != ""){
+						document.getElementById('passwordMailForm').value=cryptoPassword;
+			}				
+				
+				$("#userAuthenticationMailForm").val(true);
+			}else{
+				$("#userAuthenticationMailForm").val(false);
+				document.getElementById('userMailForm').readOnly = true;
+				document.getElementById('userMailForm').value="";
+				document.getElementById('passwordMailForm').readOnly = true;
+				document.getElementById('passwordMailForm').value="";
+			}
+		}
+
+
+		
+//funcion para guardar los cambios
+$( "#saveBtn" ).click(function(event) {
 	  event.preventDefault();
-	  
+	 cleanSpan();
 	  var formData = JSON.stringify($("#newConfServerMailForm").serializeJSON());
-	  var url = /*[[@{/saveconfservermail}]]*/ null;
-	  
+	  var saveConfServerMail = /*[[@{/saveconfservermail}]]*/ ;
+	  var messageError = /*[[#{message.view.confServerMail.error}]]*/;
 	  loading();
-	  if ($('#newConfServerMailForm')[0].checkValidity() === false) {
-		  hide();
-		  
-		  $('#newConfServerMailForm *').filter(':input').each(function(){
-    	    
-	          if(!$(this)[0].checkValidity()){
-	      	   	$("#" + $(this).attr('id')).addClass("has-error");
-	      	  } else {
-	      	   	$("#" + $(this).attr('id')).removeClass("has-error");
-	      	  }
-    	    
-    	  });
-		  
-	  } else{
-		  $.ajax({
-			  type: "POST",
-			  url: url,
+	  //se borra si existiera algún mensaje
+			$('#messageUpdateCSMId').html("");
+			$('#messageUpdateCSMId').removeClass('alert alert-success');
+			$('#messageUpdateCSMId').removeClass('alert alert-danger');
+		$.ajax(saveConfServerMail,{
+  			  type: "POST",
 			  data: formData,
 			  dataType: "json",
 			  contentType : "application/json",
 			  success: function(data, error){
 				  hide();
-				  
-				  $('#idConfServerMail').val(data.idConfServerMail);
-				  $('#issuerMailForm').val(data.issuerMail);
-				  $('#hostMailForm').val(data.hostMail);
-				  $('#portMailForm').val(data.portMail);
-				  $('#useAuthenticationMailForm').val(data.useAuthenticationMail);
-				  $('#userMailForm').val(data.userMail);
-				  $('#passwordMailForm').val(data.passwordMail);
-				  
-				  $('#newConfServerMailForm *').filter(':input').each(function(){
-					 $("#" + $(this).attr('id')).removeClass("has-error");
-				  });
-				   
-				  if ($('#errorModalConfMail').length > 0){
-					 $('#errorModalConfMail').remove();
-				  }
-				  
-			  },
+				  if(data.error != null){
+						var errores = JSON.parse(data.error);
+						if(errores != null){
+								jQuery.each(errores, function(i, val){
+								$('#newConfServerMailForm *').filter('span').each(function(){
+									if (i == $(this).attr('id')){
+										$("#" + i).text(val);
+										$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+									}
+								});
+							})
+						}else{
+							$('#messageUpdateCSMId').html(data.error);
+							$('#messageUpdateCSMId').addClass('alert alert-danger');
+						}
+					} else{
+					  if(data.msgOk!= "" && data.msgOk!= null){
+							$('#messageUpdateCSMId').html(data.msgOk);
+							$('#messageUpdateCSMId').addClass('alert alert-success');
+						}
+						
+			  }},
 			  error:function(){
 				  hide();
 				  if ($('#errorModalConfMail').length > 0){
 						 $('#errorModalConfMail').remove();
 					  }
-				  $('#newConfServerMailForm').append('<div id="errorModalConfMail" class="alert alert-danger" role="alert"><strong>Error al guardar la configuraci&oacute;n del servidor del correo electr&oacute;nico</strong></div>');
+				  $('#messageUpdateCSMId').html(messageError);
+					$('#messageUpdateCSMId').addClass('alert alert-danger');
+				 
 			  }
 			});
-	  }
+
 
 });
 
-function cleanForm(f){
-	$(f + ' *').filter(':input').each(function(){
-		$(this).val('');
-	});
-	$(f + ' *').filter('span').each(function(){
-		$(this).text('');
-	});
-	$(f + " select").select2().val('').change();
-	$(f).find(".alert").remove();
+function cleanSpan(){
+ $('#newConfServerMailForm *').filter('span.badge').each(function(){
+							$(this).text("");
+							$(this).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+							});
+	
+	 $('#messageUpdateCSMId').text("");
+	 $('#messageUpdateCSMId').removeClass('alert alert-danger');
+	 $('#messageUpdateCSMId').removeClass('alert alert-success');
 }
 
 </script>

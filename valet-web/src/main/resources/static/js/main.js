@@ -319,7 +319,7 @@ function closeButton(btnId){
 
 
 function cleanSpan(obj){
-$("#"+ obj).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill');
+$("#"+ obj).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
 var msg = '';
 $("#"+ obj).html(msg);
 }
@@ -330,10 +330,10 @@ function validateField(obj, msg)
   if(!obj.checkValidity())
   {
 	 $("#" + $(obj).attr('id')+"_span").html(msg);
-	 $("#" + $(obj).attr('id')+"_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill");
+	 $("#" + $(obj).attr('id')+"_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
   } else {
   $("#" + $(obj).attr('id')+"_span").text('');
-	 $("#" + $(obj).attr('id')).removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill");
+	 $("#" + $(obj).attr('id')).removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
   }
 }
 

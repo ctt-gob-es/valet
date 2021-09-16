@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 24/01/2019.
+ * @version 1.7, 16/09/2021.
  */
 package es.gob.valet.rest.controller;
 
@@ -53,7 +53,7 @@ import es.gob.valet.tasks.TasksManager;
 /**
  * <p>Class that manages the REST request related to the Task's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 24/01/2019.
+ * @version 1.7, 16/09/2021.
  */
 @RestController
 public class TaskRestController {
@@ -76,7 +76,7 @@ public class TaskRestController {
 	@RequestMapping(value = "/updatetask", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody TaskForm updateTask(@RequestBody TaskForm taskForm) {
 
-		// JSONObject json = new JSONObject();
+	
 
 		try {
 
@@ -143,13 +143,14 @@ public class TaskRestController {
 	 */
 	private Boolean validateInitDate(TaskForm taskForm) {
 		Boolean result = true;
-
-		// se comprueba que la fecha indicada no sea anterior a la actual
-		LocalDate now = LocalDate.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_DATE);
-		LocalDate initDay = LocalDate.parse(taskForm.getInitDayString(), formatter);
-		if (initDay == null || initDay.isBefore(now)) {
-			result = false;
+		if (taskForm.getIsEnabled()) {
+			// se comprueba que la fecha indicada no sea anterior a la actual
+			LocalDate now = LocalDate.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_DATE);
+			LocalDate initDay = LocalDate.parse(taskForm.getInitDayString(), formatter);
+			if (initDay == null || initDay.isBefore(now)) {
+				result = false;
+			}
 		}
 
 		return result;

@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 27/12/2018.
+ * @version 1.3, 16/09/2021.
  */
 package es.gob.valet.form;
 
 /**
  * <p>Class that represents the backing form for adding/editing a server mail.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 27/12/2018.
+ * @version 1.2, 16/09/2021.
  */
 public class ConfServerMailForm {
 
@@ -56,7 +56,7 @@ public class ConfServerMailForm {
 	 * Attribute that represents a flag that indicates if it is necessary to use
 	 * the authentication.
 	 */
-	private Boolean useAuthenticationMail;
+	private Boolean useAuthenticationMail = Boolean.FALSE;
 
 	/**
 	 * Attribute that represents the user.
@@ -67,6 +67,20 @@ public class ConfServerMailForm {
 	 * Attribute that represents the password.
 	 */
 	private String passwordMail;
+	/**
+	 * Attribute that represents the password.
+	 */
+	private Boolean newPassword = Boolean.FALSE;
+	
+	/**
+	 * Attribute that represents the variable where the ok messages will be stored.
+	 */
+	private String msgOk;
+
+	/**
+	 * Attribute that represents the variable where the error messages will be stored.
+	 */
+	private String error;
 
 	/**
 	 * Gets the value of the attribute {@link #idConfServerMail}.
@@ -178,6 +192,61 @@ public class ConfServerMailForm {
 	 */
 	public void setPasswordMail(String passwordMailParam) {
 		this.passwordMail = passwordMailParam;
+	}
+
+	
+	/**
+	 * Gets the value of the attribute {@link #msgOk}.
+	 * @return the value of the attribute {@link #msgOk}.
+	 */
+	public String getMsgOk() {
+		return msgOk;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #msgOk}.
+	 * @param msgOk The value for the attribute {@link #msgOk}.
+	 */
+	public void setMsgOk(String msgOk) {
+		this.msgOk = msgOk;
+	}
+
+	
+	/**
+	 * Gets the value of the attribute {@link #error}.
+	 * @return the value of the attribute {@link #error}.
+	 */
+	public String getError() {
+		return error;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #error}.
+	 * @param error The value for the attribute {@link #error}.
+	 */
+	public void setError(String error) {
+		this.error = error;
+	}
+
+
+	
+	
+	/**
+	 * Gets the value of the attribute {@link #newPassword}.
+	 * @return the value of the attribute {@link #newPassword}.
+	 */
+	public Boolean getNewPassword() {
+		return newPassword;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #newPassword}.
+	 * @param newPassword The value for the attribute {@link #newPassword}.
+	 */
+	public void setNewPassword(Boolean newPassword) {
+		this.newPassword = newPassword;
 	}
 
 }

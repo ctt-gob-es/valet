@@ -21,21 +21,20 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 27/12/2018.
+ * @version 1.3, 16/09/2021.
  */
 package es.gob.valet.rest.controller;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.ConfServerMailForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
@@ -48,7 +47,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * <p>Class that manages the REST requests related to the ConfServerMails administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 27/12/2018.
+ * @version 1.3, 16/09/2021.
  */
 @RestController
 public class ConfServerMailRestController {
@@ -57,6 +56,29 @@ public class ConfServerMailRestController {
 	 * Attribute that represents the object that manages the log of the class.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(ConfServerMailRestController.class);
+	/**
+	 * Constant that represents the default text string of the password displayed in edit mode.
+	 */
+	private static final String PASSWORD_EDIT = "********";
+	
+	/**
+	 * Constant that represents the parameter 'issuerMail'.
+	 */
+	private static final String FIELD_ISSUER_MAIL = "issuerMail";
+	/**
+	 * Constant that represents the parameter 'hostMail'.
+	 */
+	private static final String FIELD_HOST_MAIL = "hostMail";
+
+	/**
+	 * Constant that represents the parameter 'portMail'.
+	 */
+	private static final String FIELD_PORT_MAIL = "portMail";
+	/**
+	 * Constant that represents the parameter 'hostMail'.
+	 */
+	private static final String FIELD_USER_MAIL = "userMail";
+
 
 	/**
 	 * Method that maps the save configuration of server mail web request to the controller and saves
@@ -68,16 +90,21 @@ public class ConfServerMailRestController {
 	 * @return {@link ConfServerMail}
 	 */
 	@RequestMapping(value = "/saveconfservermail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody ConfServerMail save(@RequestBody ConfServerMailForm confServerMailForm, BindingResult bindingResult) {
-		ConfServerMail confMail, result = new ConfServerMail();
+	public @ResponseBody ConfServerMailForm save(@RequestBody ConfServerMailForm confServerMailForm) {
+		
+		ConfServerMailForm csmFormUpdated = confServerMailForm;
+		JSONObject json = new JSONObject();
+		boolean error = Boolean.FALSE;
+		
 
-		if (bindingResult.hasErrors()) {
-			JSONObject json = new JSONObject();
-			for (FieldError o: bindingResult.getFieldErrors()) {
-				json.put(o.getField() + "_span", o.getDefaultMessage());
-			}
-		} else {
 			try {
+				validateConfServerMailParam(confServerMailForm, json);
+				
+				if (json.length() > 0) {
+					error = Boolean.TRUE;
+				}
+				if (!error) {
+				ConfServerMail confMail = null;
 				IConfServerMailService confServerMailService = ManagerPersistenceConfigurationServices.getInstance().getConfServerMailService();
 				if (confServerMailForm.getIdConfServerMail() != null) {
 					confMail = confServerMailService.getConfServerMailById(confServerMailForm.getIdConfServerMail());
@@ -88,20 +115,77 @@ public class ConfServerMailRestController {
 				confMail.setHostMail(confServerMailForm.getHostMail());
 				confMail.setPortMail(confServerMailForm.getPortMail());
 				confMail.setUseAuthenticationMail(confServerMailForm.getUseAuthenticationMail());
-				confMail.setUserMail(confServerMailForm.getUserMail());
-				String pwd = confServerMailForm.getPasswordMail();
-				if (pwd == null) {
+				
+				if (confServerMailForm.getUseAuthenticationMail()) {
+					confMail.setUserMail(confServerMailForm.getUserMail());
+					//se comprueba si se ha modificado la contraseña
+					String pwd = confServerMailForm.getPasswordMail();
+					if (!UtilsStringChar.isNullOrEmpty(pwd) && !pwd.equals(PASSWORD_EDIT)) {
+						confMail.setPasswordMail(new String(UtilsAESCipher.getInstance().encryptMessage(pwd)));
+					}
+					
+				}else{
+					confMail.setUserMail(null);
 					confMail.setPasswordMail(null);
-				} else {
-					confMail.setPasswordMail(new String(UtilsAESCipher.getInstance().encryptMessage(pwd)));
 				}
-				result = confServerMailService.saveConfServerMail(confMail);
+								
+				//se guarda en base de datos
+				confServerMailService.saveConfServerMail(confMail);
+				// se muestra un mensaje indicando que se ha actualizado
+				// correctamente.
+				LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.CMS_005));
+				csmFormUpdated.setMsgOk(Language.getResWebGeneral(IWebGeneralMessages.CMS_005));
+				}else{
+					csmFormUpdated.setError(json.toString());
+				}
 			} catch (Exception e) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_MODIFY_PROXY), e);
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.CMS_006), e);
+				if (confServerMailForm == null) {
+					csmFormUpdated = new ConfServerMailForm();
+				}
+				csmFormUpdated.setError(Language.getFormatResWebGeneral(IWebGeneralMessages.CMS_007));
+			}
+		
+
+		return csmFormUpdated;
+	}
+
+	
+
+	/**
+	 * Method to validate the mandatory fields to add a specific header for HTTP/S.
+	 * 
+	 * @param valmetForm Object that represents the backing Configuration Server Mail form.
+	 *  @param json Contains the error messages that have been generated.
+	 * @return JSONObject Object JSON Object with the error messages that have been generated.
+	 */
+	private JSONObject validateConfServerMailParam(ConfServerMailForm csmform, JSONObject json) {
+
+		if (UtilsStringChar.isNullOrEmpty(csmform.getIssuerMail())) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_001);
+			LOGGER.error(msgError);
+			json.put(FIELD_ISSUER_MAIL + "_span", msgError);
+		} 
+		if (UtilsStringChar.isNullOrEmpty(csmform.getHostMail())) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_002);
+			LOGGER.error(msgError);
+			json.put(FIELD_HOST_MAIL + "_span", msgError);
+		} 
+		if (csmform.getPortMail() == null) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_003);
+			LOGGER.error(msgError);
+			json.put(FIELD_PORT_MAIL + "_span", msgError);
+		} 
+		
+		if(csmform.getUseAuthenticationMail()){
+			if(UtilsStringChar.isNullOrEmpty(csmform.getUserMail()) || UtilsStringChar.isNullOrEmpty(csmform.getPasswordMail())){
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_004);
+			LOGGER.error(msgError);
+			json.put(FIELD_USER_MAIL + "_span", msgError);
 			}
 		}
+		return json;
 
-		return result;
 	}
 
 }

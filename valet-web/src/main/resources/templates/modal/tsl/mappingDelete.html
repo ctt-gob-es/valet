@@ -53,7 +53,8 @@ function deleteMappingTsl(){
 		//Se oculta la capa 'cargando...'
 		hide();
 		closeModalButton('modalDeleteMapping', 'mappingTslDeleteForm');
-    	tblMapping.row(data.index).remove().draw();
+		 tblMapping.ajax.reload();
+    	//tblMapping.row(data.index).remove().draw();
 		},
 		error:function(){
 			closeModalButton('modalDeleteMapping', 'mappingTslDeleteForm');

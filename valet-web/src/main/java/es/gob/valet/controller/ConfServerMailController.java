@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 27/12/2018.
+ * @version 1.3, 16/09/2021.
  */
 package es.gob.valet.controller;
 
@@ -28,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.ConfServerMailForm;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
@@ -36,10 +37,15 @@ import es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailSer
 /**
  * <p>Class that manages the requests related to the ConfServerMail administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 27/12/2018.
+ * @version 1.3, 16/09/2021.
  */
 @Controller
 public class ConfServerMailController {
+
+	/**
+	 * Constant that represents the default text string of the password displayed in edit mode.
+	 */
+	private static final String PASSWORD_EDIT = "********";
 
 	/**
 	 * Method that maps the add ConfServerMail web request to the controller and sets the
@@ -49,23 +55,43 @@ public class ConfServerMailController {
 	 */
 	@RequestMapping(value = "confmailadmin")
 	public String confServerMailAdmin(Model model) {
-		ConfServerMail confServerMail = new ConfServerMail();
+
 		ConfServerMailForm confServerMailForm = new ConfServerMailForm();
 		IConfServerMailService confServerMailService = ManagerPersistenceConfigurationServices.getInstance().getConfServerMailService();
-		// TODO Al obtener el listado de TODOS los servidores de correo se debe obtener una lista,
-		// no una única instancia, y en consecuencia, mostrar ese listado en la administración.
-		confServerMail = confServerMailService.getAllConfServerMail();
-
-		if (confServerMail != null) {
-			confServerMailForm.setIdConfServerMail(confServerMail.getIdConfServerMail());
-			confServerMailForm.setIssuerMail(confServerMail.getIssuerMail());
-			confServerMailForm.setHostMail(confServerMail.getHostMail());
-			confServerMailForm.setPortMail(confServerMail.getPortMail());
-			confServerMailForm.setUseAuthenticationMail(confServerMail.getUseAuthenticationMail());
-			confServerMailForm.setUserMail(confServerMail.getUserMail());
-			confServerMailForm.setPasswordMail(confServerMail.getPasswordMail());
+		// TODO Al obtener el listado de TODOS los servidores de correo se debe
+		// obtener una lista,
+		// no una única instancia, y en consecuencia, mostrar ese listado en la
+		// administración.
+		ConfServerMail confServerMail = confServerMailService.getAllConfServerMail();
+		if (confServerMail == null) {
+			confServerMail = new ConfServerMail();
+			confServerMail.setUseAuthenticationMail(Boolean.FALSE);
 		}
 
+		confServerMailForm.setIdConfServerMail(confServerMail.getIdConfServerMail());
+		confServerMailForm.setIssuerMail(confServerMail.getIssuerMail());
+		confServerMailForm.setHostMail(confServerMail.getHostMail());
+		confServerMailForm.setPortMail(confServerMail.getPortMail());
+
+		boolean authentication = Boolean.FALSE;
+		if (confServerMail.getUseAuthenticationMail() != null) {
+			authentication = confServerMail.getUseAuthenticationMail();
+
+		}
+
+		confServerMailForm.setUseAuthenticationMail(authentication);
+		if (authentication) {
+			confServerMailForm.setUserMail(confServerMail.getUserMail());
+			if (!UtilsStringChar.isNullOrEmpty(confServerMail.getPasswordMail())) {
+				confServerMailForm.setNewPassword(Boolean.TRUE);
+				confServerMailForm.setPasswordMail(PASSWORD_EDIT);
+			}
+		} else {
+			confServerMailForm.setUserMail(null);
+			confServerMailForm.setPasswordMail(null);
+		}
+
+		model.addAttribute("noAuthentication", !authentication);
 		model.addAttribute("confServerMailForm", confServerMailForm);
 
 		return "fragments/confmailadmin.html";

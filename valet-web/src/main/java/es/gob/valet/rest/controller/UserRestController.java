@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 16/09/2021.
  */
 package es.gob.valet.rest.controller;
 
@@ -63,11 +63,10 @@ import es.gob.valet.rest.exception.OrderedValidation;
  * <p>Class that manages the REST requests related to the Users administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 06/11/2018.
+ * @version 1.3, 16/09/2021.
  */
 @RestController
 public class UserRestController {
-
 
 	/**
 	 * Method that maps the list users web requests to the controller and
@@ -97,9 +96,15 @@ public class UserRestController {
 	 */
 	@JsonView(DataTablesOutput.View.class)
 	@RequestMapping(path = "/deleteuser", method = RequestMethod.POST)
-	public String deleteUser(@RequestParam("id") Long userId, @RequestParam("index") String index) {
+	public String deleteUser(@RequestParam("id") Long userId, @RequestParam("index") String index, @RequestParam("remoteUser") String remoteUser) {
+		
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
-		userService.deleteUserValet(userId);
+		UserValet userValet = userService.getUserValetById(userId);
+		if(userValet !=null && !userValet.getLogin().equals(remoteUser)){
+			userService.deleteUserValet(userId);
+		}else{
+			index = "-1";
+		}
 
 		return index;
 	}
@@ -116,17 +121,15 @@ public class UserRestController {
 	 */
 	@RequestMapping(value = "/saveuser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@JsonView(DataTablesOutput.View.class)
-	public @ResponseBody DataTablesOutput<UserValet> save(
-			@Validated(OrderedValidation.class) @RequestBody UserForm userForm, BindingResult bindingResult) {
+	public @ResponseBody DataTablesOutput<UserValet> save(@Validated(OrderedValidation.class) @RequestBody UserForm userForm, BindingResult bindingResult) {
 		DataTablesOutput<UserValet> dtOutput = new DataTablesOutput<>();
 		UserValet userValet = null;
 		List<UserValet> listNewUser = new ArrayList<UserValet>();
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		if (bindingResult.hasErrors()) {
-			listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false)
-					.collect(Collectors.toList());
+			listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false).collect(Collectors.toList());
 			JSONObject json = new JSONObject();
-			for (FieldError o : bindingResult.getFieldErrors()) {
+			for (FieldError o: bindingResult.getFieldErrors()) {
 				json.put(o.getField() + "_span", o.getDefaultMessage());
 			}
 			dtOutput.setError(json.toString());
@@ -158,8 +161,7 @@ public class UserRestController {
 
 				listNewUser.add(user);
 			} catch (Exception e) {
-				listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false)
-						.collect(Collectors.toList());
+				listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false).collect(Collectors.toList());
 				throw e;
 			}
 		}
@@ -180,17 +182,15 @@ public class UserRestController {
 	 */
 	@RequestMapping(value = "/saveuseredit", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@JsonView(DataTablesOutput.View.class)
-	public @ResponseBody DataTablesOutput<UserValet> saveEdit(
-			@Validated(OrderedValidation.class) @RequestBody UserFormEdit userForm, BindingResult bindingResult) {
+	public @ResponseBody DataTablesOutput<UserValet> saveEdit(@Validated(OrderedValidation.class) @RequestBody UserFormEdit userForm, BindingResult bindingResult) {
 		DataTablesOutput<UserValet> dtOutput = new DataTablesOutput<>();
 		UserValet userValet = null;
 		List<UserValet> listNewUser = new ArrayList<UserValet>();
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		if (bindingResult.hasErrors()) {
-			listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false)
-					.collect(Collectors.toList());
+			listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false).collect(Collectors.toList());
 			JSONObject json = new JSONObject();
-			for (FieldError o : bindingResult.getFieldErrors()) {
+			for (FieldError o: bindingResult.getFieldErrors()) {
 				json.put(o.getField() + "_span", o.getDefaultMessage());
 			}
 			dtOutput.setError(json.toString());
@@ -214,8 +214,7 @@ public class UserRestController {
 
 				listNewUser.add(user);
 			} catch (Exception e) {
-				listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false)
-						.collect(Collectors.toList());
+				listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false).collect(Collectors.toList());
 				throw e;
 			}
 		}
@@ -234,15 +233,14 @@ public class UserRestController {
 	 * @return String result
 	 */
 	@RequestMapping(value = "/saveuserpassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String savePassword(@Validated(OrderedValidation.class) @RequestBody UserFormPassword userFormPassword,
-			BindingResult bindingResult) {
+	public String savePassword(@Validated(OrderedValidation.class) @RequestBody UserFormPassword userFormPassword, BindingResult bindingResult) {
 		String result = UtilsStringChar.EMPTY_STRING;
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		UserValet userValet = userService.getUserValetById(userFormPassword.getIdUserValetPass());
 
 		if (bindingResult.hasErrors()) {
 			JSONObject json = new JSONObject();
-			for (FieldError o : bindingResult.getFieldErrors()) {
+			for (FieldError o: bindingResult.getFieldErrors()) {
 				json.put(o.getField() + "_span", o.getDefaultMessage());
 			}
 			result = json.toString();
@@ -259,7 +257,8 @@ public class UserRestController {
 					userService.saveUserValet(userValet);
 					result = "0";
 				} else {
-					// no coincide la contraseña introducida, con la contraseña actual del usuario.
+					// no coincide la contraseña introducida, con la contraseña
+					// actual del usuario.
 					result = "-1";
 				}
 			} catch (Exception e) {

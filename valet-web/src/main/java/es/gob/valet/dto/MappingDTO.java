@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>05/04/2021.</p>
  * @author Gobierno de España.
- * @version 1.0, 05/04/2021.
+ * @version 1.1, 16/09/2021.
  */
 package es.gob.valet.dto;
 
@@ -32,9 +32,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 /** 
  * <p>Class that represents each file in the mapping table associated with a TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 05/04/2021.
+ * @version 1.1, 16/09/2021.
  */
-public class MappingDTO {
+public class MappingDTO implements Comparable<MappingDTO> {
 
 
 	/**
@@ -196,6 +196,18 @@ public class MappingDTO {
 	 */
 	public void setAssociationType(String associationType) {
 		this.associationType = associationType;
+	}
+
+
+	@Override
+	public int compareTo(MappingDTO o) {
+		if(idTslCountryRegionMapping < o.getIdTslCountryRegionMapping()){
+			return -1;
+		}
+		if (idTslCountryRegionMapping > o.getIdTslCountryRegionMapping()){
+			return 1;
+		}
+		return 0;
 	}
 
 }

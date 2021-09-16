@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 02/11/2018.
+ * @version 1.2, 16/09/2021.
  */
 package es.gob.valet.form;
 
@@ -40,7 +40,7 @@ import es.gob.valet.rest.exception.ThenCheckIt;
 /** 
  * <p>Class that represents the backing form for adding/editing a user.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 02/11/2018.
+ * @version 1.2, 16/09/2021.
  */
 public class UserForm {
 	
@@ -75,7 +75,7 @@ public class UserForm {
 	 */
 	@NotNull(groups=CheckItFirst.class, message="{form.valid.user.password.notempty}")
     @Size(min=NumberConstants.NUM7, max=NumberConstants.NUM30, groups=ThenCheckIt.class)
-	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message="{form.valid.user.password.noPattern}", groups=ThenCheckIt.class)
+	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,}$", message="{form.valid.user.password.noPattern}", groups=ThenCheckIt.class)
     private String password = UtilsStringChar.EMPTY_STRING;
 	
 	/**

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.11, 28/06/2021.
+ * @version 1.12, 16/09/2021.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.11, 28/06/2021.
+ * @version 1.12, 16/09/2021.
  */
 public interface IWebGeneralMessages {
 
@@ -444,11 +444,7 @@ public interface IWebGeneralMessages {
 	 */
 	String ERROR_NOT_BLANK_RESP_PHONE = "errorNotBlankPhone";
 
-	/**
-	 * Constant attribute that represents the name of the property <code>errorModifyServerMail</code> belonging to the
-	 * file messages/valet-web/general_xx_YY.properties.
-	 */
-	String ERROR_MODIFY_SERVERMAIL = "errorModifyServerMail";
+
 
 	/**
 	 * Constant attribute that represents the name of the property <code>mapping.simple.CertVersion</code> belonging to the
@@ -578,4 +574,40 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER = "mapping.simple.general.subject.serialNumber";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_001</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_001 = "CMS_001";
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_002</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_002 = "CMS_002";
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_003</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_003 = "CMS_003";
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_004</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_004 = "CMS_004";
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_005</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_005 = "CMS_005";
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_006</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_006 = "CMS_006";
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_007</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_007 = "CMS_007";
 }

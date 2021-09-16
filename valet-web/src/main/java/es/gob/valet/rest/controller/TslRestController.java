@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.14, 07/04/2021.
+ * @version 1.15, 16/09/2021.
  */
 package es.gob.valet.rest.controller;
 
@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -82,7 +83,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.14, 07/04/2021.
+ * @version 1.15, 16/09/2021.
  */
 @RestController
 public class TslRestController {
@@ -721,6 +722,31 @@ public class TslRestController {
 			}
 			listMapping.add(mappingDto);
 		}
+		
+		
+		listMapping.sort(Comparator.comparing(MappingDTO::getIdTslCountryRegionMapping));
+
+		return listMapping;
+	}
+	
+	private MappingDTO updateMapping(TslCountryRegionMapping newTcrm){
+		MappingDTO mappingDto = new MappingDTO(newTcrm.getIdTslCountryRegionMapping(), newTcrm.getTslCountryRegion().getIdTslCountryRegion(), newTcrm.getMappingIdentificator(), Language.getResPersistenceConstants(newTcrm.getAssociationType().getTokenName()));
+		if (newTcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE)) {
+			mappingDto.setMappingValue(getValueMapping(newTcrm.getMappingValue()));
+		} else {
+			mappingDto.setMappingValue(newTcrm.getMappingValue());
+		}
+		return mappingDto;
+	}
+	private List<MappingDTO> getListMappingDTO(TslCountryRegionMapping newTcrm){
+		List<MappingDTO> listMapping = new ArrayList<MappingDTO>();
+		MappingDTO mappingDto = new MappingDTO(newTcrm.getIdTslCountryRegionMapping(), newTcrm.getTslCountryRegion().getIdTslCountryRegion(), newTcrm.getMappingIdentificator(), Language.getResPersistenceConstants(newTcrm.getAssociationType().getTokenName()));
+		if (newTcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE)) {
+			mappingDto.setMappingValue(getValueMapping(newTcrm.getMappingValue()));
+		} else {
+			mappingDto.setMappingValue(newTcrm.getMappingValue());
+		}
+		listMapping.add(mappingDto);
 
 		return listMapping;
 	}
@@ -768,6 +794,7 @@ public class TslRestController {
 
 			if (!error) {
 				tslCRMNew = TSLManager.getInstance().updateTSLCountryRegionMapping(mappingTslForm.getIdTslCountryRegionMapping(), mappingTslForm.getMappingIdentificator(), null, mappingValue, mappingTslForm.getIdMappingType());
+				
 				// se actualiza la lista de mapeo
 				listTslCountryRegionMapping = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
 				dtOutput.setData(listTslCountryRegionMapping);

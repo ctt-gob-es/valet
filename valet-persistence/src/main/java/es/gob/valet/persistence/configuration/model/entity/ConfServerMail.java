@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 27/12/2018.
+ * @version 1.2, 16/09/2021.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -44,7 +44,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>CONF_SERVER_MAIL</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 27/12/2018.
+ * @version 1.2, 16/09/2021.
  */
 @Entity
 @Table(name = "CONF_SERVER_MAIL")
@@ -79,7 +79,7 @@ public class ConfServerMail implements Serializable {
 	 * Attribute that represents a flag that indicates if it is necessary to use
 	 * authentication. 
 	 */
-	private Boolean useAuthenticationMail;
+	private Boolean useAuthenticationMail = Boolean.FALSE;
 	
 	/**
 	 * Attribute that represents the user.

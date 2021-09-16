@@ -89,11 +89,11 @@ function showMappingTypeValueField() {
 }
 //método para editar mapeo
 function modifyMapping() {
-
+var tblMapping = $('#mappingTable').DataTable();
 var index =  $("#indexRowMapping").val();
 	var actionSaveMapping = /*[[@{/modifymappingtsl}]]*/;
 	var formDataMapping =JSON.stringify($("#mappingTslEditForm").serializeJSON());
-	var tblMapping = $('#mappingTable').DataTable();
+	
  	$.ajax(actionSaveMapping, {
 		data :formDataMapping, 
 	processData:false,
@@ -119,22 +119,9 @@ var index =  $("#indexRowMapping").val();
 				  })
 
 			  }else{
-//se añade nuevo valor
-			
-			 if(index != null){
-				
-				 var row = tblMapping.row(data.rowIndexHeader).data();
-	
-				 var valueMapping = data.data[0].mappingValue;
-					row.mappingValue= valueMapping;
-				
-					$('#mappingTable').dataTable().fnUpdate(valueMapping,index,2,false);
-			 }else{
-			  tblMapping.row.add($(data.data)).draw(false);
-			 }
-			 
-			  $('#modalEditMapping').modal('hide');
-				$("#mappingTslEditForm")[0].reset();
+			 tblMapping.ajax.reload();
+			 $('#modalEditMapping').modal('hide');
+			$("#mappingTslEditForm")[0].reset();
   
 }
 	},
