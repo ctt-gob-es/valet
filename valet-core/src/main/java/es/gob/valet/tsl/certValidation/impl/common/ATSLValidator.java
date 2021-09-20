@@ -820,7 +820,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 								// su relajación.
 								// Lo informamos en un mensaje de log.
 								LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL247));
-								validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED);
+								//Se establece el valor desconocido para que se evalue el resto de criterios (campos del certificado)
+								validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_UNKNOWN );
 
 							}
 							// Si se ha encontrado la extensión, y el
