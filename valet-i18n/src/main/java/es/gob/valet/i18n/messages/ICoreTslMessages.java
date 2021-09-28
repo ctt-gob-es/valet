@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 07/06/2021.
+ * @version 1.8, 27/09/2021.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 07/06/2021.
+ * @version 1.8, 27/09/2021.
  */
 public interface ICoreTslMessages {
 
@@ -1695,4 +1695,136 @@ public interface ICoreTslMessages {
 	 * Constant attribute that represents the name of the property <code>logMTSL295</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	String LOGMTSL295 = "logMTSL295";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL296</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL296 = "logMTSL296";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL297</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL297 = "logMTSL297";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL298</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL298 = "logMTSL298";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL299</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL299 = "logMTSL299";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL300</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL300 = "logMTSL300";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL301</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL301 = "logMTSL301";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL302</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL302 = "logMTSL302";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL303</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL303= "logMTSL303";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL304</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL304 = "logMTSL304";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL305</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL305 = "logMTSL305";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL306</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL306 = "logMTSL306";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL307</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL307 = "logMTSL307";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL308</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL308 = "logMTSL308";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL309</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL309 = "logMTSL309";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL310</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL310 = "logMTSL310";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL311</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL311 = "logMTSL311";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL312</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL312 = "logMTSL312";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL313</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL313 = "logMTSL313";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL314</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL314 = "logMTSL314";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL315</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL315 = "logMTSL315";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL316</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL316 = "logMTSL316";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL317</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL317 = "logMTSL317";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL318</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL318 = "logMTSL318";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL319</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL319 = "logMTSL319";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL320</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL320 = "logMTSL320";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL321</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL321 = "logMTSL321";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL322</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL322 = "logMTSL322";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL323</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL323 = "logMTSL323";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL324</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL324 = "logMTSL324";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL325</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL325 = "logMTSL325";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL3261</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL326 = "logMTSL326";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL327</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL327 = "logMTSL327";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL328</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL328 = "logMTSL328";
 }

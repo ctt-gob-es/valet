@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 22/05/2019.
+ * @version 1.3, 27/09/2021.
  */
 package es.gob.valet.tsl.certValidation.impl;
 
@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -53,10 +54,14 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLOIDs;
  * <p>This class offers static methods to extract mappings of a certificate
  * validated through a TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 22/05/2019.
+ * @version 1.3, 27/09/2021.
  */
 public final class TSLValidatorMappingCalculator {
 
+    /**
+     * Attribute that represents the object that manages the log of the class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(TSLValidatorMappingCalculator.class);
 	/**
 	 * Constant attribute that represents the set of mapping names that are static.
 	 */
@@ -86,7 +91,7 @@ public final class TSLValidatorMappingCalculator {
 	 * @param tslValidationResult TSL validation result from which get the static mapping information.
 	 */
 	public static void extractStaticMappingsFromResult(TSLCertificateExtensionAnalyzer tslCertExtAnalyzer, Map<String, String> mappings, ITSLValidatorResult tslValidationResult) {
-
+		 LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL320));
 		// Si ninguno de los parámetros de entrada es nulo...
 		if (mappings != null && tslValidationResult != null) {
 
@@ -97,6 +102,7 @@ public final class TSLValidatorMappingCalculator {
 					try {
 						mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED, getMappingTypeQualifiedFromCertificate(tslCertExtAnalyzer));
 					} catch (TSLValidationException e) {
+						LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL325));
 						mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
 					}
 					break;
@@ -117,6 +123,7 @@ public final class TSLValidatorMappingCalculator {
 			switch (tslValidationResult.getMappingClassification()) {
 				case ITSLValidatorResult.MAPPING_CLASSIFICATION_OTHER_UNKNOWN:
 					try {
+						 LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL328));
 						mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, getMappingClassificationFromCertificate(tslCertExtAnalyzer, true));
 					} catch (TSLValidationException e) {
 						mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
@@ -156,6 +163,7 @@ public final class TSLValidatorMappingCalculator {
 
 				case ITSLValidatorResult.MAPPING_QSCD_UNKNOWN:
 					try {
+						LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL326));
 						mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, getMappingQSCDFromCertificate(tslCertExtAnalyzer));
 					} catch (TSLValidationException e) {
 						mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
@@ -172,6 +180,7 @@ public final class TSLValidatorMappingCalculator {
 
 				case ITSLValidatorResult.MAPPING_QSCD_ASINCERT:
 					try {
+						LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL328));
 						mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, getMappingQSCDFromCertificate(tslCertExtAnalyzer));
 					} catch (TSLValidationException e) {
 						mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
@@ -204,17 +213,19 @@ public final class TSLValidatorMappingCalculator {
 
 		// Por defecto el valor es desconocido.
 		String result = ITslMappingConstants.MAPPING_VALUE_UNKNOWN;
-
+		LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL322));
 		// Si dispone de la extensión QcStatement y al menos uno es de los
 		// cualificados, o en su defecto hay una extensión Certificate Policies
 		// Policy Information que determina que es cualificado...
 		if (tslCertExtAnalyzer.hasSomeQcStatementExtensionOid(ITSLValidatorOtherConstants.QCSTATEMENTS_OIDS_FOR_QUALIFIED_CERTS_LIST) || tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_QUALIFIED_CERTS_LIST)) {
 
 			result = ITslMappingConstants.MAPPING_VALUE_YES;
+			LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL323));
 
 		} else {
 
 			result = ITslMappingConstants.MAPPING_VALUE_NO;
+			LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL324));
 
 		}
 

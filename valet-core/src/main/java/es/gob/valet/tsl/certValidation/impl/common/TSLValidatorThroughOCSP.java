@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 13/05/2019.
+ * @version 1.5, 27/09/2021.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -97,7 +97,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 13/05/2019.
+ * @version 1.5, 27/09/2021.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -586,9 +586,14 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 			try {
 				// En caso de disponer del certificado emisor del certificado a
-				// validar, comprobamos si es el que firma la respuesta.
-				result = validationResult.getIssuerCert() != null && signerCert.equals(UtilsCertificate.getBouncyCastleCertificate(validationResult.getIssuerCert()));
-			} catch (CommonUtilsException e) {
+				// validar, comprobamos si es el que firma la respuesta o que haya sido emitido por este
+				if(validationResult.getIssuerCert() != null) {
+					X509Certificate signerCertX509 = UtilsCertificate.getX509Certificate(signerCert.getEncoded());
+					result = signerCert.equals(UtilsCertificate.getBouncyCastleCertificate(validationResult.getIssuerCert())) ||  
+					            UtilsCertificate.getCertificateIssuerId(signerCertX509).equals(UtilsCertificate.getCertificateId(validationResult.getIssuerCert()));
+				}
+			//	result = validationResult.getIssuerCert() != null && signerCert.equals(UtilsCertificate.getBouncyCastleCertificate(validationResult.getIssuerCert()));
+			} catch (CommonUtilsException | IOException e) {
 				// Consideramos que no se ha verificado.
 				result = false;
 			}
@@ -1031,9 +1036,13 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// La almacenamos en la respuesta.
 			validationResult.setRevocationValueBasicOCSPResponse(basicOcspResponse);
 			validationResult.setRevocationValueURL(uri);
-
+			//se indica que ha determinado el resultado según el DP
+			validationResult.setResultFromDPorAIA(Boolean.TRUE);
+			
 			// Comprobamos el estado de revocación del certificado.
 			result = checkCertificateInOCSPResponse(validationDate, singleResponse, timeIntervalAllowed, validationResult);
+			
+			
 
 		} catch (Exception e) {
 
