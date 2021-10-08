@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 25/05/2021.
+ * @version 1.4, 08/10/2021.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -52,7 +52,7 @@ import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 /**
  * <p>Class that represents a Digital Identities Processor.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 25/05/2021.
+ * @version 1.4, 08/10/2021.
  */
 public class DigitalIdentitiesProcessor {
 
@@ -415,7 +415,11 @@ public class DigitalIdentitiesProcessor {
 
 					// Obtenemos el AuthorityKeyIdentifier en array de
 					// bytes.
-					AuthorityKeyIdentifier aki = AuthorityKeyIdentifier.getInstance(ASN1OctetString.getInstance(cert.getExtensionValue(Extension.authorityKeyIdentifier.getId())).getOctets());
+					AuthorityKeyIdentifier aki = null;
+					byte[ ] authKeyIdent = cert.getExtensionValue(Extension.authorityKeyIdentifier.getId());
+					if (authKeyIdent != null) {
+						aki = AuthorityKeyIdentifier.getInstance(ASN1OctetString.getInstance(authKeyIdent).getOctets());
+					}
 					if (aki != null) {
 						akiBytes = aki.getKeyIdentifier();
 					}

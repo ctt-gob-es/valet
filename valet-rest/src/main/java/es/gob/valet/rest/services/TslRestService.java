@@ -563,7 +563,7 @@ public class TslRestService implements ITslRestService {
 			} else {
 				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG016, new Object[ ] { tslLocation, detectionDate });
 			}
-			LOGGER.info(msg);
+		//	LOGGER.info(msg);
 			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED);
 			result.setDescription(msg);
 

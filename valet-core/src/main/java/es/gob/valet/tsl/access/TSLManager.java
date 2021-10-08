@@ -643,9 +643,7 @@ public final class TSLManager {
 			boolean result = UtilsCertificate.hasCertKeyPurposeTimeStamping(cert);
 			if (result) {
 				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL200));
-			} else {
-				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL201));
-			}
+			} 
 			// Añadimos la traza de auditoría...
 			CommonsCertificatesAuditTraces.addCertIsTsaCert(auditTransNumber, result);
 			return result;

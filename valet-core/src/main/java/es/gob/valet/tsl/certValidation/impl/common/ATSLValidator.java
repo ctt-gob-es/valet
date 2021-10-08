@@ -522,7 +522,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// por lo que asignamos el mismo nombre de servicio al
 					// resultado de la validación (y el servicio).
 					if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
-						LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL215));
+						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL215));
 						validationResult.setResultFromServiceStatus(Boolean.TRUE);
 						validationResult.setResultFromDPorAIA(Boolean.FALSE);
 						validationResult.setTSPServiceNameForValidate(validationResult.getTSPServiceNameForDetect());
@@ -546,7 +546,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// Tratamos de validar el estado de revocación mediante los
 				// puntos de distribución
 				// establecidos en el propio certificado.
-				LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL216, new Object[] {validationDate.toString()}));
+				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL216, new Object[] {validationDate.toString()}));
 				validateCertificateUsingDistributionPoints(cert, isCACert, isTsaCertificate, validationDate, validationResult, tsp);
 
 				// Si el estado no es desconocido, significa que ya se ha
@@ -576,7 +576,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// de sello de tiempo ni de CA)
 				else if (!isTsaCertificate && !isCACert) {
 
-					LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL217));
+					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL217));
 
 					// Almacenamos en una variable si el certificado es
 					// cualificado o no.
@@ -662,14 +662,14 @@ public abstract class ATSLValidator implements ITSLValidator {
 		if (tspService.getServiceInformation().getServiceStatusStartingTime().before(validationDate)) {
 
 			if (tspService.getServiceInformation().isServiceValidAndUsable()) {
-				LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL295, new Object[] {tspService.getServiceInformation().getServiceStatusStartingTime().toString(), validationDate.toString()}));
+			//	LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL295, new Object[] {validationDate.toString(), tspService.getServiceInformation().getServiceStatusStartingTime().toString()}));
 				shi = tspService.getServiceInformation();
 			}
 
 		} else {
 
 			if (tspService.isThereSomeServiceHistory()) {
-				LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL296, new Object[] {tspService.getServiceInformation().getServiceStatusStartingTime().toString(), validationDate.toString()}));
+			//	LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL296, new Object[] {validationDate.toString(), tspService.getServiceInformation().getServiceStatusStartingTime().toString()}));
 				List<ServiceHistoryInstance> shiList = tspService.getAllServiceHistory();
 				for (ServiceHistoryInstance shiFromList: shiList) {
 					if (shiFromList.getServiceStatusStartingTime().before(validationDate)) {
@@ -724,7 +724,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			if (checkIfTSPServiceTypeIsTSAQualified(tspServiceType) || checkIfTSPServiceTypeIsTSANonQualified(tspServiceType)) {
 				// Comprobamos si dicho servicio identifica al certificado...
 				if (checkIfDigitalIdentitiesMatchesCertificate(shi.getAllDigitalIdentities(), cert, isTsaCertificate)) {
-					LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL275, new Object[] {tspService.getServiceInformation().getServiceTypeIdentifier().toString()}));
+					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL275, new Object[] {tspService.getServiceInformation().getServiceTypeIdentifier().toString()}));
 					// Establecemos la clasificación a sello de tiempo.
 					validationResult.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_TSA);
 
@@ -732,14 +732,14 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// Si es una TSA "qualified"...
 					if (checkIfTSPServiceTypeIsTSAQualified(tspServiceType)) {
 						validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_QUALIFIED);
-						LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL276, new Object[] {tspService.getServiceInformation().getServiceTypeIdentifier().toString()}));
+						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL276, new Object[] {tspService.getServiceInformation().getServiceTypeIdentifier().toString()}));
 
 					}
 					// Si no...
 					else if (checkIfTSPServiceTypeIsTSANonQualified(tspServiceType)) {
 
 						validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED);
-						LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL277, new Object[] {tspService.getServiceInformation().getServiceTypeIdentifier().toString()}));
+						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL277, new Object[] {tspService.getServiceInformation().getServiceTypeIdentifier().toString()}));
 
 					}
 
@@ -753,7 +753,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// información
 					// de este.
 					if (isHistoricServiceInf) {
-						LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL278));
+						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL278));
 						assignTSPServiceHistoryInformationNameForDetectToResult(validationResult, shi);
 						validationResult.setTSPServiceHistoryInformationInstanceForDetect(shi);
 					}
@@ -769,7 +769,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Comprobamos si el servicio es de tipo CA (certificados
 			// cualificados o no).
 			if (checkIfTSPServiceTypeIsCAQC(tspServiceType) || checkIfTSPServiceTypeIsCAPKC(tspServiceType) || checkIfTSPServiceTypeIsNationalRootCAQC(tspServiceType)) {
-				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL299));
+				//LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL299));
 				// Comprobamos si dicho servicio identifica al certificado...
 				// Si es una CA, comprobamos en sus identidades digitales que
 				// coincida con alguna de las declaradas, si no,
@@ -799,7 +799,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							// AdditionalServiceInformation concuerdan con
 							// los del certificado. Esto depende de la
 							// especificación.
-							LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL301));
+							LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL301));
 							detectedCert = checkIfTSPServiceAdditionalServiceInformationExtensionsDetectCert(validationResult, shi);
 
 							// Si se ha obtenido null, es porque no está
@@ -831,7 +831,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							// encaja con su
 							// definición, entonces lo consideramos cualificado.
 							else if (detectedCert.booleanValue()) {
-								LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL285));
+								LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL285));
 								validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_QUALIFIED);
 
 							}
@@ -860,9 +860,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// "non qualified".
 					if (checkIfTSPServiceTypeIsCAPKC(tspServiceType) || isWithdrawnBeforeDateOfIssue(cert, tspService)) {
 						if(checkIfTSPServiceTypeIsCAPKC(tspServiceType)){
-							LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL286));
+							LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL286));
 						}else {
-							LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL287));
+							LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL287));
 						}
 						validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED);
 					}
@@ -876,7 +876,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					if (detectedCert != null || checkIfTSPServiceTypeIsCAPKC(tspServiceType)) {
 						// Indicamos que es detectado.
 						validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_UNKNOWN);
-						LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL309));
+						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL309));
 						// Se establece el resultado según el estado.
 						setStatusResultInAccordanceWithTSPServiceCurrentStatus(isCACert, shi.getServiceStatus().toString(), shi.getServiceStatusStartingTime(), validationDate, validationResult);
 						// Guardamos la información del servicio histórico
@@ -965,7 +965,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// log.
 			if (result) {
 
-				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL213));
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL213));
 
 				// Además, si el certificado es de CA y autoemitido, podemos
 				// definir
@@ -1021,9 +1021,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Si se ha encontrado, lo indicamos en el log.
 			if (result) {
 				if (isTsaService) {
-					LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL212));
+					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL212));
 				} else {
-					LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL263));
+					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL263));
 				}
 			}
 
@@ -1223,7 +1223,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 		// Si no se encontró ningún Qualifications Extensions...
 		if (!qualificationExtAlreadyChecked) {
-			LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL310));
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL310));
 			// Según la especificación de TSL, puede considerarse detectado si
 			// se cumplen una serie de condiciones en el certificado, como que
 			// se pueda saber por sus atributos/extensiones si es QC, si está
@@ -1755,7 +1755,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		
 		// Si la lista no es nula ni vacía...
 		if (tspServiceList != null && !tspServiceList.isEmpty()) {
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL272));
+			//LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL272));
 			// La vamos recorriendo mientras no se termine y no se haya
 			// detectado el certificado.
 			for (int index = 0; index < tspServiceList.size() && !validationResult.hasBeenDetectedTheCertificate(); index++) {
@@ -1783,7 +1783,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// por lo que asignamos el mismo nombre de servicio al
 					// resultado de la validación (y el servicio).
 					if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
-						LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL215));
+						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL215));
 						validationResult.setTSPServiceNameForValidate(validationResult.getTSPServiceNameForDetect());
 						validationResult.setTSPServiceForValidate(tspService);
 						validationResult.setTspServiceHistoryInformationInstanceNameForValidate(validationResult.getTSPServiceHistoryInformationInstanceNameForDetect());
@@ -1854,7 +1854,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			validationResult.setTSPServiceForValidate(validationResult.getTSPServiceForDetect());
 			validationResult.setTspServiceHistoryInformationInstanceNameForValidate(validationResult.getTSPServiceHistoryInformationInstanceNameForDetect());
 			validationResult.setTspServiceHistoryInformationInstanceForValidate(validationResult.getTSPServiceHistoryInformationInstanceForDetect());
-			LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL220));
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL220));
 
 		}
 		// Si no, hay que tratar de buscar un servicio dentro del mismo TSP que
@@ -1895,7 +1895,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					if (validationResult.getTSPServiceHistoryInformationInstanceForValidate() != null) {
 						assignTSPServiceHistoryInformationNameForValidateToResult(validationResult, validationResult.getTSPServiceHistoryInformationInstanceForValidate());
 					}
-					LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL220));
+					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL220));
 				}
 
 			}
