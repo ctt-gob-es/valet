@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 28/06/2021..
+ * @version 1.7, 13/10/2021.
  */
 package es.gob.valet.tasks;
 
@@ -37,8 +37,10 @@ import org.apache.log4j.Logger;
 
 import es.gob.valet.alarms.AlarmsManager;
 import es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsResources;
+import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
@@ -62,7 +64,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 28/06/2021.
+ * @version 1.7, 13/10/2021.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
@@ -306,11 +308,15 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @throws TSLManagingException if update fail.
 	 */
 	private void checkAndUpdateLastAlarm(TSLDataCacheObject tsldco, String tslCountryRegion) throws TSLManagingException {
-		Date dateToCheck = UtilsDate.getDateAddingDays(tsldco.getLastNewTSLAvailableFind(), NumberConstants.NUM7);
+		Integer daysReminder = NumberConstants.NUM7;
+		if(!UtilsStringChar.isNullOrEmpty(StaticValetConfig.getProperty(StaticValetConfig.DAYS_REMINDER_ALARM))){
+			daysReminder = Integer.valueOf(StaticValetConfig.getProperty(StaticValetConfig.DAYS_REMINDER_ALARM));
+		}
+		Date dateToCheck = UtilsDate.getDateAddingDays(tsldco.getLastNewTSLAvailableFind(), daysReminder);
 		Date actualDate = Calendar.getInstance().getTime();
 		LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_008, new Object[ ] { tsldco.getLastNewTSLAvailableFind(), tslCountryRegion }));
 		if (dateToCheck.before(actualDate)) {
-			LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_009));
+			LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_009, new Object[] {daysReminder.toString()}));
 			AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM005_NEW_TSL_DETECTED, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM005_EVENT_002, new Object[ ] { tslCountryRegion, tsldco.getSequenceNumber() }));
 			// se actualiza la nueva fecha de notificación
 			TSLManager.getInstance().updateLastNewAvaliableTSLFindData(tsldco.getTslDataId(), actualDate);
