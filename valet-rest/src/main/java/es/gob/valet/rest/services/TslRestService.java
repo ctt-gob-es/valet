@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.18, 30/08/2021.
+ * @version 1.19, 29/11/2021.
  */
 package es.gob.valet.rest.services;
 
@@ -91,7 +91,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.18, 30/08/2021.
+ * @version 1.19, 29/11/2021.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -1160,7 +1160,8 @@ public class TslRestService implements ITslRestService {
 			Map<String, Integer> tslCountryVersion = TSLManager.getInstance().getTslInfoVersions();
 			result = new TslInformationVersionsResponse();
 			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_TSLINFOVERSIONS_OK);
-			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG040, new Object[ ] { tslCountryVersion.size() }));
+			int numTsl = tslCountryVersion != null ? tslCountryVersion.size(): 0;
+			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG040, new Object[ ] { numTsl }));
 			result.setTslVersionsMap(tslCountryVersion);
 			//se calcula la representación en bytes del resultado, y si la obtenemos correctamente, cerramos la transacción.
 			byte[ ] resultByteArray = buildResultByteArray(result);

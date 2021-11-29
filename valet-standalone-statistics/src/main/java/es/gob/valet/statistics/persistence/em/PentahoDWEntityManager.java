@@ -88,6 +88,7 @@ public final class PentahoDWEntityManager {
 	private PentahoDWEntityManager() {
 		createEntityManagerFactory();
 		createEntityManager();
+	
 	}
 
 	/**
@@ -97,8 +98,11 @@ public final class PentahoDWEntityManager {
 	private void createEntityManagerFactory() {
 		try {
 			emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+			
 		} catch (Exception e) {
-			LOGGER.error(Language.getResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.STAND_STATISTICS_LOG001));
+			String msgError = Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.STAND_STATISTICS_LOG001, new Object[] {e.getCause(), e.getMessage()});
+			LOGGER.error(msgError);
+			e.printStackTrace();
 
 		}
 	}
@@ -110,10 +114,11 @@ public final class PentahoDWEntityManager {
 	private void createEntityManager() {
 		try {
 			em = emf.createEntityManager();
+			
 
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.STAND_STATISTICS_LOG001, new Object[ ] { EntityManagerFactory.class.getSimpleName() }));
-
+			LOGGER.error(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.STAND_STATISTICS_LOG002, new Object[] {e.getCause(), e.getMessage()}));
+			e.printStackTrace();
 		}
 	}
 

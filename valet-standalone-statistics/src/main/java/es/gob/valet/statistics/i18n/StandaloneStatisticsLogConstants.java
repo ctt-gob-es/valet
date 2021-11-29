@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/10/2019.
+ * @version 1.1, 29/11/2021.
  */
 package es.gob.valet.statistics.i18n;
 
@@ -28,7 +28,7 @@ package es.gob.valet.statistics.i18n;
 /** 
  * <p>Interface that defines all the constants related with the log of the standalone statistics module .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/10/2019.
+ * @version 1.1, 29/11/2021.
  */
 public interface StandaloneStatisticsLogConstants {
 	/**
@@ -36,6 +36,11 @@ public interface StandaloneStatisticsLogConstants {
 	 * file standalone.audit_xx_xx.properties.
 	 */
 	String STAND_STATISTICS_LOG001 = "STAND_STATISTICS_001";
+	/**
+	 * Constant attribute that represents the name of the property <code>STAND_STATISTICS_001</code> belonging to the
+	 * file standalone.audit_xx_xx.properties.
+	 */
+	String STAND_STATISTICS_LOG002 = "STAND_STATISTICS_002";
 	
 	/**
 	 * Constant attribute that represents the name of the property <code>VSS_001</code> belonging to the
@@ -251,4 +256,10 @@ public interface StandaloneStatisticsLogConstants {
 	 * file standaloneStatistics.general_xx_xx.properties.
 	 */
 	String PMBOI_LOG006 = "PMBOI_006";
+	/**
+	 * Constant attribute that represents the name of the property <code>PMBOI_007</code> belonging to the
+	 * file standaloneStatistics.general_xx_xx.properties.
+	 */
+	String PMBOI_LOG007 = "PMBOI_007";
+
 }

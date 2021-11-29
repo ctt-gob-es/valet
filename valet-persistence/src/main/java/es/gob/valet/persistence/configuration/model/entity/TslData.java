@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 24/03/2021.
+ * @version 1.5, 29/11/2021.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -52,7 +52,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>TSL_DATA</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 24/03/2021.
+ * @version 1.5, 29/11/2021.
  */
 @Entity
 @Table(name = "TSL_DATA")
@@ -64,7 +64,7 @@ public class TslData implements Serializable {
 	private static final long serialVersionUID = -999355505652868226L;
 
 	/**
-	 * Attribute that represents the country/region for this TSL.
+	 * Attribute that represents the identifier of TSL.
 	 */
 	private Long idTslData;
 

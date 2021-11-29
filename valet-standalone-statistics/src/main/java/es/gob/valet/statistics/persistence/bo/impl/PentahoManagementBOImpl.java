@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 01/09/2021.
+ * @version 1.2, 29/11/2021.
  */
 package es.gob.valet.statistics.persistence.bo.impl;
 
@@ -53,7 +53,7 @@ import es.gob.valet.statistics.persistence.pojo.FctValidationPOJO;
 /** 
  * <p>Class that implements all the operations related with de database schema.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 01/09/2021.
+ * @version 1.2, 29/11/2021.
  */
 public final class PentahoManagementBOImpl implements IPentahoManagementBO {
 
@@ -178,10 +178,13 @@ public final class PentahoManagementBOImpl implements IPentahoManagementBO {
 	public void saveTransactions(List<TransactionDTO> listTransactions, List<ValidationDTO> listValidations, Date dateStart, String logFilename) throws ValetStatisticsException {
 		EntityTransaction tx = null;
 		if (listTransactions == null || listTransactions.isEmpty()) {
+			LOGGER.info(Language.getResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.PMBOI_LOG005));
 			throw new ValetStatisticsException(Language.getResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.PMBOI_LOG005));
 		}
 
+		if(em != null && em.getEntityManager() != null){
 		try {
+			
 			tx = em.getEntityManager().getTransaction();
 			tx.begin();
 
@@ -214,6 +217,9 @@ public final class PentahoManagementBOImpl implements IPentahoManagementBO {
 			tx.commit();
 		} finally {
 			safeCloseEntityManager();
+		}
+		}else{
+			LOGGER.info(Language.getResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.PMBOI_LOG007));
 		}
 
 	}
