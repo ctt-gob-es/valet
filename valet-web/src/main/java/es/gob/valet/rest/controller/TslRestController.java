@@ -61,6 +61,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.dto.MappingDTO;
+import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
@@ -76,6 +77,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionM
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;
+import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
@@ -274,8 +276,14 @@ public class TslRestController {
 			}
 
 		} catch (TSLManagingException e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }), e);
-			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL_WEB));
+			String msgErrorWeb = null;
+			if (e.getErrorCode() != null && e.getErrorCode().equals(IValetException.COD_204)) {
+				msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_KEYSTORE_TSL_WEB);
+			} else {
+				msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL_WEB);
+			}
+			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+			json.put(KEY_JS_ERROR_SAVE_TSL, msgErrorWeb);
 			listTSL = StreamSupport.stream(tslDataService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 		}
@@ -395,7 +403,6 @@ public class TslRestController {
 	 * @param implTslFile Parameter that represents the file with the implementation of the TSL.
 	 * @return TslForm object with the updated data of the form.
 	 * @throws IOException If the method fails.
-	 * @throws TSLManagingException
 	 */
 	@JsonView(TslForm.View.class)
 	@ResponseStatus(HttpStatus.OK)
@@ -471,11 +478,22 @@ public class TslRestController {
 					tslForm.setExpirationDate(sdf.format(tslObject.getSchemeInformation().getNextUpdate()));
 					tslForm.setImplTslFile(implTslFile);
 				}
-
+			}catch (TSLMalformedException e){
+					String msgErrorWeb = null;
+					if (e.getErrorCode() != null && e.getErrorCode().equals(IValetException.COD_204)) {
+						msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_KEYSTORE_TSL_WEB);
+					} else {
+						msgErrorWeb =  Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL, new Object[ ] { e.getMessage() });
+					}
+					LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+					json.put(FIELD_IMPL_TSL_FILE + "_span", msgErrorWeb);
+					error = true;
+			
 			} catch (Exception e) {
 				String msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL, new Object[ ] { e.getMessage() });
 
 				LOGGER.error(msgError);
+
 				json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL_WEB));
 				error = true;
 
@@ -491,8 +509,6 @@ public class TslRestController {
 
 		return tslForm;
 	}
-
-	
 
 	/**
 	 * Method to load the datatable with all the mappings corresponding to the selected TSL .
@@ -615,8 +631,6 @@ public class TslRestController {
 
 	}
 
-	
-
 	/**
 	 * Method that creates a new mapping for the indicated TSL.
 	 * @param codeCountryRegion Parameter that represents a country/region identifier.
@@ -722,34 +736,47 @@ public class TslRestController {
 			}
 			listMapping.add(mappingDto);
 		}
-		
-		
+
 		listMapping.sort(Comparator.comparing(MappingDTO::getIdTslCountryRegionMapping));
 
 		return listMapping;
 	}
-	
-	private MappingDTO updateMapping(TslCountryRegionMapping newTcrm){
-		MappingDTO mappingDto = new MappingDTO(newTcrm.getIdTslCountryRegionMapping(), newTcrm.getTslCountryRegion().getIdTslCountryRegion(), newTcrm.getMappingIdentificator(), Language.getResPersistenceConstants(newTcrm.getAssociationType().getTokenName()));
-		if (newTcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE)) {
-			mappingDto.setMappingValue(getValueMapping(newTcrm.getMappingValue()));
-		} else {
-			mappingDto.setMappingValue(newTcrm.getMappingValue());
-		}
-		return mappingDto;
-	}
-	private List<MappingDTO> getListMappingDTO(TslCountryRegionMapping newTcrm){
-		List<MappingDTO> listMapping = new ArrayList<MappingDTO>();
-		MappingDTO mappingDto = new MappingDTO(newTcrm.getIdTslCountryRegionMapping(), newTcrm.getTslCountryRegion().getIdTslCountryRegion(), newTcrm.getMappingIdentificator(), Language.getResPersistenceConstants(newTcrm.getAssociationType().getTokenName()));
-		if (newTcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE)) {
-			mappingDto.setMappingValue(getValueMapping(newTcrm.getMappingValue()));
-		} else {
-			mappingDto.setMappingValue(newTcrm.getMappingValue());
-		}
-		listMapping.add(mappingDto);
 
-		return listMapping;
-	}
+	// private MappingDTO updateMapping(TslCountryRegionMapping newTcrm) {
+	// MappingDTO mappingDto = new
+	// MappingDTO(newTcrm.getIdTslCountryRegionMapping(),
+	// newTcrm.getTslCountryRegion().getIdTslCountryRegion(),
+	// newTcrm.getMappingIdentificator(),
+	// Language.getResPersistenceConstants(newTcrm.getAssociationType().getTokenName()));
+	// if
+	// (newTcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE))
+	// {
+	// mappingDto.setMappingValue(getValueMapping(newTcrm.getMappingValue()));
+	// } else {
+	// mappingDto.setMappingValue(newTcrm.getMappingValue());
+	// }
+	// return mappingDto;
+	// }
+	//
+	// private List<MappingDTO> getListMappingDTO(TslCountryRegionMapping
+	// newTcrm) {
+	// List<MappingDTO> listMapping = new ArrayList<MappingDTO>();
+	// MappingDTO mappingDto = new
+	// MappingDTO(newTcrm.getIdTslCountryRegionMapping(),
+	// newTcrm.getTslCountryRegion().getIdTslCountryRegion(),
+	// newTcrm.getMappingIdentificator(),
+	// Language.getResPersistenceConstants(newTcrm.getAssociationType().getTokenName()));
+	// if
+	// (newTcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE))
+	// {
+	// mappingDto.setMappingValue(getValueMapping(newTcrm.getMappingValue()));
+	// } else {
+	// mappingDto.setMappingValue(newTcrm.getMappingValue());
+	// }
+	// listMapping.add(mappingDto);
+	//
+	// return listMapping;
+	// }
 
 	/**
 	 * Method to modify the value of an identifier.
@@ -794,13 +821,13 @@ public class TslRestController {
 
 			if (!error) {
 				tslCRMNew = TSLManager.getInstance().updateTSLCountryRegionMapping(mappingTslForm.getIdTslCountryRegionMapping(), mappingTslForm.getMappingIdentificator(), null, mappingValue, mappingTslForm.getIdMappingType());
-				
+
 				// se actualiza la lista de mapeo
 				listTslCountryRegionMapping = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
 				dtOutput.setData(listTslCountryRegionMapping);
 
 			} else {
-				List<MappingDTO> listTslCountryRegionMappingOld = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());	
+				List<MappingDTO> listTslCountryRegionMappingOld = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
 				listTslCountryRegionMapping = StreamSupport.stream(listTslCountryRegionMappingOld.spliterator(), false).collect(Collectors.toList());
 				dtOutput.setError(json.toString());
 
@@ -811,7 +838,7 @@ public class TslRestController {
 			listTslCountryRegionMapping = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
 			dtOutput.setError(json.toString());
 		}
-	
+
 		return dtOutput;
 	}
 
@@ -854,6 +881,5 @@ public class TslRestController {
 
 		return index;
 	}
-
 
 }

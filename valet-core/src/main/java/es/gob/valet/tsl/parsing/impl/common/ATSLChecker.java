@@ -1393,11 +1393,11 @@ public abstract class ATSLChecker implements ITSLChecker {
 			// confianza.
 			String alias = tslTrustedKeystore.getCertificateAlias(x509cert);
 			if (UtilsStringChar.isNullOrEmptyTrim(alias)) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL147, new Object[ ] { UtilsCertificate.getCertificateIssuerId(x509cert), x509cert.getSerialNumber().toString() }));
+				throw new TSLMalformedException(IValetException.COD_204, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL147, new Object[ ] { UtilsCertificate.getCertificateIssuerId(x509cert), x509cert.getSerialNumber().toString() }));
 			}
 
 		} catch (Exception e) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL146), e);
+			throw new TSLMalformedException(IValetException.COD_204, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL146), e);
 		}
 
 	}
@@ -1439,12 +1439,12 @@ public abstract class ATSLChecker implements ITSLChecker {
 				result = certsArray[0];
 			}
 		} catch (AOInvalidFormatException e) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL257), e);
+			throw new TSLMalformedException(IValetException.COD_204, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL257), e);
 		}
 
 		// Si no lo hemos encontrado lanzamos excepción.
 		if (result == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL257));
+			throw new TSLMalformedException(IValetException.COD_204, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL257));
 		}
 
 		return result;

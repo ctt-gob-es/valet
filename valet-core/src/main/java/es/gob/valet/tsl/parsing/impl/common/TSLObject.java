@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 28/06/2021.
+ * @version 1.4, 14/12/2021.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -52,7 +52,7 @@ import es.gob.valet.tsl.parsing.impl.TSLCheckerFactory;
  * <p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 28/06/2021
+ * @version 1.4, 14/12/2021
  */
 public class TSLObject implements ITSLObject {
 
@@ -294,7 +294,7 @@ public class TSLObject implements ITSLObject {
 	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#checkTSLValues()
 	 */
 	@Override
-	public final void checkTSLValues() throws TSLMalformedException {
+	public final void checkTSLValues() throws TSLMalformedException{
 		getTSLChecker().checkTSLValues(false, fullTSLxml);
 	}
 
@@ -303,7 +303,7 @@ public class TSLObject implements ITSLObject {
 	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#buildTSLFromXMLcheckValues(java.io.InputStream)
 	 */
 	@Override
-	public final void buildTSLFromXMLcheckValues(InputStream isParam) throws TSLArgumentException, TSLParsingException, TSLMalformedException {
+	public final void buildTSLFromXMLcheckValues(InputStream isParam) throws TSLArgumentException, TSLParsingException, TSLMalformedException{
 		buildTSLFromXMLcheckValues(isParam, true, false);
 	}
 
@@ -312,7 +312,7 @@ public class TSLObject implements ITSLObject {
 	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#buildTSLFromXMLcheckValues(java.io.InputStream)
 	 */
 	@Override
-	public final void buildTSLFromXMLcheckValuesCache(InputStream isParam) throws TSLArgumentException, TSLParsingException, TSLMalformedException {
+	public final void buildTSLFromXMLcheckValuesCache(InputStream isParam) throws TSLArgumentException, TSLParsingException, TSLMalformedException{
 		buildTSLFromXMLcheckValues(isParam, true, true);
 	}
 
@@ -321,7 +321,7 @@ public class TSLObject implements ITSLObject {
 	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#buildTSLFromXMLcheckValues(java.io.InputStream, boolean)
 	 */
 	@Override
-	public final void buildTSLFromXMLcheckValues(InputStream is, boolean checkSignature, boolean cache) throws TSLArgumentException, TSLParsingException, TSLMalformedException {
+	public final void buildTSLFromXMLcheckValues(InputStream is, boolean checkSignature, boolean cache) throws TSLArgumentException, TSLParsingException, TSLMalformedException{
 
 		// Almacenamos una "copia de seguridad" de los actuales datos,
 		// para que en caso de error, los podamos restaurar.
@@ -333,13 +333,16 @@ public class TSLObject implements ITSLObject {
 		boolean restoreBackup = false;
 		String msgError = new String();
 		try {
-
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL343));
 			// Construimos la TSL a partir del XML.
 			fullTSLxml = getTSLBuilder().buildTSLFromXML(is);
 			// Comprobamos que los valores establecidos son los correctos.
 			if(schemeInformation != null){
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL347));
 				getTSLChecker().checkTSLValues(checkSignature, fullTSLxml);
 			}
+			
+			
 			
 			
 
@@ -350,6 +353,11 @@ public class TSLObject implements ITSLObject {
 				throw e;
 			}
 		} finally {
+			if(schemeInformation != null && !UtilsStringChar.isNullOrEmpty(schemeInformation.getSchemeTerritory())){
+				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL345, new Object[]{schemeInformation.getSchemeTerritory()}));
+			}else{
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL346));
+			}
 			// Si hubiera que restaurar los datos originales debido a un fallo
 			// en el parseo
 			// o en la comprobación de los valores...
@@ -372,7 +380,7 @@ public class TSLObject implements ITSLObject {
 	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#checkValuesBuildXMLfromTSL()
 	 */
 	@Override
-	public final byte[ ] checkValuesBuildXMLfromTSL() throws TSLMalformedException, TSLEncodingException {
+	public final byte[ ] checkValuesBuildXMLfromTSL() throws TSLMalformedException, TSLEncodingException{
 
 		byte[ ] result = null;
 

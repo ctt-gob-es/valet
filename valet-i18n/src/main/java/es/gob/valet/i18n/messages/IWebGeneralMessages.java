@@ -127,6 +127,18 @@ public interface IWebGeneralMessages {
 	 */
 	String ERROR_SAVE_TSL_WEB = "errorSaveTslWeb";
 	/**
+	 * Constant attribute that represents the name of the property <code>errorKeystoreTslWeb</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_KEYSTORE_TSL_WEB = "errorKeystoreTslWeb";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorUpdateKeystoreTslWeb</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_UPDATE_KEYSTORE_TSL_WEB = "errorUpdateKeystoreTslWeb";
+	
+	/**
 	 * Constant attribute that represents the name of the property <code>errorUpdateImplTsl</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */

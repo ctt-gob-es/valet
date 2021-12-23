@@ -381,7 +381,7 @@ public final class TSLManager {
 
 		// Inicializamos el resultado.
 		Map<String, String> result = null;
-		
+
 		Date date = cert.getNotBefore();
 
 		// Inicializamos el resultado de detectar el certificado y obtener
@@ -427,14 +427,13 @@ public final class TSLManager {
 
 			try {
 
-
 				// Buscamos la TSL de España.
 				TSLDataCacheObject tdco = getTSLDataFromCountryRegion(UtilsCountryLanguage.ES_COUNTRY_CODE);
 
 				// Si hemos encontrado la TSL y su fecha de caducidad es
 				// posterior
-				// a la fecha de emisión 
-				
+				// a la fecha de emisión
+
 				Date dateIssue = cert.getNotBefore();
 				if (tdco != null && tdco.getNextUpdateDate().after(dateIssue)) {
 
@@ -644,7 +643,7 @@ public final class TSLManager {
 			boolean result = UtilsCertificate.hasCertKeyPurposeTimeStamping(cert);
 			if (result) {
 				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL200));
-			} 
+			}
 			// Añadimos la traza de auditoría...
 			CommonsCertificatesAuditTraces.addCertIsTsaCert(auditTransNumber, result);
 			return result;
@@ -694,7 +693,7 @@ public final class TSLManager {
 			DateString tslNextUpdate = new DateString(tslObject.getSchemeInformation().getNextUpdate());
 			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, true, tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber(), tslIssued, tslNextUpdate);
 			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL279));
-			// Continuamos el proceso...			
+			// Continuamos el proceso...
 			result = validateX509withRevocationValues(auditTransNumber, cert, validationDateToUse, crls, ocsps, tslObject, calculateMappings);
 
 		}
@@ -1184,8 +1183,6 @@ public final class TSLManager {
 		} catch (Exception e) {
 			throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL160), e);
 		}
-
-
 
 		return result;
 
@@ -1855,9 +1852,18 @@ public final class TSLManager {
 			// parsearlo y añadirlo.
 			ByteArrayInputStream bais = new ByteArrayInputStream(tslXMLbytes);
 			ITSLObject tslObject = null;
+			// try {
 			try {
 				tslObject = new TSLObject(tslSpecification, tslSpecificationVersion);
+
 				tslObject.buildTSLFromXMLcheckValues(bais);
+			} catch (TSLMalformedException e) {
+				if (e.getErrorCode() != null && e.getErrorCode().equals(IValetException.COD_204)) {
+					throw new TSLManagingException(IValetException.COD_204, e.getMessage(), e);
+				} else {
+					throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
+				}
+
 			} catch (Exception e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
 			} finally {
@@ -2281,6 +2287,14 @@ public final class TSLManager {
 				try {
 
 					tslObject.buildTSLFromXMLcheckValues(bais);
+
+				} catch (TSLMalformedException e) {
+					if (e.getErrorCode() != null && e.getErrorCode().equals(IValetException.COD_204)) {
+						throw new TSLManagingException(IValetException.COD_204, e.getMessage(), e);
+					} else {
+						throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
+					}
+
 				} catch (Exception e) {
 					throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
 				} finally {
@@ -2345,7 +2359,9 @@ public final class TSLManager {
 				updateTSLDataLegibleDocument(tslDataId, legibleDocumentArrayByte);
 			}
 			result = td;
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 
 			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL259, new Object[ ] { tslDataId }), e);
 

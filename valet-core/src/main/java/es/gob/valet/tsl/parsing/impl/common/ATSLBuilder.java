@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 14/12/2021.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -66,7 +66,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.UnknownExtension;
  * <p>Abstract class that represents a TSL builder with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 14/12/2021.
  */
 public abstract class ATSLBuilder implements ITSLBuilder {
 
@@ -125,6 +125,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 		ByteArrayInputStream bais = new ByteArrayInputStream(result);
 		// Parseamos el flujo de entrada XML, y se almacena localmente.
 		try {
+			
 			parseXMLInputStream(bais);
 		} finally {
 			UtilsResources.safeCloseInputStream(bais);
@@ -137,7 +138,8 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 		buildTSLlistTSP();
 		// Finalmente obtenemos la firma.
 		buildTSLSignature();
-
+		
+		
 		return result;
 
 	}
@@ -194,7 +196,9 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 	 * @throws TSLParsingException In case of some error getting the values.
 	 */
 	protected final void buildTSLSchemeInformation() throws TSLParsingException {
-
+		
+		// Establecemos el territorio de la TSL.
+		buildSchemeInformationTerritory();
 		// Establecemos el identificador de versión.
 		buildSchemeInformationTSLVersionIdentifier();
 		// Establecemos el número de secuencia.
@@ -213,8 +217,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 		buildSchemeInformationStatusDeterminationApproach();
 		// Establecemos los type/community/rules
 		buildSchemeInformationTypeCommunityRules();
-		// Establecemos el territorio de la TSL.
-		buildSchemeInformationTerritory();
+
 		// Establecemos las políticas y notas legales.
 		buildSchemeInformationPolicyOrLegalNotice();
 		// Establecemos el periodo de información histórica.
@@ -471,7 +474,11 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 	 * @throws TSLParsingException In case of some error getting the territory.
 	 */
 	private void buildSchemeInformationTerritory() throws TSLParsingException {
-		tsl.getSchemeInformation().setSchemeTerritory(getSchemeTerritory());
+		String schemeTerritory = getSchemeTerritory();
+		tsl.getSchemeInformation().setSchemeTerritory(schemeTerritory);
+		if(!UtilsStringChar.isNullOrEmpty(schemeTerritory)){
+			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL344, new Object[ ] {schemeTerritory}));
+		}
 	}
 
 	/**

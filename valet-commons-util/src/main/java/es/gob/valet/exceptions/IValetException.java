@@ -317,5 +317,8 @@ public interface IValetException {
 
 	/** Constant attribute that represents the error code: Error getting the list of versions of the enabled TSLs.	*/
 	String COD_203 = "COD_203";
+	
+	/** Constant attribute that represents the error code: Error checking TSL certificate.	*/
+	String COD_204 = "COD_204";
 
 }

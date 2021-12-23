@@ -133,6 +133,7 @@ public interface ITSLObject extends Serializable {
 	 * Checks all the actual values assigned to this TSL as the concrecte specification and version
 	 * requires.
 	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
+	 * @throws TSLKeystoreException In case that an error is generated regarding the TSL certificate.
 	 */
 	void checkTSLValues() throws TSLMalformedException;
 
@@ -145,6 +146,7 @@ public interface ITSLObject extends Serializable {
 	 * @throws TSLArgumentException In case of the input parameter is <code>null</code>.
 	 * @throws TSLParsingException In case of some error parsing the XML input stream.
 	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
+	 * @throws TSLKeystoreException In case that an error is generated regarding the TSL certificate.
 	 */
 	void buildTSLFromXMLcheckValues(InputStream is) throws TSLArgumentException, TSLParsingException, TSLMalformedException;
 	/**
@@ -156,6 +158,7 @@ public interface ITSLObject extends Serializable {
 	 * @throws TSLArgumentException In case of the input parameter is <code>null</code>.
 	 * @throws TSLParsingException In case of some error parsing the XML input stream.
 	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
+	 * @throws TSLKeystoreException In case that an error is generated regarding the TSL certificate.
 	 */
 	void buildTSLFromXMLcheckValuesCache(InputStream is) throws TSLArgumentException, TSLParsingException, TSLMalformedException;
 
@@ -169,6 +172,7 @@ public interface ITSLObject extends Serializable {
 	 * @throws TSLArgumentException In case of the input parameter is <code>null</code>.
 	 * @throws TSLParsingException In case of some error parsing the XML input stream.
 	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
+	 * @throws TSLKeystoreException In case that an error is generated regarding the TSL certificate.
 	 */
 	void buildTSLFromXMLcheckValues(InputStream is, boolean checkSignature, boolean cache) throws TSLArgumentException, TSLParsingException, TSLMalformedException;
 
@@ -178,6 +182,7 @@ public interface ITSLObject extends Serializable {
 	 * @return byte array that represents the XML of the TSL.
 	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
 	 * @throws TSLEncodingException In case of some error encoding the TSL.
+	 * @throws TSLKeystoreException In case that an error is generated regarding the TSL certificate.
 	 */
 	byte[ ] checkValuesBuildXMLfromTSL() throws TSLMalformedException, TSLEncodingException;
 

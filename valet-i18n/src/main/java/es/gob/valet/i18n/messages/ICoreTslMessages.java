@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 27/09/2021.
+ * @version 1.9, 14/12/2021.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 27/09/2021.
+ * @version 1.9, 14/12/2021.
  */
 public interface ICoreTslMessages {
 
@@ -1884,5 +1884,25 @@ public interface ICoreTslMessages {
 	 * Constant attribute that represents the name of the property <code>logMTSL342</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	String LOGMTSL342 = "logMTSL342";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL343</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL343 = "logMTSL343";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL344</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL344 = "logMTSL344";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL345</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL345 = "logMTSL345";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL346</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL346 = "logMTSL346";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL347</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL347 = "logMTSL347";
 	
 }

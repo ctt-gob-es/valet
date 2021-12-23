@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 15/12/2020.
+ * @version 1.9, 22/12/2021.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -72,7 +72,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.Qualifications;
  * <p>Abstract class that represents a TSL validator with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 15/12/2020.
+ * @version 1.9, 22/12/2021.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -723,7 +723,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Comprobamos si el servicio es de tipo TSA (cualificado o no).
 			if (checkIfTSPServiceTypeIsTSAQualified(tspServiceType) || checkIfTSPServiceTypeIsTSANonQualified(tspServiceType)) {
 				// Comprobamos si dicho servicio identifica al certificado...
-				if (checkIfDigitalIdentitiesMatchesCertificate(shi.getAllDigitalIdentities(), cert, isTsaCertificate)) {
+				if (checkIfDigitalIdentitiesMatchesCertificate(shi.getAllDigitalIdentities(), cert, isTsaCertificate, isCACert, validationResult)) {
 					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL275, new Object[] {tspService.getServiceInformation().getServiceTypeIdentifier().toString()}));
 					// Establecemos la clasificación a sello de tiempo.
 					validationResult.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_TSA);
@@ -1002,9 +1002,12 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * @param cert X509v3 certificate to check.
 	 * @param isTsaService Flag to indicate if the digital identities are from a TSA Service or a
 	 * CA Service.
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
+	 * (<code>true</code>) or not (<code>false</code>).
+	 * @param validationResult Object where is stored the validation result data.
 	 * @return <code>true</code> if the certificate matches with some of the input identities, otherwise <code>false</code>.
 	 */
-	private boolean checkIfDigitalIdentitiesMatchesCertificate(List<DigitalID> digitalIdentitiesList, X509Certificate cert, boolean isTsaService) {
+	private boolean checkIfDigitalIdentitiesMatchesCertificate(List<DigitalID> digitalIdentitiesList, X509Certificate cert, boolean isTsaService, boolean isCACert, TSLValidatorResult validationResult) {
 
 		// Por defecto consideramos que no coincide con ninguna identidad,
 		// y a la primera identidad que coincida, se le cambia el resultado.
@@ -1015,8 +1018,15 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 			// Creamos el procesador de identidades digitales.
 			DigitalIdentitiesProcessor dip = new DigitalIdentitiesProcessor(digitalIdentitiesList);
-			// Procesamos el certificado a validar.
-			result = dip.checkIfDigitalIdentitiesMatchesCertificate(cert);
+			
+
+			// Procesamos el certificado a validar y modificamos el resultado si
+						// fuera necesario.
+						if (isCACert) {
+							result = dip.checkIfDigitalIdentitiesMatchesCertificate(cert);
+						} else {
+							result = dip.checkIfCertificateIsIssuedBySomeIdentity(cert, validationResult);
+						}
 
 			// Si se ha encontrado, lo indicamos en el log.
 			if (result) {

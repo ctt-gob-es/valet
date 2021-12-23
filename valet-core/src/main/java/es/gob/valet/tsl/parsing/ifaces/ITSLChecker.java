@@ -24,6 +24,7 @@
  */
 package es.gob.valet.tsl.parsing.ifaces;
 
+
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 
 /**
@@ -40,6 +41,7 @@ public interface ITSLChecker {
 	 * or not (<code>false</code>).
 	 * @param fullTSLxml Byte array that represents the full TSL xml to check the signature.
 	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
+	 * @throws TSLKeystoreException In case that an error is generated regarding the TSL certificate.
 	 */
 	void checkTSLValues(boolean checkSignature, byte[ ] fullTSLxml) throws TSLMalformedException;
 

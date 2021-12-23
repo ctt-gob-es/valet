@@ -42,7 +42,8 @@ var btnDelTsl =  /*[[#{tsl.admin.btn.delete}]]*/;
 var btnShowMapping =  /*[[#{table.tsl.mapeo.alt}]]*/;
 
 var tbl = $('#tslTable').DataTable({
-	dom: 'Bfrtip',
+	dom: 'Bfrti',
+	pageLength: 50,
 	columnDefs: [
         {className: "text-center", targets: [6], 
 		order:[ 2, "asc" ]}
