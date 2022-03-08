@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 22/06/2021.
+ * @version 1.7, 08/03/2022.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -76,7 +76,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 22/06/2021.
+ * @version 1.7, 08/03/2022.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -115,7 +115,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	public void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, ServiceHistoryInstance shi, boolean isHistoricServiceInf, TSLValidatorResult validationResult) {
 
 		// Obtenemos los datos que identificarán al emisor de la CRL.
-		extractCRLIssuerData(shi);
+		extractCRLIssuerData(tspService);
 
 		// Si hemos obtenido al menos una identidad digital, continuamos.
 		if (dip.isThereSomeDigitalIdentity()) {
@@ -214,10 +214,17 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 * Extracts the information about the CRL issuer from the TSP Service.
 	 * @param shi TSL - TSP Service History Information from which extract the information to validate the certificate.
 	 */
-	private void extractCRLIssuerData(ServiceHistoryInstance shi) {
+	private void extractCRLIssuerData(TSPService tspServiceDetected) {
 
 		// Obtenemos la lista de identidades digitales para analizarlas.
-		List<DigitalID> identitiesList = shi.getAllDigitalIdentities();
+		List<ServiceHistoryInstance> listServiceHistory = tspServiceDetected.getAllServiceHistory();
+		List<DigitalID> identitiesList = new ArrayList<DigitalID>();
+		if(!listServiceHistory.isEmpty()){
+			for(ServiceHistoryInstance shi : listServiceHistory){
+				identitiesList.addAll(shi.getAllDigitalIdentities());
+			}
+		}
+		identitiesList.addAll(tspServiceDetected.getServiceInformation().getAllDigitalIdentities());
 
 		// Creamos el procesador de identidades digitales.
 		dip = new DigitalIdentitiesProcessor(identitiesList);
@@ -761,7 +768,8 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	public void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult) {
 
 		// Obtenemos los datos que identificarán al emisor de la CRL.
-		extractCRLIssuerData(shi);
+		//extractCRLIssuerData(shi);
+		extractCRLIssuerData(validationResult.getTSPServiceForDetect());
 
 		// Si hemos obtenido al menos una identidad digital, y
 		// si la CRL está emitida por alguna de las entidades
