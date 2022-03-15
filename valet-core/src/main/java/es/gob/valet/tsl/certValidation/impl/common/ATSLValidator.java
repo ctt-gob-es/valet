@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 22/12/2021.
+ * @version 1.10, 14/03/2022.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -72,7 +72,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.Qualifications;
  * <p>Abstract class that represents a TSL validator with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 22/12/2021.
+ * @version 1.10, 14/03/2022.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -1018,15 +1018,16 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 			// Creamos el procesador de identidades digitales.
 			DigitalIdentitiesProcessor dip = new DigitalIdentitiesProcessor(digitalIdentitiesList);
-			
-
 			// Procesamos el certificado a validar y modificamos el resultado si
 						// fuera necesario.
-						if (isCACert) {
-							result = dip.checkIfDigitalIdentitiesMatchesCertificate(cert);
-						} else {
-							result = dip.checkIfCertificateIsIssuedBySomeIdentity(cert, validationResult);
-						}
+			
+			//Tras consultar Dirección de Proyecto, se decide que se dará como detectado un certificado de sello de tiempo si en la identidad digital aparece el certificado o bien el emisor del  mismo. 
+			result = dip.checkIfDigitalIdentitiesMatchesCertificate(cert);
+			//si no se encuentra el certificado, se comprueba si está el emisor del mismo.
+			if(!result){
+				result = dip.checkIfCertificateIsIssuedBySomeIdentity(cert, validationResult);
+			}
+
 
 			// Si se ha encontrado, lo indicamos en el log.
 			if (result) {
