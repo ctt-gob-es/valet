@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 21/02/2022.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -47,7 +47,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  *<p>Class that maps the <i>SYSTEM_CERTIFICATE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 21/02/2022.
  */
 @Entity
 @Table(name = "SYSTEM_CERTIFICATE")
@@ -98,6 +98,11 @@ public class SystemCertificate implements Serializable {
 	 * encoded on Base 64. This attribute is used only when the key pairs is stored inside of a HSM.
 	 */
 	private String hash;
+	
+	/**
+	 * Attribute that represents the country of the certificate.
+	 */
+	private String country;
 
 	/**
 	 * Gets the value of the attribute {@link #idSystemCertificate}.
@@ -247,4 +252,22 @@ public class SystemCertificate implements Serializable {
 		this.hash = hashParam;
 	}
 
+	/**
+	 * Gets the value of the attribute {@link #country}.
+	 * @return the value of the attribute {@link #country}.
+	 */
+	@Column(name = "COUNTRY", length = NumberConstants.NUM20)
+	@JsonView(DataTablesOutput.View.class)
+	public String getCountry() {
+		return country;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #country}.
+	 * @param hashParam The value for the attribute {@link #country}.
+	 */
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	
 }

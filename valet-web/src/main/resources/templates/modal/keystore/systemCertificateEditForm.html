@@ -58,7 +58,12 @@
 									style="overflow: hidden" readonly class="form-control" />
 							</div>
 						</div>
-
+						<div class="form-group col-md-12">
+							<label for="country" th:text="#{form.editCertificate.country}"></label>
+							<input type="text" id="country" class="form-control"
+								th:field="*{country}" readonly></input>
+							<div style="clear: both;"></div>
+						</div>
 					</div>
 				</div>
 			</form>

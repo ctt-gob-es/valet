@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 06/11/2018.
+ * @version 1.4, 22/02/2022.
  */
 package es.gob.valet.controller;
 
@@ -48,7 +48,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificate
 /**
  * <p>Class that manages the requests related to the Keystore administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 06/11/2018.
+ * @version 1.4, 22/02/2022.
  */
 @Controller
 public class KeystoreController {
@@ -125,6 +125,7 @@ public class KeystoreController {
 		certificateForm.setIssuer(certificateToEdit.getIssuer());
 		certificateForm.setIdKeystore(certificateToEdit.getKeystore().getIdKeystore());
 		certificateForm.setIdSystemCertificate(idSystemCertificate);
+		certificateForm.setCountry(certificateToEdit.getCountry());
 
 		model.addAttribute("editcertificateform", certificateForm);
 		return "modal/keystore/systemCertificateEditForm.html";
