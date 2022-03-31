@@ -44,7 +44,7 @@
 		<!-- Versionado de otras dependencias. -->
 	<!-- Actualizados spring-data y spring-rest para evitar vulnerabilidad 
 			cve-2018-1273 -->
-		<spring.version>2.0.9.RELEASE</spring.version>
+		<spring.version>2.5.12</spring.version>
 		<spring.data.version>2.0.9.RELEASE</spring.data.version>
 		<spring.rest.version>2.0.9.RELEASE</spring.rest.version>
 		<hibernate.version>5.2.13.Final</hibernate.version>
