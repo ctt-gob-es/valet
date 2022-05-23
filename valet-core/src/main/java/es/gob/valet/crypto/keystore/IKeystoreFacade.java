@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 27/04/2022.
  */
 package es.gob.valet.crypto.keystore;
 
@@ -29,6 +29,7 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 import es.gob.valet.crypto.exception.CryptographyException;
@@ -39,7 +40,7 @@ import es.gob.valet.persistence.configuration.model.utils.IStatusCertificateIdCo
 /**
  * <p>Interface that defines the methods to manage operations with keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 27/04/2022.
  */
 public interface IKeystoreFacade {
 
@@ -168,5 +169,12 @@ public interface IKeystoreFacade {
 	 * @return an object that represents the information about the keystore from the cache system.
 	 */
 	KeystoreCacheObject getKeystoreCacheObject();
+
+	/**
+	 * Method that obtains a list with all the certificates stored inside of a keystore.
+	 * @return a list with all the certificates stored inside of a keystore.
+	 * @throws CryptographyException If the method fails.
+	 */
+	List<X509Certificate> getAllX509Certificates() throws CryptographyException;
 
 }

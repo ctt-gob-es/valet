@@ -82,6 +82,12 @@ public interface ICoreGeneralMessages {
 	String INITIALIZATION_007 = "INITIALIZATION_007";
 
 	/**
+	 * Constant attribute that represents the property key <code>INITIALIZATION_008</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String INITIALIZATION_008 = "INITIALIZATION_008";
+
+	/**
 	 * Constant attribute that represents the property key <code>KEYSTORE_FACTORY_001</code> belonging to the
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
@@ -567,6 +573,8 @@ public interface ICoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	String STANDARD_KEYSTORE_073 = "STANDARD_KEYSTORE_073";
+
+
 
 	/**
 	 * Constant attribute that represents the property key <code>UTILS_CACHE_000</code> belonging to the
@@ -1265,5 +1273,16 @@ public interface ICoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	String CCAT_000 = "CCAT_000";
+	/**
+	 * Constant attribute that represents the property key <code>CC_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String CC_000 = "CC_000";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CC_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String CC_001 = "CC_001";
 
 }

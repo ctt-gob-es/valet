@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 31/01/2019.
+ * @version 1.3, 16/03/2022.
  */
 package es.gob.valet.rest.elements;
 
@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * <p>Class that represents structure of a certificated detected in TSL.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
- * @version 1.2, 31/01/2019.
+ * @version 1.3, 16/03/2022.
  */
 public class CertDetectedInTSL implements Serializable {
 
@@ -58,6 +58,29 @@ public class CertDetectedInTSL implements Serializable {
 	 * Attribute that represents the TSL revocation status in certificated detected in TSL.
 	 */
 	private TslRevocationStatus tslRevocStatus;
+
+	/**
+	 * Attribute that represents the certification chain of the certificate.
+	 */
+	private CertificateChain certificateChain;
+
+	
+	/**
+	 * Gets the value of the attribute {@link #certificateChain}.
+	 * @return the value of the attribute {@link #certificateChain}.
+	 */
+	public CertificateChain getCertificateChain() {
+		return certificateChain;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #certificateChain}.
+	 * @param certificateChain The value for the attribute {@link #certificateChain}.
+	 */
+	public void setCertificateChain(CertificateChain certificateChain) {
+		this.certificateChain = certificateChain;
+	}
 
 	/**
 	 * Gets the value of the attribute {@link #tspName}.

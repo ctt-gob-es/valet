@@ -55,6 +55,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -224,6 +225,9 @@ public class KeystoreRestController {
 
 				listCertificates.add(newSystemCert);
 				dtOutput.setData(listCertificates);
+				
+				//recargamos caché
+				CertificateCacheManager.getInstance().loadListCertificateCA();
 
 			} 
 			
@@ -361,6 +365,10 @@ public class KeystoreRestController {
 						SystemCertificate newCert = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, idKeystore);
 						listSystemCertificate.add(newCert);
 						dtOutput.setData(listSystemCertificate);
+						
+						
+						//se actualiza la caché
+						CertificateCacheManager.getInstance().loadListCertificateCA();
 
 						
 					}else{
@@ -417,6 +425,9 @@ public class KeystoreRestController {
 			Long idKeystore = systemCertificate.getKeystore().getIdKeystore();
 			IKeystoreFacade keystoreFacade = KeystoreFactory.getKeystoreInstance(idKeystore);
 			keystoreFacade.removeEntry(systemCertificate.getAlias());
+			
+			//se actualiza la caché
+			CertificateCacheManager.getInstance().loadListCertificateCA();
 		} catch (Exception e) {
 			result = "-1";
 		}

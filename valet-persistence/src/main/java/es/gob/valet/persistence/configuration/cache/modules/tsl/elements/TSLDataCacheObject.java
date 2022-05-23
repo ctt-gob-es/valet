@@ -25,7 +25,10 @@
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
@@ -97,12 +100,15 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 	 * Attribute that represents the last new TSL available are find.
 	 */
 	private Date lastNewTSLAvailableFind = null;
+	
+	private List<X509Certificate> x509CertificateList = null;
 
 	/**
 	 * Constructor method for the class TSLDataCacheObject.java.
 	 */
 	public TSLDataCacheObject() {
 		super();
+		x509CertificateList = new ArrayList<X509Certificate>();
 	}
 
 	/**
@@ -131,6 +137,8 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 			setNewTSLAvailable(td.getNewTSLAvailable());
 			setTslObject(tslObjectSerializable);
 			setLastNewTSLAvailableFind(td.getLastNewTSLAvailableFind());
+			setX509CertificateList(new ArrayList<X509Certificate>());
+			
 
 		}
 
@@ -297,6 +305,24 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 		this.lastNewTSLAvailableFind = lastNewTSLAvailableFindParam;
 	}
 
+	
+	/**
+	 * Gets the value of the attribute {@link #x509CertificateList}.
+	 * @return the value of the attribute {@link #x509CertificateList}.
+	 */
+	public List<X509Certificate> getX509CertificateList() {
+		return x509CertificateList;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #x509CertificateList}.
+	 * @param x509CertificateList The value for the attribute {@link #x509CertificateList}.
+	 */
+	public void setX509CertificateList(List<X509Certificate> x509CertificateList) {
+		this.x509CertificateList = x509CertificateList;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#writeReplace()
@@ -348,7 +374,7 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 		tdco.setTslObject(getTslObject());
 		tdco.setNewTSLAvailable(getNewTSLAvailable());
 		tdco.setLastNewTSLAvailableFind(getLastNewTSLAvailableFind());
-
+tdco.setX509CertificateList(getX509CertificateList());
 		return tdco;
 
 	}

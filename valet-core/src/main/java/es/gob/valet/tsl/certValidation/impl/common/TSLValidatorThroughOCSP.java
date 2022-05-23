@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -586,13 +587,14 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 			try {
 				// En caso de disponer del certificado emisor del certificado a
-				// validar, comprobamos si es el que firma la respuesta o que haya sido emitido por este
-				if(validationResult.getIssuerCert() != null) {
+				// validar, comprobamos si es el que firma la respuesta o que
+				// haya sido emitido por este
+				if (validationResult.getIssuerCert() != null) {
 					X509Certificate signerCertX509 = UtilsCertificate.getX509Certificate(signerCert.getEncoded());
-					result = signerCert.equals(UtilsCertificate.getBouncyCastleCertificate(validationResult.getIssuerCert())) ||  
-					            UtilsCertificate.getCertificateIssuerId(signerCertX509).equals(UtilsCertificate.getCertificateId(validationResult.getIssuerCert()));
+					result = signerCert.equals(UtilsCertificate.getBouncyCastleCertificate(validationResult.getIssuerCert())) || UtilsCertificate.getCertificateIssuerId(signerCertX509).equals(UtilsCertificate.getCertificateId(validationResult.getIssuerCert()));
 				}
-			//	result = validationResult.getIssuerCert() != null && signerCert.equals(UtilsCertificate.getBouncyCastleCertificate(validationResult.getIssuerCert()));
+				// result = validationResult.getIssuerCert() != null &&
+				// signerCert.equals(UtilsCertificate.getBouncyCastleCertificate(validationResult.getIssuerCert()));
 			} catch (CommonUtilsException | IOException e) {
 				// Consideramos que no se ha verificado.
 				result = false;
@@ -981,7 +983,6 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	private void checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate, OCSPResp ocspResponse, String uri, int timeIntervalAllowed, TSLValidatorResult validationResult) {
 
 		try {
-
 			// Obtenemos el objeto que representa a la respuesta básica.
 			BasicOCSPResp basicOcspResponse = (BasicOCSPResp) ocspResponse.getResponseObject();
 
@@ -1036,13 +1037,11 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// La almacenamos en la respuesta.
 			validationResult.setRevocationValueBasicOCSPResponse(basicOcspResponse);
 			validationResult.setRevocationValueURL(uri);
-			//se indica que ha determinado el resultado según el DP
+			// se indica que ha determinado el resultado según el DP
 			validationResult.setResultFromDPorAIA(Boolean.TRUE);
-			
+
 			// Comprobamos el estado de revocación del certificado.
 			result = checkCertificateInOCSPResponse(validationDate, singleResponse, timeIntervalAllowed, validationResult);
-			
-			
 
 		} catch (Exception e) {
 
@@ -1159,32 +1158,42 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 		boolean result = true;
 
-		// Calculamos la fecha actual y el intervalo permitido en milisegundos.
+		//Se comprueba si el intervalo de tiempo permitido si la fecha de validación es la fecha actual o muy cercano al momento de validación (consideramos un margen de 5 minutos)
+		long currentTime = System.currentTimeMillis();
+		
+		// se obtiene la fecha de validación
 		long validationDateMillisSeconds = validationDate.getTime();
-		long timeIntervalAllowedMilliSeconds = Integer.valueOf(timeIntervalAllowedSeconds).longValue() * Integer.valueOf(NumberConstants.NUM1000).longValue();
-
-		// Extraemos la fecha hasta cuando es válida la respuesta.
-		Date nextUpdate = singleResponse.getNextUpdate();
-		// Si la hemos obtenido y la fecha de próxima actualización es anterior
-		// a la actual menos el intervalo permitido, significa que la respuesta
-		// no
-		// es válida.
-		if (nextUpdate != null && nextUpdate.getTime() < validationDateMillisSeconds - timeIntervalAllowedMilliSeconds) {
-			result = false;
-		}
-
-		// Si aún es válida la respuesta, comprobamos la fecha de emisión de
-		// esta.
-		if (result) {
-
-			Date thisUpdate = singleResponse.getThisUpdate();
-			// Si no la hemos obtenido, o es posterior a la fecha actual más el
-			// intervalo permitido, no pude ser válida al venir del futuro.
-			if (thisUpdate == null || thisUpdate.getTime() > validationDateMillisSeconds + timeIntervalAllowedMilliSeconds) {
+		
+		
+		//Según RFC6960, la comprobación debe hacerse con la hora del sistema (hora actual) no se puede comprobar el intervalo con fechas pasadas.
+		if(currentTime-validationDateMillisSeconds < NumberConstants.NUM300000_LONG){
+			// Calculamos el intervalo permitido en milisegundos.
+			long timeIntervalAllowedMilliSeconds = Integer.valueOf(timeIntervalAllowedSeconds).longValue() * Integer.valueOf(NumberConstants.NUM1000).longValue();
+			// Extraemos la fecha hasta cuando es válida la respuesta.
+			Date nextUpdate = singleResponse.getNextUpdate();
+			// Si la hemos obtenido y la fecha de próxima actualización es anterior
+			// a la actual menos el intervalo permitido, significa que la respuesta
+			// no
+			// es válida.
+			if (nextUpdate != null && nextUpdate.getTime() < validationDateMillisSeconds - timeIntervalAllowedMilliSeconds) {
 				result = false;
 			}
 
+			// Si aún es válida la respuesta, comprobamos la fecha de emisión de
+			// esta.
+			if (result) {
+
+				Date thisUpdate = singleResponse.getThisUpdate();
+				// Si no la hemos obtenido, o es posterior a la fecha actual más el
+				// intervalo permitido, no pude ser válida al venir del futuro.
+				if (thisUpdate == null || thisUpdate.getTime() > validationDateMillisSeconds + timeIntervalAllowedMilliSeconds) {
+					result = false;
+				}
+
+			}
 		}
+		
+		
 
 		return result;
 
@@ -1455,6 +1464,104 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		} else {
 			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL265));
 		}
+
+	}
+
+	@Override
+	public boolean validateCertificateChainUsingDistributionPoints(X509Certificate cert, Vector<X509Certificate> certificateChain, boolean isCA, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult) {
+
+		// Inicialmente se considera que no se ha conseguido comprobar el estado
+		// de revocación del certificado.
+		boolean result = false;
+
+		// Recuperamos la información de acceso a los servicios disponibles en
+		// la autoridad.
+		AuthorityInformationAccess aia = null;
+		try {
+			aia = AuthorityInformationAccess.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions());
+		} catch (Exception e) {
+			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL186), e);
+		}
+
+		// Si la información recuperada no es nula, y al menos hay un
+		// elemento...
+		if (aia != null && aia.getAccessDescriptions() != null && aia.getAccessDescriptions().length > 0) {
+
+			// Creamos el CertificateID que se usará en las peticiones OCSP.
+			CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(), null, null);
+
+			// Si hemos podido generar el CertificateID, continuamos.
+			if (certificateId != null) {
+
+				// Obtenemos las propiedades que determinan los
+				// timeouts
+				// de lectura y conexión configurados.
+				int readTimeout = TSLProperties.getOcspReadTimeout();
+				int connectionTimeout = TSLProperties.getOcspConnectionTimeout();
+				int timeIntervalAllowed = TSLProperties.getOcspTimeIntervalAllowed();
+
+				// Iniciamos la variable que contendrá la respuesta OCSP.
+				OCSPResp ocspResponse = null;
+				// Iniciamos la variable que contendrá el valor de la
+				// extensión Nonce.
+				byte[ ] nonce = null;
+
+				// Los vamos recorriendo uno a uno hasta que encontremos un
+				// servicio OCSP que se pueda usar.
+				AccessDescription[ ] accessDescArray = aia.getAccessDescriptions();
+				String uri = null;
+				for (AccessDescription accessDescription: accessDescArray) {
+
+					if (OCSPObjectIdentifiers.id_pkix_ocsp.equals(accessDescription.getAccessMethod())) {
+
+						// Obtenemos la URI de acceso al OCSP.
+						GeneralName accessLocationGeneralName = accessDescription.getAccessLocation();
+						if (accessLocationGeneralName.getTagNo() == GeneralName.uniformResourceIdentifier) {
+
+							String ocspUriString = ((DERIA5String) accessLocationGeneralName.getName()).getString();
+
+							// La convertimos a objeto URI.
+							URI ocspUri = URI.create(ocspUriString);
+
+							// Creamos el valor para la extensión Nonce.
+							nonce = buildNonce();
+
+							// Construimos y mandamos la petición OCSP.
+							ocspResponse = buildAndSendOCSPRequest(certificateId, nonce, ocspUri, readTimeout, connectionTimeout);
+
+							// Si la respuesta no es nula, comprobamos si está
+							// bien
+							// formada y el nonce.
+							if (ocspResponse != null) {
+								if (!checkOCSPResponseIsValid(ocspResponse, nonce, validationDate, validationResult, !isTsaCertificate, null, null)) {
+									ocspResponse = null;
+									LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL223));
+								} else {
+									uri = ocspUriString;
+									break;
+								}
+							}
+
+						}
+
+					}
+
+				}
+
+				// Si hemos obtenido una respuesta...
+				if (ocspResponse != null) {
+					checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, uri, timeIntervalAllowed, validationResult);
+				} else {
+
+					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL134));
+
+				}
+
+			}
+
+		}
+
+		return result;
 
 	}
 

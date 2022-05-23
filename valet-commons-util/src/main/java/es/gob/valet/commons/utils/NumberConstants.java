@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 31/10/2019
+ * @version 1.2, 27/04/2022
  */
 package es.gob.valet.commons.utils;
 
 /**
  * <p>Interface that defines numeric constants for generalized usage.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 31/10/2019.
+ * @version 1.2, 27/04/2022.
  */
 public interface NumberConstants {
 
@@ -719,6 +719,10 @@ public interface NumberConstants {
 	 * Constant attribute that represents the number 300000.
 	 */
 	int NUM300000 = 300000;
+	/**
+	 * Constant attribute that represents the number 300000 (type long).
+	 */
+	long NUM300000_LONG = 300000l;
 
 	/**
 	 * Constant attribute that represents the number 600000.

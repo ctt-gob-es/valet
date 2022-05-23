@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 06/07/2021.
+ * @version 1.9, 27/04/2022.
  */
 package es.gob.valet.commons.utils;
 
@@ -37,11 +37,13 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Vector;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -60,7 +62,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 06/07/2021.
+ * @version 1.9, 27/04/2022.
  */
 public final class UtilsCertificate {
 
@@ -86,18 +88,17 @@ public final class UtilsCertificate {
 		InputStream is = new ByteArrayInputStream(certificate);
 		try {
 			X509Certificate x509 = (X509Certificate) CertificateFactory.getInstance(X509_TYPE).generateCertificate(is);
-			if(x509 != null){
+			if (x509 != null) {
 				return x509;
-			}else{
+			} else {
 				throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000));
 			}
-			
+
 		} catch (CertificateException e) {
 			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
-		} 
-		finally {
+		} finally {
 			UtilsResources.safeCloseInputStream(is);
 		}
 	}
@@ -491,6 +492,222 @@ public final class UtilsCertificate {
 
 		return cert != null && cert.getBasicConstraints() != -1;
 
+	}
+
+
+	/**
+	 * Method that obtains the certificate chain of a certificate from a list with certificates related and not related to the certificate to process.
+	 * @param cert Parameter that represents the certificate to search the associated certificate chain.
+	 * @param certsList Parameter that represents the list with the certificates where to search the certificate chain.
+	 * @return a list of certificates that represents the certificate chain. <code>null</code> if the input certificate is <code>null</code> or
+	 * it was not possible to obtain the certificate chain.
+	 * @throws CommonUtilsException If there is some error searching the certificate chain in the input list.
+	 */
+	public static Vector<X509Certificate> getCertificateChainIssuer(X509Certificate cert, List<? extends X509Certificate> certsList) throws CommonUtilsException {
+
+		
+		Vector<X509Certificate> result = null;
+		if (cert != null) {
+
+			// Creamos la lista resultante.
+			result = new Vector<X509Certificate>();
+
+			// Comprobamos si el certificado es autoemitido, en cuyo caso hemos
+			// terminado.
+			if (!UtilsCertificate.esAutoemitido(cert)) {
+
+				// Como no es autoemitido, hay que terminar de montar la cadena
+				// si la lista de entrada tiene certificados...
+				if (certsList != null && !certsList.isEmpty()) {
+
+					// Para no modificar la lista entrante, hacemos una copia...
+					List<X509Certificate> certsListCloned = new ArrayList<X509Certificate>(certsList.size());
+					certsListCloned.addAll(certsList);
+
+					// Buscamos el emisor del certificado...
+					X509Certificate issuerCert = getIssuerCertificate(cert, certsListCloned);
+
+					// Si lo hemos encontrado...
+					if (issuerCert != null) {
+						
+						result.add(issuerCert);
+
+						// Mientras no sea autoemitido, seguimos buscando el
+						// siguiente de la cadena...
+						while (result != null && !UtilsCertificate.esAutoemitido(issuerCert)) {
+
+							// Buscamos el siguiente emisor
+							issuerCert = getIssuerCertificate(issuerCert, certsListCloned);
+							if (issuerCert != null) {
+								result.add(issuerCert);
+							} else {
+								// Si no lo hemos encontrado, la cadena no está
+								// completa.
+								result = null;
+							}
+
+						}
+
+					} else {
+
+						// Si no lo hemos encontrado, la cadena no está
+						// completa.
+						result = null;
+
+					}
+
+				} else {
+
+					// En este caso no se ha podido montar la cadena
+					result = null;
+
+				}
+
+			}
+
+		}
+
+		return result;
+
+	}
+	
+	/**
+	 * Method that obtains the certificate chain of a certificate from a list with certificates related and not related to the certificate to process.
+	 * @param cert Parameter that represents the certificate to search the associated certificate chain.
+	 * @param certsList Parameter that represents the list with the certificates where to search the certificate chain.
+	 * @return a list of certificates that represents the certificate chain. <code>null</code> if the input certificate is <code>null</code> or
+	 * it was not possible to obtain the certificate chain.
+	 * @throws CommonUtilsException If there is some error searching the certificate chain in the input list.
+	 */
+	public static List<X509Certificate> getCertificateChain(X509Certificate cert, List<? extends X509Certificate> certsList) throws CommonUtilsException {
+
+		List<X509Certificate> result = null;
+		if (cert != null) {
+
+			// Creamos la lista resultante.
+			result = new ArrayList<X509Certificate>();
+
+			// Comprobamos si el certificado es autoemitido, en cuyo caso hemos
+			// terminado.
+			if (!UtilsCertificate.esAutoemitido(cert)) {
+
+				// Como no es autoemitido, hay que terminar de montar la cadena
+				// si la lista de entrada tiene certificados...
+				if (certsList != null && !certsList.isEmpty()) {
+
+					// Para no modificar la lista entrante, hacemos una copia...
+					List<X509Certificate> certsListCloned = new ArrayList<X509Certificate>(certsList.size());
+					certsListCloned.addAll(certsList);
+
+					// Buscamos el emisor del certificado...
+					X509Certificate issuerCert = getIssuerCertificate(cert, certsListCloned);
+
+					// Si lo hemos encontrado...
+					if (issuerCert != null) {
+						result.add(issuerCert);
+						
+						// Mientras no sea autoemitido, seguimos buscando el
+						// siguiente de la cadena...
+						while (result != null && !UtilsCertificate.esAutoemitido(issuerCert)) {
+
+							// Buscamos el siguiente emisor
+							issuerCert = getIssuerCertificate(issuerCert, certsListCloned);
+							if (issuerCert != null) {
+								result.add(issuerCert);
+							} else {
+								// Si no lo hemos encontrado, la cadena no está
+								// completa.
+								result = null;
+							}
+
+						}
+
+					} else {
+
+						// Si no lo hemos encontrado, la cadena no está
+						// completa.
+						result = null;
+
+					}
+
+				} else {
+
+					// En este caso no se ha podido montar la cadena
+					result = null;
+
+				}
+
+			}
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Method that checks whether a certificate has been self-issued (true) or not (false).
+	 * @param cert Parameter that represents the certificate.
+	 * @return a boolean that indicates whether a certificate has been self-issued (true) or not (false).
+	 */
+	public static boolean esAutoemitido(X509Certificate cert) {
+		try {
+			// Debe estar autofirmado.
+			cert.verify(cert.getPublicKey());
+			// El emisor y asunto deben ser los mismos.
+			String idCertificado = getCertificateId(cert);
+			String idEmisor = getCertificateIssuerId(cert);
+			return idCertificado.equals(idEmisor);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Method that obtains the issuer certificate of a certificate from a list of certificates. The method removes from the certificates list the
+	 * obtained certificate.
+	 * @param cert Parameter that represents the certificate to process.
+	 * @param certsList Parameter that represents the list of certificates to process.
+	 * @return an object that represents the issuer certificate, or <code>null</code> if the list doesn't contain the issuer certificate.
+	 * @throws CommonUtilsException If the method fails.
+	 */
+	private static X509Certificate getIssuerCertificate(X509Certificate cert, List<X509Certificate> certsList) throws CommonUtilsException {
+
+		X509Certificate result = null;
+
+		for (int index = 0; index < certsList.size() && result == null; index++) {
+
+			X509Certificate certInList = certsList.get(index);
+			if (isIssuer(certInList, cert)) {
+				result = certInList;
+				certsList.remove(index);
+			}
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Checks if psc is the issuer from a certificate.
+	 * @param psc Certificate psc data.
+	 * @param cert Certificate child data.
+	 * @return true if is the issuer or false if not.
+	 * @throws CommonUtilsException Exception thrown if there is any problem creating any certificate given its data.
+	 */
+	public static boolean isIssuer(X509Certificate psc, X509Certificate cert) throws CommonUtilsException {
+		// El certificado "padre" debe haber firmado al "hijo".
+		try {
+			cert.verify(psc.getPublicKey());
+			String parentSubject = canonicalizarIdCertificado(psc.getSubjectDN().toString());
+			String childIssuer = canonicalizarIdCertificado(cert.getIssuerDN().toString());
+			return childIssuer.equals(parentSubject);
+		} catch (InvalidKeyException | CertificateException
+				| NoSuchAlgorithmException | NoSuchProviderException
+				| SignatureException e) {
+			return false;
+		}
 	}
 
 }

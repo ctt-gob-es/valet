@@ -1,4 +1,4 @@
-/*
+/* 
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,35 +14,52 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/**
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants.java.</p>
- * <b>Description:</b><p>Interface that contains all the system keystores IDs.</p>
+/** 
+ * <b>File:</b><p>es.gob.valet.rest.elements.CertificateChain.java.</p>
+ * <b>Description:</b><p>Class that represents the certificate chain of the certificate being validated.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>06/11/2018.</p>
+ * <b>Date:</b><p>02/03/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.0, 02/03/2022.
  */
-package es.gob.valet.persistence.configuration.model.utils;
+package es.gob.valet.rest.elements;
 
-/**
- * <p>Interface that contains all the system keystores IDs.</p>
+import java.io.Serializable;
+import java.util.List;
+
+
+/** 
+ * <p>Class that represents the certificate chain of the certificate being validated.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.0, 02/03/2022.
  */
-public interface IKeystoreIdConstants {
+public class CertificateChain implements Serializable {
 
 	/**
-	 * Constant attribute that represents the ID to identify the SSL - TrustStore.
+	 * Attribute that represents the serial version UID. 
 	 */
-	Long ID_SSL_TRUSTSTORE = 5L;
+	private static final long serialVersionUID = -5340721366963200015L;
 
 	/**
-	 * Constant attribute that represents the ID to identify the TSL - TrustStore.
+	 * Attribute that represents the list of certificates that make up the certification chain.
 	 */
-	Long ID_TSL_TRUSTSTORE = 17L;
-	/**
-	 * Constant attribute that represents the ID to identify the CA - TrustStore.
-	 */
-	Long ID_CA_TRUSTSTORE = 18L;
+	List<Certificate> certificates;
 
+	
+	/**
+	 * Gets the value of the attribute {@link #certificates}.
+	 * @return the value of the attribute {@link #certificates}.
+	 */
+	public List<Certificate> getCertificates() {
+		return certificates;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #certificates}.
+	 * @param certificates The value for the attribute {@link #certificates}.
+	 */
+	public void setCertificates(List<Certificate> certificates) {
+		this.certificates = certificates;
+	}
 }

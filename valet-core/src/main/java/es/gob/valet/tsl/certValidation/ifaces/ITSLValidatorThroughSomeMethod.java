@@ -27,9 +27,11 @@ package es.gob.valet.tsl.certValidation.ifaces;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.Vector;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
+import es.gob.valet.rest.elements.TslRevocationStatus;
 import es.gob.valet.tsl.certValidation.impl.common.ATSLValidator;
 import es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
@@ -81,5 +83,20 @@ public interface ITSLValidatorThroughSomeMethod {
 	 * @return Flag that indicates if the certificate has been validated (<code>true</code>) or not (<code>false</code>).
 	 */
 	boolean validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator);
+
+	/**
+	 * Method that validates the input x509 v3 certificate using the distribution point information on it.
+	 * @param cert Certificate X509v3 to validate its revocation.
+	 * @param isCACert Flag that indicates if the input certificate has the Basic Constraints with the CA flag activated
+	 * (<code>true</code>) or not (<code>false</code>).
+	 * @param isTsaCertificate Flag that indicates if the input certificate has the id-kp-timestamping key purpose
+	 * (<code>true</code>) or not (<code>false</code>).
+	 * @param validationDate Validation date to check the certificate status revocation.
+	 * @param validationResult Object where must be stored the validation result data.
+	 * @return Flag that indicates if the certificate has been validated (<code>true</code>) or not (<code>false</code>).
+	 */
+	boolean validateCertificateChainUsingDistributionPoints(X509Certificate cert, Vector<X509Certificate> certificateChain, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult);
+
+	
 
 }

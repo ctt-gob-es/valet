@@ -291,5 +291,29 @@ public interface IRestGeneralMessages {
 	 * file messages/valet-rest/general_xx_YY.properties.
 	 */
 	String REST_LOG044 = "REST044";
-	
+	/**
+	 * Constant attribute that represents the name of the property <code>REST045</code> belonging to the
+	 * file messages/valet-rest/general_xx_YY.properties.
+	 */
+	String REST_LOG045 = "REST045";
+	/**
+	 * Constant attribute that represents the name of the property <code>REST046</code> belonging to the
+	 * file messages/valet-rest/general_xx_YY.properties.
+	 */
+	String REST_LOG046 = "REST046";
+	/**
+	 * Constant attribute that represents the name of the property <code>REST047</code> belonging to the
+	 * file messages/valet-rest/general_xx_YY.properties.
+	 */
+	String REST_LOG047 = "REST047";
+	/**
+	 * Constant attribute that represents the name of the property <code>REST048</code> belonging to the
+	 * file messages/valet-rest/general_xx_YY.properties.
+	 */
+	String REST_LOG048 = "REST048";
+	/**
+	 * Constant attribute that represents the name of the property <code>REST049</code> belonging to the
+	 * file messages/valet-rest/general_xx_YY.properties.
+	 */
+	String REST_LOG049 = "REST049";
 }

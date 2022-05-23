@@ -38,6 +38,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -219,8 +220,8 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		// Obtenemos la lista de identidades digitales para analizarlas.
 		List<ServiceHistoryInstance> listServiceHistory = tspServiceDetected.getAllServiceHistory();
 		List<DigitalID> identitiesList = new ArrayList<DigitalID>();
-		if(!listServiceHistory.isEmpty()){
-			for(ServiceHistoryInstance shi : listServiceHistory){
+		if (!listServiceHistory.isEmpty()) {
+			for (ServiceHistoryInstance shi: listServiceHistory) {
 				identitiesList.addAll(shi.getAllDigitalIdentities());
 			}
 		}
@@ -540,10 +541,10 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			// es porque no se confía en su emisor.
 			if (!result) {
 				try {
-					LOGGER.debug( Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+					LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
 					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_001, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
 				} catch (CommonUtilsException e) {
-					LOGGER.error( Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));
+					LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));
 				}
 			}
 
@@ -768,7 +769,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	public void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult) {
 
 		// Obtenemos los datos que identificarán al emisor de la CRL.
-		//extractCRLIssuerData(shi);
+		// extractCRLIssuerData(shi);
 		extractCRLIssuerData(validationResult.getTSPServiceForDetect());
 
 		// Si hemos obtenido al menos una identidad digital, y
@@ -960,6 +961,246 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		} else {
 
 			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL185));
+
+		}
+
+		return result;
+
+	}
+
+	@Override
+	public boolean validateCertificateChainUsingDistributionPoints(X509Certificate cert, Vector<X509Certificate> certificateChain, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult) {
+
+		// Inicialmente se considera que no se ha conseguido comprobar el estado
+		// de revocación del certificado.
+		boolean result = false;
+
+		// Recuperamos el listado de Distribution Points de tipo CRL.
+		CRLDistPoint crlDps = null;
+		ASN1InputStream dIn = null;
+		try {
+			Extensions extensions = UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions();
+			Extension ext = extensions.getExtension(Extension.cRLDistributionPoints);
+			byte[ ] octs = ext.getExtnValue().getOctets();
+			dIn = new ASN1InputStream(octs);
+			crlDps = CRLDistPoint.getInstance(dIn.readObject());
+		} catch (Exception e1) {
+			crlDps = null;
+		} finally {
+			if (dIn != null) {
+				try {
+					dIn.close();
+				} catch (IOException e) {
+					dIn = null;
+				}
+			}
+		}
+		// Si lo hemos obtenido...
+		if (crlDps != null) {
+			// Si la extensión no está vacía...
+			DistributionPoint[ ] crlDpsArray = crlDps.getDistributionPoints();
+			if (crlDpsArray != null && crlDpsArray.length > 0) {
+
+				// Los vamos recorriendo uno a uno hasta encontrar una CRL que
+				// se
+				// pueda obtener...
+				X509CRL crl = null;
+				String uriSelected = null;
+				for (int indexDp = 0; crl == null && indexDp < crlDpsArray.length; indexDp++) {
+
+					// Obtenemos el name.
+					DistributionPointName dpName = crlDpsArray[indexDp].getDistributionPoint();
+
+					// Dentro del Distribution point el campo Name me
+					// indica la CRL ---> Analizando
+					if (dpName == null) {
+						// Si no hay name en este punto de distribución
+						// pruebo con otro.
+						continue;
+					}
+
+					// Si se trata de un RelativeDistinguishedName,
+					// entonces es un conjunto (SET)
+					// de AttributeTypeAndValue, que a su vez es una
+					// secuencia (SEQUENCE) de
+					// pares (AttributeType, AttributeValue), que al
+					// final son pares (OID, valor).
+					if (dpName.getType() == DistributionPointName.NAME_RELATIVE_TO_CRL_ISSUER) {
+						// Como no se conoce la especificación para
+						// obtener los datos de la ruta CRL
+						// a partir de los pares antes especificados, se
+						// continúa con el siguiente DP.
+						continue;
+					}
+					// En este punto, sabemos que tenemos un
+					// "GeneralNames":
+					// GeneralNames ::= SEQUENCE SIZE (1..MAX) OF
+					// GeneralName
+					//
+					// GeneralName ::= CHOICE {
+					// otherName [0] AnotherName,
+					// rfc822Name [1] IA5String,
+					// dNSName [2] IA5String,
+					// x400Address [3] ORAddress,
+					// directoryName [4] Name,
+					// ediPartyName [5] EDIPartyName,
+					// uniformResourceIdentifier [6] IA5String,
+					// iPAddress [7] OCTET STRING,
+					// registeredID [8] OBJECT IDENTIFIER }
+					else {
+
+						// La ruta CRL siempre vendrá en un
+						// uniformResourceIdentifier (tipo 6 - IA5String)
+						GeneralName[ ] generalNames = GeneralNames.getInstance(dpName.getName()).getNames();
+						List<URI> uriDistPointsList = new ArrayList<URI>();
+						for (GeneralName gn: generalNames) {
+							if (gn.getTagNo() == GeneralName.uniformResourceIdentifier) {
+								String uriString = ((DERIA5String) gn.getName()).getString();
+								try {
+									uriDistPointsList.add(new URI(uriString));
+								} catch (URISyntaxException e) {
+									continue;
+								}
+							}
+						}
+
+						// Si al menos se ha obtenido alguna ruta, se
+						// continúa:
+						if (!uriDistPointsList.isEmpty()) {
+
+							// Obtenemos las propiedades que determinan los
+							// timeouts
+							// de lectura y conexión configurados.
+							int readTimeout = TSLProperties.getCrlTimeoutRead();
+							int connectionTimeout = TSLProperties.getCrlTimeoutConnection();
+
+							// Recorremos las URI e intentamos descargar la
+							// CRL...
+							for (int index = 0; crl == null && index < uriDistPointsList.size(); index++) {
+
+								// Obtenemos la uri a analizar.
+								URI uri = uriDistPointsList.get(index);
+
+								// Tratamos de obtener la CRL.
+								crl = downloadCRLFromSupplyPoint(uri, connectionTimeout, readTimeout);
+								if (crl == null) {
+									LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL292));
+									// Lanzamos la alarma notificando que no se
+									// tiene acceso o no es posible parsear la
+									// CRL.
+									AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_000, new Object[ ] { uri.toString() }));
+								}
+								// Si la CRL es nula o no es válida respecto a
+								// la fecha de validación, la descartamos.
+								boolean checkIssuerOfCRL = !isTsaCertificate && !isCACert;
+								if (crl != null && !checkCRLisValidCertificateChain(crl, validationDate, checkIssuerOfCRL, certificateChain)) {
+									crl = null;
+								}
+								// Si no es nula, guardamos la URI.
+								if (crl != null) {
+									uriSelected = uri.toString();
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+				// Si tras recorrer los distribution points hemos obtenido una
+				// CRL,
+				// NO la validamos ya que consideramos que al estar indicada en
+				// el
+				// distribution point
+				// de un certificado detectado en una TSL, dicha información es
+				// veraz.
+				// Buscamos el certificado dentro de la CRL.
+				if (crl != null) {
+
+					// Asignamos la CRL a aplicar.
+					validationResult.setRevocationValueCRL(crl);
+					validationResult.setRevocationValueURL(uriSelected);
+					// Buscamos el certificado dentro de esta.
+					searchCertInCRL(cert, validationDate, crl, validationResult);
+					// Indicamos que se ha determinado el resultado según el DP.
+					validationResult.setResultFromServiceStatus(Boolean.FALSE);
+					validationResult.setResultFromDPorAIA(Boolean.TRUE);
+					result = true;
+
+				}
+
+			} else {
+
+				LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL185));
+
+			}
+
+		} else {
+
+			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL185));
+
+		}
+
+		return result;
+	}
+
+	/**
+	 * Checks if the downloaded CRL is valid and consistent.
+	 * @param crl {@link X509CRL} object that represents the CRL to analyze.
+	 * @param validationDate Validation date to check the certificate status revocation.
+	 * @param checkIssuerOfCRL Flag that indicates if must be checked that the issuer of the CRL
+	 * is defined how digital identity.
+	 * @param validationResult Object from which extracts the possible issuer of the CRL to check.
+	 * @param tsp Trust Service Provider from which search some TSP Service that verifies the crl as is issuer. If it
+	 * is <code>null</code>, then this method uses the Digital Identities Processor builded from the CRL/OCSP Service.
+	 * @param tslValidator TSL Validator to check if some CRL TSP Service is in accord with the qualified (or not) certificate.
+	 * @return <code>true</code> if the CRL has been verified, otherwise <code>false</code>.
+	 */
+	private boolean checkCRLisValidCertificateChain(X509CRL crl, Date validationDate, boolean checkIssuerOfCRL, Vector<X509Certificate> certificateChain) {
+
+		boolean result = true;
+
+		// Comprobamos que la fecha de próxima actualización es posterior a la
+		// de validación.
+		if (crl.getNextUpdate() != null && crl.getNextUpdate().before(validationDate)) {
+			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL124, new Object[ ] { validationDate.toString(), crl.getNextUpdate().toString() }));
+			result = false;
+		}
+
+		// Si la CRL sigue siendo válida y se ha indicado que se compruebe su
+		// emisor...
+		if (result && checkIssuerOfCRL) {
+			try {
+				List<PublicKey> publicKeyList = new ArrayList<PublicKey>();
+				for(X509Certificate cer: certificateChain){
+					publicKeyList.add(cer.getPublicKey());
+				}
+				for (PublicKey publicKeyIssuer: publicKeyList) {
+					try {
+						crl.verify(publicKeyIssuer);
+						result = true;
+						break;
+					} catch (Exception e) {
+						continue;
+					}
+
+				}
+			} catch (Exception e) {
+				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL348, new Object[ ] {e.getMessage() }));
+			}
+
+			// Si hemos llegado a este punto y no se confía en la CRL,
+			// es porque no se confía en su emisor.
+			if (!result) {
+				try {
+					LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_001, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+				} catch (CommonUtilsException e) {
+					LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));
+				}
+			}
 
 		}
 

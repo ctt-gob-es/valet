@@ -20,13 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.19, 29/11/2021.
+ * @version 1.20, 27/04/2022.
  */
 package es.gob.valet.rest.services;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.cert.CRLException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
@@ -36,6 +37,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -58,6 +60,7 @@ import es.gob.valet.audit.access.IEventsCollectorConstants;
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsServicesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
+import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsDate;
@@ -71,7 +74,10 @@ import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFac
 import es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
+import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
 import es.gob.valet.rest.elements.CertDetectedInTSL;
+import es.gob.valet.rest.elements.Certificate;
+import es.gob.valet.rest.elements.CertificateChain;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.ResultTslInfVal;
 import es.gob.valet.rest.elements.TslInformation;
@@ -85,13 +91,14 @@ import es.gob.valet.rest.elements.json.DateString;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
+import es.gob.valet.tsl.certValidation.impl.common.CertificateChainValidator;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.19, 29/11/2021.
+ * @version 1.20, 27/04/2022.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -100,18 +107,16 @@ public class TslRestService implements ITslRestService {
 	 * Attribute that represents the object that manages the log of the class.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(TslRestService.class);
-	
-	
+
 	/**
 	 * Attribute that represents the identifier of the application that will be used for auditing in the 'getTslInformation' service
 	 */
 	private static final String INTERNAL_TASK_APP = "APP_INTERNAL_TASK";
-	
+
 	/**
 	 * Attribute that represents the identifier of the delegated application that will be used for auditing in the 'getTslInformation' service
 	 */
 	private static final String INTERNAL_TASK_DELEGATE_APP = "DELAPP_INTERNAL_TASK";
-	
 
 	/**
 	 * Attribute that represents the HTTP Servlet Request.
@@ -130,7 +135,7 @@ public class TslRestService implements ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List) throws ValetRestException {
+	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List, @FormParam(PARAM_RETURN_CERT_CHAIN) Boolean returnCertificateChain) throws ValetRestException {
 		// CHECKSTYLE:ON
 		long startOperationTime = Calendar.getInstance().getTimeInMillis();
 		// Añadimos la información NDC al log y obtenemos un número único
@@ -349,7 +354,7 @@ public class TslRestService implements ITslRestService {
 				// en auditoría.
 				CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, IEventsCollectorConstants.SERVICE_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION_ID, extractRequestByteArray());
 				CommonsServicesAuditTraces.addStartRSTrace(auditTransNumber, application, delegatedAppAux);
-				result = executeServiceDetectCertInTslInfoAndValidation(auditTransNumber, application, delegatedAppAux, tslLocation, x509cert, detectionDateAux, getInfo.booleanValue(), checkRevStatus.booleanValue(), returnRevocationEvidence, crlArray, basicOcspRespArray);
+				result = executeServiceDetectCertInTslInfoAndValidation(auditTransNumber, application, delegatedAppAux, tslLocation, x509cert, detectionDateAux, getInfo.booleanValue(), checkRevStatus.booleanValue(), returnRevocationEvidence, crlArray, basicOcspRespArray, returnCertificateChain);
 				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_OK, result.getDescription());
 				// Calculamos la representación en bytes del resultado, y si la
 				// obtenemos correctamente, cerramos la transacción.
@@ -495,12 +500,14 @@ public class TslRestService implements ITslRestService {
 	 * If this is defined, then {@code checkRevStatus} is considered <code>true</code>.
 	 * @param basicOcspRespArray List of {@link BasicOCSPResp} that could be used like revocation evidence. It could be <code>null</code>.
 	 * If this is defined, then {@code checkRevStatus} is considered <code>true</code>.
+	 * @param returnCertificateChain Flag that indicates if it is necessary to return chain certificate.
 	 * @return Structure of DetectCertInTslInfoAndValidationResponse.
 	 * @throws TSLManagingException In case of some error detecting or validating the certificate with the TSL.
 	 * @throws IOException In case of some error decoding a Basic OCSP Response.
 	 * @throws CRLException Incase of some error decoding a CRL.
+	 * @throws ValetRestException 
 	 */
-	private DetectCertInTslInfoAndValidationResponse executeServiceDetectCertInTslInfoAndValidation(String auditTransNumber, String application, String delegatedApp, String tslLocation, X509Certificate x509cert, Date detectionDate, boolean getInfo, boolean checkRevStatus, Boolean returnRevocationEvidence, X509CRL[ ] crlArray, BasicOCSPResp[ ] basicOcspRespArray) throws TSLManagingException, CRLException, IOException {
+	private DetectCertInTslInfoAndValidationResponse executeServiceDetectCertInTslInfoAndValidation(String auditTransNumber, String application, String delegatedApp, String tslLocation, X509Certificate x509cert, Date detectionDate, boolean getInfo, boolean checkRevStatus, Boolean returnRevocationEvidence, X509CRL[ ] crlArray, BasicOCSPResp[ ] basicOcspRespArray, Boolean returnCertificateChain) throws TSLManagingException, CRLException, IOException, ValetRestException {
 
 		// Inicializamos el resultado a devolver.
 		DetectCertInTslInfoAndValidationResponse result = new DetectCertInTslInfoAndValidationResponse();
@@ -563,7 +570,7 @@ public class TslRestService implements ITslRestService {
 			} else {
 				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG016, new Object[ ] { tslLocation, detectionDate });
 			}
-		//	LOGGER.info(msg);
+			// LOGGER.info(msg);
 			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED);
 			result.setDescription(msg);
 
@@ -602,7 +609,7 @@ public class TslRestService implements ITslRestService {
 
 					// Lo marcamos en la respuesta.
 					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG018);
-					//LOGGER.info(msg);
+					// LOGGER.info(msg);
 					result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED);
 					result.setDescription(msg);
 
@@ -708,6 +715,31 @@ public class TslRestService implements ITslRestService {
 						// Añadimos toda la información de revocación en la
 						// respuesta.
 						certDetectedInTsl.setTslRevocStatus(tslRevocationStatus);
+
+					}
+
+					// si se ha solicitado obtener la cadena de
+					// certificación y las evidencias de revocación
+					if (returnCertificateChain) {
+						LOGGER.info(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG048));
+						CertificateChain certChain = null;
+						List<Certificate> listCertificates = new ArrayList<Certificate>();
+
+						listCertificates = getCertificateChainAndRevocationStatus(x509cert, detectionDate, tslValidatorResult.getTslCountryRegionCode());
+						if (listCertificates != null && !listCertificates.isEmpty()) {
+							certChain = new CertificateChain();
+							certChain.setCertificates(listCertificates);
+
+						}
+
+						certDetectedInTsl.setCertificateChain(certChain);
+					
+						if(certChain!= null && certChain.getCertificates() != null && !certChain.getCertificates().isEmpty()){
+							LOGGER.info(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG049));
+						} else{
+							LOGGER.warn(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG047));
+						}
+						
 
 					}
 
@@ -1154,16 +1186,17 @@ public class TslRestService implements ITslRestService {
 		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS);
 		LOGGER.info(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG043));
 		try {
-			//Se abre la transacción de auditoría
+			// Se abre la transacción de auditoría
 			CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, IEventsCollectorConstants.SERVICE_GET_TSL_INFO_VERSIONS_ID, extractRequestByteArray());
 			CommonsServicesAuditTraces.addStartRSTrace(auditTransNumber, INTERNAL_TASK_APP, INTERNAL_TASK_DELEGATE_APP);
 			Map<String, Integer> tslCountryVersion = TSLManager.getInstance().getTslInfoVersions();
 			result = new TslInformationVersionsResponse();
 			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_TSLINFOVERSIONS_OK);
-			int numTsl = tslCountryVersion != null ? tslCountryVersion.size(): 0;
+			int numTsl = tslCountryVersion != null ? tslCountryVersion.size() : 0;
 			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG040, new Object[ ] { numTsl }));
 			result.setTslVersionsMap(tslCountryVersion);
-			//se calcula la representación en bytes del resultado, y si la obtenemos correctamente, cerramos la transacción.
+			// se calcula la representación en bytes del resultado, y si la
+			// obtenemos correctamente, cerramos la transacción.
 			byte[ ] resultByteArray = buildResultByteArray(result);
 			CommonsServicesAuditTraces.addCloseTransactionTrace(auditTransNumber, resultByteArray);
 		} catch (TSLManagingException e) {
@@ -1183,9 +1216,68 @@ public class TslRestService implements ITslRestService {
 		}
 		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG044, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		// devolvemos el resultado
-		//Limpiamos la información NDC.
+		// Limpiamos la información NDC.
 		LoggingInformationNDC.unregisterNdcInf();
 		return result;
 	}
 
+	/**
+	 * Method that obtains the certification chain and the revocation status of the chain.
+	 * @param x509cert Certificate where to get the certification chain
+	 * @return certification chain and the revocation status of the chain.
+	 * @throws ValetRestException If the method fails.
+	 */
+	private List<Certificate> getCertificateChainAndRevocationStatus(X509Certificate x509cert, Date validationDate, String countryCode) throws ValetRestException {
+
+		List<Certificate> listCertificates = new ArrayList<Certificate>();
+		Vector<X509Certificate> certificateChain = null;
+		try {
+
+			List<X509Certificate> listX509 = new ArrayList<X509Certificate>();
+
+			List<X509Certificate> listX509CA = CertificateCacheManager.getListCertificateCA();
+			if (listX509CA != null) {
+				listX509.addAll(listX509CA);
+			}
+			List<X509Certificate> listX509TSL = TSLManager.getInstance().getListCertificateTSL(countryCode);
+			if (listX509TSL != null) {
+				listX509.addAll(listX509TSL);
+			}
+
+			certificateChain = UtilsCertificate.getCertificateChainIssuer(x509cert, listX509);
+
+			if (certificateChain != null && certificateChain.size() > 0) {
+				for (int i = 0; i < certificateChain.size(); i++) {
+					// for (X509Certificate x509cer: certificateChain) {
+					X509Certificate x509cer = certificateChain.get(i);
+					X509Certificate issuerX509Cer = null;
+					boolean isRoot = UtilsCertificate.isSelfSigned(x509cer);
+
+					Certificate certificate = new Certificate();
+					certificate.setIsRoot(isRoot);
+					certificate.setCertificateValue(new ByteArrayB64(x509cer.getEncoded()));
+
+					// Si no es root, se obtienen las evidencias de revocación
+					if (!isRoot) {
+						issuerX509Cer = certificateChain.get(i + 1);
+						CertificateChainValidator ccv = new CertificateChainValidator();
+						TslRevocationStatus tvrTemp = ccv.validateCertificateUsingDistributionPointsCertificateChain(x509cer, issuerX509Cer, certificateChain, UtilsCertificate.isCA(x509cer), UtilsCertificate.hasCertKeyPurposeTimeStamping(x509cer), validationDate);
+						certificate.setTslRevocStatus(tvrTemp);
+					}
+
+					listCertificates.add(certificate);
+
+				}
+			}
+
+		} catch (CommonUtilsException | CertificateEncodingException e) {
+			throw new ValetRestException(IValetException.COD_190, Language.getFormatResCoreGeneral(IRestGeneralMessages.REST_LOG045, new Object[ ] { IKeystoreIdConstants.ID_CA_TRUSTSTORE }), e);
+		} catch (Exception e) {
+			throw new ValetRestException(IValetException.COD_205, Language.getFormatResCoreGeneral(IRestGeneralMessages.REST_LOG046, new Object[ ] { e.getMessage() }), e);
+		}
+
+		return listCertificates;
+	}
+
+	
 }

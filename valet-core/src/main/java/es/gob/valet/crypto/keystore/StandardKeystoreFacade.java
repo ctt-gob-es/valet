@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 21/02/2022.
+ * @version 1.2, 27/04/2022.
  */
 package es.gob.valet.crypto.keystore;
 
@@ -63,7 +63,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
 /**
  * <p>Class that manages all the operations related with JCE, JCEKS and PKCS#12 keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 21/02/2022.
+ * @version 1.2, 27/04/2022.
  */
 public class StandardKeystoreFacade implements IKeystoreFacade {
 
@@ -349,7 +349,7 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 		// Se obtiene el país del almacén de los certificados
 		String countryOfCertificate = UtilsCertificate.getCountryOfTheCertificateString(x509cert);
 		sc.setCountry(countryOfCertificate);
-		
+
 		// Guardamos el keystore.
 		ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().saveKeystore(ks);
 		// Guardamos el system certificate.
@@ -391,7 +391,8 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 			saveSystemCertificateAndUpdateKeystore(oldEntryAlias, newEntryAlias);
 
 		} catch (UnrecoverableKeyException | KeyStoreException
-				| NoSuchAlgorithmException | KeystoreCacheException | CommonUtilsException e) {
+				| NoSuchAlgorithmException | KeystoreCacheException
+				| CommonUtilsException e) {
 			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_016, new Object[ ] { oldEntryAlias, newEntryAlias, Language.getResPersistenceConstants(keystoreCacheObject.getTokenName()) });
 			LOGGER.error(errorMsg, e);
 			throw new CryptographyException(IValetException.COD_190, errorMsg, e);
@@ -448,13 +449,13 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 		// Le actualizamos su contenido y versionado.
 		ks.setKeystore(keystoreCacheObject.getKeystoreBytes());
 		ks.setVersion(keystoreCacheObject.getVersion());
-		
+
 		// Obtenemos de base de datos el SystemCertificate asociado a ese alias
 		// y keystore.
 		SystemCertificate sc = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(oldEntryAlias, ks.getIdKeystore());
 		// Le modificamos el alias.
 		sc.setAlias(newEntryAlias);
-		
+
 		// Guardamos el keystore.
 		ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().saveKeystore(ks);
 		// Guardamos el system certificate.
@@ -735,6 +736,26 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 	@Override
 	public KeystoreCacheObject getKeystoreCacheObject() {
 		return keystoreCacheObject;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.crypto.keystore.IKeystoreFacade#getAllX509Certificates()
+	 */
+	@Override
+	public List<X509Certificate> getAllX509Certificates() throws CryptographyException {
+		List<X509Certificate> result = new ArrayList<X509Certificate>();
+		try {
+			for (Certificate cer: getAllCertificates()) {
+
+				result.add(UtilsCertificate.getX509Certificate(cer.getEncoded()));
+
+			}
+		} catch (CertificateEncodingException | CommonUtilsException e) {
+			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_063, new Object[ ] { Language.getResPersistenceConstants(keystoreCacheObject.getTokenName()) });
+			throw new CryptographyException(IValetException.COD_190, errorMsg, e);
+		}
+		return result;
 	}
 
 }

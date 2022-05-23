@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.10, 11/03/2019.
+ * @version 1.11, 27/04/2022.
  */
 package es.gob.valet.spring.config;
 
@@ -41,6 +41,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import es.gob.valet.cache.FactoryCacheValet;
 import es.gob.valet.cache.exceptions.CacheValetException;
+import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsDeploymentType;
 import es.gob.valet.commons.utils.UtilsGrayLog;
@@ -58,7 +59,7 @@ import es.gob.valet.utils.UtilsProxy;
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.10, 11/03/2019.
+ * @version 1.11, 27/04/2022.
  */
 @Configuration
 @EnableAutoConfiguration
@@ -155,6 +156,7 @@ public class ApplicationConfig {
 		// Cargamos las TSL.
 		startOperationTime = Calendar.getInstance().getTimeInMillis();
 		TSLManager.getInstance().reloadTSLCache();
+
 		logger.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_004, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 
 		// Cargamos el resto de objetos para la caché.
@@ -175,8 +177,14 @@ public class ApplicationConfig {
 			TasksManager.loadTasks();
 
 		}
-		
-		// Escribimos en GrayLog el mensaje que indica que la plataforma a inicializado.
+
+		// Se inicia la caché de certificados emisores
+		startOperationTime = Calendar.getInstance().getTimeInMillis();
+		CertificateCacheManager.getInstance();
+		logger.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_008, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
+
+		// Escribimos en GrayLog el mensaje que indica que la plataforma a
+		// inicializado.
 		UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, UtilsGrayLog.TOKEN_VALUE_CODERROR_INITIALIZATION, UtilsGrayLog.getHostName(), Language.getFormatResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_007, UtilsGrayLog.getHostName(), cacheInitializationTime));
 
 	}

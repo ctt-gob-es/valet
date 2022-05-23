@@ -105,7 +105,7 @@ public class ValetClient {
 	 * @return Structure with detected certificate in TSL and revocation status.
 	 * @throws ValetRestException If some error is produced in the execution of the service.
 	 */
-	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(final String application, final String delegatedApp, final String tslLocation, final byte[ ] certByteArray, final Date detectionDate, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevocationEvidence, final List<byte[ ]> crlsByteArrayList, final List<byte[ ]> basicOcspResponsesByteArrayList) throws ValetRestException {
+	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(final String application, final String delegatedApp, final String tslLocation, final byte[ ] certByteArray, final Date detectionDate, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevocationEvidence, final List<byte[ ]> crlsByteArrayList, final List<byte[ ]> basicOcspResponsesByteArrayList, Boolean returnCertificateChain) throws ValetRestException {
 		LOGGER.info("Starting call to \'detectCertInTslInfoAndValidation\' method at Valet rest service.");
 
 		DetectCertInTslInfoAndValidationResponse response = null;
@@ -150,7 +150,7 @@ public class ValetClient {
 					
 			
 			try {
-				response = restService.detectCertInTslInfoAndValidation(application, delegatedApp, tslLocationB4, new ByteArrayB64(certByteArray), dateString, getInfo, checkRevStatus, returnRevocationEvidence, crlsByteArrayB64List, basicOcspResponsesByteArrayB64List);
+				response = restService.detectCertInTslInfoAndValidation(application, delegatedApp, tslLocationB4, new ByteArrayB64(certByteArray), dateString, getInfo, checkRevStatus, returnRevocationEvidence, crlsByteArrayB64List, basicOcspResponsesByteArrayB64List, returnCertificateChain);
 			} catch (ProcessingException e) {
 				if (e.getCause().getClass().equals(UnknownHostException.class)) {
 					throw new ValetRestUnknownHostException(IValetException.COD_193, "Error trying to connect to Valet rest services. Unknown host. The address of the host could not be determined.");

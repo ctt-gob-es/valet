@@ -219,7 +219,7 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	/**
 	 * Constructor method for the class TSLValidatorResult.java.
 	 */
-	private TSLValidatorResult() {
+	public TSLValidatorResult() {
 		super();
 	}
 

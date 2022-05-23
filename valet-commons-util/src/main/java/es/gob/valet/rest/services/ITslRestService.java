@@ -109,6 +109,11 @@ public interface ITslRestService {
 	String PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY = "basicOcspResponsesByteArray";
 
 	/**
+	 * Constant attribute that represents the token parameter 'returnCertificateChain'.
+	 */
+	String PARAM_RETURN_CERT_CHAIN = "returnCertificateChain";
+
+	/**
 	 * Constant attribute that represents the token parameter 'detectCertInTslInfoAndValidation'.
 	 */
 	String SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION = "detectCertInTslInfoAndValidation";
@@ -136,6 +141,7 @@ public interface ITslRestService {
 	 * @param crlsByteArrayB64List List of byte arrays (in base 64) that represents the CRL to use to validate the certificate. <code>null</code> if there is not.
 	 * If this is defined, then {@code checkRevStatus} is considered <code>true</code>.
 	 * @param basicOcspResponsesByteArrayB64List List of byte arrays (in base 64) that represents the Basic OCSP responses to use to validate the certificate. <code>null</code> if there is not.
+	 * @param returnCertificateChain Flag that indicates if it is necessary to return chain certificate.
 	 * If this is defined, then {@code checkRevStatus} is considered <code>true</code>.
 	 * @return Structure with detected certificate in TSL and revocation status.
 	 * @throws ValetRestException If some error is produced in the execution of the service.
@@ -144,7 +150,7 @@ public interface ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) String application, @FormParam(PARAM_DELEGATED_APP) String delegatedApp, @FormParam(PARAM_TSL_LOCATION) String tslLocation, @FormParam(PARAM_CERTIFICATE) ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) DateString detectionDate, @FormParam(PARAM_GET_INFO) Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List) throws ValetRestException;
+	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) String application, @FormParam(PARAM_DELEGATED_APP) String delegatedApp, @FormParam(PARAM_TSL_LOCATION) String tslLocation, @FormParam(PARAM_CERTIFICATE) ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) DateString detectionDate, @FormParam(PARAM_GET_INFO) Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List, @FormParam(PARAM_RETURN_CERT_CHAIN) Boolean returnCertificateChain) throws ValetRestException;
 
 	/**
 	 * Method that returns the TSL information.
@@ -165,7 +171,7 @@ public interface ITslRestService {
 	/**
 	 * Method that returns the versions of the TSLs registered in valET.
 	 * @return Structure with a map that relates the TSL with the registered version.
-	 * @throws throws TSLManagingException If some error is produced in the execution of the service.
+	 * @throws throws  ValetRestException If some error is produced in the execution of the service.
 	 */
 	@POST
 	@Path("/getTslInfoVersions")
