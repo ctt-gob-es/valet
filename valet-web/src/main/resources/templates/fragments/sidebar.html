@@ -50,6 +50,19 @@
 	                 	$('#aTslAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionTsl, 'optionReplacement', 'GET', null, true); return false;});
 	                </script>
 				</a></li>
+				<li class="nav-item">
+					<a id="aMappingCertTslAdmin" class='sidebar-link' href="#"> 
+						<span class="icon-holder"> 
+							<i class="c-green-500 ti-panel"></i>
+						</span> 
+						<span class="title" th:text="#{menu.admin.mappingCertTsl}"></span> 
+						<script th:inline="javascript"> 
+							var actionMappingCertTsl = /*[[@{/mappingCertTsl/viewMappingCertTsl}]]*/;
+		                	$('#aMappingCertTslAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionMappingCertTsl, 'optionReplacement', 'GET', null, true); return false;});
+						</script>
+					</a>
+				</li>
+				
 								<li class="nav-item"><a id="aAppAdmin" class='sidebar-link'
 					href="#"> <span class="icon-holder"> <i
 							class="c-purple-500 ti-layout-tab-window"></i>

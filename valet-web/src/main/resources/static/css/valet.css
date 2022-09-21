@@ -200,3 +200,14 @@
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+.mappingCertTslTree {
+  height:650px;
+  overflow-y: scroll;
+}
+
+.mappingCertTslForm {
+  display: block;
+  overflow: auto;
+  overflow-x: hidden
+}
