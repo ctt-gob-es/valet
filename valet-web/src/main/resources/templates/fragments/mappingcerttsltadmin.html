@@ -115,27 +115,32 @@ function loadingDatatableMappingCertTsls(idMappingCertTsl) {
 		    {
 	           	orderable: true,
 	           	targets:   0,
-	           	width: "850px",
+	           	width: "2000px",
 	        },
 	        {
 	           	orderable: false,
 	           	targets:   1,
-	           	width: "40px",
+	           	width: "150px",
 	           	render: function ( data, type, row, meta ) {
-	           		
-	           		if(isConsultant == 'true') {
-						var editIcon = '<div class="text-center"><a alt='+btnEditMapping+' title='+btnEditMapping+'>	<span class="c-green-500 ti-pencil-alt icon-tb"></span></a>';
-				    	var deleteIcon = '<a alt='+btnDeleteMapping+' title='+btnDeleteMapping+'>	<span class="c-red-500 ti-trash icon-tb"></span></a></div>';
+	            	
+					if(isConsultant == 'true'){
+						var editIcon = '<a alt='+btnEditMapping+' title='+btnEditMapping+'>	<span class="c-green-500 ti-pencil-alt icon-tb"></span></a>';
+				    		  
+				    	var deleteIcon = '&nbsp;&nbsp;&nbsp;<a alt='+btnDeleteMapping+' title='+btnDeleteMapping+'>	<span class="c-red-500 ti-trash icon-tb"></span></a>';
 				    		
-				    	editIcon += deleteIcon;
+				    	if(row.associationType != '---') {
+				    		editIcon += deleteIcon;
+				    	}
 							  
 				    	return editIcon;
 							
-					} else {
-						var editIcon = '<div class="text-center"><a onclick=editMapping('+data+'); alt='+btnEditMapping+' title='+btnEditMapping+'>	<span class="c-green-500 ti-pencil-alt icon-tb"></span></a>';
-				    	var deleteIcon = '<a onclick=deleteMapping('+data+'"); alt='+btnDeleteMapping+' title='+btnDeleteMapping+'>	<span class="c-red-500 ti-trash icon-tb"></span></a></div>';
+					}else{
+						var editIcon = '<a onclick=editMapping('+row.idMappingCertTsl+'); alt='+btnEditMapping+' title='+btnEditMapping+'>	<span class="c-green-500 ti-pencil-alt icon-tb"></span></a>';
+				    	var deleteIcon = '&nbsp;&nbsp;&nbsp;<a onclick=deleteMapping('+row.idMappingCertTsl+'"); alt='+btnDeleteMapping+' title='+btnDeleteMapping+'>	<span class="c-red-500 ti-trash icon-tb"></span></a>';
 				    		
-				    	editIcon += deleteIcon;
+				    	if(row.associationType != '---') {
+				    		editIcon += deleteIcon;
+				    	}
 							  
 				    	return editIcon;
 					}
