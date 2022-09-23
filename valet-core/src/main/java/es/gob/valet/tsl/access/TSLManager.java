@@ -997,21 +997,6 @@ public final class TSLManager {
 		} catch (Exception e) {
 			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL153), e);
 		}
-
-		LOGGER.info("************ RECARGA CACHE *******************************************************");
-		for (String cc: mapTslMappingTree.keySet()) {
-			LOGGER.info("MapTslMappingTree para :" + cc);
-			for (TslMappingDTO tm: mapTslMappingTree.get(cc)) {
-				LOGGER.info("version:" + tm.getVersion());
-				LOGGER.info("codPais:" + tm.getCodeCountry());
-				LOGGER.info("tspName:" + tm.getTspName());
-				LOGGER.info("tspServiceName:" + tm.getTspServiceName());
-				LOGGER.info("expirationDate:" + tm.getExpirationDate());
-				LOGGER.info("certificado:" + tm.getDigitalIdentity());
-			}
-		}
-		LOGGER.info("*******************************************************************");
-
 	}
 
 	/**
@@ -1028,23 +1013,17 @@ public final class TSLManager {
 				mapTslMappingTree.put(codeCountry, listTslMappingTree);
 			}
 
-			LOGGER.info("************ actualización TSL *******************************************************");
-
-			LOGGER.info("MapTslMappingTree para :" + codeCountry);
-			for (TslMappingDTO tm: mapTslMappingTree.get(codeCountry)) {
-				LOGGER.info("version:" + tm.getVersion());
-				LOGGER.info("codPais:" + tm.getCodeCountry());
-				LOGGER.info("tspName:" + tm.getTspName());
-				LOGGER.info("tspServiceName:" + tm.getTspServiceName());
-				LOGGER.info("expirationDate:" + tm.getExpirationDate());
-				LOGGER.info("certificado:" + tm.getDigitalIdentity());
-			}
-
-			LOGGER.info("*******************************************************************");
-
 		} catch (Exception e) {
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL354, new Object[ ] { e.getMessage() }), e);
 		}
+	}
+
+	/**
+	 * Method to delete the information of the TSL in mapTslMappingTree of the country passed as parameter.
+	 * @param codeCountry Country/region code for the TSL
+	 */
+	public void deleteMapTslMappingTree(String codeCountry) {
+		mapTslMappingTree.remove(codeCountry);
 	}
 
 	/**
@@ -1706,7 +1685,8 @@ public final class TSLManager {
 				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService().deleteTslCountryRegionMapping(mappingId);
 				// Lo borramos de la caché.
 				ConfigurationCacheFacade.tslRemoveMappingFromCountryRegion(countryRegionCode, mappingId);
-
+				// se actualiza el mapa mapTslMappingTree
+				deleteMapTslMappingTree(countryRegionCode);
 			} catch (Exception e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL167, new Object[ ] { mappingId, countryRegionCode }), e);
 			}
@@ -2061,6 +2041,11 @@ public final class TSLManager {
 
 				// Asignamos como resultado el objeto de base de datos.
 				result = td;
+
+				// se actualiza la información en los datos del arbol de mapeos
+				// de
+				// TSLs.
+				updateMapTslMappingTree(td.getTslCountryRegion().getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
 
 			} catch (Exception e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171), e);
