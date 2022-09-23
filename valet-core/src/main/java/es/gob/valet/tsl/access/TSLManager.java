@@ -122,20 +122,9 @@ public final class TSLManager {
 	private Set<String> setOfURLStringThatRepresentsEuLOTL = new TreeSet<String>();
 
 	/**
-	 * Attribute that represents the list of certificates that appear in the TSLs.
-	 */
-	// private List<X509Certificate> listCertificateTSL = new
-	// ArrayList<X509Certificate>();
-
-	/**
 	 * Attribute that represents the map of certificates that appear in the TSLs by Country.
 	 */
 	private Map<String, List<X509Certificate>> mapCertificateTSL = new HashMap<String, List<X509Certificate>>();
-
-	/**
-	 * Attribute that represents the map of TslMappingTreeDTO that appear in the TSLs by Country.
-	 */
-	private Map<String, List<TslMappingDTO>> mapTslMappingTree = new HashMap<String, List<TslMappingDTO>>();
 
 	/**
 	 * Attribute that represents a set of URL (String format) that represents the official
@@ -948,7 +937,7 @@ public final class TSLManager {
 			ConfigurationCacheFacade.tslClearTSLCache();
 
 			mapCertificateTSL.clear();
-			mapTslMappingTree.clear();
+			TslInformationTree.mapTslMappingTree.clear();
 
 			// Obtenemos todas las regiones dadas de alta en base de datos.
 			List<TslCountryRegion> tcrList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getAllTslCountryRegion(false);
@@ -983,7 +972,7 @@ public final class TSLManager {
 							List<X509Certificate> listCertificates = getListCertificatesTSL(tslObject);
 							mapCertificateTSL.put(tcr.getCountryRegionCode(), listCertificates);
 							List<TslMappingDTO> listTslMappingTree = getListTslMappingTree(tcr.getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
-							mapTslMappingTree.put(tcr.getCountryRegionCode(), listTslMappingTree);
+							TslInformationTree.mapTslMappingTree.put(tcr.getCountryRegionCode(), listTslMappingTree);
 						}
 
 					}
@@ -1010,7 +999,7 @@ public final class TSLManager {
 			// Si lo hemos conseguido parsear...
 			if (tslObject != null) {
 				List<TslMappingDTO> listTslMappingTree = getListTslMappingTree(codeCountry, version, tslObject);
-				mapTslMappingTree.put(codeCountry, listTslMappingTree);
+				TslInformationTree.mapTslMappingTree.put(codeCountry, listTslMappingTree);
 			}
 
 		} catch (Exception e) {
@@ -1023,7 +1012,7 @@ public final class TSLManager {
 	 * @param codeCountry Country/region code for the TSL
 	 */
 	public void deleteMapTslMappingTree(String codeCountry) {
-		mapTslMappingTree.remove(codeCountry);
+		TslInformationTree.mapTslMappingTree.remove(codeCountry);
 	}
 
 	/**
@@ -2678,12 +2667,6 @@ public final class TSLManager {
 		return result;
 	}
 
-	/**
-	 * Gets the value of the attribute {@link #mapTslMappingTree}.
-	 * @return the value of the attribute {@link #mapTslMappingTree}.
-	 */
-	public Map<String, List<TslMappingDTO>> getMapTslMappingTree() {
-		return mapTslMappingTree;
-	}
+
 
 }
