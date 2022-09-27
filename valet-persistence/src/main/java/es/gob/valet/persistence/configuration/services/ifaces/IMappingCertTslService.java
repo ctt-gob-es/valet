@@ -21,31 +21,35 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/09/2022.
+ * @version 1.1, 27/09/2022.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
 
 /**
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the mapping certficate tsl entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/09/2022.
+ * @version 1.1, 27/09/2022.
  */
 public interface IMappingCertTslService {
 
 	/**
 	 * Method that create tree of mapping certificate tsls.
+	 * @param mapTsl parameter that contain map with all information about tsls.
+	 * @param valueSearch parameter that contain value search enter for the user.
 	 * 
 	 * @return tree of mapping certificate tsls.
 	 */
-	List<BootstrapTreeNode> createTreeMappingCertTsl();
+	List<BootstrapTreeNode> createTreeMappingCertTsl(Map<String, List<TslMappingDTO>> mapTsl, String valueSearch);
 
 	/**
 	 * Method that create datatable of mapping certificate tsls. Only contain paramenters referents to data of datatable.

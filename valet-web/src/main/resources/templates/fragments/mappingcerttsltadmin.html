@@ -8,7 +8,7 @@
 					<div class="input-group mb-3 col-md-12">
 					  <input type="text" id="search" class="form-control" th:placeholder="#{form.app.mappingcerttsl.placeholder}" aria-describedby="button-search">
 					  <span class="form-clear d-none glyphicon-remove-search glyphicon-remove"></span>
-					  <button class="btn btn-secondary" type="button" id="button-search"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+					  <button class="btn btn-secondary" type="button" id="button-search" onclick="searchInTree();"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
 					</div>						 
 				</div>						
 				<!-- arbol de Mappings de Certificados TSLs-->
@@ -34,27 +34,32 @@
 	</div>
 </div>
 
-
-
 <script th:inline="javascript">
 var mappingCertTslTable;
+var mappingCertTslTree;
 
 $(document).ready(function() {
-	loadingTreeMappingCertTsls();
+	loadingTreeMappingCertTsls(undefined);
 });
 
 // Función para cargar el árbol de mappings de certificados tsls
-function loadingTreeMappingCertTsls() {
+function loadingTreeMappingCertTsls(data) {
 	var listBootstrapTreeNode = [[${listBootstrapTreeNode}]];
 	
-	var dataJson = JSON.stringify(listBootstrapTreeNode);
+	var dataJson; 
+	
+	if(undefined != data) {
+		dataJson = data;
+	} else {
+		dataJson = JSON.stringify(listBootstrapTreeNode);
+	}
 	
 	// Se inicializa el arbol de mappings de certificados tsls
-	mappingCertTslTable = $('#mappingCertTslTree').treeview({
+	mappingCertTslTree = $('#mappingCertTslTree').treeview({
 		data: dataJson,
-	    highlightSelected: true,
+		highlightSelected: true,
 	    highlightSearchResults: true,
-	    searchResultBackColor: '#CCC',
+	    searchResultBackColor: '#ffeb3b1f',
 	    searchResultColor: '#428bca',
 	    color: "#428bca",
 	    onNodeSelected: function(event, data) {
@@ -237,4 +242,48 @@ function addRowsMappingCertTslsTable(idMappingCertTsl) {
 		}
 	});
 }
+
+// Función para realizar búsquedas en función de un valor introducido por el usuario en la caja de búsqueda
+function searchInTree() {
+	var valueSearch = $("#search").val();
+	var searchInTree = /*[[@{/mappingCertTslRest/searchInTree}]]*/;
+	
+	loading();
+	$.ajax({
+		url: searchInTree,
+		type: 'POST',
+		cache: false,
+		data: $.param({'valueSearch': valueSearch}),
+		success: function(xhr) {
+			hide();
+			loadingTreeMappingCertTsls(xhr);
+			$('#mappingCertTslTree').treeview('expandAll',true);
+			$('#mappingCertTslTree').treeview("search", valueSearch);				
+		}
+	});
+}
+
+// Evento que se registra para que cuando el usuario marque con el teclado algún valor a buscar aparezca el botón de limpiar la búsqueda.
+$("#search").on("keyup", function () {
+    var value = $.trim($(this).val());
+    if (value.length > 0) {
+		$('.input-group :input').on('keydown focus', function() {
+			if ($(this).val().length > 0) {
+		    	$(this).nextAll('.form-clear').removeClass('d-none');
+		    }
+		}).on('keydown keyup blur', function() {
+			if ($(this).val().length === 0) {
+				$(this).nextAll('.form-clear').addClass('d-none');
+		    }
+		});
+		$('.form-clear').on('click', function() {
+			$(this).addClass('d-none').prevAll(':input').val('');
+			loading();
+			loadingTreeMappingCertTsls();
+			hide();
+		}); 
+    }    
+});
+
+
 </script>

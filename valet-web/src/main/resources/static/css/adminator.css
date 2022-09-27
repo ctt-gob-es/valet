@@ -50339,3 +50339,17 @@ footer {
 /*@import 'vendor/index';*/
 
 /*# sourceMappingURL=stylesheet.css.map */
+
+/* Icono para limpiar la búsqueda en arboles */
+.glyphicon-remove-search{
+	position: absolute;
+    top: 11px;
+    display: initial;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    right: 50px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

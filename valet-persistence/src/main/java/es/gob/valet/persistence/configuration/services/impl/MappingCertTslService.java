@@ -20,26 +20,33 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/09/2022.
+ * @version 1.1, 27/09/2022.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 
+import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
 
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Mapping Certificate TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/09/2022.
+ * @version 1.1, 27/09/2022.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -51,91 +58,125 @@ public class MappingCertTslService implements IMappingCertTslService {
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#createTreeMappingCertTsl()
 	 */
 	@Override
-	public List<BootstrapTreeNode> createTreeMappingCertTsl() {
-		
-		BootstrapTreeNode bootstrapTreeNode1_1 = new BootstrapTreeNode();
-		bootstrapTreeNode1_1.setText("IT");
-		bootstrapTreeNode1_1.setSelectable(false);
-		bootstrapTreeNode1_1.setNodeId(0L);
-		bootstrapTreeNode1_1.setIcon(BootstrapTreeNode.ICON_POLICY);
-		
-		
-		BootstrapTreeNode bootstrapTreeNode1_2 = new BootstrapTreeNode();
-		bootstrapTreeNode1_2.setText("Banca d'Italia");
-		bootstrapTreeNode1_2.setSelectable(false);
-		bootstrapTreeNode1_2.setParentId(0L);
-		bootstrapTreeNode1_2.setNodeId(1L);
-		bootstrapTreeNode1_2.setIcon(BootstrapTreeNode.ICON_HOME);
-		
-		BootstrapTreeNode bootstrapTreeNode1_2_1 = new BootstrapTreeNode();
-		bootstrapTreeNode1_2_1.setText("CN=Banca d'Italia,OU=Servizi di certificazione,O=Banca d'Italia/00950501007,C=IT - CAD: 29/07/2018");
-		bootstrapTreeNode1_2_1.setSelectable(true);
-		bootstrapTreeNode1_2_1.setParentId(1L);
-		bootstrapTreeNode1_2_1.setNodeId(11L);
-		bootstrapTreeNode1_2_1.setIcon(BootstrapTreeNode.ICON_CERTIFICATE);
-				
-		BootstrapTreeNode bootstrapTreeNode1_2_2 = new BootstrapTreeNode();
-		bootstrapTreeNode1_2_2.setText("CN=Banca d'Italia,OU=Servizi di certificazione,O=Banca d'Italia/00950501007,C=IT - CAD: 29/07/2040");
-		bootstrapTreeNode1_2_2.setSelectable(true);
-		bootstrapTreeNode1_2_2.setParentId(1L);
-		bootstrapTreeNode1_2_2.setNodeId(22L);
-		bootstrapTreeNode1_2_2.setIcon(BootstrapTreeNode.ICON_CERTIFICATE);
-		
-		BootstrapTreeNode bootstrapTreeNode2_1 = new BootstrapTreeNode();
-		bootstrapTreeNode2_1.setText("Consiglio Nazionale dei Dottori Commercialisti e degli Esperti Contabili");
-		bootstrapTreeNode2_1.setSelectable(false);
-		bootstrapTreeNode2_1.setParentId(0L);
-		bootstrapTreeNode2_1.setNodeId(33L);
-		bootstrapTreeNode2_1.setIcon(BootstrapTreeNode.ICON_HOME);
-		
-		bootstrapTreeNode1_2.setNodes(new ArrayList<>());
-		bootstrapTreeNode1_2.getNodes().add(bootstrapTreeNode1_2_1);
-		bootstrapTreeNode1_2.getNodes().add(bootstrapTreeNode1_2_2);
-		
-		bootstrapTreeNode1_1.setNodes(new ArrayList<>());
-		bootstrapTreeNode1_1.getNodes().add(bootstrapTreeNode1_2);
-		bootstrapTreeNode1_1.getNodes().add(bootstrapTreeNode2_1);
-		
-		BootstrapTreeNode bootstrapTreeNode3_1 = new BootstrapTreeNode();
-		bootstrapTreeNode3_1.setText("BE");
-		bootstrapTreeNode3_1.setSelectable(false);
-		bootstrapTreeNode3_1.setNodeId(1L);
-		bootstrapTreeNode3_1.setIcon(BootstrapTreeNode.ICON_POLICY);
-		
-		BootstrapTreeNode bootstrapTreeNode3_2 = new BootstrapTreeNode();
-		bootstrapTreeNode3_2.setText("Certipost n.v./s.a.");
-		bootstrapTreeNode3_2.setSelectable(false);
-		bootstrapTreeNode3_2.setParentId(1L);
-		bootstrapTreeNode3_2.setNodeId(1L);
-		bootstrapTreeNode3_2.setIcon(BootstrapTreeNode.ICON_HOME);
-		
-		BootstrapTreeNode bootstrapTreeNode3_2_1 = new BootstrapTreeNode();
-		bootstrapTreeNode3_2_1.setText("CN=Belgium Root CA3, C=BE");
-		bootstrapTreeNode3_2_1.setSelectable(true);
-		bootstrapTreeNode3_2_1.setParentId(1L);
-		bootstrapTreeNode3_2_1.setNodeId(11L);
-		bootstrapTreeNode3_2_1.setIcon(BootstrapTreeNode.ICON_CERTIFICATE);
-		
-		BootstrapTreeNode bootstrapTreeNode3_2_2 = new BootstrapTreeNode();
-		bootstrapTreeNode3_2_2.setText("CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE");
-		bootstrapTreeNode3_2_2.setSelectable(true);
-		bootstrapTreeNode3_2_2.setParentId(1L);
-		bootstrapTreeNode3_2_2.setNodeId(22L);
-		bootstrapTreeNode3_2_2.setIcon(BootstrapTreeNode.ICON_CERTIFICATE);
-		
-		bootstrapTreeNode3_2.setNodes(new ArrayList<>());
-		bootstrapTreeNode3_2.getNodes().add(bootstrapTreeNode3_2_1);
-		bootstrapTreeNode3_2.getNodes().add(bootstrapTreeNode3_2_2);
-		
-		bootstrapTreeNode3_1.setNodes(new ArrayList<>());
-		bootstrapTreeNode3_1.getNodes().add(bootstrapTreeNode3_2);
-		
-		List<BootstrapTreeNode> l = new ArrayList<BootstrapTreeNode>();
-		
-		l.add(bootstrapTreeNode1_1);
-		l.add(bootstrapTreeNode3_1);
-		
-		return l;
+	public List<BootstrapTreeNode> createTreeMappingCertTsl(Map<String, List<TslMappingDTO>> mapTsl, String valueSearch) {
+		Set<BootstrapTreeNode> setBootstrapTreeNodeCountry = new HashSet<BootstrapTreeNode>();
+		Set<BootstrapTreeNode> setBootstrapTreeNodeTSPName = new HashSet<BootstrapTreeNode>();
+		Set<BootstrapTreeNode> setBootstrapTreeNodeTSPService = new HashSet<BootstrapTreeNode>();
+		this.preparedListWithTslMappingDTO(mapTsl, setBootstrapTreeNodeCountry,setBootstrapTreeNodeTSPName,setBootstrapTreeNodeTSPService, valueSearch);
+		this.joinElementsToNode2(setBootstrapTreeNodeTSPName, setBootstrapTreeNodeTSPService);
+		this.joinElementsToNode1(setBootstrapTreeNodeCountry, setBootstrapTreeNodeTSPName);
+		return new ArrayList<BootstrapTreeNode>(setBootstrapTreeNodeCountry); 
+	}
+
+	/**
+	 * Method that join elements to node 1 to tree mappings certificate tsls.
+	 * 
+	 * @param setBootstrapTreeNodeCountry parameter that contain list set of countries.
+	 * @param setBootstrapTreeNodeTSPName parameter that contain list set of TSPName.
+	 */
+	private void joinElementsToNode1(Set<BootstrapTreeNode> setBootstrapTreeNodeCountry, Set<BootstrapTreeNode> setBootstrapTreeNodeTSPName) {
+		for (BootstrapTreeNode bootstrapTreeNodeTSPName : setBootstrapTreeNodeTSPName) {
+			BootstrapTreeNode bootstrapTreeNodeCountry = setBootstrapTreeNodeCountry.stream().filter(bTNCountry -> bTNCountry.getNodeId().equals(bootstrapTreeNodeTSPName.getParentId())).findFirst().orElse(null);
+			List<BootstrapTreeNode> listBootstrapTreeNode = bootstrapTreeNodeCountry.getNodes();
+			if(null != listBootstrapTreeNode) {
+				listBootstrapTreeNode.add(bootstrapTreeNodeTSPName);
+			} else {
+				listBootstrapTreeNode = new ArrayList<BootstrapTreeNode>();
+				listBootstrapTreeNode.add(bootstrapTreeNodeTSPName);
+				bootstrapTreeNodeCountry.setNodes(listBootstrapTreeNode);
+			}
+		}
+	}
+
+	/**
+	 * Method that join elements to node 2 to tree mappings certificate tsls.
+	 * 
+	 * @param setBootstrapTreeNodeTSPName parameter that contain list set of TSPName.
+	 * @param setBootstrapTreeNodeTSPService parameter that contain list set of TSPService.
+	 */
+	private void joinElementsToNode2(Set<BootstrapTreeNode> setBootstrapTreeNodeTSPName,
+			Set<BootstrapTreeNode> setBootstrapTreeNodeTSPService) {
+		for (BootstrapTreeNode bootstrapTreeNodeService : setBootstrapTreeNodeTSPService) {
+			BootstrapTreeNode bootstrapTreeNodeTSPName = setBootstrapTreeNodeTSPName.stream().filter(bTNTSPname -> bTNTSPname.getNodeId().equals(bootstrapTreeNodeService.getParentId())).findFirst().orElse(null);
+			List<BootstrapTreeNode> listBootstrapTreeNode = bootstrapTreeNodeTSPName.getNodes();
+			if(null != listBootstrapTreeNode) {
+				listBootstrapTreeNode.add(bootstrapTreeNodeService);
+			} else {
+				listBootstrapTreeNode = new ArrayList<BootstrapTreeNode>();
+				listBootstrapTreeNode.add(bootstrapTreeNodeService);
+				bootstrapTreeNodeTSPName.setNodes(listBootstrapTreeNode);
+			}
+		}
+	}
+	
+	/**
+	 * Method that prepared information to join nodes. 
+	 * 
+	 * @param mapTsl parameter that contain information with mapping certifcate tsls. 
+	 * @param setBootstrapTreeNodeCountry parameter that contain list set of Country.
+	 * @param setBootstrapTreeNodeTSPName parameter that contain list set of TSPName.
+	 * @param setBootstrapTreeNodeTSPService parameter that contain list set of TSPService.
+	 * @param valueSearch parameter that contain value to search.
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void preparedListWithTslMappingDTO(Map<String, List<TslMappingDTO>> mapTsl,
+			Set<BootstrapTreeNode> setBootstrapTreeNodeCountry, Set<BootstrapTreeNode> setBootstrapTreeNodeTSPName,
+			Set<BootstrapTreeNode> setBootstrapTreeNodeTSPService, String valueSearch) {
+		for (Map.Entry entry : mapTsl.entrySet()) {
+			// Obtenemos la lista de TslMappingDTO
+			List<TslMappingDTO> listTslMappingDTO =  (List<TslMappingDTO>) entry.getValue();
+		    // Añadimos el pais a la lista resultados
+		    BootstrapTreeNode bootstrapTreeNodeCountry = new BootstrapTreeNode();
+		    bootstrapTreeNodeCountry.setText(entry.getKey().toString());
+		    bootstrapTreeNodeCountry.setIcon(BootstrapTreeNode.ICON_PAWN);
+		    bootstrapTreeNodeCountry.setNodeId(entry.getKey().toString());
+		    bootstrapTreeNodeCountry.setSelectable(false);
+		    setBootstrapTreeNodeCountry.add(bootstrapTreeNodeCountry);
+		    // Recorremos la lista con los mappings tsls obtenida previamente		
+		    for (TslMappingDTO tslMappingDTO: listTslMappingDTO) {
+			    if(!UtilsStringChar.isNullOrEmpty(valueSearch)) {
+					if (tslMappingDTO.getTspName().toLowerCase().contains(valueSearch.toLowerCase())
+							|| tslMappingDTO.getTspServiceName().toLowerCase().contains(valueSearch.toLowerCase())) {
+			    		addTSPNameAndTSPService(setBootstrapTreeNodeTSPName, setBootstrapTreeNodeTSPService,
+								tslMappingDTO);
+			    	}
+			    } else {
+			    	addTSPNameAndTSPService(setBootstrapTreeNodeTSPName, setBootstrapTreeNodeTSPService,
+							tslMappingDTO);
+			    }
+		    }
+		}
+		// Se ordenan todas las listas
+		setBootstrapTreeNodeCountry =  setBootstrapTreeNodeCountry.stream().sorted(Comparator.comparing(BootstrapTreeNode::getText)).collect(Collectors.toSet());
+		setBootstrapTreeNodeTSPName = setBootstrapTreeNodeTSPName.stream().sorted(Comparator.comparing(BootstrapTreeNode::getText)).collect(Collectors.toSet());
+		setBootstrapTreeNodeTSPService = setBootstrapTreeNodeTSPService.stream().sorted(Comparator.comparing(BootstrapTreeNode::getText)).collect(Collectors.toSet());
+	}
+
+	/**
+	 * Method that add TSPName and TPService to list results.
+	 * 
+	 * @param setBootstrapTreeNodeTSPName parameter that contain list set of TSPName.
+	 * @param setBootstrapTreeNodeTSPService parameter that contain list set of TSPService.
+	 * @param tslMappingDTO parameter that contain tsl mapping dto.
+	 */
+	private void addTSPNameAndTSPService(Set<BootstrapTreeNode> setBootstrapTreeNodeTSPName,
+			Set<BootstrapTreeNode> setBootstrapTreeNodeTSPService, TslMappingDTO tslMappingDTO) {
+		// Añadimos el TSPName a la lista resultado
+		BootstrapTreeNode bootstrapTreeNodeTSPName = new BootstrapTreeNode();
+		bootstrapTreeNodeTSPName.setText(tslMappingDTO.getTspName());
+		bootstrapTreeNodeTSPName.setIcon(BootstrapTreeNode.ICON_HOME);
+		bootstrapTreeNodeTSPName.setNodeId(tslMappingDTO.getTspName());
+		bootstrapTreeNodeTSPName.setParentId(tslMappingDTO.getCodeCountry());
+		bootstrapTreeNodeTSPName.setSelectable(false);
+		setBootstrapTreeNodeTSPName.add(bootstrapTreeNodeTSPName);
+		// Añadimos el TSPService a la lista resultado		    	
+		BootstrapTreeNode bootstrapTreeNodeTSPService = new BootstrapTreeNode();
+		bootstrapTreeNodeTSPService.setText(tslMappingDTO.getTspServiceName());
+		bootstrapTreeNodeTSPService.setIcon(BootstrapTreeNode.ICON_CERTIFICATE);
+		bootstrapTreeNodeTSPService.setNodeId(tslMappingDTO.getTspServiceName());
+		bootstrapTreeNodeTSPService.setParentId(tslMappingDTO.getTspName());
+		bootstrapTreeNodeTSPService.setSelectable(true);
+		setBootstrapTreeNodeTSPService.add(bootstrapTreeNodeTSPService);
 	}
 
 	/**
