@@ -69,7 +69,7 @@ public class LogicalField implements Serializable {
 	/**
 	 * Attribute that represents the description of the identificator.
 	 */
-	@Column(name = "IDENTIFICATOR", nullable = false, length = NumberConstants.NUM255)
+	@Column(name = "IDENTIFICATOR", unique = true, nullable = false, length = NumberConstants.NUM255)
 	private String identificator;
 	
 	/**
