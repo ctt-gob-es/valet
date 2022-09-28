@@ -20,16 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 19/09/2022.
+ * @version 1.0, 28/09/2022.
  */
 package es.gob.valet.persistence.configuration.model.dto;
-
-
 
 /** 
  * <p>Class that represents the information needed to generate the tree of the TSL Mappings module.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19/09/2022.
+ * @version 1.0, 28/09/2022.
  */
 public class TslMappingDTO {
 
@@ -177,4 +175,68 @@ public class TslMappingDTO {
 		this.expirationDate = expirationDate;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((codeCountry == null) ? 0 : codeCountry.hashCode());
+		result = prime * result + ((digitalIdentity == null) ? 0 : digitalIdentity.hashCode());
+		result = prime * result + ((expirationDate == null) ? 0 : expirationDate.hashCode());
+		result = prime * result + ((tspName == null) ? 0 : tspName.hashCode());
+		result = prime * result + ((tspServiceName == null) ? 0 : tspServiceName.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TslMappingDTO other = (TslMappingDTO) obj;
+		if (codeCountry == null) {
+			if (other.codeCountry != null)
+				return false;
+		} else if (!codeCountry.equals(other.codeCountry))
+			return false;
+		if (digitalIdentity == null) {
+			if (other.digitalIdentity != null)
+				return false;
+		} else if (!digitalIdentity.equals(other.digitalIdentity))
+			return false;
+		if (expirationDate == null) {
+			if (other.expirationDate != null)
+				return false;
+		} else if (!expirationDate.equals(other.expirationDate))
+			return false;
+		if (tspName == null) {
+			if (other.tspName != null)
+				return false;
+		} else if (!tspName.equals(other.tspName))
+			return false;
+		if (tspServiceName == null) {
+			if (other.tspServiceName != null)
+				return false;
+		} else if (!tspServiceName.equals(other.tspServiceName))
+			return false;
+		if (version == null) {
+			if (other.version != null)
+				return false;
+		} else if (!version.equals(other.version))
+			return false;
+		return true;
+	}
+
+	
 }

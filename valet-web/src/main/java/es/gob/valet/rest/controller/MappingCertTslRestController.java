@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 27/09/2022.
+ * @version 1.2, 28/09/2022.
  */
 package es.gob.valet.rest.controller;
 
@@ -50,7 +50,7 @@ import es.gob.valet.tsl.access.TslInformationTree;
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 27/09/2022.
+ * @version 1.2, 28/09/2022.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
