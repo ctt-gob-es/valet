@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 27/09/2022.
+ * @version 1.2, 30/09/2022.
  */
 package es.gob.valet.controller;
 
@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
@@ -41,7 +42,7 @@ import es.gob.valet.tsl.access.TslInformationTree;
 /**
  * <p>Class that manages the requests related to the mappings of certificates TSL administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 27/09/2022.
+ * @version 1.2, 30/09/2022.
  */
 @Controller
 @RequestMapping(value = "/mappingCertTsl")
@@ -72,5 +73,16 @@ public class MappingCertTslController {
 		List<BootstrapTreeNode> listBootstrapTreeNode = iMappingCertTslService.createTreeMappingCertTsl(mapTsl, null);
 		model.addAttribute("listBootstrapTreeNode", listBootstrapTreeNode);
 		return "fragments/mappingcerttsltadmin.html";
+	}
+	
+	/**
+	 * Method that return view modal of update certificate tsls. 
+	 * 
+	 * @param model Holder object form model attributes.
+	 * @return view modal of update certificate tsls. 
+	 */
+	@PostMapping(value = "/viewUpdateCertificateTsl")
+	public String viewUpdateCertificateTsl(Model model) {
+		return "modal/mappingcerttsl/updateCertificateTslForm.html";
 	}
 }

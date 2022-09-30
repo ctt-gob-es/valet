@@ -21,10 +21,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 27/09/2022.
+ * @version 1.2, 30/09/2022.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -32,13 +33,14 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
+import es.gob.valet.persistence.configuration.model.entity.TSLService;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
 
 /**
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the mapping certficate tsl entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 27/09/2022.
+ * @version 1.2, 30/09/2022.
  */
 public interface IMappingCertTslService {
 
@@ -57,5 +59,18 @@ public interface IMappingCertTslService {
 	 * @return tree of mapping certificate tsls.
 	 */
 	DataTablesOutput<MappingCertTslsDTO> createDatatableMappingCertTsls(Long idMappingCertTsl);
+
+	/**
+	 * Method that save or update to tsl service. 
+	 * 
+	 * @param mapTslMappingDTO parameter that contain tree of the mappings certificate tsl.
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param tspNameSelectTree parameter that contain of tsp name select for the user.
+	 * @param countrySelectTree parameter that contain of country select for the user.
+	 * @param fileCertificateTsl parameter that contain certificate select for the user. 
+	 * @return Object persistent in BD.
+	 * @throws ParseException possible exception to parse Date.
+	 */
+	TSLService saveOrUpdateTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree, byte[] fileCertificateTsl) throws ParseException;
 
 }

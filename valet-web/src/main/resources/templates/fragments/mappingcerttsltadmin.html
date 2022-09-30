@@ -1,3 +1,4 @@
+<!-- Interfaz de administración para los mappgins de certificados tsl -->
 <div class="container-fluid">
 	<h4 class="c-grey-900 mT-10 mB-30" th:text="#{form.app.mappingcerttsl.title}"></h4>
 	<div class="row gap-20 masonry pos-r">
@@ -35,8 +36,12 @@
 </div>
 
 <script th:inline="javascript">
+// Declaracion de variables 
 var mappingCertTslTable;
 var mappingCertTslTree;
+var tspServiceName;
+var tspName;
+var country;
 
 $(document).ready(function() {
 	loadingTreeMappingCertTsls(undefined);
@@ -63,6 +68,11 @@ function loadingTreeMappingCertTsls(data) {
 	    searchResultColor: '#428bca',
 	    color: "#428bca",
 	    onNodeSelected: function(event, data) {
+	    	$("#idBtnUpdateCert").prop("disabled", false);
+	    	// Se almacenan los valores de pais, tspName y tspServiceName seleccionado para actualizar su certificado dado el caso
+	    	tspServiceName = data.text;
+	    	tspName = $('#mappingCertTslTree').treeview('getParent', data).text;
+	    	country = $('#mappingCertTslTree').treeview('getParent', $('#mappingCertTslTree').treeview('getParent', data)).text;
 	    	var title = /*[[#{form.app.mappingcerttsl.h4.title}]]*/;
 	    	$("#idTitleLogicalField").text(title+": "+data.text);
 	    	// Si existe una instancia de datatable creada previamente NO la volvemos a crear
@@ -72,8 +82,11 @@ function loadingTreeMappingCertTsls(data) {
 	    		loadingDatatableMappingCertTsls(data.nodeId);		
 	    	}
 	    },
-		nodeUnselected (event, node) {
-			
+	    onNodeUnselected (event, node) {
+	    	tspServiceName = undefined;
+	    	tspName = undefined;
+	    	country = undefined;
+	    	$("#idBtnUpdateCert").prop("disabled", true);
 		}
 	});
 }
@@ -193,12 +206,20 @@ function loadingDatatableMappingCertTsls(idMappingCertTsl) {
         		}
         	},
         	{
-        		extend: 'selected',
         		text: btnUpdateCert, 
         		attr: {id: 'idBtnUpdateCert'},        	
         		action: function ( e, dt, node, config ) {
-					var d = dt.rows({
-	                	selected: !0
+					var viewUpdateCertificateTsl = /*[[@{/mappingCertTsl/viewUpdateCertificateTsl}]]*/;
+					loading();
+					$.ajax({
+						url: viewUpdateCertificateTsl,
+						type: 'POST',
+						cache: false,
+						success: function(xhr) {
+							hide();
+							$('#modal').html(xhr);
+							$('#modalUpdateCertificateTslForm').modal('show');
+						}
 					});
         		}
         	}
@@ -284,6 +305,4 @@ $("#search").on("keyup", function () {
 		}); 
     }    
 });
-
-
 </script>

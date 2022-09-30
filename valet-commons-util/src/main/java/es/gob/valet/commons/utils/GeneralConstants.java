@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 27/12/2018.
+ * @version 1.3, 30/09/2022.
  */
 package es.gob.valet.commons.utils;
 
 /**
  * <p>Interface that contains general constants.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 27/12/2018.
+ * @version 1.3, 30/09/2022.
  */
 public interface GeneralConstants {
 
@@ -47,8 +47,8 @@ public interface GeneralConstants {
 	Long PLANNING_TYPE_DATE = 2L;
 	
 	/**
-	 * Constant attribute that represents the Afirma Logger name.
+	 * Constant attribute that represents the Valet Logger name.
 	 */
-	public static final String LOGGER_NAME_AFIRMA_LOG = "Afirma-Server";
-
+	public static final String LOGGER_NAME_VALET_LOG = "valet-web";
+	
 }

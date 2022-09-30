@@ -346,3 +346,16 @@ function closeModalButton(modalId, nameForm){
 		//se limpia valores del formulario
 	$('#' + modalId).modal('hide');	
 }
+
+//Función para cerrar el modal.
+function closeModal(modalId){
+	$('#' + modalId).modal('hide');
+	$('.modal-backdrop').remove();
+}
+
+//Función para limpiar todas las etiquetas con errores.
+function cleanAllSpan(modalId){
+	$('#'+modalId+'*').filter('span.badge').each(function(){
+		$(this).text("");				
+	});
+}

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>28/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 28/09/2022.
+ * @version 1.1, 30/09/2022.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -35,7 +35,7 @@ import es.gob.valet.persistence.configuration.model.entity.TSLService;
 /**
  * <p>Interface that provides CRUD functionality for the ApplicationValet entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 28/09/2022.
+ * @version 1.1, 30/09/2022.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -48,4 +48,12 @@ public interface TSLServiceRepository extends PagingAndSortingRepository<TSLServ
 	 * @return Object that represents an application from the persistence.
 	 */
 	TSLService findByIdTslService(Long idTslService);
+
+	/**
+	 * Method that obtains from the persistence an application identified by its tsp service name.
+	 * 
+	 * @param tspServiceName that represents the tsp service name of the application in the persistence.
+	 * @return Object that represents an application from the persistence.
+	 */
+	TSLService findByTspServiceName(String tspServiceName);
 }

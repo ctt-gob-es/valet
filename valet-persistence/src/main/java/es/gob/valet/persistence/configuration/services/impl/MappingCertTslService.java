@@ -20,10 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 27/09/2022.
+ * @version 1.2, 30/09/2022.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -32,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -40,18 +43,26 @@ import org.springframework.stereotype.Service;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
+import es.gob.valet.persistence.configuration.model.entity.TSLService;
+import es.gob.valet.persistence.configuration.model.repository.TSLServiceRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
 
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Mapping Certificate TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 27/09/2022.
+ * @version 1.2, 30/09/2022.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class MappingCertTslService implements IMappingCertTslService {
 
+	/**
+	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
+	 */
+	@Autowired
+	TSLServiceRepository tslServiceRepository;
+	
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -204,6 +215,41 @@ public class MappingCertTslService implements IMappingCertTslService {
 		dataTablesOutput.setData(listMappingCertTslsDTO);
 		
 		return dataTablesOutput;
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#saveOrUpdateTslService
+	 */
+	public TSLService saveOrUpdateTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO,
+			String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree,
+			byte[] fileCertificateTsl)
+			throws ParseException {
+		
+		// Buscamos el tsp service name seleccionado por el usuario en el arbol 
+		TSLService tslServiceFound = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
+		
+		// Si no se ha encontrado creamos un tsp service name nuevo.
+		if(null == tslServiceFound) {
+			List<TslMappingDTO> listTslMappingDTO = mapTslMappingDTO.get(countrySelectTree.toString());
+			TslMappingDTO tlsMappingDTOFound = listTslMappingDTO.stream().filter(tslMappingDTO -> tslMappingDTO.getTspName().equals(tspNameSelectTree.toString()) && tslMappingDTO.getTspServiceName().equals(tspServiceNameSelectTree.toString())).findAny().orElse(null);
+			TSLService tlsServiceNew = new TSLService();
+			tlsServiceNew.setCertificate(fileCertificateTsl);
+			tlsServiceNew.setCountry(tlsMappingDTOFound.getCodeCountry());
+			tlsServiceNew.setDigitalIdentityCad(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(tlsMappingDTOFound.getExpirationDate()));
+			tlsServiceNew.setDigitalIdentityId(tlsMappingDTOFound.getDigitalIdentity());
+			tlsServiceNew.setTslVersion(Long.parseLong(tlsMappingDTOFound.getVersion()));
+			tlsServiceNew.setTspName(tlsMappingDTOFound.getTspServiceName());
+			tlsServiceNew.setTspServiceName(tlsMappingDTOFound.getTspServiceName());
+			
+			return tslServiceRepository.save(tlsServiceNew);
+		// Si existe se modifica su certificado por el nuevo introducido
+		} else {
+			tslServiceFound.setCertificate(fileCertificateTsl);
+			
+			return tslServiceRepository.save(tslServiceFound);
+		}
 	}
 
 }
