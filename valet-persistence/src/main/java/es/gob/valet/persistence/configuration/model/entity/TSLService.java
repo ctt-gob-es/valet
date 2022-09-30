@@ -65,9 +65,9 @@ public class TSLService implements Serializable {
 	 */
 	@Id
 	@Column(name = "ID_SERVICE", unique = true, nullable = false, precision = NumberConstants.NUM19)
-	@GeneratedValue(generator = "sq_service")
-	@GenericGenerator(name = "sq_service", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-			@Parameter(name = "sequence_name", value = "SQ_SERVICE"), @Parameter(name = "initial_value", value = "1"),
+	@GeneratedValue(generator = "sq_tsl_service")
+	@GenericGenerator(name = "sq_tsl_service", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+			@Parameter(name = "sequence_name", value = "SQ_TSL_SERVICE"), @Parameter(name = "initial_value", value = "1"),
 			@Parameter(name = "increment_size", value = "1") })
 	private Long idTslService;
 
