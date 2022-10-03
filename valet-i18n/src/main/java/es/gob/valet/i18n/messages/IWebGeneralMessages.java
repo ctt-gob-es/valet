@@ -197,12 +197,6 @@ public interface IWebGeneralMessages {
 	String ERROR_NOT_CERTIFICATE_FILE = "errorNotCertificateFile";
 	
 	/**
-	 * Constant attribute that represents the name of the property <code>errorValidationCertExtIncorrect</code> belonging to the
-	 * file messages/valet-web/general_xx_YY.properties.
-	 */
-	String ERROR_VALIDATION_CERT_EXT_INCORRECT = "errorValidationCertExtIncorrect";
-	
-	/**
 	 * Constant attribute that represents the name of the property <code>errorValidationCertIncorrect</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */

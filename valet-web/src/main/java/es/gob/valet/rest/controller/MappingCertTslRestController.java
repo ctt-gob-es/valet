@@ -181,9 +181,6 @@ public class MappingCertTslRestController {
 		if (fileCertificateTsl == null || fileCertificateTsl.getSize() == 0 || fileCertificateTsl.getBytes() == null || fileCertificateTsl.getBytes().length == 0) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
 			mErrors.put(FIELD_FILE_CERTIFICATE_TSL_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
-		} else if (!fileCertificateTsl.getOriginalFilename().contains(UtilsCertificate.CERT_EXTENSION)) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_EXT_INCORRECT));
-			mErrors.put(FIELD_FILE_CERTIFICATE_TSL_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_EXT_INCORRECT));
 		} else {
 			try {
 				UtilsCertificate.getX509Certificate(fileCertificateTsl.getBytes());
