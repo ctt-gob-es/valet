@@ -319,9 +319,9 @@ function closeButton(btnId){
 
 
 function cleanSpan(obj){
-$("#"+ obj).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
-var msg = '';
-$("#"+ obj).html(msg);
+	$("#"+ obj).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+	var msg = '';
+	$("#"+ obj).html(msg);
 }
 
 //Client side validation
@@ -356,6 +356,15 @@ function closeModal(modalId){
 //Función para limpiar todas las etiquetas con errores.
 function cleanAllSpan(modalId){
 	$('#'+modalId+'*').filter('span.badge').each(function(){
-		$(this).text("");				
+		$(this).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+		var msg = '';
+		$(this).html(msg);
 	});
+}
+
+// Función para mostrar mensajes temporales
+function slideUpMessage(divId) {
+	setTimeout(function() {
+		$("#"+divId).slideUp();
+	}, 5000); // <-- time in milliseconds
 }

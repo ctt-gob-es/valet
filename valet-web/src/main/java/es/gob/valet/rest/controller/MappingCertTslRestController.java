@@ -20,13 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.3, 30/09/2022.
+ * @version 1.4, 03/10/2022.
  */
 package es.gob.valet.rest.controller;
 
 import java.io.IOException;
-import java.security.cert.X509Certificate;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +48,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.exceptions.CommonUtilsException;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.configuration.model.entity.TSLService;
@@ -58,7 +60,7 @@ import es.gob.valet.tsl.access.TslInformationTree;
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 30/09/2022.
+ * @version 1.4, 03/10/2022.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
@@ -80,6 +82,11 @@ public class MappingCertTslRestController {
 	 */
 	@Autowired
 	TslInformationTree tslInformationTree;
+	
+	/**
+	 * Constant that represents the parameter 'fileCertificateTslId'.
+	 */
+	public static final String FIELD_FILE_CERTIFICATE_TSL_ID = "fileCertificateTslId";
 	
 	/**
 	 * Method that obtain the list of data to datatable in part front. This information be represent in object Datatable.
@@ -141,10 +148,16 @@ public class MappingCertTslRestController {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String res = null;
 		try {
-			Map<String, List<TslMappingDTO>> mapTslMappingDTO = tslInformationTree.getMapTslMappingTree();
-			TSLService tslService = iMappingCertTslService.saveOrUpdateTslService(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, fileCertificateTsl.getBytes());
-			res = objectMapper.writeValueAsString(tslService);
-		}catch (IOException e) {
+			Map<String, String> errors = this.validateInputs(fileCertificateTsl);
+			if(!errors.isEmpty()) {
+				response.setStatus(506);
+				res = objectMapper.writeValueAsString(errors);
+			} else {
+				Map<String, List<TslMappingDTO>> mapTslMappingDTO = tslInformationTree.getMapTslMappingTree();
+				TSLService tslService = iMappingCertTslService.saveOrUpdateTslService(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, fileCertificateTsl.getBytes());
+				res = objectMapper.writeValueAsString(tslService);
+			}
+		} catch (IOException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			LOGGER.error(e.getMessage(), e);
 			res = e.getMessage();
@@ -153,7 +166,32 @@ public class MappingCertTslRestController {
 			LOGGER.error(e.getMessage(), e);
 			res = e.getMessage();
 		}
-		
 		return res;
+	}
+
+	/**
+	 * Method that performs validations on the attached file.
+	 * 
+	 * @param fileCertificateTsl parameter that contain file with certificate or other file.
+	 * @return map empty or with errors.
+	 * @throws IOException If the method fails.
+	 */
+	private Map<String, String> validateInputs(MultipartFile fileCertificateTsl) throws IOException {
+		Map<String, String> mErrors = new HashMap<String, String>();
+		if (fileCertificateTsl == null || fileCertificateTsl.getSize() == 0 || fileCertificateTsl.getBytes() == null || fileCertificateTsl.getBytes().length == 0) {
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
+			mErrors.put(FIELD_FILE_CERTIFICATE_TSL_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
+		} else if (!fileCertificateTsl.getOriginalFilename().contains(UtilsCertificate.CERT_EXTENSION)) {
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_EXT_INCORRECT));
+			mErrors.put(FIELD_FILE_CERTIFICATE_TSL_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_EXT_INCORRECT));
+		} else {
+			try {
+				UtilsCertificate.getX509Certificate(fileCertificateTsl.getBytes());
+			} catch (CommonUtilsException e) {
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_INCORRECT));
+				mErrors.put(FIELD_FILE_CERTIFICATE_TSL_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_INCORRECT));
+			}
+		}
+		return mErrors;
 	}
 }

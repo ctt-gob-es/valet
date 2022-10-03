@@ -1,3 +1,4 @@
+<!-- Modal para actualizar el certificado tsl de un TSP service -->
 <div class="modal fade" role="dialog" data-toggle="modal" id="modalUpdateCertificateTslForm" data-backdrop="true" data-keyboard="false">
 	<div class="modal-dialog" id="modalPrimary">
 		<div class="modal-content">
@@ -19,6 +20,7 @@
 							<input type="file" class="custom-file-input" id="fileCertificateTslId" aria-describedby="fileHelp" onchange="cleanSpan('fileCertificateTslId_span');">
 							<label class="custom-file-label" for="fileCertificateTslId" th:text="#{form.app.mappingcerttsl.updateCertTsl.tspfileCertificateTslId.customFileLabel}"></label>
 						</div>
+						<span id="fileCertificateTslId_span"></span>
 						<div style="clear: both;"></div>
 					</div>
 				</form>
@@ -42,34 +44,49 @@ $(document).ready(function() {
 
 // Función que realiza la actualización del certificado tsl.
 function updateCertTsl() {
-	var file = $('#fileCertificateTslId').prop('files')[0];
-	if(undefined != file) {
-		var updateCertTsl = /*[[@{/mappingCertTslRest/updateCertTsl}]]*/;
-		var formData = new FormData();
-		formData.append("fileCertificateTsl", file);
-		formData.append("tspServiceNameSelectTree",new Blob([window.tspServiceName], {type: "application/json"}));
-		formData.append("tspNameSelectTree",new Blob([window.tspName], {type: "application/json"}));
-		formData.append("countrySelectTree",new Blob([window.country], {type: "application/json"}));
-		loading();
-		$.ajax({
-			url: updateCertTsl,
-			data :formData,
-			type: 'POST',
-			enctype: 'multipart/form-data;',
-			processData: false,
-	        contentType: false,
-	        cache: false,
-			success: function(xhr) {
-				hide();
-				closeModal('modalUpdateCertificateTslForm');
-			},
-			error: function(xhr) {
-				hide();
+	var updateCertTsl = /*[[@{/mappingCertTslRest/updateCertTsl}]]*/;
+	var formData = new FormData();
+	formData.append("fileCertificateTsl", undefined != $('#fileCertificateTslId').prop('files')[0] ? $('#fileCertificateTslId').prop('files')[0] : new File([""], "nofile", {type: "text/plain", lastModified: new Date()}));
+	formData.append("tspServiceNameSelectTree", new Blob([window.tspServiceName], {type: "application/json"}));
+	formData.append("tspNameSelectTree", new Blob([window.tspName], {type: "application/json"}));
+	formData.append("countrySelectTree", new Blob([window.country], {type: "application/json"}));
+	loading();
+	$.ajax({
+		url: updateCertTsl,
+		data :formData,
+		type: 'POST',
+		enctype: 'multipart/form-data;',
+		processData: false,
+        contentType: false,
+        cache: false,
+		success: function(xhr) {
+			hide();
+			closeModal('modalUpdateCertificateTslForm');
+			var meesageSuccess = /*[[#{form.app.mappingcerttsl.updateCertTsl.tspfileCertificateTslId.messageSuccess}]]*/;
+			$('#successUpdateCertificateTsl').html(meesageSuccess);
+			$('#successUpdateCertificateTsl').addClass('alert alert-success');
+			$('#successUpdateCertificateTsl').css("display","block");
+			slideUpMessage('successUpdateCertificateTsl');
+		},
+		error: function(xhr) {
+			debugger;
+			hide();
+			if(xhr.status == 506) {
+				var errors = JSON.parse(xhr.responseText);
+				jQuery.each(errors, function(i, val) {
+					$('#idUpdateCertificateTslForm *').filter('span').each(function(){
+						if (i == $(this).attr('id')){
+							$("#" + i).text(val);
+							$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+						}
+					});
+			  	})
+			} else {
 				$('#errorUpdateCertificateTsl').html(xhr.responseText);
-				$('#errorUpdateCertificateTsl').addClass('alert alert-danger');
+				$('#errorUpdateCertificateTsl').addClass('alert alert-danger');	
 			}
-		});
-	}
+		}
+	});
 }
 
 </script>

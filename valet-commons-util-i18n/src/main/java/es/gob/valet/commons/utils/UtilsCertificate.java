@@ -75,6 +75,11 @@ public final class UtilsCertificate {
 	 * Constant that represents a "X.509" Certificate type.
 	 */
 	public static final String X509_TYPE = "X.509";
+	
+	/**
+	 * Constant that represents a "cer" extension file.
+	 */
+	public static final String CERT_EXTENSION = ".cer";
 
 	/**
 	 * Creates a X509Certificate given its content.
