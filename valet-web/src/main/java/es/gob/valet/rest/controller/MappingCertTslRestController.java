@@ -24,6 +24,9 @@
  */
 package es.gob.valet.rest.controller;
 
+import static es.gob.valet.rest.controller.MappingCertTslRestController.TSLSERVICEDTO;
+import static es.gob.valet.rest.controller.MappingCertTslRestController.TSPSERVICENAMESELECTTREE;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -35,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,6 +55,7 @@ import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
+import es.gob.valet.persistence.configuration.model.dto.TSLServiceDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.configuration.model.entity.TSLService;
 import es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService;
@@ -231,5 +236,23 @@ public class MappingCertTslRestController {
 			}
 		}
 		return mErrors;
+	}
+	
+	@PostMapping(value = "/obtainTspServiceNameSelectTree")
+	private String obtainTspServiceNameSelectTree(@RequestParam(TSPSERVICENAMESELECTTREE) String tspServiceNameSelectTree, HttpServletResponse response) {
+		TSLServiceDTO tslServiceDTO = null;
+		String res = null;
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			tslServiceDTO = iMappingCertTslService.obtainTspServiceNameSelectTree(tspServiceNameSelectTree);
+			res = objectMapper.writeValueAsString(tslServiceDTO);
+		} catch (CommonUtilsException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			res = e.getMessage();
+		} catch (JsonProcessingException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			res = e.getMessage();
+		}
+		return res;
 	}
 }

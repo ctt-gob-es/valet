@@ -24,12 +24,8 @@
  */
 package es.gob.valet.controller;
 
-import static es.gob.valet.rest.controller.MappingCertTslRestController.*;
-
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,10 +33,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.persistence.configuration.model.dto.TSLServiceDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
@@ -95,25 +88,10 @@ public class MappingCertTslController {
 	
 	/**
 	 * Method that return view modal of view certificate tsl.
-	 *  
-	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
-	 * @param model Holder object form model attributes.
-	 * @param response parameter that represents posibility errors in process.
 	 * @return view modal of view certificate tsl.
 	 */
 	@PostMapping(value = "/viewCertificateTsl")
-	public String viewCertificateTsl(@RequestParam(TSPSERVICENAMESELECTTREE) String tspServiceNameSelectTree, Model model, HttpServletResponse response) {
-		String res;
-		TSLServiceDTO tslServiceDTO = null;
-		try {
-			tslServiceDTO = iMappingCertTslService.obtainTspServiceNameSelectTree(tspServiceNameSelectTree);
-			model.addAttribute(TSLSERVICEDTO, tslServiceDTO);
-			res = "modal/mappingcerttsl/viewCertificateTslForm.html";
-		} catch (CommonUtilsException e) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			res = e.getMessage();
-		}
-		
-		return res;
+	public String viewCertificateTsl() {
+		return "modal/mappingcerttsl/viewCertificateTslForm.html";
 	}
 }

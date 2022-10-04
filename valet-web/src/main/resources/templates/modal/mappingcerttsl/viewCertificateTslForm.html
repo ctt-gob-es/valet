@@ -11,27 +11,25 @@
 				</button>
 			</div>
 			<div class="modal-body bg-modal">
-				<form name="idViewCertificateTslForm" role="form" id="idViewCertificateTslForm" class="form-horizontal" th:object="${tslServiceDTO}">
-					<div id="warningUpdateCertificateTsl" role="alert"></div>
-					
+				<form name="idViewCertificateTslForm" role="form" id="idViewCertificateTslForm" class="form-horizontal">
 					<div class="form-group col-md-12">
 						<label for="subjectDN" th:text="#{form.app.mappingcerttsl.viewCertTsl.subjectDN.input}"></label>
-						<input type="text" id="subjectDN" class="form-control" th:field="*{subjectDN}" readonly></input>
+						<input type="text" id="subjectDN" class="form-control" readonly></input>
 						<div style="clear: both;"></div>
 					</div>
 					<div class="form-group col-md-12">
 						<label for="issuerDN" th:text="#{form.app.mappingcerttsl.viewCertTsl.issuerDN.input}"></label>
-						<input type="text" id="issuerDN" class="form-control" th:field="*{issuerDN}" readonly></input>
+						<input type="text" id="issuerDN" class="form-control" readonly></input>
 						<div style="clear: both;"></div>
 					</div>
 					<div class="valet-form-row">
 						<div class="form-group col-md-6">
 							<label for="notBefore" class="col-form-label" th:text="#{form.app.mappingcerttsl.viewCertTsl.notBefore.input}"></label> 
-							<input type="text" id="notBefore" th:field="*{notBefore}" style="overflow: hidden" readonly class="form-control" />
+							<input type="text" id="notBefore" style="overflow: hidden" readonly class="form-control" />
 						</div>
 						<div class="form-group col-md-6">
 							<label for="notAfter" class="col-form-label" th:text="#{form.app.mappingcerttsl.viewCertTsl.notAfter.input}"></label> 
-							<input type="text" id="notAfter" th:field="*{notAfter}" style="overflow: hidden" readonly class="form-control" />
+							<input type="text" id="notAfter" style="overflow: hidden" readonly class="form-control" />
 						</div>
 					</div>
 				</form>
@@ -44,27 +42,21 @@
 	</div>
 </div>
 <script th:inline="javascript">
-var tslServiceDTO;
 
 $(document).ready(function() {
-	tslServiceDTO = [[${tslServiceDTO}]];
-	// Si el certificado no existe se imprime un mensaje de aviso.
-	if(null == tslServiceDTO.certificate) {
-		var meesageWarning = /*[[#{form.app.mappingcerttsl.viewCertTsl.messageWarning}]]*/;
-		$('#warningUpdateCertificateTsl').html(meesageWarning);
-		$('#warningUpdateCertificateTsl').addClass('alert alert-warning');
-		$('#warningUpdateCertificateTsl').css("display","block");
-		$("#viewCertTsltBtn").prop("disabled", true);
-	}
+	$("#subjectDN").val(window.tslServiceDTO.subjectDN);
+	$("#issuerDN").val(window.tslServiceDTO.issuerDN);
+	$("#notBefore").val(window.tslServiceDTO.notBefore);
+	$("#notAfter").val(window.tslServiceDTO.notAfter);
 });
 
 // Función que descarga el certficado tsl.
 function downLoadCertTsl() {
-	var bytes = new Uint8Array(tslServiceDTO.certificate); // pass your byte response to this constructor
+	var bytes = new Uint8Array(window.tslServiceDTO.certificate); // pass your byte response to this constructor
 	var blob = new Blob([bytes], {type: "application/x-x509-ca-cert"});// change resultByte to bytes
 	var link=document.createElement('a');
 	link.href=window.URL.createObjectURL(blob);
-	link.download=tslServiceDTO.tspServiceName;
+	link.download="Certificate";
 	link.click();
 }
 
