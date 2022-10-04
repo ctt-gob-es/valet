@@ -1,9 +1,46 @@
+/* 
+/*******************************************************************************
+ * Copyright (C) 2018 MINHAFP, Gobierno de España
+ * This program is licensed and may be used, modified and redistributed under the  terms
+ * of the European Public License (EUPL), either version 1.1 or (at your option)
+ * any later version as soon as they are approved by the European Commission.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and
+ * more details.
+ * You should have received a copy of the EUPL1.1 license
+ * along with this program; if not, you may find it at
+ * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ ******************************************************************************/
+
+/** 
+ * <b>File:</b><p>es.gob.valet.dto.TSLServiceDTO.java.</p>
+ * <b>Description:</b><p>Class that represents the information needed to generate the tree of the TSL Mappings module.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>04/10/2022.</p>
+ * @author Gobierno de España.
+ * @version 1.0, 04/10/2022.
+ */
 package es.gob.valet.persistence.configuration.model.dto;
 
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import es.gob.valet.commons.utils.UtilsCertificate;
+import es.gob.valet.commons.utils.UtilsDate;
+import es.gob.valet.exceptions.CommonUtilsException;
+import es.gob.valet.persistence.configuration.model.entity.TSLService;
+
+/** 
+ * <p>Class that represents the information needed to generate the tree of the TSL Mappings module.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * @version 1.0, 04/10/2022.
+ */
 public class TSLServiceDTO implements Serializable {
 
 	/**
@@ -29,17 +66,17 @@ public class TSLServiceDTO implements Serializable {
 	/**
 	 * Attribute that represents the description of the tsp name.
 	 */
-	private Long tspName;
+	private String tspName;
 
 	/**
 	 * Attribute that represents the description of the tsp service name.
 	 */
-	private Long tspServiceName;
+	private String tspServiceName;
 
 	/**
 	 * Attribute that represents the description of the digital identity id.
 	 */
-	private Long digitalIdentityId;
+	private String digitalIdentityId;
 
 	/**
 	 * Attribute that represents the description of the digital identity caduced.
@@ -49,7 +86,54 @@ public class TSLServiceDTO implements Serializable {
 	/**
 	 * Attribute that represents the description of the certificate.
 	 */
+	@JsonSerialize(using = es.gob.valet.persistence.utils.ByteArraySerializer.class)
 	private byte[] certificate;
+
+	/**
+	 * Attribute that represents the issuer of certificate.
+	 */
+	private String issuerDN;
+
+	/**
+	 * Attribute that represents the subject of certificate.
+	 */
+	private String subjectDN;
+
+	/**
+	 * Attribute that represents the start date of certificate.
+	 */
+	private String notBefore;
+
+	/**
+	 * Attribute that represents the end date of certificate.
+	 */
+	private String notAfter;
+
+	/**
+	 * Constructor method for the class TSLServiceDTO.java.
+	 * 
+	 * @param tslService parameter that contain tsl service obtain from BD.
+	 * @throws CommonUtilsException If the method fails.
+	 */
+	public TSLServiceDTO(TSLService tslService) throws CommonUtilsException {
+		if(null != tslService) {
+			this.country = tslService.getCountry();
+			this.digitalIdentityCad = tslService.getDigitalIdentityCad();
+			this.digitalIdentityId = tslService.getDigitalIdentityId();
+			this.idTslService = tslService.getIdTslService();
+			this.tslVersion = tslService.getTslVersion();
+			this.tspName = tslService.getTspName();
+			this.tspServiceName = tslService.getTspServiceName();
+			if(null != tslService.getCertificate()) {
+				this.certificate = tslService.getCertificate(); 
+				X509Certificate x509Certificate = UtilsCertificate.getX509Certificate(tslService.getCertificate());
+				this.issuerDN = x509Certificate.getIssuerDN().toString();
+				this.subjectDN = x509Certificate.getSubjectDN().toString();
+				this.notBefore = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, x509Certificate.getNotBefore()); 
+				this.notAfter = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, x509Certificate.getNotAfter()); 
+			}
+		}
+	}
 
 	/**
 	 * Gets the value of the attribute {@link #idTslService}.
@@ -103,7 +187,7 @@ public class TSLServiceDTO implements Serializable {
 	 * Gets the value of the attribute {@link #tspName}.
 	 * @return the value of the attribute {@link #tspName}.
 	 */
-	public Long getTspName() {
+	public String getTspName() {
 		return tspName;
 	}
 
@@ -111,7 +195,7 @@ public class TSLServiceDTO implements Serializable {
 	 * Sets the value of the attribute {@link #tspName}.
 	 * @param tspName The value for the attribute {@link #tspName}.
 	 */
-	public void setTspName(Long tspName) {
+	public void setTspName(String tspName) {
 		this.tspName = tspName;
 	}
 
@@ -119,7 +203,7 @@ public class TSLServiceDTO implements Serializable {
 	 * Gets the value of the attribute {@link #tspServiceName}.
 	 * @return the value of the attribute {@link #tspServiceName}.
 	 */
-	public Long getTspServiceName() {
+	public String getTspServiceName() {
 		return tspServiceName;
 	}
 
@@ -127,7 +211,7 @@ public class TSLServiceDTO implements Serializable {
 	 * Sets the value of the attribute {@link #tspServiceName}.
 	 * @param tspServiceName The value for the attribute {@link #tspServiceName}.
 	 */
-	public void setTspServiceName(Long tspServiceName) {
+	public void setTspServiceName(String tspServiceName) {
 		this.tspServiceName = tspServiceName;
 	}
 
@@ -135,7 +219,7 @@ public class TSLServiceDTO implements Serializable {
 	 * Gets the value of the attribute {@link #digitalIdentityId}.
 	 * @return the value of the attribute {@link #digitalIdentityId}.
 	 */
-	public Long getDigitalIdentityId() {
+	public String getDigitalIdentityId() {
 		return digitalIdentityId;
 	}
 
@@ -143,7 +227,7 @@ public class TSLServiceDTO implements Serializable {
 	 * Sets the value of the attribute {@link #digitalIdentityId}.
 	 * @param digitalIdentityId The value for the attribute {@link #digitalIdentityId}.
 	 */
-	public void setDigitalIdentityId(Long digitalIdentityId) {
+	public void setDigitalIdentityId(String digitalIdentityId) {
 		this.digitalIdentityId = digitalIdentityId;
 	}
 
@@ -178,6 +262,70 @@ public class TSLServiceDTO implements Serializable {
 	public void setCertificate(byte[] certificate) {
 		this.certificate = certificate;
 	}
+	
+	/**
+	 * Gets the value of the attribute {@link #issuerDN}.
+	 * @return the value of the attribute {@link #issuerDN}.
+	 */
+	public String getIssuerDN() {
+		return issuerDN;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #issuerDN}.
+	 * @param issuerDN The value for the attribute {@link #issuerDN}.
+	 */
+	public void setIssuerDN(String issuerDN) {
+		this.issuerDN = issuerDN;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #subjectDN}.
+	 * @return the value of the attribute {@link #subjectDN}.
+	 */
+	public String getSubjectDN() {
+		return subjectDN;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #subjectDN}.
+	 * @param subjectDN The value for the attribute {@link #subjectDN}.
+	 */
+	public void setSubjectDN(String subjectDN) {
+		this.subjectDN = subjectDN;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #notBefore}.
+	 * @return the value of the attribute {@link #notBefore}.
+	 */
+	public String getNotBefore() {
+		return notBefore;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #notBefore}.
+	 * @param notBefore The value for the attribute {@link #notBefore}.
+	 */
+	public void setNotBefore(String notBefore) {
+		this.notBefore = notBefore;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #notAfter}.
+	 * @return the value of the attribute {@link #notAfter}.
+	 */
+	public String getNotAfter() {
+		return notAfter;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #notAfter}.
+	 * @param notAfter The value for the attribute {@link #notAfter}.
+	 */
+	public void setNotAfter(String notAfter) {
+		this.notAfter = notAfter;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -192,6 +340,10 @@ public class TSLServiceDTO implements Serializable {
 		result = prime * result + ((digitalIdentityCad == null) ? 0 : digitalIdentityCad.hashCode());
 		result = prime * result + ((digitalIdentityId == null) ? 0 : digitalIdentityId.hashCode());
 		result = prime * result + ((idTslService == null) ? 0 : idTslService.hashCode());
+		result = prime * result + ((issuerDN == null) ? 0 : issuerDN.hashCode());
+		result = prime * result + ((notAfter == null) ? 0 : notAfter.hashCode());
+		result = prime * result + ((notBefore == null) ? 0 : notBefore.hashCode());
+		result = prime * result + ((subjectDN == null) ? 0 : subjectDN.hashCode());
 		result = prime * result + ((tslVersion == null) ? 0 : tslVersion.hashCode());
 		result = prime * result + ((tspName == null) ? 0 : tspName.hashCode());
 		result = prime * result + ((tspServiceName == null) ? 0 : tspServiceName.hashCode());
@@ -232,6 +384,26 @@ public class TSLServiceDTO implements Serializable {
 			if (other.idTslService != null)
 				return false;
 		} else if (!idTslService.equals(other.idTslService))
+			return false;
+		if (issuerDN == null) {
+			if (other.issuerDN != null)
+				return false;
+		} else if (!issuerDN.equals(other.issuerDN))
+			return false;
+		if (notAfter == null) {
+			if (other.notAfter != null)
+				return false;
+		} else if (!notAfter.equals(other.notAfter))
+			return false;
+		if (notBefore == null) {
+			if (other.notBefore != null)
+				return false;
+		} else if (!notBefore.equals(other.notBefore))
+			return false;
+		if (subjectDN == null) {
+			if (other.subjectDN != null)
+				return false;
+		} else if (!subjectDN.equals(other.subjectDN))
 			return false;
 		if (tslVersion == null) {
 			if (other.tslVersion != null)

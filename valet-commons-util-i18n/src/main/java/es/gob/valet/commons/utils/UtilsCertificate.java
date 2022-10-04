@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 06/07/2021.
+ * @version 1.9, 04/10/2022.
  */
 package es.gob.valet.commons.utils;
 
@@ -60,7 +60,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 06/07/2021.
+ * @version 1.9, 04/10/2022.
  */
 public final class UtilsCertificate {
 
@@ -76,26 +76,6 @@ public final class UtilsCertificate {
 	 */
 	public static final String X509_TYPE = "X.509";
 	
-	/**
-	 * Constant that represents a "cert" extension file.
-	 */
-	public static final String CERT_EXTENSION = ".cert";
-	
-	/**
-	 * Constant that represents a "crt" extension file.
-	 */
-	public static final String CRT_EXTENSION = ".crt";
-	
-	/**
-	 * Constant that represents a "cer" extension file.
-	 */
-	public static final String CER_EXTENSION = ".cer";
-	
-	/**
-	 * Constant that represents a "der" extension file.
-	 */
-	public static final String DER_EXTENSION = ".der";
-
 	/**
 	 * Creates a X509Certificate given its content.
 	 * @param certificate Certificate content.

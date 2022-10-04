@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.4, 03/10/2022.
+ * @version 1.5, 04/10/2022.
  */
 package es.gob.valet.rest.controller;
 
@@ -60,7 +60,7 @@ import es.gob.valet.tsl.access.TslInformationTree;
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 03/10/2022.
+ * @version 1.5, 04/10/2022.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
@@ -75,18 +75,59 @@ public class MappingCertTslRestController {
 	 * Attribute that represents the service object for accessing the repository of mapping certificate tsls.
 	 */
 	@Autowired
-	IMappingCertTslService iMappingCertTslService;
+	private IMappingCertTslService iMappingCertTslService;
 	
 	/**
 	 * Attribute that represents bean spring for accessing the map of mapping certificate tsls.
 	 */
 	@Autowired
-	TslInformationTree tslInformationTree;
+	private TslInformationTree tslInformationTree;
 	
 	/**
-	 * Constant that represents the parameter 'fileCertificateTslId'.
+	 * Attribute that represents the identifier of the html input file certificate tsl id.
 	 */
-	public static final String FIELD_FILE_CERTIFICATE_TSL_ID = "fileCertificateTslId";
+	private static final String FIELD_FILE_CERTIFICATE_TSL_ID = "fileCertificateTslId";
+	
+	/**
+	 * Attribute that represents the tsp service name select for the user in the tree.
+	 */
+	public static final String TSPSERVICENAMESELECTTREE = "tspServiceNameSelectTree";
+
+	/**
+	 * Attribute that represents the tsp name select for the user in the tree.
+	 */
+	private static final String TSPNAMESELECTTREE = "tspNameSelectTree";
+	
+	/**
+	 * Attribute that represents the country select for the user in the tree.
+	 */
+	private static final String COUNTRYSELECTTREE = "countrySelectTree";
+	
+	/**
+	 * Attribute that represents the certificate attached for the user in the input.
+	 */
+	private static final String INPUT_FILECERTIFICATETSL = "fileCertificateTsl";
+	
+	/**
+	 * Attribute that represents the value search entered for the user in the input search.
+	 */
+	private static final String INPUT_VALUESEARCH = "valueSearch";
+	
+	/**
+	 * Attribute that represents the value id mapping certificate tsl click for the user in the datatable.
+	 */
+	private static final String DATATABLE_IDMAPPINGCERTTSL = "idMappingCertTsl";
+	
+	/**
+	 * Attribute that represents the value Tsl Service DTO who model attribute of the interface.
+	 */
+	public static final String TSLSERVICEDTO = "tslServiceDTO";
+	
+	/**
+	 * Attribute that represents the status 506 for valet validation exception in call ajax.
+	 */
+	private static final int VALIDATIONSMAPPINGCERTTSL = 506;
+	
 	
 	/**
 	 * Method that obtain the list of data to datatable in part front. This information be represent in object Datatable.
@@ -95,7 +136,7 @@ public class MappingCertTslRestController {
 	 * @return the list of data to datatable in part front. This information be represent in object Datatable.
 	 */
 	@PostMapping(value = "/loadingDatatableMappingCertTsls")
-	public DataTablesOutput<MappingCertTslsDTO> loadingDatatableMappingCertTsls(@RequestParam("idMappingCertTsl") Long idMappingCertTsl) {
+	public DataTablesOutput<MappingCertTslsDTO> loadingDatatableMappingCertTsls(@RequestParam(DATATABLE_IDMAPPINGCERTTSL) Long idMappingCertTsl) {
 		
 		DataTablesOutput<MappingCertTslsDTO> dataTablesOutput =  iMappingCertTslService.createDatatableMappingCertTsls(idMappingCertTsl);
 		
@@ -111,7 +152,7 @@ public class MappingCertTslRestController {
 	 */
 	@SuppressWarnings("static-access")
 	@PostMapping(value = "/searchInTree")
-	public String searchInTree(@RequestParam("valueSearch") String valueSearch, HttpServletResponse response) {
+	public String searchInTree(@RequestParam(INPUT_VALUESEARCH) String valueSearch, HttpServletResponse response) {
 		Map<String, List<TslMappingDTO>> mapTsl = tslInformationTree.getMapTslMappingTree();
 		List<BootstrapTreeNode> listBootstrapTreeNode = iMappingCertTslService.createTreeMappingCertTsl(mapTsl, valueSearch);
 		ObjectMapper mapper = new ObjectMapper();
@@ -140,17 +181,17 @@ public class MappingCertTslRestController {
 	@SuppressWarnings("static-access")
 	@PostMapping(value = "/updateCertTsl")
 	public String updateCertTsl(
-			@RequestPart("tspServiceNameSelectTree") String tspServiceNameSelectTree,
-			@RequestPart("tspNameSelectTree") String tspNameSelectTree,
-			@RequestPart("countrySelectTree") String countrySelectTree,
-			@RequestPart("fileCertificateTsl") MultipartFile fileCertificateTsl, 
+			@RequestPart(TSPSERVICENAMESELECTTREE) String tspServiceNameSelectTree,
+			@RequestPart(TSPNAMESELECTTREE) String tspNameSelectTree,
+			@RequestPart(COUNTRYSELECTTREE) String countrySelectTree,
+			@RequestPart(INPUT_FILECERTIFICATETSL) MultipartFile fileCertificateTsl, 
 			HttpServletResponse response) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String res = null;
 		try {
 			Map<String, String> errors = this.validateInputs(fileCertificateTsl);
 			if(!errors.isEmpty()) {
-				response.setStatus(506);
+				response.setStatus(VALIDATIONSMAPPINGCERTTSL);
 				res = objectMapper.writeValueAsString(errors);
 			} else {
 				Map<String, List<TslMappingDTO>> mapTslMappingDTO = tslInformationTree.getMapTslMappingTree();

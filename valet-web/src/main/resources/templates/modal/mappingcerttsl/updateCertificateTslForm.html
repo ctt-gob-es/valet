@@ -69,7 +69,6 @@ function updateCertTsl() {
 			slideUpMessage('successUpdateCertificateTsl');
 		},
 		error: function(xhr) {
-			debugger;
 			hide();
 			if(xhr.status == 506) {
 				var errors = JSON.parse(xhr.responseText);

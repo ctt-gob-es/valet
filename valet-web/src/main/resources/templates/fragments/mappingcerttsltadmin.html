@@ -70,6 +70,7 @@ function loadingTreeMappingCertTsls(data) {
 	    color: "#428bca",
 	    onNodeSelected: function(event, data) {
 	    	$("#idBtnUpdateCert").prop("disabled", false);
+	    	$("#idbtnViewCert").prop("disabled", false);
 	    	// Se almacenan los valores de pais, tspName y tspServiceName seleccionado para actualizar su certificado dado el caso
 	    	tspServiceName = data.text;
 	    	tspName = $('#mappingCertTslTree').treeview('getParent', data).text;
@@ -88,6 +89,7 @@ function loadingTreeMappingCertTsls(data) {
 	    	tspName = undefined;
 	    	country = undefined;
 	    	$("#idBtnUpdateCert").prop("disabled", true);
+	    	$("#idbtnViewCert").prop("disabled", true);
 		}
 	});
 }
@@ -197,12 +199,25 @@ function loadingDatatableMappingCertTsls(idMappingCertTsl) {
         		}
         	},
         	{
-        		extend: 'selected',
         		text: btnViewCert, 
         		attr: {id: 'idbtnViewCert'},        	
         		action: function ( e, dt, node, config ) {
-        			var d = dt.rows({
-	                	selected: !0
+        			var viewCertificateTsl = /*[[@{/mappingCertTsl/viewCertificateTsl}]]*/;
+					loading();
+					$.ajax({
+						url: viewCertificateTsl,
+						data: $.param({'tspServiceNameSelectTree': tspServiceName}),
+						type: 'POST',
+						cache: false,
+						success: function(xhr) {
+							hide();
+							$('#modal').html(xhr);
+							$('#modalViewCertificateTslForm').modal('show');
+						} ,
+						error:  function(xhr) {
+							$('#errorMappingCertTsl').html(xhr.responseText);
+							$('#errorMappingCertTsl').addClass('alert alert-danger');
+						}
 					});
         		}
         	},

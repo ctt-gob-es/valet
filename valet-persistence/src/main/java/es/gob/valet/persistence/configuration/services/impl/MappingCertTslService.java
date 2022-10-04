@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.2, 30/09/2022.
+ * @version 1.3, 04/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -41,7 +41,9 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
+import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
+import es.gob.valet.persistence.configuration.model.dto.TSLServiceDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.configuration.model.entity.TSLService;
 import es.gob.valet.persistence.configuration.model.repository.TSLServiceRepository;
@@ -51,7 +53,7 @@ import es.gob.valet.persistence.utils.BootstrapTreeNode;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Mapping Certificate TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 30/09/2022.
+ * @version 1.3, 04/10/2022.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -251,5 +253,14 @@ public class MappingCertTslService implements IMappingCertTslService {
 			return tslServiceRepository.save(tslServiceFound);
 		}
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#obtainTspServiceNameSelectTree
+	 */
+	public TSLServiceDTO obtainTspServiceNameSelectTree(String tspServiceNameSelectTree) throws CommonUtilsException {
+		TSLService tslService = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
+		TSLServiceDTO tslServiceDTO = new TSLServiceDTO(tslService);
+		return tslServiceDTO;
+	}
 }
