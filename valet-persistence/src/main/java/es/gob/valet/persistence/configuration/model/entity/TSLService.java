@@ -15,12 +15,12 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.TSLService.java.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.TslService.java.</p>
  * <b>Description:</b><p>Class that maps the <i>TSL_SERVICE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 28/09/2022.
+ * @version 1.1, 07/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -45,15 +45,16 @@ import org.hibernate.annotations.Parameter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
 
 /**
  * <p>Class that maps the <i>TSL_SERVICE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.0, 28/09/2022.
+ *  @version 1.1, 07/10/2022.
  */
 @Entity
 @Table(name = "TSL_SERVICE")
-public class TSLService implements Serializable {
+public class TslService implements Serializable {
 
 	/**
 	 * Attribute that represents the class serial version.
@@ -118,8 +119,29 @@ public class TSLService implements Serializable {
 	/**
 	 * Attribute that represents the tsl mappings associated.
 	 */
-	@OneToMany(mappedBy = "tslService", cascade = { CascadeType.REMOVE, CascadeType.MERGE }, fetch = FetchType.LAZY)
-	private List<TSLMapping> tslMapping;
+	@OneToMany(mappedBy = "tslService", cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	private List<TslMapping> tslMapping;
+
+	/**
+	 * Constructor method for the class TslService.java.
+	 */
+	public TslService() {}
+	
+	/**
+	 * Constructor method for the class TslService.java.
+	 * 
+	 * @param tslServiceDTO parameter that contain tsl service DTO to transform a entity.
+	 */
+	public TslService(TslServiceDTO tslServiceDTO) {
+		this.certificate = tslServiceDTO.getCertificate();
+		this.country = tslServiceDTO.getCountry();
+		this.digitalIdentityCad = tslServiceDTO.getDigitalIdentityCad();
+		this.idTslService = tslServiceDTO.getIdTslService();
+		this.tslMapping = this.getTslMapping();
+		this.tslVersion = this.getTslVersion();
+		this.tspName = this.getTspName();
+		this.tspServiceName = this.getTspServiceName();
+	}
 
 	/**
 	 * Gets the value of the attribute {@link #idTslService}.
@@ -253,7 +275,7 @@ public class TSLService implements Serializable {
 	 * Gets the value of the attribute {@link #tslMapping}.
 	 * @return the value of the attribute {@link #tslMapping}.
 	 */
-	public List<TSLMapping> getTslMapping() {
+	public List<TslMapping> getTslMapping() {
 		return tslMapping;
 	}
 
@@ -261,7 +283,7 @@ public class TSLService implements Serializable {
 	 * Sets the value of the attribute {@link #tslMapping}.
 	 * @param tslMapping The value for the attribute {@link #tslMapping}.
 	 */
-	public void setTslMapping(List<TSLMapping> tslMapping) {
+	public void setTslMapping(List<TslMapping> tslMapping) {
 		this.tslMapping = tslMapping;
 	}
 
@@ -297,7 +319,7 @@ public class TSLService implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TSLService other = (TSLService) obj;
+		TslService other = (TslService) obj;
 		if (!Arrays.equals(certificate, other.certificate))
 			return false;
 		if (country == null) {

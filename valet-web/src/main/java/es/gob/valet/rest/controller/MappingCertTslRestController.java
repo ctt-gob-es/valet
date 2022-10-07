@@ -20,12 +20,32 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.5, 04/10/2022.
+ * @version 1.6, 07/10/2022.
  */
 package es.gob.valet.rest.controller;
 
-import static es.gob.valet.rest.controller.MappingCertTslRestController.TSLSERVICEDTO;
-import static es.gob.valet.rest.controller.MappingCertTslRestController.TSPSERVICENAMESELECTTREE;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_AUTHORITY_INFORMATION_ACCESS;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_CERTPOL_INFO_OIDS;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_CERT_VERSION;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_COMMON_NAME;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_COUNTRY;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_CRL_DISTRIBUTION_POINTS;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_GIVEN_NAME;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_ISSUER;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_IS_CA;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_KEY_USAGE;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_PSEUDONYM;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_QC_STATEMENTS_OIDS;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_SERIAL_NUMBER;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_SIGALG_NAME;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_SIGALG_OID;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_SUBJECT;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_SUBJECT_ALT_NAME;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_SUBJECT_SERIAL_NUMBER;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_SURNAME;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_VALID_FROM;
+import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_VALID_TO;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -34,12 +54,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.ui.Model;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -50,22 +71,25 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import es.gob.valet.commons.utils.GeneralConstants;
+import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
+import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
-import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
-import es.gob.valet.persistence.configuration.model.dto.TSLServiceDTO;
+import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
-import es.gob.valet.persistence.configuration.model.entity.TSLService;
+import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
 import es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
 import es.gob.valet.tsl.access.TslInformationTree;
+import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;
+import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 04/10/2022.
+ * @version 1.6, 07/10/2022.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
@@ -94,9 +118,29 @@ public class MappingCertTslRestController {
 	private static final String FIELD_FILE_CERTIFICATE_TSL_ID = "fileCertificateTslId";
 	
 	/**
+	 * Attribute that represents the identifier of the html input identificator logical field.
+	 */
+	private static final String FIELD_IDENTIFICATOR_LOGICAL_FIELD = "identificatorLogicalField";
+	
+	/**
+	 * Attribute that represents the identifier of the html input value logical field free.
+	 */
+	private static final String FIELD_VALUE_LOGICAL_FIELD_FREE = "valueLogicalFieldFree";
+
+	/**
+	 * Attribute that represents the identifier of the html input value logical field simple.
+	 */
+	private static final String FIELD_VALUE_LOGICAL_FIELD_SIMPLE = "valueLogicalFieldSimple";
+	
+	/**
 	 * Attribute that represents the tsp service name select for the user in the tree.
 	 */
 	public static final String TSPSERVICENAMESELECTTREE = "tspServiceNameSelectTree";
+	
+	/**
+	 * Attribute that represents the identifier of the html input id siple value.
+	 */
+	public static final String IDSIMPLEVALUE = "idSimpleValue";
 
 	/**
 	 * Attribute that represents the tsp name select for the user in the tree.
@@ -119,11 +163,6 @@ public class MappingCertTslRestController {
 	private static final String INPUT_VALUESEARCH = "valueSearch";
 	
 	/**
-	 * Attribute that represents the value id mapping certificate tsl click for the user in the datatable.
-	 */
-	private static final String DATATABLE_IDMAPPINGCERTTSL = "idMappingCertTsl";
-	
-	/**
 	 * Attribute that represents the value Tsl Service DTO who model attribute of the interface.
 	 */
 	public static final String TSLSERVICEDTO = "tslServiceDTO";
@@ -132,21 +171,6 @@ public class MappingCertTslRestController {
 	 * Attribute that represents the status 506 for valet validation exception in call ajax.
 	 */
 	private static final int VALIDATIONSMAPPINGCERTTSL = 506;
-	
-	
-	/**
-	 * Method that obtain the list of data to datatable in part front. This information be represent in object Datatable.
-	 * 
-	 * @param idMappingCertTsl parameter that contain id of mapping certificate tsls.
-	 * @return the list of data to datatable in part front. This information be represent in object Datatable.
-	 */
-	@PostMapping(value = "/loadingDatatableMappingCertTsls")
-	public DataTablesOutput<MappingCertTslsDTO> loadingDatatableMappingCertTsls(@RequestParam(DATATABLE_IDMAPPINGCERTTSL) Long idMappingCertTsl) {
-		
-		DataTablesOutput<MappingCertTslsDTO> dataTablesOutput =  iMappingCertTslService.createDatatableMappingCertTsls(idMappingCertTsl);
-		
-		return dataTablesOutput;
-	}
 	
 	/**
 	 * Method that search in tree value enter for user in searching. 
@@ -194,20 +218,23 @@ public class MappingCertTslRestController {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String res = null;
 		try {
-			Map<String, String> errors = this.validateInputs(fileCertificateTsl);
+			Map<String, String> errors = this.validateInputsUpdate(fileCertificateTsl);
 			if(!errors.isEmpty()) {
 				response.setStatus(VALIDATIONSMAPPINGCERTTSL);
 				res = objectMapper.writeValueAsString(errors);
 			} else {
 				Map<String, List<TslMappingDTO>> mapTslMappingDTO = tslInformationTree.getMapTslMappingTree();
-				TSLService tslService = iMappingCertTslService.saveOrUpdateTslService(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, fileCertificateTsl.getBytes());
-				res = objectMapper.writeValueAsString(tslService);
+				res = objectMapper.writeValueAsString(new TslServiceDTO(iMappingCertTslService.saveOrUpdateTslService(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, fileCertificateTsl.getBytes()))); 
 			}
 		} catch (IOException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			LOGGER.error(e.getMessage(), e);
 			res = e.getMessage();
 		} catch (ParseException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
+			res = e.getMessage();
+		} catch (CommonUtilsException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			LOGGER.error(e.getMessage(), e);
 			res = e.getMessage();
@@ -222,7 +249,7 @@ public class MappingCertTslRestController {
 	 * @return map empty or with errors.
 	 * @throws IOException If the method fails.
 	 */
-	private Map<String, String> validateInputs(MultipartFile fileCertificateTsl) throws IOException {
+	private Map<String, String> validateInputsUpdate(MultipartFile fileCertificateTsl) throws IOException {
 		Map<String, String> mErrors = new HashMap<String, String>();
 		if (fileCertificateTsl == null || fileCertificateTsl.getSize() == 0 || fileCertificateTsl.getBytes() == null || fileCertificateTsl.getBytes().length == 0) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
@@ -238,9 +265,16 @@ public class MappingCertTslRestController {
 		return mErrors;
 	}
 	
+	/**
+	 * Method that obtain tsp service name search for tsp service name select in the tree.
+	 * 
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param response parameter that represents posibility errors in process.
+	 * @return tsp service DTO in format Json.
+	 */
 	@PostMapping(value = "/obtainTspServiceNameSelectTree")
 	private String obtainTspServiceNameSelectTree(@RequestParam(TSPSERVICENAMESELECTTREE) String tspServiceNameSelectTree, HttpServletResponse response) {
-		TSLServiceDTO tslServiceDTO = null;
+		TslServiceDTO tslServiceDTO = null;
 		String res = null;
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
@@ -254,5 +288,164 @@ public class MappingCertTslRestController {
 			res = e.getMessage();
 		}
 		return res;
+	}
+	
+	/**
+	 * Method that select value a watch when user press button watch value.
+	 * 
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param idSimpleValue parameter that contain of id simple value.
+	 * @param response parameter that represents posibility errors in process.
+	 * @return value a watch when user press button watch value.
+	 */
+	@PostMapping(value = "/watchCertificate")
+	private String watchCertificate(@RequestParam(TSPSERVICENAMESELECTTREE) String tspServiceNameSelectTree, @RequestParam(IDSIMPLEVALUE) Integer idSimpleValue, HttpServletResponse response) {
+		TslServiceDTO tslServiceDTO;
+		String res = null;
+		try {
+			tslServiceDTO = iMappingCertTslService.obtainTspServiceNameSelectTree(tspServiceNameSelectTree);
+			WrapperX509Cert wrapperX509Cert = new WrapperX509Cert(
+					UtilsCertificate.getX509Certificate(tslServiceDTO.getCertificate()));
+
+			switch (idSimpleValue) {
+				case INFOCERT_CERT_VERSION:
+					res = wrapperX509Cert.getX509CertVersion();
+					break;
+				case INFOCERT_SUBJECT:
+					res = wrapperX509Cert.getSubject();
+					break;
+				case INFOCERT_ISSUER:
+					res = wrapperX509Cert.getIssuer();
+					break;
+				case INFOCERT_SERIAL_NUMBER:
+					res = wrapperX509Cert.getSerialNumber();
+					break;
+				case INFOCERT_SIGALG_NAME:
+					res = wrapperX509Cert.getSignatureAlgorithmName();
+					break;
+				case INFOCERT_SIGALG_OID:
+					res = wrapperX509Cert.getSignatureAlgorithmOID();
+					break;
+				case INFOCERT_VALID_FROM:
+					res = wrapperX509Cert.getValidFrom();
+					break;
+				case INFOCERT_VALID_TO:
+					res = wrapperX509Cert.getValidTo();
+					break;
+				case INFOCERT_CERTPOL_INFO_OIDS:
+					res = wrapperX509Cert.getExtensionCertPoliciesInformationOIDs();
+					break;
+				case INFOCERT_QC_STATEMENTS_OIDS:
+					res = wrapperX509Cert.getExtensionQcStatementsOIDs();
+					break;
+				case INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS:
+					res = wrapperX509Cert.getExtensionQcStatementExtEuTypeOids();
+					break;
+				case INFOCERT_SUBJECT_ALT_NAME:
+					res = wrapperX509Cert.getExtensionSubjectAltName();
+					break;
+				case INFOCERT_IS_CA:
+					res = wrapperX509Cert.getExtensionBasicConstrainstIsCA();
+					break;
+				case INFOCERT_KEY_USAGE:
+					res = wrapperX509Cert.getExtensionKeyUsage();
+					break;
+				case INFOCERT_CRL_DISTRIBUTION_POINTS:
+					res = wrapperX509Cert.getExtensionCRLDistributionPoints();
+					break;
+				case INFOCERT_AUTHORITY_INFORMATION_ACCESS:
+					res = wrapperX509Cert.getExtensionAuthorityInformationAccess();
+					break;
+				case INFOCERT_SURNAME:
+					res = wrapperX509Cert.getSurname();
+					break;
+				case INFOCERT_COMMON_NAME:
+					res = wrapperX509Cert.getCommonName();
+					break;
+				case INFOCERT_GIVEN_NAME:
+					res = wrapperX509Cert.getGivenName();
+					break;
+				case INFOCERT_COUNTRY:
+					res = wrapperX509Cert.getCountry();
+					break;
+				case INFOCERT_PSEUDONYM:
+					res = wrapperX509Cert.getPseudonym();
+					break;
+				case INFOCERT_SUBJECT_SERIAL_NUMBER:
+					res = wrapperX509Cert.getSubjectSerieNumber();
+					break;
+				default:
+					break;
+			}
+		} catch (CommonUtilsException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			res = e.getMessage();
+		} catch (TSLCertificateValidationException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			res = e.getMessage();
+		}
+		return res;
+	}
+	
+	/**
+	 * Method that save new mapping with logical field and tsl service.
+	 * 
+	 * @param mappingTslDTO parameter that contain information from interface add logic field.
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param tspNameSelectTree parameter that contain of tsp name select for the user.
+	 * @param countrySelectTree parameter that contain of country select for the user.
+	 * @param response parameter that represents posibility errors in process.
+	 * @return exit or error to process.
+	 */
+	@PostMapping(value = "/saveMappingLogicField")
+	@Consumes(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@SuppressWarnings("static-access")
+	private String saveMappingLogicField(@RequestBody MappingTslDTO mappingTslDTO,
+			@RequestParam(TSPSERVICENAMESELECTTREE) String tspServiceNameSelectTree,
+			@RequestParam(TSPNAMESELECTTREE) String tspNameSelectTree,
+			@RequestParam(COUNTRYSELECTTREE) String countrySelectTree, HttpServletResponse response) {
+		String res = null;
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			Map<String, String> mErrors = this.validateInputsSave(mappingTslDTO);
+			if(!mErrors.isEmpty()) {
+				response.setStatus(VALIDATIONSMAPPINGCERTTSL);
+				res = objectMapper.writeValueAsString(mErrors);
+			} else {
+				Map<String, List<TslMappingDTO>> mapTslMappingDTO = tslInformationTree.getMapTslMappingTree();
+				iMappingCertTslService.saveMappingLogicField(mapTslMappingDTO, mappingTslDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree);
+			}
+		} catch (ParseException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
+			res = e.getMessage();
+		} catch (JsonProcessingException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
+			res = e.getMessage();
+		}
+		return res;
+	}
+
+	/**
+	 * Method that validate inputs to save new mapping. 
+	 *  
+	 * @param mappingTslDTO parameter that contain information from interface add logic field.
+	 * @return map with errors if this exists.
+	 */
+	private Map<String, String> validateInputsSave(MappingTslDTO mappingTslDTO) {
+		Map<String, String> mErrors = new HashMap<>();
+		if(UtilsStringChar.isNullOrEmpty(mappingTslDTO.getLogicalFieldDTO().getIdentificator())) {
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_EMPTY));
+			mErrors.put(FIELD_IDENTIFICATOR_LOGICAL_FIELD + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_EMPTY));
+		} 
+		if (UtilsStringChar.isNullOrEmpty(mappingTslDTO.getLogicalFieldDTO().getLogicalFieldValue())) {
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
+			mErrors.put(FIELD_VALUE_LOGICAL_FIELD_FREE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
+		} else if(mappingTslDTO.getLogicalFieldDTO().getLogicalFieldValue().equals(String.valueOf(NumberConstants.NUM_NEG_1))) {
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
+			mErrors.put(FIELD_VALUE_LOGICAL_FIELD_SIMPLE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
+		}
+ 		return mErrors;
 	}
 }

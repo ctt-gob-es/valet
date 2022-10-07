@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.13, 03/10/2022.
+ * @version 1.14, 07/10/2022.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.13, 03/10/2022.
+ * @version 1.14, 07/10/2022.
  */
 public interface IWebGeneralMessages {
 
@@ -201,6 +201,18 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String ERROR_VALIDATION_CERT_INCORRECT = "errorValidationCertIncorrect";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorValidationIdentificatorEmpty</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_VALIDATION_IDENTIFICATOR_EMPTY = "errorValidationIdentificatorEmpty";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorValidationValueEmpty</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String ERROR_VALIDATION_VALUE_EMPTY = "errorValidationValueEmpty";
 
 	/**
 	 * Constant attribute that represents the name of the property <code>errorNotBlankAlias</code> belonging to the

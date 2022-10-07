@@ -16,32 +16,35 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.dto.TSLServiceDTO.java.</p>
- * <b>Description:</b><p>Class that represents the information needed to generate the tree of the TSL Mappings module.</p>
+ * <b>Description:</b><p>Class that represents the information needed to generate the tree of the TSL Service DTO module.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 04/10/2022.
+ * @version 1.0, 07/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.persistence.configuration.model.entity.TSLService;
+import es.gob.valet.persistence.configuration.model.entity.TslMapping;
+import es.gob.valet.persistence.configuration.model.entity.TslService;
 
 /** 
- * <p>Class that represents the information needed to generate the tree of the TSL Mappings module.</p>
+ * <p>Class that represents the information needed to generate the tree of the TSL Service DTO module.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 04/10/2022.
+ * @version 1.0, 07/10/2022.
  */
-public class TSLServiceDTO implements Serializable {
+public class TslServiceDTO implements Serializable {
 
 	/**
 	 * Class serial version.
@@ -110,12 +113,22 @@ public class TSLServiceDTO implements Serializable {
 	private String notAfter;
 
 	/**
+	 * Attribute that represents the logical fiels that have associate this tsl service.
+	 */
+	private List<LogicalFieldDTO> listLogicalFieldDTO;
+	
+	/**
+	 * Constructor method for the class TslServiceDTO.java.
+	 */
+	public TslServiceDTO(){}
+	
+	/**
 	 * Constructor method for the class TSLServiceDTO.java.
 	 * 
 	 * @param tslService parameter that contain tsl service obtain from BD.
 	 * @throws CommonUtilsException If the method fails.
 	 */
-	public TSLServiceDTO(TSLService tslService) throws CommonUtilsException {
+	public TslServiceDTO(TslService tslService) throws CommonUtilsException {
 		if(null != tslService) {
 			this.country = tslService.getCountry();
 			this.digitalIdentityCad = tslService.getDigitalIdentityCad();
@@ -130,7 +143,15 @@ public class TSLServiceDTO implements Serializable {
 				this.issuerDN = x509Certificate.getIssuerDN().toString();
 				this.subjectDN = x509Certificate.getSubjectDN().toString();
 				this.notBefore = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, x509Certificate.getNotBefore()); 
-				this.notAfter = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, x509Certificate.getNotAfter()); 
+				this.notAfter = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, x509Certificate.getNotAfter());
+			}
+			List<TslMapping> listTslMapping = tslService.getTslMapping();
+			if(null != listTslMapping && !listTslMapping.isEmpty()) {
+				this.listLogicalFieldDTO = new ArrayList<LogicalFieldDTO>();
+				for (TslMapping tslMapping : listTslMapping) {
+					LogicalFieldDTO logicalFieldDTO = new LogicalFieldDTO(tslMapping.getLogicalField());
+					listLogicalFieldDTO.add(logicalFieldDTO);
+				}
 			}
 		}
 	}
@@ -326,6 +347,22 @@ public class TSLServiceDTO implements Serializable {
 	public void setNotAfter(String notAfter) {
 		this.notAfter = notAfter;
 	}
+	
+	/**
+	 * Gets the value of the attribute {@link #listLogicalFieldDTO}.
+	 * @return the value of the attribute {@link #listLogicalFieldDTO}.
+	 */
+	public List<LogicalFieldDTO> getListLogicalFieldDTO() {
+		return listLogicalFieldDTO;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #listLogicalFieldDTO}.
+	 * @param listLogicalFieldDTO The value for the attribute {@link #listLogicalFieldDTO}.
+	 */
+	public void setListLogicalFieldDTO(List<LogicalFieldDTO> listLogicalFieldDTO) {
+		this.listLogicalFieldDTO = listLogicalFieldDTO;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -341,6 +378,7 @@ public class TSLServiceDTO implements Serializable {
 		result = prime * result + ((digitalIdentityId == null) ? 0 : digitalIdentityId.hashCode());
 		result = prime * result + ((idTslService == null) ? 0 : idTslService.hashCode());
 		result = prime * result + ((issuerDN == null) ? 0 : issuerDN.hashCode());
+		result = prime * result + ((listLogicalFieldDTO == null) ? 0 : listLogicalFieldDTO.hashCode());
 		result = prime * result + ((notAfter == null) ? 0 : notAfter.hashCode());
 		result = prime * result + ((notBefore == null) ? 0 : notBefore.hashCode());
 		result = prime * result + ((subjectDN == null) ? 0 : subjectDN.hashCode());
@@ -362,7 +400,7 @@ public class TSLServiceDTO implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TSLServiceDTO other = (TSLServiceDTO) obj;
+		TslServiceDTO other = (TslServiceDTO) obj;
 		if (!Arrays.equals(certificate, other.certificate))
 			return false;
 		if (country == null) {
@@ -389,6 +427,11 @@ public class TSLServiceDTO implements Serializable {
 			if (other.issuerDN != null)
 				return false;
 		} else if (!issuerDN.equals(other.issuerDN))
+			return false;
+		if (listLogicalFieldDTO == null) {
+			if (other.listLogicalFieldDTO != null)
+				return false;
+		} else if (!listLogicalFieldDTO.equals(other.listLogicalFieldDTO))
 			return false;
 		if (notAfter == null) {
 			if (other.notAfter != null)

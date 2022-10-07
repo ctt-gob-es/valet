@@ -60,26 +60,22 @@ function updateCertTsl() {
         contentType: false,
         cache: false,
 		success: function(xhr) {
-			hide();
 			closeModal('modalUpdateCertificateTslForm');
 			var meesageSuccess = /*[[#{form.app.mappingcerttsl.updateCertTsl.tspfileCertificateTslId.messageSuccess}]]*/;
-			$('#successUpdateCertificateTsl').html(meesageSuccess);
-			$('#successUpdateCertificateTsl').addClass('alert alert-success');
-			$('#successUpdateCertificateTsl').css("display","block");
-			slideUpMessage('successUpdateCertificateTsl');
+			$('#successMappingCertTsl').html(meesageSuccess);
+			$('#successMappingCertTsl').addClass('alert alert-success');
+			$('#successMappingCertTsl').css("display","block");
+			slideUpMessage('successMappingCertTsl');
+			
+			// Se vuelve a cargar la botonera y las filas del datatable 
+			window.obtainTspServiceNameSelectTree(window.tspServiceName);
+			
+			hide();
 		},
 		error: function(xhr) {
 			hide();
 			if(xhr.status == 506) {
-				var errors = JSON.parse(xhr.responseText);
-				jQuery.each(errors, function(i, val) {
-					$('#idUpdateCertificateTslForm *').filter('span').each(function(){
-						if (i == $(this).attr('id')){
-							$("#" + i).text(val);
-							$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
-						}
-					});
-			  	})
+				printErrors(xhr, 'idUpdateCertificateTslForm');
 			} else {
 				$('#errorUpdateCertificateTsl').html(xhr.responseText);
 				$('#errorUpdateCertificateTsl').addClass('alert alert-danger');	

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 06/07/2021.
+ * @version 1.4, 07/10/2022.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -58,7 +58,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
  * <p>Wrapper class for a X.509v3 Certificate. This class provides methods to
  * calculate/extract some information of the certificate.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 06/07/2021.
+ * @version 1.4, 07/10/2022.
  */
 public class WrapperX509Cert {
 
@@ -744,7 +744,7 @@ public class WrapperX509Cert {
 	 * Gets the serie number of the certificate.
 	 * @return
 	 */
-	private String getSubjectSerieNumber() {
+	public String getSubjectSerieNumber() {
 		String result = null;
 		if (x509CertBC != null) {
 			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
@@ -763,7 +763,7 @@ public class WrapperX509Cert {
 	 * Gets the pseudonym of the certificate.
 	 * @return
 	 */
-	private String getPseudonym() {
+	public String getPseudonym() {
 		String result = null;
 		if (x509CertBC != null) {
 			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
@@ -781,7 +781,7 @@ public class WrapperX509Cert {
 	 * Gets the given name of the certificate.
 	 * @return
 	 */
-	private String getGivenName() {
+	public String getGivenName() {
 		String result = null;
 		if (x509CertBC != null) {
 			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
@@ -799,7 +799,7 @@ public class WrapperX509Cert {
 	 * Gets the common name of the certificate.
 	 * @return
 	 */
-	private String getCommonName() {
+	public String getCommonName() {
 		String result = null;
 		if (x509CertBC != null) {
 			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();
@@ -817,7 +817,7 @@ public class WrapperX509Cert {
 	 * Gets the country of the certificate.
 	 * @return
 	 */
-	private String getCountry() {
+	public String getCountry() {
 		String result = null;
 		if (x509CertBC != null) {
 			result = UtilsCertificate.getCountryOfTheCertificateString(x509Cert);
@@ -829,7 +829,7 @@ public class WrapperX509Cert {
 	 * Gets the surname of the certificate.
 	 * @return
 	 */
-	private String getSurname() {
+	public String getSurname() {
 		String result = null;
 		if (x509CertBC != null) {
 			X500Name x500name = x509CertBC.getTBSCertificate().getSubject();

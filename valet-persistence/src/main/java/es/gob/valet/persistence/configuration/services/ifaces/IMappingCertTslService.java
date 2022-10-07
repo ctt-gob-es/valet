@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 04/10/2022.
+ * @version 1.4, 07/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -29,20 +29,18 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
-import es.gob.valet.persistence.configuration.model.dto.TSLServiceDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
+import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
-import es.gob.valet.persistence.configuration.model.entity.TSLService;
+import es.gob.valet.persistence.configuration.model.entity.TslService;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
 
 /**
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the mapping certficate tsl entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 04/10/2022.
+ * @version 1.4, 07/10/2022.
  */
 public interface IMappingCertTslService {
 
@@ -56,13 +54,6 @@ public interface IMappingCertTslService {
 	List<BootstrapTreeNode> createTreeMappingCertTsl(Map<String, List<TslMappingDTO>> mapTsl, String valueSearch);
 
 	/**
-	 * Method that create datatable of mapping certificate tsls. Only contain paramenters referents to data of datatable.
-	 * 
-	 * @return tree of mapping certificate tsls.
-	 */
-	DataTablesOutput<MappingCertTslsDTO> createDatatableMappingCertTsls(Long idMappingCertTsl);
-
-	/**
 	 * Method that save or update to tsl service. 
 	 * 
 	 * @param mapTslMappingDTO parameter that contain tree of the mappings certificate tsl.
@@ -73,7 +64,7 @@ public interface IMappingCertTslService {
 	 * @return Object persistent in BD.
 	 * @throws ParseException possible exception to parse Date.
 	 */
-	TSLService saveOrUpdateTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree, byte[] fileCertificateTsl) throws ParseException;
+	TslService saveOrUpdateTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree, byte[] fileCertificateTsl) throws ParseException;
 
 	/**
 	 * Method that obtain tsp service from tsp service name select in the tree.
@@ -81,6 +72,18 @@ public interface IMappingCertTslService {
 	 * @return tsp service DTO.
 	 * @throws CommonUtilsException If the method fails.
 	 */
-	TSLServiceDTO obtainTspServiceNameSelectTree(String tspServiceNameSelectTree) throws CommonUtilsException;
+	TslServiceDTO obtainTspServiceNameSelectTree(String tspServiceNameSelectTree) throws CommonUtilsException;
+
+	/**
+	 * Method that save entitys to tsl service, logical field and mapping. If tsl service not exists, here be create.
+	 * 
+	 * @param mapTslMappingDTO parameter that contain tree of the mappings certificate tsl.
+	 * @param mappingTslDTO parameter that contain information from interface add logic field.
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param tspNameSelectTree parameter that contain of tsp name select for the user.
+	 * @param countrySelectTree parameter that contain of country select for the user.
+	 * @throws ParseException possible exception to parse Date.
+	 */
+	void saveMappingLogicField(Map<String, List<TslMappingDTO>> mapTslMappingDTO, MappingTslDTO mappingTslDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree) throws ParseException;
 
 }

@@ -16,20 +16,22 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.persistence.configuration.dto.LogicalFieldDTO.java.</p>
- * <b>Description:</b><p>Class that represents an object that relates the code of a to the Logical Field administration.</p>
+ * <b>Description:</b><p>Class that represents an object that relates the code of a to the Logical Field DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 28/09/2022.
+ * @version 1.2, 07/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
 import java.io.Serializable;
 
+import es.gob.valet.persistence.configuration.model.entity.LogicalField;
+
 /** 
- * <p>Class that represents an object that relates the code of a to the Logical Field administration.</p>
+ * <p>Class that represents an object that relates the code of a to the Logical Field DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 28/09/2022.
+ * @version 1.2, 07/10/2022.
  */
 public class LogicalFieldDTO implements Serializable {
 
@@ -47,6 +49,27 @@ public class LogicalFieldDTO implements Serializable {
 	 * Attribute that represents the description of the logical field.
 	 */
 	private String identificator;
+	
+	/**
+	 * Attribute that represents the logic field value.
+	 */
+	private String logicalFieldValue;
+	
+	/**
+	 * Constructor method for the class LogicalFieldDTO.java.
+	 */
+	public LogicalFieldDTO() {}
+	
+	/**
+	 * Constructor method for the class LogicalFieldDTO.java.
+	 * 
+	 * @param logicalField parameter that contain logical field obtain from BD.
+	 */
+	public LogicalFieldDTO(LogicalField logicalField) {
+		this.idLogicalField = logicalField.getIdLogicalField();
+		this.identificator = logicalField.getIdentificator();
+		this.logicalFieldValue = logicalField.getLogicalFieldValue();
+	}
 
 	/**
 	 * Gets the value of the attribute {@link #idLogicalField}.
@@ -81,6 +104,22 @@ public class LogicalFieldDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the value of the attribute {@link #logicalFieldValue}.
+	 * @return the value of the attribute {@link #logicalFieldValue}.
+	 */
+	public String getLogicalFieldValue() {
+		return logicalFieldValue;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #logicalFieldValue}.
+	 * @param logicalFieldValue The value for the attribute {@link #logicalFieldValue}.
+	 */
+	public void setLogicalFieldValue(String logicalFieldValue) {
+		this.logicalFieldValue = logicalFieldValue;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -90,6 +129,7 @@ public class LogicalFieldDTO implements Serializable {
 		int result = 1;
 		result = prime * result + ((idLogicalField == null) ? 0 : idLogicalField.hashCode());
 		result = prime * result + ((identificator == null) ? 0 : identificator.hashCode());
+		result = prime * result + ((logicalFieldValue == null) ? 0 : logicalFieldValue.hashCode());
 		return result;
 	}
 
@@ -115,6 +155,11 @@ public class LogicalFieldDTO implements Serializable {
 			if (other.identificator != null)
 				return false;
 		} else if (!identificator.equals(other.identificator))
+			return false;
+		if (logicalFieldValue == null) {
+			if (other.logicalFieldValue != null)
+				return false;
+		} else if (!logicalFieldValue.equals(other.logicalFieldValue))
 			return false;
 		return true;
 	}

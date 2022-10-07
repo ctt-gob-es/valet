@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.3, 04/10/2022.
+ * @version 1.4, 07/10/2022.
  */
 package es.gob.valet.controller;
 
@@ -34,15 +34,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
+import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 import es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
+import es.gob.valet.persistence.utils.ConstantsUtils;
 import es.gob.valet.tsl.access.TslInformationTree;
 
 /**
  * <p>Class that manages the requests related to the mappings of certificates TSL administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 04/10/2022.
+ * @version 1.4, 07/10/2022.
  */
 @Controller
 @RequestMapping(value = "/mappingCertTsl")
@@ -59,6 +62,12 @@ public class MappingCertTslController {
 	 */
 	@Autowired
 	TslInformationTree tslInformationTree;
+	
+	/**
+	 * Attribute that represents the service object for accessing the repository of mapping certificate tsls.
+	 */
+	@Autowired
+	ICAssociationTypeService iCAssociationTypeService;
 	
 	/**
 	 * Method that return view admin of mapping certificate tsls.
@@ -93,5 +102,19 @@ public class MappingCertTslController {
 	@PostMapping(value = "/viewCertificateTsl")
 	public String viewCertificateTsl() {
 		return "modal/mappingcerttsl/viewCertificateTslForm.html";
+	}
+	
+	/**
+	 * Method that return view modal of view add mapping logical field.
+	 * 
+	 * @return view modal of view add mapping logical field.
+	 */
+	@PostMapping(value = "/viewAddLogicField")
+	public String viewAddLogicField(Model model) {
+		MappingTslDTO mappingTslDTO = new MappingTslDTO();
+		mappingTslDTO.setListCAssociationTypeDTO(iCAssociationTypeService.getAllAssociationTypeDTO());
+		mappingTslDTO.setListValuesAssocSimple(ConstantsUtils.loadSimpleAssociationValues());
+		model.addAttribute("mappingTslDTO", mappingTslDTO);
+		return "modal/mappingcerttsl/addMappingLogicalFieldForm.html";
 	}
 }

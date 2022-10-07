@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 28/09/2022.
+ * @version 1.1, 7/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -40,11 +40,12 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.persistence.configuration.model.dto.LogicalFieldDTO;
 
 /**
  * <p>Class that maps the <i>LOGICAL_FIELD</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 28/09/2022.
+ * @version 1.1, 7/10/2022.
  */
 @Entity
 @Table(name = "LOGICAL_FIELD")
@@ -69,14 +70,36 @@ public class LogicalField implements Serializable {
 	/**
 	 * Attribute that represents the description of the identificator.
 	 */
-	@Column(name = "IDENTIFICATOR", unique = true, nullable = false, length = NumberConstants.NUM255)
+	@Column(name = "IDENTIFICATOR", nullable = false, length = NumberConstants.NUM255)
 	private String identificator;
 	
 	/**
 	 * Attribute that represents the description of the logical field.
 	 */
-	@OneToMany(mappedBy = "logicalField", cascade = { CascadeType.REMOVE, CascadeType.MERGE }, fetch = FetchType.LAZY)
-	private List<TSLMapping> tslMapping;
+	@OneToMany(mappedBy = "logicalField", cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	private List<TslMapping> tslMapping;
+	
+	/**
+	 * Attribute that represents the value of the logical field.
+	 */
+	@Column(name = "LOGICAL_FIELD_VALUE", nullable = false, length = NumberConstants.NUM256)
+	private String logicalFieldValue;
+	
+	/**
+	 * Constructor method for the class LogicalField.java.
+	 */
+	public LogicalField(){}
+	
+	/**
+	 * Constructor method for the class LogicalField.java.
+	 * 
+	 * @param logicalFieldDTO parameter that contain logical field DTO to transform a entity.
+	 */
+	public LogicalField(LogicalFieldDTO logicalFieldDTO) {
+		this.idLogicalField = logicalFieldDTO.getIdLogicalField();
+		this.identificator = logicalFieldDTO.getIdentificator();
+		this.logicalFieldValue = logicalFieldDTO.getLogicalFieldValue();
+	}
 
 	/**
 	 * Gets the value of the attribute {@link #idLogicalField}.
@@ -111,6 +134,38 @@ public class LogicalField implements Serializable {
 	}
 
 	/**
+	 * Gets the value of the attribute {@link #tslMapping}.
+	 * @return the value of the attribute {@link #tslMapping}.
+	 */
+	public List<TslMapping> getTslMapping() {
+		return tslMapping;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #tslMapping}.
+	 * @param tslMapping The value for the attribute {@link #tslMapping}.
+	 */
+	public void setTslMapping(List<TslMapping> tslMapping) {
+		this.tslMapping = tslMapping;
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #logicalFieldValue}.
+	 * @return the value of the attribute {@link #logicalFieldValue}.
+	 */
+	public String getLogicalFieldValue() {
+		return logicalFieldValue;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #logicalFieldValue}.
+	 * @param logicalFieldValue The value for the attribute {@link #logicalFieldValue}.
+	 */
+	public void setLogicalFieldValue(String logicalFieldValue) {
+		this.logicalFieldValue = logicalFieldValue;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -120,6 +175,8 @@ public class LogicalField implements Serializable {
 		int result = 1;
 		result = prime * result + ((idLogicalField == null) ? 0 : idLogicalField.hashCode());
 		result = prime * result + ((identificator == null) ? 0 : identificator.hashCode());
+		result = prime * result + ((logicalFieldValue == null) ? 0 : logicalFieldValue.hashCode());
+		result = prime * result + ((tslMapping == null) ? 0 : tslMapping.hashCode());
 		return result;
 	}
 
@@ -145,6 +202,16 @@ public class LogicalField implements Serializable {
 			if (other.identificator != null)
 				return false;
 		} else if (!identificator.equals(other.identificator))
+			return false;
+		if (logicalFieldValue == null) {
+			if (other.logicalFieldValue != null)
+				return false;
+		} else if (!logicalFieldValue.equals(other.logicalFieldValue))
+			return false;
+		if (tslMapping == null) {
+			if (other.tslMapping != null)
+				return false;
+		} else if (!tslMapping.equals(other.tslMapping))
 			return false;
 		return true;
 	}

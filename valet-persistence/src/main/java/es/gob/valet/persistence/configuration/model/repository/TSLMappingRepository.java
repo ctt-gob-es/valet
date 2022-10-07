@@ -15,12 +15,12 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.TSLMappingRepository.java.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.TslMappingRepository.java.</p>
  * <b>Description:</b><p> Interface that provides CRUD functionality for the ApplicationValet entity..</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>10/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 28/09/2022.
+ * @version 1.1, 07/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -30,15 +30,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import es.gob.valet.persistence.configuration.model.entity.TSLMapping;
+import es.gob.valet.persistence.configuration.model.entity.TslMapping;
 
 /**
  * <p>Interface that provides CRUD functionality for the ApplicationValet entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 28/09/2022.
+ * @version 1.1, 07/10/2022.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public interface TSLMappingRepository extends PagingAndSortingRepository<TSLMapping, Long>, JpaRepository<TSLMapping, Long> {
+public interface TslMappingRepository extends PagingAndSortingRepository<TslMapping, Long>, JpaRepository<TslMapping, Long> {
 	
 }

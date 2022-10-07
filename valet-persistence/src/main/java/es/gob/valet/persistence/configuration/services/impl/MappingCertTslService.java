@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.3, 04/10/2022.
+ * @version 1.4, 07/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -37,23 +37,25 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
-import es.gob.valet.persistence.configuration.model.dto.TSLServiceDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
+import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
-import es.gob.valet.persistence.configuration.model.entity.TSLService;
-import es.gob.valet.persistence.configuration.model.repository.TSLServiceRepository;
+import es.gob.valet.persistence.configuration.model.entity.TslMapping;
+import es.gob.valet.persistence.configuration.model.entity.TslService;
+import es.gob.valet.persistence.configuration.model.repository.LogicalFieldRepository;
+import es.gob.valet.persistence.configuration.model.repository.TslMappingRepository;
+import es.gob.valet.persistence.configuration.model.repository.TslServiceRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
 
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Mapping Certificate TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 04/10/2022.
+ * @version 1.4, 07/10/2022.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -63,7 +65,19 @@ public class MappingCertTslService implements IMappingCertTslService {
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
 	 */
 	@Autowired
-	TSLServiceRepository tslServiceRepository;
+	TslServiceRepository tslServiceRepository;
+	
+	/**
+	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
+	 */
+	@Autowired
+	LogicalFieldRepository logicalFieldRepository;
+	
+	/**
+	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
+	 */
+	@Autowired
+	TslMappingRepository tslMappingRepository;
 	
 	/**
 	 * 
@@ -195,72 +209,79 @@ public class MappingCertTslService implements IMappingCertTslService {
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#createDatatableMappingCertTsls(java.lang.Long)
-	 */
-	@Override
-	public DataTablesOutput<MappingCertTslsDTO> createDatatableMappingCertTsls(Long idMappingCertTsl) {
-		DataTablesOutput<MappingCertTslsDTO> dataTablesOutput = new DataTablesOutput<MappingCertTslsDTO>();
-		
-		List<MappingCertTslsDTO> listMappingCertTslsDTO = new ArrayList<MappingCertTslsDTO>();
-		
-		MappingCertTslsDTO mappingCertTslsDTO1 = new MappingCertTslsDTO();
-		mappingCertTslsDTO1.setName("Nombre");
-		mappingCertTslsDTO1.setIdMappingCertTsl(1L);
-		
-		MappingCertTslsDTO mappingCertTslsDTO2 = new MappingCertTslsDTO();
-		mappingCertTslsDTO2.setName("Apellidos");
-		mappingCertTslsDTO2.setIdMappingCertTsl(2L);
-		
-		listMappingCertTslsDTO.add(mappingCertTslsDTO1);
-		listMappingCertTslsDTO.add(mappingCertTslsDTO2);
-		
-		dataTablesOutput.setData(listMappingCertTslsDTO);
-		
-		return dataTablesOutput;
-	}
-	
-	/**
-	 * 
-	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#saveOrUpdateTslService
 	 */
-	public TSLService saveOrUpdateTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO,
+	public TslService saveOrUpdateTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO,
 			String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree,
 			byte[] fileCertificateTsl)
 			throws ParseException {
 		
 		// Buscamos el tsp service name seleccionado por el usuario en el arbol 
-		TSLService tslServiceFound = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
+		TslService tslServiceFound = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
 		
 		// Si no se ha encontrado creamos un tsp service name nuevo.
 		if(null == tslServiceFound) {
-			List<TslMappingDTO> listTslMappingDTO = mapTslMappingDTO.get(countrySelectTree.toString());
-			TslMappingDTO tlsMappingDTOFound = listTslMappingDTO.stream().filter(tslMappingDTO -> tslMappingDTO.getTspName().equals(tspNameSelectTree.toString()) && tslMappingDTO.getTspServiceName().equals(tspServiceNameSelectTree.toString())).findAny().orElse(null);
-			TSLService tlsServiceNew = new TSLService();
-			tlsServiceNew.setCertificate(fileCertificateTsl);
-			tlsServiceNew.setCountry(tlsMappingDTOFound.getCodeCountry());
-			tlsServiceNew.setDigitalIdentityCad(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(tlsMappingDTOFound.getExpirationDate()));
-			tlsServiceNew.setDigitalIdentityId(tlsMappingDTOFound.getDigitalIdentity());
-			tlsServiceNew.setTslVersion(Long.parseLong(tlsMappingDTOFound.getVersion()));
-			tlsServiceNew.setTspName(tlsMappingDTOFound.getTspServiceName());
-			tlsServiceNew.setTspServiceName(tlsMappingDTOFound.getTspServiceName());
+			TslService tlsServiceNew = createTspServiceNew(mapTslMappingDTO, tspServiceNameSelectTree,
+					tspNameSelectTree, countrySelectTree, fileCertificateTsl);
 			
 			return tslServiceRepository.save(tlsServiceNew);
 		// Si existe se modifica su certificado por el nuevo introducido
 		} else {
 			tslServiceFound.setCertificate(fileCertificateTsl);
-			
 			return tslServiceRepository.save(tslServiceFound);
 		}
+	}
+
+	/**
+	 * Method that create a new tsp service.
+	 * 
+	 * @param mapTslMappingDTO parameter that contain tree of the mappings certificate tsl.
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param tspNameSelectTree parameter that contain of tsp name select for the user.
+	 * @param countrySelectTree parameter that contain of country select for the user.
+	 * @param fileCertificateTsl parameter that contain certificate select for the user.
+	 * @return a new tsp service.
+	 * @throws ParseException If the method fails.
+	 */
+	private TslService createTspServiceNew(Map<String, List<TslMappingDTO>> mapTslMappingDTO,
+			String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree,
+			byte[] fileCertificateTsl) throws ParseException {
+		List<TslMappingDTO> listTslMappingDTO = mapTslMappingDTO.get(countrySelectTree.toString());
+		TslMappingDTO tlsMappingDTOFound = listTslMappingDTO.stream().filter(tslMappingDTO -> tslMappingDTO.getTspName().equals(tspNameSelectTree.toString()) && tslMappingDTO.getTspServiceName().equals(tspServiceNameSelectTree.toString())).findAny().orElse(null);
+		TslService tlsServiceNew = new TslService();
+		tlsServiceNew.setCertificate(fileCertificateTsl);
+		tlsServiceNew.setCountry(tlsMappingDTOFound.getCodeCountry());
+		tlsServiceNew.setDigitalIdentityCad(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(tlsMappingDTOFound.getExpirationDate()));
+		tlsServiceNew.setDigitalIdentityId(tlsMappingDTOFound.getDigitalIdentity());
+		tlsServiceNew.setTslVersion(Long.parseLong(tlsMappingDTOFound.getVersion()));
+		tlsServiceNew.setTspName(tlsMappingDTOFound.getTspServiceName());
+		tlsServiceNew.setTspServiceName(tlsMappingDTOFound.getTspServiceName());
+		return tlsServiceNew;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#obtainTspServiceNameSelectTree
 	 */
-	public TSLServiceDTO obtainTspServiceNameSelectTree(String tspServiceNameSelectTree) throws CommonUtilsException {
-		TSLService tslService = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
-		TSLServiceDTO tslServiceDTO = new TSLServiceDTO(tslService);
+	public TslServiceDTO obtainTspServiceNameSelectTree(String tspServiceNameSelectTree) throws CommonUtilsException {
+		TslService tslService = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
+		TslServiceDTO tslServiceDTO = new TslServiceDTO(tslService);
 		return tslServiceDTO;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#saveMappingLogicField
+	 */
+	public void saveMappingLogicField(Map<String, List<TslMappingDTO>> mapTslMappingDTO, MappingTslDTO mappingTslDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree) throws ParseException {
+		TslMapping tslMapping = null;
+		if(null == mappingTslDTO.getTslServiceDTO().getIdTslService()) {
+			tslMapping =  new TslMapping(new TslServiceDTO(), mappingTslDTO.getLogicalFieldDTO(), mappingTslDTO.getcAssociationTypeDTO());
+			tslMapping.setTslService(tslServiceRepository.save(this.createTspServiceNew(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, null)));
+		} else {
+			tslMapping =  new TslMapping(mappingTslDTO.getTslServiceDTO(), mappingTslDTO.getLogicalFieldDTO(), mappingTslDTO.getcAssociationTypeDTO());
+		}
+		logicalFieldRepository.save(tslMapping.getLogicalField());
+		tslMappingRepository.save(tslMapping);
 	}
 }

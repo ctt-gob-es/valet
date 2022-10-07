@@ -1,4 +1,4 @@
-/*
+/* 
 /*******************************************************************************
  * Copyright (C) 2018 MINHAFP, Gobierno de España
  * This program is licensed and may be used, modified and redistributed under the  terms
@@ -14,45 +14,32 @@
  * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
  ******************************************************************************/
 
-/**
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.entity.CAssociationType.java.</p>
- * <b>Description:</b><p>Class that represents the representation of the <i>C_ASSOCIATION_TYPE</i> database table as a Plain Old Java Object.</p>
+/** 
+ * <b>File:</b><p>es.gob.valet.dto.CAssociationTypeDTO.java.</p>
+ * <b>Description:</b><p>Class that represents an object that relates the code of a to the Association Type DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>22/10/2018.</p>
+ * <b>Date:</b><p>07/10/2022.</p>
  * @author Gobierno de España.
- * @version 1.2, 07/10/2022.
+ * @version 1.0, 07/10/2022.
  */
-package es.gob.valet.persistence.configuration.model.entity;
+package es.gob.valet.persistence.configuration.model.dto;
 
 import java.io.Serializable;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
+import es.gob.valet.persistence.utils.ConstantsUtils;
 
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-
-import com.fasterxml.jackson.annotation.JsonView;
-
-import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.persistence.configuration.model.dto.CAssociationTypeDTO;
-
-/**
- * <p>Class that represents the representation of the <i>C_ASSOCIATION_TYPE</i> database table as a Plain Old Java Object.</p>
+/** 
+ * <p>Class that represents an object that relates the code of a to the Association Type DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 07/10/2022.
+ * @version 1.0, 07/10/2022.
  */
-@Cacheable
-@Entity
-@Table(name = "C_ASSOCIATION_TYPE")
-public class CAssociationType implements Serializable {
+public class CAssociationTypeDTO implements Serializable {
 
 	/**
 	 * Constant attribute that represents the serial versio UID.
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -2980946641002079483L;
 
 	/**
 	 * Attribute that represents the object ID.
@@ -60,72 +47,56 @@ public class CAssociationType implements Serializable {
 	private Long idAssociationType;
 
 	/**
-	 * Attribute that represents the name of the token with the description stored in properties file for internationalization.
+	 * Attribute that represents the name of the token with the description
+	 * stored in properties file for internationalization.
 	 */
 	private String tokenName;
 
 	/**
 	 * Constructor method for the class CAssociationType.java.
 	 */
-	public CAssociationType() {}
+	public CAssociationTypeDTO(){}
 	
 	/**
-	 * Constructor method for the class CAssociationType.java.
+	 * Constructor method for the class CAssociationTypeDTO.java.
 	 * 
-	 * @param cAssociationTypeDTO parameter that contain cAssociationType DTO. 
+	 * @param cAssociationType parameter that contain entity for cAssociationType.
 	 */
-	public CAssociationType(CAssociationTypeDTO cAssociationTypeDTO) {
-		this.idAssociationType = cAssociationTypeDTO.getIdAssociationType();
-		this.tokenName = cAssociationTypeDTO.getTokenName();
+	public CAssociationTypeDTO(CAssociationType cAssociationType) {
+		this.idAssociationType = cAssociationType.getIdAssociationType();
+		this.tokenName = ConstantsUtils.getConstantsValue(cAssociationType.getTokenName());
 	}
-
+	
 	/**
 	 * Gets the value of the attribute {@link #idAssociationType}.
 	 * @return the value of the attribute {@link #idAssociationType}.
 	 */
-	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
-	// because Hibernate JPA needs not final access methods.
-	@Id
-	@Column(name = "ID_ASSOCIATION_TYPE", unique = true, nullable = false, precision = NumberConstants.NUM19)
-	@JsonView(DataTablesOutput.View.class)
 	public Long getIdAssociationType() {
-		// CHECKSTYLE:ON
 		return idAssociationType;
 	}
 
 	/**
 	 * Sets the value of the attribute {@link #idAssociationType}.
-	 * @param idAssociationTypeParam The value for the attribute {@link #idAssociationType}.
+	 * @param idAssociationType The value for the attribute {@link #idAssociationType}.
 	 */
-	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
-	// because Hibernate JPA needs not final access methods.
-	public void setIdAssociationType(Long idAssociationTypeParam) {
-		// CHECKSTYLE:ON
-		this.idAssociationType = idAssociationTypeParam;
+	public void setIdAssociationType(Long idAssociationType) {
+		this.idAssociationType = idAssociationType;
 	}
 
 	/**
 	 * Gets the value of the attribute {@link #tokenName}.
 	 * @return the value of the attribute {@link #tokenName}.
 	 */
-	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
-	// because Hibernate JPA needs not final access methods.
-	@Column(name = "TOKEN_NAME", nullable = false, length = NumberConstants.NUM30)
-	@JsonView(DataTablesOutput.View.class)
 	public String getTokenName() {
-		// CHECKSTYLE:ON
 		return tokenName;
 	}
 
 	/**
 	 * Sets the value of the attribute {@link #tokenName}.
-	 * @param tokenNameParam The value for the attribute {@link #tokenName}.
+	 * @param tokenName The value for the attribute {@link #tokenName}.
 	 */
-	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
-	// because Hibernate JPA needs not final access methods.
-	public void setTokenName(String tokenNameParam) {
-		// CHECKSTYLE:ON
-		this.tokenName = tokenNameParam;
+	public void setTokenName(String tokenName) {
+		this.tokenName = tokenName;
 	}
 
 	/**
@@ -153,7 +124,7 @@ public class CAssociationType implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CAssociationType other = (CAssociationType) obj;
+		CAssociationTypeDTO other = (CAssociationTypeDTO) obj;
 		if (idAssociationType == null) {
 			if (other.idAssociationType != null)
 				return false;
@@ -167,5 +138,4 @@ public class CAssociationType implements Serializable {
 		return true;
 	}
 
-	
 }

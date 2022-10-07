@@ -15,12 +15,12 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.TSLServiceRepository.java.</p>
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.repository.TslServiceRepository.java.</p>
  * <b>Description:</b><p> Interface that provides CRUD functionality for the ApplicationValet entity..</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>28/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 30/09/2022.
+ * @version 1.2, 07/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -30,16 +30,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import es.gob.valet.persistence.configuration.model.entity.TSLService;
+import es.gob.valet.persistence.configuration.model.entity.TslService;
 
 /**
  * <p>Interface that provides CRUD functionality for the ApplicationValet entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 30/09/2022.
+ * @version 1.2, 07/10/2022.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public interface TSLServiceRepository extends PagingAndSortingRepository<TSLService, Long>, JpaRepository<TSLService, Long> {
+public interface TslServiceRepository extends PagingAndSortingRepository<TslService, Long>, JpaRepository<TslService, Long> {
 	
 	/**
 	 * Method that obtains from the persistence an application identified by its primary key.
@@ -47,7 +47,7 @@ public interface TSLServiceRepository extends PagingAndSortingRepository<TSLServ
 	 * @param id Long that represents the primary key of the application in the persistence.
 	 * @return Object that represents an application from the persistence.
 	 */
-	TSLService findByIdTslService(Long idTslService);
+	TslService findByIdTslService(Long idTslService);
 
 	/**
 	 * Method that obtains from the persistence an application identified by its tsp service name.
@@ -55,5 +55,5 @@ public interface TSLServiceRepository extends PagingAndSortingRepository<TSLServ
 	 * @param tspServiceName that represents the tsp service name of the application in the persistence.
 	 * @return Object that represents an application from the persistence.
 	 */
-	TSLService findByTspServiceName(String tspServiceName);
+	TslService findByTspServiceName(String tspServiceName);
 }
