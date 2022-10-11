@@ -44,6 +44,7 @@ var tspServiceName;
 var tspName;
 var country;
 var tslServiceDTO;
+var idTslMappingDelete;
 
 $(document).ready(function() {
 	loadingTreeMappingCertTsls(undefined);
@@ -112,28 +113,28 @@ function obtainTspServiceNameSelectTree(tspServiceName) {
 		success: function(xhr) {
 			tslServiceDTO = JSON.parse(xhr);
 			// No tiene ningún campo lógico ni ningún certificado asignado. 1, 2 y 5 Habilitados.
-			if(null == tslServiceDTO.listLogicalFieldDTO && null == tslServiceDTO.certificate) {
+			if(null == tslServiceDTO.listMappingTslDTO && null == tslServiceDTO.certificate) {
 				$("#idbtnAddLogicField").prop("disabled", false);
 				$("#idBtnUpdateCert").prop("disabled", false);
 				$("#idbtnViewCert").prop("disabled", true);
 				$("#idBtnExport").prop("disabled", true);
 				$("#idBtnImport").prop("disabled", false);
 			// No tiene ningún campo lógico pero tiene un certificado asignado. 1, 2, 3 y 5 Habilitados.
-			} else if (null == tslServiceDTO.listLogicalFieldDTO && null != tslServiceDTO.certificate) {
+			} else if (null == tslServiceDTO.listMappingTslDTO && null != tslServiceDTO.certificate) {
 				$("#idbtnAddLogicField").prop("disabled", false);
 				$("#idBtnUpdateCert").prop("disabled", false);
 				$("#idbtnViewCert").prop("disabled", false);
 				$("#idBtnExport").prop("disabled",true);
 				$("#idBtnImport").prop("disabled", false);
 			// Tiene campos lógico pero no certificado. 1, 2, 4 y 5 Habilitados.
-			} else if (null != tslServiceDTO.listLogicalFieldDTO && null == tslServiceDTO.certificate) {
+			} else if (null != tslServiceDTO.listMappingTslDTO && null == tslServiceDTO.certificate) {
 				$("#idbtnAddLogicField").prop("disabled", false);
 				$("#idBtnUpdateCert").prop("disabled", false);
 				$("#idbtnViewCert").prop("disabled", true);
 				$("#idBtnExport").prop("disabled", false);
 				$("#idBtnImport").prop("disabled", false);
 			// Tiene campos lógico y certificado. Todos Habilitados.
-			} else if (null != tslServiceDTO.listLogicalFieldDTO && null != tslServiceDTO.certificate) {
+			} else if (null != tslServiceDTO.listMappingTslDTO && null != tslServiceDTO.certificate) {
 				$("#idbtnAddLogicField").prop("disabled", false);
 				$("#idBtnUpdateCert").prop("disabled", false);
 				$("#idbtnViewCert").prop("disabled", false);
@@ -211,7 +212,7 @@ function loadingDatatableMappingCertTsls() {
 							
 					} else {
 						var editIcon = '<div class="text-center"><a onclick=editMapping('+data+'); alt='+btnEditMapping+' title='+btnEditMapping+'>	<span class="c-green-500 ti-pencil-alt icon-tb"></span></a>';
-				    	var deleteIcon = '<a onclick=deleteMapping('+data+'"); alt='+btnDeleteMapping+' title='+btnDeleteMapping+'>	<span class="c-red-500 ti-trash icon-tb"></span></a></div>';
+				    	var deleteIcon = '<a onclick=deleteMapping("'+data+'"); alt='+btnDeleteMapping+' title='+btnDeleteMapping+'>	<span class="c-red-500 ti-trash icon-tb"></span></a></div>';
 				    		
 				    	editIcon += deleteIcon;
 							  
@@ -316,11 +317,11 @@ function loadingDatatableMappingCertTsls() {
 // Función para añadir filas a la instancia de datatable definida previamente
 function addRowsMappingCertTslsTable() {
 	mappingCertTslTable.clear().draw();
-	if(undefined != tslServiceDTO && null != tslServiceDTO.listLogicalFieldDTO) {
-		tslServiceDTO.listLogicalFieldDTO.forEach(reg => {
-			var identificator = reg.identificator;
-			var idTslService = tslServiceDTO.idTslService;
-			mappingCertTslTable.row.add([identificator, idTslService]).draw(false);
+	if(undefined != tslServiceDTO && null != tslServiceDTO.listMappingTslDTO) {
+		tslServiceDTO.listMappingTslDTO.forEach(reg => {
+			var idTslMapping = reg.idTslMapping;
+			var logicalFieldId = reg.logicalFieldId;
+			mappingCertTslTable.row.add([logicalFieldId, idTslMapping]).draw(false);
 		});	
 	}
 }
@@ -366,4 +367,40 @@ $("#search").on("keyup", function () {
 		}); 
     }    
 });
+
+// Función para editar los mappings
+function editMapping(idTslMapping) {
+	var viewEditMapping = /*[[@{/mappingCertTsl/viewEditMapping}]]*/;
+	loading();
+	$.ajax({
+		url: viewEditMapping,
+		type: 'POST',
+		cache: false,
+		data: $.param({'idTslMapping': idTslMapping}),
+		success: function(xhr) {
+			hide();
+			$('#modal').html(xhr);
+			$('#modalAddMappingLogicalFieldForm').modal('show');				
+		}
+	});
+}
+
+//Función para eliminar los mappings
+function deleteMapping(idTslMapping) {
+	var viewDeleteMapping = /*[[@{/mappingCertTsl/viewDeleteMapping}]]*/;
+	idTslMappingDelete = idTslMapping;
+	loading();
+	$.ajax({
+		url: viewDeleteMapping,
+		type: 'POST',
+		cache: false,
+		data: $.param({'idTslMapping': idTslMapping}),
+		success: function(xhr) {
+			hide();
+			$('#modal').html(xhr);
+			$('#modalDeleteMappingLogicalFieldForm').modal('show');				
+		}
+	});
+}
+
 </script>

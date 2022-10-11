@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.4, 07/10/2022.
+ * @version 1.5, 11/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -41,12 +41,12 @@ import org.springframework.stereotype.Service;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
 import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
+import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.TslMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslService;
-import es.gob.valet.persistence.configuration.model.repository.LogicalFieldRepository;
 import es.gob.valet.persistence.configuration.model.repository.TslMappingRepository;
 import es.gob.valet.persistence.configuration.model.repository.TslServiceRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService;
@@ -55,7 +55,7 @@ import es.gob.valet.persistence.utils.BootstrapTreeNode;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Mapping Certificate TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 07/10/2022.
+ * @version 1.5, 11/10/2022.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -66,12 +66,6 @@ public class MappingCertTslService implements IMappingCertTslService {
 	 */
 	@Autowired
 	TslServiceRepository tslServiceRepository;
-	
-	/**
-	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
-	 */
-	@Autowired
-	LogicalFieldRepository logicalFieldRepository;
 	
 	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
@@ -273,15 +267,59 @@ public class MappingCertTslService implements IMappingCertTslService {
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#saveMappingLogicField
 	 */
-	public void saveMappingLogicField(Map<String, List<TslMappingDTO>> mapTslMappingDTO, MappingTslDTO mappingTslDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree) throws ParseException {
+	public void addMappingLogicField(Map<String, List<TslMappingDTO>> mapTslMappingDTO, MappingTslDTO mappingTslDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree) throws ParseException {
 		TslMapping tslMapping = null;
+		// Si el tsl service no existe lo creamos por primera vez
 		if(null == mappingTslDTO.getTslServiceDTO().getIdTslService()) {
-			tslMapping =  new TslMapping(new TslServiceDTO(), mappingTslDTO.getLogicalFieldDTO(), mappingTslDTO.getcAssociationTypeDTO());
+			tslMapping =  new TslMapping();
 			tslMapping.setTslService(tslServiceRepository.save(this.createTspServiceNew(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, null)));
+			tslMapping.setcAssociationType(new CAssociationType(mappingTslDTO.getcAssociationTypeDTO()));
+			tslMapping.setLogicalFieldId(mappingTslDTO.getLogicalFieldId());
+			tslMapping.setLogicalFieldValue(mappingTslDTO.getLogicalFieldValue());
 		} else {
-			tslMapping =  new TslMapping(mappingTslDTO.getTslServiceDTO(), mappingTslDTO.getLogicalFieldDTO(), mappingTslDTO.getcAssociationTypeDTO());
+			tslMapping =  new TslMapping(mappingTslDTO);
 		}
-		logicalFieldRepository.save(tslMapping.getLogicalField());
+		// Se almacena el mapping
 		tslMappingRepository.save(tslMapping);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#obtainMappingLogicalField
+	 */
+	public MappingTslDTO obtainMappingLogicalField(Long idTslMapping) throws CommonUtilsException {
+		TslMapping tslMapping = tslMappingRepository.findByIdTslMapping(idTslMapping);
+		MappingTslDTO mappingTslDTO = new MappingTslDTO(tslMapping);
+		return mappingTslDTO;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#mergeMappingLogicField
+	 */
+	public void mergeMappingLogicField(MappingTslDTO mappingTslDTO) {
+		TslMapping tslMapping = new TslMapping(mappingTslDTO);
+		tslMappingRepository.save(tslMapping);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#existsTspServiceNameAndIdentificator
+	 */
+	public boolean existsTspServiceNameAndIdentificator(String tspServiceName, String logicalFieldId) {
+		TslService tslService = tslServiceRepository.findByTspServiceNameAndLogicFieldId(tspServiceName, logicalFieldId);
+		if(null != tslService) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#deleteMappingLogicalField
+	 */
+	public void deleteMappingLogicalField(Long idTslMappingDelete) {
+		tslMappingRepository.deleteById(idTslMappingDelete);
 	}
 }

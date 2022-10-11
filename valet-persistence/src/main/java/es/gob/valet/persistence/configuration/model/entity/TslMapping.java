@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 07/10/2022.
+ * @version 1.2, 11/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -39,14 +39,12 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.persistence.configuration.model.dto.CAssociationTypeDTO;
-import es.gob.valet.persistence.configuration.model.dto.LogicalFieldDTO;
-import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
+import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 
 /**
  * <p>Class that maps the <i>TSL_MAPPING</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.1, 07/10/2022.
+ *  @version 1.2, 11/10/2022.
  */
 @Entity
 @Table(name = "TSL_MAPPING")
@@ -60,12 +58,7 @@ public class TslMapping implements Serializable {
 	/**
 	 * Attribute that represents constant to id service.
 	 */
-	private static final String ID_SERVICE = "ID_SERVICE";
-
-	/**
-	 * Attribute that represents constant to id logical field.
-	 */
-	private static final String ID_LOGICAL_FIELD = "ID_LOGICAL_FIELD";
+	private static final String ID_TSL_SERVICE = "ID_TSL_SERVICE";
 
 	/**
 	 * Attribute that represents constant to id association type.
@@ -85,22 +78,27 @@ public class TslMapping implements Serializable {
 	 * Attribute that represents the entity to tsl service.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = ID_SERVICE, nullable = false)
+	@JoinColumn(name = ID_TSL_SERVICE, nullable = false)
 	private TslService tslService;
 
-	/**
-	 * Attribute that represents the entity to logical field.
-	 */
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = ID_LOGICAL_FIELD, nullable = false)
-	private LogicalField logicalField;
-	
 	/**
 	 * Attribute that represents the entity to associatiion type.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = ID_ASSOCIATION_TYPE, nullable = false)
 	private CAssociationType cAssociationType;
+	
+	/**
+	 * Attribute that represents the description of the identificator.
+	 */
+	@Column(name = "LOGICAL_FIELD_ID", nullable = false, length = NumberConstants.NUM256)
+	private String logicalFieldId;
+	
+	/**
+	 * Attribute that represents the value of the logical field.
+	 */
+	@Column(name = "LOGICAL_FIELD_VALUE", nullable = false, length = NumberConstants.NUM256)
+	private String logicalFieldValue;
 
 	/**
 	 * Constructor method for the class LogicalField.java.
@@ -110,14 +108,14 @@ public class TslMapping implements Serializable {
 	/**
 	 * Constructor method for the class LogicalField.java.
 	 * 
-	 * @param tslServiceDTO parameter that contain tsl service DTO to transform a entity.
-	 * @param logicalFieldDTO parameter that contain logical field DTO to transform a entity.
-	 * @param cAssociationTypeDTO parameter that contain association type DTO to transform a entity.
+	 * @param mappingTslDTO parameter that contain mapping tsl DTO to transform a entity.
 	 */
-	public TslMapping(TslServiceDTO tslServiceDTO, LogicalFieldDTO logicalFieldDTO, CAssociationTypeDTO cAssociationTypeDTO) {
-		this.logicalField = new LogicalField(logicalFieldDTO);
-		this.cAssociationType = new CAssociationType(cAssociationTypeDTO);
-		this.tslService = new TslService(tslServiceDTO);
+	public TslMapping(MappingTslDTO mappingTslDTO) {
+		this.idTslMapping = mappingTslDTO.getIdTslMapping();
+		this.tslService = new TslService(mappingTslDTO.getTslServiceDTO());
+		this.cAssociationType = new CAssociationType(mappingTslDTO.getcAssociationTypeDTO());
+		this.logicalFieldId = mappingTslDTO.getLogicalFieldId();
+		this.logicalFieldValue = mappingTslDTO.getLogicalFieldValue();
 	}
 
 	/**
@@ -153,22 +151,6 @@ public class TslMapping implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #logicalField}.
-	 * @return the value of the attribute {@link #logicalField}.
-	 */
-	public LogicalField getLogicalField() {
-		return logicalField;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #logicalField}.
-	 * @param logicalField The value for the attribute {@link #logicalField}.
-	 */
-	public void setLogicalField(LogicalField logicalField) {
-		this.logicalField = logicalField;
-	}
-
-	/**
 	 * Gets the value of the attribute {@link #cAssociationType}.
 	 * @return the value of the attribute {@link #cAssociationType}.
 	 */
@@ -183,7 +165,40 @@ public class TslMapping implements Serializable {
 	public void setcAssociationType(CAssociationType cAssociationType) {
 		this.cAssociationType = cAssociationType;
 	}
+	
+	/**
+	 * Gets the value of the attribute {@link #logicalFieldId}.
+	 * @return the value of the attribute {@link #logicalFieldId}.
+	 */
+	public String getLogicalFieldId() {
+		return logicalFieldId;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #logicalFieldId}.
+	 * @param logicalFieldId The value for the attribute {@link #logicalFieldId}.
+	 */
+	public void setLogicalFieldId(String logicalFieldId) {
+		this.logicalFieldId = logicalFieldId;
+	}
 
+	/**
+	 * Gets the value of the attribute {@link #logicalFieldValue}.
+	 * @return the value of the attribute {@link #logicalFieldValue}.
+	 */
+	public String getLogicalFieldValue() {
+		return logicalFieldValue;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #logicalFieldValue}.
+	 * @param logicalFieldValue The value for the attribute {@link #logicalFieldValue}.
+	 */
+	public void setLogicalFieldValue(String logicalFieldValue) {
+		this.logicalFieldValue = logicalFieldValue;
+	}
+
+	
 	/**
 	 * {@inheritDoc}
 	 * @see java.lang.Object#hashCode()
@@ -194,7 +209,8 @@ public class TslMapping implements Serializable {
 		int result = 1;
 		result = prime * result + ((cAssociationType == null) ? 0 : cAssociationType.hashCode());
 		result = prime * result + ((idTslMapping == null) ? 0 : idTslMapping.hashCode());
-		result = prime * result + ((logicalField == null) ? 0 : logicalField.hashCode());
+		result = prime * result + ((logicalFieldId == null) ? 0 : logicalFieldId.hashCode());
+		result = prime * result + ((logicalFieldValue == null) ? 0 : logicalFieldValue.hashCode());
 		result = prime * result + ((tslService == null) ? 0 : tslService.hashCode());
 		return result;
 	}
@@ -222,10 +238,15 @@ public class TslMapping implements Serializable {
 				return false;
 		} else if (!idTslMapping.equals(other.idTslMapping))
 			return false;
-		if (logicalField == null) {
-			if (other.logicalField != null)
+		if (logicalFieldId == null) {
+			if (other.logicalFieldId != null)
 				return false;
-		} else if (!logicalField.equals(other.logicalField))
+		} else if (!logicalFieldId.equals(other.logicalFieldId))
+			return false;
+		if (logicalFieldValue == null) {
+			if (other.logicalFieldValue != null)
+				return false;
+		} else if (!logicalFieldValue.equals(other.logicalFieldValue))
 			return false;
 		if (tslService == null) {
 			if (other.tslService != null)

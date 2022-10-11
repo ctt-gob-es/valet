@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 07/10/2022.
+ * @version 1.1, 11/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -39,10 +39,18 @@ import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.persistence.configuration.model.entity.TslMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslService;
 
-/** 
- * <p>Class that represents the information needed to generate the tree of the TSL Service DTO module.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 07/10/2022.
+/**
+ * <p>
+ * Class that represents the information needed to generate the tree of the TSL
+ * Service DTO module.
+ * </p>
+ * <b>Project:</b>
+ * <p>
+ * Platform for detection and validation of certificates recognized in European
+ * TSL.
+ * </p>
+ * 
+ * @version 1.1, 11/10/2022.
  */
 public class TslServiceDTO implements Serializable {
 
@@ -82,7 +90,8 @@ public class TslServiceDTO implements Serializable {
 	private String digitalIdentityId;
 
 	/**
-	 * Attribute that represents the description of the digital identity caduced.
+	 * Attribute that represents the description of the digital identity
+	 * caduced.
 	 */
 	private Date digitalIdentityCad;
 
@@ -113,15 +122,17 @@ public class TslServiceDTO implements Serializable {
 	private String notAfter;
 
 	/**
-	 * Attribute that represents the logical fiels that have associate this tsl service.
+	 * Attribute that represents the logical fiels that have associate this tsl
+	 * service.
 	 */
-	private List<LogicalFieldDTO> listLogicalFieldDTO;
-	
+	private List<MappingTslDTO> listMappingTslDTO;
+
 	/**
 	 * Constructor method for the class TslServiceDTO.java.
 	 */
-	public TslServiceDTO(){}
-	
+	public TslServiceDTO() {
+	}
+
 	/**
 	 * Constructor method for the class TSLServiceDTO.java.
 	 * 
@@ -129,7 +140,7 @@ public class TslServiceDTO implements Serializable {
 	 * @throws CommonUtilsException If the method fails.
 	 */
 	public TslServiceDTO(TslService tslService) throws CommonUtilsException {
-		if(null != tslService) {
+		if (null != tslService) {
 			this.country = tslService.getCountry();
 			this.digitalIdentityCad = tslService.getDigitalIdentityCad();
 			this.digitalIdentityId = tslService.getDigitalIdentityId();
@@ -137,20 +148,23 @@ public class TslServiceDTO implements Serializable {
 			this.tslVersion = tslService.getTslVersion();
 			this.tspName = tslService.getTspName();
 			this.tspServiceName = tslService.getTspServiceName();
-			if(null != tslService.getCertificate()) {
-				this.certificate = tslService.getCertificate(); 
+			if (null != tslService.getCertificate()) {
+				this.certificate = tslService.getCertificate();
 				X509Certificate x509Certificate = UtilsCertificate.getX509Certificate(tslService.getCertificate());
 				this.issuerDN = x509Certificate.getIssuerDN().toString();
 				this.subjectDN = x509Certificate.getSubjectDN().toString();
-				this.notBefore = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, x509Certificate.getNotBefore()); 
+				this.notBefore = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, x509Certificate.getNotBefore());
 				this.notAfter = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, x509Certificate.getNotAfter());
 			}
 			List<TslMapping> listTslMapping = tslService.getTslMapping();
-			if(null != listTslMapping && !listTslMapping.isEmpty()) {
-				this.listLogicalFieldDTO = new ArrayList<LogicalFieldDTO>();
+			if (null != listTslMapping && !listTslMapping.isEmpty()) {
+				this.listMappingTslDTO = new ArrayList<MappingTslDTO>();
 				for (TslMapping tslMapping : listTslMapping) {
-					LogicalFieldDTO logicalFieldDTO = new LogicalFieldDTO(tslMapping.getLogicalField());
-					listLogicalFieldDTO.add(logicalFieldDTO);
+					MappingTslDTO mappingTslDTO = new MappingTslDTO();
+					mappingTslDTO.setIdTslMapping(tslMapping.getIdTslMapping());
+					mappingTslDTO.setLogicalFieldId(tslMapping.getLogicalFieldId());
+					mappingTslDTO.setLogicalFieldValue(tslMapping.getLogicalFieldValue());
+					listMappingTslDTO.add(mappingTslDTO);
 				}
 			}
 		}
@@ -283,7 +297,7 @@ public class TslServiceDTO implements Serializable {
 	public void setCertificate(byte[] certificate) {
 		this.certificate = certificate;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #issuerDN}.
 	 * @return the value of the attribute {@link #issuerDN}.
@@ -349,19 +363,19 @@ public class TslServiceDTO implements Serializable {
 	}
 	
 	/**
-	 * Gets the value of the attribute {@link #listLogicalFieldDTO}.
-	 * @return the value of the attribute {@link #listLogicalFieldDTO}.
+	 * Gets the value of the attribute {@link #listMappingTslDTO}.
+	 * @return the value of the attribute {@link #listMappingTslDTO}.
 	 */
-	public List<LogicalFieldDTO> getListLogicalFieldDTO() {
-		return listLogicalFieldDTO;
+	public List<MappingTslDTO> getListMappingTslDTO() {
+		return listMappingTslDTO;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #listLogicalFieldDTO}.
-	 * @param listLogicalFieldDTO The value for the attribute {@link #listLogicalFieldDTO}.
+	 * Sets the value of the attribute {@link #listMappingTslDTO}.
+	 * @param listMappingTslDTO The value for the attribute {@link #listMappingTslDTO}.
 	 */
-	public void setListLogicalFieldDTO(List<LogicalFieldDTO> listLogicalFieldDTO) {
-		this.listLogicalFieldDTO = listLogicalFieldDTO;
+	public void setListMappingTslDTO(List<MappingTslDTO> listMappingTslDTO) {
+		this.listMappingTslDTO = listMappingTslDTO;
 	}
 
 	/**
@@ -378,7 +392,7 @@ public class TslServiceDTO implements Serializable {
 		result = prime * result + ((digitalIdentityId == null) ? 0 : digitalIdentityId.hashCode());
 		result = prime * result + ((idTslService == null) ? 0 : idTslService.hashCode());
 		result = prime * result + ((issuerDN == null) ? 0 : issuerDN.hashCode());
-		result = prime * result + ((listLogicalFieldDTO == null) ? 0 : listLogicalFieldDTO.hashCode());
+		result = prime * result + ((listMappingTslDTO == null) ? 0 : listMappingTslDTO.hashCode());
 		result = prime * result + ((notAfter == null) ? 0 : notAfter.hashCode());
 		result = prime * result + ((notBefore == null) ? 0 : notBefore.hashCode());
 		result = prime * result + ((subjectDN == null) ? 0 : subjectDN.hashCode());
@@ -428,10 +442,10 @@ public class TslServiceDTO implements Serializable {
 				return false;
 		} else if (!issuerDN.equals(other.issuerDN))
 			return false;
-		if (listLogicalFieldDTO == null) {
-			if (other.listLogicalFieldDTO != null)
+		if (listMappingTslDTO == null) {
+			if (other.listMappingTslDTO != null)
 				return false;
-		} else if (!listLogicalFieldDTO.equals(other.listLogicalFieldDTO))
+		} else if (!listMappingTslDTO.equals(other.listMappingTslDTO))
 			return false;
 		if (notAfter == null) {
 			if (other.notAfter != null)

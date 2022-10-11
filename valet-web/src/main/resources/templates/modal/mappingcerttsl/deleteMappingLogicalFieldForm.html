@@ -1,0 +1,43 @@
+<!-- Modal para eliminar un mapeo -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalDeleteMappingLogicalFieldForm" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.app.mappingcerttsl.deleteMappingLogicalField.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.app.btn.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="modal-pre">
+					<form name="idDeleteMappingLogicalFieldForm" role="form" id="idDeleteMappingLogicalFieldForm" method="post">
+						<p th:text="#{form.app.mappingcerttsl.deleteMappingLogicalField.message}"></p>
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" th:text="#{form.app.btn.close}" onclick="closeModal('modalDeleteMappingLogicalFieldForm')"></button>
+				<button type="button" id="idDeleteCertificateBtn" class="btn btn-danger" th:text="#{form.app.btn.delete}" onclick="deleteMappingLogicalField();"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+// Función para llamar al método back y eliminar el mapeo del campo lógico.
+function deleteMappingLogicalField(){
+	var deleteMappingLogicalField = /*[[@{/mappingCertTslRest/deleteMappingLogicalField}]]*/;
+	loading();
+	$.ajax({
+		url: deleteMappingLogicalField,
+		type: 'POST',
+		data: $.param({'idTslMappingDelete': idTslMappingDelete}),
+		cache: false,
+		success: function(xhr) {
+			hide();
+			closeModal('modalDeleteMappingLogicalFieldForm');
+			// Se vuelve a cargar la botonera y las filas del datatable 
+			window.obtainTspServiceNameSelectTree(window.tspServiceName);
+		}
+	});
+}
+</script>

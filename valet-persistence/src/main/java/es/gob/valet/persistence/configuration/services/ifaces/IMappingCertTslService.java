@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 07/10/2022.
+ * @version 1.5, 11/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -40,7 +40,7 @@ import es.gob.valet.persistence.utils.BootstrapTreeNode;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the mapping certficate tsl entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 07/10/2022.
+ * @version 1.5, 11/10/2022.
  */
 public interface IMappingCertTslService {
 
@@ -84,6 +84,38 @@ public interface IMappingCertTslService {
 	 * @param countrySelectTree parameter that contain of country select for the user.
 	 * @throws ParseException possible exception to parse Date.
 	 */
-	void saveMappingLogicField(Map<String, List<TslMappingDTO>> mapTslMappingDTO, MappingTslDTO mappingTslDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree) throws ParseException;
+	void addMappingLogicField(Map<String, List<TslMappingDTO>> mapTslMappingDTO, MappingTslDTO mappingTslDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree) throws ParseException;
+
+	/**
+	 * Method that obtain mapping logic field search for id.
+	 * 
+	 * @param idTslMapping parameter that contain id to tsl mapping.
+	 * @return mapping logic field search for id.
+	 * @throws CommonUtilsException If the method fails.
+	 */
+	MappingTslDTO obtainMappingLogicalField(Long idTslMapping) throws CommonUtilsException;
+
+	/**
+	 * Method that realized merge to tsl mapping entity.
+	 * 
+	 * @param mappingTslDTO parameter that contain information from interface add logic field.
+	 */
+	void mergeMappingLogicField(MappingTslDTO mappingTslDTO);
+
+	/**
+	 * Method that evaluate if tsp service exits search for tsp service name and identificator of logic field id.
+	 * 
+	 * @param tspServiceName that represents the tsp service name of the application in the persistence.
+	 * @param logicalFieldId  parameter that represents the identificator to logic field.
+	 * @return true or false if tsp service is found.
+	 */
+	boolean existsTspServiceNameAndIdentificator(String tspServiceName, String logicalFieldId);
+
+	/**
+	 * Method that delete a mapping logic field search for the id.
+	 * 
+	 * @param idTslMappingDelete parameter that represents the id of mapping tsl.
+	 */
+	void deleteMappingLogicalField(Long idTslMappingDelete);
 
 }

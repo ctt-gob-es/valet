@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 07/10/2022.
+ * @version 1.2, 11/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -50,7 +50,7 @@ import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
 /**
  * <p>Class that maps the <i>TSL_SERVICE</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.1, 07/10/2022.
+ *  @version 1.2, 11/10/2022.
  */
 @Entity
 @Table(name = "TSL_SERVICE")
@@ -65,7 +65,7 @@ public class TslService implements Serializable {
 	 * Attribute that represents the object ID.
 	 */
 	@Id
-	@Column(name = "ID_SERVICE", unique = true, nullable = false, precision = NumberConstants.NUM19)
+	@Column(name = "ID_TSL_SERVICE", unique = true, nullable = false, precision = NumberConstants.NUM19)
 	@GeneratedValue(generator = "sq_tsl_service")
 	@GenericGenerator(name = "sq_tsl_service", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "SQ_TSL_SERVICE"), @Parameter(name = "initial_value", value = "1"),

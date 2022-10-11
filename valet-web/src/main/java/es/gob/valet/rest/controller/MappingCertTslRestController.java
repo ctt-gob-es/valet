@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.6, 07/10/2022.
+ * @version 1.7, 11/10/2022.
  */
 package es.gob.valet.rest.controller;
 
@@ -89,7 +89,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 07/10/2022.
+ * @version 1.7, 11/10/2022.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
@@ -135,32 +135,37 @@ public class MappingCertTslRestController {
 	/**
 	 * Attribute that represents the tsp service name select for the user in the tree.
 	 */
-	public static final String TSPSERVICENAMESELECTTREE = "tspServiceNameSelectTree";
+	public static final String REQ_PARAM_TSP_SERVICE_NAME_SELECT_TREE = "tspServiceNameSelectTree";
+	
+	/**
+	 * Attribute that represents the id of tsp service name select for the user in the tree.
+	 */
+	public static final String REQ_PARAM_ID_TSL_MAPPING = "idTslMapping";
 	
 	/**
 	 * Attribute that represents the identifier of the html input id siple value.
 	 */
-	public static final String IDSIMPLEVALUE = "idSimpleValue";
+	public static final String REQ_PARAM_ID_SIMPLE_VALUE = "idSimpleValue";
 
 	/**
 	 * Attribute that represents the tsp name select for the user in the tree.
 	 */
-	private static final String TSPNAMESELECTTREE = "tspNameSelectTree";
+	private static final String REQ_PARAM_TSP_NAME_SELECT_TREE = "tspNameSelectTree";
 	
 	/**
 	 * Attribute that represents the country select for the user in the tree.
 	 */
-	private static final String COUNTRYSELECTTREE = "countrySelectTree";
+	private static final String REQ_PARAM_COUNTRY_SELECT_TREE = "countrySelectTree";
 	
 	/**
 	 * Attribute that represents the certificate attached for the user in the input.
 	 */
-	private static final String INPUT_FILECERTIFICATETSL = "fileCertificateTsl";
+	private static final String REQ_PARAM_FILE_CERTIFICATE_TSL = "fileCertificateTsl";
 	
 	/**
 	 * Attribute that represents the value search entered for the user in the input search.
 	 */
-	private static final String INPUT_VALUESEARCH = "valueSearch";
+	private static final String REQ_PARAM_VALUE_SEARCH = "valueSearch";
 	
 	/**
 	 * Attribute that represents the value Tsl Service DTO who model attribute of the interface.
@@ -181,7 +186,7 @@ public class MappingCertTslRestController {
 	 */
 	@SuppressWarnings("static-access")
 	@PostMapping(value = "/searchInTree")
-	public String searchInTree(@RequestParam(INPUT_VALUESEARCH) String valueSearch, HttpServletResponse response) {
+	public String searchInTree(@RequestParam(REQ_PARAM_VALUE_SEARCH) String valueSearch, HttpServletResponse response) {
 		Map<String, List<TslMappingDTO>> mapTsl = tslInformationTree.getMapTslMappingTree();
 		List<BootstrapTreeNode> listBootstrapTreeNode = iMappingCertTslService.createTreeMappingCertTsl(mapTsl, valueSearch);
 		ObjectMapper mapper = new ObjectMapper();
@@ -210,10 +215,10 @@ public class MappingCertTslRestController {
 	@SuppressWarnings("static-access")
 	@PostMapping(value = "/updateCertTsl")
 	public String updateCertTsl(
-			@RequestPart(TSPSERVICENAMESELECTTREE) String tspServiceNameSelectTree,
-			@RequestPart(TSPNAMESELECTTREE) String tspNameSelectTree,
-			@RequestPart(COUNTRYSELECTTREE) String countrySelectTree,
-			@RequestPart(INPUT_FILECERTIFICATETSL) MultipartFile fileCertificateTsl, 
+			@RequestPart(REQ_PARAM_TSP_SERVICE_NAME_SELECT_TREE) String tspServiceNameSelectTree,
+			@RequestPart(REQ_PARAM_TSP_NAME_SELECT_TREE) String tspNameSelectTree,
+			@RequestPart(REQ_PARAM_COUNTRY_SELECT_TREE) String countrySelectTree,
+			@RequestPart(REQ_PARAM_FILE_CERTIFICATE_TSL) MultipartFile fileCertificateTsl, 
 			HttpServletResponse response) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String res = null;
@@ -273,7 +278,7 @@ public class MappingCertTslRestController {
 	 * @return tsp service DTO in format Json.
 	 */
 	@PostMapping(value = "/obtainTspServiceNameSelectTree")
-	private String obtainTspServiceNameSelectTree(@RequestParam(TSPSERVICENAMESELECTTREE) String tspServiceNameSelectTree, HttpServletResponse response) {
+	private String obtainTspServiceNameSelectTree(@RequestParam(REQ_PARAM_TSP_SERVICE_NAME_SELECT_TREE) String tspServiceNameSelectTree, HttpServletResponse response) {
 		TslServiceDTO tslServiceDTO = null;
 		String res = null;
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -299,7 +304,7 @@ public class MappingCertTslRestController {
 	 * @return value a watch when user press button watch value.
 	 */
 	@PostMapping(value = "/watchCertificate")
-	private String watchCertificate(@RequestParam(TSPSERVICENAMESELECTTREE) String tspServiceNameSelectTree, @RequestParam(IDSIMPLEVALUE) Integer idSimpleValue, HttpServletResponse response) {
+	private String watchCertificate(@RequestParam(REQ_PARAM_TSP_SERVICE_NAME_SELECT_TREE) String tspServiceNameSelectTree, @RequestParam(REQ_PARAM_ID_SIMPLE_VALUE) Integer idSimpleValue, HttpServletResponse response) {
 		TslServiceDTO tslServiceDTO;
 		String res = null;
 		try {
@@ -397,13 +402,13 @@ public class MappingCertTslRestController {
 	 * @param response parameter that represents posibility errors in process.
 	 * @return exit or error to process.
 	 */
-	@PostMapping(value = "/saveMappingLogicField")
+	@PostMapping(value = "/addMappingLogicField")
 	@Consumes(MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@SuppressWarnings("static-access")
-	private String saveMappingLogicField(@RequestBody MappingTslDTO mappingTslDTO,
-			@RequestParam(TSPSERVICENAMESELECTTREE) String tspServiceNameSelectTree,
-			@RequestParam(TSPNAMESELECTTREE) String tspNameSelectTree,
-			@RequestParam(COUNTRYSELECTTREE) String countrySelectTree, HttpServletResponse response) {
+	private String addMappingLogicField(@RequestBody MappingTslDTO mappingTslDTO,
+			@RequestParam(REQ_PARAM_TSP_SERVICE_NAME_SELECT_TREE) String tspServiceNameSelectTree,
+			@RequestParam(REQ_PARAM_TSP_NAME_SELECT_TREE) String tspNameSelectTree,
+			@RequestParam(REQ_PARAM_COUNTRY_SELECT_TREE) String countrySelectTree, HttpServletResponse response) {
 		String res = null;
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
@@ -413,7 +418,7 @@ public class MappingCertTslRestController {
 				res = objectMapper.writeValueAsString(mErrors);
 			} else {
 				Map<String, List<TslMappingDTO>> mapTslMappingDTO = tslInformationTree.getMapTslMappingTree();
-				iMappingCertTslService.saveMappingLogicField(mapTslMappingDTO, mappingTslDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree);
+				iMappingCertTslService.addMappingLogicField(mapTslMappingDTO, mappingTslDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree);
 			}
 		} catch (ParseException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -435,17 +440,59 @@ public class MappingCertTslRestController {
 	 */
 	private Map<String, String> validateInputsSave(MappingTslDTO mappingTslDTO) {
 		Map<String, String> mErrors = new HashMap<>();
-		if(UtilsStringChar.isNullOrEmpty(mappingTslDTO.getLogicalFieldDTO().getIdentificator())) {
+		if(UtilsStringChar.isNullOrEmpty(mappingTslDTO.getLogicalFieldId())) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_EMPTY));
 			mErrors.put(FIELD_IDENTIFICATOR_LOGICAL_FIELD + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_EMPTY));
-		} 
-		if (UtilsStringChar.isNullOrEmpty(mappingTslDTO.getLogicalFieldDTO().getLogicalFieldValue())) {
+		} else if (!mappingTslDTO.getLogicalFieldId().equals(mappingTslDTO.getLogicalFieldIdAux())
+				&& iMappingCertTslService.existsTspServiceNameAndIdentificator(mappingTslDTO.getTslServiceDTO().getTspServiceName(), mappingTslDTO.getLogicalFieldId())) {
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_DUPLICATE));
+			mErrors.put(FIELD_IDENTIFICATOR_LOGICAL_FIELD + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_DUPLICATE));
+		}
+		if (UtilsStringChar.isNullOrEmpty(mappingTslDTO.getLogicalFieldValue())) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
 			mErrors.put(FIELD_VALUE_LOGICAL_FIELD_FREE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
-		} else if(mappingTslDTO.getLogicalFieldDTO().getLogicalFieldValue().equals(String.valueOf(NumberConstants.NUM_NEG_1))) {
+		} else if(mappingTslDTO.getLogicalFieldValue().equals(String.valueOf(NumberConstants.NUM_NEG_1))) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
 			mErrors.put(FIELD_VALUE_LOGICAL_FIELD_SIMPLE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
 		}
  		return mErrors;
+	}
+	
+	/**
+	 * Method that realized calls for merge for mapping logic field entity.
+	 * 
+	 * @param mappingTslDTO parameter that contain mapping tsl DTO to transform a entity.
+	 * @param response parameter that represents posibility errors in process.
+	 * @return string with the result final.
+	 */
+	@PostMapping(value = "/mergeMappingLogicField")
+	@Consumes(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	private String mergeMappingLogicField(@RequestBody MappingTslDTO mappingTslDTO, HttpServletResponse response) {
+		String res = null;
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			Map<String, String> mErrors = this.validateInputsSave(mappingTslDTO);
+			if(!mErrors.isEmpty()) {
+				response.setStatus(VALIDATIONSMAPPINGCERTTSL);
+				res = objectMapper.writeValueAsString(mErrors);
+			} else {
+				iMappingCertTslService.mergeMappingLogicField(mappingTslDTO);
+			}
+		} catch (JsonProcessingException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
+			res = e.getMessage();
+		}
+		return res;
+	}
+	
+	/**
+	 * Method that realized calls merge to tsl mapping entity.
+	 * 
+	 * @param idTslMappingDelete parameter that represents the id of mapping tsl.
+	 */
+	@PostMapping(value = "/deleteMappingLogicalField")
+	private void deleteMappingLogicalField(@RequestParam("idTslMappingDelete") Long idTslMappingDelete) {
+		iMappingCertTslService.deleteMappingLogicalField(idTslMappingDelete);
 	}
 }
