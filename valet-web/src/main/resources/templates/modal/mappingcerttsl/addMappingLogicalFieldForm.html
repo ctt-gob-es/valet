@@ -33,7 +33,7 @@
 					</div>
 					<div id="idDivMappingSimpleValue" class="form-group col-md-12" style="display:none">
 						<label for="idSimpleValue" th:text="#{form.app.mappingcerttsl.addMappingLogicalField.value.inputOrSelect}"></label>
-						<select id="idSimpleValue" class="form-control mb-1">
+						<select id="idSimpleValue" class="form-control mb-1" onchange="cleanValueWatch();">
 							<option th:value="-1" th:text="#{form.app.mappingcerttsl.addMappingLogicalField.value.select}"></option>
 							<option th:each="asv: *{listValuesAssocSimple}" th:value="${asv.idConstant}" th:text="${asv.value}"></option>
 						</select>
@@ -75,6 +75,11 @@ $(document).ready(function() {
 		}
 	}
 });
+
+// Función para limpiar el campo de ver propiedad del certificado en caso de que el usuario seleccione otro en el desplegable
+function cleanValueWatch() {
+	$("#associationSimpleCertificate").val("");
+}
 
 // Función para mostrar el valor según el tipo de asociacion.
 function showMappingTypeValueField() {

@@ -162,6 +162,7 @@ public class TslServiceDTO implements Serializable {
 				for (TslMapping tslMapping : listTslMapping) {
 					MappingTslDTO mappingTslDTO = new MappingTslDTO();
 					mappingTslDTO.setIdTslMapping(tslMapping.getIdTslMapping());
+					mappingTslDTO.setcAssociationTypeDTO(new CAssociationTypeDTO(tslMapping.getcAssociationType()));
 					mappingTslDTO.setLogicalFieldId(tslMapping.getLogicalFieldId());
 					mappingTslDTO.setLogicalFieldValue(tslMapping.getLogicalFieldValue());
 					listMappingTslDTO.add(mappingTslDTO);
