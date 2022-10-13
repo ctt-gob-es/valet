@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.7, 11/10/2022.
+ * @version 1.8, 13/10/2022.
  */
 package es.gob.valet.rest.controller;
 
@@ -89,7 +89,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 11/10/2022.
+ * @version 1.8, 13/10/2022.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
@@ -494,5 +494,24 @@ public class MappingCertTslRestController {
 	@PostMapping(value = "/deleteMappingLogicalField")
 	private void deleteMappingLogicalField(@RequestParam("idTslMappingDelete") Long idTslMappingDelete) {
 		iMappingCertTslService.deleteMappingLogicalField(idTslMappingDelete);
+	}
+	
+	/**
+	 * Method that obtain a mapping of tsl service in format json.
+	 * 
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param response parameter that represents posibility errors in process.
+	 * @return mapping of tsl service in format json.
+	 */
+	@PostMapping(value = "/exportMappingToJson")
+	private String exportMappingToJson(@RequestParam(REQ_PARAM_TSP_SERVICE_NAME_SELECT_TREE) String tspServiceNameSelectTree, HttpServletResponse response) {
+		String res;
+		try {
+			 res = iMappingCertTslService.obtainJsonWithMappingsToTslService(tspServiceNameSelectTree);
+		} catch (JsonProcessingException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			res = e.getMessage();
+		}
+		return res;
 	}
 }

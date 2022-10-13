@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.5, 11/10/2022.
+ * @version 1.6, 13/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -39,10 +39,14 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslMappingExportDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.TslMapping;
@@ -55,7 +59,7 @@ import es.gob.valet.persistence.utils.BootstrapTreeNode;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Mapping Certificate TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 11/10/2022.
+ * @version 1.6, 13/10/2022.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -321,5 +325,25 @@ public class MappingCertTslService implements IMappingCertTslService {
 	 */
 	public void deleteMappingLogicalField(Long idTslMappingDelete) {
 		tslMappingRepository.deleteById(idTslMappingDelete);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#obtainJsonWithMappingsToTslService 
+	 */
+	public String obtainJsonWithMappingsToTslService(String tspServiceName) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		TslService tslService = tslServiceRepository.findByTspServiceName(tspServiceName);
+		
+		List<TslMapping> listTslMappings = tslService.getTslMapping();
+		List<TslMappingExportDTO> listMappingTslDTO = new ArrayList<TslMappingExportDTO>();
+		
+		for (TslMapping tslMapping : listTslMappings) {
+			TslMappingExportDTO tslMappingExportDTO = new TslMappingExportDTO(tslMapping);
+			listMappingTslDTO.add(tslMappingExportDTO);
+		}
+		
+		return objectMapper.writeValueAsString(listMappingTslDTO);
 	}
 }
