@@ -325,8 +325,21 @@ function loadingDatatableMappingCertTsls() {
         		text: btnImport, 
         		attr: {id: 'idBtnImport'},        	
         		action: function ( e, dt, node, config ) {
-        			var d = dt.rows({
-	                	selected: !0
+        			var viewMonitorImportTsl = /*[[@{/mappingCertTsl/viewMonitorImportTsl}]]*/;
+        			loading();
+					$.ajax({
+						url: viewMonitorImportTsl,
+						type: 'POST',
+						cache: false,
+						success: function(xhr) {
+							hide();
+							$('#modal').html(xhr);
+							$('#modalMonitorImportMappingLogicalFieldForm').modal('show');
+						} ,
+						error:  function(xhr) {
+							$('#errorMappingCertTsl').html(xhr.responseText);
+							$('#errorMappingCertTsl').addClass('alert alert-danger');
+						}
 					});
         		}
         	}

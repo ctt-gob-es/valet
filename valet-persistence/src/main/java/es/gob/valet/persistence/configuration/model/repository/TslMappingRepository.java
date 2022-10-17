@@ -20,22 +20,27 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>10/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 11/10/2022.
+ * @version 1.3, 17/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.repository;
+
+import java.util.List;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.entity.TslMapping;
 
 /**
  * <p>Interface that provides CRUD functionality for the ApplicationValet entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 11/10/2022.
+ * @version 1.3, 17/10/2022.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -49,4 +54,13 @@ public interface TslMappingRepository extends PagingAndSortingRepository<TslMapp
 	 */
 	TslMapping findByIdTslMapping(Long idTslMapping);
 	
+	/**
+	 * Sentence that delete mappings from list id´s.
+	 *  
+	 * @param listIdTslMapping parameter that contain list id´s.
+	 */
+	@Transactional
+	@Modifying
+	@Query("DELETE FROM TslMapping TSLM where TSLM.idTslMapping in ?1")
+	void deleteAllById(List<Long> listIdTslMapping);
 }

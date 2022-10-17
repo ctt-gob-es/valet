@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.5, 11/10/2022.
+ * @version 1.6, 17/10/2022.
  */
 package es.gob.valet.controller;
 
@@ -55,7 +55,7 @@ import static es.gob.valet.rest.controller.MappingCertTslRestController.REQ_PARA
 /**
  * <p>Class that manages the requests related to the mappings of certificates TSL administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 11/10/2022.
+ * @version 1.6, 17/10/2022.
  */
 @Controller
 @RequestMapping(value = "/mappingCertTsl")
@@ -164,6 +164,15 @@ public class MappingCertTslController {
 	 */
 	@PostMapping(value = "/viewDeleteMapping")
 	public String viewDeleteMapping() {
-		return "modal/mappingcerttsl/deleteMappingLogicalFieldForm";
+		return "modal/mappingcerttsl/deleteMappingLogicalFieldForm.html";
+	}
+	
+	/**
+	 * Method that redirect to view of monitoring process import.
+	 * @return string with view of monitoring process import.
+	 */
+	@PostMapping(value = "/viewMonitorImportTsl")
+	public String viewMonitorImportTsl() {
+		return "modal/mappingcerttsl/monitorImportMappingLogicalFieldForm.html";
 	}
 }

@@ -20,10 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.6, 13/10/2022.
+ * @version 1.7, 17/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,16 +35,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
+import es.gob.valet.commons.utils.GeneralConstants;
+import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IPersistenceGeneralMessages;
 import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingExportDTO;
@@ -54,17 +65,23 @@ import es.gob.valet.persistence.configuration.model.entity.TslService;
 import es.gob.valet.persistence.configuration.model.repository.TslMappingRepository;
 import es.gob.valet.persistence.configuration.model.repository.TslServiceRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService;
+import es.gob.valet.persistence.exceptions.ImportException;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
+import es.gob.valet.persistence.utils.ImportUtils;
 
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Mapping Certificate TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 13/10/2022.
+ * @version 1.7, 17/10/2022.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class MappingCertTslService implements IMappingCertTslService {
-
+	/**
+	 * Attribute that represents the object that manages the log of the class.
+	 */
+	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	
 	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
 	 */
@@ -77,6 +94,17 @@ public class MappingCertTslService implements IMappingCertTslService {
 	@Autowired
 	TslMappingRepository tslMappingRepository;
 	
+	/**
+	 * Attribute that represents percentage process import completed.
+	 */
+	private int percentage = 0;
+	
+	/**
+	 * Attribute that represents enviroments declarates in application.properties.
+	 */
+	 @Autowired
+	 private Environment env;
+	 
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -331,19 +359,87 @@ public class MappingCertTslService implements IMappingCertTslService {
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#obtainJsonWithMappingsToTslService 
 	 */
-	public String obtainJsonWithMappingsToTslService(String tspServiceName) throws JsonProcessingException {
+	public String obtainJsonWithMappingsToTslService(String tspServiceNameSelectTree) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		TslService tslService = tslServiceRepository.findByTspServiceName(tspServiceName);
+		TslService tslService = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
 		
 		List<TslMapping> listTslMappings = tslService.getTslMapping();
-		List<TslMappingExportDTO> listMappingTslDTO = new ArrayList<TslMappingExportDTO>();
+		List<TslMappingExportDTO> listTslMappingExportDTO = new ArrayList<TslMappingExportDTO>();
 		
 		for (TslMapping tslMapping : listTslMappings) {
 			TslMappingExportDTO tslMappingExportDTO = new TslMappingExportDTO(tslMapping);
-			listMappingTslDTO.add(tslMappingExportDTO);
+			listTslMappingExportDTO.add(tslMappingExportDTO);
 		}
 		
-		return objectMapper.writeValueAsString(listMappingTslDTO);
+		return objectMapper.writeValueAsString(listTslMappingExportDTO);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#importMappingLogicFieldFromJson 
+	 */
+	public void importMappingLogicFieldFromJson(String originalFilename, byte[] importMappingLogicalfieldFile, String tspServiceNameSelectTree,
+			String tspNameSelectTree, String countrySelectTree, Map<String, List<TslMappingDTO>> mapTslMappingDTO) throws ImportException, JsonMappingException, IOException, ParseException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+		this.percentage = NumberConstants.NUM20;
+		
+		// Comprobamos que se ha indicado el archivo JSON con los mapeos a importar.
+		ImportUtils.checkIsFileNotNull(importMappingLogicalfieldFile, Language.getResPersistenceGeneral(IPersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_FILE_EMPTY));
+		// Evaluamos que el fichero no supere el tamaño máximo
+		Integer maxFileSize = Integer.parseInt(env.getProperty("max.fileSize")); 
+		ImportUtils.checkIsFileMaxSize(originalFilename, importMappingLogicalfieldFile, maxFileSize);
+		// Evaluamos que el fichero contenga un formato json correcto.
+		ImportUtils.checkIsJsonExtension(originalFilename);
+		
+		this.percentage = NumberConstants.NUM60;
+		TslMappingExportDTO[] arrayTslMappingExportDTO = null;
+		try {
+			arrayTslMappingExportDTO = objectMapper.readValue(importMappingLogicalfieldFile, TslMappingExportDTO[].class);
+		} catch(JsonParseException e) { // No es un archivo con formato json
+			String msgError = Language.getResPersistenceGeneral(IPersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_FORMAT_INCORRECT);
+			LOGGER.error(msgError);
+			throw new ImportException(msgError);
+		} catch(UnrecognizedPropertyException e) { // No es un json con propiedades de la instancia TslMappingImportDTO  
+			String msgError = Language.getResPersistenceGeneral(IPersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_TSL_MAPPING_NOT_INSTANCE);
+			LOGGER.error(msgError);
+			throw new ImportException(msgError);
+		}
+		
+		TslService tslService = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
+		this.percentage = NumberConstants.NUM80;
+		
+		// Si no existe el tslService seleccionado lo creamos
+		if(null == tslService) {
+			tslService = this.saveOrUpdateTslService(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, null);
+		// Si existe tsl service seleccionado y además contiene mappings, los sobreescribimos
+		} else if (null != tslService && null != tslService.getTslMapping()) {
+			tslMappingRepository.deleteAllById(tslService.getTslMapping().stream().map(TslMapping::getIdTslMapping).collect(Collectors.toList()));
+			tslService.setTslMapping(null);
+		}
+		List<TslMapping> listTslMappingNew = new ArrayList<TslMapping>();
+		for (TslMappingExportDTO tslMappingExportDTO : arrayTslMappingExportDTO) {
+			TslMapping tslMapping = new TslMapping(tslService, tslMappingExportDTO);
+			listTslMappingNew.add(tslMapping);
+		}
+		tslMappingRepository.saveAll(listTslMappingNew);
+		this.percentage = NumberConstants.NUM100;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#getPercentage 
+	 */
+	public int getPercentage() {
+		return percentage;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#setPercentage 
+	 */
+	public void setPercentage(int percentage) {
+		this.percentage = percentage;
 	}
 }

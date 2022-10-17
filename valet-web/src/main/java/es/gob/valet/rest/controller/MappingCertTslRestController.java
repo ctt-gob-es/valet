@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.8, 13/10/2022.
+ * @version 1.9, 17/10/2022.
  */
 package es.gob.valet.rest.controller;
 
@@ -58,6 +58,7 @@ import javax.ws.rs.Consumes;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,11 +69,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
+import es.gob.valet.commons.utils.UtilsFile;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
@@ -81,6 +84,7 @@ import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
 import es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService;
+import es.gob.valet.persistence.exceptions.ImportException;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
 import es.gob.valet.tsl.access.TslInformationTree;
 import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;
@@ -89,7 +93,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 13/10/2022.
+ * @version 1.9, 17/10/2022.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
@@ -111,6 +115,12 @@ public class MappingCertTslRestController {
 	 */
 	@Autowired
 	private TslInformationTree tslInformationTree;
+	
+	/**
+	 * Attribute that represents enviroments declarates in application.properties.
+	 */
+	@Autowired
+	private Environment env;
 	
 	/**
 	 * Attribute that represents the identifier of the html input file certificate tsl id.
@@ -170,7 +180,12 @@ public class MappingCertTslRestController {
 	/**
 	 * Attribute that represents the value Tsl Service DTO who model attribute of the interface.
 	 */
-	public static final String TSLSERVICEDTO = "tslServiceDTO";
+	public static final String REQ_PARAM_TSL_SERVICE_DTO = "tslServiceDTO";
+	
+	/**
+	 * Attribute that represents fiel select for the user in interface.
+	 */
+	public static final String REQ_PARAM_IMPORT_MAPPING_LOGICAL_FIELD_FILE = "importMappingLogicalfieldFile";
 	
 	/**
 	 * Attribute that represents the status 506 for valet validation exception in call ajax.
@@ -263,7 +278,7 @@ public class MappingCertTslRestController {
 			try {
 				UtilsCertificate.getX509Certificate(fileCertificateTsl.getBytes());
 			} catch (CommonUtilsException e) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_INCORRECT));
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_INCORRECT), e);
 				mErrors.put(FIELD_FILE_CERTIFICATE_TSL_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_INCORRECT));
 			}
 		}
@@ -287,9 +302,11 @@ public class MappingCertTslRestController {
 			res = objectMapper.writeValueAsString(tslServiceDTO);
 		} catch (CommonUtilsException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
 			res = e.getMessage();
 		} catch (JsonProcessingException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
 			res = e.getMessage();
 		}
 		return res;
@@ -384,9 +401,11 @@ public class MappingCertTslRestController {
 			}
 		} catch (CommonUtilsException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
 			res = e.getMessage();
 		} catch (TSLCertificateValidationException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
 			res = e.getMessage();
 		}
 		return res;
@@ -510,8 +529,77 @@ public class MappingCertTslRestController {
 			 res = iMappingCertTslService.obtainJsonWithMappingsToTslService(tspServiceNameSelectTree);
 		} catch (JsonProcessingException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
 			res = e.getMessage();
 		}
 		return res;
+	}
+	
+	/**
+	 * Method that import all mappings from file with format json.
+	 * 
+	 * @param importMappingLogicalfieldFile parameter that contain file with mappings in format json.
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param tspNameSelectTree parameter that contain of tsp name select for the user.
+	 * @param countrySelectTree parameter that contain of country select for the user.
+	 * @param response parameter that represents posibility errors in process.
+	 * @return result of process.
+	 */
+	@SuppressWarnings("static-access")
+	@PostMapping(value = "/importMappingLogicFieldFromJson")
+	private String importMappingLogicFieldFromJson(
+			@RequestPart(REQ_PARAM_IMPORT_MAPPING_LOGICAL_FIELD_FILE) MultipartFile importMappingLogicalfieldFile,
+			@RequestPart(REQ_PARAM_TSP_SERVICE_NAME_SELECT_TREE) String tspServiceNameSelectTree,
+			@RequestPart(REQ_PARAM_TSP_NAME_SELECT_TREE) String tspNameSelectTree,
+			@RequestPart(REQ_PARAM_COUNTRY_SELECT_TREE) String countrySelectTree,
+			HttpServletResponse response) {
+		String res = null;
+		try {
+			Map<String, List<TslMappingDTO>> mapTslMappingDTO = tslInformationTree.getMapTslMappingTree();
+			iMappingCertTslService.importMappingLogicFieldFromJson(importMappingLogicalfieldFile.getOriginalFilename(), importMappingLogicalfieldFile.getBytes(), tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, mapTslMappingDTO);
+		} catch(ParseException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
+			res = e.getMessage();
+		} catch (JsonMappingException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
+			res = e.getMessage();
+		} catch (ImportException e) {
+			response.setStatus(VALIDATIONSMAPPINGCERTTSL);
+			LOGGER.error(e.getMessage(), e);
+			res = e.getMessage();
+		} catch (IOException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
+			res = e.getMessage();
+		} catch(OutOfMemoryError e) {
+			response.setStatus(VALIDATIONSMAPPINGCERTTSL);
+			Integer maxFileSize = Integer.parseInt(env.getProperty("max.fileSize")); 
+			res = Language.getFormatResWebGeneral(IWebGeneralMessages.WRONG_FILE_SIZE,
+					new Object[] { importMappingLogicalfieldFile.getOriginalFilename(),
+							UtilsFile.getStringSizeLengthFile(importMappingLogicalfieldFile.getSize()), UtilsFile.getStringSizeLengthFile(maxFileSize)});
+		}
+		return res;
+	}
+	
+	/**
+	 * Method that obtain percentage completed for import policies.
+	 * 
+	 * @return contain pertecentage process.
+	 */
+	@PostMapping(value = "/consultPercentajeProcessImport")
+	public int consultPercentajeProcessImport() {
+		return iMappingCertTslService.getPercentage();
+	}
+	
+	/**
+	 * Method that obtain percentage completed for import policies.
+	 * 
+	 * @return contain percentage process.
+	 */
+	@PostMapping(value = "/resetPercentajeProcessImport") 
+	public void resetPercentajeProcessImport() {
+		iMappingCertTslService.setPercentage(0);
 	}
 }

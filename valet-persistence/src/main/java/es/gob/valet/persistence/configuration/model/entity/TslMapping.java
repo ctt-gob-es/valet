@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 11/10/2022.
+ * @version 1.3, 17/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -40,11 +40,12 @@ import org.hibernate.annotations.Parameter;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslMappingExportDTO;
 
 /**
  * <p>Class that maps the <i>TSL_MAPPING</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.2, 11/10/2022.
+ *  @version 1.3, 17/10/2022..
  */
 @Entity
 @Table(name = "TSL_MAPPING")
@@ -54,16 +55,6 @@ public class TslMapping implements Serializable {
 	 * Attribute that represents the class serial version.
 	 */
 	private static final long serialVersionUID = -5150100957528946006L;
-
-	/**
-	 * Attribute that represents constant to id service.
-	 */
-	private static final String ID_TSL_SERVICE = "ID_TSL_SERVICE";
-
-	/**
-	 * Attribute that represents constant to id association type.
-	 */
-	private static final String ID_ASSOCIATION_TYPE = "ID_ASSOCIATION_TYPE";
 
 	/**
 	 * Attribute that represents the pk.
@@ -78,14 +69,14 @@ public class TslMapping implements Serializable {
 	 * Attribute that represents the entity to tsl service.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = ID_TSL_SERVICE, nullable = false)
+	@JoinColumn(name = "ID_TSL_SERVICE", nullable = false)
 	private TslService tslService;
 
 	/**
 	 * Attribute that represents the entity to associatiion type.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = ID_ASSOCIATION_TYPE, nullable = false)
+	@JoinColumn(name = "ID_ASSOCIATION_TYPE", nullable = false)
 	private CAssociationType cAssociationType;
 	
 	/**
@@ -116,6 +107,19 @@ public class TslMapping implements Serializable {
 		this.cAssociationType = new CAssociationType(mappingTslDTO.getcAssociationTypeDTO());
 		this.logicalFieldId = mappingTslDTO.getLogicalFieldId();
 		this.logicalFieldValue = mappingTslDTO.getLogicalFieldValue();
+	}
+
+	/**
+	 * Constructor method for the class LogicalField.java.
+	 * 
+	 * @param tslServiceImport parameter that contain tsl service create prev.
+	 * @param tslMappingExportDTO parameter that contain mapping tsl mapping DTO to transform a entity.
+	 */
+	public TslMapping(TslService tslServiceImport, TslMappingExportDTO tslMappingExportDTO) {
+		this.tslService = tslServiceImport;
+		this.cAssociationType = new CAssociationType(tslMappingExportDTO.getcAssociationTypeDTO());
+		this.logicalFieldId = tslMappingExportDTO.getLogicalFieldId();
+		this.logicalFieldValue = tslMappingExportDTO.getLogicalFieldValue();
 	}
 
 	/**
