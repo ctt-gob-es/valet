@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.9, 17/10/2022.
+ * @version 1.10, 18/10/2022.
  */
 package es.gob.valet.rest.controller;
 
@@ -48,6 +48,7 @@ import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_VALID_FROM;
 import static es.gob.valet.persistence.utils.ConstantsUtils.INFOCERT_VALID_TO;
 
 import java.io.IOException;
+import java.security.cert.CertificateEncodingException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -93,7 +94,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 17/10/2022.
+ * @version 1.10, 18/10/2022.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
@@ -183,9 +184,14 @@ public class MappingCertTslRestController {
 	public static final String REQ_PARAM_TSL_SERVICE_DTO = "tslServiceDTO";
 	
 	/**
-	 * Attribute that represents fiel select for the user in interface.
+	 * Attribute that represents the file import for the user in interface.
 	 */
 	public static final String REQ_PARAM_IMPORT_MAPPING_LOGICAL_FIELD_FILE = "importMappingLogicalfieldFile";
+	
+	/**
+	 * Attribute that represents if user export certificate example in the json.
+	 */
+	private static final String REQ_PARAM_EXPORT_CERTIFICATE = "exportCertificate";
 	
 	/**
 	 * Attribute that represents the status 506 for valet validation exception in call ajax.
@@ -244,7 +250,7 @@ public class MappingCertTslRestController {
 				res = objectMapper.writeValueAsString(errors);
 			} else {
 				Map<String, List<TslMappingDTO>> mapTslMappingDTO = tslInformationTree.getMapTslMappingTree();
-				res = objectMapper.writeValueAsString(new TslServiceDTO(iMappingCertTslService.saveOrUpdateTslService(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, fileCertificateTsl.getBytes()))); 
+				res = objectMapper.writeValueAsString(new TslServiceDTO(iMappingCertTslService.updateCertificateOrSaveTslService(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, fileCertificateTsl.getBytes()))); 
 			}
 		} catch (IOException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -522,12 +528,22 @@ public class MappingCertTslRestController {
 	 * @param response parameter that represents posibility errors in process.
 	 * @return mapping of tsl service in format json.
 	 */
-	@PostMapping(value = "/exportMappingToJson")
-	private String exportMappingToJson(@RequestParam(REQ_PARAM_TSP_SERVICE_NAME_SELECT_TREE) String tspServiceNameSelectTree, HttpServletResponse response) {
-		String res;
+	@PostMapping(value = "/exportMappingLogicalFieldToJson")
+	private String exportMappingLogicalFieldToJson(
+			@RequestParam(REQ_PARAM_TSP_SERVICE_NAME_SELECT_TREE) String tspServiceNameSelectTree,
+			@RequestParam(REQ_PARAM_EXPORT_CERTIFICATE) boolean exportCertificate, HttpServletResponse response) {
+		String res = null;
 		try {
-			 res = iMappingCertTslService.obtainJsonWithMappingsToTslService(tspServiceNameSelectTree);
+			 res = iMappingCertTslService.obtainJsonWithMappingsToTslService(tspServiceNameSelectTree, exportCertificate);
 		} catch (JsonProcessingException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
+			res = e.getMessage();
+		} catch (CertificateEncodingException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			LOGGER.error(e.getMessage(), e);
+			res = e.getMessage();
+		} catch (CommonUtilsException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			LOGGER.error(e.getMessage(), e);
 			res = e.getMessage();

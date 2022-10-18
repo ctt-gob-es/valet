@@ -21,11 +21,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 17/10/2022.
+ * @version 1.8, 18/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
 import java.io.IOException;
+import java.security.cert.CertificateEncodingException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ import es.gob.valet.persistence.utils.BootstrapTreeNode;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the mapping certficate tsl entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 17/10/2022.
+ * @version 1.8, 18/10/2022.
  */
 public interface IMappingCertTslService {
 
@@ -69,7 +70,7 @@ public interface IMappingCertTslService {
 	 * @return Object persistent in BD.
 	 * @throws ParseException possible exception to parse Date.
 	 */
-	TslService saveOrUpdateTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree, byte[] fileCertificateTsl) throws ParseException;
+	TslService updateCertificateOrSaveTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree, byte[] fileCertificateTsl) throws ParseException;
 
 	/**
 	 * Method that obtain tsp service from tsp service name select in the tree.
@@ -127,10 +128,13 @@ public interface IMappingCertTslService {
 	 * Method that obtain all mappings for a tsl service.
 	 * 
 	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param exportCertificate  parameter that contain if user want export certificate example.
 	 * @return all mappings for a tsl service.
 	 * @throws JsonProcessingException If the method fails.
+	 * @throws CommonUtilsException If the method fails.
+	 * @throws CertificateEncodingException If the method fails.
 	 */
-	String obtainJsonWithMappingsToTslService(String tspServiceNameSelectTree) throws JsonProcessingException;
+	String obtainJsonWithMappingsToTslService(String tspServiceNameSelectTree, boolean exportCertificate) throws JsonProcessingException, CertificateEncodingException, CommonUtilsException;
 
 	/**
 	 * Method that import all mappings from file with format json.

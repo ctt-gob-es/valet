@@ -20,21 +20,26 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.7, 17/10/2022.
+ * @version 1.8, 18/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
 import java.io.IOException;
+import java.security.cert.CertificateEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -72,7 +77,7 @@ import es.gob.valet.persistence.utils.ImportUtils;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Mapping Certificate TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 17/10/2022.
+ * @version 1.8, 18/10/2022.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -102,9 +107,24 @@ public class MappingCertTslService implements IMappingCertTslService {
 	/**
 	 * Attribute that represents enviroments declarates in application.properties.
 	 */
-	 @Autowired
-	 private Environment env;
-	 
+	@Autowired
+	private Environment env;
+	
+	/**
+	 * Attribute that represents map key to certificate.
+	 */
+	public static final String MAP_KEY_CERTIFICATE = "certificate";
+
+	/**
+	 * Attribute that represents map key to list mappings.
+	 */
+	private static final String MAP_KEY_LIST_MAPPINGS = "listTslMapping";
+
+	/**
+	 * Attribute that represents map key to export certificate.
+	 */
+	private static final String MAP_KEY_EXPORT_CERTIFICATE = "exportCertificate";
+	
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -235,9 +255,9 @@ public class MappingCertTslService implements IMappingCertTslService {
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#saveOrUpdateTslService
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#updateCertificateOrSaveTslService
 	 */
-	public TslService saveOrUpdateTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO,
+	public TslService updateCertificateOrSaveTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO,
 			String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree,
 			byte[] fileCertificateTsl)
 			throws ParseException {
@@ -280,7 +300,7 @@ public class MappingCertTslService implements IMappingCertTslService {
 		tlsServiceNew.setDigitalIdentityCad(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(tlsMappingDTOFound.getExpirationDate()));
 		tlsServiceNew.setDigitalIdentityId(tlsMappingDTOFound.getDigitalIdentity());
 		tlsServiceNew.setTslVersion(Long.parseLong(tlsMappingDTOFound.getVersion()));
-		tlsServiceNew.setTspName(tlsMappingDTOFound.getTspServiceName());
+		tlsServiceNew.setTspName(tlsMappingDTOFound.getTspName());
 		tlsServiceNew.setTspServiceName(tlsMappingDTOFound.getTspServiceName());
 		return tlsServiceNew;
 	}
@@ -359,7 +379,7 @@ public class MappingCertTslService implements IMappingCertTslService {
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#obtainJsonWithMappingsToTslService 
 	 */
-	public String obtainJsonWithMappingsToTslService(String tspServiceNameSelectTree) throws JsonProcessingException {
+	public String obtainJsonWithMappingsToTslService(String tspServiceNameSelectTree, boolean exportCertificate) throws JsonProcessingException, CertificateEncodingException, CommonUtilsException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		
 		TslService tslService = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
@@ -372,19 +392,31 @@ public class MappingCertTslService implements IMappingCertTslService {
 			listTslMappingExportDTO.add(tslMappingExportDTO);
 		}
 		
-		return objectMapper.writeValueAsString(listTslMappingExportDTO);
+		// Si el usuario desea exportar el certificado de ejemplo se incluyen los bytes en base 64
+		Map<String, Object> mTslMapping = new HashMap<String, Object>();
+		if(exportCertificate) {
+			mTslMapping.put(MAP_KEY_CERTIFICATE, new String(new Base64(NumberConstants.NUM64).encode(tslService.getCertificate())));
+			mTslMapping.put(MAP_KEY_LIST_MAPPINGS, listTslMappingExportDTO);
+			mTslMapping.put(MAP_KEY_EXPORT_CERTIFICATE, exportCertificate);
+			return objectMapper.writeValueAsString(mTslMapping);
+		} else {
+			mTslMapping.put(MAP_KEY_LIST_MAPPINGS, listTslMappingExportDTO);
+			mTslMapping.put(MAP_KEY_EXPORT_CERTIFICATE, exportCertificate);
+			return objectMapper.writeValueAsString(mTslMapping);
+		}
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IMappingCertTslService#importMappingLogicFieldFromJson 
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void importMappingLogicFieldFromJson(String originalFilename, byte[] importMappingLogicalfieldFile, String tspServiceNameSelectTree,
 			String tspNameSelectTree, String countrySelectTree, Map<String, List<TslMappingDTO>> mapTslMappingDTO) throws ImportException, JsonMappingException, IOException, ParseException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-		this.percentage = NumberConstants.NUM20;
 		
+		this.percentage = NumberConstants.NUM20;
 		// Comprobamos que se ha indicado el archivo JSON con los mapeos a importar.
 		ImportUtils.checkIsFileNotNull(importMappingLogicalfieldFile, Language.getResPersistenceGeneral(IPersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_FILE_EMPTY));
 		// Evaluamos que el fichero no supere el tamaño máximo
@@ -394,9 +426,50 @@ public class MappingCertTslService implements IMappingCertTslService {
 		ImportUtils.checkIsJsonExtension(originalFilename);
 		
 		this.percentage = NumberConstants.NUM60;
-		TslMappingExportDTO[] arrayTslMappingExportDTO = null;
+		Map<String, Object> mTslMapping = new HashMap<String, Object>();
+		List<TslMapping> listTslMappingNew = new ArrayList<TslMapping>();
+		byte[] certificate = null;
+		List<LinkedHashMap> listLinkedHashMap;
 		try {
-			arrayTslMappingExportDTO = objectMapper.readValue(importMappingLogicalfieldFile, TslMappingExportDTO[].class);
+			mTslMapping = objectMapper.readValue(importMappingLogicalfieldFile, HashMap.class);
+		
+			TslService tslService = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
+			this.percentage = NumberConstants.NUM80;
+			
+			if(null == tslService && !Boolean.parseBoolean(mTslMapping.get(MAP_KEY_EXPORT_CERTIFICATE).toString())) {
+				TslService tlsServiceNew = createTspServiceNew(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, certificate);
+				tslService = tslServiceRepository.save(tlsServiceNew);
+			} else if (null == tslService && Boolean.parseBoolean(mTslMapping.get(MAP_KEY_EXPORT_CERTIFICATE).toString())) {
+				certificate = new Base64(NumberConstants.NUM64).decode(mTslMapping.get(MAP_KEY_CERTIFICATE).toString());
+				TslService tlsServiceNew = createTspServiceNew(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, certificate);
+				tslService = tslServiceRepository.save(tlsServiceNew);
+			} else if (null != tslService &&  null == tslService.getCertificate() && !Boolean.parseBoolean(mTslMapping.get(MAP_KEY_EXPORT_CERTIFICATE).toString())) {
+				tslMappingRepository.deleteAllById(tslService.getTslMapping().stream().map(TslMapping::getIdTslMapping).collect(Collectors.toList()));
+				tslService.setTslMapping(null);
+			} else if (null != tslService &&  null != tslService.getCertificate() && Boolean.parseBoolean(mTslMapping.get(MAP_KEY_EXPORT_CERTIFICATE).toString())) {
+				certificate = new Base64(NumberConstants.NUM64).decode(mTslMapping.get(MAP_KEY_CERTIFICATE).toString());
+				tslService.setCertificate(certificate);
+				tslService = tslServiceRepository.save(tslService);
+				tslMappingRepository.deleteAllById(tslService.getTslMapping().stream().map(TslMapping::getIdTslMapping).collect(Collectors.toList()));
+				tslService.setTslMapping(null);
+			} else if (null != tslService &&  null == tslService.getCertificate() && Boolean.parseBoolean(mTslMapping.get(MAP_KEY_EXPORT_CERTIFICATE).toString())) {
+				certificate = new Base64(NumberConstants.NUM64).decode(mTslMapping.get(MAP_KEY_CERTIFICATE).toString());
+				tslService.setCertificate(certificate);
+				tslService = tslServiceRepository.save(tslService);
+				tslMappingRepository.deleteAllById(tslService.getTslMapping().stream().map(TslMapping::getIdTslMapping).collect(Collectors.toList()));
+				tslService.setTslMapping(null);
+			} else if (null != tslService &&  null != tslService.getCertificate() && !Boolean.parseBoolean(mTslMapping.get(MAP_KEY_EXPORT_CERTIFICATE).toString())) {
+				tslMappingRepository.deleteAllById(tslService.getTslMapping().stream().map(TslMapping::getIdTslMapping).collect(Collectors.toList()));
+				tslService.setTslMapping(null);
+			}
+			
+			// Se sobreescriben los mappings de campos lógicos
+			listLinkedHashMap = (List<LinkedHashMap>) mTslMapping.get(MAP_KEY_LIST_MAPPINGS);
+			for (LinkedHashMap linkedHashMap : listLinkedHashMap) {
+				TslMappingExportDTO tslMappingExportDTO = objectMapper.convertValue(linkedHashMap, TslMappingExportDTO.class); 
+				TslMapping tslMapping = new TslMapping(tslService, tslMappingExportDTO);
+				listTslMappingNew.add(tslMapping);
+			}
 		} catch(JsonParseException e) { // No es un archivo con formato json
 			String msgError = Language.getResPersistenceGeneral(IPersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_FORMAT_INCORRECT);
 			LOGGER.error(msgError);
@@ -405,23 +478,6 @@ public class MappingCertTslService implements IMappingCertTslService {
 			String msgError = Language.getResPersistenceGeneral(IPersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_TSL_MAPPING_NOT_INSTANCE);
 			LOGGER.error(msgError);
 			throw new ImportException(msgError);
-		}
-		
-		TslService tslService = tslServiceRepository.findByTspServiceName(tspServiceNameSelectTree);
-		this.percentage = NumberConstants.NUM80;
-		
-		// Si no existe el tslService seleccionado lo creamos
-		if(null == tslService) {
-			tslService = this.saveOrUpdateTslService(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, null);
-		// Si existe tsl service seleccionado y además contiene mappings, los sobreescribimos
-		} else if (null != tslService && null != tslService.getTslMapping()) {
-			tslMappingRepository.deleteAllById(tslService.getTslMapping().stream().map(TslMapping::getIdTslMapping).collect(Collectors.toList()));
-			tslService.setTslMapping(null);
-		}
-		List<TslMapping> listTslMappingNew = new ArrayList<TslMapping>();
-		for (TslMappingExportDTO tslMappingExportDTO : arrayTslMappingExportDTO) {
-			TslMapping tslMapping = new TslMapping(tslService, tslMappingExportDTO);
-			listTslMappingNew.add(tslMapping);
 		}
 		tslMappingRepository.saveAll(listTslMappingNew);
 		this.percentage = NumberConstants.NUM100;

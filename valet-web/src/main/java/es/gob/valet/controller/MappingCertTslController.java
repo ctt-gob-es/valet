@@ -175,4 +175,13 @@ public class MappingCertTslController {
 	public String viewMonitorImportTsl() {
 		return "modal/mappingcerttsl/monitorImportMappingLogicalFieldForm.html";
 	}
+	
+	/**
+	 * Method that redirect to view of monitoring process import.
+	 * @return string with view of monitoring process import.
+	 */
+	@PostMapping(value = "/viewExportMappingToJson")
+	public String viewExportMappingToJson() {
+		return "modal/mappingcerttsl/exportMappingLogicalFieldToJsonForm.html";
+	}
 }

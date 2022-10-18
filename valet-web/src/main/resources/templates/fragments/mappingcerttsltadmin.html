@@ -297,28 +297,17 @@ function loadingDatatableMappingCertTsls() {
         		text: btnExport, 
         		attr: {id: 'idBtnExport'},
         		action: function ( e, dt, node, config ) {
-        			var exportMappingToJson = /*[[@{/mappingCertTslRest/exportMappingToJson}]]*/;
-        			loading();
+        			var viewExportMappingToJson = /*[[@{/mappingCertTsl/viewExportMappingToJson}]]*/;
         			$.ajax({
-        				url: exportMappingToJson,
-        				data:$.param({'tspServiceNameSelectTree':tspServiceName}),
+        				url: viewExportMappingToJson,
         				type: 'POST',
         				cache: false,
         				success:function(xhr) {
         					hide();
-        					var blob=new Blob([xhr], {type: "application/json"});
-        					var link=document.createElement('a');
-        					link.href=window.URL.createObjectURL(blob);
-        					link.download="mappingTslService.json";
-        					link.click();
-        				},
-        				error:function(xhr) {
-        					hide();
-        					$('#errorMappingCertTsl').html(xhr.responseText);
-							$('#errorMappingCertTsl').addClass('alert alert-danger');
+        					$('#modal').html(xhr);
+							$('#modalExportMappingLogicalFieldToJsonForm').modal('show');
         				},
         			});
-        			
         		}
         	},
         	{
