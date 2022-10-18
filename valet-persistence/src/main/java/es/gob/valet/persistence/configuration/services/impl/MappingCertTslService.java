@@ -29,6 +29,7 @@ import java.security.cert.CertificateEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,8 +39,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -395,7 +394,7 @@ public class MappingCertTslService implements IMappingCertTslService {
 		// Si el usuario desea exportar el certificado de ejemplo se incluyen los bytes en base 64
 		Map<String, Object> mTslMapping = new HashMap<String, Object>();
 		if(exportCertificate) {
-			mTslMapping.put(MAP_KEY_CERTIFICATE, new String(new Base64(NumberConstants.NUM64).encode(tslService.getCertificate())));
+			mTslMapping.put(MAP_KEY_CERTIFICATE, new String(Base64.getEncoder().encode(tslService.getCertificate())));
 			mTslMapping.put(MAP_KEY_LIST_MAPPINGS, listTslMappingExportDTO);
 			mTslMapping.put(MAP_KEY_EXPORT_CERTIFICATE, exportCertificate);
 			return objectMapper.writeValueAsString(mTslMapping);
@@ -440,20 +439,20 @@ public class MappingCertTslService implements IMappingCertTslService {
 				TslService tlsServiceNew = createTspServiceNew(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, certificate);
 				tslService = tslServiceRepository.save(tlsServiceNew);
 			} else if (null == tslService && Boolean.parseBoolean(mTslMapping.get(MAP_KEY_EXPORT_CERTIFICATE).toString())) {
-				certificate = new Base64(NumberConstants.NUM64).decode(mTslMapping.get(MAP_KEY_CERTIFICATE).toString());
+				certificate = Base64.getDecoder().decode(mTslMapping.get(MAP_KEY_CERTIFICATE).toString());
 				TslService tlsServiceNew = createTspServiceNew(mapTslMappingDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree, certificate);
 				tslService = tslServiceRepository.save(tlsServiceNew);
 			} else if (null != tslService &&  null == tslService.getCertificate() && !Boolean.parseBoolean(mTslMapping.get(MAP_KEY_EXPORT_CERTIFICATE).toString())) {
 				tslMappingRepository.deleteAllById(tslService.getTslMapping().stream().map(TslMapping::getIdTslMapping).collect(Collectors.toList()));
 				tslService.setTslMapping(null);
 			} else if (null != tslService &&  null != tslService.getCertificate() && Boolean.parseBoolean(mTslMapping.get(MAP_KEY_EXPORT_CERTIFICATE).toString())) {
-				certificate = new Base64(NumberConstants.NUM64).decode(mTslMapping.get(MAP_KEY_CERTIFICATE).toString());
+				certificate = Base64.getDecoder().decode(mTslMapping.get(MAP_KEY_CERTIFICATE).toString());
 				tslService.setCertificate(certificate);
 				tslService = tslServiceRepository.save(tslService);
 				tslMappingRepository.deleteAllById(tslService.getTslMapping().stream().map(TslMapping::getIdTslMapping).collect(Collectors.toList()));
 				tslService.setTslMapping(null);
 			} else if (null != tslService &&  null == tslService.getCertificate() && Boolean.parseBoolean(mTslMapping.get(MAP_KEY_EXPORT_CERTIFICATE).toString())) {
-				certificate = new Base64(NumberConstants.NUM64).decode(mTslMapping.get(MAP_KEY_CERTIFICATE).toString());
+				certificate = Base64.getDecoder().decode(mTslMapping.get(MAP_KEY_CERTIFICATE).toString());
 				tslService.setCertificate(certificate);
 				tslService = tslServiceRepository.save(tslService);
 				tslMappingRepository.deleteAllById(tslService.getTslMapping().stream().map(TslMapping::getIdTslMapping).collect(Collectors.toList()));
