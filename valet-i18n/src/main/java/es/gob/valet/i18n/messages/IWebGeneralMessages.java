@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.16, 17/10/2022.
+ * @version 1.17, 19/10/2022.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.16, 17/10/2022.
+ * @version 1.17, 19/10/2022.
  */
 public interface IWebGeneralMessages {
 
@@ -652,4 +652,10 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String WRONG_FILE_SIZE = "wrongFileSize";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>wrongFileSize</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String END = "END";
 }
