@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>10/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 17/10/2022.
+ * @version 1.4, 18/10/2022.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -40,7 +40,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslMapping;
 /**
  * <p>Interface that provides CRUD functionality for the ApplicationValet entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 17/10/2022.
+ * @version 1.4, 18/10/2022.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -63,4 +63,13 @@ public interface TslMappingRepository extends PagingAndSortingRepository<TslMapp
 	@Modifying
 	@Query("DELETE FROM TslMapping TSLM where TSLM.idTslMapping in ?1")
 	void deleteAllById(List<Long> listIdTslMapping);
+
+	/**
+	 * Query that obtain all mappings to tsp service name. 
+	 * 
+	 * @param tspServiceName parameter that represents the tsp service name of the application in the persistence.
+	 * @return all mappings to tsp service name.
+	 */
+	@Query("SELECT TSLM FROM TslMapping TSLM, TslService TSLS WHERE TSLS.tspServiceName LIKE ?1 AND TSLM.tslService.idTslService = TSLS.idTslService")
+	List<TslMapping> findMappingsToTspServiceName(String tspServiceName);
 }

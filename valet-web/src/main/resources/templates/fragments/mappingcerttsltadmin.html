@@ -76,8 +76,8 @@ function loadingTreeMappingCertTsls(treeDataSerch) {
 	    color: "#428bca",
 	    onNodeSelected: function(event, data) {
 	    	loading();
-	    	// Se almacenan los valores de pais, tspName y tspServiceName seleccionado para actualizar su certificado dado el caso
-	    	tspServiceName = data.text;
+	    	// Se almacenan los valores de pais, tspName y tspServiceName seleccionado para actualizar su certificado dado el caso.
+	    	tspServiceName = data.text.substring(0,data.text.indexOf("D:") - 5); // CAD: or END: - 5 characters.
 	    	tspName = $('#mappingCertTslTree').treeview('getParent', data).text;
 	    	country = $('#mappingCertTslTree').treeview('getParent', $('#mappingCertTslTree').treeview('getParent', data)).text;
 	    	var title = /*[[#{form.app.mappingcerttsl.h4.title}]]*/;
@@ -87,7 +87,7 @@ function loadingTreeMappingCertTsls(treeDataSerch) {
 	    		loadingDatatableMappingCertTsls();
 	    	}
 	    	// Se obtiene el tsp service name DTO del arbol para trabajar con sus campos lógicos asociados y su certificado
-	    	obtainTspServiceNameSelectTree(data.text);
+	    	obtainTspServiceNameSelectTree();
 	    	hide();
 	    },
 	    onNodeUnselected (event, node) {
@@ -105,7 +105,7 @@ function loadingTreeMappingCertTsls(treeDataSerch) {
 }
 
 // Función para obtener el DTO del tsp service seleccionado en el árbol
-function obtainTspServiceNameSelectTree(tspServiceName) {
+function obtainTspServiceNameSelectTree() {
 	var obtainTspServiceNameSelectTree = /*[[@{/mappingCertTslRest/obtainTspServiceNameSelectTree}]]*/;
 	$.ajax({
 		url: obtainTspServiceNameSelectTree,

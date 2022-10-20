@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.14, 22/09/2022.
+ * @version 1.15, 20/10/2022.
  */
 package es.gob.valet.tsl.access;
 
@@ -70,10 +70,13 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
+import es.gob.valet.persistence.configuration.model.entity.TslMapping;
+import es.gob.valet.persistence.configuration.model.repository.TslMappingRepository;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.rest.elements.json.DateString;
+import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
@@ -96,7 +99,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.14, 22/09/2022.
+ * @version 1.15, 20/10/2022.
  */
 public final class TSLManager {
 
@@ -905,11 +908,30 @@ public final class TSLManager {
 		} catch (TSLValidationException e) {
 			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL152), e);
 		}
+		// Obtenemos los mapings de campos lógicos.
+		String tspServiceName = tslValidationResult.getTSPServiceNameForDetect();
+		this.obtainMappingWithLogicalField(mappings, tspServiceName);
 		// Guardamos los mapeos calculados en el resultado de la validación.
 		tslValidationResult.setMappings(mappings);
 		// Lo indicamos en auditoría.
 		CommonsCertificatesAuditTraces.addCertMappingFieldsTrace(auditTransNumber, mappings);
 
+	}
+
+	/**
+	 * Method that obtain mappings with logical fields from tsp service name.
+	 * 
+	 * @param mappings paramater where store all mappings.
+	 * @param tspServiceName paramater that contain the name of tsp service.
+	 */
+	private void obtainMappingWithLogicalField(Map<String, String> mappings, String tspServiceName) {
+		// Obtenemos todos los mappings de campos lógicos en caso de que existan.
+		List<TslMapping> listTslMapping = ApplicationContextProvider.getApplicationContext().getBean(TslMappingRepository.class).findMappingsToTspServiceName(tspServiceName);
+		if(null != listTslMapping) {
+			for (TslMapping tslMapping: listTslMapping) {
+				mappings.put(tslMapping.getLogicalFieldId(), tslMapping.getLogicalFieldValue());
+			}
+		}
 	}
 
 	/**
