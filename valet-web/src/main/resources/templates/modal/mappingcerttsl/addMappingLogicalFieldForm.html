@@ -3,8 +3,8 @@
 	<div class="modal-dialog" id="modalPrimary">
 		<div class="modal-content">
 			<div class="modal-header bg-title">
-				<div id="titleAddMappingLogicalField">
-					<h4 class="modal-title" th:text="#{form.app.mappingcerttsl.addMappingLogicalField.title}"></h4>
+				<div>
+					<h4 id="idTitleAddMappingLogicalField" class="modal-title" th:text="#{form.app.mappingcerttsl.addMappingLogicalField.title}"></h4>
 				</div>
 				<button type="button" class="close" aria-label="#{form.app.btn.close}" onclick="closeModal('modalAddMappingLogicalFieldForm')">
 					<span aria-hidden="true">&times;</span>
@@ -64,6 +64,8 @@ $(document).ready(function() {
 	mappingTslDTO = [[${mappingTslDTO}]];
 	// Si estamos mergeando cargamos la información en el modal
 	if(mappingTslDTO.action == "merge") {
+		var addTitle = /*[[#{form.app.mappingcerttsl.mergeMappingLogicalField.title}]]*/;
+		$("#idTitleAddMappingLogicalField").text(addTitle);
 		$("#idCAssociationTypeDTO").val(mappingTslDTO.cAssociationTypeDTO.idAssociationType);
 		if(mappingTslDTO.cAssociationTypeDTO.idAssociationType == 4) {
 			$("#idIdentificator").val(mappingTslDTO.logicalFieldId);
@@ -73,6 +75,9 @@ $(document).ready(function() {
 			$("#idSimpleValue").val(mappingTslDTO.logicalFieldValue);
 			showMappingTypeValueField();
 		}
+	} else {
+		var mergeTitle = /*[[#{form.app.mappingcerttsl.mergeMappingLogicalField.title}]]*/;
+		$("#idTitleAddMappingLogicalField").text(mergeTitle);
 	}
 });
 
