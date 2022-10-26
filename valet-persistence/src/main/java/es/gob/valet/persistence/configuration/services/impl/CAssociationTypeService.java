@@ -20,10 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 07/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +32,15 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import es.gob.valet.persistence.configuration.model.dto.CAssociationTypeDTO;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.repository.CAssociationTypeRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 
 /**
- * <p>Class that implements the communication with the operations of the persistence layer for CAssociationType.</p>
+ * <p>Class that implements the communication with the operations of the persistence layer for CAssociationTypeService.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 07/10/2022.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -68,5 +70,17 @@ public class CAssociationTypeService implements ICAssociationTypeService {
 		return repository.findByIdAssociationType(idCAssociationType);
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService#getAllAssociationTypeDTO()
+	 */
+	public List<CAssociationTypeDTO> getAllAssociationTypeDTO() {
+		List<CAssociationType> listCAssociationType = repository.findAll();
+		List<CAssociationTypeDTO> listCAssociationTypeDTO = new ArrayList<>();
+		for (CAssociationType cAssociationType : listCAssociationType) {
+			CAssociationTypeDTO cAssociationTypeDTO = new CAssociationTypeDTO(cAssociationType);
+			listCAssociationTypeDTO.add(cAssociationTypeDTO);
+		}
+		return listCAssociationTypeDTO;
+	}
 }

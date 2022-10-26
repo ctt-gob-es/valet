@@ -1,0 +1,63 @@
+<!-- Modal para ver/descargar el certificado tsl de un TSP service -->
+<div class="modal fade" role="dialog" data-toggle="modal" id="modalViewCertificateTslForm" data-backdrop="true" data-keyboard="false">
+	<div class="modal-dialog" id="modalPrimary">
+		<div class="modal-content">
+			<div class="modal-header bg-title">
+				<div id="titleViewCertTsl">
+					<h4 class="modal-title" th:text="#{form.app.mappingcerttsl.viewCertTsl.title}"></h4>
+				</div>
+				<button type="button" class="close" aria-label="#{form.app.btn.close}" onclick="closeModal('modalViewCertificateTslForm')">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body bg-modal">
+				<form name="idViewCertificateTslForm" role="form" id="idViewCertificateTslForm" class="form-horizontal">
+					<div class="form-group col-md-12">
+						<label for="subjectDN" th:text="#{form.app.mappingcerttsl.viewCertTsl.subjectDN.input}"></label>
+						<input type="text" id="subjectDN" class="form-control" readonly></input>
+						<div style="clear: both;"></div>
+					</div>
+					<div class="form-group col-md-12">
+						<label for="issuerDN" th:text="#{form.app.mappingcerttsl.viewCertTsl.issuerDN.input}"></label>
+						<input type="text" id="issuerDN" class="form-control" readonly></input>
+						<div style="clear: both;"></div>
+					</div>
+					<div class="valet-form-row">
+						<div class="form-group col-md-6">
+							<label for="notBefore" class="col-form-label" th:text="#{form.app.mappingcerttsl.viewCertTsl.notBefore.input}"></label> 
+							<input type="text" id="notBefore" style="overflow: hidden" readonly class="form-control" />
+						</div>
+						<div class="form-group col-md-6">
+							<label for="notAfter" class="col-form-label" th:text="#{form.app.mappingcerttsl.viewCertTsl.notAfter.input}"></label> 
+							<input type="text" id="notAfter" style="overflow: hidden" readonly class="form-control" />
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer bg-footer">
+				<button type="button" class="btn btn-default" th:text="#{form.app.btn.close}" onclick="closeModal('modalViewCertificateTslForm')"></button>
+				<button type="submit" id="viewCertTsltBtn" onclick="downLoadCertTsl();" class="btn btn-primary" th:text="#{form.app.btn.download}"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+
+$(document).ready(function() {
+	$("#subjectDN").val(window.tslServiceDTO.subjectDN);
+	$("#issuerDN").val(window.tslServiceDTO.issuerDN);
+	$("#notBefore").val(window.tslServiceDTO.notBefore);
+	$("#notAfter").val(window.tslServiceDTO.notAfter);
+});
+
+// Función que descarga el certficado tsl.
+function downLoadCertTsl() {
+	var bytes = new Uint8Array(window.tslServiceDTO.certificate); // pass your byte response to this constructor
+	var blob = new Blob([bytes], {type: "application/x-x509-ca-cert"});// change resultByte to bytes
+	var link=document.createElement('a');
+	link.href=window.URL.createObjectURL(blob);
+	link.download="Certificate";
+	link.click();
+}
+
+</script>

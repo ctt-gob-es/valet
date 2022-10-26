@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 17/10/2022.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the persistence module of valET: cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 17/10/2022.
  */
 public interface IPersistenceGeneralMessages {
 
@@ -51,4 +51,27 @@ public interface IPersistenceGeneralMessages {
 	 */
 	String CIPHER_LOG003 = "AESCIPHER003";
 
+	/**
+	 * Constant attribute that represents the name of the property <code>errorImportJSONMappingExtensionIncorrect</code> belonging to the
+	 * file messages/valet-persistence/general_xx_YY.properties.
+	 */
+	String ERROR_IMPORTING_JSON_MAPPING_EXTENSION_INCORRECT = "errorImportJSONMappingExtensionIncorrect";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorImportJSONMappingFileEmpty</code> belonging to the
+	 * file messages/valet-persistence/general_xx_YY.properties.
+	 */
+	String ERROR_IMPORTING_JSON_MAPPING_FILE_EMPTY = "errorImportJSONMappingFileEmpty";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorImportJSONMappingFormatIncorrect</code> belonging to the
+	 * file messages/valet-persistence/general_xx_YY.properties.
+	 */
+	String ERROR_IMPORTING_JSON_MAPPING_FORMAT_INCORRECT = "errorImportJSONMappingFormatIncorrect";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorImportJSONMappingTslMappingNotInstance</code> belonging to the
+	 * file messages/valet-persistence/general_xx_YY.properties.
+	 */
+	String ERROR_IMPORTING_JSON_MAPPING_TSL_MAPPING_NOT_INSTANCE = "errorImportJSONMappingTslMappingNotInstance";
 }

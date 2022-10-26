@@ -1,0 +1,87 @@
+<!-- Modal para actualizar el certificado tsl de un TSP service -->
+<div class="modal fade" role="dialog" data-toggle="modal" id="modalUpdateCertificateTslForm" data-backdrop="true" data-keyboard="false">
+	<div class="modal-dialog" id="modalPrimary">
+		<div class="modal-content">
+			<div class="modal-header bg-title">
+				<div id="titleUpdateCertTsl">
+					<h4 class="modal-title" th:text="#{form.app.mappingcerttsl.updateCertTsl.title}"></h4>
+				</div>
+				<button type="button" class="close" aria-label="#{form.app.btn.close}" onclick="closeModal('modalUpdateCertificateTslForm')">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body bg-modal">
+				<form name="idUpdateCertificateTslForm" role="form" id="idUpdateCertificateTslForm" class="form-horizontal">
+					<div id="errorUpdateCertificateTsl" role="alert"></div>
+					
+					<div class="form-group col-md-12">
+						<label for="fileCertificateTslId" th:text="#{form.app.mappingcerttsl.updateCertTsl.tspfileCertificateTslId.label}"></label>
+						<div id="customFile" class="form-group col-md-8 mb-1">
+							<input type="file" class="custom-file-input" id="fileCertificateTslId" aria-describedby="fileHelp" onchange="cleanSpan('fileCertificateTslId_span');">
+							<label class="custom-file-label" for="fileCertificateTslId" th:text="#{form.app.mappingcerttsl.updateCertTsl.tspfileCertificateTslId.customFileLabel}"></label>
+						</div>
+						<span id="fileCertificateTslId_span"></span>
+						<div style="clear: both;"></div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer bg-footer">
+				<button type="button" class="btn btn-default" th:text="#{form.app.btn.close}" onclick="closeModal('modalUpdateCertificateTslForm')"></button>
+				<button type="submit" id="updateCertTsltBtn" onclick="updateCertTsl();" class="btn btn-primary" th:text="#{form.app.btn.update}"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+$(document).ready(function() {
+	// Se modifica el texto que caso de que el usuario selecciona un archivo
+	$('#fileCertificateTslId').change(function () {
+		var i = $(this).prev('label').clone();
+		var file = $('#fileCertificateTslId')[0].files[0].name;
+		$(this).next('label').text(file);
+	});
+});
+
+// Función que realiza la actualización del certificado tsl.
+function updateCertTsl() {
+	var updateCertTsl = /*[[@{/mappingCertTslRest/updateCertTsl}]]*/;
+	var formData = new FormData();
+	formData.append("fileCertificateTsl", undefined != $('#fileCertificateTslId').prop('files')[0] ? $('#fileCertificateTslId').prop('files')[0] : new File([""], "nofile", {type: "text/plain", lastModified: new Date()}));
+	formData.append("tspServiceNameSelectTree", new Blob([window.tspServiceName], {type: "application/json"}));
+	formData.append("tspNameSelectTree", new Blob([window.tspName], {type: "application/json"}));
+	formData.append("countrySelectTree", new Blob([window.country], {type: "application/json"}));
+	loading();
+	$.ajax({
+		url: updateCertTsl,
+		data :formData,
+		type: 'POST',
+		enctype: 'multipart/form-data;',
+		processData: false,
+        contentType: false,
+        cache: false,
+		success: function(xhr) {
+			closeModal('modalUpdateCertificateTslForm');
+			var meesageSuccess = /*[[#{form.app.mappingcerttsl.updateCertTsl.tspfileCertificateTslId.messageSuccess}]]*/;
+			$('#successMappingCertTsl').html(meesageSuccess);
+			$('#successMappingCertTsl').addClass('alert alert-success');
+			$('#successMappingCertTsl').css("display","block");
+			slideUpMessage('successMappingCertTsl');
+			
+			// Se vuelve a cargar la botonera y las filas del datatable 
+			window.obtainTspServiceNameSelectTree(window.tspServiceName);
+			
+			hide();
+		},
+		error: function(xhr) {
+			hide();
+			if(xhr.status == 506) {
+				printErrors(xhr, 'idUpdateCertificateTslForm');
+			} else {
+				$('#errorUpdateCertificateTsl').html(xhr.responseText);
+				$('#errorUpdateCertificateTsl').addClass('alert alert-danger');	
+			}
+		}
+	});
+}
+
+</script>

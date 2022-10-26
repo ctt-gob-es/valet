@@ -319,9 +319,9 @@ function closeButton(btnId){
 
 
 function cleanSpan(obj){
-$("#"+ obj).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
-var msg = '';
-$("#"+ obj).html(msg);
+	$("#"+ obj).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+	var msg = '';
+	$("#"+ obj).html(msg);
 }
 
 //Client side validation
@@ -345,4 +345,38 @@ function closeModalButton(modalId, nameForm){
 	});
 		//se limpia valores del formulario
 	$('#' + modalId).modal('hide');	
+}
+
+//Función para cerrar el modal.
+function closeModal(modalId){
+	$('#' + modalId).modal('hide');
+	$('.modal-backdrop').remove();
+}
+
+//Función para limpiar todas las etiquetas con errores.
+function cleanAllSpan(formId){
+	$('#'+formId+' *').filter('span.badge').each(function(){
+		$(this).removeClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+		var msg = '';
+		$(this).html(msg);
+	});
+}
+
+// Función para mostrar mensajes temporales
+function slideUpMessage(divId) {
+	setTimeout(function() {
+		$("#"+divId).slideUp();
+	}, 5000); // <-- time in milliseconds
+}
+
+function printErrors(xhr, formId) {
+	var errors = JSON.parse(xhr.responseText);
+	jQuery.each(errors, function(i, val) {
+		$('#'+formId+' *').filter('span').each(function(){
+			if (i == $(this).attr('id')){
+				$("#" + i).text(val);
+				$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+			}
+		});
+  	})
 }

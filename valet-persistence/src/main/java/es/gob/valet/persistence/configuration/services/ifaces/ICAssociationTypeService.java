@@ -20,18 +20,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 07/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
 import java.util.List;
 
+import es.gob.valet.persistence.configuration.model.dto.CAssociationTypeDTO;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to CAssociationType.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 07/10/2022.
  */
 public interface ICAssociationTypeService {
 
@@ -48,5 +49,10 @@ public interface ICAssociationTypeService {
 	 * @return {@link CAssociationType} an object that represents the CAssociationType.
 	 */
 	CAssociationType getAssociationTypeById(Long idCAssociationType);
-
+	
+	/**
+	 * Method that gets the list of all association type DTO.
+	 * @return List of type of mapping associations.
+	 */
+	List<CAssociationTypeDTO> getAllAssociationTypeDTO();
 }

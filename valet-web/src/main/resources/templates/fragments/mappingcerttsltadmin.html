@@ -1,14 +1,14 @@
+<!-- Interfaz de administración para los mappgins de certificados tsl -->
 <div class="container-fluid">
 	<h4 class="c-grey-900 mT-10 mB-30" th:text="#{form.app.mappingcerttsl.title}"></h4>
 	<div class="row gap-20 masonry pos-r">
 		<div class="masonry-item col-md-4">
 			<div class="bgc-white p-20 bd">
-				<div id="errorMappingCertTsl" role="alert"></div>
 				<div id="searcher" class="form-row mT-10">		
 					<div class="input-group mb-3 col-md-12">
 					  <input type="text" id="search" class="form-control" th:placeholder="#{form.app.mappingcerttsl.placeholder}" aria-describedby="button-search">
 					  <span class="form-clear d-none glyphicon-remove-search glyphicon-remove"></span>
-					  <button class="btn btn-secondary" type="button" id="button-search"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+					  <button class="btn btn-secondary" type="button" id="button-search" onclick="searchInTree();"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
 					</div>						 
 				</div>						
 				<!-- arbol de Mappings de Certificados TSLs-->
@@ -18,13 +18,17 @@
 		<div class="masonry-item col-md-8">
 			<div class="bgc-white p-20 bd h-100">
 				<h4 class="c-grey-900 mB-20" id="idTitleLogicalField"></h4>
+				<div id="errorMappingCertTsl" role="alert"></div>
+				<div id="successMappingCertTsl" role="alert"></div>
 				<div class="mT-30 mappingCertTslForm" >
 					<table id="mappingCertTslTable" class="table table-striped table-bordered" style="display:none" cellspacing="0" width="100%">
 						<thead>
 							<tr>
-								<th th:text="#{form.app.mappingcerttsl.table.column}"></th>
+								<th th:text="#{form.app.mappingcerttsl.table.identificator.column}"></th>
+								<th th:text="#{form.app.mappingcerttsl.table.value.column}"></th>
+								<th th:text="#{form.app.mappingcerttsl.table.type.column}"></th>
 								<!--  Columna para incluir botones editar, eliminar-->
-								<th></th>				
+								<th th:text="#{form.app.mappingcerttsl.table.action.column}"></th>
 							</tr>
 						</thead>
 					</table>	
@@ -34,59 +38,133 @@
 	</div>
 </div>
 
-
-
 <script th:inline="javascript">
+// Declaracion de variables 
 var mappingCertTslTable;
+var mappingCertTslTree;
+var tspServiceName;
+var tspName;
+var country;
+var tslServiceDTO;
+var idTslMappingDelete;
 
 $(document).ready(function() {
-	loadingTreeMappingCertTsls();
+	loadingTreeMappingCertTsls(undefined);
 });
 
 // Función para cargar el árbol de mappings de certificados tsls
-function loadingTreeMappingCertTsls() {
+function loadingTreeMappingCertTsls(treeDataSerch) {
 	var listBootstrapTreeNode = [[${listBootstrapTreeNode}]];
 	
-	var dataJson = JSON.stringify(listBootstrapTreeNode);
+	var dataJson; 
+	
+	// Si se carga por primera vez el arbol le proporcionamos los datos que vienen del controller. 
+	// Si viene la petición por la búsqueda de un certificado se le propociona dichos datos.
+	if(undefined != treeDataSerch) {
+		dataJson = treeDataSerch;
+	} else {
+		dataJson = JSON.stringify(listBootstrapTreeNode);
+	}
 	
 	// Se inicializa el arbol de mappings de certificados tsls
-	mappingCertTslTable = $('#mappingCertTslTree').treeview({
+	mappingCertTslTree = $('#mappingCertTslTree').treeview({
 		data: dataJson,
-	    highlightSelected: true,
+		highlightSelected: true,
 	    highlightSearchResults: true,
-	    searchResultBackColor: '#CCC',
+	    searchResultBackColor: '#ffeb3b1f',
 	    searchResultColor: '#428bca',
 	    color: "#428bca",
 	    onNodeSelected: function(event, data) {
+	    	loading();
+	    	// Se almacenan los valores de pais, tspName y tspServiceName seleccionado para actualizar su certificado dado el caso.
+	    	tspServiceName = data.text.substring(0,data.text.indexOf("D:") - 5); // CAD: or END: - 5 characters.
+	    	tspName = $('#mappingCertTslTree').treeview('getParent', data).text;
+	    	country = $('#mappingCertTslTree').treeview('getParent', $('#mappingCertTslTree').treeview('getParent', data)).text;
 	    	var title = /*[[#{form.app.mappingcerttsl.h4.title}]]*/;
 	    	$("#idTitleLogicalField").text(title+": "+data.text);
 	    	// Si existe una instancia de datatable creada previamente NO la volvemos a crear
-	    	if ( $.fn.dataTable.isDataTable( '#mappingCertTslTable' ) ) {
-	    		addRowsMappingCertTslsTable(data.nodeId);
-	    	} else {
-	    		loadingDatatableMappingCertTsls(data.nodeId);		
+	    	if ( !$.fn.dataTable.isDataTable( '#mappingCertTslTable' ) ) {
+	    		loadingDatatableMappingCertTsls();
 	    	}
+	    	// Se obtiene el tsp service name DTO del arbol para trabajar con sus campos lógicos asociados y su certificado
+	    	obtainTspServiceNameSelectTree();
+	    	hide();
 	    },
-		nodeUnselected (event, node) {
-			
+	    onNodeUnselected (event, node) {
+	    	tspServiceName = undefined;
+	    	tspName = undefined;
+	    	country = undefined;
+	    	mappingCertTslTable.clear().draw();
+	    	$("#idbtnAddLogicField").prop("disabled", true);
+			$("#idBtnUpdateCert").prop("disabled", true);
+			$("#idbtnViewCert").prop("disabled", true);
+			$("#idBtnExport").prop("disabled", true);
+			$("#idBtnImport").prop("disabled", true);
 		}
 	});
 }
 
+// Función para obtener el DTO del tsp service seleccionado en el árbol
+function obtainTspServiceNameSelectTree() {
+	var obtainTspServiceNameSelectTree = /*[[@{/mappingCertTslRest/obtainTspServiceNameSelectTree}]]*/;
+	$.ajax({
+		url: obtainTspServiceNameSelectTree,
+		data: $.param({'tspServiceNameSelectTree': tspServiceName}),
+		type: 'POST',
+		cache: false,
+		success: function(xhr) {
+			tslServiceDTO = JSON.parse(xhr);
+			// No tiene ningún campo lógico ni ningún certificado asignado. 1, 2 y 5 Habilitados.
+			if(null == tslServiceDTO.listMappingTslDTO && null == tslServiceDTO.certificate) {
+				$("#idbtnAddLogicField").prop("disabled", false);
+				$("#idBtnUpdateCert").prop("disabled", false);
+				$("#idbtnViewCert").prop("disabled", true);
+				$("#idBtnExport").prop("disabled", true);
+				$("#idBtnImport").prop("disabled", false);
+			// No tiene ningún campo lógico pero tiene un certificado asignado. 1, 2, 3 y 5 Habilitados.
+			} else if (null == tslServiceDTO.listMappingTslDTO && null != tslServiceDTO.certificate) {
+				$("#idbtnAddLogicField").prop("disabled", false);
+				$("#idBtnUpdateCert").prop("disabled", false);
+				$("#idbtnViewCert").prop("disabled", false);
+				$("#idBtnExport").prop("disabled",true);
+				$("#idBtnImport").prop("disabled", false);
+			// Tiene campos lógico pero no certificado. 1, 2, 4 y 5 Habilitados.
+			} else if (null != tslServiceDTO.listMappingTslDTO && null == tslServiceDTO.certificate) {
+				$("#idbtnAddLogicField").prop("disabled", false);
+				$("#idBtnUpdateCert").prop("disabled", false);
+				$("#idbtnViewCert").prop("disabled", true);
+				$("#idBtnExport").prop("disabled", false);
+				$("#idBtnImport").prop("disabled", false);
+			// Tiene campos lógico y certificado. Todos Habilitados.
+			} else if (null != tslServiceDTO.listMappingTslDTO && null != tslServiceDTO.certificate) {
+				$("#idbtnAddLogicField").prop("disabled", false);
+				$("#idBtnUpdateCert").prop("disabled", false);
+				$("#idbtnViewCert").prop("disabled", false);
+				$("#idBtnExport").prop("disabled", false);
+				$("#idBtnImport").prop("disabled", false);
+			}
+			
+			addRowsMappingCertTslsTable();
+		} ,
+		error: function(xhr) {
+			hide();
+			$('#errorMappingCertTsl').html(xhr.responseText);
+			$('#errorMappingCertTsl').addClass('alert alert-danger');
+		}
+	});	
+}
+
 // Funcíon para cargar el datatable de mappings de certificados tsls en función de un identificador
-function loadingDatatableMappingCertTsls(idMappingCertTsl) {
+function loadingDatatableMappingCertTsls() {
 	
-	var loadingDatatableMappingCertTsls = /*[[@{/mappingCertTslRest/loadingDatatableMappingCertTsls}]]*/;
 	var isConsultant = $('#isConsultant').val();
 	var btnEditMapping =  /*[[#{form.app.mappingcerttsl.table.edit.btn}]]*/;
 	var btnDeleteMapping = /*[[#{form.app.mappingcerttsl.table.delete.btn}]]*/;
 	var btnExport = /*[[#{form.app.mappingcerttsl.table.export.btn}]]*/;
 	var btnImport = /*[[#{form.app.mappingcerttsl.table.import.btn}]]*/;
-	var btnAddField = /*[[#{form.app.mappingcerttsl.table.addField.btn}]]*/;
+	var btnAddLogicField = /*[[#{form.app.mappingcerttsl.table.addLogicField.btn}]]*/;
 	var btnViewCert = /*[[#{form.app.mappingcerttsl.table.viewCert.btn}]]*/;
 	var btnUpdateCert = /*[[#{form.app.mappingcerttsl.table.updateCert.btn}]]*/;
-	
-	loading();
 	
 	// Se crea la instancia del datatable
 	mappingCertTslTable = $('#mappingCertTslTable').DataTable({
@@ -118,12 +196,22 @@ function loadingDatatableMappingCertTsls(idMappingCertTsl) {
 		    {
 	           	orderable: true,
 	           	targets:   0,
-	           	width: "790px",
+	           	width: "500px",
+	        },
+	        {
+	           	orderable: true,
+	           	targets:   1,
+	           	width: "500px",
+	        },
+	        {
+	           	orderable: true,
+	           	targets:   2,
+	           	width: "auto",
 	        },
 	        {
 	           	orderable: false,
-	           	targets:   1,
-	           	width: "40px",
+	           	targets:   3,
+	           	width: "auto",
 	           	render: function ( data, type, row, meta ) {
 	           		
 	           		if(isConsultant == 'true') {
@@ -136,7 +224,7 @@ function loadingDatatableMappingCertTsls(idMappingCertTsl) {
 							
 					} else {
 						var editIcon = '<div class="text-center"><a onclick=editMapping('+data+'); alt='+btnEditMapping+' title='+btnEditMapping+'>	<span class="c-green-500 ti-pencil-alt icon-tb"></span></a>';
-				    	var deleteIcon = '<a onclick=deleteMapping('+data+'"); alt='+btnDeleteMapping+' title='+btnDeleteMapping+'>	<span class="c-red-500 ti-trash icon-tb"></span></a></div>';
+				    	var deleteIcon = '<a onclick=deleteMapping("'+data+'"); alt='+btnDeleteMapping+' title='+btnDeleteMapping+'>	<span class="c-red-500 ti-trash icon-tb"></span></a></div>';
 				    		
 				    	editIcon += deleteIcon;
 							  
@@ -148,52 +236,99 @@ function loadingDatatableMappingCertTsls(idMappingCertTsl) {
 		dom: 'Bfrtip',
         buttons: [
         	{
-        		extend: 'selected',
-        		text: btnExport, 
-        		attr: {id: 'idBtnExport'},
+        		text: btnAddLogicField, 
+        		attr: {id: 'idbtnAddLogicField'},        	
         		action: function ( e, dt, node, config ) {
-        			var d = dt.rows({
-	                	selected: !0
+        			var viewAddLogicField = /*[[@{/mappingCertTsl/viewAddLogicField}]]*/;
+					loading();
+					$.ajax({
+						url: viewAddLogicField,
+						type: 'POST',
+						cache: false,
+						success: function(xhr) {
+							hide();
+							$('#modal').html(xhr);
+							$('#modalAddMappingLogicalFieldForm').modal('show');
+						}
 					});
         		}
         	},
         	{
-        		extend: 'selected',
-        		text: btnImport, 
-        		attr: {id: 'idBtnImport'},        	
-        		action: function ( e, dt, node, config ) {
-        			var d = dt.rows({
-	                	selected: !0
-					});
-        		}
-        	},
-        	{
-        		extend: 'selected',
-        		text: btnAddField, 
-        		attr: {id: 'idbtnAddField'},        	
-        		action: function ( e, dt, node, config ) {
-        			var d = dt.rows({
-	                	selected: !0
-					});
-        		}
-        	},
-        	{
-        		extend: 'selected',
-        		text: btnViewCert, 
-        		attr: {id: 'idbtnViewCert'},        	
-        		action: function ( e, dt, node, config ) {
-        			var d = dt.rows({
-	                	selected: !0
-					});
-        		}
-        	},
-        	{
-        		extend: 'selected',
         		text: btnUpdateCert, 
         		attr: {id: 'idBtnUpdateCert'},        	
         		action: function ( e, dt, node, config ) {
-					var d = dt.rows({
-	                	selected: !0
+					var viewUpdateCertificateTsl = /*[[@{/mappingCertTsl/viewUpdateCertificateTsl}]]*/;
+					loading();
+					$.ajax({
+						url: viewUpdateCertificateTsl,
+						type: 'POST',
+						cache: false,
+						success: function(xhr) {
+							hide();
+							$('#modal').html(xhr);
+							$('#modalUpdateCertificateTslForm').modal('show');
+						}
+					});
+        		}
+        	},
+        	{
+        		text: btnViewCert, 
+        		attr: {id: 'idbtnViewCert'},        	
+        		action: function ( e, dt, node, config ) {
+        			var viewCertificateTsl = /*[[@{/mappingCertTsl/viewCertificateTsl}]]*/;
+					loading();
+					$.ajax({
+						url: viewCertificateTsl,
+						type: 'POST',
+						cache: false,
+						success: function(xhr) {
+							hide();
+							$('#modal').html(xhr);
+							$('#modalViewCertificateTslForm').modal('show');
+						} ,
+						error:  function(xhr) {
+							$('#errorMappingCertTsl').html(xhr.responseText);
+							$('#errorMappingCertTsl').addClass('alert alert-danger');
+						}
+					});
+        		}
+        	},
+        	{
+        		text: btnExport, 
+        		attr: {id: 'idBtnExport'},
+        		action: function ( e, dt, node, config ) {
+        			var viewExportMappingToJson = /*[[@{/mappingCertTsl/viewExportMappingToJson}]]*/;
+        			$.ajax({
+        				url: viewExportMappingToJson,
+        				type: 'POST',
+        				cache: false,
+        				success:function(xhr) {
+        					hide();
+        					$('#modal').html(xhr);
+							$('#modalExportMappingLogicalFieldToJsonForm').modal('show');
+        				},
+        			});
+        		}
+        	},
+        	{
+        		text: btnImport, 
+        		attr: {id: 'idBtnImport'},        	
+        		action: function ( e, dt, node, config ) {
+        			var viewMonitorImportTsl = /*[[@{/mappingCertTsl/viewMonitorImportTsl}]]*/;
+        			loading();
+					$.ajax({
+						url: viewMonitorImportTsl,
+						type: 'POST',
+						cache: false,
+						success: function(xhr) {
+							hide();
+							$('#modal').html(xhr);
+							$('#modalMonitorImportMappingLogicalFieldForm').modal('show');
+						} ,
+						error:  function(xhr) {
+							$('#errorMappingCertTsl').html(xhr.responseText);
+							$('#errorMappingCertTsl').addClass('alert alert-danger');
+						}
 					});
         		}
         	}
@@ -207,34 +342,100 @@ function loadingDatatableMappingCertTsls(idMappingCertTsl) {
 			$("#mappingTable").find('input,  button, select, td, a').attr('disabled','disabled');
 			
 		}
-    } );
-	
-	// Añadimos registros al datatable
-	addRowsMappingCertTslsTable(idMappingCertTsl);
-	
+    });
+		
 	$("#mappingCertTslTable").css("display","block");
-	
-	hide();
 }
 
-// Función para añadir registros a la instacia de datatable definida previamente
-function addRowsMappingCertTslsTable(idMappingCertTsl) {
-	var loadingDatatableMappingCertTsls = /*[[@{/mappingCertTslRest/loadingDatatableMappingCertTsls}]]*/;
+// Función para añadir filas a la instancia de datatable definida previamente
+function addRowsMappingCertTslsTable() {
+	mappingCertTslTable.clear().draw();
+	if(undefined != tslServiceDTO && null != tslServiceDTO.listMappingTslDTO) {
+		tslServiceDTO.listMappingTslDTO.forEach(reg => {
+			var idTslMapping = reg.idTslMapping;
+			var logicalFieldId = reg.logicalFieldId;
+			var logicalFieldValue = reg.logicalFieldValue;
+			var tokenName = reg.cAssociationTypeDTO.tokenName;
+			mappingCertTslTable.row.add([logicalFieldId, logicalFieldValue, tokenName, idTslMapping]).draw(false);
+		});	
+	}
+}
+
+// Función para realizar búsquedas en función de un valor introducido por el usuario en la caja de búsqueda
+function searchInTree() {
+	var valueSearch = $("#search").val();
+	var searchInTree = /*[[@{/mappingCertTslRest/searchInTree}]]*/;
+	
 	loading();
 	$.ajax({
-		url: loadingDatatableMappingCertTsls,
+		url: searchInTree,
 		type: 'POST',
 		cache: false,
-		data: $.param({'idMappingCertTsl': idMappingCertTsl}),
-		success: function(xhr){
+		data: $.param({'valueSearch': valueSearch}),
+		success: function(xhr) {
 			hide();
-			mappingCertTslTable.clear().draw();
-			xhr.data.forEach(reg => {
-				var name = reg.name;
-				var idMappingCertTsl = reg.idMappingCertTsl;
-				mappingCertTslTable.row.add([name, idMappingCertTsl]).draw(false);
-			})
+			loadingTreeMappingCertTsls(xhr);
+			$('#mappingCertTslTree').treeview('expandAll',true);
+			$('#mappingCertTslTree').treeview("search", valueSearch);				
 		}
 	});
 }
+
+// Evento que se registra para que cuando el usuario marque con el teclado algún valor a buscar aparezca el botón de limpiar la búsqueda.
+$("#search").on("keyup", function () {
+    var value = $.trim($(this).val());
+    if (value.length > 0) {
+		$('.input-group :input').on('keydown focus', function() {
+			if ($(this).val().length > 0) {
+		    	$(this).nextAll('.form-clear').removeClass('d-none');
+		    }
+		}).on('keydown keyup blur', function() {
+			if ($(this).val().length === 0) {
+				$(this).nextAll('.form-clear').addClass('d-none');
+		    }
+		});
+		$('.form-clear').on('click', function() {
+			$(this).addClass('d-none').prevAll(':input').val('');
+			loading();
+			loadingTreeMappingCertTsls();
+			hide();
+		}); 
+    }    
+});
+
+// Función para editar los mappings
+function editMapping(idTslMapping) {
+	var viewEditMapping = /*[[@{/mappingCertTsl/viewEditMapping}]]*/;
+	loading();
+	$.ajax({
+		url: viewEditMapping,
+		type: 'POST',
+		cache: false,
+		data: $.param({'idTslMapping': idTslMapping}),
+		success: function(xhr) {
+			hide();
+			$('#modal').html(xhr);
+			$('#modalAddMappingLogicalFieldForm').modal('show');				
+		}
+	});
+}
+
+//Función para eliminar los mappings
+function deleteMapping(idTslMapping) {
+	var viewDeleteMapping = /*[[@{/mappingCertTsl/viewDeleteMapping}]]*/;
+	idTslMappingDelete = idTslMapping;
+	loading();
+	$.ajax({
+		url: viewDeleteMapping,
+		type: 'POST',
+		cache: false,
+		data: $.param({'idTslMapping': idTslMapping}),
+		success: function(xhr) {
+			hide();
+			$('#modal').html(xhr);
+			$('#modalDeleteMappingLogicalFieldForm').modal('show');				
+		}
+	});
+}
+
 </script>

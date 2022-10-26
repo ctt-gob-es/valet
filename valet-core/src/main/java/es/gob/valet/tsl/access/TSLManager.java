@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.13, 27/04/2022.
+ * @version 1.15, 20/10/2022.
  */
 package es.gob.valet.tsl.access;
 
 import java.io.ByteArrayInputStream;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -44,9 +45,11 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
+import es.gob.valet.commons.utils.CryptographicConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsCountryLanguage;
+import es.gob.valet.commons.utils.UtilsCrypto;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -61,15 +64,19 @@ import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCoun
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
+import es.gob.valet.persistence.configuration.model.entity.TslMapping;
+import es.gob.valet.persistence.configuration.model.repository.TslMappingRepository;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.rest.elements.json.DateString;
+import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
@@ -92,7 +99,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.13, 27/04/2022.
+ * @version 1.15, 20/10/2022.
  */
 public final class TSLManager {
 
@@ -118,14 +125,9 @@ public final class TSLManager {
 	private Set<String> setOfURLStringThatRepresentsEuLOTL = new TreeSet<String>();
 
 	/**
-	 * Attribute that represents the list of certificates that appear in the TSLs.
-	 */
-	//private List<X509Certificate> listCertificateTSL = new ArrayList<X509Certificate>();
-
-	/**
 	 * Attribute that represents the map of certificates that appear in the TSLs by Country.
 	 */
-	private Map<String, List<X509Certificate>> mapCertificateTSL  = new HashMap<String, List<X509Certificate>>();
+	private Map<String, List<X509Certificate>> mapCertificateTSL = new HashMap<String, List<X509Certificate>>();
 
 	/**
 	 * Attribute that represents a set of URL (String format) that represents the official
@@ -906,11 +908,31 @@ public final class TSLManager {
 		} catch (TSLValidationException e) {
 			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL152), e);
 		}
+		// Obtenemos los mapings de campos lógicos.
+		String tspServiceName = tslValidationResult.getTSPServiceNameForDetect();
+		this.obtainMappingWithLogicalField(mappings, tspServiceName);
 		// Guardamos los mapeos calculados en el resultado de la validación.
 		tslValidationResult.setMappings(mappings);
 		// Lo indicamos en auditoría.
 		CommonsCertificatesAuditTraces.addCertMappingFieldsTrace(auditTransNumber, mappings);
 
+	}
+
+	/**
+	 * Method that obtain mappings with logical fields from tsp service name.
+	 * 
+	 * @param mappings paramater where store all mappings.
+	 * @param tspServiceName paramater that contain the name of tsp service.
+	 */
+	private void obtainMappingWithLogicalField(Map<String, String> mappings, String tspServiceName) {
+		// Obtenemos todos los mappings de campos lógicos en caso de que
+		// existan.
+		List<TslMapping> listTslMapping = ApplicationContextProvider.getApplicationContext().getBean(TslMappingRepository.class).findMappingsToTspServiceName(tspServiceName);
+		if (null != listTslMapping) {
+			for (TslMapping tslMapping: listTslMapping) {
+				mappings.put(tslMapping.getLogicalFieldId(), tslMapping.getLogicalFieldValue());
+			}
+		}
 	}
 
 	/**
@@ -937,8 +959,8 @@ public final class TSLManager {
 			// TSL).
 			ConfigurationCacheFacade.tslClearTSLCache();
 
-		//	listCertificateTSL.clear();
 			mapCertificateTSL.clear();
+			TslInformationTree.mapTslMappingTree.clear();
 
 			// Obtenemos todas las regiones dadas de alta en base de datos.
 			List<TslCountryRegion> tcrList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getAllTslCountryRegion(false);
@@ -971,8 +993,9 @@ public final class TSLManager {
 							// caché compartida.
 							ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
 							List<X509Certificate> listCertificates = getListCertificatesTSL(tslObject);
-							//listCertificateTSL.addAll(listCertificates);
 							mapCertificateTSL.put(tcr.getCountryRegionCode(), listCertificates);
+							List<TslMappingDTO> listTslMappingTree = getListTslMappingTree(tcr.getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
+							TslInformationTree.mapTslMappingTree.put(tcr.getCountryRegionCode(), listTslMappingTree);
 						}
 
 					}
@@ -986,7 +1009,114 @@ public final class TSLManager {
 		} catch (Exception e) {
 			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL153), e);
 		}
+	}
 
+	/**
+	 * Method to update the information of the TSL in mapTslMappingTree of the country passed as parameter.
+	 * @param codeCountry Country/region code for the TSL.
+	 */
+	public void updateMapTslMappingTree(String codeCountry, String version, ITSLObject tslObject) {
+
+		try {
+
+			// Si lo hemos conseguido parsear...
+			if (tslObject != null) {
+				List<TslMappingDTO> listTslMappingTree = getListTslMappingTree(codeCountry, version, tslObject);
+				TslInformationTree.mapTslMappingTree.put(codeCountry, listTslMappingTree);
+			}
+
+		} catch (Exception e) {
+			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL354, new Object[ ] { e.getMessage() }), e);
+		}
+	}
+
+	/**
+	 * Method to delete the information of the TSL in mapTslMappingTree of the country passed as parameter.
+	 * @param codeCountry Country/region code for the TSL
+	 */
+	public void deleteMapTslMappingTree(String codeCountry) {
+		TslInformationTree.mapTslMappingTree.remove(codeCountry);
+	}
+
+	/**
+	 * Method to extract the necessary information from each TSL to generate the tree of the TSL Mapping module.
+	 * 
+	 * @param codeCountry Country/region code for the TSL.
+	 * @param version Version of TSL.
+	 * @param tslObject TSL Object representation (already parsed)
+	 * @return List of TslMappingDTO.
+	 */
+	private List<TslMappingDTO> getListTslMappingTree(String codeCountry, String version, ITSLObject tslObject) {
+		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL349));
+		List<TslMappingDTO> result = new ArrayList<TslMappingDTO>();
+		boolean error = Boolean.FALSE;
+		// Recuperamos la lista de TSP y vamos analizando uno a uno.
+		List<TrustServiceProvider> tspList = tslObject.getTrustServiceProviderList();
+		// Si la lista no es nula ni vacía...
+		if (tspList != null && !tspList.isEmpty()) {
+
+			// La vamos recorriendo mientras no se termine y no se haya
+			// modificado el resultado de la validación del certificado.
+			for (int index = 0; index < tspList.size(); index++) {
+
+				// Almacenamos en una variable el TSP a tratar.
+				TrustServiceProvider tsp = tspList.get(index);
+				List<String> tspNameList = tsp.getTspInformation().getTSPNamesForLanguage(Locale.UK.getLanguage());
+				String tspName = tspNameList.get(0);
+
+				List<TSPService> tspServiceList = tsp.getAllTSPServices();
+				// Si la lista no es nula ni vacía...
+				if (tspServiceList != null && !tspServiceList.isEmpty()) {
+					for (int indexTspService = 0; indexTspService < tspServiceList.size(); indexTspService++) {
+
+						TSPService tspService = tspServiceList.get(indexTspService);
+
+						if (tspService != null) {
+							ServiceHistoryInstance shi = tspService.getServiceInformation();
+							// si el servicio es de tipo CA (certificados
+							// cualificados o no).
+							String tspServiceType = shi.getServiceTypeIdentifier().toString();
+							if (!UtilsStringChar.isNullOrEmpty(tspServiceType)) {
+								if (tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_CA_QC) || tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_CA_PKC) || tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_NATIONALROOTCA)) {
+									TslMappingDTO tmDto = new TslMappingDTO(codeCountry, version, tspName);
+
+									String tspServiceName = shi.getServiceNameInLanguage(Locale.UK.getLanguage());
+									tmDto.setTspServiceName(tspServiceName);
+									// se obtiene la identidad digital
+									DigitalIdentitiesProcessor dipAux = new DigitalIdentitiesProcessor(shi.getAllDigitalIdentities());
+									if (dipAux.getX509certList() != null && !dipAux.getX509certList().isEmpty()) {
+										X509Certificate x509cert = dipAux.getX509certList().get(0);
+										String digitalId = ""; // provisional
+										try {
+											digitalId = UtilsCrypto.calculateDigestReturnB64String(CryptographicConstants.HASH_ALGORITHM_SHA256, x509cert.getEncoded(), null);
+
+										} catch (CommonUtilsException e) {
+											error = Boolean.TRUE;
+											LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL351, new Object[ ] { codeCountry, tspName, tspServiceName }));
+
+										} catch (CertificateEncodingException e) {
+											error = Boolean.TRUE;
+											LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL352, new Object[ ] { codeCountry, tspName, tspServiceName }));
+										}
+										tmDto.setDigitalIdentity(digitalId);
+										String expDate = UtilsCertificate.getValidTo(x509cert);
+										tmDto.setExpirationDate(expDate);
+									}
+									if (!error)
+										result.add(tmDto);
+								}
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL350));
+		}
+		return result;
 	}
 
 	/**
@@ -1567,7 +1697,8 @@ public final class TSLManager {
 				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService().deleteTslCountryRegionMapping(mappingId);
 				// Lo borramos de la caché.
 				ConfigurationCacheFacade.tslRemoveMappingFromCountryRegion(countryRegionCode, mappingId);
-
+				// se actualiza el mapa mapTslMappingTree
+				deleteMapTslMappingTree(countryRegionCode);
 			} catch (Exception e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL167, new Object[ ] { mappingId, countryRegionCode }), e);
 			}
@@ -1922,6 +2053,11 @@ public final class TSLManager {
 
 				// Asignamos como resultado el objeto de base de datos.
 				result = td;
+
+				// se actualiza la información en los datos del arbol de mapeos
+				// de
+				// TSLs.
+				updateMapTslMappingTree(td.getTslCountryRegion().getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
 
 			} catch (Exception e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171), e);
@@ -2292,6 +2428,7 @@ public final class TSLManager {
 			// Recuperamos de la caché compartida el TSLData a actualizar, y de
 			// esta el objeto serializable que representa a la TSL.
 			TSLDataCacheObject tdco = getTSLDataCacheObject(tslDataId);
+
 			ITSLObject tslObject = (ITSLObject) tdco.getTslObject();
 
 			// Cargamos el pojo de base de datos.
@@ -2378,6 +2515,9 @@ public final class TSLManager {
 				updateTSLDataLegibleDocument(tslDataId, legibleDocumentArrayByte);
 			}
 			result = td;
+			// se actualiza la información en los datos del arbol de mapeos de
+			// TSLs.
+			updateMapTslMappingTree(td.getTslCountryRegion().getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
 		} catch (
 
 		Exception e) {
@@ -2538,15 +2678,14 @@ public final class TSLManager {
 
 	}
 
-
-	
 	/**
 	 * Gets the value of the attribute {@link #mapCertificateTSL}.
 	 * @return the value of the attribute {@link #mapCertificateTSL}.
 	 */
 	public List<X509Certificate> getListCertificateTSL(String codeCountry) {
-		List<X509Certificate> result  = new ArrayList<X509Certificate>();
-		if(codeCountry != null){
+		List<X509Certificate> result = new ArrayList<X509Certificate>();
+		if (codeCountry != null) {
+
 			result = mapCertificateTSL.get(codeCountry);
 		}
 		return result;

@@ -1,0 +1,216 @@
+<!-- Modal para monitorizar el proceso de importación de tsl mappings -->
+<div class="modal fade" role="dialog" data-toggle="modal" id="modalMonitorImportMappingLogicalFieldForm" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-title">
+				<h4 class="modal-title" th:text="#{form.app.mappingcerttsl.monitorImportMappingLogicalField.title}"></h4>
+				<button type="button" id="idButtonClosed1" class="close" aria-label="#{form.app.btn.close}" onclick="closeModal('modalMonitorImportMappingLogicalFieldForm')">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body bg-body">
+				<form id="monitorImportMappingLogicalFieldForm" role="form">
+					<div id="resultMsgImportMappingLogicalField"></div>
+					<div class="form-row">
+						<div class="form-group col-md-12 mb-0">
+							<label for="importMappingLogicalfieldFile" th:text="#{form.app.mappingcerttsl.monitorImportMappingLogicalField.label}"></label>
+							<div id="docFile" class="form-group col-md-12 mb-1">
+								<input type="file" class="custom-file-input" id="importMappingLogicalfieldFile" aria-describedby="fileHelp">
+								<label class="custom-file-label" for="importMappingLogicalfieldFile" th:text="#{form.app.mappingcerttsl.monitorImportMappingLogicalField.chooseFile.btn}"></label>
+							</div>
+							<div class="progress" style="height:25px; margin-top:10px">
+								<div class="progress-bar" role="progressbar" id="progressbarId" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+							<div id="status" style="display:none">
+								<p id="messageStatus"></p>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer bg-footer">
+				<button type="button" id="idButtonClosed2" class="btn btn-default" th:text="#{form.app.btn.close}" onclick="closeModal('modalMonitorImportMappingLogicalFieldForm')"></button>
+				<button type="button" id="idButtonSave" class="btn btn-primary text-top" th:text="#{form.app.btn.import}" onclick="importLogicalFieldMapping();"></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script th:inline="javascript">
+
+var errorException;
+
+$(document).ready(function() {
+	
+	changeFileImport();
+	
+	$('#resultMsgImportMappingLogicalField').hide();
+	$('.progress').hide();
+	
+});
+
+// Función que evalua si hay algún cambio cuando el usuario selecciona un archivo a importar
+function changeFileImport() {
+	// Se modifica el texto que caso de que el usuario selecciona un archivo
+	$('#importMappingLogicalfieldFile').change(function () {
+		var i = $(this).prev('label').clone();
+		var file = $('#importMappingLogicalfieldFile')[0].files[0].name;
+		$(this).next('label').text(file);
+		
+		if(errorException) {
+			errorException = false;
+			$(".progress, #resultMsgImportMappingLogicalField, #status").slideUp(500);
+			$("#progressbarId").text("");
+		} else if (!errorException && $('#progressbarId').text().includes("100%")) {
+			$(".progress, #status").slideUp(500);
+			$("#progressbarId").removeClass();
+			$("#progressbarId").css("width","0%");
+			$("#progressbarId").text("");
+		}
+	});
+}
+
+// Función para iniciar el proceso de importación de mappings
+function method1() {
+	var importMappingLogicFieldFromJson = /*[[@{/mappingCertTslRest/importMappingLogicFieldFromJson}]]*/;
+	
+	$('.progress').slideDown(500);
+	
+	var formData = new FormData();
+	
+	formData.append("importMappingLogicalfieldFile", undefined != $('#importMappingLogicalfieldFile').prop('files')[0] ? $('#importMappingLogicalfieldFile').prop('files')[0] : new File([""], "nofile", {type: "text/plain", lastModified: new Date()}));
+	formData.append("tspServiceNameSelectTree", new Blob([window.tspServiceName], {type: "application/json"}));
+	formData.append("tspNameSelectTree", new Blob([window.tspName], {type: "application/json"}));
+	formData.append("countrySelectTree", new Blob([window.country], {type: "application/json"}));
+	
+	return $.ajax({
+		url: importMappingLogicFieldFromJson,
+		data: formData,
+		type: 'POST',
+		enctype: 'multipart/form-data;',
+		processData: false,
+        contentType: false,
+        cache: false,
+        error: function(xhr) {
+        	if(xhr.status == 506) {
+        		var msgError =  xhr.responseText;
+        		$('#resultMsgImportMappingLogicalField').html(msgError);
+    			$('#resultMsgImportMappingLogicalField').addClass('alert alert-danger');
+    			$('#resultMsgImportMappingLogicalField').slideDown(500);
+    		} else {
+    			var msgError =  xhr.responseText;
+        		$('#resultMsgImportMappingLogicalField').html(msgError);
+    			$('#resultMsgImportMappingLogicalField').addClass('alert alert-danger');
+    			$('#resultMsgImportMappingLogicalField').slideDown(500);
+    		}
+        	errorException = true;
+        },
+    });
+}
+
+// Funcion que realiza una llamada para consultar el porcentaje actual del proceso de importación de mappings.
+function method2() {
+	var consultPercentajeProcessImport = /*[[@{/mappingCertTslRest/consultPercentajeProcessImport}]]*/;
+	
+	return $.ajax({
+		url: consultPercentajeProcessImport,
+		type: 'POST',
+		cache: false,
+		complete: function(data) {
+			if(errorException) {
+				clearTimeout();
+				// Se muestra el porcentaje de mappings insertados antes del error
+				$("#progressbarId").removeClass();
+				$("#progressbarId").addClass("progress-bar bg-danger");
+				$("#progressbarId").css("width",data.responseText+"%");
+				$("#progressbarId").css("text-align","center");
+				$("#progressbarId").text(data.responseText+"%");
+				
+				$("#status").show();
+				$("#messageStatus").css("color","red");
+				var meesageProcessCancel = /*[[#{form.app.mappingcerttsl.monitorImportMappingLogicalField.cancel}]]*/;
+				$("#messageStatus").text(meesageProcessCancel);
+				$("#messageStatus").css("margin-bottom","0px");
+				$("#messageStatus").css("text-align","center");
+				$("#messageStatus").css("font-style","italic");
+				$("#messageStatus").css("font-weight","bold");
+				
+				resetPercentage();
+				
+				$('#idButtonClosed1').prop('disabled', false)
+			    $('#idButtonClosed2').prop('disabled', false)
+			    $('#importMappingLogicalfieldFile').prop('disabled', false)
+			
+			} else if (data.responseText != "100") {
+				$("#progressbarId").removeClass();			
+				$("#progressbarId").addClass("progress-bar");
+				$("#progressbarId").css("width",data.responseText+"%");
+				$("#progressbarId").text(data.responseText+"%");
+				
+				$("#status").show();
+				var meessageInProcess = /*[[#{form.app.mappingcerttsl.monitorImportMappingLogicalField.inprocess}]]*/;
+				$("#messageStatus").css("color","#007bff");
+				$("#messageStatus").text(meessageInProcess);
+				$("#messageStatus").css("margin-bottom","0px");
+				$("#messageStatus").css("text-align","center");
+				$("#messageStatus").css("font-style","italic");
+				$("#messageStatus").css("font-weight","bold");
+				
+				$('#idButtonClosed1').prop('disabled', true);
+			    $('#idButtonClosed2').prop('disabled', true);
+			    $('#importMappingLogicalfieldFile').prop('disabled', true);
+			    
+			    // Schedule the next request when the current one's complete
+			    setTimeout(method2, 500);
+			} else {
+				$("#progressbarId").removeClass();
+				$("#progressbarId").addClass("progress-bar bg-success");
+				$("#progressbarId").css("width",data.responseText+"%");
+				$("#progressbarId").text(data.responseText+"%");
+				$("#progressbarId").css("text-align","center");
+				
+				$("#status").show();
+				var meesageProcessComplete = /*[[#{form.app.mappingcerttsl.monitorImportMappingLogicalField.completed}]]*/;
+				$("#messageStatus").css("color","#28a745");
+				$("#messageStatus").text(meesageProcessComplete);
+				$("#messageStatus").css("margin-bottom","0px");
+				$("#messageStatus").css("text-align","center");
+				$("#messageStatus").css("font-style","italic");
+				$("#messageStatus").css("font-weight","bold");
+				
+				$('#idButtonClosed1').prop('disabled', false)
+			    $('#idButtonClosed2').prop('disabled', false)
+			    $('#importMappingLogicalfieldFile').prop('disabled', false)
+			    
+				clearTimeout();
+				resetPercentage();
+				
+				loading();
+				// Se vuelve a cargar la botonera y las filas del datatable 
+				window.obtainTspServiceNameSelectTree(window.tspServiceName);
+				hide();
+				
+				$("#idButtonSave").prop("disabled",true);
+				$("#importMappingLogicalfieldFile").prop("disabled",true);
+			}
+		}
+	});
+}
+
+// Función que resetea el porcentaje de proceso importado hasta el momento.
+function resetPercentage() {
+	var resetPercentajeProcessImport = /*[[@{/mappingCertTslRest/resetPercentajeProcessImport}]]*/;
+	// Se resetea el porcentaje a 0
+	$.ajax({
+		url: resetPercentajeProcessImport,
+		type: 'POST',
+		cache: false,
+    });
+}
+
+// Función que realiza la llamada a la importacion de políticas y a la consulta de proceso de carga.
+function importLogicalFieldMapping() {
+	$.when(method1(), method2()).then({});	
+}
+
+</script>

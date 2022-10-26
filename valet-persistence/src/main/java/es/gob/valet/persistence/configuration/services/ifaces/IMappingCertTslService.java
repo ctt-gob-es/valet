@@ -21,37 +21,146 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/09/2022.
+ * @version 1.8, 18/10/2022.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
+import java.io.IOException;
+import java.security.cert.CertificateEncodingException;
+import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
-import es.gob.valet.persistence.configuration.model.dto.MappingCertTslsDTO;
+import es.gob.valet.exceptions.CommonUtilsException;
+import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
+import es.gob.valet.persistence.configuration.model.entity.TslService;
+import es.gob.valet.persistence.exceptions.ImportException;
 import es.gob.valet.persistence.utils.BootstrapTreeNode;
 
 /**
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the mapping certficate tsl entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/09/2022.
+ * @version 1.8, 18/10/2022.
  */
 public interface IMappingCertTslService {
 
 	/**
 	 * Method that create tree of mapping certificate tsls.
+	 * @param mapTsl parameter that contain map with all information about tsls.
+	 * @param valueSearch parameter that contain value search enter for the user.
 	 * 
 	 * @return tree of mapping certificate tsls.
 	 */
-	List<BootstrapTreeNode> createTreeMappingCertTsl();
+	List<BootstrapTreeNode> createTreeMappingCertTsl(Map<String, List<TslMappingDTO>> mapTsl, String valueSearch);
 
 	/**
-	 * Method that create datatable of mapping certificate tsls. Only contain paramenters referents to data of datatable.
+	 * Method that save or update to tsl service. 
 	 * 
-	 * @return tree of mapping certificate tsls.
+	 * @param mapTslMappingDTO parameter that contain tree of the mappings certificate tsl.
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param tspNameSelectTree parameter that contain of tsp name select for the user.
+	 * @param countrySelectTree parameter that contain of country select for the user.
+	 * @param fileCertificateTsl parameter that contain certificate select for the user. 
+	 * @return Object persistent in BD.
+	 * @throws ParseException possible exception to parse Date.
 	 */
-	DataTablesOutput<MappingCertTslsDTO> createDatatableMappingCertTsls(Long idMappingCertTsl);
+	TslService updateCertificateOrSaveTslService(Map<String, List<TslMappingDTO>> mapTslMappingDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree, byte[] fileCertificateTsl) throws ParseException;
 
+	/**
+	 * Method that obtain tsp service from tsp service name select in the tree.
+	 * @param tspServiceNameSelectTree parameter that contain tsp service name.
+	 * @return tsp service DTO.
+	 * @throws CommonUtilsException If the method fails.
+	 */
+	TslServiceDTO obtainTspServiceNameSelectTree(String tspServiceNameSelectTree) throws CommonUtilsException;
+
+	/**
+	 * Method that save entitys to tsl service, logical field and mapping. If tsl service not exists, here be create.
+	 * 
+	 * @param mapTslMappingDTO parameter that contain tree of the mappings certificate tsl.
+	 * @param mappingTslDTO parameter that contain information from interface add logic field.
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param tspNameSelectTree parameter that contain of tsp name select for the user.
+	 * @param countrySelectTree parameter that contain of country select for the user.
+	 * @throws ParseException possible exception to parse Date.
+	 */
+	void addMappingLogicField(Map<String, List<TslMappingDTO>> mapTslMappingDTO, MappingTslDTO mappingTslDTO, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree) throws ParseException;
+
+	/**
+	 * Method that obtain mapping logic field search for id.
+	 * 
+	 * @param idTslMapping parameter that contain id to tsl mapping.
+	 * @return mapping logic field search for id.
+	 * @throws CommonUtilsException If the method fails.
+	 */
+	MappingTslDTO obtainMappingLogicalField(Long idTslMapping) throws CommonUtilsException;
+
+	/**
+	 * Method that realized merge to tsl mapping entity.
+	 * 
+	 * @param mappingTslDTO parameter that contain information from interface add logic field.
+	 */
+	void mergeMappingLogicField(MappingTslDTO mappingTslDTO);
+
+	/**
+	 * Method that evaluate if tsp service exits search for tsp service name and identificator of logic field id.
+	 * 
+	 * @param tspServiceName that represents the tsp service name of the application in the persistence.
+	 * @param logicalFieldId  parameter that represents the identificator to logic field.
+	 * @return true or false if tsp service is found.
+	 */
+	boolean existsTspServiceNameAndIdentificator(String tspServiceName, String logicalFieldId);
+
+	/**
+	 * Method that delete a mapping logic field search for the id.
+	 * 
+	 * @param idTslMappingDelete parameter that represents the id of mapping tsl.
+	 */
+	void deleteMappingLogicalField(Long idTslMappingDelete);
+
+	/**
+	 * Method that obtain all mappings for a tsl service.
+	 * 
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param exportCertificate  parameter that contain if user want export certificate example.
+	 * @return all mappings for a tsl service.
+	 * @throws JsonProcessingException If the method fails.
+	 * @throws CommonUtilsException If the method fails.
+	 * @throws CertificateEncodingException If the method fails.
+	 */
+	String obtainJsonWithMappingsToTslService(String tspServiceNameSelectTree, boolean exportCertificate) throws JsonProcessingException, CertificateEncodingException, CommonUtilsException;
+
+	/**
+	 * Method that import all mappings from file with format json.
+	 * 
+	 * @param originalFilename parameter that contain name of file.
+	 * @param importMappingLogicalfieldFile parameter that contain file with mappings in format json.
+	 * @param tspServiceNameSelectTree parameter that contain of tsp service name select for the user.
+	 * @param tspNameSelectTree parameter that contain of tsp name select for the user.
+	 * @param countrySelectTree parameter that contain of country select for the user.
+	 * @param mapTslMappingDTO parameter that contain tree of the mappings certificate tsl.
+	 * @throws ImportException If the method fails.
+	 * @throws JsonMappingException If the method fails.
+	 * @throws IOException If the method fails.
+	 * @throws ParseException If the method fails.
+	 */
+	void importMappingLogicFieldFromJson(String originalFilename, byte[] importMappingLogicalfieldFile, String tspServiceNameSelectTree, String tspNameSelectTree, String countrySelectTree, Map<String, List<TslMappingDTO>> mapTslMappingDTO) throws ImportException, JsonMappingException, IOException, ParseException;
+
+	/**
+	 * Gets the value of the attribute {@link #percentage}.
+	 * @return the value of the attribute {@link #percentage}.
+	 */
+	int getPercentage();
+
+	/**
+	 * Sets the value of the attribute {@link #percentage}.
+	 * @param percentage The value for the attribute {@link #percentage}.
+	 */
+	void setPercentage(int i);
 }

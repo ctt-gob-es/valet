@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 14/12/2021.
+ * @version 1.10, 22/09/2022.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 14/12/2021.
+ * @version 1.10, 22/09/2022.
  */
 public interface ICoreTslMessages {
 
@@ -1908,5 +1908,28 @@ public interface ICoreTslMessages {
 	 * Constant attribute that represents the name of the property <code>logMTSL348</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	String LOGMTSL348 = "logMTSL348";
-	
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL349</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL349 = "logMTSL349";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL350</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL350 = "logMTSL350";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL351</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL351 = "logMTSL351";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL352</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL352 = "logMTSL352";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL353</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL353 = "logMTSL353";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL354</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL354 = "logMTSL354";
 }

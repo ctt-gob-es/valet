@@ -20,10 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/09/2022.
+ * @version 1.1, 27/09/2022.
  */
 package es.gob.valet.persistence.utils;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -32,10 +33,15 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 /**
  * <p>Class that representation tree in interfaces with boostrap treeview.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/09/2022.
+ * @version 1.1, 27/09/2022.
  */
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
-public class BootstrapTreeNode {
+public class BootstrapTreeNode implements Serializable {
+
+	/**
+	 * Attribute that represents the serial version UID. 
+	 */
+	private static final long serialVersionUID = -6541463222109373995L;
 
 	/**
 	 * Attribute that represents the identifier of the glyphicon home. 
@@ -50,7 +56,7 @@ public class BootstrapTreeNode {
 	/**
 	 * Attribute that represents the identifier of the glyphicon certificate. 
 	 */
-	public static final String ICON_POLICY = "glyphicon glyphicon-pawn text-warning";
+	public static final String ICON_PAWN = "glyphicon glyphicon-pawn text-warning";
 
 	/**
 	 * Attribute that represents the identifier of the glyphicon certificate. 
@@ -75,12 +81,12 @@ public class BootstrapTreeNode {
 	/**
 	 * Attribute that represents the nodeId of the node. 
 	 */
-	private Long nodeId;
+	private Object nodeId;
 
 	/**
 	 * Attribute that represents the parentId of the node. 
 	 */
-	private Long parentId;
+	private Object parentId;
 	
 	/**
 	 * Attribute that represents the text of the node. 
@@ -208,7 +214,7 @@ public class BootstrapTreeNode {
 	 * Gets the value of the attribute {@link #idNode}.
 	 * @return the value of the attribute {@link #idNode}.
 	 */
-	public Long getNodeId() {
+	public Object getNodeId() {
 		return nodeId;
 	}
 
@@ -216,7 +222,7 @@ public class BootstrapTreeNode {
 	 * Sets the value of the attribute {@link #idNode}.
 	 * @param nodeId The value for the attribute {@link #idNode}.
 	 */
-	public void setNodeId(Long nodeId) {
+	public void setNodeId(Object nodeId) {
 		this.nodeId = nodeId;
 	}
 
@@ -224,7 +230,7 @@ public class BootstrapTreeNode {
 	 * Gets the value of the attribute {@link #parentId}.
 	 * @return the value of the attribute {@link #parentId}.
 	 */
-	public Long getParentId() {
+	public Object getParentId() {
 		return parentId;
 	}
 
@@ -232,7 +238,7 @@ public class BootstrapTreeNode {
 	 * Sets the value of the attribute {@link #parentId}.
 	 * @param parentId The value for the attribute {@link #parentId}.
 	 */
-	public void setParentId(Long parentId) {
+	public void setParentId(Object parentId) {
 		this.parentId = parentId;
 	}
 
@@ -343,6 +349,75 @@ public class BootstrapTreeNode {
 		public void setSelected(Boolean selected) {
 			this.selected = selected;
 		}
+		
+	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((icon == null) ? 0 : icon.hashCode());
+		result = prime * result + ((nodeId == null) ? 0 : nodeId.hashCode());
+		result = prime * result + ((nodes == null) ? 0 : nodes.hashCode());
+		result = prime * result + ((parentId == null) ? 0 : parentId.hashCode());
+		result = prime * result + ((selectable == null) ? 0 : selectable.hashCode());
+		result = prime * result + ((state == null) ? 0 : state.hashCode());
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BootstrapTreeNode other = (BootstrapTreeNode) obj;
+		if (icon == null) {
+			if (other.icon != null)
+				return false;
+		} else if (!icon.equals(other.icon))
+			return false;
+		if (nodeId == null) {
+			if (other.nodeId != null)
+				return false;
+		} else if (!nodeId.equals(other.nodeId))
+			return false;
+		if (nodes == null) {
+			if (other.nodes != null)
+				return false;
+		} else if (!nodes.equals(other.nodes))
+			return false;
+		if (parentId == null) {
+			if (other.parentId != null)
+				return false;
+		} else if (!parentId.equals(other.parentId))
+			return false;
+		if (selectable == null) {
+			if (other.selectable != null)
+				return false;
+		} else if (!selectable.equals(other.selectable))
+			return false;
+		if (state == null) {
+			if (other.state != null)
+				return false;
+		} else if (!state.equals(other.state))
+			return false;
+		if (text == null) {
+			if (other.text != null)
+				return false;
+		} else if (!text.equals(other.text))
+			return false;
+		return true;
 	}
 }

@@ -1,0 +1,225 @@
+<!-- Modal para añadir un campo lógico -->
+<div class="modal fade" role="dialog" data-toggle="modal" id="modalAddMappingLogicalFieldForm" data-backdrop="true" data-keyboard="false">
+	<div class="modal-dialog" id="modalPrimary">
+		<div class="modal-content">
+			<div class="modal-header bg-title">
+				<div>
+					<h4 id="idTitleAddMappingLogicalField" class="modal-title"></h4>
+				</div>
+				<button type="button" class="close" aria-label="#{form.app.btn.close}" onclick="closeModal('modalAddMappingLogicalFieldForm')">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body bg-modal">
+				<form name="idAddMappingLogicalFieldForm" role="form" id="idAddMappingLogicalFieldForm" th:object="${mappingTslDTO}" class="form-horizontal">
+					<div id="errorAddMappingLogicalFieldForm" data-dismiss="alert"></div>
+					<div class="form-group col-md-4">
+						<label for="idMappingType" th:text="#{form.app.mappingcerttsl.addMappingLogicalField.select}"></label>
+						<select id="idCAssociationTypeDTO" name="idCAssociationTypeDTO" class="form-control" onchange="showMappingTypeValueField();">
+							<option th:each="th: *{listCAssociationTypeDTO}" th:value="${th.idAssociationType}" th:text="${th.tokenName}" th:selected="${th.idAssociationType == 4}"/>
+						</select>
+					</div>
+					<div class="form-group col-md-12">
+						<label for="idIdentificator" th:text="#{form.app.mappingcerttsl.addMappingLogicalField.identificator.input}"></label> 
+						<input type="text" id="idIdentificator" class="form-control mb-1"></input>
+						<span id="identificatorLogicalField_span"></span>
+						<div style="clear: both;"></div>
+					</div>
+					<div id="idDivMappingFreeValue" class="form-group col-md-12" style="display:block">
+						<label for="idFreeValue" th:text="#{form.app.mappingcerttsl.addMappingLogicalField.value.inputOrSelect}"></label> 
+						<input type="text" id="idFreeValue" class="form-control mb-1"></input>
+						<span id="valueLogicalFieldFree_span"></span>
+						<div style="clear: both;"></div>
+					</div>
+					<div id="idDivMappingSimpleValue" class="form-group col-md-12" style="display:none">
+						<label for="idSimpleValue" th:text="#{form.app.mappingcerttsl.addMappingLogicalField.value.inputOrSelect}"></label>
+						<select id="idSimpleValue" class="form-control mb-1" onchange="cleanValueWatch();">
+							<option th:value="-1" th:text="#{form.app.mappingcerttsl.addMappingLogicalField.value.select}"></option>
+							<option th:each="asv: *{listValuesAssocSimple}" th:value="${asv.idConstant}" th:text="${asv.value}"></option>
+						</select>
+						<span id="valueLogicalFieldSimple_span"></span>
+						<div style="clear: both;"></div>
+					</div>
+					<div id="idDivMappingSimpleViewCertificate" class="form-group col-md-12" style="display:none">
+						<label for="associationSimpleCertificate" th:text="#{form.app.mappingcerttsl.addMappingLogicalField.certificate.textArea}"></label>
+						<div class="form-inline">
+							<textarea rows="2" id="associationSimpleCertificate" readonly style="width:93.5%;margin-right:10px" maxlength="500" class="form-control"></textarea>
+							<i class="glyphicon glyphicon-eye-open" style="font-size:25px; color:#0c83e2;" onclick="watchCertificate();"></i>
+						</div>
+					</div>
+				</form>
+			</div>
+			
+			<div class="modal-footer bg-footer">
+				<button type="button" class="btn btn-default" th:text="#{form.app.btn.close}" onclick="closeModal('modalAddMappingLogicalFieldForm')"></button>
+				<button type="submit" id="viewCertTsltBtn" onclick="saveOrMergeMappingLogicField();" class="btn btn-primary" th:text="#{form.app.btn.save}"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+var mappingTslDTO;
+
+$(document).ready(function() {
+	mappingTslDTO = [[${mappingTslDTO}]];
+	// Si estamos mergeando cargamos la información en el modal
+	if(mappingTslDTO.action == "merge") {
+		var mergeTitle = /*[[#{form.app.mappingcerttsl.mergeMappingLogicalField.title}]]*/;
+		$("#idTitleAddMappingLogicalField").text(mergeTitle);
+		$("#idCAssociationTypeDTO").val(mappingTslDTO.cAssociationTypeDTO.idAssociationType);
+		if(mappingTslDTO.cAssociationTypeDTO.idAssociationType == 4) {
+			$("#idIdentificator").val(mappingTslDTO.logicalFieldId);
+			$("#idFreeValue").val(mappingTslDTO.logicalFieldValue);
+		} else if(mappingTslDTO.cAssociationTypeDTO.idAssociationType == 0) {
+			$("#idIdentificator").val(mappingTslDTO.logicalFieldId);
+			$("#idSimpleValue").val(mappingTslDTO.logicalFieldValue);
+			showMappingTypeValueField();
+		}
+	} else {
+		var addTitle = /*[[#{form.app.mappingcerttsl.addMappingLogicalField.title}]]*/;
+		$("#idTitleAddMappingLogicalField").text(addTitle);
+	}
+});
+
+// Función para limpiar el campo de ver propiedad del certificado en caso de que el usuario seleccione otro en el desplegable
+function cleanValueWatch() {
+	$("#associationSimpleCertificate").val("");
+}
+
+// Función para mostrar el valor según el tipo de asociacion.
+function showMappingTypeValueField() {
+	var mappingTypeValue = $("#idCAssociationTypeDTO").val();
+	if (mappingTypeValue == "4") {
+		$("#idDivMappingFreeValue").prop("style", "display:block");
+		$("#idDivMappingSimpleValue").prop("style", "display:none");
+		$("#idDivMappingSimpleViewCertificate").prop("style", "display:none");
+	} else if (mappingTypeValue == "0") {
+		$("#idDivMappingFreeValue").prop("style", "display:none");
+		$("#idDivMappingSimpleValue").prop("style", "display:block");
+		// Si la asociación es simple y el tsp service seleccionado tiene certificado se muestra el campo para ver el certificado asociado.
+		if(null != window.tslServiceDTO.certificate ) {
+			$("#idDivMappingSimpleViewCertificate").prop("style", "display:block");
+		}
+	}
+}
+
+// Función para ver algún valor de certificado en caso de que éste exista.
+function watchCertificate() {
+	var watchCertificate = /*[[@{/mappingCertTslRest/watchCertificate}]]*/;
+	var idSimpleValue = $("#idSimpleValue :selected").val();
+	
+	loading();
+
+	$.ajax({
+		type: "POST",
+		url: watchCertificate,
+		data: $.param({'tspServiceNameSelectTree': window.tspServiceName, "idSimpleValue": idSimpleValue}),
+		cache: false,
+		success: function(data) {
+			hide();
+			$("#associationSimpleCertificate").val(data);
+        },
+        error:function(xhr) {
+        	hide();
+        	var msgError =  xhr.responseText;	    		
+			$('#errorAddMappingLogicalFieldForm').html(msgError);
+			$('#errorAddMappingLogicalFieldForm').addClass('alert alert-danger');
+		}
+	});
+}
+
+// Función que almacena un nuevo mapping
+function saveOrMergeMappingLogicField() {
+	if(mappingTslDTO.action == "add") {
+		addMappingLogicField();	
+	} else if(mappingTslDTO.action == "merge") {
+		mergeMappingLogicField();	
+	}
+}
+
+// Función para almacenar la información del mapping introducida por el usuario y llamar al metodo de merge
+function mergeMappingLogicField() {
+	var mergeMappingLogicField = /*[[@{/mappingCertTslRest/mergeMappingLogicField}]]*/;
+	
+	storeMappingTslDTO();
+	
+	cleanAllSpan("idAddMappingLogicalFieldForm");
+	
+	loading();
+	$.ajax({
+		url: mergeMappingLogicField,
+		data: JSON.stringify(mappingTslDTO),
+		type: 'POST',
+		contentType : "application/json;charset=UTF-8",
+		cache: false, 
+		success: function(data) {
+			hide();
+			closeModal('modalAddMappingLogicalFieldForm');
+			// Se vuelve a cargar la botonera y las filas del datatable 
+			window.obtainTspServiceNameSelectTree(window.tspServiceName);
+        },
+        error:function(xhr) {
+        	hide();
+        	if(xhr.status == 506) {
+        		printErrors(xhr,'idAddMappingLogicalFieldForm');
+			} else {
+				var msgError =  xhr.responseText;
+	        	$('#errorAddMappingLogicalFieldForm').html(msgError);
+				$('#errorAddMappingLogicalFieldForm').addClass('alert alert-danger');		
+			}
+        }
+	});
+}
+
+// Función para almacenar la información del mapping introducida por el usuario y llamar al metodo de guardado 
+function addMappingLogicField() {
+	var addMappingLogicField = /*[[@{/mappingCertTslRest/addMappingLogicField}]]*/;
+	
+	storeMappingTslDTO();
+	
+	cleanAllSpan("idAddMappingLogicalFieldForm");
+	
+	loading();
+	$.ajax({
+		url: addMappingLogicField+"?tspServiceNameSelectTree="+window.tspServiceName+"&tspNameSelectTree="+window.tspName+"&countrySelectTree="+window.country,
+		data: JSON.stringify(mappingTslDTO),
+		type: 'POST',
+		contentType : "application/json;charset=UTF-8",
+		cache: false, 
+		success: function(data) {
+			hide();
+			closeModal('modalAddMappingLogicalFieldForm');
+			// Se vuelve a cargar la botonera y las filas del datatable 
+			window.obtainTspServiceNameSelectTree(window.tspServiceName);
+        },
+        error:function(xhr) {
+        	hide();
+        	if(xhr.status == 506) {
+        		printErrors(xhr,'idAddMappingLogicalFieldForm');
+			} else {
+				var msgError =  xhr.responseText;
+	        	$('#errorAddMappingLogicalFieldForm').html(msgError);
+				$('#errorAddMappingLogicalFieldForm').addClass('alert alert-danger');		
+			}
+        }
+	});
+}
+
+// Función que prepara el DTO que será usado en el back para realizar lógica de negocio.
+function storeMappingTslDTO() {
+	// Almacenamos el TSL service	
+	mappingTslDTO.tslServiceDTO = window.tslServiceDTO;
+	
+	// Almacenamos el campo lógico
+	mappingTslDTO.logicalFieldId = $("#idIdentificator").val();
+	var mappingTypeValue = $("#idCAssociationTypeDTO").val();
+	if (mappingTypeValue == "4") {
+		mappingTslDTO.logicalFieldValue = $("#idFreeValue").val();
+	} else if (mappingTypeValue == "0") {
+		mappingTslDTO.logicalFieldValue = $("#idSimpleValue :selected").val();
+	}
+	// Almacenamos el tipo de asociaccion
+	mappingTslDTO.cAssociationTypeDTO.idAssociationType = $("#idCAssociationTypeDTO :selected").val();
+}
+
+</script>

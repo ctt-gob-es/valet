@@ -1,0 +1,71 @@
+<!-- Modal para exportar un mapeo -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalExportMappingLogicalFieldToJsonForm" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.app.mappingcerttsl.exportMappingLogicalField.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.app.btn.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id="errorExportMappingLogicalField" role="alert"></div>
+				<form name="idExportMappingLogicalFieldForm" role="form" id="idExportMappingLogicalFieldForm" method="post">
+					<div class="form-inline">
+						<p id="idMessageExport" th:text="#{form.app.mappingcerttsl.exportMappingLogicalField.message}"></p>
+					</div>
+					<div class="form-inline">
+						<label for="idMappingType" class="mr-2" th:text="#{form.app.mappingcerttsl.exportMappingLogicalField.export.label}"></label>
+						<input type="checkbox" id="idCheckExportCertificate" name="idCheckExportCertificate"/>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" th:text="#{form.app.btn.close}" onclick="closeModal('modalExportMappingLogicalFieldToJsonForm')"></button>
+				<button type="button" id="idExportMappingLogicalFieldBtn" class="btn btn-primary" th:text="#{form.app.btn.export}" onclick="exportMappingLogicalField();"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+$(document).ready(function() {
+	// Modificamos el mensaje añadiendo el tsp service name
+	$("#idMessageExport").text($("#idMessageExport").text() + window.tspServiceName + ".");
+	// se deshabilita el check en caso de que tsp service no tenga certificado
+	null == window.tslServiceDTO.certificate && $("#idCheckExportCertificate").prop("disabled", true);
+});
+
+// Función para llamar al método back y exportar el mapeo del campo lógico.
+function exportMappingLogicalField(){
+	var exportMappingLogicalFieldToJson = /*[[@{/mappingCertTslRest/exportMappingLogicalFieldToJson}]]*/;
+	var exportCertificate;
+	
+	if($("#idCheckExportCertificate").is(':checked')) {
+		exportCertificate = true; 
+    } else {
+    	exportCertificate = false; 
+    }
+	
+	loading();
+	$.ajax({
+		url: exportMappingLogicalFieldToJson,
+		data: $.param({'tspServiceNameSelectTree': window.tspServiceName, "exportCertificate": exportCertificate}),
+		type: 'POST',
+		cache: false,
+		success:function(xhr) {
+			hide();
+			closeModal('modalExportMappingLogicalFieldToJsonForm')
+			var blob=new Blob([xhr], {type: "application/json"});
+			var link=document.createElement('a');
+			link.href=window.URL.createObjectURL(blob);
+			link.download="mappingTslService.json";
+			link.click();
+		},
+		error:function(xhr) {
+			hide();
+			$('#errorExportMappingLogicalField').html(xhr.responseText);
+			$('#errorExportMappingLogicalField').addClass('alert alert-danger');
+		},
+	});
+}
+</script>
