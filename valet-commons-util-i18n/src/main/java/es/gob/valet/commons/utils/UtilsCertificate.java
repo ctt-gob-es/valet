@@ -62,11 +62,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
-<<<<<<< HEAD
- * @version 1.9, 27/04/2022.
-=======
  * @version 1.9, 04/10/2022.
-
  */
 public final class UtilsCertificate {
 
