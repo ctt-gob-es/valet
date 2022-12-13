@@ -58,6 +58,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import es.gob.valet.commons.utils.CertificateConstants;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.dto.MappingDTO;
@@ -76,7 +77,6 @@ import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.tsl.access.TSLManager;
-import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
@@ -557,70 +557,70 @@ public class TslRestController {
 		String result = null;
 
 		switch (code) {
-			case WrapperX509Cert.INFOCERT_CERT_VERSION:
+			case CertificateConstants.INFOCERT_CERT_VERSION:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_CERTVERSION);
 				break;
-			case WrapperX509Cert.INFOCERT_SUBJECT:
+			case CertificateConstants.INFOCERT_SUBJECT:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SUBJECT);
 				break;
-			case WrapperX509Cert.INFOCERT_ISSUER:
+			case CertificateConstants.INFOCERT_ISSUER:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_ISSUER);
 				break;
-			case WrapperX509Cert.INFOCERT_SERIAL_NUMBER:
+			case CertificateConstants.INFOCERT_SERIAL_NUMBER:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SERIALNUMBER);
 				break;
-			case WrapperX509Cert.INFOCERT_SIGALG_NAME:
+			case CertificateConstants.INFOCERT_SIGALG_NAME:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGNAME);
 				break;
-			case WrapperX509Cert.INFOCERT_SIGALG_OID:
+			case CertificateConstants.INFOCERT_SIGALG_OID:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGOID);
 				break;
-			case WrapperX509Cert.INFOCERT_VALID_FROM:
+			case CertificateConstants.INFOCERT_VALID_FROM:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDFROM);
 				break;
-			case WrapperX509Cert.INFOCERT_VALID_TO:
+			case CertificateConstants.INFOCERT_VALID_TO:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDTO);
 				break;
-			case WrapperX509Cert.INFOCERT_CERTPOL_INFO_OIDS:
+			case CertificateConstants.INFOCERT_CERTPOL_INFO_OIDS:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CERTPOLINFOOIDS);
 				break;
-			case WrapperX509Cert.INFOCERT_QC_STATEMENTS_OIDS:
+			case CertificateConstants.INFOCERT_QC_STATEMENTS_OIDS:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATOIDS);
 				break;
-			case WrapperX509Cert.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS:
+			case CertificateConstants.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATEUTYPEOIDS);
 				break;
-			case WrapperX509Cert.INFOCERT_SUBJECT_ALT_NAME:
+			case CertificateConstants.INFOCERT_SUBJECT_ALT_NAME:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_SUBJECTALTNAME);
 				break;
-			case WrapperX509Cert.INFOCERT_IS_CA:
+			case CertificateConstants.INFOCERT_IS_CA:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_BASICCONSTRAINTISCA);
 				break;
-			case WrapperX509Cert.INFOCERT_KEY_USAGE:
+			case CertificateConstants.INFOCERT_KEY_USAGE:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_KEYUSAGE);
 				break;
-			case WrapperX509Cert.INFOCERT_CRL_DISTRIBUTION_POINTS:
+			case CertificateConstants.INFOCERT_CRL_DISTRIBUTION_POINTS:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT);
 				break;
-			case WrapperX509Cert.INFOCERT_AUTHORITY_INFORMATION_ACCESS:
+			case CertificateConstants.INFOCERT_AUTHORITY_INFORMATION_ACCESS:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_AIA);
 				break;
-			case WrapperX509Cert.INFOCERT_SURNAME:
+			case CertificateConstants.INFOCERT_SURNAME:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME);
 				break;
-			case WrapperX509Cert.INFOCERT_COMMON_NAME:
+			case CertificateConstants.INFOCERT_COMMON_NAME:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME);
 				break;
-			case WrapperX509Cert.INFOCERT_GIVEN_NAME:
+			case CertificateConstants.INFOCERT_GIVEN_NAME:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME);
 				break;
-			case WrapperX509Cert.INFOCERT_COUNTRY:
+			case CertificateConstants.INFOCERT_COUNTRY:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY);
 				break;
-			case WrapperX509Cert.INFOCERT_PSEUDONYM:
+			case CertificateConstants.INFOCERT_PSEUDONYM:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM);
 				break;
-			case WrapperX509Cert.INFOCERT_SUBJECT_SERIAL_NUMBER:
+			case CertificateConstants.INFOCERT_SUBJECT_SERIAL_NUMBER:
 				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER);
 				break;
 			default:

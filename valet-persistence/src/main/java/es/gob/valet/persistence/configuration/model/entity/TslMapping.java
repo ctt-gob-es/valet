@@ -45,7 +45,7 @@ import es.gob.valet.persistence.configuration.model.dto.TslMappingExportDTO;
 /**
  * <p>Class that maps the <i>TSL_MAPPING</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.3, 17/10/2022..
+ *  @version 1.3, 17/10/2022.
  */
 @Entity
 @Table(name = "TSL_MAPPING")

@@ -1932,4 +1932,8 @@ public interface ICoreTslMessages {
 	 * Constant attribute that represents the name of the property <code>logMTSL354</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	String LOGMTSL354 = "logMTSL354";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL355</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL355 = "logMTSL355";
 }

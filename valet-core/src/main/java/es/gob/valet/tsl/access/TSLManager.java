@@ -83,6 +83,7 @@ import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.impl.TSLValidatorFactory;
 import es.gob.valet.tsl.certValidation.impl.TSLValidatorMappingCalculator;
 import es.gob.valet.tsl.certValidation.impl.common.DigitalIdentitiesProcessor;
+import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
 import es.gob.valet.tsl.exceptions.TSLException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
@@ -902,15 +903,24 @@ public final class TSLManager {
 		// Extraemos los valores de los mapeos fijos para todas las validaciones
 		// mediante TSL.
 		TSLValidatorMappingCalculator.extractStaticMappingsFromResult(tslValidationResult.getTslCertificateExtensionAnalyzer(), mappings, tslValidationResult);
+
 		// Extraemos los mapeos propios de la región.
 		try {
 			TSLValidatorMappingCalculator.extractMappingsFromCertificate(cert, mappings, tslCrmcoSet);
 		} catch (TSLValidationException e) {
 			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL152), e);
 		}
+
 		// Obtenemos los mapings de campos lógicos.
+		
 		String tspServiceName = tslValidationResult.getTSPServiceNameForDetect();
-		this.obtainMappingWithLogicalField(mappings, tspServiceName);
+		try{
+			TSLValidatorMappingCalculator.extractMappingsFromTSPService(cert, mappings, tspServiceName);
+		}catch (TSLValidationException e) {
+			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL355), e);
+		}
+		
+		
 		// Guardamos los mapeos calculados en el resultado de la validación.
 		tslValidationResult.setMappings(mappings);
 		// Lo indicamos en auditoría.
@@ -918,22 +928,6 @@ public final class TSLManager {
 
 	}
 
-	/**
-	 * Method that obtain mappings with logical fields from tsp service name.
-	 * 
-	 * @param mappings paramater where store all mappings.
-	 * @param tspServiceName paramater that contain the name of tsp service.
-	 */
-	private void obtainMappingWithLogicalField(Map<String, String> mappings, String tspServiceName) {
-		// Obtenemos todos los mappings de campos lógicos en caso de que
-		// existan.
-		List<TslMapping> listTslMapping = ApplicationContextProvider.getApplicationContext().getBean(TslMappingRepository.class).findMappingsToTspServiceName(tspServiceName);
-		if (null != listTslMapping) {
-			for (TslMapping tslMapping: listTslMapping) {
-				mappings.put(tslMapping.getLogicalFieldId(), tslMapping.getLogicalFieldValue());
-			}
-		}
-	}
 
 	/**
 	 * Checks if the input mapping name matches with some of the static mapping names.
