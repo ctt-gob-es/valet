@@ -33,9 +33,12 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import es.gob.valet.commons.utils.CertificateConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.exceptions.CommonUtilsException;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.TslMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslService;
 
@@ -99,7 +102,7 @@ public class TslServiceDTO implements Serializable {
 	 * Attribute that represents the description of the certificate.
 	 */
 	@JsonSerialize(using = es.gob.valet.persistence.utils.ByteArraySerializer.class)
-	private byte[] certificate;
+	private byte[ ] certificate;
 
 	/**
 	 * Attribute that represents the issuer of certificate.
@@ -159,16 +162,109 @@ public class TslServiceDTO implements Serializable {
 			List<TslMapping> listTslMapping = tslService.getTslMapping();
 			if (null != listTslMapping && !listTslMapping.isEmpty()) {
 				this.listMappingTslDTO = new ArrayList<MappingTslDTO>();
-				for (TslMapping tslMapping : listTslMapping) {
+				for (TslMapping tslMapping: listTslMapping) {
 					MappingTslDTO mappingTslDTO = new MappingTslDTO();
 					mappingTslDTO.setIdTslMapping(tslMapping.getIdTslMapping());
 					mappingTslDTO.setcAssociationTypeDTO(new CAssociationTypeDTO(tslMapping.getcAssociationType()));
 					mappingTslDTO.setLogicalFieldId(tslMapping.getLogicalFieldId());
-					mappingTslDTO.setLogicalFieldValue(tslMapping.getLogicalFieldValue());
+					mappingTslDTO.setLogicalFieldValue(getValueMapping(tslMapping.getLogicalFieldValue()));
 					listMappingTslDTO.add(mappingTslDTO);
 				}
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @param infoCertCode
+	 * @return
+	 */
+	private String getValueMapping(String infoCertCode) {
+		Integer code = -1;
+		boolean error = false;
+		String result = null;
+		try {
+			code = Integer.valueOf(infoCertCode);
+		} catch (Exception e) {
+			error = true;
+			result = infoCertCode;
+		}
+
+		
+		if (!error) {
+			switch (code) {
+				case CertificateConstants.INFOCERT_CERT_VERSION:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_CERTVERSION);
+					break;
+				case CertificateConstants.INFOCERT_SUBJECT:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SUBJECT);
+					break;
+				case CertificateConstants.INFOCERT_ISSUER:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_ISSUER);
+					break;
+				case CertificateConstants.INFOCERT_SERIAL_NUMBER:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SERIALNUMBER);
+					break;
+				case CertificateConstants.INFOCERT_SIGALG_NAME:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGNAME);
+					break;
+				case CertificateConstants.INFOCERT_SIGALG_OID:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGOID);
+					break;
+				case CertificateConstants.INFOCERT_VALID_FROM:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDFROM);
+					break;
+				case CertificateConstants.INFOCERT_VALID_TO:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDTO);
+					break;
+				case CertificateConstants.INFOCERT_CERTPOL_INFO_OIDS:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CERTPOLINFOOIDS);
+					break;
+				case CertificateConstants.INFOCERT_QC_STATEMENTS_OIDS:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATOIDS);
+					break;
+				case CertificateConstants.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATEUTYPEOIDS);
+					break;
+				case CertificateConstants.INFOCERT_SUBJECT_ALT_NAME:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_SUBJECTALTNAME);
+					break;
+				case CertificateConstants.INFOCERT_IS_CA:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_BASICCONSTRAINTISCA);
+					break;
+				case CertificateConstants.INFOCERT_KEY_USAGE:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_KEYUSAGE);
+					break;
+				case CertificateConstants.INFOCERT_CRL_DISTRIBUTION_POINTS:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT);
+					break;
+				case CertificateConstants.INFOCERT_AUTHORITY_INFORMATION_ACCESS:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_AIA);
+					break;
+				case CertificateConstants.INFOCERT_SURNAME:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME);
+					break;
+				case CertificateConstants.INFOCERT_COMMON_NAME:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME);
+					break;
+				case CertificateConstants.INFOCERT_GIVEN_NAME:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME);
+					break;
+				case CertificateConstants.INFOCERT_COUNTRY:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY);
+					break;
+				case CertificateConstants.INFOCERT_PSEUDONYM:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM);
+					break;
+				case CertificateConstants.INFOCERT_SUBJECT_SERIAL_NUMBER:
+					result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER);
+					break;
+				default:
+					break;
+			}
+		}
+		return result;
+
 	}
 
 	/**
@@ -287,7 +383,7 @@ public class TslServiceDTO implements Serializable {
 	 * Gets the value of the attribute {@link #certificate}.
 	 * @return the value of the attribute {@link #certificate}.
 	 */
-	public byte[] getCertificate() {
+	public byte[ ] getCertificate() {
 		return certificate;
 	}
 
@@ -295,7 +391,7 @@ public class TslServiceDTO implements Serializable {
 	 * Sets the value of the attribute {@link #certificate}.
 	 * @param certificate The value for the attribute {@link #certificate}.
 	 */
-	public void setCertificate(byte[] certificate) {
+	public void setCertificate(byte[ ] certificate) {
 		this.certificate = certificate;
 	}
 
@@ -362,7 +458,7 @@ public class TslServiceDTO implements Serializable {
 	public void setNotAfter(String notAfter) {
 		this.notAfter = notAfter;
 	}
-	
+
 	/**
 	 * Gets the value of the attribute {@link #listMappingTslDTO}.
 	 * @return the value of the attribute {@link #listMappingTslDTO}.

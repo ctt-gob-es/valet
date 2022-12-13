@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import es.gob.valet.commons.utils.CertificateConstants;
 import es.gob.valet.form.ConstantsForm;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
@@ -52,7 +53,6 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 import es.gob.valet.tsl.access.TSLManager;
-import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
@@ -322,28 +322,28 @@ public class TslController {
 
 		List<ConstantsForm> result = new ArrayList<ConstantsForm>();
 
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_CERT_VERSION).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_CERTVERSION)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SUBJECT).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SUBJECT)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_ISSUER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_ISSUER)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_COMMON_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_GIVEN_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SURNAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_COUNTRY).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SUBJECT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_PSEUDONYM).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SERIALNUMBER)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SIGALG_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGNAME)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SIGALG_OID).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGOID)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_VALID_FROM).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDFROM)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_VALID_TO).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDTO)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_CERTPOL_INFO_OIDS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CERTPOLINFOOIDS)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_QC_STATEMENTS_OIDS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATOIDS)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATEUTYPEOIDS)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_SUBJECT_ALT_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_SUBJECTALTNAME)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_IS_CA).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_BASICCONSTRAINTISCA)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_KEY_USAGE).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_KEYUSAGE)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_CRL_DISTRIBUTION_POINTS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT)));
-		result.add(new ConstantsForm(Integer.valueOf(WrapperX509Cert.INFOCERT_AUTHORITY_INFORMATION_ACCESS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_AIA)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_CERT_VERSION).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_CERTVERSION)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SUBJECT)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_ISSUER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_ISSUER)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_COMMON_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_GIVEN_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SURNAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_COUNTRY).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_PSEUDONYM).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SERIALNUMBER)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SIGALG_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGNAME)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SIGALG_OID).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGOID)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_VALID_FROM).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDFROM)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_VALID_TO).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDTO)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_CERTPOL_INFO_OIDS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CERTPOLINFOOIDS)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_QC_STATEMENTS_OIDS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATOIDS)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATEUTYPEOIDS)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT_ALT_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_SUBJECTALTNAME)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_IS_CA).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_BASICCONSTRAINTISCA)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_KEY_USAGE).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_KEYUSAGE)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_CRL_DISTRIBUTION_POINTS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_AUTHORITY_INFORMATION_ACCESS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_AIA)));
 		
 
 		return result;

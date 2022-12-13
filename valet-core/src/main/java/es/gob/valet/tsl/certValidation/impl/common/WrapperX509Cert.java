@@ -47,6 +47,7 @@ import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.KeyUsage;
 
+import es.gob.valet.commons.utils.CertificateConstants;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -62,115 +63,6 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
  */
 public class WrapperX509Cert {
 
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Certificate Version.
-	 */
-	public static final int INFOCERT_CERT_VERSION = 0;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Subject.
-	 */
-	public static final int INFOCERT_SUBJECT = 1;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Issuer.
-	 */
-	public static final int INFOCERT_ISSUER = 2;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Serial Number.
-	 */
-	public static final int INFOCERT_SERIAL_NUMBER = NumberConstants.NUM3;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Signature Algorithm Name.
-	 */
-	public static final int INFOCERT_SIGALG_NAME = NumberConstants.NUM4;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Signauture Algorithm OID.
-	 */
-	public static final int INFOCERT_SIGALG_OID = NumberConstants.NUM5;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Valid From.
-	 */
-	public static final int INFOCERT_VALID_FROM = NumberConstants.NUM6;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Valid To.
-	 */
-	public static final int INFOCERT_VALID_TO = NumberConstants.NUM7;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Certificate Policies Information OIDs.
-	 */
-	public static final int INFOCERT_CERTPOL_INFO_OIDS = NumberConstants.NUM8;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Qc Statements OIDs.
-	 */
-	public static final int INFOCERT_QC_STATEMENTS_OIDS = NumberConstants.NUM9;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Qc Statements ExtEu Type OIDs.
-	 */
-	public static final int INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS = NumberConstants.NUM10;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Subject Alternative Name.
-	 */
-	public static final int INFOCERT_SUBJECT_ALT_NAME = NumberConstants.NUM11;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Basic Constraints - Is CA.
-	 */
-	public static final int INFOCERT_IS_CA = NumberConstants.NUM12;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Key Usage.
-	 */
-	public static final int INFOCERT_KEY_USAGE = NumberConstants.NUM13;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: CRL Distribution Points.
-	 */
-	public static final int INFOCERT_CRL_DISTRIBUTION_POINTS = NumberConstants.NUM14;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Authority Information Access.
-	 */
-	public static final int INFOCERT_AUTHORITY_INFORMATION_ACCESS = NumberConstants.NUM15;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Surname.
-	 */
-	public static final int INFOCERT_SURNAME = NumberConstants.NUM16;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Common Name.
-	 */
-	public static final int INFOCERT_COMMON_NAME = NumberConstants.NUM17;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Given Name.
-	 */
-	public static final int INFOCERT_GIVEN_NAME = NumberConstants.NUM18;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Country.
-	 */
-	public static final int INFOCERT_COUNTRY = NumberConstants.NUM19;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Pseudonym.
-	 */
-	public static final int INFOCERT_PSEUDONYM = NumberConstants.NUM20;
-
-	/**
-	 * Constant attribute that represents the identifier to obtain the certificate info: Serial Number
-	 */
-	public static final int INFOCERT_SUBJECT_SERIAL_NUMBER = NumberConstants.NUM21;
 
 	/**
 	 * Attribute that represents the X.509 Certificate (Java).
@@ -666,70 +558,70 @@ public class WrapperX509Cert {
 		String result = null;
 
 		switch (infoCertCode) {
-			case INFOCERT_CERT_VERSION:
+			case CertificateConstants.INFOCERT_CERT_VERSION:
 				result = getX509CertVersion();
 				break;
-			case INFOCERT_SUBJECT:
+			case CertificateConstants.INFOCERT_SUBJECT:
 				result = getSubject();
 				break;
-			case INFOCERT_ISSUER:
+			case CertificateConstants.INFOCERT_ISSUER:
 				result = getIssuer();
 				break;
-			case INFOCERT_SERIAL_NUMBER:
+			case CertificateConstants.INFOCERT_SERIAL_NUMBER:
 				result = getSerialNumber();
 				break;
-			case INFOCERT_SIGALG_NAME:
+			case CertificateConstants.INFOCERT_SIGALG_NAME:
 				result = getSignatureAlgorithmName();
 				break;
-			case INFOCERT_SIGALG_OID:
+			case CertificateConstants.INFOCERT_SIGALG_OID:
 				result = getSignatureAlgorithmOID();
 				break;
-			case INFOCERT_VALID_FROM:
+			case CertificateConstants.INFOCERT_VALID_FROM:
 				result = getValidFrom();
 				break;
-			case INFOCERT_VALID_TO:
+			case CertificateConstants.INFOCERT_VALID_TO:
 				result = getValidTo();
 				break;
-			case INFOCERT_CERTPOL_INFO_OIDS:
+			case CertificateConstants.INFOCERT_CERTPOL_INFO_OIDS:
 				result = getExtensionCertPoliciesInformationOIDs();
 				break;
-			case INFOCERT_QC_STATEMENTS_OIDS:
+			case CertificateConstants.INFOCERT_QC_STATEMENTS_OIDS:
 				result = getExtensionQcStatementsOIDs();
 				break;
-			case INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS:
+			case CertificateConstants.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS:
 				result = getExtensionQcStatementExtEuTypeOids();
 				break;
-			case INFOCERT_SUBJECT_ALT_NAME:
+			case CertificateConstants.INFOCERT_SUBJECT_ALT_NAME:
 				result = getExtensionSubjectAltName();
 				break;
-			case INFOCERT_IS_CA:
+			case CertificateConstants.INFOCERT_IS_CA:
 				result = getExtensionBasicConstrainstIsCA();
 				break;
-			case INFOCERT_KEY_USAGE:
+			case CertificateConstants.INFOCERT_KEY_USAGE:
 				result = getExtensionKeyUsage();
 				break;
-			case INFOCERT_CRL_DISTRIBUTION_POINTS:
+			case CertificateConstants.INFOCERT_CRL_DISTRIBUTION_POINTS:
 				result = getExtensionCRLDistributionPoints();
 				break;
-			case INFOCERT_AUTHORITY_INFORMATION_ACCESS:
+			case CertificateConstants.INFOCERT_AUTHORITY_INFORMATION_ACCESS:
 				result = getExtensionAuthorityInformationAccess();
 				break;
-			case INFOCERT_SURNAME:
+			case CertificateConstants.INFOCERT_SURNAME:
 				result = getSurname();
 				break;
-			case INFOCERT_COMMON_NAME:
+			case CertificateConstants.INFOCERT_COMMON_NAME:
 				result = getCommonName();
 				break;
-			case INFOCERT_GIVEN_NAME:
+			case CertificateConstants.INFOCERT_GIVEN_NAME:
 				result = getGivenName();
 				break;
-			case INFOCERT_COUNTRY:
+			case CertificateConstants.INFOCERT_COUNTRY:
 				result = getCountry();
 				break;
-			case INFOCERT_PSEUDONYM:
+			case CertificateConstants.INFOCERT_PSEUDONYM:
 				result = getPseudonym();
 				break;
-			case INFOCERT_SUBJECT_SERIAL_NUMBER:
+			case CertificateConstants.INFOCERT_SUBJECT_SERIAL_NUMBER:
 				result = getSubjectSerieNumber();
 				break;
 			default:

@@ -141,6 +141,50 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	}
 
 	/**
+	 * This constructor method sets an email to be sended through internal mail server.
+	 * @param listAddresseesParam Parameter that represents the list of addressees to the e-mail.
+	 * @param subjectParam Parameter that represents the subject of the e-mail.
+	 * @param message Parameter that represents the message of the e-mail.
+	 * @throws EMailException If some of the input parameters is null.
+	 */
+	public EMailTimeLimitedOperation(List<String> listAddresseesParam, String subjectParam, String message) throws EMailException {
+	
+		this();
+	
+		// Comprobamos que haya destinatarios a los que enviar el e-mail
+		if (listAddresseesParam == null || listAddresseesParam.isEmpty()) {
+			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_005));
+		} else {
+			for (String mailAddress: listAddresseesParam) {
+				if (checkEmailAdress(mailAddress)) {
+					try {
+						mailAddresses.add(new InternetAddress(mailAddress));
+					} catch (AddressException e) {
+						continue;
+					}
+				} else {
+					LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_008, new Object[ ] { mailAddress }));
+				}
+			}
+			if (mailAddresses.isEmpty()) {
+				throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_005));
+			}
+		}
+		// Comprobamos que se haya indicado un asunto
+		if (subjectParam == null) {
+			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_006));
+		}
+		subject = subjectParam;
+		// Comprobamos que se haya indicado un mensaje
+		if (message == null) {
+			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_007));
+		}
+		messageBuilder = new StringBuilder(message);
+		setMaxTimeForRunningThread(NumberConstants.NUM10000);
+	
+	}
+
+	/**
 	 * Auxiliar method that sets all the properties needed for the mail server from a data base instance.
 	 * @param csm Object that represents an instance of a mail server in the data base.
 	 * @throws EMailException In case of some error setting the configuration.
@@ -216,50 +260,6 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 			LOGGER.error(e2.getMessage(), e2);
 		}
 		return result;
-
-	}
-
-	/**
-	 * This constructor method sets an email to be sended through internal mail server.
-	 * @param listAddresseesParam Parameter that represents the list of addressees to the e-mail.
-	 * @param subjectParam Parameter that represents the subject of the e-mail.
-	 * @param message Parameter that represents the message of the e-mail.
-	 * @throws EMailException If some of the input parameters is null.
-	 */
-	public EMailTimeLimitedOperation(List<String> listAddresseesParam, String subjectParam, String message) throws EMailException {
-
-		this();
-
-		// Comprobamos que haya destinatarios a los que enviar el e-mail
-		if (listAddresseesParam == null || listAddresseesParam.isEmpty()) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_005));
-		} else {
-			for (String mailAddress: listAddresseesParam) {
-				if (checkEmailAdress(mailAddress)) {
-					try {
-						mailAddresses.add(new InternetAddress(mailAddress));
-					} catch (AddressException e) {
-						continue;
-					}
-				} else {
-					LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_008, new Object[ ] { mailAddress }));
-				}
-			}
-			if (mailAddresses.isEmpty()) {
-				throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_005));
-			}
-		}
-		// Comprobamos que se haya indicado un asunto
-		if (subjectParam == null) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_006));
-		}
-		subject = subjectParam;
-		// Comprobamos que se haya indicado un mensaje
-		if (message == null) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_007));
-		}
-		messageBuilder = new StringBuilder(message);
-		setMaxTimeForRunningThread(NumberConstants.NUM10000);
 
 	}
 

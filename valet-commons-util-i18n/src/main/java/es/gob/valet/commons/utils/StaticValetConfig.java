@@ -92,6 +92,10 @@ public final class StaticValetConfig {
 	 * Attribute that represents the key for the property that indicates the Padding algorithm for the AES cipher.
 	 */
 	public static final String AES_NO_PADDING_ALG = "aes.nopadding.alg";
+	/**
+	 * Attribute that represents the Padding algorithm for the AES cipher.
+	 */
+	public static final String AES_PADDING_ALG = "aes.padding.alg";
 
 	/**
 	 * Attribute that represents the key for the property that indicates the AES algorithm name.
