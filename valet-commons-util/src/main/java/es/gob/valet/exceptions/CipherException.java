@@ -15,61 +15,59 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.crypto.exception.CryptographyException.java.</p>
- * <b>Description:</b><p>Class that manages the errors related with the management of keystores in the system.</p>
+ * <b>File:</b><p>es.gob.valet.exceptions.CipherException.java.</p>
+ * <b>Description:</b><p>Class that represents an exception related with the cipher utility</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * <b>Date:</b><p>26/09/2018.</p>
+ * <b>Date:</b><p>21/12/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/11/2018.
+ * @version 1.0, 23/12/2022.
  */
-package es.gob.valet.crypto.exception;
-
-import es.gob.valet.exceptions.ValetException;
+package es.gob.valet.exceptions;
 
 /**
- * <p>Class that manages the errors related with the management of keystores in the system.</p>
+ * <p>Class that represents an exception related with the cipher utility.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.0, 23/12/2022.
  */
-public class CryptographyException extends ValetException {
+public class CipherException extends ValetException {
 
 	/**
-	 * Attribute that represents class serial version.
+	 * Constant attribute that represents the serial version UID.
 	 */
-	private static final long serialVersionUID = -149578704699248361L;
+	private static final long serialVersionUID = -6434261310096445951L;
 
 	/**
-	 * Constructor method for the class CryptographyException.java.
+	 * Constructor method for the class CipherException.java.
 	 */
-	public CryptographyException() {
+	public CipherException() {
 		super();
 	}
 
 	/**
-	 * Constructor method for the class CryptographyException.java.
+	 * Constructor method for the class CipherException.java.
 	 * @param errorCode Error code.
 	 * @param errorDesc Description for the error.
 	 */
-	public CryptographyException(String errorCode, String errorDesc) {
+	public CipherException(String errorCode, String errorDesc) {
 		super(errorCode, errorDesc);
 	}
 
 	/**
-	 * Constructor method for the class CryptographyException.java.
+	 * Constructor method for the class CipherException.java.
 	 * @param errorCode Error code.
 	 * @param errorDesc Description for the error.
 	 * @param exception Exception that causes the error.
 	 */
-	public CryptographyException(String errorCode, String errorDesc, Exception exception) {
+	public CipherException(String errorCode, String errorDesc, Exception exception) {
 		super(errorCode, errorDesc, exception);
 	}
-
+	
 	/**
-	 * Constructor method for the class CryptographyException.java.
+	 * Constructor method for the class CipherException.java.
 	 * @param message Error message.
-	 * @param exception Error cause.
 	 */
-	public CryptographyException(String message, Exception exception) {
-		super(message, exception);
+	public CipherException(String message) {
+		super(message);
 	}
+
 }

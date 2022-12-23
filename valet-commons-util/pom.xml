@@ -87,6 +87,9 @@
 			<artifactId>jackson-annotations</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-i18n</artifactId>
+		</dependency>
 	</dependencies>
-
 </project>

@@ -105,6 +105,27 @@ public class ValetException extends Exception implements IValetException {
 		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
 	}
 
+	public ValetException(final String errorCodeParam, final Exception exceptionParam) {
+		super(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, exceptionParam }));
+		errorCode = errorCodeParam;
+		exception = exceptionParam;
+		// Solamente en trace escribimos el mensaje y la excepción, por si es
+		// controlada
+		// posteriormente para ocultarla pero es necesario tenerla en cuenta
+		// para
+		// desarrollo.
+		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
+	}
+	
+	/**
+	 * Constructor method for the class ValetException.java.
+	 * @param errorDescParam Description for the error.
+	 */
+	public ValetException(final String errorDescParam) {
+		errorDesc = errorDescParam;
+		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
+	}
+	
 	/**
 	 * Gets the value of the attribute {@link #errorCode}.
 	 * @return the value of the attribute {@link #errorCode}.

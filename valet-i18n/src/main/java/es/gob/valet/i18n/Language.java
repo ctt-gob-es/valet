@@ -124,6 +124,17 @@ public final class Language {
 	 * Attribute that represents the location of file that contains the general messages persistence module.
 	 */
 	private static final String CONTENT_STATISTICS_GENERAL_PATH = "valet-standaloneStatistics.general";
+	
+	/**
+	 * Constant attribute that represents the string to identify the bundle name to the file related with core logs.
+	 */
+	private static final String BUNDLENAME_COMMONUTILS = "valet-commons-util.valet";
+	
+	/**
+	 * Constant attribute that represents the string to identify the bundle name to the file related with core logs.
+	 */
+	private static final String BUNDLENAME_CORE = "valet-core.valet";
+	
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
@@ -173,6 +184,11 @@ public final class Language {
 	 * Attribute that represents the resource boundle with the tasks messages for the core module.
 	 */
 	private static ResourceBundle coreTasks = null;
+	
+	/**
+	 * Attribute that represents the properties for the locale for the core afirma messages.
+	 */
+	private static ResourceBundle resCore = null;
 
 	/**
 	 * Attribute that represents the properties for the locale of the constants from the tables of the configuration schema.
@@ -195,6 +211,11 @@ public final class Language {
 	private static ResourceBundle standaloneStatisticsGeneral = null;
 
 	/**
+	 * Attribute that represents the properties for the locale for the core bundle messages.
+	 */
+	private static ResourceBundle resCommonsUtilsBundle = null;
+	
+	/**
 	 * Attribute that represents the locale specified in the configuration.
 	 */
 	private static Locale currentLocale;
@@ -203,7 +224,7 @@ public final class Language {
 	 * Attribute that represents the url class loader for the messages files.
 	 */
 	private static URLClassLoader urlClassLoaderMsg;
-
+	
 	/**
 	 * Constructor method for the class Language.java.
 	 */
@@ -312,8 +333,12 @@ public final class Language {
 
 		persistenceGeneral = ResourceBundle.getBundle(CONTENT_PERSISTENCE_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
 		
+		resCommonsUtilsBundle = ResourceBundle.getBundle(BUNDLENAME_COMMONUTILS, currentLocale, urlClassLoaderMsg);
+		
+		resCore = ResourceBundle.getBundle(BUNDLENAME_CORE, currentLocale, urlClassLoaderMsg);
+		
 		standaloneStatisticsGeneral =  ResourceBundle.getBundle(CONTENT_STATISTICS_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
-
+		
 	}
 
 	/**
@@ -553,4 +578,41 @@ public final class Language {
 		return standaloneStatisticsGeneral.getString(key);
 	}
 
+	/**
+	 * Gets the message with the key and values indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @param values Values for insert in the message.
+	 * @return String with the message well-formed.
+	 */
+	public static String getFormatResCommonsUtilsValet(String key, Object[ ] values) {
+		return new MessageFormat(resCommonsUtilsBundle.getString(key), currentLocale).format(values);
+	}
+
+	/**
+	 * Gets the message with the key indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @return String with the message.
+	 */
+	public static String getResCommonsUtilsValet(String key) {
+		return resCommonsUtilsBundle.getString(key);
+	}
+	
+	/**
+	 * Gets the message with the key and values indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @param values Values for insert in the message.
+	 * @return String with the message well-formed.
+	 */
+	public static String getFormatResCoreValet(String key, Object[ ] values) {
+		return new MessageFormat(resCore.getString(key), currentLocale).format(values);
+	}
+
+	/**
+	 * Gets the message with the key indicated as input parameters.
+	 * @param key Key for obtain the message.
+	 * @return String with the message.
+	 */
+	public static String getResCoreValet(String key) {
+		return resCore.getString(key);
+	}
 }
