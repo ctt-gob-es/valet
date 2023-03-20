@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 22/02/2023.
  */
 package es.gob.valet.persistence.utils;
 
@@ -28,7 +28,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -38,7 +37,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.exceptions.IValetException;
@@ -49,7 +47,7 @@ import es.gob.valet.persistence.exceptions.CipherException;
 /**
  * <p>Class to decode and encode password using AES algorithm.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 22/02/2023.
  */
 public final class UtilsAESCipher {
 
@@ -117,19 +115,18 @@ public final class UtilsAESCipher {
 	 * @throws CipherException If the method fails.
 	 */
 	public byte[ ] encryptMessage(String msg) throws CipherException {
-		Cipher cipher;
-	
-		Security.addProvider(new BouncyCastleProvider());
 		try {
-			cipher = Cipher.getInstance(StaticValetConfig.getProperty(StaticValetConfig.AES_PADDING_ALG));
-			cipher.init(Cipher.ENCRYPT_MODE, key);
+			Cipher cipher = Cipher.getInstance(StaticValetConfig.getProperty(StaticValetConfig.AES_NO_PADDING_ALG));
+			IvParameterSpec ivspec = new IvParameterSpec(key.getEncoded());
+			cipher.init(Cipher.ENCRYPT_MODE, key, ivspec);
 			return Base64.encodeBase64(cipher.doFinal(msg.getBytes()));
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+		} catch (InvalidKeyException | IllegalBlockSizeException
+				| BadPaddingException e) {
 			throw new CipherException(IValetException.COD_199, Language.getResPersistenceGeneral(IPersistenceGeneralMessages.CIPHER_LOG003), e);
-			
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException
+				| InvalidAlgorithmParameterException e) {
+			throw new CipherException(IValetException.COD_199, Language.getResPersistenceGeneral(IPersistenceGeneralMessages.CIPHER_LOG001), e);
 		}
-		
-		
 	}
 
 	/**
@@ -144,20 +141,9 @@ public final class UtilsAESCipher {
 			IvParameterSpec ivspec = new IvParameterSpec(key.getEncoded());
 			cipher.init(Cipher.DECRYPT_MODE, key, ivspec);
 			return cipher.doFinal(Base64.decodeBase64(msg));
-		} catch (InvalidKeyException | IllegalBlockSizeException e) {
+		} catch (InvalidKeyException | IllegalBlockSizeException
+				| BadPaddingException e) {
 			throw new CipherException(IValetException.COD_199, Language.getResPersistenceGeneral(IPersistenceGeneralMessages.CIPHER_LOG002), e);
-		} catch (BadPaddingException e) {
-			Cipher cipher;
-			try {
-				cipher = Cipher.getInstance(StaticValetConfig.getProperty(StaticValetConfig.AES_PADDING_ALG));
-				cipher.init(Cipher.DECRYPT_MODE, key);
-				return cipher.doFinal(Base64.decodeBase64(msg));
-			} catch (InvalidKeyException | IllegalBlockSizeException
-					| BadPaddingException e1) {
-				throw new CipherException(IValetException.COD_199, Language.getResPersistenceGeneral(IPersistenceGeneralMessages.CIPHER_LOG002), e);
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
-				throw new CipherException(IValetException.COD_199, Language.getResPersistenceGeneral(IPersistenceGeneralMessages.CIPHER_LOG001), e);
-			}
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
 			throw new CipherException(IValetException.COD_199, Language.getResPersistenceGeneral(IPersistenceGeneralMessages.CIPHER_LOG001), e);

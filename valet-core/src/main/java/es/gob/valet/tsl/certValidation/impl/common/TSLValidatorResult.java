@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 13/05/2019.
+ * @version 1.4, 22/02/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -45,7 +45,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that represents a TSL validation result.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 13/05/2019.
+ * @version 1.4, 22/02/2023.
  */
 public class TSLValidatorResult implements ITSLValidatorResult {
 
@@ -175,6 +175,11 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 * Attribute that represents the mapping that indicates if the certificate is in QSCD.
 	 */
 	private int mappingQSCD = ITSLValidatorResult.MAPPING_QSCD_UNKNOWN;
+	
+	/**
+	 * Attribute that represents the mapping that indicates additional information returned by ETSI TS 119 615 v.1.1.1.
+	 */
+	private String mappingETSIResult = null;
 
 	/**
 	 * Attribute that represents the issuer X509 certificate of the certificate to validate.
@@ -436,6 +441,22 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 */
 	public final void setTSPServiceNameForDetect(String tspServiceNameForDetectParam) {
 		this.tspServiceNameForDetect = tspServiceNameForDetectParam;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #mappingETSIResult}.
+	 * @return the value of the attribute {@link #mappingETSIResult}.
+	 */
+	public String getMappingETSIResult() {
+		return mappingETSIResult;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #mappingETSIResult}.
+	 * @param mappingETSIResult The value for the attribute {@link #mappingETSIResult}.
+	 */
+	public void setMappingETSIResult(String mappingETSIResult) {
+		this.mappingETSIResult = mappingETSIResult;
 	}
 
 	/**

@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 22/02/2022.
+ * @version 1.5, 22/02/2023.
  */
 package es.gob.valet.controller;
 
 import java.io.IOException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
@@ -41,14 +42,23 @@ import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.form.SystemCertificateForm;
 import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
+import es.gob.valet.utils.UtilsCache;
 
 /**
- * <p>Class that manages the requests related to the Keystore administration.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 22/02/2022.
+ * <p>
+ * Class that manages the requests related to the Keystore administration.
+ * </p>
+ * <b>Project:</b>
+ * <p>
+ * Platform for detection and validation of certificates recognized in European
+ * TSL.
+ * </p>
+ * 
+ * @version 1.5, 22/02/2023.
  */
 @Controller
 public class KeystoreController {
@@ -64,17 +74,27 @@ public class KeystoreController {
 	private static final String FIELD_ID_SYSTEM_CERTIFICATE = "idSystemCertificate";
 
 	/**
-	 * Method that load the list of certificates stored in the specified keystore.
+	 * Method that load the list of certificates stored in the specified
+	 * keystore.
 	 *
-	 * @param idKeystore Parameter that represents ID of kestore.
-	 * @param model Holder object form model attributes.
+	 * @param idKeystore
+	 *            Parameter that represents ID of kestore.
+	 * @param model
+	 *            Holder object form model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
-	@RequestMapping(value="/loadcertificatesdatatable", method = RequestMethod.GET)
-	public String loadCertificatesDatatable(@RequestParam(FIELD_ID_KEYSTORE) Long idKeystore, Model model){
+	@RequestMapping(value = "/loadcertificatesdatatable", method = RequestMethod.GET)
+	public String loadCertificatesDatatable(@RequestParam(FIELD_ID_KEYSTORE) Long idKeystore, Model model) {
+		try {
+			UtilsCache.reloadConfigurationLocalCache(true);
+		} catch (ConfigurationCacheException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		SystemCertificateForm systemCertificateForm = new SystemCertificateForm();
 		systemCertificateForm.setIdKeystore(idKeystore);
-		IKeystoreService keystoreService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService();
+		IKeystoreService keystoreService = ManagerPersistenceServices.getInstance()
+				.getManagerPersistenceConfigurationServices().getKeystoreService();
 		systemCertificateForm.setNameKeystore(keystoreService.getNameKeystoreById(idKeystore));
 		model.addAttribute("keystoreform", systemCertificateForm);
 		return "fragments/keystoreadmin.html";
@@ -84,9 +104,12 @@ public class KeystoreController {
 	/**
 	 * Method that maps the add TSL web request to the controller and sets the
 	 * backing form.
-	 * @param model Holder object for model attributes.
+	 * 
+	 * @param model
+	 *            Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
-	 * @throws IOException If the method fails.
+	 * @throws IOException
+	 *             If the method fails.
 	 */
 
 	@RequestMapping(value = "/addcertificate")
@@ -97,29 +120,42 @@ public class KeystoreController {
 	}
 
 	/**
-	 * Method that maps the editing of system certificate to the controller and sets the backing form.
-	 * @param idSystemCertificate Parameter that represetns ID of system certificate.
-	 * @param model Holder object for model attributes.
+	 * Method that maps the editing of system certificate to the controller and
+	 * sets the backing form.
+	 * 
+	 * @param idSystemCertificate
+	 *            Parameter that represetns ID of system certificate.
+	 * @param model
+	 *            Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
-	@RequestMapping(value = "/loadeditcertificate",  method = RequestMethod.GET)
+	@RequestMapping(value = "/loadeditcertificate", method = RequestMethod.GET)
 	public String editCertificate(@RequestParam("id") Long idSystemCertificate, Model model) {
-		ISystemCertificateService systemCertificateService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService();
+		ISystemCertificateService systemCertificateService = ManagerPersistenceServices.getInstance()
+				.getManagerPersistenceConfigurationServices().getSystemCertificateService();
 		SystemCertificate certificateToEdit = systemCertificateService.getSystemCertificateById(idSystemCertificate);
 		SystemCertificateForm certificateForm = new SystemCertificateForm();
-		//obtenemos el certificado
+		// obtenemos el certificado
 		try {
 			Long idKeystoreSelected = certificateToEdit.getKeystore().getIdKeystore();
+
 			IKeystoreFacade keystore = KeystoreFactory.getKeystoreInstance(idKeystoreSelected);
-			X509Certificate cert = UtilsCertificate.getX509Certificate(keystore.getCertificate(certificateToEdit.getAlias()).getEncoded());
-			//se obtiene las fechas hasta y desde
-			certificateForm.setValidFrom(UtilsCertificate.getValidFrom(cert));
-			certificateForm.setValidTo(UtilsCertificate.getValidTo(cert));
+			Certificate certificate = keystore.getCertificate(certificateToEdit.getAlias());
+			if (certificate != null) {
+				X509Certificate cert = UtilsCertificate.getX509Certificate(certificate.getEncoded());
+				// se obtiene las fechas hasta y desde
+				certificateForm.setValidFrom(UtilsCertificate.getValidFrom(cert));
+				certificateForm.setValidTo(UtilsCertificate.getValidTo(cert));
+			}
+			
+			
+				
+			
 		} catch (CryptographyException | CertificateEncodingException | CommonUtilsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		certificateForm.setAlias(certificateToEdit.getAlias());
 		certificateForm.setSubject(certificateToEdit.getSubject());
 		certificateForm.setIssuer(certificateToEdit.getIssuer());
@@ -132,14 +168,21 @@ public class KeystoreController {
 	}
 
 	/**
-	 *  Method that loads the necessary information to show the confirmation modal to remove a selected certificate.
-	 * @param idSystemCertificate Parameter that represetns ID of system certificate.
-	 * @param rowIndexCertificate Parameter that represents the index of the row of the selected certificate.
-	 * @param model Holder object for model attributes.
+	 * Method that loads the necessary information to show the confirmation
+	 * modal to remove a selected certificate.
+	 * 
+	 * @param idSystemCertificate
+	 *            Parameter that represetns ID of system certificate.
+	 * @param rowIndexCertificate
+	 *            Parameter that represents the index of the row of the selected
+	 *            certificate.
+	 * @param model
+	 *            Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
-	@RequestMapping(value = "/loadconfirmdeletecertificate",  method = RequestMethod.GET)
-	public String deleteConfirmCertificate(@RequestParam(FIELD_ID_SYSTEM_CERTIFICATE) Long idSystemCertificate, @RequestParam("rowindex") String rowIndexCertificate, Model model){
+	@RequestMapping(value = "/loadconfirmdeletecertificate", method = RequestMethod.GET)
+	public String deleteConfirmCertificate(@RequestParam(FIELD_ID_SYSTEM_CERTIFICATE) Long idSystemCertificate,
+			@RequestParam("rowindex") String rowIndexCertificate, Model model) {
 		SystemCertificateForm certificateForm = new SystemCertificateForm();
 		certificateForm.setIdSystemCertificate(idSystemCertificate);
 		certificateForm.setRowIndexCertificate(rowIndexCertificate);

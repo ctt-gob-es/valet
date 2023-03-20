@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>es.gob.valet</groupId>
 	<artifactId>valet-parent</artifactId>
-	<version>1.0.1</version>
+	<version>1.1.0</version>
 	<packaging>pom</packaging>
 	<name>valet-parent</name>
 	<description>vaLET parent project</description>
@@ -29,17 +29,17 @@
 		<java.version>${java.1.8.version}</java.version>
 
 		<!-- Versionado de módulos propios de valET. -->
-		<valet.version.commons-util>1.0.1</valet.version.commons-util>
-		<valet.version.commons-util-i18n>1.0.1</valet.version.commons-util-i18n>
-		<valet.version.i18n>1.0.1</valet.version.i18n>
-		<valet.version.persistence>1.0.1</valet.version.persistence>
-		<valet.version.core>1.0.1</valet.version.core>
-		<valet.version.web>1.0.1</valet.version.web>
-		<valet.version.rest>1.0.1</valet.version.rest>
-		<valet.version.rest-client>1.0.1</valet.version.rest-client>
-		<valet.version.cache>1.0.1</valet.version.cache>
-		<valet.version.quartz>1.0.1</valet.version.quartz>
-		<valet.version.standalone.statistics>1.0.1</valet.version.standalone.statistics>
+		<valet.version.commons-util>1.1.0</valet.version.commons-util>
+		<valet.version.commons-util-i18n>1.1.0</valet.version.commons-util-i18n>
+		<valet.version.i18n>1.1.0</valet.version.i18n>
+		<valet.version.persistence>1.1.0</valet.version.persistence>
+		<valet.version.core>1.1.0</valet.version.core>
+		<valet.version.web>1.1.0</valet.version.web>
+		<valet.version.rest>1.1.0</valet.version.rest>
+		<valet.version.rest-client>1.1.0</valet.version.rest-client>
+		<valet.version.cache>1.1.0</valet.version.cache>
+		<valet.version.quartz>1.1.0</valet.version.quartz>
+		<valet.version.standalone.statistics>1.1.0</valet.version.standalone.statistics>
 
 		<!-- Versionado de otras dependencias. -->
 	<!-- Actualizados spring-data y spring-rest para evitar vulnerabilidad 

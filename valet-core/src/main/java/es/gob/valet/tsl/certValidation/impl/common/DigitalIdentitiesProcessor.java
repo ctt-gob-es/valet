@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 08/10/2021.
+ * @version 1.5, 22/02/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -47,12 +47,13 @@ import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.tsl.certValidation.ResultServiceInformation;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 
 /**
  * <p>Class that represents a Digital Identities Processor.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 08/10/2021.
+ * @version 1.5, 22/02/2023.
  */
 public class DigitalIdentitiesProcessor {
 
@@ -290,6 +291,217 @@ public class DigitalIdentitiesProcessor {
 	/**
 	 * Checks if the input certificate is issued by some of the identities and sets its in the result.
 	 * @param cert X509v3 certificate to check.
+	 * @param  resultSI Result obtained when executing the procedure 4.3.Obtaining
+	 *            listed services matching a certificate of ETSI TS 119 615
+	 *            v.1.1.1.
+	 * @return <code>true</code> if the certificate is issued by some of the input identities, otherwise <code>false</code>.
+	 */
+	public final boolean checkIfCertificateIsIssuedBySomeIdentity(X509Certificate cert, ResultServiceInformation resultSI) {
+
+		// Por defecto, indicamos que el certificado no está emitido
+		// por ninguno de los contenidos en las identidades digitales.
+		boolean result = false;
+
+		// Creamos una resultado parcial para cada subanálisis.
+		boolean partialResult = false;
+
+		// Comprobamos primero los certificados X509v3.
+		for (X509Certificate issuerCert: x509certList) {
+
+			// Comprobamos si la clave pública del certificado de la CA
+			// firma el certificado.
+			try {
+				partialResult = UtilsCertificate.verify(issuerCert, cert);
+			} catch (CommonUtilsException e) {
+				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL110));
+			}
+
+			// Si se ha encontrado el emisor del certificado y no lo habíamos
+			// detectado ya,
+			// lo indicamos en el resultado.
+			if (partialResult) {
+				result = true;
+				resultSI.getInfoCertificateIssuer().setIssuerCert(issuerCert);
+				resultSI.getInfoCertificateIssuer().setIssuerPublicKey(issuerCert.getPublicKey());
+				try {
+					resultSI.getInfoCertificateIssuer().setIssuerSubjectName(UtilsCertificate.getCertificateId(issuerCert));
+				} catch (CommonUtilsException e) {
+					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL182));
+				}
+				try {
+					if (!UtilsCertificate.isSelfSigned(cert)) {
+						SubjectKeyIdentifier ski = SubjectKeyIdentifier.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(issuerCert).getTBSCertificate().getExtensions());
+						resultSI.getInfoCertificateIssuer().setIssuerSKIbytes(ski.getKeyIdentifier());
+					}
+				} catch (Exception e) {
+					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL183));
+				}
+				break;
+			}
+
+		}
+
+		// Si ya hemos encontrado un emisor que verifica el certificado, tenemos
+		// todos los datos.
+		// En caso contrario, continuamos examinando las demás identidades
+		// digitales.
+		if (!result || resultSI.getInfoCertificateIssuer().getIssuerSubjectName() == null || resultSI.getInfoCertificateIssuer().getIssuerSKIbytes() == null) {
+
+			partialResult = false;
+			// Comprobamos las claves públicas.
+			for (PublicKey issuerPublicKey: x509publicKeysList) {
+
+				try {
+					partialResult = UtilsCertificate.verify(issuerPublicKey, cert);
+				} catch (CommonUtilsException e) {
+					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL112));
+				}
+				// Si se ha encontrado el emisor del certificado y no
+				// lo habíamos detectado ya,
+				// lo indicamos en el resultado.
+				if (partialResult) {
+					result = true;
+					resultSI.getInfoCertificateIssuer().setIssuerPublicKey(issuerPublicKey);
+					break;
+				}
+
+			}
+
+			// IMPORTANTE: Consideramos que comparar el emisor del certificado a
+			// validar
+			// con los asuntos recuperados, no es garantía suficiente para
+			// determinar que
+			// estas identidades digitales representan al emisor del
+			// certificado.
+			partialResult = false;
+			// Comprobamos los Subject Names.
+			for (String issuerSubjectName: x509SubjectNameList) {
+
+				// Comprobamos que el subject de la CA coincide con el emisor
+				// del
+				// certificado.
+				String caSubject = null;
+				try {
+					caSubject = UtilsCertificate.canonicalizarIdCertificado(issuerSubjectName);
+					String certIssuer = UtilsCertificate.getCertificateIssuerId(cert);
+					partialResult = caSubject.equals(certIssuer);
+				} catch (CommonUtilsException e) {
+					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL111));
+				}
+				// Si se ha detectado el emisor del certificado y no lo habíamos
+				// detectado
+				// ya, lo indicamos en el resultado.
+				if (partialResult) {
+
+					// No se considera prueba suficiente para determinar que
+					// este sea el emisor del certificado.
+					result = true;
+					resultSI.getInfoCertificateIssuer().setIssuerSubjectName(caSubject);
+					break;
+				}
+
+			}
+
+			// Y por último comprobamos los Subject Key Identifier si el
+			// certificado no es autoemitido.
+			if (resultSI.getInfoCertificateIssuer().getIssuerSKIbytes() == null && !UtilsCertificate.isSelfSigned(cert)) {
+
+				// IMPORTANTE: Consideramos que comparar el emisor del
+				// certificado a validar
+				// con los asuntos recuperados, no es garantía suficiente para
+				// determinar que
+				// estas identidades digitales representan al emisor del
+				// certificado.
+
+				byte[ ] akiBytes = null;
+				try {
+
+					// Obtenemos el AuthorityKeyIdentifier en array de
+					// bytes.
+					AuthorityKeyIdentifier aki = null;
+					byte[ ] authKeyIdent = cert.getExtensionValue(Extension.authorityKeyIdentifier.getId());
+					if (authKeyIdent != null) {
+						aki = AuthorityKeyIdentifier.getInstance(ASN1OctetString.getInstance(authKeyIdent).getOctets());
+					}
+					if (aki != null) {
+						akiBytes = aki.getKeyIdentifier();
+					}
+
+				} catch (Exception e) {
+					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL114));
+				}
+
+				if (akiBytes != null) {
+
+					partialResult = false;
+					for (byte[ ] issuerSKI: x509ski) {
+
+						// Comparamos los arrays...
+						partialResult = Arrays.equals(issuerSKI, akiBytes);
+
+						// Si se ha encontrado el emisor del certificado y no lo
+						// habíamos
+						// detectado ya, lo indicamos en el resultado.
+						if (partialResult) {
+							// No se considera prueba suficiente para determinar
+							// que
+							// este sea
+							// el emisor del certificado.
+							result = true;
+							resultSI.getInfoCertificateIssuer().setIssuerSKIbytes(issuerSKI);
+							break;
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Checks if the input certificate is some of the identities and sets its in the result.
+	 * @param cert X509v3 certificate to check.
+	 * @return <code>true</code> if the certificate is some of the identities, otherwise <code>false</code>.
+	 */
+	public final boolean checkIfDigitalIdentitiesMatchesCertificate(java.security.cert.X509Certificate cert) {
+
+		// Por defecto, indicamos que no se detecta el certificado.
+		boolean result = false;
+
+		// Comprobamos primero los certificados X509v3.
+		for (X509Certificate certDI: x509certList) {
+
+			// Comprobamos si se trata del mismo certificado.
+			try {
+				result = UtilsCertificate.equals(cert, certDI);
+				if (result) {
+					break;
+				}
+			} catch (CommonUtilsException e) {
+				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL196));
+			}
+
+		}
+
+		// Consideramos que para identificar el certificado, no nos
+		// valen el resto de identidades digitales,
+		// tiene que coincidir exactamente con alguno de los certificados
+		// declarados.
+
+		return result;
+
+	}
+	
+	
+	/**
+	 * Checks if the input certificate is issued by some of the identities and sets its in the result.
+	 * @param cert X509v3 certificate to check.
 	 * @param validationResult Object where is stored the validation result data.
 	 * @return <code>true</code> if the certificate is issued by some of the input identities, otherwise <code>false</code>.
 	 */
@@ -456,40 +668,6 @@ public class DigitalIdentitiesProcessor {
 			}
 
 		}
-
-		return result;
-
-	}
-
-	/**
-	 * Checks if the input certificate is some of the identities and sets its in the result.
-	 * @param cert X509v3 certificate to check.
-	 * @return <code>true</code> if the certificate is some of the identities, otherwise <code>false</code>.
-	 */
-	public final boolean checkIfDigitalIdentitiesMatchesCertificate(java.security.cert.X509Certificate cert) {
-
-		// Por defecto, indicamos que no se detecta el certificado.
-		boolean result = false;
-
-		// Comprobamos primero los certificados X509v3.
-		for (X509Certificate certDI: x509certList) {
-
-			// Comprobamos si se trata del mismo certificado.
-			try {
-				result = UtilsCertificate.equals(cert, certDI);
-				if (result) {
-					break;
-				}
-			} catch (CommonUtilsException e) {
-				LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL196));
-			}
-
-		}
-
-		// Consideramos que para identificar el certificado, no nos
-		// valen el resto de identidades digitales,
-		// tiene que coincidir exactamente con alguno de los certificados
-		// declarados.
 
 		return result;
 

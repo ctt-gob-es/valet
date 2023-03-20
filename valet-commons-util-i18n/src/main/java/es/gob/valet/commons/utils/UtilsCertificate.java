@@ -62,7 +62,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 04/10/2022.
+ * @version 1.10, 22/02/2023.
  */
 public final class UtilsCertificate {
 
@@ -671,7 +671,7 @@ public final class UtilsCertificate {
 	 * @return an object that represents the issuer certificate, or <code>null</code> if the list doesn't contain the issuer certificate.
 	 * @throws CommonUtilsException If the method fails.
 	 */
-	private static X509Certificate getIssuerCertificate(X509Certificate cert, List<X509Certificate> certsList) throws CommonUtilsException {
+	public static X509Certificate getIssuerCertificate(X509Certificate cert, List<X509Certificate> certsList) throws CommonUtilsException {
 
 		X509Certificate result = null;
 

@@ -31,7 +31,6 @@ import java.util.Vector;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
-import es.gob.valet.rest.elements.TslRevocationStatus;
 import es.gob.valet.tsl.certValidation.impl.common.ATSLValidator;
 import es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;

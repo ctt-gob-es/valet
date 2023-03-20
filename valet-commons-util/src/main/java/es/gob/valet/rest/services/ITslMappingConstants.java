@@ -27,7 +27,7 @@ package es.gob.valet.rest.services;
 /**
  * <p>Interface that defines all the commons constants related with the mappings.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 31/01/2019.
+ * @version 1.1, 22/02/2023.
  */
 public interface ITslMappingConstants {
 
@@ -157,7 +157,21 @@ public interface ITslMappingConstants {
 	 * Constant attribute that represents the mapping value 'INDETERMINATE'.
 	 */
 	String MAPPING_VALUE_ETSI_RESULT_INDET = "INDETERMINATE";
+	/**
+	 * Constant attribute that represents the symbol '-'.
+	 */
+	String HYPHEN_SYMBOL = " - ";
 	
+	/**
+	 * Constant attribute that represents the mapping value 'INDET_QC_For_eSig - INDET_QC_For_eSeal - INDET_QWAC '.
+	 */
+	String MAPPING_VALUE_ETSI_RESULT_ALL_INDET = MAPPING_VALUE_ETSI_RESULT_INDET_ESIG+HYPHEN_SYMBOL+MAPPING_VALUE_ETSI_RESULT_INDET_ESIG+HYPHEN_SYMBOL+MAPPING_VALUE_ETSI_RESULT_NQ_WSA;
+	
+	/**
+	 * Constant attribute that represents the mapping value 'Not_Qualified_For_eSig - Not_Qualified_For_eSeal - Not_QWAC '.
+	 */
+	String MAPPING_VALUE_ETSI_RESULT_ALL_NQ = MAPPING_VALUE_ETSI_RESULT_NQ_ESIG+HYPHEN_SYMBOL+MAPPING_VALUE_ETSI_RESULT_NQ_ESEAL+HYPHEN_SYMBOL+MAPPING_VALUE_ETSI_RESULT_INDET_WSA;
 
+			
 
 }

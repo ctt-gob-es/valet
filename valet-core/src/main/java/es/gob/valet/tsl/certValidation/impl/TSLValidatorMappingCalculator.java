@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 27/09/2021.
+ * @version 1.4, 22/02/2023.
  */
 package es.gob.valet.tsl.certValidation.impl;
 
@@ -36,6 +36,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 
+import es.gob.valet.commons.utils.UtilsMappings;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
@@ -55,10 +56,17 @@ import es.gob.valet.tsl.exceptions.TSLValidationException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLOIDs;
 
 /**
- * <p>This class offers static methods to extract mappings of a certificate
- * validated through a TSL.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 27/09/2021.
+ * <p>
+ * This class offers static methods to extract mappings of a certificate
+ * validated through a TSL.
+ * </p>
+ * <b>Project:</b>
+ * <p>
+ * Platform for detection and validation of certificates recognized in European
+ * TSL.
+ * </p>
+ * 
+ * @version 1.4, 22/02/2023.
  */
 public final class TSLValidatorMappingCalculator {
 
@@ -67,9 +75,12 @@ public final class TSLValidatorMappingCalculator {
 	 */
 	private static final Logger LOGGER = Logger.getLogger(TSLValidatorMappingCalculator.class);
 	/**
-	 * Constant attribute that represents the set of mapping names that are static.
+	 * Constant attribute that represents the set of mapping names that are
+	 * static.
 	 */
-	public static final Set<String> STATIC_MAPPING_NAMES_SET = new HashSet<String>(Arrays.asList(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED, ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_KEY_QSCD));
+	public static final Set<String> STATIC_MAPPING_NAMES_SET = new HashSet<String>(
+			Arrays.asList(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED,
+					ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_KEY_QSCD));
 
 	/**
 	 * Constructor method for the class TSLValidatorMappingCalculator.java.
@@ -79,245 +90,38 @@ public final class TSLValidatorMappingCalculator {
 	}
 
 	/**
-	 * Checks if the input mapping name matches with some of the static mapping names.
-	 * @param mappingName Mapping name to check.
-	 * @return <code>true</code> if the input mapping name matches with some of the static mapping names,
-	 * otherwise <code>false</code>.
+	 * Checks if the input mapping name matches with some of the static mapping
+	 * names.
+	 * 
+	 * @param mappingName
+	 *            Mapping name to check.
+	 * @return <code>true</code> if the input mapping name matches with some of
+	 *         the static mapping names, otherwise <code>false</code>.
 	 */
 	public static boolean checksIfMappingNameMatchesWithSomeStaticMappingName(String mappingName) {
 		return STATIC_MAPPING_NAMES_SET.contains(mappingName);
 	}
 
-	/**
-	 * Extracts the static mappings from the validation result, and add these on the input mapping set.
-	 * @param tslCertExtAnalyzer TSL Certificate Extension Analyzer needed to resolve the mappings of the certificate.
-	 * @param mappings Map in which adds the pairs <MappingName, MappingValue> calculated for the validated certificate.
-	 * @param tslValidationResult TSL validation result from which get the static mapping information.
-	 */
-	public static void extractStaticMappingsFromResult(TSLCertificateExtensionAnalyzer tslCertExtAnalyzer, Map<String, String> mappings, ITSLValidatorResult tslValidationResult) {
-		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL320));
-		// Si ninguno de los parámetros de entrada es nulo...
-		if (mappings != null && tslValidationResult != null) {
-
-			// Establecemos primero si el certificado es qualified o no.
-			switch (tslValidationResult.getMappingType()) {
-
-				case ITSLValidatorResult.MAPPING_TYPE_UNKNOWN:
-					try {
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL329));
-						mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED, getMappingTypeQualifiedFromCertificate(tslCertExtAnalyzer));
-					} catch (TSLValidationException e) {
-						LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL325));
-						mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
-					}
-					break;
-
-				case ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL330));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED, ITslMappingConstants.MAPPING_VALUE_NO);
-					break;
-
-				case ITSLValidatorResult.MAPPING_TYPE_QUALIFIED:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL331));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED, ITslMappingConstants.MAPPING_VALUE_YES);
-					break;
-
-				default:
-					break;
-			}
-
-			// Establecemos la clasificación del certificado.
-			switch (tslValidationResult.getMappingClassification()) {
-				case ITSLValidatorResult.MAPPING_CLASSIFICATION_OTHER_UNKNOWN:
-					try {
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL328));
-						mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, getMappingClassificationFromCertificate(tslCertExtAnalyzer, true));
-					} catch (TSLValidationException e) {
-						mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
-					}
-					break;
-
-				case ITSLValidatorResult.MAPPING_CLASSIFICATION_NATURAL_PERSON:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL332));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON);
-					break;
-
-				case ITSLValidatorResult.MAPPING_CLASSIFICATION_LEGALPERSON:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL333));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_LEGALPERSON);
-					break;
-
-				case ITSLValidatorResult.MAPPING_CLASSIFICATION_ESEAL:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL334));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL);
-					break;
-
-				case ITSLValidatorResult.MAPPING_CLASSIFICATION_ESIG:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL335));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG);
-					break;
-
-				case ITSLValidatorResult.MAPPING_CLASSIFICATION_WSA:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL336));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA);
-					break;
-
-				case ITSLValidatorResult.MAPPING_CLASSIFICATION_TSA:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL337));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_TSA);
-					break;
-
-				default:
-					break;
-			}
-
-			// Establecemos si el certificado es de un QSCD.
-			switch (tslValidationResult.getMappingQSCD()) {
-
-				case ITSLValidatorResult.MAPPING_QSCD_UNKNOWN:
-					try {
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL326));
-						mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, getMappingQSCDFromCertificate(tslCertExtAnalyzer));
-					} catch (TSLValidationException e) {
-						mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
-					}
-					break;
-
-				case ITSLValidatorResult.MAPPING_QSCD_NO:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL338));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, ITslMappingConstants.MAPPING_VALUE_NO);
-					break;
-
-				case ITSLValidatorResult.MAPPING_QSCD_YES:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL339));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, ITslMappingConstants.MAPPING_VALUE_YES);
-					break;
-
-				case ITSLValidatorResult.MAPPING_QSCD_ASINCERT:
-					try {
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL340));
-						mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, getMappingQSCDFromCertificate(tslCertExtAnalyzer));
-					} catch (TSLValidationException e) {
-						LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL341));
-						mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
-					}
-					break;
-
-				case ITSLValidatorResult.MAPPING_QSCD_YES_MANAGEDONBEHALF:
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL342));
-					mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, ITslMappingConstants.MAPPING_VALUE_QSCD_YES_MANAGEDONBEHALF);
-					break;
-
-				default:
-					break;
-			}
-
-		}
-
-		// temporal
-		obtainETSIResult(mappings);
-
-	}
-
-	public static void obtainETSIResult(Map<String, String> mappings) {
-
-		if (mappings != null && !mappings.isEmpty()) {
-			if (mappings.get(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED) != null && mappings.get(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION) != null) {
-				if (mappings.get(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED).equals(ITslMappingConstants.MAPPING_VALUE_NO)) {
-					switch (mappings.get(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION)) {
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_NQ_ESIG);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_LEGALPERSON:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_NQ_ESIG);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_NQ_ESIG);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_NQ_ESEAL);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_NQ_WSA);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_UNKNOWN:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_INDET);
-							break;
-						default:
-							break;
-					}
-					mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
-				} else if (mappings.get(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED).equals(ITslMappingConstants.MAPPING_VALUE_YES)) {
-					switch (mappings.get(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION)) {
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_Q_ESIG);
-							mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_LEGALPERSON:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_Q_ESIG);
-							mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_Q_ESIG);
-							mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_Q_ESEAL);
-							mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_Q_WSA);
-							mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_UNKNOWN:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_INDET);
-							mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
-							break;
-						default:
-							break;
-					}
-				} else if (mappings.get(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED).equals(ITslMappingConstants.MAPPING_VALUE_UNKNOWN)) {
-					switch (mappings.get(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION)) {
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_INDET_ESIG);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_LEGALPERSON:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_INDET_ESIG);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_INDET_ESIG);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_INDET_ESEAL);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_INDET_WSA);
-							break;
-						case ITslMappingConstants.MAPPING_VALUE_UNKNOWN:
-							mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_INDET);
-							break;
-						default:
-							break;
-					}
-					mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
-				}
-
-			}
-
-		}
-	}
+	
 
 	/**
 	 * Tries to extract from the certificate if it is qualified or not.
-	 * @param tslCertExtAnalyzer TSL Certificate Extension Analyzer needed to resolve the mappings of the certificate.
-	 * @return String that represents the mapping type of the input certificate. It only can be one of the following:<br>
-	 * <ul>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_YES}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_NO}</li>
-	 * </ul>
-	 * @throws TSLValidationException In case of some error parsing the input certificate with IAIK provider.
+	 * 
+	 * @param tslCertExtAnalyzer
+	 *            TSL Certificate Extension Analyzer needed to resolve the
+	 *            mappings of the certificate.
+	 * @return String that represents the mapping type of the input certificate.
+	 *         It only can be one of the following:<br>
+	 *         <ul>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_YES}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_NO}</li>
+	 *         </ul>
+	 * @throws TSLValidationException
+	 *             In case of some error parsing the input certificate with IAIK
+	 *             provider.
 	 */
-	public static String getMappingTypeQualifiedFromCertificate(TSLCertificateExtensionAnalyzer tslCertExtAnalyzer) throws TSLValidationException {
+	public static String getMappingTypeQualifiedFromCertificate(TSLCertificateExtensionAnalyzer tslCertExtAnalyzer)
+			throws TSLValidationException {
 
 		// Por defecto el valor es desconocido.
 		String result = ITslMappingConstants.MAPPING_VALUE_UNKNOWN;
@@ -325,7 +129,10 @@ public final class TSLValidatorMappingCalculator {
 		// Si dispone de la extensión QcStatement y al menos uno es de los
 		// cualificados, o en su defecto hay una extensión Certificate Policies
 		// Policy Information que determina que es cualificado...
-		if (tslCertExtAnalyzer.hasSomeQcStatementExtensionOid(ITSLValidatorOtherConstants.QCSTATEMENTS_OIDS_FOR_QUALIFIED_CERTS_LIST) || tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_QUALIFIED_CERTS_LIST)) {
+		if (tslCertExtAnalyzer
+				.hasSomeQcStatementExtensionOid(ITSLValidatorOtherConstants.QCSTATEMENTS_OIDS_FOR_QUALIFIED_CERTS_LIST)
+				|| tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(
+						ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_QUALIFIED_CERTS_LIST)) {
 
 			result = ITslMappingConstants.MAPPING_VALUE_YES;
 			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL323));
@@ -343,24 +150,38 @@ public final class TSLValidatorMappingCalculator {
 
 	/**
 	 * Tries to extract from the certificate its classification type.
-	 * @param tslCertExtAnalyzer TSL Certificate Extension Analyzer needed to resolve the mappings of the certificate.
-	 * @param translateMapping Flag that if it is <code>true</code>, then the returned mapping values
-	 * {@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON} and {@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_LEGALPERSON}
-	 * are translated to {@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESEAL} and
-	 * {@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESIG} respectively.
-	 * @return String that represents the mapping classification of the input certificate. It only can be one of the following:<br>
-	 * <ul>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_UNKNOWN}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_LEGALPERSON}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESEAL}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESIG}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_WSA}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_TSA}</li>
-	 * </ul>
-	 * @throws TSLValidationException In case of some error parsing the input certificate with IAIK provider.
+	 * 
+	 * @param tslCertExtAnalyzer
+	 *            TSL Certificate Extension Analyzer needed to resolve the
+	 *            mappings of the certificate.
+	 * @param translateMapping
+	 *            Flag that if it is <code>true</code>, then the returned
+	 *            mapping values
+	 *            {@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON}
+	 *            and
+	 *            {@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_LEGALPERSON}
+	 *            are translated to
+	 *            {@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESEAL}
+	 *            and
+	 *            {@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESIG}
+	 *            respectively.
+	 * @return String that represents the mapping classification of the input
+	 *         certificate. It only can be one of the following:<br>
+	 *         <ul>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_UNKNOWN}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_LEGALPERSON}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESEAL}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESIG}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_WSA}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_TSA}</li>
+	 *         </ul>
+	 * @throws TSLValidationException
+	 *             In case of some error parsing the input certificate with IAIK
+	 *             provider.
 	 */
-	public static String getMappingClassificationFromCertificate(TSLCertificateExtensionAnalyzer tslCertExtAnalyzer, boolean translateMapping) throws TSLValidationException {
+	public static String getMappingClassificationFromCertificate(TSLCertificateExtensionAnalyzer tslCertExtAnalyzer,
+			boolean translateMapping) throws TSLValidationException {
 
 		// Por defecto el valor es desconocido.
 		String result = ITslMappingConstants.MAPPING_VALUE_UNKNOWN;
@@ -370,15 +191,18 @@ public final class TSLValidatorMappingCalculator {
 		if (tslCertExtAnalyzer.isThereSomeQcStatementEuTypeExtension()) {
 
 			// Comprobamos los OID de ESIG, ESEAL y WSA.
-			if (tslCertExtAnalyzer.hasQcStatementEuTypeExtensionOid(ITSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE_ESIGN.getId())) {
+			if (tslCertExtAnalyzer
+					.hasQcStatementEuTypeExtensionOid(ITSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE_ESIGN.getId())) {
 
 				result = ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG;
 
-			} else if (tslCertExtAnalyzer.hasQcStatementEuTypeExtensionOid(ITSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE_ESEAL.getId())) {
+			} else if (tslCertExtAnalyzer
+					.hasQcStatementEuTypeExtensionOid(ITSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE_ESEAL.getId())) {
 
 				result = ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL;
 
-			} else if (tslCertExtAnalyzer.hasQcStatementEuTypeExtensionOid(ITSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE_WEB.getId())) {
+			} else if (tslCertExtAnalyzer
+					.hasQcStatementEuTypeExtensionOid(ITSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE_WEB.getId())) {
 
 				result = ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA;
 
@@ -389,19 +213,26 @@ public final class TSLValidatorMappingCalculator {
 		// IMPORTANTE, si al menos tiene el QcCompliance, ya se considera de
 		// firma,
 		// por lo que si aún no lo hemos determinado, lo comprobamos.
-		if (result.equals(ITslMappingConstants.MAPPING_VALUE_UNKNOWN) && tslCertExtAnalyzer.isThereSomeQcStatementExtension()) {
+		if (result.equals(ITslMappingConstants.MAPPING_VALUE_UNKNOWN)
+				&& tslCertExtAnalyzer.isThereSomeQcStatementExtension()) {
 			result = ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG;
 		}
 
 		// Si aún no hemos podido verificar que el certificado sea detectado,
 		// comprobamos los CertificatePolicies.
-		if (result.equals(ITslMappingConstants.MAPPING_VALUE_UNKNOWN) && tslCertExtAnalyzer.isThereSomeCertPolPolInfExtension()) {
+		if (result.equals(ITslMappingConstants.MAPPING_VALUE_UNKNOWN)
+				&& tslCertExtAnalyzer.isThereSomeCertPolPolInfExtension()) {
 
-			if (tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_ESIG_CERTS_LIST)) {
-				result = translateMapping ? ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG : ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON;
-			} else if (tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_ESEAL_CERTS_LIST)) {
-				result = translateMapping ? ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL : ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_LEGALPERSON;
-			} else if (tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_WSA_CERTS_LIST)) {
+			if (tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(
+					ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_ESIG_CERTS_LIST)) {
+				result = translateMapping ? ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG
+						: ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON;
+			} else if (tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(
+					ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_ESEAL_CERTS_LIST)) {
+				result = translateMapping ? ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL
+						: ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_LEGALPERSON;
+			} else if (tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(
+					ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_WSA_CERTS_LIST)) {
 				result = ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA;
 			}
 
@@ -412,19 +243,27 @@ public final class TSLValidatorMappingCalculator {
 	}
 
 	/**
-	 * Tries to extract from the certificate if it has its private key in a QSCD.
-	 * @param tslCertExtAnalyzer TSL Certificate Extension Analyzer needed to resolve the mappings of the certificate.
-	 * @return String that represents the mapping for the input certificate. It only can be one of the following:<br>
-	 * <ul>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_UNKNOWN}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_YES}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_NO}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_ASINCERT}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_QSCD_YES_MANAGEDONBEHALF}</li>
-	 * </ul>
-	 * @throws TSLValidationException In case of some error parsing the input certificate with IAIK provider.
+	 * Tries to extract from the certificate if it has its private key in a
+	 * QSCD.
+	 * 
+	 * @param tslCertExtAnalyzer
+	 *            TSL Certificate Extension Analyzer needed to resolve the
+	 *            mappings of the certificate.
+	 * @return String that represents the mapping for the input certificate. It
+	 *         only can be one of the following:<br>
+	 *         <ul>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_UNKNOWN}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_YES}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_NO}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_ASINCERT}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_QSCD_YES_MANAGEDONBEHALF}</li>
+	 *         </ul>
+	 * @throws TSLValidationException
+	 *             In case of some error parsing the input certificate with IAIK
+	 *             provider.
 	 */
-	public static String getMappingQSCDFromCertificate(TSLCertificateExtensionAnalyzer tslCertExtAnalyzer) throws TSLValidationException {
+	public static String getMappingQSCDFromCertificate(TSLCertificateExtensionAnalyzer tslCertExtAnalyzer)
+			throws TSLValidationException {
 
 		// Inicializamos el resultado a desconocido.
 		String result = ITslMappingConstants.MAPPING_VALUE_UNKNOWN;
@@ -437,11 +276,14 @@ public final class TSLValidatorMappingCalculator {
 		}
 
 		// Comprobamos los CertificatePolicies - Policy Information.
-		if (result.equals(ITslMappingConstants.MAPPING_VALUE_UNKNOWN) && tslCertExtAnalyzer.isThereSomeCertPolPolInfExtension()) {
+		if (result.equals(ITslMappingConstants.MAPPING_VALUE_UNKNOWN)
+				&& tslCertExtAnalyzer.isThereSomeCertPolPolInfExtension()) {
 
-			if (tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_CERTS_IN_QSCD_LIST)) {
+			if (tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(
+					ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_CERTS_IN_QSCD_LIST)) {
 				result = ITslMappingConstants.MAPPING_VALUE_YES;
-			} else if (tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_CERTS_IN_NO_QSCD_LIST)) {
+			} else if (tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(
+					ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_CERTS_IN_NO_QSCD_LIST)) {
 				result = ITslMappingConstants.MAPPING_VALUE_NO;
 			}
 
@@ -453,14 +295,23 @@ public final class TSLValidatorMappingCalculator {
 	}
 
 	/**
-	 * Extracts the static mappings from the validation result, and add these on the input mapping set.
-	 * If there is some error calculating any mapping, this mapping is not returned in the map.
-	 * @param cert X509v3 certificate from which extract the mapping information.
-	 * @param mappings Map in which adds the pairs <MappingName, MappingValue> calculated for the validated certificate.
-	 * @param tslCrmcoSet Set of mappings to calculate with the input certificate.
-	 * @throws TSLValidationException In case of some error generating the wrapper of the input certificate.
+	 * Extracts the static mappings from the validation result, and add these on
+	 * the input mapping set. If there is some error calculating any mapping,
+	 * this mapping is not returned in the map.
+	 * 
+	 * @param cert
+	 *            X509v3 certificate from which extract the mapping information.
+	 * @param mappings
+	 *            Map in which adds the pairs <MappingName, MappingValue>
+	 *            calculated for the validated certificate.
+	 * @param tslCrmcoSet
+	 *            Set of mappings to calculate with the input certificate.
+	 * @throws TSLValidationException
+	 *             In case of some error generating the wrapper of the input
+	 *             certificate.
 	 */
-	public static void extractMappingsFromCertificate(X509Certificate cert, Map<String, String> mappings, Set<TSLCountryRegionMappingCacheObject> tslCrmcoSet) throws TSLValidationException {
+	public static void extractMappingsFromCertificate(X509Certificate cert, Map<String, String> mappings,
+			Set<TSLCountryRegionMappingCacheObject> tslCrmcoSet) throws TSLValidationException {
 
 		// Si el certificado no es nulo, y el conjunto de mapeos a extraer
 		// no es nulo ni vacío, contianuamos.
@@ -471,14 +322,14 @@ public final class TSLValidatorMappingCalculator {
 				WrapperX509Cert wrappedCert = new WrapperX509Cert(cert);
 
 				// Por cada uno de los mapeos a extraer...
-				for (TSLCountryRegionMappingCacheObject tslCrmco: tslCrmcoSet) {
+				for (TSLCountryRegionMappingCacheObject tslCrmco : tslCrmcoSet) {
 
 					// Calculamos el valor extraído del certificado.
 					String mappingValue = calculateMapping(wrappedCert, tslCrmco);
 					// Si el valor extraido no es nulo ni vacío...
 					if (!UtilsStringChar.isNullOrEmptyTrim(mappingValue)) {
 						// Lo añadimos a la lista de mapeos resultantes.
-						mappings.put(tslCrmco.getIdentificator(), mappingValue);
+						mappings.put(UtilsMappings.getValueMapping(tslCrmco.getValue()), mappingValue);
 					}
 
 				}
@@ -488,7 +339,8 @@ public final class TSLValidatorMappingCalculator {
 				// Se produjo un error al tratar de crear el Wrapper del
 				// certificado,
 				// por lo que no se podrán extraer los mapeos.
-				throw new TSLValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL151), e);
+				throw new TSLValidationException(IValetException.COD_187,
+						Language.getResCoreTsl(ICoreTslMessages.LOGMTSL151), e);
 
 			}
 
@@ -497,19 +349,30 @@ public final class TSLValidatorMappingCalculator {
 	}
 
 	/**
-	 * Extracts the mappings configured in the TSPService where the certificate has been detected, and add these on the input mapping set.
-	 * If there is some error calculating any mapping, this mapping is not returned in the map.
-	 * @param cert X509v3 certificate from which extract the mapping information.
-	 * @param mappings Map in which adds the pairs <MappingName, MappingValue> calculated for the validated certificate.
-	 * @param tspServiceName TSPServiceName where the certificate has been detected.
-	 * @throws TSLValidationException In case of some error generating the wrapper of the input certificate.
+	 * Extracts the mappings configured in the TSPService where the certificate
+	 * has been detected, and add these on the input mapping set. If there is
+	 * some error calculating any mapping, this mapping is not returned in the
+	 * map.
+	 * 
+	 * @param cert
+	 *            X509v3 certificate from which extract the mapping information.
+	 * @param mappings
+	 *            Map in which adds the pairs <MappingName, MappingValue>
+	 *            calculated for the validated certificate.
+	 * @param tspServiceName
+	 *            TSPServiceName where the certificate has been detected.
+	 * @throws TSLValidationException
+	 *             In case of some error generating the wrapper of the input
+	 *             certificate.
 	 */
-	public static void extractMappingsFromTSPService(X509Certificate cert, Map<String, String> mappings, String tspServiceName) throws TSLValidationException {
+	public static void extractMappingsFromTSPService(X509Certificate cert, Map<String, String> mappings,
+			String tspServiceName) throws TSLValidationException {
 
 		// Si el certificado no es nulo, y el conjunto de mapeos a extraer
 		// no es nulo ni vacío, contianuamos.
 		if (cert != null && mappings != null && tspServiceName != null) {
-			List<TslMapping> listTslMapping = ApplicationContextProvider.getApplicationContext().getBean(TslMappingRepository.class).findMappingsToTspServiceName(tspServiceName);
+			List<TslMapping> listTslMapping = ApplicationContextProvider.getApplicationContext()
+					.getBean(TslMappingRepository.class).findMappingsToTspServiceName(tspServiceName);
 
 			try {
 				// Creamos un envoltorio para trabajar con el certificado.
@@ -517,7 +380,7 @@ public final class TSLValidatorMappingCalculator {
 
 				// Por cada uno de los mapeos
 				if (null != listTslMapping) {
-					for (TslMapping tslMapping: listTslMapping) {
+					for (TslMapping tslMapping : listTslMapping) {
 						// Calculamos el valor extraído del certificado.
 						String mappingValue = calculateMappingTspService(wrappedCert, tslMapping);
 						// Si el valor extraido no es nulo ni vacío...
@@ -533,7 +396,8 @@ public final class TSLValidatorMappingCalculator {
 				// Se produjo un error al tratar de crear el Wrapper del
 				// certificado,
 				// por lo que no se podrán extraer los mapeos.
-				throw new TSLValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL151), e);
+				throw new TSLValidationException(IValetException.COD_187,
+						Language.getResCoreTsl(ICoreTslMessages.LOGMTSL151), e);
 
 			}
 
@@ -542,12 +406,18 @@ public final class TSLValidatorMappingCalculator {
 	}
 
 	/**
-	 * Calculates the input mapping representation with the input certificate data information.
-	 * If there is some error calculating the mapping, then returns <code>null</code>.
-	 * @param wrappedCert X509v3 certificate from which extract the mapping information.
-	 * @param tslCrmco mapping cache object with the information to extract from the certificate.
-	 * @return String value with the mapping value calculated. <code>null</code> if there is some error
-	 * or not was possible to extract the specified information.
+	 * Calculates the input mapping representation with the input certificate
+	 * data information. If there is some error calculating the mapping, then
+	 * returns <code>null</code>.
+	 * 
+	 * @param wrappedCert
+	 *            X509v3 certificate from which extract the mapping information.
+	 * @param tslCrmco
+	 *            mapping cache object with the information to extract from the
+	 *            certificate.
+	 * @return String value with the mapping value calculated. <code>null</code>
+	 *         if there is some error or not was possible to extract the
+	 *         specified information.
 	 */
 	private static String calculateMapping(WrapperX509Cert wrappedCert, TSLCountryRegionMappingCacheObject tslCrmco) {
 
@@ -574,12 +444,18 @@ public final class TSLValidatorMappingCalculator {
 	}
 
 	/**
-	 * Calculates the input mapping representation with the input certificate data information.
-	 * If there is some error calculating the mapping, then returns <code>null</code>.
-	 * @param wrappedCert X509v3 certificate from which extract the mapping information.
-	 * @param tslCrmco mapping cache object with the information to extract from the certificate.
-	 * @return String value with the mapping value calculated. <code>null</code> if there is some error
-	 * or not was possible to extract the specified information.
+	 * Calculates the input mapping representation with the input certificate
+	 * data information. If there is some error calculating the mapping, then
+	 * returns <code>null</code>.
+	 * 
+	 * @param wrappedCert
+	 *            X509v3 certificate from which extract the mapping information.
+	 * @param tslCrmco
+	 *            mapping cache object with the information to extract from the
+	 *            certificate.
+	 * @return String value with the mapping value calculated. <code>null</code>
+	 *         if there is some error or not was possible to extract the
+	 *         specified information.
 	 */
 	private static String calculateMappingTspService(WrapperX509Cert wrappedCert, TslMapping tslMapping) {
 
@@ -607,11 +483,17 @@ public final class TSLValidatorMappingCalculator {
 	}
 
 	/**
-	 * Calculates the mapping with simple association of the input certificate for the input value.
-	 * @param wrappedCert X509v3 certificate from which extract the mapping information.
-	 * @param fieldToExtract String representation of the field to search in the certificate.
-	 * @return String value with the mapping value calculated. <code>null</code> if there is some error
-	 * or not was possible to extract the specified information.
+	 * Calculates the mapping with simple association of the input certificate
+	 * for the input value.
+	 * 
+	 * @param wrappedCert
+	 *            X509v3 certificate from which extract the mapping information.
+	 * @param fieldToExtract
+	 *            String representation of the field to search in the
+	 *            certificate.
+	 * @return String value with the mapping value calculated. <code>null</code>
+	 *         if there is some error or not was possible to extract the
+	 *         specified information.
 	 */
 	private static String calculateMappingAssociationSimple(WrapperX509Cert wrappedCert, String fieldToExtract) {
 
@@ -633,19 +515,23 @@ public final class TSLValidatorMappingCalculator {
 	}
 
 	/**
-	 * Calculates the mapping for the logic field 'certClassification' from the input mapping value
-	 * of the logic field 'clasificacion'.
-	 * @param classificationValue String representation of the mapping value of the logical field 'clasificacion'.
-	 * @return String that represents the mapping classification for the input value. It only can be one of the following:<br>
-	 * <ul>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_UNKNOWN}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_LEGALPERSON}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESEAL}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESIG}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_WSA}</li>
-	 *   <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_TSA}</li>
-	 * </ul>
+	 * Calculates the mapping for the logic field 'certClassification' from the
+	 * input mapping value of the logic field 'clasificacion'.
+	 * 
+	 * @param classificationValue
+	 *            String representation of the mapping value of the logical
+	 *            field 'clasificacion'.
+	 * @return String that represents the mapping classification for the input
+	 *         value. It only can be one of the following:<br>
+	 *         <ul>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_UNKNOWN}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_NATURAL_PERSON}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_LEGALPERSON}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESEAL}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_ESIG}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_WSA}</li>
+	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_CLASSIFICATION_TSA}</li>
+	 *         </ul>
 	 */
 	public static String calculateMappingCertClassificationFromMappingClassification(String classificationValue) {
 
@@ -728,14 +614,23 @@ public final class TSLValidatorMappingCalculator {
 	}
 
 	/**
-	 * Adds the mappings extracted from the TSL information (and certificate) over the mappings configured in the certificate policies.
-	 * If the {@link ITslMappingConstants#MAPPING_KEY_CERT_CLASSIFICATION} is with {@link ITslMappingConstants#MAPPING_VALUE_UNKNOWN} in TSL mappings, then is calculated
-	 * from the {@link ITslMappingConstants#MAPPING_KEY_CERT_CLASIFICACION} field from the original mappings.
-	 * @param certInfoMap Mappings calculated from the certificate policy configuration.
-	 * @param certInfoMapFromTSL Mappings calculated from the information in the TSL and the certificate.
+	 * Adds the mappings extracted from the TSL information (and certificate)
+	 * over the mappings configured in the certificate policies. If the
+	 * {@link ITslMappingConstants#MAPPING_KEY_CERT_CLASSIFICATION} is with
+	 * {@link ITslMappingConstants#MAPPING_VALUE_UNKNOWN} in TSL mappings, then
+	 * is calculated from the
+	 * {@link ITslMappingConstants#MAPPING_KEY_CERT_CLASIFICACION} field from
+	 * the original mappings.
+	 * 
+	 * @param certInfoMap
+	 *            Mappings calculated from the certificate policy configuration.
+	 * @param certInfoMapFromTSL
+	 *            Mappings calculated from the information in the TSL and the
+	 *            certificate.
 	 * @return Map with all the mixed mappings.
 	 */
-	public static Map<String, String> addMappingsAndCheckCertClassification(Map<String, String> certInfoMap, Map<String, String> certInfoMapFromTSL) {
+	public static Map<String, String> addMappingsAndCheckCertClassification(Map<String, String> certInfoMap,
+			Map<String, String> certInfoMapFromTSL) {
 
 		// Inicializamos el resultado.
 		Map<String, String> result = certInfoMap;
@@ -767,6 +662,111 @@ public final class TSLValidatorMappingCalculator {
 
 		// Devolvemos el resultado.
 		return result;
+
+	}
+
+	/**
+	 * Extracts the static mappings from the validation result, and add these on
+	 * the input mapping set.
+	 * 
+	 * @param tslCertExtAnalyzer
+	 *            TSL Certificate Extension Analyzer needed to resolve the
+	 *            mappings of the certificate.
+	 * @param mappings
+	 *            Map in which adds the pairs <MappingName, MappingValue>
+	 *            calculated for the validated certificate.
+	 * @param tslValidationResult
+	 *            TSL validation result from which get the static mapping
+	 *            information.
+	 */
+	public static void extractStaticMappingsFromResult(Map<String, String> mappings, ITSLValidatorResult tslValidationResult) {
+		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL320));
+		// Si ninguno de los parámetros de entrada es nulo...
+		if (mappings != null && tslValidationResult != null) {
+
+			// Establecemos primero si el certificado es qualified o no.
+			switch (tslValidationResult.getMappingType()) {
+
+			case ITSLValidatorResult.MAPPING_TYPE_UNKNOWN:
+
+				// LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL329));
+				mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED,
+						ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
+
+				break;
+
+			case ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED:
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL330));
+				mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED, ITslMappingConstants.MAPPING_VALUE_NO);
+				break;
+
+			case ITSLValidatorResult.MAPPING_TYPE_QUALIFIED:
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL331));
+				mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_QUALIFIED, ITslMappingConstants.MAPPING_VALUE_YES);
+				break;
+
+			default:
+				break;
+			}
+
+			// Establecemos la clasificación del certificado.
+			switch (tslValidationResult.getMappingClassification()) {
+			case ITSLValidatorResult.MAPPING_CLASSIFICATION_OTHER_UNKNOWN:
+				mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION,
+						ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
+
+				break;
+
+			case ITSLValidatorResult.MAPPING_CLASSIFICATION_ESEAL:
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL334));
+				mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION,
+						ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL);
+				break;
+
+			case ITSLValidatorResult.MAPPING_CLASSIFICATION_ESIG:
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL335));
+				mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION,
+						ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG);
+				break;
+
+			case ITSLValidatorResult.MAPPING_CLASSIFICATION_WSA:
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL336));
+				mappings.put(ITslMappingConstants.MAPPING_KEY_CERT_CLASSIFICATION,
+						ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA);
+				break;
+
+			default:
+				break;
+			}
+
+			// Establecemos si el certificado es de un QSCD.
+			switch (tslValidationResult.getMappingQSCD()) {
+
+			case ITSLValidatorResult.MAPPING_QSCD_UNKNOWN:
+
+				// LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL326));
+				mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, ITslMappingConstants.MAPPING_VALUE_UNKNOWN);
+
+				break;
+
+			case ITSLValidatorResult.MAPPING_QSCD_NO:
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL338));
+				mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, ITslMappingConstants.MAPPING_VALUE_NO);
+				break;
+
+			case ITSLValidatorResult.MAPPING_QSCD_YES:
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL339));
+				mappings.put(ITslMappingConstants.MAPPING_KEY_QSCD, ITslMappingConstants.MAPPING_VALUE_YES);
+				break;
+
+			default:
+				break;
+			}
+
+			// Establecemos el valor ETSI_Result
+			mappings.put(ITslMappingConstants.MAPPING_KEY_ETSI_RESULT, tslValidationResult.getMappingETSIResult());
+
+		}
 
 	}
 

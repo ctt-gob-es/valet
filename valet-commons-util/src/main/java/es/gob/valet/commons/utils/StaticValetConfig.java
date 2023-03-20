@@ -39,7 +39,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.14, 21/08/2019.
+ * @version 1.15, 22/02/2023.
  */
 public final class StaticValetConfig {
 
@@ -243,6 +243,11 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents name for property <i>"connection.MaxSize"</i>.
 	 */
 	public static final String DAYS_REMINDER_ALARM = "days.reminder.alarm";
+
+	/**
+	 * Constant attribute that represents date time of TSL
+	 */
+	public static final String TSL_DATE_TIME = "tsl.date.time";
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.

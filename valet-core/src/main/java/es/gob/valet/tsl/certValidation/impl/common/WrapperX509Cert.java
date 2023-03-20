@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 07/10/2022.
+ * @version 1.5, 22/02/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -46,6 +46,7 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 
 import es.gob.valet.commons.utils.CertificateConstants;
 import es.gob.valet.commons.utils.NumberConstants;
@@ -59,7 +60,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
  * <p>Wrapper class for a X.509v3 Certificate. This class provides methods to
  * calculate/extract some information of the certificate.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 07/10/2022.
+ * @version 1.5, 22/02/2023.
  */
 public class WrapperX509Cert {
 
@@ -730,6 +731,46 @@ public class WrapperX509Cert {
 				if (rndArray[0].getFirst() != null) {
 
 					result = IETFUtils.valueToString(rndArray[0].getFirst().getValue());
+				}
+			}
+		}
+
+		return result;
+	}
+	
+	
+	/**
+	 * Gets the organization name of the certificate.
+	 * @return
+	 */
+	public String getOrganizationNameCertificate() {
+		String result = null;
+		if (x509CertBC != null) {
+			X500Name x500name = x509CertBC.getTBSCertificate().getIssuer();
+			RDN[ ] rndArray = x500name.getRDNs(BCStyle.O);
+			if (rndArray != null && rndArray.length > 0) {
+				if (rndArray[0].getFirst() != null) {
+					result = IETFUtils.valueToString(rndArray[0].getFirst().getValue());
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Get the issuer alternative name.
+	 * @return
+	 */
+	public String getIssuerAlternativeName() {
+		String result = null;
+		if (x509CertBC.getTBSCertificate().getExtensions() != null) {
+			AuthorityInformationAccess aia = AuthorityInformationAccess.fromExtensions(x509CertBC.getTBSCertificate().getExtensions());
+			if (aia != null) {
+				AccessDescription[ ] descriptions = aia.getAccessDescriptions();
+				for (AccessDescription ad: descriptions) {
+					if (ad.getAccessMethod().getId().equals(X509ObjectIdentifiers.id_ad_caIssuers.getId())){
+						result = ad.getAccessLocation().getName().toString();
+					}
 				}
 			}
 		}

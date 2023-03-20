@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 13/05/2019.
+ * @version 1.4, 22/02/2023.
  */
 package es.gob.valet.tsl.certValidation.ifaces;
 
@@ -40,7 +40,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Interface that represents a validation result using TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 13/05/2019.
+ * @version 1.4, 22/02/2023.
  */
 public interface ITSLValidatorResult {
 
@@ -266,6 +266,11 @@ public interface ITSLValidatorResult {
 	 * @return the mapping type of the validated certificate.
 	 */
 	int getMappingType();
+	
+	/**
+	 * Gets the mapping  that indicates additional information returned by ETSI TS 119 615 v.1.1.1. 
+	 */
+	String getMappingETSIResult();
 
 	/**
 	 * Constant attribute that represents the value for a mapping certificate classification other/unknown.

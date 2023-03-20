@@ -1283,8 +1283,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// En ese caso hay que intentar buscar el emisor de la SubCA dentro
 			// del mismo TSP.
 			if (isCACert && !UtilsCertificate.isSelfSigned(cert)) {
-
 				searchAndSetIssuerCertFromTSPforSubCACert(cert, validationDate, validationResult, tslValidator, tsp);
+
 
 			}
 

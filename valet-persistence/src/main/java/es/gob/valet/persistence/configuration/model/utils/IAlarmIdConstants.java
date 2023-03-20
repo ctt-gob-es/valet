@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/01/2019.
+ * @version 1.1, 22/02/2023.
  */
 package es.gob.valet.persistence.configuration.model.utils;
 
 /**
  * <p>Interface that contains all the IDs of the alarms.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/01/2019.
+ * @version 1.1, 22/02/2023.
  */
 public interface IAlarmIdConstants {
 
@@ -55,5 +55,20 @@ public interface IAlarmIdConstants {
 	 * Constant attribute that represents the ID for the Alarm 005: New TSL version detected.
 	 */
 	String ALM005_NEW_TSL_DETECTED = "ALM005";
+
+	/**
+	 * Constant attribute that represents the ID for the Alarm 006:Error al obtener el certificado a partir de SubjectAltName
+	 */
+	String ALM006_ERROR_GETTING_CERT_SUBJECT_ALT_NAME = "ALM006";
+
+	/**
+	 * Constant attribute that represents the ID for the Alarm 007: No ha sido posible recuperar el certificado emisor del Almacén de Confianza CA
+	 */
+	String ALM007_ERROR_GETTING_ISSUER_KEYSTORE = "ALM007";
+
+	/**
+	 * Constant attribute that represents the ID for the Alarm 008: Se ha registrado un certificado emisor en el Almacén de Confianza CA.
+	 */
+	String ALM008_REGISTER_KEYSTORE_CA = "ALM008";
 
 }

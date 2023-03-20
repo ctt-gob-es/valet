@@ -132,30 +132,9 @@ public class KeystoreServiceImpl implements IKeystoreService{
 				// Actualizamos la lista de certificados CA que existen en memoria.
 				CertificateCacheManager.getInstance().loadListCertificateCA();
 			}
-    	} catch (CryptographyException e) {
-			String errorMsg = Language.getResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008);
-			LOGGER.error(errorMsg, e);
-		} catch (KeyStoreException e) {
-			String errorMsg = Language.getResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008);
-			LOGGER.error(errorMsg, e);
-		} catch (NoSuchAlgorithmException e) {
-			String errorMsg = Language.getResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008);
-			LOGGER.error(errorMsg, e);
-		} catch (CertificateException e) {
-			String errorMsg = Language.getResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008);
-			LOGGER.error(errorMsg, e);
-		} catch (IOException e) {
-			String errorMsg = Language.getResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008);
-			LOGGER.error(errorMsg, e);
-		} catch (CommonUtilsException e) {
-			String errorMsg = Language.getResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008);
-			LOGGER.error(errorMsg, e);
-		} catch (TSLCertificateValidationException e) {
-			String errorMsg = Language.getResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008);
-			LOGGER.error(errorMsg, e);
-		} catch (CipherException e) {
-			String errorMsg = Language.getResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008);
-			LOGGER.error(errorMsg, e);
+    	} catch (CryptographyException | CommonUtilsException | TSLCertificateValidationException | NoSuchAlgorithmException | CertificateException | CipherException | IOException e) {
+			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008, new Object[]{e.getMessage()});
+			LOGGER.error(errorMsg);
 		} 
 	}
 	

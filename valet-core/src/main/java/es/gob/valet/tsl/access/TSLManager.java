@@ -70,20 +70,16 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
-import es.gob.valet.persistence.configuration.model.entity.TslMapping;
-import es.gob.valet.persistence.configuration.model.repository.TslMappingRepository;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.rest.elements.json.DateString;
-import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.impl.TSLValidatorFactory;
 import es.gob.valet.tsl.certValidation.impl.TSLValidatorMappingCalculator;
 import es.gob.valet.tsl.certValidation.impl.common.DigitalIdentitiesProcessor;
-import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
 import es.gob.valet.tsl.exceptions.TSLException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
@@ -100,7 +96,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.15, 20/10/2022.
+ * @version 1.16, 22/02/2023.
  */
 public final class TSLManager {
 
@@ -902,7 +898,7 @@ public final class TSLManager {
 		Map<String, String> mappings = new HashMap<String, String>();
 		// Extraemos los valores de los mapeos fijos para todas las validaciones
 		// mediante TSL.
-		TSLValidatorMappingCalculator.extractStaticMappingsFromResult(tslValidationResult.getTslCertificateExtensionAnalyzer(), mappings, tslValidationResult);
+		TSLValidatorMappingCalculator.extractStaticMappingsFromResult(mappings, tslValidationResult);
 
 		// Extraemos los mapeos propios de la región.
 		try {

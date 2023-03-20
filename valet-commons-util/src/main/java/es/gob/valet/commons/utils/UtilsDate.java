@@ -36,7 +36,7 @@ import java.util.TimeZone;
  * <p>Class that provides methods for managing dates.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI
  * certificates and electronic signature.</p>
- * @version 1.2, 01/02/2019.
+ * @version 1.3, 22/02/2023.
  */
 public class UtilsDate {
 
@@ -164,6 +164,11 @@ public class UtilsDate {
 	 * Constant attribute that represents the date format <code>"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"</code>.
 	 */
 	public static final String FORMAT_DATE_TIME_JSON = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+
+	/**
+	 * Constant attribute that represents the date format <code>"yyyy-MM-dd'T'HH:mm:ss'Z"</code>.
+	 */
+	public static final String FORMAT_DATE_TIME_TSL = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
 	/**
 	 * Attribute that represents the value of the date.

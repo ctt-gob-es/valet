@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.20, 27/04/2022.
+ * @version 1.21, 22/02/2023.
  */
 package es.gob.valet.rest.services;
 
@@ -98,7 +98,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.20, 27/04/2022.
+ * @version 1.21, 22/02/2023.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -342,6 +342,10 @@ public class TslRestService implements ITslRestService {
 
 			}
 
+		}
+		
+		if(returnCertificateChain == null){
+			returnCertificateChain = Boolean.FALSE;
 		}
 
 		// Si todo ha ido bien, continuamos con el proceso de ejecución del

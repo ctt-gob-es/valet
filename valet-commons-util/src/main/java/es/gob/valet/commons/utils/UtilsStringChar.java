@@ -24,12 +24,21 @@
  */
 package es.gob.valet.commons.utils;
 
+import java.util.List;
+
 import org.apache.commons.codec.binary.Hex;
 
 /**
- * <p>Class that provides functionality for managing strings and characters.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 18/02/2019.
+ * <p>
+ * Class that provides functionality for managing strings and characters.
+ * </p>
+ * <b>Project:</b>
+ * <p>
+ * Platform for detection and validation of certificates recognized in European
+ * TSL.
+ * </p>
+ * 
+ * @version 1.10, 22/02/2023.
  */
 public final class UtilsStringChar {
 
@@ -41,229 +50,276 @@ public final class UtilsStringChar {
 	}
 
 	/**
-	 * Constant attribute that represents the string to identify the empty string.
+	 * Constant attribute that represents the string to identify the empty
+	 * string.
 	 */
 	public static final String EMPTY_STRING = "";
 
 	/**
-	 * Constant attribute that represents the char to identify the blank space character.
+	 * Constant attribute that represents the char to identify the blank space
+	 * character.
 	 */
 	public static final char SPECIAL_BLANK_SPACE = ' ';
 
 	/**
-	 * Constant attribute that represents the string to identify the blank space character.
+	 * Constant attribute that represents the string to identify the blank space
+	 * character.
 	 */
 	public static final String SPECIAL_BLANK_SPACE_STRING = String.valueOf(SPECIAL_BLANK_SPACE);
 
 	/**
-	 * Constant attribute that represents the string to identify the line separator character in this system.
+	 * Constant attribute that represents the string to identify the line
+	 * separator character in this system.
 	 */
 	public static final String SPECIAL_SYSTEM_LINE_SEPARATOR_STRING = System.lineSeparator();
 
 	/**
-	 * Constant attribute that represents the char to identify the line break character.
+	 * Constant attribute that represents the char to identify the line break
+	 * character.
 	 */
 	public static final char SPECIAL_LINE_BREAK = '\n';
 
 	/**
-	 * Constant attribute that represents the string to identify the line break character.
+	 * Constant attribute that represents the string to identify the line break
+	 * character.
 	 */
 	public static final String SPECIAL_LINE_BREAK_STRING = String.valueOf(SPECIAL_LINE_BREAK);
 
 	/**
-	 * Constant attribute that represents the char to identify the line start character.
+	 * Constant attribute that represents the char to identify the line start
+	 * character.
 	 */
 	public static final char SPECIAL_LINE_START = '\r';
 
 	/**
-	 * Constant attribute that represents the string to identify the line start character.
+	 * Constant attribute that represents the string to identify the line start
+	 * character.
 	 */
 	public static final String SPECIAL_LINE_START_STRING = String.valueOf(SPECIAL_LINE_START);
 
 	/**
-	 * Constant attribute that represents the char to identify the tabulation character.
+	 * Constant attribute that represents the char to identify the tabulation
+	 * character.
 	 */
 	public static final char SPECIAL_TABULATION = '\t';
 
 	/**
-	 * Constant attribute that represents the string to identify the tabulation character.
+	 * Constant attribute that represents the string to identify the tabulation
+	 * character.
 	 */
 	public static final String SPECIAL_TABULATION_STRING = String.valueOf(SPECIAL_TABULATION);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>#</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>#</code>.
 	 */
 	public static final char SYMBOL_PAD = '#';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>#</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>#</code>.
 	 */
 	public static final String SYMBOL_PAD_STRING = String.valueOf(SYMBOL_PAD);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>&</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>&</code>.
 	 */
 	public static final char SYMBOL_AMPERSAND = '&';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>&</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>&</code>.
 	 */
 	public static final String SYMBOL_AMPERSAND_STRING = String.valueOf(SYMBOL_AMPERSAND);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>:</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>:</code>.
 	 */
 	public static final char SYMBOL_COLON = ':';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>:</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>:</code>.
 	 */
 	public static final String SYMBOL_COLON_STRING = String.valueOf(SYMBOL_COLON);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>;</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>;</code>.
 	 */
 	public static final char SYMBOL_SEMICOLON = ';';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>;</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>;</code>.
 	 */
 	public static final String SYMBOL_SEMICOLON_STRING = String.valueOf(SYMBOL_SEMICOLON);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>=</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>=</code>.
 	 */
 	public static final char SYMBOL_EQUAL = '=';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>=</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>=</code>.
 	 */
 	public static final String SYMBOL_EQUAL_STRING = String.valueOf(SYMBOL_EQUAL);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>-</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>-</code>.
 	 */
 	public static final char SYMBOL_HYPHEN = '-';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>-</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>-</code>.
 	 */
 	public static final String SYMBOL_HYPHEN_STRING = String.valueOf(SYMBOL_HYPHEN);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>,</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>,</code>.
 	 */
 	public static final char SYMBOL_COMMA = ',';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>,</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>,</code>.
 	 */
 	public static final String SYMBOL_COMMA_STRING = String.valueOf(SYMBOL_COMMA);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>.</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>.</code>.
 	 */
 	public static final char SYMBOL_DOT = '.';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>.</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>.</code>.
 	 */
 	public static final String SYMBOL_DOT_STRING = String.valueOf(SYMBOL_DOT);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>/</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>/</code>.
 	 */
 	public static final char SYMBOL_SLASH = '/';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>/</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>/</code>.
 	 */
 	public static final String SYMBOL_SLASH_STRING = String.valueOf(SYMBOL_SLASH);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>?</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>?</code>.
 	 */
 	public static final char SYMBOL_QUESTION_MARK = '?';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>?</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>?</code>.
 	 */
 	public static final String SYMBOL_QUESTION_MARK_STRING = String.valueOf(SYMBOL_QUESTION_MARK);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>\</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>\</code>.
 	 */
 	public static final char SYMBOL_ESCAPED_BACKSLASH = '\\';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>\</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>\</code>.
 	 */
 	public static final String SYMBOL_ESCAPED_BACKSLASH_STRING = String.valueOf(SYMBOL_ESCAPED_BACKSLASH);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>[</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>[</code>.
 	 */
 	public static final char SYMBOL_OPEN_SQUARE_BRACKET = '[';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>[</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>[</code>.
 	 */
 	public static final String SYMBOL_OPEN_SQUARE_BRACKET_STRING = String.valueOf(SYMBOL_OPEN_SQUARE_BRACKET);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>]</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>]</code>.
 	 */
 	public static final char SYMBOL_CLOSE_SQUARE_BRACKET = ']';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>]</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>]</code>.
 	 */
 	public static final String SYMBOL_CLOSE_SQUARE_BRACKET_STRING = String.valueOf(SYMBOL_CLOSE_SQUARE_BRACKET);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>(</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>(</code>.
 	 */
 	public static final char SYMBOL_OPEN_BRACKET = '(';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>(</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>(</code>.
 	 */
 	public static final String SYMBOL_OPEN_BRACKET_STRING = String.valueOf(SYMBOL_OPEN_BRACKET);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>)</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>)</code>.
 	 */
 	public static final char SYMBOL_CLOSE_BRACKET = ')';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>)</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>)</code>.
 	 */
 	public static final String SYMBOL_CLOSE_BRACKET_STRING = String.valueOf(SYMBOL_CLOSE_BRACKET);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>*</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>*</code>.
 	 */
 	public static final char SYMBOL_ASTERISK = '*';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>*</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>*</code>.
 	 */
 	public static final String SYMBOL_ASTERISK_STRING = String.valueOf(SYMBOL_ASTERISK);
 
 	/**
-	 * Constant attribute that represents the char to identify the symbol: <code>|</code>.
+	 * Constant attribute that represents the char to identify the symbol:
+	 * <code>|</code>.
 	 */
 	public static final char SYMBOL_PIPE = '|';
 
 	/**
-	 * Constant attribute that represents the string to identify the symbol: <code>|</code>.
+	 * Constant attribute that represents the string to identify the symbol:
+	 * <code>|</code>.
 	 */
 	public static final String SYMBOL_PIPE_STRING = String.valueOf(SYMBOL_PIPE);
 
 	/**
-	 * Constant attribute that represents the array with all the characters defined as constants in this class.
+	 * Constant attribute that represents the array with all the characters
+	 * defined as constants in this class.
 	 */
-	public static final char[ ] CHARACTERS_SET_TO_VALIDATORS = new char[ ] { UtilsStringChar.SPECIAL_LINE_BREAK, UtilsStringChar.SPECIAL_LINE_START, UtilsStringChar.SPECIAL_TABULATION, UtilsStringChar.SYMBOL_PAD, UtilsStringChar.SYMBOL_COLON, UtilsStringChar.SYMBOL_SEMICOLON, UtilsStringChar.SYMBOL_EQUAL };
+	public static final char[] CHARACTERS_SET_TO_VALIDATORS = new char[] { UtilsStringChar.SPECIAL_LINE_BREAK,
+			UtilsStringChar.SPECIAL_LINE_START, UtilsStringChar.SPECIAL_TABULATION, UtilsStringChar.SYMBOL_PAD,
+			UtilsStringChar.SYMBOL_COLON, UtilsStringChar.SYMBOL_SEMICOLON, UtilsStringChar.SYMBOL_EQUAL };
 
 	/**
 	 * Constant attribute that represents the token '0'.
@@ -272,8 +328,11 @@ public final class UtilsStringChar {
 
 	/**
 	 * Method that checks whether a string is null or empty.
-	 * @param str Parameter that represents the string to process.
-	 * @return a boolean with <code>true</code> value whether the string is null or empty, or <code>false</code> value in another case.
+	 * 
+	 * @param str
+	 *            Parameter that represents the string to process.
+	 * @return a boolean with <code>true</code> value whether the string is null
+	 *         or empty, or <code>false</code> value in another case.
 	 */
 	public static boolean isNullOrEmpty(String str) {
 
@@ -286,9 +345,13 @@ public final class UtilsStringChar {
 	}
 
 	/**
-	 * Method that checks whether a string is null or empty after to apply the method {@link String#trim()} on.
-	 * @param str Parameter that represents the string to process.
-	 * @return a boolean with <code>true</code> value whether the string is null or empty, or <code>false</code> value in another case.
+	 * Method that checks whether a string is null or empty after to apply the
+	 * method {@link String#trim()} on.
+	 * 
+	 * @param str
+	 *            Parameter that represents the string to process.
+	 * @return a boolean with <code>true</code> value whether the string is null
+	 *         or empty, or <code>false</code> value in another case.
 	 */
 	public static boolean isNullOrEmptyTrim(String str) {
 
@@ -303,10 +366,14 @@ public final class UtilsStringChar {
 	}
 
 	/**
-	 * Method that checks whether a string contains some of the characters contained in {@link #CHARACTERS_SET_TO_VALIDATORS} (true) or not (false).
-	 * @param str Parameter that represents the string to process.
-	 * @return a boolean that indicates whether a string contains some of the characters contained in {@link #CHARACTERS_SET_TO_VALIDATORS}
-	 * (true) or not (false).
+	 * Method that checks whether a string contains some of the characters
+	 * contained in {@link #CHARACTERS_SET_TO_VALIDATORS} (true) or not (false).
+	 * 
+	 * @param str
+	 *            Parameter that represents the string to process.
+	 * @return a boolean that indicates whether a string contains some of the
+	 *         characters contained in {@link #CHARACTERS_SET_TO_VALIDATORS}
+	 *         (true) or not (false).
 	 */
 	public static boolean containsSomeOfTheCharacterSet(String str) {
 
@@ -315,13 +382,18 @@ public final class UtilsStringChar {
 	}
 
 	/**
-	 * Method that checks whether a string contains some of the characters contained in certain characters array (true) or not (false).
-	 * @param str Parameter that represents the string to process.
-	 * @param characterSet Parameter that represents the characters array to process.
-	 * @return a boolean that indicates whether a string contains some of the characters contained in certain characters array
-	 * (true) or not (false).
+	 * Method that checks whether a string contains some of the characters
+	 * contained in certain characters array (true) or not (false).
+	 * 
+	 * @param str
+	 *            Parameter that represents the string to process.
+	 * @param characterSet
+	 *            Parameter that represents the characters array to process.
+	 * @return a boolean that indicates whether a string contains some of the
+	 *         characters contained in certain characters array (true) or not
+	 *         (false).
 	 */
-	public static boolean containsSomeOfTheCharacterSetInTheSet(String str, char[ ] characterSet) {
+	public static boolean containsSomeOfTheCharacterSetInTheSet(String str, char[] characterSet) {
 
 		// Si la cadena de entrada es nula o vacía, devolvemos false.
 		if (UtilsStringChar.isNullOrEmpty(str)) {
@@ -354,12 +426,16 @@ public final class UtilsStringChar {
 
 	/**
 	 * Method that converts a byte array to a hexadecimal string.
-	 * @param data Parameter that represents the byte array to convert.
-	 * @param separate Parameter that indicates if to separate each two bytes with {@link #SYMBOL_HYPHEN} (true) or not (false).
+	 * 
+	 * @param data
+	 *            Parameter that represents the byte array to convert.
+	 * @param separate
+	 *            Parameter that indicates if to separate each two bytes with
+	 *            {@link #SYMBOL_HYPHEN} (true) or not (false).
 	 * @return an string with hexadecimal format.
 	 */
-	public static String convertByteArrayToHex(byte[ ] data, boolean separate) {
-		char[ ] c = Hex.encodeHex(data);
+	public static String convertByteArrayToHex(byte[] data, boolean separate) {
+		char[] c = Hex.encodeHex(data);
 		if (c == null || c.length == 0) {
 			return null;
 		}
@@ -384,9 +460,12 @@ public final class UtilsStringChar {
 	}
 
 	/**
-	 * To free resources, this method sets the length of the input {@link StringBuilder} to
-	 * zero and then trim it.
-	 * @param sb String builder to clean. If it is <code>null</code>, this method do nothing.
+	 * To free resources, this method sets the length of the input
+	 * {@link StringBuilder} to zero and then trim it.
+	 * 
+	 * @param sb
+	 *            String builder to clean. If it is <code>null</code>, this
+	 *            method do nothing.
 	 */
 	public static void cleanStringBuilder(StringBuilder sb) {
 
@@ -398,12 +477,16 @@ public final class UtilsStringChar {
 	}
 
 	/**
-	 * Removes all the blanks from the input string.
-	 * It is considered how blanks: {@link UtilsStringChar#SPECIAL_BLANK_SPACE_STRING}, {@link UtilsStringChar#SPECIAL_LINE_BREAK_STRING},
-	 * {@link UtilsStringChar#SPECIAL_LINE_START_STRING} and {@link UtilsStringChar#SPECIAL_TABULATION_STRING}.
-	 * @param string String from what removes the blanks.
-	 * @return a empty string if the input parameter is <code>null</code>, otherwise, the same input
-	 * string after removes the blanks.
+	 * Removes all the blanks from the input string. It is considered how
+	 * blanks: {@link UtilsStringChar#SPECIAL_BLANK_SPACE_STRING},
+	 * {@link UtilsStringChar#SPECIAL_LINE_BREAK_STRING},
+	 * {@link UtilsStringChar#SPECIAL_LINE_START_STRING} and
+	 * {@link UtilsStringChar#SPECIAL_TABULATION_STRING}.
+	 * 
+	 * @param string
+	 *            String from what removes the blanks.
+	 * @return a empty string if the input parameter is <code>null</code>,
+	 *         otherwise, the same input string after removes the blanks.
 	 */
 	public static String removeBlanksFromString(String string) {
 
@@ -427,6 +510,29 @@ public final class UtilsStringChar {
 
 		return result;
 
+	}
+
+	/**
+	 * Method that checks if a string is found in a list of strings as part of the string.
+	 * 
+	 * @param listString String list where you want to search for the string.
+	 * @param string  String to search for.
+	 * @return True, if the string was found within the list. 
+	 */
+	public static boolean listContaisString(List<String> listString, String stringParam) {
+		boolean result = Boolean.FALSE;
+		if(listString != null && !listString.isEmpty()){
+			String string = stringParam.replaceAll("[^a-zA-Z0-9]", "");
+			//String string = stringParam.replaceAll("\\s","");
+			for(String s: listString){
+				//s = s.replaceAll("\\s","");
+				s = s.replaceAll("[^a-zA-Z0-9]", "");
+				if(s.toUpperCase().contains(string.toUpperCase())){
+					result = Boolean.TRUE;
+				}
+			}
+		}
+		return result;
 	}
 
 }

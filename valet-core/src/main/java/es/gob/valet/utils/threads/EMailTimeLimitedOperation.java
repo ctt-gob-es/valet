@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 24/01/2019.
+ * @version 1.3, 22/02/2023.
  */
 package es.gob.valet.utils.threads;
 
@@ -62,7 +62,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * is specified to define the e-mail and the necessary functionality is contributed to realize the sending
  * as an independent thread via SMTP server. This thread will be time limited.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 24/01/2019.
+ * @version 1.3, 22/02/2023.
  */
 public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
@@ -283,6 +283,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		// defecto.
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailServerHost);
+		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.port", Integer.toString(mailServerPort));
 		props.put("mail.smtp.auth", Boolean.toString(mailServerAuthUseAuthentication));
 

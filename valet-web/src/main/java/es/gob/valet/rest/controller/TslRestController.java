@@ -58,7 +58,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import es.gob.valet.commons.utils.CertificateConstants;
+import es.gob.valet.commons.utils.UtilsMappings;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.dto.MappingDTO;
@@ -532,7 +532,7 @@ public class TslRestController {
 				MappingDTO mapping = new MappingDTO(tcrm.getIdTslCountryRegionMapping(), tcrm.getTslCountryRegion().getIdTslCountryRegion(), tcrm.getMappingIdentificator(), Language.getResPersistenceConstants(tcrm.getAssociationType().getTokenName()));
 
 				if (tcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE)) {
-					mapping.setMappingValue(getValueMapping(tcrm.getMappingValue()));
+					mapping.setMappingValue(UtilsMappings.getValueMapping(tcrm.getMappingValue()));
 				} else {
 					mapping.setMappingValue(tcrm.getMappingValue());
 				}
@@ -546,90 +546,7 @@ public class TslRestController {
 		return dtOutput;
 	}
 
-	/**
-	 * 
-	 * @param infoCertCode
-	 * @return
-	 */
-	private String getValueMapping(String infoCertCode) {
-		Integer code = Integer.valueOf(infoCertCode);
-
-		String result = null;
-
-		switch (code) {
-			case CertificateConstants.INFOCERT_CERT_VERSION:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_CERTVERSION);
-				break;
-			case CertificateConstants.INFOCERT_SUBJECT:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SUBJECT);
-				break;
-			case CertificateConstants.INFOCERT_ISSUER:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_ISSUER);
-				break;
-			case CertificateConstants.INFOCERT_SERIAL_NUMBER:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SERIALNUMBER);
-				break;
-			case CertificateConstants.INFOCERT_SIGALG_NAME:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGNAME);
-				break;
-			case CertificateConstants.INFOCERT_SIGALG_OID:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGOID);
-				break;
-			case CertificateConstants.INFOCERT_VALID_FROM:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDFROM);
-				break;
-			case CertificateConstants.INFOCERT_VALID_TO:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDTO);
-				break;
-			case CertificateConstants.INFOCERT_CERTPOL_INFO_OIDS:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CERTPOLINFOOIDS);
-				break;
-			case CertificateConstants.INFOCERT_QC_STATEMENTS_OIDS:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATOIDS);
-				break;
-			case CertificateConstants.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATEUTYPEOIDS);
-				break;
-			case CertificateConstants.INFOCERT_SUBJECT_ALT_NAME:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_SUBJECTALTNAME);
-				break;
-			case CertificateConstants.INFOCERT_IS_CA:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_BASICCONSTRAINTISCA);
-				break;
-			case CertificateConstants.INFOCERT_KEY_USAGE:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_KEYUSAGE);
-				break;
-			case CertificateConstants.INFOCERT_CRL_DISTRIBUTION_POINTS:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT);
-				break;
-			case CertificateConstants.INFOCERT_AUTHORITY_INFORMATION_ACCESS:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_AIA);
-				break;
-			case CertificateConstants.INFOCERT_SURNAME:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME);
-				break;
-			case CertificateConstants.INFOCERT_COMMON_NAME:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME);
-				break;
-			case CertificateConstants.INFOCERT_GIVEN_NAME:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME);
-				break;
-			case CertificateConstants.INFOCERT_COUNTRY:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY);
-				break;
-			case CertificateConstants.INFOCERT_PSEUDONYM:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM);
-				break;
-			case CertificateConstants.INFOCERT_SUBJECT_SERIAL_NUMBER:
-				result = Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER);
-				break;
-			default:
-				break;
-		}
-
-		return result;
-
-	}
+	
 
 	/**
 	 * Method that creates a new mapping for the indicated TSL.
@@ -691,7 +608,7 @@ public class TslRestController {
 
 				MappingDTO mapping = new MappingDTO(tslCRMNew.getIdTslCountryRegionMapping(), tslCRMNew.getTslCountryRegion().getIdTslCountryRegion(), mappingIdentificator, Language.getResPersistenceConstants(tslCRMNew.getAssociationType().getTokenName()));
 				if (tslCRMNew.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE)) {
-					mapping.setMappingValue(getValueMapping(tslCRMNew.getMappingValue()));
+					mapping.setMappingValue(UtilsMappings.getValueMapping(tslCRMNew.getMappingValue()));
 				} else {
 					mapping.setMappingValue(tslCRMNew.getMappingValue());
 				}
@@ -730,7 +647,7 @@ public class TslRestController {
 		for (TslCountryRegionMapping tslcrm: listTslCountryRegionMappingOld) {
 			MappingDTO mappingDto = new MappingDTO(tslcrm.getIdTslCountryRegionMapping(), tslcrm.getTslCountryRegion().getIdTslCountryRegion(), tslcrm.getMappingIdentificator(), Language.getResPersistenceConstants(tslcrm.getAssociationType().getTokenName()));
 			if (tslcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE)) {
-				mappingDto.setMappingValue(getValueMapping(tslcrm.getMappingValue()));
+				mappingDto.setMappingValue(UtilsMappings.getValueMapping(tslcrm.getMappingValue()));
 			} else {
 				mappingDto.setMappingValue(tslcrm.getMappingValue());
 			}
@@ -751,7 +668,7 @@ public class TslRestController {
 	// if
 	// (newTcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE))
 	// {
-	// mappingDto.setMappingValue(getValueMapping(newTcrm.getMappingValue()));
+	// mappingDto.setMappingValue(UtilsMappings.getValueMapping(newTcrm.getMappingValue()));
 	// } else {
 	// mappingDto.setMappingValue(newTcrm.getMappingValue());
 	// }
@@ -769,7 +686,7 @@ public class TslRestController {
 	// if
 	// (newTcrm.getAssociationType().getTokenName().equals(ASSOCIATION_TYPE_SIMPLE))
 	// {
-	// mappingDto.setMappingValue(getValueMapping(newTcrm.getMappingValue()));
+	// mappingDto.setMappingValue(UtilsMappings.getValueMapping(newTcrm.getMappingValue()));
 	// } else {
 	// mappingDto.setMappingValue(newTcrm.getMappingValue());
 	// }
