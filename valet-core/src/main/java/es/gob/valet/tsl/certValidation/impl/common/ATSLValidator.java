@@ -282,6 +282,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// PRO-4.4.4-34 se vuelve a llamar al método pasándole la
 				// fecha de emisión del certificado como fecha de
 				// validación.
+				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL397, new Object[]{cert.getNotBefore().toString()}));
 				ResultQualifiedCertificate resultQCDateIssue = new ResultQualifiedCertificate(cert);
 				procEUQualifiedCertificateDetermination(resultQCDateIssue, cert, isCACert, isTsaCertificate, cert.getNotBefore(), tspList);
 
@@ -2404,13 +2405,13 @@ public abstract class ATSLValidator implements ITSLValidator {
 			wrapperX509cert = new WrapperX509Cert(cert);
 
 			String organizationName = wrapperX509cert.getOrganizationNameCertificate();
-			String commonName = wrapperX509cert.getCommonName();
+			String commonName = wrapperX509cert.getCommonNameIssuer();
 
 			// PRO-4.4.4-06 a)
 			if (!UtilsStringChar.isNullOrEmpty(organizationName)) {
 				// si existe el atributo OrganizationCertificate en el campo
 				// 'issuerName' se obtiene la lista de TSPNames de SI-Results
-				if (!UtilsStringChar.listContaisString(resultSI.getInfoSIResult().getListTSPNames(), organizationName) && !UtilsStringChar.listContaisString(resultSI.getInfoSIResult().getListTSPTradeNames(), organizationName)) {
+				if (!UtilsStringChar.listContainingString(resultSI.getInfoSIResult().getListTSPNames(), organizationName) && !UtilsStringChar.listContainingString(resultSI.getInfoSIResult().getListTSPTradeNames(), organizationName)) {
 					error = Boolean.TRUE;
 				}
 			} else {
@@ -2442,10 +2443,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 */
 	private boolean verifyIssuerWithTSPNameorTSPTradeName(ResultServiceInformation resultSI, String commonName) {
 		boolean verify = Boolean.FALSE;
-
 		if (!UtilsStringChar.isNullOrEmpty(commonName)) {
 
-			if ((resultSI.getInfoSIResult().getListTSPNames().contains(commonName) || resultSI.getInfoSIResult().getListTSPTradeNames().contains(commonName))) {
+			if ((UtilsStringChar.listContainingString(resultSI.getInfoSIResult().getListTSPNames(), commonName) || UtilsStringChar.listContainingString(resultSI.getInfoSIResult().getListTSPTradeNames(),commonName))) {
 				verify = Boolean.TRUE;
 			}
 		}
@@ -2835,7 +2835,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// PRO-4.3.4-03 i).
 				if (checkIfTSPServiceTypeIsCAQC(tspServiceType)) {
 					// PRO-4.3.4-03 ii).
-					if (checkIfCADigitalIdentitiesVerifyCertificate(si.getAllDigitalIdentities(), cert, isCACert, resultSI)) {
+					if (checkIfDigitalIdentitiesMatchesCertificate(si.getAllDigitalIdentities(), cert, resultSI)) {
 
 						SIResult siResult = new SIResult();
 						// PRO-4.3.4-03 b)
@@ -2856,7 +2856,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							String tspName = getTSPName(tsp);
 							LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL371, new Object[ ] { tspName }));
 							siResult.setTspName(tspName);
-							siResult.setTspTradeName(getTSPTradeName(tsp));
+							siResult.setListTspTradeName(getTSPTradeName(tsp));
 							siResult.setTspDetected(tsp);
 
 							// se obtiene informacion sobre las extensiones
@@ -2874,6 +2874,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// se comprueba si está entre los TSPService de sello de
 					// tiempo.
 					if (checkIfDigitalIdentitiesMatchesCertificate(si.getAllDigitalIdentities(), cert, resultSI)) {
+						// Si se ha encontrado, lo indicamos en el log.
+						
+						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL212));
+						
 						// se ha detectado el certificado en un TSPService de
 						// sello de tiempo, se guarda la información para
 						// indicar que es reconocido por la TSL.
@@ -2886,7 +2890,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 						// LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL371,
 						// new Object[] { tspName }));
 						siResultTSA.setTspName(tspName);
-						siResultTSA.setTspTradeName(getTSPTradeName(tsp));
+						siResultTSA.setListTspTradeName(getTSPTradeName(tsp));
 						siResultTSA.setTspDetected(tsp);
 						updateResultSI(resultSI, siResultTSA);
 					}
@@ -2932,10 +2936,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				result = dip.checkIfCertificateIsIssuedBySomeIdentity(cert, resutlSI);
 			}
 
-			// Si se ha encontrado, lo indicamos en el log.
-			if (result) {
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL212));
-			}
+			
 
 		}
 		return result;
@@ -2962,9 +2963,13 @@ public abstract class ATSLValidator implements ITSLValidator {
 			if (!resultSI.getInfoSIResult().getListTSPNames().contains(siResult.getTspName())) {
 				resultSI.getInfoSIResult().getListTSPNames().add(siResult.getTspName());
 			}
-			if (!resultSI.getInfoSIResult().getListTSPTradeNames().contains(siResult.getTspTradeName())) {
-				resultSI.getInfoSIResult().getListTSPTradeNames().add(siResult.getTspTradeName());
+			
+			for(String tspTradeName : siResult.getListTspTradeName()){
+				if (!resultSI.getInfoSIResult().getListTSPTradeNames().contains(tspTradeName)){
+					resultSI.getInfoSIResult().getListTSPTradeNames().add(tspTradeName);
+				}
 			}
+		
 
 		} else {
 			resultSI.getInfoSIResult().setSiResultTSA(siResult);
@@ -2996,9 +3001,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 *            TSP provider from which extracts the name.
 	 * @return TSP Trade name from the TSP provider.
 	 */
-	private String getTSPTradeName(TrustServiceProvider tsp) {
+	private List<String> getTSPTradeName(TrustServiceProvider tsp) {
 
-		String result = null;
+		List<String> result = new ArrayList<String>();
 		// Los vamos recorriendo...
 		Map<String, List<String>> tradeNamesMap = tsp.getTspInformation().getAllTSPTradeNames();
 		// Recuperamos el correspondiente al idioma inglés por defecto.
@@ -3012,9 +3017,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// estructura del identificador oficial,
 			// lo comprobamos.
 			if (validTradeName) {
-				result = tradeName;
-				break;
-
+				result.add(tradeName);
 			}
 
 		}
@@ -3105,42 +3108,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		return verify;
 	}
 
-	/**
-	 * Checks if some of the input CA identities detect the input X509v3 certificate and then set its information
-	 * on the result.
-	 * @param digitalIdentitiesList List of CA digital identities.
-	 * @param cert
-	 *            Certificate X509 v3 to validate.
-	 * @param isCACert
-	 *            Flag that indicates if the input certificate has the Basic
-	 *            Constraints with the CA flag activated (<code>true</code>) or
-	 *            not (<code>false</code>).
-	 * @param resultSI  Result obtained when executing the procedure 4.3.Obtaining
-	 *            listed services matching a certificate of ETSI TS 119 615
-	 *            v.1.1.1.
-	 * @return <code>true</code> if the certificate is issued by some of the input identities, otherwise <code>false</code>.
-	 */
-	private boolean checkIfCADigitalIdentitiesVerifyCertificate(List<DigitalID> digitalIdentitiesList, X509Certificate cert, boolean isCACert, ResultServiceInformation resultSI) {
-		// Por defecto consideramos que no se ha detectado, y si se encuentra se
-		// le cambia el resultado
-		boolean result = false;
 
-		// Si la lista de identidades no es nula ni vacía...
-		if (digitalIdentitiesList != null && !digitalIdentitiesList.isEmpty()) {
-
-			// Creamos el procesador de identidades digitales.
-			DigitalIdentitiesProcessor dip = new DigitalIdentitiesProcessor(digitalIdentitiesList);
-			// Procesamos el certificado a validar y modificamos el resultado si
-			// fuera necesario.
-			if (isCACert) {
-				result = dip.checkIfDigitalIdentitiesMatchesCertificate(cert);
-			} else {
-				result = dip.checkIfCertificateIsIssuedBySomeIdentity(cert, resultSI);
-			}
-		}
-
-		return result;
-	}
 
 	/**
 	 * Shows in log the result of the validation.

@@ -705,6 +705,23 @@ public class WrapperX509Cert {
 		}
 		return result;
 	}
+	
+	/**
+	 * Gets the common name of the issuer certificate
+	 */
+	public String getCommonNameIssuer(){
+		String result = null;
+		if (x509CertBC != null) {
+			X500Name x500name = x509CertBC.getTBSCertificate().getIssuer();
+			RDN[ ] rndArray = x500name.getRDNs(BCStyle.CN);
+			if (rndArray != null && rndArray.length > 0) {
+				if (rndArray[0].getFirst() != null) {
+					result = IETFUtils.valueToString(rndArray[0].getFirst().getValue());
+				}
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * Gets the country of the certificate.

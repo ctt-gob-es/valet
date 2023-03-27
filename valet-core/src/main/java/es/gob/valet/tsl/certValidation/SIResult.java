@@ -25,7 +25,8 @@
 package es.gob.valet.tsl.certValidation;
 
 import java.io.Serializable;
-
+import java.util.ArrayList;
+import java.util.List;
 
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
@@ -62,8 +63,7 @@ public class SIResult implements Serializable {
 	 * 'Service history instance' element.
 	 */
 	private ServiceHistoryInstance siAtDateTime;
-	
-	
+
 	/**
 	 * Attribute representing the TSPService associated with the SIResult.
 	 */
@@ -78,9 +78,9 @@ public class SIResult implements Serializable {
 	 */
 	private String tspName;
 	/**
-	 * Attribute that represents a 'TSP trade name' element.
+	 * Attribute that represents list of 'TSP trade name' elements.
 	 */
-	private String tspTradeName;
+	private List<String> listTspTradeName;
 	
 	/**
 	 * Attribute that stores information from the TrustServiceProvider that has identified the certificate.
@@ -114,6 +114,7 @@ public class SIResult implements Serializable {
 	 * Constructor method for the class SIResult.java.
 	 */
 	public SIResult() {
+		listTspTradeName = new ArrayList<String>();
 	}
 
 	/**
@@ -164,6 +165,8 @@ public class SIResult implements Serializable {
 		this.serviceStatus = serviceStatus;
 	}
 
+	
+	
 	/**
 	 * Gets the value of the attribute {@link #tspName}.
 	 * @return the value of the attribute {@link #tspName}.
@@ -172,6 +175,7 @@ public class SIResult implements Serializable {
 		return tspName;
 	}
 
+	
 	/**
 	 * Sets the value of the attribute {@link #tspName}.
 	 * @param tspName The value for the attribute {@link #tspName}.
@@ -181,19 +185,19 @@ public class SIResult implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #tspTradeName}.
-	 * @return the value of the attribute {@link #tspTradeName}.
+	 * Gets the value of the attribute {@link #listTspTradeName}.
+	 * @return the value of the attribute {@link #listTspTradeName}.
 	 */
-	public String getTspTradeName() {
-		return tspTradeName;
+	public List<String> getListTspTradeName() {
+		return listTspTradeName;
 	}
 
 	/**
-	 * Sets the value of the attribute {@link #tspTradeName}.
-	 * @param tspTradeName The value for the attribute {@link #tspTradeName}.
+	 * Sets the value of the attribute {@link #listTspTradeName}.
+	 * @param tspTradeName The value for the attribute {@link #listTspTradeName}.
 	 */
-	public void setTspTradeName(String tspTradeName) {
-		this.tspTradeName = tspTradeName;
+	public void setListTspTradeName(List<String> listTspTradeName) {
+		this.listTspTradeName = listTspTradeName;
 	}
 
 	/**
@@ -322,7 +326,7 @@ public class SIResult implements Serializable {
 		setSiAtDateTime(null);
 		setSiFull(null);
 		setTspName(null);
-		setTspTradeName(null);
+		setListTspTradeName(new ArrayList<String>());
 		setTspDetected(null);
 
 	}

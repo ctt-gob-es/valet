@@ -244,8 +244,11 @@ public final class TSLManager {
 				if (date != null && date.before(tdco.getNextUpdateDate())) {
 					// Establecemos como resultado esta TSL.
 					result = (TSLObject) tdco.getTslObject();
+				}else{
+					LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL396, new Object[] {date.toString(), countryCode}));
 				}
 
+				
 			}
 
 		}

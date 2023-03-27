@@ -312,6 +312,11 @@ public final class UtilsStringChar {
 	 * <code>|</code>.
 	 */
 	public static final String SYMBOL_PIPE_STRING = String.valueOf(SYMBOL_PIPE);
+	
+	/**
+	 * Constant attribute that represents strings that are neither letters nor numbers
+	 */
+	public static final String SYMBOL_STRING_ONLY_LETTER_NUMBER = "[^a-zA-Z0-9]";
 
 	/**
 	 * Constant attribute that represents the array with all the characters
@@ -519,14 +524,14 @@ public final class UtilsStringChar {
 	 * @param string  String to search for.
 	 * @return True, if the string was found within the list. 
 	 */
-	public static boolean listContaisString(List<String> listString, String stringParam) {
+	public static boolean listContainingString(List<String> listString, String stringParam) {
 		boolean result = Boolean.FALSE;
 		if(listString != null && !listString.isEmpty()){
-			String string = stringParam.replaceAll("[^a-zA-Z0-9]", "");
-			//String string = stringParam.replaceAll("\\s","");
+			String string = removeBlanksFromString(stringParam);
+			string = string.replaceAll(SYMBOL_STRING_ONLY_LETTER_NUMBER, EMPTY_STRING);		
 			for(String s: listString){
-				//s = s.replaceAll("\\s","");
-				s = s.replaceAll("[^a-zA-Z0-9]", "");
+				s = removeBlanksFromString(s);
+				s = s.replaceAll(SYMBOL_STRING_ONLY_LETTER_NUMBER, EMPTY_STRING);
 				if(s.toUpperCase().contains(string.toUpperCase())){
 					result = Boolean.TRUE;
 				}
