@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 22/02/2023.
+ * @version 1.5, 03/04/2023.
  */
 package es.gob.valet.tsl.certValidation.impl;
 
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 
 import es.gob.valet.commons.utils.UtilsMappings;
@@ -66,14 +66,14 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLOIDs;
  * TSL.
  * </p>
  * 
- * @version 1.4, 22/02/2023.
+ * @version 1.5, 03/04/2023.
  */
 public final class TSLValidatorMappingCalculator {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TSLValidatorMappingCalculator.class);
+	private static final Logger LOGGER = LogManager.getLogger(TSLValidatorMappingCalculator.class);
 	/**
 	 * Constant attribute that represents the set of mapping names that are
 	 * static.

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>30/03/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 30/03/2022.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -30,7 +30,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.i18n.Language;
@@ -47,7 +47,7 @@ import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
 /** 
  * <p>Class .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 30/03/2022.
+ * @version 1.1, 03/04/2023.
  */
 public class CertificateChainValidator {
 
@@ -60,7 +60,7 @@ public class CertificateChainValidator {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(CertificateChainValidator.class);
+	private static final Logger LOGGER = LogManager.getLogger(CertificateChainValidator.class);
 
 	/**
 	 * Constructor method for the class CertificateChainValidator.java. 

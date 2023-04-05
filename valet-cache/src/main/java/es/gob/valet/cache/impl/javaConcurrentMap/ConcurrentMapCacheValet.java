@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.cache.impl.javaConcurrentMap;
 
@@ -29,7 +29,7 @@ import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.cache.exceptions.CacheValetException;
 import es.gob.valet.cache.ifaces.ICacheValet;
@@ -43,14 +43,14 @@ import es.gob.valet.i18n.messages.ICacheGeneralMessages;
  * <p>Implementation of the {@link ICacheValet} that extends the {@link ACacheValet}
  * implemented with the Java Concurrent HashMap.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 03/04/2023.
  */
 public class ConcurrentMapCacheValet extends ACacheValet {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ConcurrentMapCacheValet.class);
+	private static final Logger LOGGER = LogManager.getLogger(ConcurrentMapCacheValet.class);
 
 	/**
 	 * Attribute that represents and manages the cache.

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 29/11/2021.
+ * @version 1.3, 03/04/2023.
  */
 package es.gob.valet.statistics;
 
@@ -32,8 +32,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Properties;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.statistics.i18n.Language;
@@ -43,7 +43,7 @@ import es.gob.valet.statistics.tools.FileLogFilter;
 /** 
  * <p>Main class of the module ValET Standalone Statistics.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 29/11/2021.
+ * @version 1.3, 03/04/2023.
  */
 public final class ValetStandaloneStatistics {
 

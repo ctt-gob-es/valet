@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 24/03/2021.
+ * @version 1.3, 03/04/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -37,7 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SchemaTypeLoader;
 import org.apache.xmlbeans.XmlBeans;
@@ -73,14 +73,14 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * <p>Abstract class that represents a TSL data checker with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 24/03/2021.
+ * @version 1.3, 03/04/2023.
  */
 public abstract class ATSLChecker implements ITSLChecker {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ATSLChecker.class);
+	private static final Logger LOGGER = LogManager.getLogger(ATSLChecker.class);
 
 	/**
 	 * Constant attribute that represents the token name for the Scheme Type Field.

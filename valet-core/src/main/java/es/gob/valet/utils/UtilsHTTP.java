@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 11/03/2019.
+ * @version 1.3, 03/04/2023.
  */
 package es.gob.valet.utils;
 
@@ -66,7 +66,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.StandardHttpRequestRetryHandler;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsGrayLog;
@@ -83,14 +84,14 @@ import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 /**
  * <p>Utilities class relating to connections and HTTP/S protocol.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 11/03/2019.
+ * @version 1.3, 03/04/2023.
  */
 public final class UtilsHTTP {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(UtilsHTTP.class);
+	private static final Logger LOGGER = LogManager.getLogger(UtilsHTTP.class);
 
 	/**
 	 * Constant attribute that represents the representation string of the scheme http.

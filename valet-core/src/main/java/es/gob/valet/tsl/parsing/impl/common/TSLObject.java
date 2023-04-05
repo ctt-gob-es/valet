@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 14/12/2021.
+ * @version 1.5, 03/04/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -30,7 +30,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.w3.x2000.x09.xmldsig.SignatureType;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -52,14 +52,14 @@ import es.gob.valet.tsl.parsing.impl.TSLCheckerFactory;
  * <p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 14/12/2021
+ * @version 1.5, 03/04/2023.
  */
 public class TSLObject implements ITSLObject {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TSLObject.class);
+	private static final Logger LOGGER = LogManager.getLogger(TSLObject.class);
 	/**
 	 * Constant attribute that represents the serial version UID.
 	 */

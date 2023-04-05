@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 21/02/2019.
+ * @version 1.3, 03/04/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -43,7 +43,8 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -65,14 +66,14 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Utilities class that provides functionality to manage and work with X.509 CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 21/02/2019.
+ * @version 1.3, 03/04/2023.
  */
 public final class UtilsCRL {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(UtilsCRL.class);
+	private static final Logger LOGGER = LogManager.getLogger(UtilsCRL.class);
 
 	/**
 	 * Constructor method for the class UtilsCRL.java.

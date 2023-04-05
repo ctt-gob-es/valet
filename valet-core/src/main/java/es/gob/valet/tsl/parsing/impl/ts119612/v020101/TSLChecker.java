@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 21/08/2019.
+ * @version 1.5, 03/04/2023.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -40,7 +40,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
@@ -101,14 +101,14 @@ import es.gob.valet.tsl.parsing.impl.common.TSPInformation;
  * <p>Class that represents a TSL Data Checker of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 21/08/2019.
+ * @version 1.5, 03/04/2023.
  */
 public class TSLChecker extends ATSLChecker {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TSLChecker.class);
+	private static final Logger LOGGER = LogManager.getLogger(TSLChecker.class);
 
 	/**
 	 * Constant attribute that represents the start date form which applies this specification.

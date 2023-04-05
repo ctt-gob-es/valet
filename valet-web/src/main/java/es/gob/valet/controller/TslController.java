@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.13, 07/06/2021.
+ * @version 1.14, 03/04/2023.
  */
 package es.gob.valet.controller;
 
@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -59,7 +60,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.13, 07/06/2021.
+ *  @version 1.14, 03/04/2023.
  */
 @Controller
 public class TslController {
@@ -67,7 +68,7 @@ public class TslController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TslController.class);
+	private static final Logger LOGGER = LogManager.getLogger(TslController.class);
 
 	/**
 	 * Constant that represents the parameter 'idTslCountryRegionMapping'.

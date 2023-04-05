@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/12/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 23/12/2022.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.service.impl;
 
@@ -35,7 +35,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,14 +63,14 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 /** 
  * <p>Class .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 23/12/2022.
+ * @version 1.1, 03/04/2023.
  */
 @Service("keystoreServiceImpl")
 public class KeystoreServiceImpl implements IKeystoreService{
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(KeystoreServiceImpl.class);
+	private static final Logger LOGGER = LogManager.getLogger(KeystoreServiceImpl.class);
 	
 	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence. 

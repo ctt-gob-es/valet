@@ -21,14 +21,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.cache.utils;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICacheGeneralMessages;
@@ -37,7 +37,7 @@ import es.gob.valet.i18n.messages.ICacheGeneralMessages;
  * <p>Utility class that controls in a independent thread the operation of stopping a Cache
  * giving some time of living previosly.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 03/04/2023.
  */
 public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 
@@ -49,7 +49,7 @@ public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GiveSomeTimeBeforeStopCacheThread.class);
+	private static final Logger LOGGER = LogManager.getLogger(GiveSomeTimeBeforeStopCacheThread.class);
 
 	/**
 	 * Attribute that represents the time (in milliseconds) to wait before stop the cache.

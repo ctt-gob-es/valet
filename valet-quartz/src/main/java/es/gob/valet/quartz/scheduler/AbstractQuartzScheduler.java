@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.quartz.scheduler;
 
@@ -30,7 +30,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -51,14 +52,14 @@ import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
 /**
  * <p>Class that represents an abstract quartz scheduler.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 03/04/2023.
  */
 public abstract class AbstractQuartzScheduler {
 
 	/**
 	 * Constant attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(AbstractQuartzScheduler.class);
+	private static final Logger LOGGER = LogManager.getLogger(AbstractQuartzScheduler.class);
 
 	/**
 	 * Constant attribute that represents the hyphen.

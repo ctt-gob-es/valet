@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 25/05/2021.
+ * @version 1.5, 03/04/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
 import org.json.JSONObject;
@@ -64,7 +63,7 @@ import es.gob.valet.rest.exception.OrderedValidation;
  * <p>Class that manages the REST requests related to the Alarms administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 25/05/2021.
+ * @version 1.5, 03/04/2023.
  */
 @RestController
 public class AlarmRestController {

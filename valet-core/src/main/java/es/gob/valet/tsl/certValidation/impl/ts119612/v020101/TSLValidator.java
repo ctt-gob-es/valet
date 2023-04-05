@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version  1.7, 22/02/2023.
+ * @version  1.8, 03/04/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.ts119612.v020101;
 
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -57,14 +57,14 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.AdditionalServiceInformat
  * <p>Class that represents a TSL Validator implementation for the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 22/02/2023.
+ * @version  1.8, 03/04/2023.
  */
 public class TSLValidator extends ATSLValidator {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TSLValidator.class);
+	private static final Logger LOGGER = LogManager.getLogger(TSLValidator.class);
 
 	/**
 	 * Constructor method for the class TSLValidator.java.

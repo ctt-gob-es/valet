@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.10, 18/10/2022.
+ * @version 1.11, 03/04/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -57,7 +57,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
@@ -94,7 +95,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.10, 18/10/2022.
+ * @version 1.11, 03/04/2023.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
@@ -103,7 +104,7 @@ public class MappingCertTslRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	private static final Logger LOGGER = LogManager.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
 
 	/**
 	 * Attribute that represents the service object for accessing the repository of mapping certificate tsls.

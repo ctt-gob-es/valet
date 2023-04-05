@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 13/10/2021.
+ * @version 1.8, 03/04/2023.
  */
 package es.gob.valet.tasks;
 
@@ -33,7 +33,8 @@ import java.util.Map;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.alarms.AlarmsManager;
 import es.gob.valet.commons.utils.NumberConstants;
@@ -64,14 +65,14 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 13/10/2021.
+ * @version 1.8, 03/04/2023.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(FindNewTSLRevisionsTask.class);
+	private static final Logger LOGGER = LogManager.getLogger(FindNewTSLRevisionsTask.class);
 
 	/**
 	 * Attribute that will save the moment the task starts.

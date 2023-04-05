@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 07/04/2021.
+ * @version 1.3, 03/04/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -33,7 +33,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biz.paluch.logging.gelf.intern.GelfMessage;
 import biz.paluch.logging.gelf.intern.GelfSender;
@@ -44,14 +45,14 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Utilities class for the use of GrayLog.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 07/04/2021.
+ * @version 1.3, 03/04/2023.
  */
 public final class UtilsGrayLog {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(UtilsGrayLog.class);
+	private static final Logger LOGGER = LogManager.getLogger(UtilsGrayLog.class);
 
 	/**
 	 * Constant attribute that represents the token key 'cod_error' for a Gray Log Message Field.

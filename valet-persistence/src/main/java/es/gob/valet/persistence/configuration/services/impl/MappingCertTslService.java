@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.10, 20/10/2022.
+ * @version 1.11, 03/04/2023.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -73,7 +73,7 @@ import es.gob.valet.persistence.utils.ImportUtils;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Mapping Certificate TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.10, 20/10/2022.
+ * @version 1.11, 03/04/2023.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -82,7 +82,7 @@ public class MappingCertTslService implements IMappingCertTslService {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	private static final Logger LOGGER = LogManager.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
 
 	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.

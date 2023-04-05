@@ -20,11 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/10/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 17/10/2022.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.persistence.utils;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.UtilsFile;
@@ -36,14 +36,14 @@ import es.gob.valet.persistence.exceptions.ImportException;
 /**
  * <p>Class with utilities for import processes.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17/10/2022.
+ * @version 1.1, 03/04/2023
  */
 public class ImportUtils {
 
 	/**
 	 * Attribute that represents the logger.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	private static final Logger LOGGER = LogManager.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
 	
 	/**
 	 * Constant attribute that represents the extension used to define JSON files.

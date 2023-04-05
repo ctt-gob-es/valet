@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 11/03/2019.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -35,7 +35,8 @@ import java.security.cert.X509CRL;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.novell.ldap.LDAPAttribute;
 import com.novell.ldap.LDAPConnection;
@@ -53,14 +54,14 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Utilities class relating to connections and LDAP protocol.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 11/03/2019.
+ * @version 1.2, 03/04/2023.
  */
 public final class UtilsLDAP {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(UtilsLDAP.class);
+	private static final Logger LOGGER = LogManager.getLogger(UtilsLDAP.class);
 
 	/**
 	 * Constant attribute that represents the representation string of the LDAP scheme.

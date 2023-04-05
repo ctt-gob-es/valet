@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 25/11/2018.
+ * @version 1.4, 03/04/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -32,7 +32,8 @@ import java.security.Security;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import es.gob.valet.i18n.Language;
@@ -41,14 +42,14 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Utilities class for manage the cryptographic providers.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 25/11/2018.
+ * @version 1.4, 03/04/2023.
  */
 public final class UtilsProviders {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(UtilsProviders.class);
+	private static final Logger LOGGER = LogManager.getLogger(UtilsProviders.class);
 
 	/**
 	 * Constant attribute that represents the token name-id for the seed algorithm SHA1-PRNG.

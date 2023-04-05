@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 06/02/2019.
+ * @version 1.7, 03/04/2023.
  */
 package es.gob.valet.persistence.configuration.cache.engine;
 
@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
@@ -55,14 +55,14 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Facade for all the configuration cache objects of the configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 06/02/2019.
+ * @version 1.7, 03/04/2023.
  */
 public final class ConfigurationCacheFacade {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ConfigurationCacheFacade.class);
+	private static final Logger LOGGER = LogManager.getLogger(ConfigurationCacheFacade.class);
 
 	/**
 	 * Constructor method for the class ConfigurationCacheFacade.java.

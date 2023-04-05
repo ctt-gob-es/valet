@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.15, 16/09/2021.
+ * @version 1.16, 03/04/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -40,7 +40,8 @@ import java.util.stream.StreamSupport;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -85,7 +86,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.15, 16/09/2021.
+ * @version 1.16, 03/04/2023.
  */
 @RestController
 public class TslRestController {
@@ -93,7 +94,7 @@ public class TslRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TslRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger(TslRestController.class);
 
 	/**
 	 * Constant attribute that represents the token 'text/xml'.

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -28,7 +28,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
@@ -44,7 +44,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents a TSL extension that provide additional information on a service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 03/04/2023.
  */
 public class AdditionalServiceInformation extends Extension {
 
@@ -56,7 +56,7 @@ public class AdditionalServiceInformation extends Extension {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(AdditionalServiceInformation.class);
+	private static final Logger LOGGER = LogManager.getLogger(AdditionalServiceInformation.class);
 
 	/**
 	 * Attribute that represents an URI identifying the additional information.

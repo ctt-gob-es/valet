@@ -21,13 +21,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 05/03/2019.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.audit.access;
 
 import java.util.Calendar;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsServicesAuditTraces;
@@ -40,7 +40,7 @@ import es.gob.valet.rest.elements.json.DateString;
  * <p>Class that represents an audit events collector. This class must be
  * used to register all the audit traces occurred in the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 05/03/2019.
+ * @version 1.2, 03/04/2023.
  */
 public final class EventsCollector {
 
@@ -52,7 +52,7 @@ public final class EventsCollector {
 	/**
 	 * Attribute that represents the audit logger to use.
 	 */
-	private static final Logger AUDIT_LOGGER = Logger.getLogger(AUDIT_LOGGER_NAME);
+	private static final Logger AUDIT_LOGGER = LogManager.getLogger(AUDIT_LOGGER_NAME);
 
 	/**
 	 * Constants attribute that represents the separator used in the event file for separating the field identifier and value.

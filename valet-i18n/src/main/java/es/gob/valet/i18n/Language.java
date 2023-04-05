@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 31/10/2019.
+ * @version 1.10, 03/04/2023.
  */
 package es.gob.valet.i18n;
 
@@ -34,14 +34,15 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.i18n.utils.UtilsTomcat;
 
 /**
  * <p>Class that manages the access to the properties files used for generation messages in the plataform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 31/10/2019.
+ * @version 1.10, 03/04/2023.
  */
 public final class Language {
 
@@ -138,7 +139,7 @@ public final class Language {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(Language.class);
+	private static final Logger LOGGER = LogManager.getLogger(Language.class);
 
 	/**
 	 * Attribute that represents the resource boundle with the general messages for the web module.

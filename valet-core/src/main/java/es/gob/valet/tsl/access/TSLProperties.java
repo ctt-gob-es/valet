@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 01/02/2019.
+ * @version 1.3, 03/04/2023.
  */
 package es.gob.valet.tsl.access;
 
@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
@@ -42,14 +42,14 @@ import es.gob.valet.i18n.messages.ICoreTslMessages;
 /**
  * <p>Class that provides access to the differents properties associated to the TSL operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 01/02/2019.
+ * @version 1.3, 03/04/2023.
  */
 public final class TSLProperties {
 
 	/**
 	 * Constant attribute that represents the log manager of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TSLProperties.class);
+	private static final Logger LOGGER = LogManager.getLogger(TSLProperties.class);
 
 	/**
 	 * Constant attribute that represents the initial date 01/07/2016 from which allow the use of TSL.

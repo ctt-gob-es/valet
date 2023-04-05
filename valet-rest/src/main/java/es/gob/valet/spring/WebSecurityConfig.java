@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>28/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 28/11/2018.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.spring;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -35,7 +36,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 /** 
  * <p>Spring Boot Web Security Configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 28/11/2018.
+ * @version 1.1, 03/04/2023.
  */
 @Configuration
 @EnableWebSecurity
@@ -44,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(WebSecurityConfig.class);
+	private static final Logger LOGGER = LogManager.getLogger(WebSecurityConfig.class);
 
 	/**
 	 * Constructor method for the class WebSecurityConfig.java. 

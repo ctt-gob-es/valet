@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 07/06/2021.
+ * @version 1.7, 03/04/2023.
  */
 package es.gob.valet.rest.client;
 
@@ -37,7 +37,8 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.UriBuilder;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
@@ -55,14 +56,14 @@ import es.gob.valet.rest.services.ITslRestService;
 /**
  * <p>Class that implements a client for Valet rest services.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 07/06/2021.
+ * @version 1.7, 03/04/2023.
  */
 public class ValetClient {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ValetClient.class);
+	private static final Logger LOGGER = LogManager.getLogger(ValetClient.class);
 
 	/**
 	 * Attribute that represents the object that manages the communication with Valet rest services.

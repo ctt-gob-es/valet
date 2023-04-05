@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.21, 22/02/2023.
+ * @version 1.22, 03/04/2023.
  */
 package es.gob.valet.rest.services;
 
@@ -48,7 +48,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
@@ -98,7 +99,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.21, 22/02/2023.
+ * @version 1.22, 03/04/2023.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -106,7 +107,7 @@ public class TslRestService implements ITslRestService {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TslRestService.class);
+	private static final Logger LOGGER = LogManager.getLogger(TslRestService.class);
 
 	/**
 	 * Attribute that represents the identifier of the application that will be used for auditing in the 'getTslInformation' service
@@ -138,7 +139,7 @@ public class TslRestService implements ITslRestService {
 	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List, @FormParam(PARAM_RETURN_CERT_CHAIN) Boolean returnCertificateChain) throws ValetRestException {
 		// CHECKSTYLE:ON
 		long startOperationTime = Calendar.getInstance().getTimeInMillis();
-		// Añadimos la información NDC al log y obtenemos un número único
+		// Añadimos la información ThreadContext al log y obtenemos un número único
 		// para la transacción.
 		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION);
 
@@ -382,7 +383,7 @@ public class TslRestService implements ITslRestService {
 
 		}
 
-		// Limpiamos la información NDC.
+		// Limpiamos la información ThreadContext.
 		LoggingInformationNDC.unregisterNdcInf();
 		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG041, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		return result;
@@ -1063,7 +1064,7 @@ public class TslRestService implements ITslRestService {
 
 		}
 		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG042, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
-		// Limpiamos la información NDC.
+		// Limpiamos la información ThreadContext.
 		LoggingInformationNDC.unregisterNdcInf();
 
 		return result;
@@ -1220,7 +1221,7 @@ public class TslRestService implements ITslRestService {
 		}
 		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG044, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		// devolvemos el resultado
-		// Limpiamos la información NDC.
+		// Limpiamos la información ThreadContext.
 		LoggingInformationNDC.unregisterNdcInf();
 		return result;
 	}

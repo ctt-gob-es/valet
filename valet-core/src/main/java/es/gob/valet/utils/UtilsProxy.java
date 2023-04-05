@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 27/12/2018.
+ * @version 1.3, 03/04/2023.
  */
 package es.gob.valet.utils;
 
@@ -41,7 +41,8 @@ import org.apache.http.auth.NTCredentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.CredentialsManager;
 import es.gob.valet.commons.utils.NumberConstants;
@@ -59,14 +60,14 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * to obtain the data necessary to establish a connection via PROXY. Besides this load will be done in the initialization
  * of the platform, and this class is responsible for setting the data in the virtual machine.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 27/12/2018.
+ * @version 1.3, 03/04/2023.
  */
 public final class UtilsProxy {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(UtilsProxy.class);
+	private static final Logger LOGGER = LogManager.getLogger(UtilsProxy.class);
 
 	/**
 	 * Constant attribute that represents the system property key 'proxySet'.

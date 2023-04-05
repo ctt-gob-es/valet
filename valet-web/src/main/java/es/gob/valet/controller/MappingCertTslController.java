@@ -20,16 +20,21 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.6, 17/10/2022.
+ * @version 1.7, 03/04/2023.
  */
 package es.gob.valet.controller;
+
+import static es.gob.valet.persistence.configuration.model.dto.MappingTslDTO.ADD;
+import static es.gob.valet.persistence.configuration.model.dto.MappingTslDTO.MERGE;
+import static es.gob.valet.rest.controller.MappingCertTslRestController.REQ_PARAM_ID_TSL_MAPPING;
 
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,14 +53,10 @@ import es.gob.valet.persistence.utils.BootstrapTreeNode;
 import es.gob.valet.persistence.utils.ConstantsUtils;
 import es.gob.valet.tsl.access.TslInformationTree;
 
-import static es.gob.valet.persistence.configuration.model.dto.MappingTslDTO.ADD;
-import static es.gob.valet.persistence.configuration.model.dto.MappingTslDTO.MERGE;
-import static es.gob.valet.rest.controller.MappingCertTslRestController.REQ_PARAM_ID_TSL_MAPPING;
-
 /**
  * <p>Class that manages the requests related to the mappings of certificates TSL administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 17/10/2022.
+ * @version 1.7, 03/04/2023.
  */
 @Controller
 @RequestMapping(value = "/mappingCertTsl")
@@ -63,7 +64,7 @@ public class MappingCertTslController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	private static final Logger LOGGER = LogManager.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
 	
 	/**
 	 * Attribute that represents the service object for accessing the repository of mapping certificate tsls.

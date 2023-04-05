@@ -20,9 +20,13 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19 jun. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 19 jun. 2018.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.constrains;
+
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -32,10 +36,6 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 import es.gob.valet.constrains.impl.FieldMatchValidator;
-
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Validation annotation to validate that 2 fields have the same value.

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.11, 27/04/2022.
+ * @version 1.12, 03/04/2022.
  */
 package es.gob.valet.spring.config;
 
@@ -29,8 +29,8 @@ import java.util.Calendar;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -42,7 +42,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import es.gob.valet.cache.FactoryCacheValet;
 import es.gob.valet.cache.exceptions.CacheValetException;
 import es.gob.valet.certificates.CertificateCacheManager;
-import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsDeploymentType;
 import es.gob.valet.commons.utils.UtilsGrayLog;
 import es.gob.valet.commons.utils.UtilsProviders;
@@ -59,7 +58,7 @@ import es.gob.valet.utils.UtilsProxy;
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.11, 27/04/2022.
+ * @version 1.12, 03/04/2022.
  */
 @Configuration
 @EnableAutoConfiguration
@@ -83,7 +82,7 @@ public class ApplicationConfig {
 	/**
 	 * Attribute that represents the logger of this class.
 	 */
-	private static Logger logger = Logger.getLogger(ApplicationConfig.class);
+	private static Logger logger = LogManager.getLogger(ApplicationConfig.class);
 
 	/**
 	 * Attribute that forces the initialization of the manager for the persistence services.
@@ -112,20 +111,9 @@ public class ApplicationConfig {
 	 * Method that initialize all the functions of the platform.
 	 */
 	private void initializePlatform() {
-
-		// Se indica que el fichero de configuración de log4j se recargue cada
-		// cierto periodo de tiempo (10 segundos).
-		// En función del desplegable, cogemos el fichero de configuración
-		// que le corresponda.
-		String log4jConfFile = null;
-		if (UtilsDeploymentType.isDeployedServices()) {
-			log4jConfFile = System.getProperty(LOG4J_PROPERTIESFILE_VALET_REST);
-		} else {
-			log4jConfFile = System.getProperty(LOG4J_PROPERTIESFILE_VALET_WEB);
-		}
-		DOMConfigurator.configureAndWatch(log4jConfFile, NumberConstants.NUM10000);
+		
 		// Despues de iniciar la configuración de log4j, iniciamos el logger.
-		logger = Logger.getLogger(ApplicationConfig.class);
+		logger = LogManager.getLogger(ApplicationConfig.class);
 
 		logger.info(Language.getResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_000));
 

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/04/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 11/04/2022.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.certificates;
 
@@ -28,7 +28,8 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
@@ -51,14 +52,14 @@ import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
  * TSL.
  * </p>
  * 
- * @version 1.1, 22/02/2023.
+ * @version 1.1, 03/04/2023.
  */
 public final class CertificateCacheManager {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(CertificateCacheManager.class);
+	private static final Logger LOGGER = LogManager.getLogger(CertificateCacheManager.class);
 
 	/**
 	 * Attribute that represents the unique instance of this class.

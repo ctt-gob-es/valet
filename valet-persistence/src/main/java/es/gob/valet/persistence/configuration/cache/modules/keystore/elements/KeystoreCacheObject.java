@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.keystore.elements;
 
@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
@@ -48,7 +48,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
 /**
  * <p>Class that represents a keystore in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 03/04/2023.
  */
 public class KeystoreCacheObject extends ConfigurationCacheObject {
 
@@ -60,7 +60,7 @@ public class KeystoreCacheObject extends ConfigurationCacheObject {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(KeystoreCacheObject.class);
+	private static final Logger LOGGER = LogManager.getLogger(KeystoreCacheObject.class);
 
 	/**
 	 * Keystore identifier.

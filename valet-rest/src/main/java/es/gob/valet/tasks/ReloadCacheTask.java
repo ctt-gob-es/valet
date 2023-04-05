@@ -20,13 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 05/12/2018.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.tasks;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IRestTasksMessages;
@@ -38,14 +39,14 @@ import es.gob.valet.utils.UtilsCache;
 /**
  * <p>Class that represents a task to reload the cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 05/12/2018.
+ * @version 1.1, 03/04/2023.
  */
 public class ReloadCacheTask extends Task {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ReloadCacheTask.class);
+	private static final Logger LOGGER = LogManager.getLogger(ReloadCacheTask.class);
 
 	/**
 	 * {@inheritDoc}

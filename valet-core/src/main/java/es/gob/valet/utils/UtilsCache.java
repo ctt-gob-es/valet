@@ -20,14 +20,15 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 04/02/2019.
+ * @version 1.4, 03/04/2023.
  */
 package es.gob.valet.utils;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.IValetException;
@@ -40,7 +41,7 @@ import es.gob.valet.tsl.access.TSLManager;
 /**
  * <p>Utilities class for local cache operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 04/02/2019.
+ * @version 1.4, 03/04/2023.
  */
 public final class UtilsCache {
 
@@ -54,7 +55,7 @@ public final class UtilsCache {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(UtilsCache.class);
+	private static final Logger LOGGER = LogManager.getLogger(UtilsCache.class);
 
 	/**
 	 * This methods reload the configuration local cache following the steps:

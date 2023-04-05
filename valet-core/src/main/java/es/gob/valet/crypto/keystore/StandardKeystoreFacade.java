@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 27/04/2022.
+ * @version 1.3, 03/04/2023.
  */
 package es.gob.valet.crypto.keystore;
 
@@ -40,7 +40,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.crypto.exception.CryptographyException;
@@ -63,14 +64,14 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
 /**
  * <p>Class that manages all the operations related with JCE, JCEKS and PKCS#12 keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 27/04/2022.
+ * @version 1.3, 03/04/2023.
  */
 public class StandardKeystoreFacade implements IKeystoreFacade {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(StandardKeystoreFacade.class);
+	private static final Logger LOGGER = LogManager.getLogger(StandardKeystoreFacade.class);
 
 	/**
 	 * Attribute that represents the information about the keystore from the cache system.

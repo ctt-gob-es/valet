@@ -20,25 +20,26 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.commons.utils;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biz.paluch.logging.gelf.intern.ErrorReporter;
 
 /**
  * <p>Log4j implementation for the error logger to use in Gray Log.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 03/04/2023.
  */
 public final class Log4jErrorReporter implements ErrorReporter {
 
 	/**
 	 * Attribute that represents the logger for this class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(Log4jErrorReporter.class);
+	private static final Logger LOGGER = LogManager.getLogger(Log4jErrorReporter.class);
 
 	/**
 	 * Attribute that represents the singleton unique instance for this class.

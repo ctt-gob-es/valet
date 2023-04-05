@@ -20,11 +20,10 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>2 oct. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.form;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -34,7 +33,7 @@ import es.gob.valet.rest.exception.ThenCheckIt;
 /** 
  * <p>Class that represents the backing form for adding/editing a mail.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19 jun. 2018.
+ * @version 1.1, 03/04/2023.
  */
 public class MailForm {
 

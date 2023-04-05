@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 01/09/2021.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.statistics.persistence.em;
 
@@ -33,7 +33,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.statistics.i18n.Language;
 import es.gob.valet.statistics.i18n.StandaloneStatisticsLogConstants;
@@ -41,7 +41,7 @@ import es.gob.valet.statistics.i18n.StandaloneStatisticsLogConstants;
 /** 
  * <p>Class that implements the method that are used to interact with the persistence context of the pentaho database schema.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 01/09/2021.
+ * @version 1.2, 03/04/2023.
  */
 public final class PentahoDWEntityManager {
 	/**
@@ -52,7 +52,7 @@ public final class PentahoDWEntityManager {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(PentahoDWEntityManager.class);
+	private static final Logger LOGGER = LogManager.getLogger(PentahoDWEntityManager.class);
 
 	/**
 	 * Attribute that represents a class instance.

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.15, 20/10/2022.
+ * @version 1.16, 03/04/2023.
  */
 package es.gob.valet.tsl.access;
 
@@ -40,7 +40,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
@@ -96,14 +96,14 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.16, 22/02/2023.
+ * @version 1.16, 03/04/2023.
  */
 public final class TSLManager {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TSLManager.class);
+	private static final Logger LOGGER = LogManager.getLogger(TSLManager.class);
 
 	/**
 	 * Constant attribute that represents the token 'UNKNOWN'.

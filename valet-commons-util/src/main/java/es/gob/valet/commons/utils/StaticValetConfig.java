@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.14, 21/08/2019.
+ * @version 1.16, 03/04/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -29,7 +29,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
@@ -39,7 +40,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.15, 22/02/2023.
+ * @version 1.16, 03/04/2023.
  */
 public final class StaticValetConfig {
 
@@ -51,7 +52,7 @@ public final class StaticValetConfig {
 	/**
 	 * Constant attribute that represents the log manager of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(StaticValetConfig.class);
+	private static final Logger LOGGER = LogManager.getLogger(StaticValetConfig.class);
 
 	/**
 	 * Constant attribute that represents the name of properties file.

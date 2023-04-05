@@ -20,11 +20,12 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>27/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 27/09/2018.
+ * @version 1.1, 03/04/2023.
  */
 package es.gob.valet.rest.client;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.UtilsXML;
 import es.gob.valet.exceptions.ValetRestException;
@@ -32,7 +33,7 @@ import es.gob.valet.exceptions.ValetRestException;
 /** 
  * <p>Class that manages exceptions produced by network timeout in valet rest client.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 27/09/2018.
+ * @version 1.1, 03/04/2023.
  */
 public class ValetRestTimeoutException extends ValetRestException {
 
@@ -44,7 +45,7 @@ public class ValetRestTimeoutException extends ValetRestException {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ValetRestTimeoutException.class);
+	private static final Logger LOGGER = LogManager.getLogger(ValetRestTimeoutException.class);
 
 	/**
 	 * Attribute that represents the error code.

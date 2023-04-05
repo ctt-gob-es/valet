@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 05/03/2019.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.audit.utils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.audit.access.EventsCollector;
 import es.gob.valet.audit.access.IEventsCollectorConstants;
@@ -43,14 +43,14 @@ import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 /**
  * <p>Class that provides methods for registering the most commons audit traces associated to the services of the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 05/03/2019.
+ * @version 1.2, 03/04/2023.
  */
 public final class CommonsServicesAuditTraces {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(CommonsServicesAuditTraces.class);
+	private static final Logger LOGGER = LogManager.getLogger(CommonsServicesAuditTraces.class);
 
 	/**
 	 * Attribute that represents the map that has the relations between the service operation id

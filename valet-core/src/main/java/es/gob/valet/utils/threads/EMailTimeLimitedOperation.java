@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 22/02/2023.
+ * @version 1.4, 03/04/2023.
  */
 package es.gob.valet.utils.threads;
 
@@ -43,7 +43,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsResources;
@@ -62,14 +62,14 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * is specified to define the e-mail and the necessary functionality is contributed to realize the sending
  * as an independent thread via SMTP server. This thread will be time limited.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 22/02/2023.
+ * @version 1.4, 03/04/2023.
  */
 public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(EMailTimeLimitedOperation.class);
+	private static final Logger LOGGER = LogManager.getLogger(EMailTimeLimitedOperation.class);
 
 	/**
 	 * Constant attribute that represents the email transport protocol 'smtp'.

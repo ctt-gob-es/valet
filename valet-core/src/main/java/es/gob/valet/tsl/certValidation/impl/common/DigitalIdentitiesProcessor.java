@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 22/02/2023.
+ * @version 1.6, 03/04/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
@@ -53,14 +53,14 @@ import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 /**
  * <p>Class that represents a Digital Identities Processor.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 22/02/2023.
+ * @version 1.6, 03/04/2023.
  */
 public class DigitalIdentitiesProcessor {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(DigitalIdentitiesProcessor.class);
+	private static final Logger LOGGER = LogManager.getLogger(DigitalIdentitiesProcessor.class);
 
 	/**
 	 * Constant attribute that represents the string 'DSA'.

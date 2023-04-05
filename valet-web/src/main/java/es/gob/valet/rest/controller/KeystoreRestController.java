@@ -20,30 +20,27 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 21/02/2022.
+ * @version 1.9, 03/04/2023.
  */
 package es.gob.valet.rest.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpStatus;
@@ -58,7 +55,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.google.common.io.ByteStreams;
 
 import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.StaticValetConfig;
@@ -73,12 +69,11 @@ import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
-import es.gob.valet.service.IKeystoreService;
 
 /**
  * <p>Class that manages the REST request related to the Keystore's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 21/02/2022.
+ * @version 1.9, 03/04/2023.
  */
 @RestController
 public class KeystoreRestController {
@@ -86,7 +81,7 @@ public class KeystoreRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(KeystoreRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger(KeystoreRestController.class);
 
 	/**
 	 * Constant that represents the parameter 'idKeystore'.

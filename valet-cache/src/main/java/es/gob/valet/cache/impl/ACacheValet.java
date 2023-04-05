@@ -21,11 +21,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.cache.impl;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.cache.exceptions.BadPathCacheValetException;
 import es.gob.valet.cache.exceptions.CacheValetException;
@@ -40,7 +40,7 @@ import es.gob.valet.i18n.messages.ICacheGeneralMessages;
  * <p>Abstract class that represents a {@link ICacheValet} with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 03/04/2023.
  */
 public abstract class ACacheValet implements ICacheValet {
 

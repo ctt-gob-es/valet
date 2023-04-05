@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 26/12/2018.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -30,7 +30,8 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
@@ -38,14 +39,14 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides functionality to control resources.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 26/12/2018.
+ * @version 1.2, 03/04/2023.
  */
 public final class UtilsResources {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(UtilsResources.class);
+	private static final Logger LOGGER = LogManager.getLogger(UtilsResources.class);
 
 	/**
 	 * Constructor method for the class UtilsResources.java.

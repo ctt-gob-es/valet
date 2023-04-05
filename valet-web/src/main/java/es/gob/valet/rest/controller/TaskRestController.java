@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 16/09/2021.
+ * @version 1.8, 03/04/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -29,7 +29,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +54,7 @@ import es.gob.valet.tasks.TasksManager;
 /**
  * <p>Class that manages the REST request related to the Task's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 16/09/2021.
+ * @version 1.8, 03/04/2023.
  */
 @RestController
 public class TaskRestController {
@@ -61,7 +62,7 @@ public class TaskRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TaskRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger(TaskRestController.class);
 
 	/**
 	 * Constant that represents the format date.

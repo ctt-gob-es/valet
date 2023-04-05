@@ -20,14 +20,15 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 24/01/2019.
+ * @version 1.3, 03/04/2023.
  */
 package es.gob.valet.quartz.scheduler;
 
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
@@ -41,14 +42,14 @@ import es.gob.valet.quartz.planner.IPlanner;
 /**
  * <p>Class that represents an abstract quartz scheduler for valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 24/01/2019.
+ * @version 1.3, 03/04/2023.
  */
 public abstract class AbstractValetQuartzScheduler extends AbstractQuartzScheduler {
 
 	/**
 	 * Constant attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(AbstractValetQuartzScheduler.class);
+	private static final Logger LOGGER = LogManager.getLogger(AbstractValetQuartzScheduler.class);
 
 	/**
 	 * Constant attribute that represents a dummy time in milliseconds for the period of

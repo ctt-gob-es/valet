@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 11/03/2019.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.alarms;
 
@@ -32,7 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.alarms.conf.AlarmsConfiguration;
 import es.gob.valet.alarms.exception.AlarmException;
@@ -54,14 +55,14 @@ import es.gob.valet.utils.threads.EMailTimeLimitedOperation;
  * the general manager of alarms module and provides the necessary logic interface
  * for the other modules can interact with this one.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 11/03/2019.
+ * @version 1.2, 03/04/2023.
  */
 public final class AlarmsManager {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(AlarmsManager.class);
+	private static final Logger LOGGER = LogManager.getLogger(AlarmsManager.class);
 
 	/**
 	 * Constant attribute that represents the unique instance of this class.

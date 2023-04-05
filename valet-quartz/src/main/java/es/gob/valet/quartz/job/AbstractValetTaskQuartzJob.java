@@ -21,14 +21,15 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 03/04/2023.
  */
 package es.gob.valet.quartz.job;
 
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -43,7 +44,7 @@ import es.gob.valet.quartz.scheduler.AbstractQuartzScheduler;
  * <p>Class that represents a scheduler task in valET. This class must be extends
  * for all the scheduler task classes in valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 18/10/2018.
+ * @version 1.2, 03/04/2023.
  */
 public abstract class AbstractValetTaskQuartzJob implements Job {
 
@@ -55,7 +56,7 @@ public abstract class AbstractValetTaskQuartzJob implements Job {
 	/**
 	 * Constant attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(AbstractValetTaskQuartzJob.class);
+	private static final Logger LOGGER = LogManager.getLogger(AbstractValetTaskQuartzJob.class);
 
 	/**
 	 * {@inheritDoc}

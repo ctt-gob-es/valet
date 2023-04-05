@@ -20,11 +20,10 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 16/09/2021.
+ * @version 1.4, 03/04/2023.
  */
 package es.gob.valet.form;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -39,7 +38,7 @@ import es.gob.valet.rest.exception.ThenCheckIt;
  * Class that represents the backing form for adding/editing a user.
  * </p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 16/09/2021.
+ * @version 1.4, 03/04/2023.
  */
 public class UserFormPassword {
 
