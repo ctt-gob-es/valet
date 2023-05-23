@@ -115,11 +115,21 @@ public class ResultQualifiedCertificate implements Serializable {
 
 	}
 	
+	/**
+	 * @param cert
+	 * @throws TSLValidationException
+	 */
 	public ResultQualifiedCertificate(X509Certificate cert) throws TSLValidationException{
 		this();
 		try {
 			tslCertExtAnalyzer = new TSLCertificateExtensionAnalyzer(cert);
 			qcSubStatus = new ArrayList<String>();
+			qcResults  = new ArrayList<QCResult>();
+			check1ListOfQE = new ArrayList<QualificationElement>();
+			check2ListOfQE  = new ArrayList<QualificationElement>();
+			check3ListOfQE  = new ArrayList<QualificationElement>();
+			infoQcResult = new InfoQCResult();
+			endProcedure = Boolean.FALSE;
 		} catch (TSLCertificateValidationException e) {
 			throw new TSLValidationException(IValetException.COD_187, e.getErrorDescription(), e);
 		}
