@@ -4502,7 +4502,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Obtenemos la URI completa.
 			httpUri = uri.toString();
 
-			// Descargamos la CRL en un array de bytes.
+			// Descargamos el certificado
 			byte[ ] buffer = UtilsHTTP.getDataFromURI(httpUri, connectionTimeout, readTimeout, null, null, null);
 
 			if (buffer != null) {
