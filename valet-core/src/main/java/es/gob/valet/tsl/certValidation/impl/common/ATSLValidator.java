@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.11, 22/02/2023.
+ * @version 1.12, 06/06/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -106,7 +106,7 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 1.11, 22/02/2023.
+ * @version 1.12, 06/06/2023.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -385,6 +385,19 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 					InfoCertificateIssuer infoCertIssuer = resultQC.getInfoQcResult().getInfoCertificateIssuer();
 					if (infoCertIssuer != null) {
+						if(infoCertIssuer.getIssuerCert() == null){
+							//se obtiene el certificado emisor si aún no se ha obtenido.
+							X509Certificate issuerCert = getX509CertificateIssuer(cert);
+							if(issuerCert != null){
+								infoCertIssuer.setIssuerCert(issuerCert);
+								infoCertIssuer.setIssuerPublicKey(issuerCert.getPublicKey());
+								try{
+								infoCertIssuer.setIssuerSubjectName(UtilsCertificate.getCertificateId(issuerCert));
+								}catch (CommonUtilsException e) {
+									LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL182));
+								}
+							}
+						}
 						// informacion del certificado emisor
 						validationResult.setIssuerCert(infoCertIssuer.getIssuerCert());
 						validationResult.setIssuerPublicKey(infoCertIssuer.getIssuerPublicKey());
@@ -973,6 +986,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 						// certificado es reconocido por un servicio de sello de
 						// tiempo.
 						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL391));
+						resultQC.getInfoQcResult().setInfoCertificateIssuer(resultSI.getInfoCertificateIssuer());
 					}
 				}
 				endProc = Boolean.TRUE;
@@ -3948,6 +3962,19 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 					InfoCertificateIssuer infoCertIssuer = resultQC.getInfoQcResult().getInfoCertificateIssuer();
 					if (infoCertIssuer != null) {
+						if(infoCertIssuer.getIssuerCert() == null){
+							//se obtiene el certificado emisor si aún no se ha obtenido.
+							X509Certificate issuerCert = getX509CertificateIssuerKeystore(cert);
+							if(issuerCert != null){
+								infoCertIssuer.setIssuerCert(issuerCert);
+								infoCertIssuer.setIssuerPublicKey(issuerCert.getPublicKey());
+								try{
+								infoCertIssuer.setIssuerSubjectName(UtilsCertificate.getCertificateId(issuerCert));
+								}catch (CommonUtilsException e) {
+									LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL182));
+								}
+							}
+						}
 						// informacion del certificado emisor
 						validationResult.setIssuerCert(infoCertIssuer.getIssuerCert());
 						validationResult.setIssuerPublicKey(infoCertIssuer.getIssuerPublicKey());
