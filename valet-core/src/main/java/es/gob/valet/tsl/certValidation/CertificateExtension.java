@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/02/2023.</p>
  * @author Gobierno de España.
- * @version 1.0, 08/02/2023.
+ * @version 1.1, 25/05/2023.
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * TSL.
  * </p>
  * 
- * @version 1.0, 08/02/2023.
+ * @version 1.1, 25/05/2023.
  */
 public class CertificateExtension implements Serializable {
 
@@ -96,34 +96,34 @@ public class CertificateExtension implements Serializable {
 	 */
 	public String getRowCheck() {
 		String row = null;
-		if (qcCompliance || (!qcCompliance && qcType1 && !qcType2 && !qcType3)) {
+		if ((qcCompliance && !qcType1 && !qcType2 && !qcType3)|| (qcCompliance && qcType1 && !qcType2 && !qcType3)) {
 			return row = IQCCertificateConstants.QC_ROW1;
 		}
 		if (qcCompliance && !qcType1 && qcType2 && !qcType3) {
 			return row = IQCCertificateConstants.QC_ROW2;
 		}
-		if (qcCompliance && !qcType1 && qcType2 && !qcType3) {
+		if (qcCompliance && !qcType1 && !qcType2 && qcType3) {
 			return row = IQCCertificateConstants.QC_ROW3;
 		}
-		if (qcCompliance && !qcType1 && !qcType2 && qcType3) {
+		if (qcCompliance && qcType1 && qcType2 && !qcType3) {
 			return row = IQCCertificateConstants.QC_ROW4;
 		}
-		if (qcCompliance && qcType1 && qcType2 && !qcType3) {
+		if (qcCompliance && qcType1 && !qcType2 && qcType3) {
 			return row = IQCCertificateConstants.QC_ROW5;
 		}
-		if (qcCompliance && qcType1 && !qcType2 && qcType3) {
+		if (qcCompliance && !qcType1 && qcType2 && qcType3) {
 			return row = IQCCertificateConstants.QC_ROW6;
 		}
-		if (qcCompliance && !qcType1 && qcType2 && qcType3) {
+		if (qcCompliance && qcType1 && qcType2 && qcType3) {
 			return row = IQCCertificateConstants.QC_ROW7;
 		}
-		if (qcCompliance && qcType1 && qcType2 && qcType3) {
+		if (!qcCompliance && !qcType1 && !qcType2 && !qcType3) {
 			return row = IQCCertificateConstants.QC_ROW8;
 		}
-		if (!qcCompliance && !qcType1 && !qcType2 && !qcType3) {
+		if (!qcCompliance && qcType1 && !qcType2 && !qcType3) {
 			return row = IQCCertificateConstants.QC_ROW9;
 		}
-		if (!qcCompliance && qcType1 && !qcType2 && !qcType3) {
+		if (!qcCompliance && !qcType1 && qcType2 && !qcType3) {
 			return row = IQCCertificateConstants.QC_ROW10;
 		}
 		if (!qcCompliance && !qcType1 && !qcType2 && qcType3) {
