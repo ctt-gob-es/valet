@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.22, 03/04/2023.
+ * @version 1.23, 12/06/2023.
  */
 package es.gob.valet.rest.services;
 
@@ -99,7 +99,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.22, 03/04/2023.
+ * @version 1.23, 12/06/2023.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -383,9 +383,10 @@ public class TslRestService implements ITslRestService {
 
 		}
 
+		
+		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG041, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		// Limpiamos la información ThreadContext.
 		LoggingInformationNDC.unregisterNdcInf();
-		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG041, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		return result;
 
 	}
