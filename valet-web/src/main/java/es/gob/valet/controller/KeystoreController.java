@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 22/02/2023.
+ * @version 1.6, 19/06/2023.
  */
 package es.gob.valet.controller;
 
@@ -42,11 +42,9 @@ import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.form.SystemCertificateForm;
 import es.gob.valet.persistence.ManagerPersistenceServices;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
-import es.gob.valet.utils.UtilsCache;
 
 /**
  * <p>
@@ -58,7 +56,7 @@ import es.gob.valet.utils.UtilsCache;
  * TSL.
  * </p>
  * 
- * @version 1.5, 22/02/2023.
+ * @version 1.6, 19/06/2023.
  */
 @Controller
 public class KeystoreController {
@@ -85,12 +83,7 @@ public class KeystoreController {
 	 */
 	@RequestMapping(value = "/loadcertificatesdatatable", method = RequestMethod.GET)
 	public String loadCertificatesDatatable(@RequestParam(FIELD_ID_KEYSTORE) Long idKeystore, Model model) {
-		try {
-			UtilsCache.reloadConfigurationLocalCache(true);
-		} catch (ConfigurationCacheException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+
 		SystemCertificateForm systemCertificateForm = new SystemCertificateForm();
 		systemCertificateForm.setIdKeystore(idKeystore);
 		IKeystoreService keystoreService = ManagerPersistenceServices.getInstance()
@@ -147,10 +140,7 @@ public class KeystoreController {
 				certificateForm.setValidFrom(UtilsCertificate.getValidFrom(cert));
 				certificateForm.setValidTo(UtilsCertificate.getValidTo(cert));
 			}
-			
-			
-				
-			
+
 		} catch (CryptographyException | CertificateEncodingException | CommonUtilsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

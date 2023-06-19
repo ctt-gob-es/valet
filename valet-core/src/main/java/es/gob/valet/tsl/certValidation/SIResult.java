@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/02/2023.</p>
  * @author Gobierno de España.
- * @version 1.0, 08/02/2023.
+ * @version 1.1, 19/06/2023.
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -43,7 +43,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
  * TSL.
  * </p>
  * 
- * @version 1.0, 08/02/2023.
+ * @version 1.1, 19/06/2023.
  */
 public class SIResult implements Serializable {
 
@@ -78,10 +78,14 @@ public class SIResult implements Serializable {
 	 */
 	private String tspName;
 	/**
+	 * Attribute that represents a 'TSP name' element of the country of the certificate..
+	 */
+	private String tspNameCountry;
+	/**
 	 * Attribute that represents list of 'TSP trade name' elements.
 	 */
 	private List<String> listTspTradeName;
-	
+		
 	/**
 	 * Attribute that stores information from the TrustServiceProvider that has identified the certificate.
 	 */
@@ -314,6 +318,23 @@ public class SIResult implements Serializable {
 	}
 
 	/**
+	 * Gets the value of the attribute {@link #tspNameCountry}.
+	 * @return the value of the attribute {@link #tspNameCountry}.
+	 */
+	public String getTspNameCountry() {
+		return tspNameCountry;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #tspNameCountry}.
+	 * @param tspNameCountry The value for the attribute {@link #tspNameCountry}.
+	 */
+	public void setTspNameCountry(String tspNameCountry) {
+		this.tspNameCountry = tspNameCountry;
+	}
+
+	
+	/**
 	 * Resets all the data;
 	 */
 	public final void resetAllData() {
@@ -328,6 +349,7 @@ public class SIResult implements Serializable {
 		setTspName(null);
 		setListTspTradeName(new ArrayList<String>());
 		setTspDetected(null);
+		setTspNameCountry(null);
 
 	}
 

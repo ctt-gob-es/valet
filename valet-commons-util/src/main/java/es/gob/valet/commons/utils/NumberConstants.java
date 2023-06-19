@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 27/04/2022
+ * @version 1.3, 19/06/2023.
  */
 package es.gob.valet.commons.utils;
 
 /**
  * <p>Interface that defines numeric constants for generalized usage.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 27/04/2022.
+ * @version 1.3, 19/06/2023.
  */
 public interface NumberConstants {
 
@@ -159,6 +159,11 @@ public interface NumberConstants {
 	 * Constant attribute that represents the number 18.
 	 */
 	int NUM18 = 18;
+
+	/**
+	 * Constant attribute that represents the number 18 (type long).
+	 */
+	long NUM18_LONG = 18;
 
 	/**
 	 * Constant attribute that represents the number 19.
