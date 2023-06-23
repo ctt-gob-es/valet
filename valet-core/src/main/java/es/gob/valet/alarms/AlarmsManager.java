@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 11/03/2019.
+ * @version 1.2, 22/06/2023.
  */
 package es.gob.valet.alarms;
 
@@ -54,7 +54,7 @@ import es.gob.valet.utils.threads.EMailTimeLimitedOperation;
  * the general manager of alarms module and provides the necessary logic interface
  * for the other modules can interact with this one.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 11/03/2019.
+ * @version 1.2, 22/06/2023.
  */
 public final class AlarmsManager {
 
@@ -92,6 +92,7 @@ public final class AlarmsManager {
 	 * @param alarmMsg Alarm Message.
 	 */
 	public synchronized void registerAlarmEvent(String alarmId, String alarmMsg) {
+		LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_018, new Object[]{alarmId, alarmMsg}));
 
 		// Comprobamos que los parámetros de entrada son correctos.
 		if (checkParametersBeforeRegisterAlarm(alarmId, alarmMsg)) {

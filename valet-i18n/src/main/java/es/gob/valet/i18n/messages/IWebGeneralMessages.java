@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.17, 19/10/2022.
+ * @version 1.18, 22/06/2023.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.17, 19/10/2022.
+ * @version 1.18, 22/06/2023.
  */
 public interface IWebGeneralMessages {
 
@@ -646,6 +646,24 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String CMS_007 = "CMS_007";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_008</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_008 = "CMS_008";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_009</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_009 = "CMS_009";
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_010</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_010 = "CMS_010";
+
 	
 	/**
 	 * Constant attribute that represents the name of the property <code>wrongFileSize</code> belonging to the

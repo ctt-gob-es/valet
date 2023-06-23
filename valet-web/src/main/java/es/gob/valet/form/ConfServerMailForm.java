@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 16/09/2021.
+ * @version 1.4, 22/06/2023.
  */
 package es.gob.valet.form;
 
 /**
  * <p>Class that represents the backing form for adding/editing a server mail.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 16/09/2021.
+ * @version 1.4, 22/06/2023.
  */
 public class ConfServerMailForm {
 
@@ -81,6 +81,14 @@ public class ConfServerMailForm {
 	 * Attribute that represents the variable where the error messages will be stored.
 	 */
 	private String error;
+	/**
+	 * Attribute that represents the maximun time allowed, in milliseconds, for establishing the SMTP connection.
+	 */
+	private Integer connectionTimeout;
+	/**
+	 * Attribute that represents the maximun time allowed, in milliseconds,  for sending the mail messages.
+	 */
+	private Integer readingTimeout;
 
 	/**
 	 * Gets the value of the attribute {@link #idConfServerMail}.
@@ -247,6 +255,38 @@ public class ConfServerMailForm {
 	 */
 	public void setNewPassword(Boolean newPassword) {
 		this.newPassword = newPassword;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #connectionTimeout}.
+	 * @return the value of the attribute {@link #connectionTimeout}.
+	 */
+	public Integer getConnectionTimeout() {
+		return connectionTimeout;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #connectionTimeout}.
+	 * @param connectionTimeout The value for the attribute {@link #connectionTimeout}.
+	 */
+	public void setConnectionTimeout(Integer connectionTimeout) {
+		this.connectionTimeout = connectionTimeout;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #readingTimeout}.
+	 * @return the value of the attribute {@link #readingTimeout}.
+	 */
+	public Integer getReadingTimeout() {
+		return readingTimeout;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #readingTimeout}.
+	 * @param readingTimeout The value for the attribute {@link #readingTimeout}.
+	 */
+	public void setReadingTimeout(Integer readingTimeout) {
+		this.readingTimeout = readingTimeout;
 	}
 
 }
