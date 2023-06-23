@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/02/2023.</p>
  * @author Gobierno de España.
- * @version 1.1, 19/06/2023.
+ * @version 1.2, 24/07/2023.
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -43,7 +43,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
  * TSL.
  * </p>
  * 
- * @version 1.1, 19/06/2023.
+ * @version 1.2, 24/07/2023.
  */
 public class SIResult implements Serializable {
 
@@ -113,6 +113,12 @@ public class SIResult implements Serializable {
 	 * Attribute indicating whether the TSP's service type is 'http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST'.
 	 */
 	private boolean serviceTypeIsTSAQualified = Boolean.FALSE;
+	
+	
+	/**
+	 * Attribute that represents whether the process is successful or has failed.
+	 */
+	private boolean error = Boolean.FALSE;	
 
 	/**
 	 * Constructor method for the class SIResult.java.
@@ -335,6 +341,22 @@ public class SIResult implements Serializable {
 
 	
 	/**
+	 * Gets the value of the attribute {@link #error}.
+	 * @return the value of the attribute {@link #error}.
+	 */
+	public boolean isError() {
+		return error;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #error}.
+	 * @param error The value for the attribute {@link #error}.
+	 */
+	public void setError(boolean error) {
+		this.error = error;
+	}
+
+	/**
 	 * Resets all the data;
 	 */
 	public final void resetAllData() {
@@ -350,6 +372,7 @@ public class SIResult implements Serializable {
 		setListTspTradeName(new ArrayList<String>());
 		setTspDetected(null);
 		setTspNameCountry(null);
+		setError(Boolean.FALSE);
 
 	}
 

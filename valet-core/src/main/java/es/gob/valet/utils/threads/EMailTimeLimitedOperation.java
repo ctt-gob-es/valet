@@ -22,12 +22,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 22/02/2023.
+ * @version 1.4, 22/06/2023.
  */
 package es.gob.valet.utils.threads;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -45,6 +46,8 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
 
+import com.sun.mail.util.MailConnectException;
+
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -58,11 +61,19 @@ import es.gob.valet.persistence.exceptions.CipherException;
 import es.gob.valet.persistence.utils.UtilsAESCipher;
 
 /**
- * <p>Class that represents an e-mail sending-operation. In this one all the information
- * is specified to define the e-mail and the necessary functionality is contributed to realize the sending
- * as an independent thread via SMTP server. This thread will be time limited.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 22/02/2023.
+ * <p>
+ * Class that represents an e-mail sending-operation. In this one all the
+ * information is specified to define the e-mail and the necessary functionality
+ * is contributed to realize the sending as an independent thread via SMTP
+ * server. This thread will be time limited.
+ * </p>
+ * <b>Project:</b>
+ * <p>
+ * Platform for detection and validation of certificates recognized in European
+ * TSL.
+ * </p>
+ * 
+ * @version 1.4, 22/06/2023.
  */
 public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
@@ -112,7 +123,8 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	private int mailServerPort = NumberConstants.NUM25;
 
 	/**
-	 * Attribute that represents the Mail Server: Flag that indicates if it is necessary the authentication.
+	 * Attribute that represents the Mail Server: Flag that indicates if it is
+	 * necessary the authentication.
 	 */
 	private boolean mailServerAuthUseAuthentication = false;
 
@@ -127,35 +139,60 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	private String mailServerAuthPassword = null;
 
 	/**
+	 * Attribute that represents the maximun time allowed, in milliseconds, for
+	 * establishing the SMTP connection.
+	 */
+	private Integer connectionTimeout;
+	/**
+	 * Attribute that represents the maximun time allowed, in milliseconds, for
+	 * sending the mail messages.
+	 */
+	private Integer readingTimeout;
+
+	/**
 	 * Constructor method for the class EMailTimeLimitedOperation.java.
-	 * @throws EMailException In case of some error building the configuration for send the email.
+	 * 
+	 * @throws EMailException
+	 *             In case of some error building the configuration for send the
+	 *             email.
 	 */
 	private EMailTimeLimitedOperation() throws EMailException {
 		super();
-		ConfServerMail csm = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getConfServerMailService().getAllConfServerMail();
+		ConfServerMail csm = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices()
+				.getConfServerMailService().getAllConfServerMail();
 		if (csm == null) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_015));
+			throw new EMailException(IValetException.COD_201,
+					Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_015));
 		} else {
 			initializeServerMailConfiguration(csm);
 		}
 	}
 
 	/**
-	 * This constructor method sets an email to be sended through internal mail server.
-	 * @param listAddresseesParam Parameter that represents the list of addressees to the e-mail.
-	 * @param subjectParam Parameter that represents the subject of the e-mail.
-	 * @param message Parameter that represents the message of the e-mail.
-	 * @throws EMailException If some of the input parameters is null.
+	 * This constructor method sets an email to be sended through internal mail
+	 * server.
+	 * 
+	 * @param listAddresseesParam
+	 *            Parameter that represents the list of addressees to the
+	 *            e-mail.
+	 * @param subjectParam
+	 *            Parameter that represents the subject of the e-mail.
+	 * @param message
+	 *            Parameter that represents the message of the e-mail.
+	 * @throws EMailException
+	 *             If some of the input parameters is null.
 	 */
-	public EMailTimeLimitedOperation(List<String> listAddresseesParam, String subjectParam, String message) throws EMailException {
-	
+	public EMailTimeLimitedOperation(List<String> listAddresseesParam, String subjectParam, String message)
+			throws EMailException {
+
 		this();
-	
+
 		// Comprobamos que haya destinatarios a los que enviar el e-mail
 		if (listAddresseesParam == null || listAddresseesParam.isEmpty()) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_005));
+			throw new EMailException(IValetException.COD_201,
+					Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_005));
 		} else {
-			for (String mailAddress: listAddresseesParam) {
+			for (String mailAddress : listAddresseesParam) {
 				if (checkEmailAdress(mailAddress)) {
 					try {
 						mailAddresses.add(new InternetAddress(mailAddress));
@@ -163,31 +200,44 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 						continue;
 					}
 				} else {
-					LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_008, new Object[ ] { mailAddress }));
+					LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_008,
+							new Object[] { mailAddress }));
 				}
 			}
 			if (mailAddresses.isEmpty()) {
-				throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_005));
+				throw new EMailException(IValetException.COD_201,
+						Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_005));
 			}
 		}
 		// Comprobamos que se haya indicado un asunto
 		if (subjectParam == null) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_006));
+			throw new EMailException(IValetException.COD_201,
+					Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_006));
 		}
 		subject = subjectParam;
 		// Comprobamos que se haya indicado un mensaje
 		if (message == null) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_007));
+			throw new EMailException(IValetException.COD_201,
+					Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_007));
 		}
 		messageBuilder = new StringBuilder(message);
-		setMaxTimeForRunningThread(NumberConstants.NUM10000);
+		
 	
+		//setMaxTimeForRunningThread(NumberConstants.NUM10000);
+		
+		
+
 	}
 
 	/**
-	 * Auxiliar method that sets all the properties needed for the mail server from a data base instance.
-	 * @param csm Object that represents an instance of a mail server in the data base.
-	 * @throws EMailException In case of some error setting the configuration.
+	 * Auxiliar method that sets all the properties needed for the mail server
+	 * from a data base instance.
+	 * 
+	 * @param csm
+	 *            Object that represents an instance of a mail server in the
+	 *            data base.
+	 * @throws EMailException
+	 *             In case of some error setting the configuration.
 	 */
 	private void initializeServerMailConfiguration(ConfServerMail csm) throws EMailException {
 
@@ -197,7 +247,8 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		}
 		mailServerHost = csm.getHostMail();
 		if (UtilsStringChar.isNullOrEmptyTrim(mailServerHost)) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_001));
+			throw new EMailException(IValetException.COD_201,
+					Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_001));
 		}
 		boolean validPort = true;
 		Long portLong = csm.getPortMail();
@@ -211,23 +262,32 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 			LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_002));
 			mailServerPort = NumberConstants.NUM25;
 		}
+		
+		connectionTimeout = csm.getConnectionTimeout();
+		readingTimeout = csm.getReadingTimeout();
 		initializeServerMailConfigurationAuth(csm);
 
 	}
 
 	/**
-	 * Auxiliar method that sets the properties for authentication needed for the mail server from a data base instance.
-	 * @param csm Object that represents an instance of a mail server in the data base.
+	 * Auxiliar method that sets the properties for authentication needed for
+	 * the mail server from a data base instance.
+	 * 
+	 * @param csm
+	 *            Object that represents an instance of a mail server in the
+	 *            data base.
 	 */
 	private void initializeServerMailConfigurationAuth(ConfServerMail csm) {
 
-		mailServerAuthUseAuthentication = csm.getUseAuthenticationMail() == null ? false : csm.getUseAuthenticationMail().booleanValue();
+		mailServerAuthUseAuthentication = csm.getUseAuthenticationMail() == null ? false
+				: csm.getUseAuthenticationMail().booleanValue();
 		if (mailServerAuthUseAuthentication) {
 			mailServerAuthUserName = csm.getUserMail();
 			mailServerAuthPassword = csm.getPasswordMail();
 			if (mailServerAuthPassword != null) {
 				try {
-					mailServerAuthPassword = new String(UtilsAESCipher.getInstance().decryptMessage(mailServerAuthPassword));
+					mailServerAuthPassword = new String(
+							UtilsAESCipher.getInstance().decryptMessage(mailServerAuthPassword));
 				} catch (CipherException e) {
 					LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_003));
 					mailServerAuthPassword = null;
@@ -245,8 +305,11 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
 	/**
 	 * Checks if the input email address is valid.
-	 * @param emailAddress Email address to validate.
-	 * @return <code>true</code> if the input email address is valid, otherwise <code>false</code>.
+	 * 
+	 * @param emailAddress
+	 *            Email address to validate.
+	 * @return <code>true</code> if the input email address is valid, otherwise
+	 *         <code>false</code>.
 	 */
 	private boolean checkEmailAdress(String emailAddress) {
 
@@ -265,6 +328,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
 	/**
 	 * {@inheritDoc}
+	 * 
 	 * @see es.gob.valet.commons.utils.threads.ATimeLimitedOperation#doOperationThread()
 	 */
 	@Override
@@ -275,9 +339,11 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	}
 
 	/**
-	 * Private method that implements the logic to send an email through the internal mail server.
+	 * Private method that implements the logic to send an email through the
+	 * internal mail server.
+	 * @throws EMailException 
 	 */
-	private void useInternalMailServer() {
+	private void useInternalMailServer() throws EMailException {
 
 		// Se inicializan las propiedades junto con una sesión por
 		// defecto.
@@ -286,6 +352,8 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.port", Integer.toString(mailServerPort));
 		props.put("mail.smtp.auth", Boolean.toString(mailServerAuthUseAuthentication));
+		props.put("mail.smtp.connectiontimeout", connectionTimeout);// tiempo d conexión
+		props.put("mail.smtp.timeout", readingTimeout);// tiempo de mandar el mensaje
 
 		Session session = Session.getInstance(props);
 
@@ -296,7 +364,8 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 			msg.setFrom(new InternetAddress(mailServerIssuer));
 
 			if (!mailAddresses.isEmpty()) {
-				msg.setRecipients(Message.RecipientType.TO, mailAddresses.toArray(new InternetAddress[mailAddresses.size()]));
+				msg.setRecipients(Message.RecipientType.TO,
+						mailAddresses.toArray(new InternetAddress[mailAddresses.size()]));
 				msg.setSubject(subject);
 
 				msg.setSentDate(Calendar.getInstance().getTime());
@@ -309,7 +378,6 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 				// Se efectúa el envío el mensaje.
 				transport.sendMessage(msg, msg.getAllRecipients());
 				transport.close();
-
 			}
 
 		} catch (MessagingException e) {
@@ -320,54 +388,65 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
 	/**
 	 * Method that manages the send of the produced exception.
-	 * @param mex Parameter that represents the exception to send.
+	 * 
+	 * @param mex
+	 *            Parameter that represents the exception to send.
 	 */
-	private void sendException(MessagingException mex) {
-
-		LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_009));
-		LOGGER.error(stack2string(mex));
+	private void sendException(Exception mex) {
+		LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_009, new Object[] {subject}));
+		
 
 		Exception ex = mex;
 		do {
 			if (ex instanceof SendFailedException) {
 				SendFailedException sfex = (SendFailedException) ex;
-				Address[ ] invalid = sfex.getInvalidAddresses();
+				Address[] invalid = sfex.getInvalidAddresses();
 				sendExceptionAux(ICoreGeneralMessages.EMAIL_010, invalid);
 
-				Address[ ] validUnsent = sfex.getValidUnsentAddresses();
+				Address[] validUnsent = sfex.getValidUnsentAddresses();
 				sendExceptionAux(ICoreGeneralMessages.EMAIL_011, validUnsent);
 
-				Address[ ] validSent = sfex.getValidSentAddresses();
+				Address[] validSent = sfex.getValidSentAddresses();
 				sendExceptionAux(ICoreGeneralMessages.EMAIL_012, validSent);
 			}
-
-			if (ex instanceof MessagingException) {
-				ex = ((MessagingException) ex).getNextException();
-			} else {
+			else if(ex instanceof SocketTimeoutException || ex instanceof MailConnectException){
+				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_016, ex.getMessage()));
 				ex = null;
 			}
-		}
-		while (ex != null);
+			else {
+				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_017, ex.getMessage()));
+				ex = null;
+			}
+			
+		} while (ex != null);
+		LOGGER.error(stack2string(mex));
 
 	}
 
 	/**
-	 * Method that shows in the log the result of the e-mail send for each addressee.
-	 * @param errorMsg Parameter that represents the message for the error.
-	 * @param arrayAddress Parameter that represents the list of addressees.
+	 * Method that shows in the log the result of the e-mail send for each
+	 * addressee.
+	 * 
+	 * @param errorMsg
+	 *            Parameter that represents the message for the error.
+	 * @param arrayAddress
+	 *            Parameter that represents the list of addressees.
 	 */
-	private void sendExceptionAux(String errorMsg, Address[ ] arrayAddress) {
+	private void sendExceptionAux(String errorMsg, Address[] arrayAddress) {
 		LOGGER.error(Language.getResCoreGeneral(errorMsg));
 		if (arrayAddress != null) {
 			for (int i = 0; i < arrayAddress.length; i++) {
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_013, new Object[ ] { arrayAddress[i] }));
+				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_013,
+						new Object[] { arrayAddress[i] }));
 			}
 		}
 	}
 
 	/**
 	 * Method that obtains the text from the stack trace of an exception.
-	 * @param e Parameter that represents the exception to process.
+	 * 
+	 * @param e
+	 *            Parameter that represents the exception to process.
 	 * @return the text from the stack trace of the exception.
 	 */
 	private String stack2string(Exception e) {
@@ -375,7 +454,8 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		PrintWriter pw = new PrintWriter(sw);
 		try {
 			e.printStackTrace(pw);
-			return SEPARATOR + UtilsStringChar.SPECIAL_SYSTEM_LINE_SEPARATOR_STRING + sw.toString() + SEPARATOR + UtilsStringChar.SPECIAL_SYSTEM_LINE_SEPARATOR_STRING;
+			return SEPARATOR + UtilsStringChar.SPECIAL_SYSTEM_LINE_SEPARATOR_STRING + sw.toString() + SEPARATOR
+					+ UtilsStringChar.SPECIAL_SYSTEM_LINE_SEPARATOR_STRING;
 		} catch (Exception e2) {
 			return Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_014);
 		} finally {
@@ -387,15 +467,20 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
 	/**
 	 * Method that appends a text at the end of the body of the e-mail message.
-	 * @param text Parameter that represents the text to append.
+	 * 
+	 * @param text
+	 *            Parameter that represents the text to append.
 	 */
 	public final void appendToBodyMessage(String text) {
 		messageBuilder.append(text);
 	}
 
 	/**
-	 * Method that appends a text and a new line at the end of the body of the e-mail message.
-	 * @param text String with text to append.
+	 * Method that appends a text and a new line at the end of the body of the
+	 * e-mail message.
+	 * 
+	 * @param text
+	 *            String with text to append.
 	 */
 	public final void appendToBodyMessageWithNewLine(String text) {
 		appendToBodyMessage(text);

@@ -241,7 +241,9 @@ CREATE TABLE "CONF_SERVER_MAIL"(
 	"PORT_MAIL" Number(10,0) NOT NULL,
 	"USE_AUTHENTICATION_MAIL" Char(1),
 	"USER_MAIL" Varchar2(200),
-	"PASSWORD_MAIL" Varchar2(200)
+	"PASSWORD_MAIL" Varchar2(200),
+	"CONNETION_TIMEOUT"  Number(10,0) DEFAULT 10000 NOT NULL,
+	"READING_TIMEOUT" Number(10,0) DEFAULT 10000 NOT NULL
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
 ALTER TABLE "CONF_SERVER_MAIL" ADD CONSTRAINT "ID_CONF_SERVER_MAIL" PRIMARY KEY ("ID_CONF_SERVER_MAIL");
 COMMENT ON TABLE "CONF_SERVER_MAIL" IS 'Tabla que almacena la configuración del servidor de correo.';
@@ -252,6 +254,8 @@ COMMENT ON COLUMN "CONF_SERVER_MAIL"."PORT_MAIL" IS 'Valor que representa el pue
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."USE_AUTHENTICATION_MAIL" IS 'Valor que representa si es necesario usar la autenticación para el servidor de correo.';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."USER_MAIL" IS 'Valor que representa el usuario del servidor de correo.';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."PASSWORD_MAIL" IS 'Valor que representa la contraseña del servidor de correo.';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."CONNECTION_TIMEOUT" IS 'Valor que representa tiempo maximo de conexión';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."READING_TIMEOUT" IS 'Valor que representa tiempo máximo de lectura.';
 
 -- Table TASK
 CREATE TABLE "TASK"(

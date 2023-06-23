@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 26/12/2018.
+ * @version 1.1, 22/06/2023.
  */
 package es.gob.valet.commons.utils.threads;
 
@@ -29,7 +29,7 @@ package es.gob.valet.commons.utils.threads;
  * <p>Abstract class that defines a operation to execute in other
  * thread with a time limitation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 26/12/2018.
+ * @version 1.1, 22/06/2023.
  */
 public abstract class ATimeLimitedOperation {
 
@@ -132,35 +132,10 @@ public abstract class ATimeLimitedOperation {
 	 * time is less or equal to 0. In that case, the operation will be executed
 	 * in this thread.
 	 */
-	public final void startOperation() {
-
+	public final void startOperation(){
 		init();
-
-		if (millisecondsTime > 0) {
-
-			tlt = new TimeLimitedThread(this);
-			tlt.start();
-			try {
-				tlt.join(millisecondsTime);
-			} catch (InterruptedException e) {
-				interruptThread = true;
-			}
-			if (interruptThread || !operationFinished) {
-				stopTlt();
-			}
-
-		} else {
-
-			try {
-				doOperationThread();
-			} catch (Exception e) {
-				setException(e);
-			} finally {
-				setFinishedOperation();
-			}
-
-		}
-
+		tlt = new TimeLimitedThread(this);
+		tlt.start();
 	}
 
 	/**
@@ -179,7 +154,7 @@ public abstract class ATimeLimitedOperation {
 	 * Method that stop the running thread.
 	 */
 	@SuppressWarnings("deprecation")
-	private void stopTlt() {
+	public void stopTlt() {
 
 		if (tlt != null && tlt.isAlive()) {
 

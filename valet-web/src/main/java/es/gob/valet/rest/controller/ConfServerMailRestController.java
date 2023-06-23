@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 16/09/2021.
+ * @version 1.4, 22/06/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -47,7 +47,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * <p>Class that manages the REST requests related to the ConfServerMails administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 16/09/2021.
+ * @version 1.4, 22/06/2023.
  */
 @RestController
 public class ConfServerMailRestController {
@@ -78,6 +78,14 @@ public class ConfServerMailRestController {
 	 * Constant that represents the parameter 'hostMail'.
 	 */
 	private static final String FIELD_USER_MAIL = "userMail";
+	/**
+	 * Constant that represents the parameter 'connectionTimeout'.
+	 */
+	private static final String FIELD_CONNECTION_TIMEOUT = "connectionTimeout";
+	/**
+	 * Constant that represents the parameter 'readingTimeout'.
+	 */
+	private static final String FIELD_READING_TIMEOUT= "readingTimeout";
 
 
 	/**
@@ -115,6 +123,8 @@ public class ConfServerMailRestController {
 				confMail.setHostMail(confServerMailForm.getHostMail());
 				confMail.setPortMail(confServerMailForm.getPortMail());
 				confMail.setUseAuthenticationMail(confServerMailForm.getUseAuthenticationMail());
+				confMail.setConnectionTimeout(confServerMailForm.getConnectionTimeout());
+				confMail.setReadingTimeout(confServerMailForm.getReadingTimeout());
 				
 				if (confServerMailForm.getUseAuthenticationMail()) {
 					confMail.setUserMail(confServerMailForm.getUserMail());
@@ -182,6 +192,30 @@ public class ConfServerMailRestController {
 			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_004);
 			LOGGER.error(msgError);
 			json.put(FIELD_USER_MAIL + "_span", msgError);
+			}
+		}
+		
+		if (csmform.getConnectionTimeout() == null) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_008);
+			LOGGER.error(msgError);
+			json.put(FIELD_CONNECTION_TIMEOUT + "_span", msgError);
+		} else{
+			if(csmform.getConnectionTimeout().intValue() < 0){
+				String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_010);
+				LOGGER.error(msgError);
+				json.put(FIELD_CONNECTION_TIMEOUT + "_span", msgError);
+			}
+		}
+		
+		if (csmform.getReadingTimeout() == null) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_009);
+			LOGGER.error(msgError);
+			json.put(FIELD_READING_TIMEOUT + "_span", msgError);
+		} else {
+			if(csmform.getReadingTimeout().intValue() < 0){
+				String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_010);
+				LOGGER.error(msgError);
+				json.put(FIELD_READING_TIMEOUT + "_span", msgError);
 			}
 		}
 		return json;

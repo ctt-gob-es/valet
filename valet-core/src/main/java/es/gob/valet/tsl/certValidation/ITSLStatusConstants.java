@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>27/10/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 27/10/2022.
+ * @version 1.1, 24/07/2022.
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -28,7 +28,7 @@ package es.gob.valet.tsl.certValidation;
 /** 
  * <p>Interface defining all constants related to the outputs of procedures 4.3 and 4.4 inhe ETSI TS 119 615 v.1.1.1.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 27/10/2022.
+ * @version 1.1, 24/07/2022.
  */
 public interface ITSLStatusConstants {
 
@@ -43,7 +43,7 @@ public interface ITSLStatusConstants {
 	/**
 	 * Constant attribute that represents the token 'PROCESS_PASSED_WITH_WARNING'.
 	 */
-	String PROCESS_FAILED_WARNING ="PROCESS_PASSED_WITH_WARNING";
+	String PROCESS_PASSED_WITH_WARNING ="PROCESS_PASSED_WITH_WARNING";
 	/**
 	 * Constant attribute that represents the token 'WARNING_T1_DUPLICATION'.
 	 */
