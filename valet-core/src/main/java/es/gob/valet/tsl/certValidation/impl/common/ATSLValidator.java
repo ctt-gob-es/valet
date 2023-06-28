@@ -2598,16 +2598,19 @@ public abstract class ATSLValidator implements ITSLValidator {
 				if (!UtilsStringChar.listContainingString(resultSI.getInfoSIResult().getListTSPNames(),
 						organizationName)
 						&& !UtilsStringChar.listContainingString(resultSI.getInfoSIResult().getListTSPTradeNames(),
+								organizationName)
+						&& !UtilsStringChar.listContainingString(resultSI.getInfoSIResult().getListTSPNamesCountry(),
 								organizationName)) {
 					error = Boolean.TRUE;
+
 				}
+
 			} else {
 				// PRO-4.4.4-06 b)
 				if (!verifyIssuerWithTSPNameorTSPTradeName(resultSI, commonName)) {
 					error = Boolean.TRUE;
 				}
 			}
-
 		} catch (TSLCertificateValidationException e) {
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL358, new Object[] { e.getMessage() }));
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL357, new Object[] { e.getMessage() }));
@@ -2634,9 +2637,12 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 			if ((UtilsStringChar.listContainingString(resultSI.getInfoSIResult().getListTSPNames(), commonName)
 					|| UtilsStringChar.listContainingString(resultSI.getInfoSIResult().getListTSPTradeNames(),
+							commonName)
+					|| UtilsStringChar.listContainingString(resultSI.getInfoSIResult().getListTSPNamesCountry(),
 							commonName))) {
 				verify = Boolean.TRUE;
 			}
+
 		}
 
 		return verify;
@@ -2974,6 +2980,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// La vamos recorriendo mientras no se termine y no se haya
 		// detectado el certificado.
 		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL361));
+		// obtenemos el pais del certificado necesario en el procc 4.4.4-06
+		String countryCert = UtilsCertificate.getCountryOfTheCertificateString(cert);
 
 		for (int index = 0; index < tspList.size(); index++) {
 
@@ -2984,7 +2992,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// servicios del TSP.
 			try {
 				// PRO-4.3.4-03
-				searchListServicesMatchingCertificate(resultSI, cert, isCACert, isTsaCertificate, validationDate, tsp);
+				searchListServicesMatchingCertificate(resultSI, cert, isCACert, isTsaCertificate, validationDate, tsp,
+						countryCert);
 				resultSI.setSiStatus(ITSLStatusConstants.PROCESS_PASSED);
 
 			} catch (Exception e) {
@@ -3021,12 +3030,14 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 *            Object where stores the validation result data.
 	 */
 	private void searchListServicesMatchingCertificate(ResultServiceInformation resultSI, X509Certificate cert,
-			boolean isCACert, boolean isTsaCertificate, Date validationDate, TrustServiceProvider tsp) {
+			boolean isCACert, boolean isTsaCertificate, Date validationDate, TrustServiceProvider tsp, String countryCert) {
 		// Obtenemos la lista de servicios.
 		List<TSPService> tspServiceList = tsp.getAllTSPServices();
 
 		// Si la lista no es nula ni vacía...
 		if (tspServiceList != null && !tspServiceList.isEmpty()) {
+			// se obtiene el país del certificado
+			
 			// La vamos recorriendo mientras no se termine
 			for (int index = 0; index < tspServiceList.size(); index++) {
 
@@ -3042,6 +3053,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					if (checkIfDigitalIdentitiesMatchesCertificate(si.getAllDigitalIdentities(), cert, resultSI)) {
 
 						SIResult siResult = new SIResult();
+
 						// PRO-4.3.4-03 b)
 						selectSiAtDateTime(siResult, tspService, validationDate);
 						if (siResult.getSiAtDateTime() == null) {
@@ -3058,9 +3070,11 @@ public abstract class ATSLValidator implements ITSLValidator {
 							siResult.setTspService(tspService);
 							siResult.setServiceStatus(si.getServiceStatus().toString());
 							String tspName = getTSPName(tsp);
+							String tspNameCountry = getTSPNameCountry(tsp, countryCert);
 							LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL371,
 									new Object[] { tspName }));
 							siResult.setTspName(tspName);
+							siResult.setTspNameCountry(tspNameCountry);
 							siResult.setListTspTradeName(getTSPTradeName(tsp));
 							siResult.setTspDetected(tsp);
 
@@ -3092,9 +3106,11 @@ public abstract class ATSLValidator implements ITSLValidator {
 						siResultTSA.setTspService(tspService);
 						// siResult.setServiceStatus(si.getServiceStatus().toString());
 						String tspName = getTSPName(tsp);
+						String tspNameCountry = getTSPNameCountry(tsp, countryCert);
 						// LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL371,
 						// new Object[] { tspName }));
 						siResultTSA.setTspName(tspName);
+						siResultTSA.setTspNameCountry(tspNameCountry);
 						siResultTSA.setListTspTradeName(getTSPTradeName(tsp));
 						siResultTSA.setTspDetected(tsp);
 						updateResultSI(resultSI, siResultTSA);
@@ -3170,6 +3186,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 			resultSI.getInfoSIResult().getListSiAtDateTime().add(siResult.getSiAtDateTime());
 			if (!resultSI.getInfoSIResult().getListTSPNames().contains(siResult.getTspName())) {
 				resultSI.getInfoSIResult().getListTSPNames().add(siResult.getTspName());
+			}
+
+			if (!resultSI.getInfoSIResult().getListTSPNamesCountry().contains(siResult.getTspNameCountry())) {
+				resultSI.getInfoSIResult().getListTSPNamesCountry().add(siResult.getTspNameCountry());
 			}
 
 			for (String tspTradeName : siResult.getListTspTradeName()) {
@@ -3278,7 +3298,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 						String tspName = tspService.getServiceInformation()
 								.getServiceNameInLanguage(Locale.UK.getLanguage());
 						LOGGER.error(
-								Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL367, new Object[] { tspName }));
+								Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL369, new Object[] { tspName }));
 					}
 
 				}
@@ -3307,8 +3327,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 			ServiceHistoryInstance current, previous = (ServiceHistoryInstance) it.next();
 			while (it.hasNext()) {
 				current = it.next();
-				if (!previous.getServiceStatusStartingTime().before(current.getServiceStatusStartingTime())
-						|| previous.getServiceStatusStartingTime().equals(current.getServiceStatusStartingTime())) {
+				if (!current.getServiceStatusStartingTime().before(previous.getServiceStatusStartingTime())
+						|| current.getServiceStatusStartingTime().equals(previous.getServiceStatusStartingTime())) {
 					verify = Boolean.FALSE;
 					break;
 				}
@@ -3563,6 +3583,37 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 			}
 
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Auxiliar method to extract a TSP name from the TSP provider.
+	 * 
+	 * @param tsp
+	 *            TSP provider from which extracts the name.
+	 * @return TSP name from the TSP provider.
+	 */
+	private String getTSPNameCountry(TrustServiceProvider tsp, String country) {
+
+		String result = null;
+		if (country != null) {
+			// Verificamos que haya algún nombre asignado al TSP.
+			if (tsp.getTspInformation().isThereSomeName()) {
+
+				// Recuperamos el correspondiente al idioma inglés por defecto.
+				List<String> tspNamesCountry = tsp.getTspInformation().getTSPNamesForLanguage(country.toLowerCase());
+
+				// Si lo hemos obtenido, asignamos el nombre al resultado.
+				if (tspNamesCountry != null && !tspNamesCountry.isEmpty()) {
+
+					result = tspNamesCountry.get(0);
+
+				}
+
+			}
 		}
 
 		return result;

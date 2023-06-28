@@ -116,6 +116,7 @@ public class ResultQualifiedCertificate implements Serializable {
 	}
 	
 	/**
+	 * Constructor method for the class ResultQualifiedCertificate.java.
 	 * @param cert
 	 * @throws TSLValidationException
 	 */

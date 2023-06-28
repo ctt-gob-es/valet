@@ -85,12 +85,6 @@ public class KeystoreController {
 	 */
 	@RequestMapping(value = "/loadcertificatesdatatable", method = RequestMethod.GET)
 	public String loadCertificatesDatatable(@RequestParam(FIELD_ID_KEYSTORE) Long idKeystore, Model model) {
-		try {
-			UtilsCache.reloadConfigurationLocalCache(true);
-		} catch (ConfigurationCacheException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		SystemCertificateForm systemCertificateForm = new SystemCertificateForm();
 		systemCertificateForm.setIdKeystore(idKeystore);
 		IKeystoreService keystoreService = ManagerPersistenceServices.getInstance()

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/02/2023.</p>
  * @author Gobierno de España.
- * @version 1.0, 08/02/2023.
+ * @version 1.1, 19/06/2023
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -42,7 +42,7 @@ import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
  * TSL.
  * </p>
  * 
- * @version 1.0, 08/02/2023.
+ * @version 1.1, 19/06/2023
  */
 public class InfoSIResult implements Serializable {
 
@@ -60,6 +60,16 @@ public class InfoSIResult implements Serializable {
 	 * the certificate identifies.
 	 */
 	private List<String> listTSPTradeNames;
+	
+	/**
+	 * Attribute that represents the 'TSPNames' list of the TSPServices of the country of the certificate.
+	 */
+	private List<String> listTSPNamesCountry;
+	/**
+	 * Attribute that represents the 'TSPTradeName' list of the TSPServices of the country of the certificate.
+	 */
+	private List<String> listTSPTradeNamesCountry;
+
 
 	/**
 	 * Attribute that represents the list of the ServiceHistoryInstance.
@@ -79,6 +89,8 @@ public class InfoSIResult implements Serializable {
 		listTSPNames = new ArrayList<String>();
 		listTSPTradeNames = new ArrayList<String>();
 		listSiAtDateTime = new ArrayList<ServiceHistoryInstance>();
+		listTSPNamesCountry = new ArrayList<String>();
+		listTSPTradeNamesCountry = new ArrayList<String>();
 	}
 
 	/**
@@ -155,6 +167,34 @@ public class InfoSIResult implements Serializable {
 	 */
 	public void setSiResultTSA(SIResult siResultTSA) {
 		this.siResultTSA = siResultTSA;
+	}
+
+	/**
+	 * @return the listTSPNamesCountry
+	 */
+	public List<String> getListTSPNamesCountry() {
+		return listTSPNamesCountry;
+	}
+
+	/**
+	 * @param listTSPNamesCountry the listTSPNamesCountry to set
+	 */
+	public void setListTSPNamesCountry(List<String> listTSPNamesCountry) {
+		this.listTSPNamesCountry = listTSPNamesCountry;
+	}
+
+	/**
+	 * @return the listTSPTradeNamesCountry
+	 */
+	public List<String> getListTSPTradeNamesCountry() {
+		return listTSPTradeNamesCountry;
+	}
+
+	/**
+	 * @param listTSPTradeNamesCountry the listTSPTradeNamesCountry to set
+	 */
+	public void setListTSPTradeNamesCountry(List<String> listTSPTradeNamesCountry) {
+		this.listTSPTradeNamesCountry = listTSPTradeNamesCountry;
 	}
 
 
