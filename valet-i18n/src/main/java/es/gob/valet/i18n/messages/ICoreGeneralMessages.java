@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.13, 22/02/2023.
+ * @version 1.14, 22/06/2023.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.13, 22/02/2023.
+ * @version 1.14, 22/06/2023.
  */
 public interface ICoreGeneralMessages {
 
@@ -1000,6 +1000,17 @@ public interface ICoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	String EMAIL_015 = "EMAIL_015";
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_016</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_016 = "EMAIL_016";
+
+	/**
+	 * Constant attribute that represents the property key <code>EMAIL_016</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String EMAIL_017 = "EMAIL_017";
 
 	/**
 	 * Constant attribute that represents the property key <code>ALARM_MNG_000</code> belonging to the
@@ -1108,6 +1119,16 @@ public interface ICoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	String ALARM_MNG_017 = "ALARM_MNG_017";
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_018</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_018 = "ALARM_MNG_018";
+	/**
+	 * Constant attribute that represents the property key <code>ALARM_MNG_018</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ALARM_MNG_019 = "ALARM_MNG_019";
 
 	/**
 	 * Constant attribute that represents the property key <code>TASK_MNG_000</code> belonging to the

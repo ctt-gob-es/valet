@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 26/12/2018.
+ * @version 1.1, 22/06/2023.
  */
 package es.gob.valet.commons.utils.threads;
 
@@ -30,7 +30,7 @@ package es.gob.valet.commons.utils.threads;
  * <p>Class that execute in a independent thread a operation with
  * a limitation time.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 26/12/2018.
+ * @version 1.1, 22/06/2023.
  */
 public class TimeLimitedThread extends Thread {
 
@@ -61,15 +61,13 @@ public class TimeLimitedThread extends Thread {
 	 */
 	@Override
 	public void run() {
-
 		try {
 			tlo.doOperationThread();
 			tlo.setFinishedOperation();
-		} catch (InterruptedException e) {
-
 		} catch (Exception e) {
 			tlo.setException(e);
 			tlo.setFinishedOperation();
+			tlo.stopTlt();
 		}
 
 	}

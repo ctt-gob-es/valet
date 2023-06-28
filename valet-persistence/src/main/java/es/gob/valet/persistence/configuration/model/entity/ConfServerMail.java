@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 16/09/2021.
+ * @version 1.3, 22/06/2023.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -44,7 +44,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>CONF_SERVER_MAIL</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 16/09/2021.
+ * @version 1.3, 22/06/2023.
  */
 @Entity
 @Table(name = "CONF_SERVER_MAIL")
@@ -90,6 +90,14 @@ public class ConfServerMail implements Serializable {
 	 * Attribute that represents the password.
 	 */
 	private String passwordMail;
+	/**
+	 * Attribute that represents the maximun time allowed, in milliseconds, for establishing the SMTP connection.
+	 */
+	private Integer connectionTimeout;
+	/**
+	 * Attribute that represents the maximun time allowed, in milliseconds,  for sending the mail messages.
+	 */
+	private Integer readingTimeout;
 
 	/**
 	 * Gets the value of the attribute {@link #idConfServerMail}.
@@ -214,5 +222,39 @@ public class ConfServerMail implements Serializable {
 	public void setPasswordMail(String passwordMailParam) {
 		this.passwordMail = passwordMailParam;
 	}
+	/**
+	 * Gets the value of the attribute {@link #connectionTimeout}.
+	 * @return the value of the attribute {@link #connectionTimeout}.
+	 */
+	@Column(name = "CONNETION_TIMEOUT", nullable = false)
+	public Integer getConnectionTimeout() {
+		return connectionTimeout;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #connectionTimeout}.
+	 * @param connectionTimeout The value for the attribute {@link #connectionTimeout}.
+	 */
+	public void setConnectionTimeout(Integer connectionTimeoutParam) {
+		this.connectionTimeout = connectionTimeoutParam;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #readingTimeout}.
+	 * @return the value of the attribute {@link #readingTimeout}.
+	 */
+	@Column(name = "READING_TIMEOUT", nullable = false)
+	public Integer getReadingTimeout() {
+		return readingTimeout;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #readingTimeout}.
+	 * @param readingTimeout The value for the attribute {@link #readingTimeout}.
+	 */
+	public void setReadingTimeout(Integer readingTimeoutParam) {
+		this.readingTimeout = readingTimeoutParam;
+	}
+
 
 }

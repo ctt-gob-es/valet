@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 03/04/2023.
+ * @version 1.5, 22/06/2023.
  */
 package es.gob.valet.utils.threads;
 
@@ -44,7 +44,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
-
+import java.net.SocketTimeoutException;
+import com.sun.mail.util.MailConnectException;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -62,7 +63,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * is specified to define the e-mail and the necessary functionality is contributed to realize the sending
  * as an independent thread via SMTP server. This thread will be time limited.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 03/04/2023.
+ * @version 1.5, 22/06/2023.
  */
 public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
@@ -125,6 +126,16 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	 * Attribute that represents the Mail Server: Authentication: Password.
 	 */
 	private String mailServerAuthPassword = null;
+	/**
+	 * Attribute that represents the maximun time allowed, in milliseconds, for
+	 * establishing the SMTP connection.
+	 */
+	private Integer connectionTimeout;
+	/**
+	 * Attribute that represents the maximun time allowed, in milliseconds, for
+	 * sending the mail messages.
+	 */
+	private Integer readingTimeout;
 
 	/**
 	 * Constructor method for the class EMailTimeLimitedOperation.java.
@@ -180,7 +191,6 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_007));
 		}
 		messageBuilder = new StringBuilder(message);
-		setMaxTimeForRunningThread(NumberConstants.NUM10000);
 	
 	}
 
@@ -211,6 +221,9 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 			LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_002));
 			mailServerPort = NumberConstants.NUM25;
 		}
+		
+		connectionTimeout = csm.getConnectionTimeout();
+		readingTimeout = csm.getReadingTimeout();
 		initializeServerMailConfigurationAuth(csm);
 
 	}
@@ -277,7 +290,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	/**
 	 * Private method that implements the logic to send an email through the internal mail server.
 	 */
-	private void useInternalMailServer() {
+	private void useInternalMailServer() throws EMailException {
 
 		// Se inicializan las propiedades junto con una sesión por
 		// defecto.
@@ -286,7 +299,8 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.port", Integer.toString(mailServerPort));
 		props.put("mail.smtp.auth", Boolean.toString(mailServerAuthUseAuthentication));
-
+		props.put("mail.smtp.connectiontimeout", connectionTimeout);// tiempo d conexión
+		props.put("mail.smtp.timeout", readingTimeout);// tiempo de mandar el mensaje
 		Session session = Session.getInstance(props);
 
 		try {
@@ -322,10 +336,9 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	 * Method that manages the send of the produced exception.
 	 * @param mex Parameter that represents the exception to send.
 	 */
-	private void sendException(MessagingException mex) {
+	private void sendException(Exception mex) {
 
-		LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_009));
-		LOGGER.error(stack2string(mex));
+		LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_009, new Object[] {subject}));
 
 		Exception ex = mex;
 		do {
@@ -340,15 +353,17 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 				Address[ ] validSent = sfex.getValidSentAddresses();
 				sendExceptionAux(ICoreGeneralMessages.EMAIL_012, validSent);
 			}
-
-			if (ex instanceof MessagingException) {
-				ex = ((MessagingException) ex).getNextException();
-			} else {
+			else if(ex instanceof SocketTimeoutException || ex instanceof MailConnectException){
+				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_016, ex.getMessage()));
+				ex = null;
+			}
+			else {
+				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_017, ex.getMessage()));
 				ex = null;
 			}
 		}
 		while (ex != null);
-
+		LOGGER.error(stack2string(mex));
 	}
 
 	/**
