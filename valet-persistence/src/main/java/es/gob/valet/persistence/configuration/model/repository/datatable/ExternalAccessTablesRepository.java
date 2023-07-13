@@ -24,6 +24,11 @@
  */
 package es.gob.valet.persistence.configuration.model.repository.datatable;
 
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;

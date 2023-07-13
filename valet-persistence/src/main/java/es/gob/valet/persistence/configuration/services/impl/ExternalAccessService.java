@@ -24,6 +24,7 @@
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,17 +33,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import es.gob.valet.persistence.configuration.model.entity.Keystore;
-import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
-import es.gob.valet.persistence.configuration.model.repository.SystemCertificateRepository;
 import es.gob.valet.persistence.configuration.model.repository.ExternalAccessRepository;
-import es.gob.valet.persistence.configuration.model.repository.datatable.SystemCertificateDataTablesRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.ExternalAccessTablesRepository;
-import es.gob.valet.persistence.configuration.model.specification.KeystoreSpecification;
-import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
 import es.gob.valet.persistence.configuration.services.ifaces.IExternalAccessService;
 
 /**
@@ -72,8 +65,8 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IExternalAccessService#getAll(java.lang.Long)
 	 */
 	@Override
-	public Iterable<ExternalAccess> getAll(Keystore keystore) {
-		return repository.findAll();
+	public DataTablesOutput<ExternalAccess> getAll(DataTablesInput input) {
+		return dtRepository.findAll(input);
 	}
 
 	/**
@@ -94,6 +87,7 @@ public class ExternalAccessService implements IExternalAccessService {
 		return repository.findByUrl(url);
 
 	}
+
 
 
 }

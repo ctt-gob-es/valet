@@ -41,6 +41,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ICPlannerTypeServi
 import es.gob.valet.persistence.configuration.services.ifaces.ICStatusCertificateService;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailService;
+import es.gob.valet.persistence.configuration.services.ifaces.IExternalAccessService;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 import es.gob.valet.persistence.configuration.services.ifaces.IMailService;
 import es.gob.valet.persistence.configuration.services.ifaces.IPlannerService;
@@ -201,11 +202,25 @@ public class ManagerPersistenceConfigurationServices {
 
 
 	/**
+	 * Attribute that represents the services for the configuration persistence: ValET External Access.
+	 */
+	@Autowired
+	private IExternalAccessService externalAccessValetService;
+	
+	/**
 	 * Gets the value of the attribute {@link #applicationValetService}.
 	 * @return the value of the attribute {@link #applicationValetService}.
 	 */
 	public IApplicationValetService getApplicationValetService() {
 		return applicationValetService;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #externalAccessValetService}.
+	 * @return the value of the attribute {@link #externalAccessValetService}.
+	 */
+	public IExternalAccessService getExternalAccessValetService() {
+		return externalAccessValetService;
 	}
 
 	/**

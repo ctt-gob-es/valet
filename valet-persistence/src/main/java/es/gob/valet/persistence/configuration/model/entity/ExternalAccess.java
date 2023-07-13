@@ -148,16 +148,17 @@ public class ExternalAccess implements Serializable {
 	 */
 	@Column(name = "STATE_CONN", nullable = false, precision = 1)
 	@Type(type = "yes_no")
+	@JsonView(DataTablesOutput.View.class)
 	public Boolean getStateConn() {
 		return stateConn;
 	}
 
+
 	/**
-	 * Sets the value of the attribute {@link #stateConn}.
-	 * @param stateConnParam The value for the attribute {@link #stateConn}.
+	 * @param stateConn the stateConn to set
 	 */
-	public void setStateConn(Boolean stateConnParam) {
-		this.stateConn = stateConnParam;
+	public void setStateConn(Boolean stateConn) {
+		this.stateConn = stateConn;
 	}
 
 	/**

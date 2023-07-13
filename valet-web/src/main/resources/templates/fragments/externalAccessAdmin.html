@@ -1,0 +1,311 @@
+<div class="container-fluid">
+	<h4 class="c-grey-900 mT-10 mB-30"
+		th:text="#{menu.admin.externalAccess}"></h4>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="bgc-white bd bdrs-3 p-20 mB-20">
+				<form id="searchEAForm" th:object="${externalAccessform}"
+					th:action="@{/searchExternalAccess}" method="post" action="">
+					<div id="messageSearchExternalAccess" role="alert"></div>
+					<input type="hidden" class="primarykey" id="idsearchEA">
+					<div class="form-row">
+						<div class="form-group col-sm-3">
+							<label for="urlSearch" th:text="#{table.externalAccess.url}" /> <input
+								data-column="0" class="form-control" text="URL" id="urlInput"
+								name="url">
+						</div>
+						<div class="form-group col-sm-3">
+							<label for="stateConn"
+								th:text="#{table.externalAccess.stateConn}"></label> <select
+								class="form-control" text="stateConn" id="stateConn"
+								name="stateConn">
+								<option>
+								<option th:text="#{select.stateConn.value.ok}" value="true">
+								<option th:text="#{select.stateConn.value.error}" value="false">
+							</select>
+						</div>
+						<div class="form-group col-sm-3">
+							<div class="input-group date" id="dateFrom">
+								<label for="dateFromId" th:text="#{table.externalAccess.from}"></label>
+								<div class="input-group date" id="datetimepicker1">
+									<input type="text" class="form-control" id="dateFromId"
+										name="dateFrom"> <span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-sm-3">
+							<div class="input-group date" id="dateTo">
+								<label for="dateToId" th:text="#{table.externalAccess.to}"></label>
+								<div class="input-group date" id="datetimepicker2">
+									<input type="text" class="form-control" id="dateToId"
+										name="dateTo"> <span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="bgc-grey p-20 peer text-right">
+					<button id="cleanBtn" class="btn btn-default"
+						onclick="cleanForm('#searchEAForm');"
+						th:text="#{button.cleanForm}"></button>
+					<button id="searchBtn" type="submit" class="btn btn-primary"
+						onclick="search();" th:text="#{button.search}"></button>
+				</div>
+			</div>
+
+			<div class="bgc-white bd bdrs-3 p-20 mB-20">
+				<form name="altEditor-form" role="form" id="idExternalAccessForm"
+					th:object="${externalAccessform}" method="post" action="">
+					<!--  identificador idApplication -->
+					<input type='hidden' class='primarykey' id="idUrl"
+						th:field="*{idUrl}" />
+				</form>
+				<h4 class="c-grey-900 mB-20" th:text="#{table.externalAccess.title}"></h4>
+
+				<table id="externalAccessTable"
+					class="table table-striped table-bordered" cellspacing="0"
+					width="100%">
+					<thead>
+						<tr>
+							<!-- Columna oculta para el identificador de aplicación -->
+							<th></th>
+							<th th:text="#{table.externalAccess.url}"></th>
+							<th th:text="#{table.externalAccess.originUrl}"></th>
+							<th th:text="#{table.externalAccess.stateConn}"></th>
+							<th th:text="#{table.externalAccess.dateLastConn}"></th>
+							<th><input id="selectAll" type="checkbox"></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript" type="text/javascript">
+var tbl ;
+var dataSet;
+var btnGenerateReport =  /*[[#{table.externalAccess.report}]]*/;
+var btnTryConn = /*[[#{table.externalAccess.tryConn}]]*/;
+var btnDelApp  = /*[[#{table.app.btn.del}]]*/;
+var getExternalAccessInicial =/*[[@{/externalAccessDatatableInicial}]]*/;
+var getExternalAccess =/*[[@{/externalAccessDatatable}]]*/;
+var eaTemplate = /*[[@{/addexternalAccess}]]*/;
+var actionReport = /*[[@{/report}]]*/;
+var actionTryConn = /*[[@{/tryConn}]]*/;
+
+$(document).ready(function() {
+	debugger;
+
+createDatatable()
+
+//función para configurar el elemento datetimepicker
+$('#datetimepicker1').datetimepicker({
+ format: 'DD/MM/YYYY HH:mm:ss',
+ widgetPositioning:{
+	horizontal: 'auto',
+	vertical: 'top'
+}
+});
+//función para configurar el elemento datetimepicker
+$('#datetimepicker2').datetimepicker({
+ format: 'DD/MM/YYYY HH:mm:ss',
+ widgetPositioning:{
+	horizontal: 'auto',
+	vertical: 'top'
+}
+});
+
+
+//filtros de fecha:
+
+
+});// documentReady
+
+
+function createDatatable(){
+	tbl = $('#externalAccessTable').DataTable({
+		data: dataSet,
+		dom: 'Bfrtip',
+		select:false,
+		responsive: true, 
+		altEditor: true,
+	    autoWidth: false, // This parameter must be set to false
+		buttons: [{text: btnGenerateReport,name: 'report', 
+			action: function ( e, dt, node, config ) {
+				  
+		    	$.ajax(actionReport, {
+				dataType: 'json',
+				contentType:'application/json',
+				data : JSON.stringify($("#externalAccessForm").serializeJSON()),
+		    		type : 'POST',
+	       		success: function(data){
+											
+		    		},
+		    		error: function(data){
+
+		    		}
+		    });
+	        }
+		}, 
+			{text:btnTryConn, name:'tryConn', 
+				action: function ( e, dt, node, config ) {
+					debugger;
+			    	 var valoresCheck = [];
+			         var table = $("#externalAccessTable").DataTable();
+			         var data = table.rows().nodes();
+			         data.each(function (value, index) {
+			             var valor = value.cells[4].children[0].value;
+			             var check = value.cells[4].children[0].checked;
+			             if (check)
+			             {
+			                 valoresCheck.push(valor);
+			             }            
+			         }); 
+				$.ajax({
+					url : actionTryConn,
+					type : 'POST',
+					data :{
+						'valores':valoresCheck
+						},
+			    		
+		        		success: function(data){
+												
+			    		},
+			    		error: function(data){
+
+			    		}
+			    })
+				}
+			    }],
+		"iTotalRecords": "totalElements",
+		"iTotalDisplayRecords": "numberOfElements",
+		"processing": false,
+		//"serverSide": true,
+		/* "ajax":{
+			"url":getExternalAccessInicial, 
+			"dataSrc": "data",
+			"data": function (data){
+				debugger;
+				//datos a pasar al modal
+				data.formId = "externalAccessform";
+				data.addTemplate = eaTemplate;
+			}
+		}, */
+		"language": {
+			"url":"js/datatables/i18n/spanish.json",
+			select: {
+				 rows: {
+		                _: "%d filas seleccionadas",
+		                1: "1 fila seleccionada"
+		            }
+			}
+		},
+		"columns":[
+			 {"data": "idUrl","visible":false},
+			 {"data": "url","width":"35%"},
+			 {"data": "originUrl", "width":"15%"},
+			 {"data": "stateConn", "width":"15%","render": function(data, type, row){
+				 if (data == false) {
+						return 'Error';
+	     		} else if (data == true){
+						return 'OK';
+					} else {
+						return 'Error';
+					}
+			 }},
+			 {"data": "lastConn", "width":"25%" ,"render": function(data, type, row){
+					return moment(data).format("DD-MM-YYYY HH:mm");
+			 }},
+			 {"data": "idUrl",  "width": "10%","orderable": false,
+		        	"render": function(data, type, row){	
+		        		return '<input type="checkbox" value="'+data+'">';
+		        	}
+		        } 
+		]
+	})
+}
+
+$('#selectAll').click(function(event) {   
+    if(this.checked) {
+        // Iterate each checkbox
+        $(':checkbox').each(function() {
+            this.checked = true;                        
+        });
+    } else {
+        $(':checkbox').each(function() {
+            this.checked = false;                       
+        });
+    }
+}); 
+
+
+
+
+function search(){
+	 debugger;
+	 var getExternalAccess =/*[[@{/externalAccessDatatable}]]*/;
+	 var formData = JSON.stringify($("#searchEAForm").serializeJSON());
+	 
+	 //Borramos el mensaje de alerta si lo hubiese por una búsqueda anterior.
+	 $('#searchEAForm').find(".alert").html('');
+	 $('#searchEAForm').find(".alert").removeClass('alert alert-danger');
+		
+	 //controlamos que al menos 1 registro esté en el formulario relleno para la búsqueda:
+	 var url =$('#urlInput').val();
+	 var dateFrom =$('#dateFromId').val();
+	 var dateTo =$('#dateToId').val();
+	 var state = $('#stateConn').val();
+	 if(url=="" && dateFrom =="" && dateTo=="" && state==""){
+		 $('#messageSearchExternalAccess').html("Es necesario rellenar al menos un campo del formulario de búsqueda.");
+		 $('#messageSearchExternalAccess').addClass('alert alert-danger');
+	 }else{
+		//borramos los datos de la tabla anteriores
+		 tbl.clear().draw();
+		//llamamos al controlador para recuperar la información
+		$.ajax({
+			 type: "POST",
+			 url: getExternalAccess,
+			 data: formData,
+			 dataType :"json",
+			 contentType:"application/json",
+			success: function(data, error){
+				if(data.error != "" && data.error != null){
+					$('#messageSearchExternalAccess').html(data.error);
+					$('#messageSearchExternalAccess').addClass('alert alert-danger');
+				}else{
+				 data.data.forEach(reg => {
+					tbl.row.add(reg).draw();
+				}); 
+				}
+			 },
+			 error: function(data){
+				 if(data.error != "" && data.error != null){
+					$('#messageUpdateTaskId').html(data.error);
+					$('#messageUpdateTaskId').addClass('alert alert-danger');
+				}
+			}
+		 });//fin ajax
+
+	 }
+	 
+}
+
+function cleanForm(f){
+	
+	$(f + ' *').filter(':input').each(function(){
+		$(this).val('');
+	});
+	
+	$(f + " select").val('').change();
+	
+	$(f).find(".alert").html('');
+	$(f).find(".alert").removeClass('alert alert-danger');
+
+}
+
+ 
+</script>

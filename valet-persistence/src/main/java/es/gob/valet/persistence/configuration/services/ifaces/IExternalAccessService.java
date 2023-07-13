@@ -29,10 +29,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.transaction.annotation.Transactional;
-
-import es.gob.valet.persistence.configuration.model.entity.Keystore;
-import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 
 /**
@@ -47,7 +43,7 @@ public interface IExternalAccessService {
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IExternalAccessService#getAll(java.lang.Long)
 	 */
-	Iterable<ExternalAccess> getAll(Keystore keystore);
+	DataTablesOutput<ExternalAccess> getAll(DataTablesInput input);
 
 	/**
 	 * {@inheritDoc}
@@ -60,7 +56,6 @@ public interface IExternalAccessService {
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.IExternalAccessService#getDataUrlByUrl(java.lang.String)
 	 */
 	ExternalAccess getDataUrlByUrl(String url);
-
-
+	
 
 }

@@ -1,4 +1,4 @@
-<!-- Interfaz de administración para los mappgins de certificados tsl -->
+<!-- Interfaz de administraciï¿½n para los mappgins de certificados tsl -->
 <div class="container-fluid">
 	<h4 class="c-grey-900 mT-10 mB-30" th:text="#{form.app.mappingcerttsl.title}"></h4>
 	<div class="row gap-20 masonry pos-r">
@@ -52,14 +52,14 @@ $(document).ready(function() {
 	loadingTreeMappingCertTsls(undefined);
 });
 
-// Función para cargar el árbol de mappings de certificados tsls
+// Funciï¿½n para cargar el ï¿½rbol de mappings de certificados tsls
 function loadingTreeMappingCertTsls(treeDataSerch) {
 	var listBootstrapTreeNode = [[${listBootstrapTreeNode}]];
 	
 	var dataJson; 
 	
 	// Si se carga por primera vez el arbol le proporcionamos los datos que vienen del controller. 
-	// Si viene la petición por la búsqueda de un certificado se le propociona dichos datos.
+	// Si viene la peticiï¿½n por la bï¿½squeda de un certificado se le propociona dichos datos.
 	if(undefined != treeDataSerch) {
 		dataJson = treeDataSerch;
 	} else {
@@ -86,7 +86,7 @@ function loadingTreeMappingCertTsls(treeDataSerch) {
 	    	if ( !$.fn.dataTable.isDataTable( '#mappingCertTslTable' ) ) {
 	    		loadingDatatableMappingCertTsls();
 	    	}
-	    	// Se obtiene el tsp service name DTO del arbol para trabajar con sus campos lógicos asociados y su certificado
+	    	// Se obtiene el tsp service name DTO del arbol para trabajar con sus campos lï¿½gicos asociados y su certificado
 	    	obtainTspServiceNameSelectTree();
 	    	hide();
 	    },
@@ -104,7 +104,7 @@ function loadingTreeMappingCertTsls(treeDataSerch) {
 	});
 }
 
-// Función para obtener el DTO del tsp service seleccionado en el árbol
+// Funciï¿½n para obtener el DTO del tsp service seleccionado en el ï¿½rbol
 function obtainTspServiceNameSelectTree() {
 	var obtainTspServiceNameSelectTree = /*[[@{/mappingCertTslRest/obtainTspServiceNameSelectTree}]]*/;
 	$.ajax({
@@ -114,28 +114,28 @@ function obtainTspServiceNameSelectTree() {
 		cache: false,
 		success: function(xhr) {
 			tslServiceDTO = JSON.parse(xhr);
-			// No tiene ningún campo lógico ni ningún certificado asignado. 1, 2 y 5 Habilitados.
+			// No tiene ningï¿½n campo lï¿½gico ni ningï¿½n certificado asignado. 1, 2 y 5 Habilitados.
 			if(null == tslServiceDTO.listMappingTslDTO && null == tslServiceDTO.certificate) {
 				$("#idbtnAddLogicField").prop("disabled", false);
 				$("#idBtnUpdateCert").prop("disabled", false);
 				$("#idbtnViewCert").prop("disabled", true);
 				$("#idBtnExport").prop("disabled", true);
 				$("#idBtnImport").prop("disabled", false);
-			// No tiene ningún campo lógico pero tiene un certificado asignado. 1, 2, 3 y 5 Habilitados.
+			// No tiene ningï¿½n campo lï¿½gico pero tiene un certificado asignado. 1, 2, 3 y 5 Habilitados.
 			} else if (null == tslServiceDTO.listMappingTslDTO && null != tslServiceDTO.certificate) {
 				$("#idbtnAddLogicField").prop("disabled", false);
 				$("#idBtnUpdateCert").prop("disabled", false);
 				$("#idbtnViewCert").prop("disabled", false);
 				$("#idBtnExport").prop("disabled",true);
 				$("#idBtnImport").prop("disabled", false);
-			// Tiene campos lógico pero no certificado. 1, 2, 4 y 5 Habilitados.
+			// Tiene campos lï¿½gico pero no certificado. 1, 2, 4 y 5 Habilitados.
 			} else if (null != tslServiceDTO.listMappingTslDTO && null == tslServiceDTO.certificate) {
 				$("#idbtnAddLogicField").prop("disabled", false);
 				$("#idBtnUpdateCert").prop("disabled", false);
 				$("#idbtnViewCert").prop("disabled", true);
 				$("#idBtnExport").prop("disabled", false);
 				$("#idBtnImport").prop("disabled", false);
-			// Tiene campos lógico y certificado. Todos Habilitados.
+			// Tiene campos lï¿½gico y certificado. Todos Habilitados.
 			} else if (null != tslServiceDTO.listMappingTslDTO && null != tslServiceDTO.certificate) {
 				$("#idbtnAddLogicField").prop("disabled", false);
 				$("#idBtnUpdateCert").prop("disabled", false);
@@ -154,7 +154,7 @@ function obtainTspServiceNameSelectTree() {
 	});	
 }
 
-// Funcíon para cargar el datatable de mappings de certificados tsls en función de un identificador
+// Funcï¿½on para cargar el datatable de mappings de certificados tsls en funciï¿½n de un identificador
 function loadingDatatableMappingCertTsls() {
 	
 	var isConsultant = $('#isConsultant').val();
@@ -212,8 +212,7 @@ function loadingDatatableMappingCertTsls() {
 	           	orderable: false,
 	           	targets:   3,
 	           	width: "auto",
-	           	render: function ( data, type, row, meta ) {
-	           		
+	           	render: function ( data, type, row, meta ) {	           		
 	           		if(isConsultant == 'true') {
 						var editIcon = '<div class="text-center"><a alt='+btnEditMapping+' title='+btnEditMapping+'>	<span class="c-green-500 ti-pencil-alt icon-tb"></span></a>';
 				    	var deleteIcon = '<a alt='+btnDeleteMapping+' title='+btnDeleteMapping+'>	<span class="c-red-500 ti-trash icon-tb"></span></a></div>';
@@ -347,7 +346,7 @@ function loadingDatatableMappingCertTsls() {
 	$("#mappingCertTslTable").css("display","block");
 }
 
-// Función para añadir filas a la instancia de datatable definida previamente
+// Funciï¿½n para aï¿½adir filas a la instancia de datatable definida previamente
 function addRowsMappingCertTslsTable() {
 	mappingCertTslTable.clear().draw();
 	if(undefined != tslServiceDTO && null != tslServiceDTO.listMappingTslDTO) {
@@ -361,7 +360,7 @@ function addRowsMappingCertTslsTable() {
 	}
 }
 
-// Función para realizar búsquedas en función de un valor introducido por el usuario en la caja de búsqueda
+// Funciï¿½n para realizar bï¿½squedas en funciï¿½n de un valor introducido por el usuario en la caja de bï¿½squeda
 function searchInTree() {
 	var valueSearch = $("#search").val();
 	var searchInTree = /*[[@{/mappingCertTslRest/searchInTree}]]*/;
@@ -381,7 +380,7 @@ function searchInTree() {
 	});
 }
 
-// Evento que se registra para que cuando el usuario marque con el teclado algún valor a buscar aparezca el botón de limpiar la búsqueda.
+// Evento que se registra para que cuando el usuario marque con el teclado algï¿½n valor a buscar aparezca el botï¿½n de limpiar la bï¿½squeda.
 $("#search").on("keyup", function () {
     var value = $.trim($(this).val());
     if (value.length > 0) {
@@ -403,7 +402,7 @@ $("#search").on("keyup", function () {
     }    
 });
 
-// Función para editar los mappings
+// Funciï¿½n para editar los mappings
 function editMapping(idTslMapping) {
 	var viewEditMapping = /*[[@{/mappingCertTsl/viewEditMapping}]]*/;
 	loading();
@@ -420,7 +419,7 @@ function editMapping(idTslMapping) {
 	});
 }
 
-//Función para eliminar los mappings
+//Funciï¿½n para eliminar los mappings
 function deleteMapping(idTslMapping) {
 	var viewDeleteMapping = /*[[@{/mappingCertTsl/viewDeleteMapping}]]*/;
 	idTslMappingDelete = idTslMapping;
