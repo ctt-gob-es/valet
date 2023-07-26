@@ -62,14 +62,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 import es.gob.valet.persistence.configuration.model.repository.ExternalAccessRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.ExternalAccessTablesRepository;
 import es.gob.valet.service.ifaces.IExternalAccessService;
-import es.gob.valet.tsl.access.TSLManager;
 
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
@@ -143,21 +141,29 @@ public class ExternalAccessService implements IExternalAccessService {
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ifaces.IExternalAccessService#saveTryConnInExternalAccess(java.lang.String, java.lang.String)
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#testConnExternalAccessAndSaveResult(java.lang.String, java.lang.String)
 	 */
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void saveTryConnInExternalAccess(String uriTslLocation, String originUrl) {
+	public void testConnExternalAccessAndSaveResult(String uriTslLocation, String originUrl) {
 		ExternalAccess externalAccess = repository.findByUrl(uriTslLocation);
-		// Solo insertaremos aquellas url que no estén en la BD. Este valor es único.
-		if(null == externalAccess) {
+		// Realizamos el test de conexión con la url
+		boolean stateConn = this.testConnUrl(uriTslLocation);
+		// Si no existe creamos el registro con el test de conexión realizado.
+		if (null == externalAccess) {
 			ExternalAccess externalAccesSave = new ExternalAccess();
 			externalAccesSave.setUrl(uriTslLocation);
 			externalAccesSave.setOriginUrl(originUrl);
-			// Realizamos el test de conexión con la url
-			boolean stateConn = this.testConnUrl(uriTslLocation);
 			externalAccesSave.setStateConn(stateConn);
 			externalAccesSave.setLastConn(new Date());
 			repository.save(externalAccesSave);
+		} else {
+			// si existe y el resultado de la conexión es distinto lo
+			// actualizaremos
+			if (!externalAccess.getStateConn().equals(stateConn)) {
+				externalAccess.setStateConn(stateConn);
+				externalAccess.setLastConn(new Date());
+				repository.save(externalAccess);
+			}
 		}
 	}
 
@@ -278,14 +284,5 @@ public class ExternalAccessService implements IExternalAccessService {
 		}
 		
 		return urlConnected;
-	}
-
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ifaces.IExternalAccessService#secureUrlAccess()
-	 */
-	public void secureUrlAccess() throws Exception {
-		TSLManager.getInstance().prepareUrlAccess();
 	}
 }

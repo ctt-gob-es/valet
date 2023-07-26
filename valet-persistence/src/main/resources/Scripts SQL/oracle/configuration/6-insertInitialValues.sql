@@ -119,8 +119,8 @@ Insert into ALARM (ID_ALARM, DESCRIPTION, TIME_BLOCK, ACTIVE)
 -- TABLA TASK 
 Insert into TASK
    (ID_TASK, TOKEN_NAME, IMPLEMENTATION_CLASS, IS_ENABLED)
- Values (1, 'TASK01', 'es.gob.valet.tasks.FindNewTSLRevisionsTask', 'N');
-
+ Values (SQ_TASK.NEXTVAL, 'TASK01', 'es.gob.valet.tasks.FindNewTSLRevisionsTask', 'N');
+INSERT INTO TASK (ID_TASK, TOKEN_NAME, IMPLEMENTATION_CLASS, IS_ENABLED) VALUES(SQ_TASK.NEXTVAL, 'TASK02', 'es.gob.valet.tasks.ExternalAccessConnectionTestTask', 'N');
 
 -- TABLA PLANNER
   Insert into PLANNER
@@ -134,7 +134,7 @@ Insert into TASK
 Insert into X_TASK_PLANNER
    (ID_TASK, ID_PLANNER)
  Values (1, 1);
-
+INSERT INTO X_TASK_PLANNER (ID_TASK, ID_PLANNER) Values (2, 1);
 
 -- TABLA PROXY
 Insert into PROXY

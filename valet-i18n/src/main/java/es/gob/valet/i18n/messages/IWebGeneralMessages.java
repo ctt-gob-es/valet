@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.18, 22/06/2023.
+ * @version 2.0, 26/07/2023.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.18, 22/06/2023.
+ * @version 2.0, 26/07/2023.
  */
 public interface IWebGeneralMessages {
 
@@ -267,6 +267,12 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String TASK_FIND_NEW_TSL_REV_INIT_MSG = "task.findNewTslRev.initMsg";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.initMsg</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_EXT_ACC_CONN_TEST_INIT_MSG = "task.extAccConnTest.initMsg";
 
 	/**
 	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.endMsg</code> belonging to the
@@ -274,6 +280,12 @@ public interface IWebGeneralMessages {
 	 */
 	String TASK_FIND_NEW_TSL_REV_END_MSG = "task.findNewTslRev.endMsg";
 
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.initMsg</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String TASK_EXT_ACC_CONN_TEST_END_MSG = "task.extAccConnTest.endMsg";
+	
 	/**
 	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG000</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.

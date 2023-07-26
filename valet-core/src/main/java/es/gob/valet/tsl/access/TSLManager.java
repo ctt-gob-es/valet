@@ -20,17 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 26/07/2023.
+ * @version 2.1, 26/07/2023.
  */
 package es.gob.valet.tsl.access;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -65,24 +62,19 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.gob.valet.alarms.AlarmsManager;
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
 import es.gob.valet.commons.utils.CryptographicConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
-import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsCountryLanguage;
 import es.gob.valet.commons.utils.UtilsCrypto;
 import es.gob.valet.commons.utils.UtilsDate;
-import es.gob.valet.commons.utils.UtilsFTP;
-import es.gob.valet.commons.utils.UtilsLDAP;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
@@ -97,7 +89,6 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
-import es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
@@ -124,12 +115,11 @@ import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
 import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
-import es.gob.valet.utils.UtilsHTTP;
 
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 26/07/2023.
+ * @version 2.1, 26/07/2023.
  */
 public final class TSLManager {
 
@@ -2753,7 +2743,7 @@ public final class TSLManager {
 	 * @throws Exception Any exception that occurs during the execution.
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void prepareUrlAccess() throws Exception {
+	public void prepareUrlExternalAccess() throws Exception {
 		try {
 			// Obtenemos todas las regiones dadas de alta en base de datos.
     		List<TslCountryRegion> tcrList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getAllTslCountryRegion(false);
@@ -2773,28 +2763,28 @@ public final class TSLManager {
     				// Eliminamos los duplicados
     				List<String> listUrlDistributionPointDPWithoutDuplicate = listUrlDistributionPointDPResult.stream().distinct().collect(Collectors.toList());
     				for (String urlDistributionPoint: listUrlDistributionPointDPWithoutDuplicate) {
-    					ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).saveTryConnInExternalAccess(urlDistributionPoint, DISTRIBUTIONPOINT);
+    					ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).testConnExternalAccessAndSaveResult(urlDistributionPoint, DISTRIBUTIONPOINT);
 					}
     			}
     			if(!listUrlIssuerResult.isEmpty()) {
     				// Eliminamos los duplicados
     				List<String> listUrlIssuerWithoutDuplicate = listUrlIssuerResult.stream().distinct().collect(Collectors.toList());
     				for (String urlIssuerAlternativeName: listUrlIssuerWithoutDuplicate) {
-    					ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).saveTryConnInExternalAccess(urlIssuerAlternativeName, ISSUERALTERNATIVENAME);
+    					ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).testConnExternalAccessAndSaveResult(urlIssuerAlternativeName, ISSUERALTERNATIVENAME);
 					}
     			}
     			if(!listUrlDistributionPointCRLResult.isEmpty()) {
     				// Eliminamos los duplicados
     				List<String> listUrlDistributionPointCRLWithoutDuplicate = listUrlDistributionPointCRLResult.stream().distinct().collect(Collectors.toList());
     				for (String urlDistributionPointCRL: listUrlDistributionPointCRLWithoutDuplicate) {
-    					ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).saveTryConnInExternalAccess(urlDistributionPointCRL, DISTRIBUTIONPOINTCRL);
+    					ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).testConnExternalAccessAndSaveResult(urlDistributionPointCRL, DISTRIBUTIONPOINTCRL);
 					}
     			}
     			if(!listUrlDistributionPointOCSPResult.isEmpty()) {
     				// Eliminamos los duplicados
     				List<String> listUrlDistributionPointOCSPWithoutDuplicate = listUrlDistributionPointOCSPResult.stream().distinct().collect(Collectors.toList());
     				for (String urlDistributionPointOCSP: listUrlDistributionPointOCSPWithoutDuplicate) {
-    					ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).saveTryConnInExternalAccess(urlDistributionPointOCSP, DISTRIBUTIONPOINTOCSP);
+    					ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).testConnExternalAccessAndSaveResult(urlDistributionPointOCSP, DISTRIBUTIONPOINTOCSP);
 					}
     			}
     		}
