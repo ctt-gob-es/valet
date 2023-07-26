@@ -6,5 +6,7 @@
 -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8123
 -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8797,server=y,suspend=n
 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Xms1024M -Xmx2048M -XX:MetaspaceSize=1024M -XX:MaxMetaspaceSize=4096M
+-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2
+-DUseSunHttpHandler=true
 
 Nota: si el S.O es linux modificar \ por /. En los apenders de log4j2 también habrá que realizar cambios

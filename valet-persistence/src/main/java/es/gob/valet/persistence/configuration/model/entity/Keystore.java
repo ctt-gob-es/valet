@@ -232,6 +232,7 @@ public class Keystore implements Serializable {
 	 * Gets the value of the attribute {@link #keystoreType}.
 	 * @return the value of the attribute {@link #keystoreType}.
 	 */
+	@Column(name = "KEYSTORE_TYPE", nullable = false, length = NumberConstants.NUM50)
 	public String getKeystoreType() {
 		return keystoreType;
 	}
@@ -240,7 +241,6 @@ public class Keystore implements Serializable {
 	 * Sets the value of the attribute {@link #keystoreType}.
 	 * @param keystoreTypeParam The value for the attribute {@link #keystoreType}.
 	 */
-	@Column(name = "KEYSTORE_TYPE", nullable = false, length = NumberConstants.NUM50)
 	public void setKeystoreType(String keystoreTypeParam) {
 		this.keystoreType = keystoreTypeParam;
 	}

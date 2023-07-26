@@ -1325,4 +1325,16 @@ public interface ICoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	String CC_001 = "CC_001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>ERROR_SERVICE_01</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ERROR_SERVICE_01 = "ERROR_SERVICE_01";
+	
+	/**
+	 * Constant attribute that represents the property key <code>ERROR_SERVICE_02</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String ERROR_SERVICE_02 = "ERROR_SERVICE_02";
 }
