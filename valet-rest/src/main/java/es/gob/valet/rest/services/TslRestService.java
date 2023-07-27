@@ -612,7 +612,7 @@ public class TslRestService implements ITslRestService {
 				}
 				// Si se ha detectado el certificado en la TSL...
 				else {
-
+					if (tslValidatorResult.getTSPServiceForDetect() != null) {
 					// Lo marcamos en la respuesta.
 					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG018);
 					// LOGGER.info(msg);
@@ -763,7 +763,7 @@ public class TslRestService implements ITslRestService {
 				}
 
 			}
-
+			}
 		}
 
 		return result;

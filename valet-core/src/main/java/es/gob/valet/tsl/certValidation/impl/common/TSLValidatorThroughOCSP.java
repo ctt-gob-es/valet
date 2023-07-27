@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 03/04/2023.
+ * @version 1.7, 24/07/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -39,7 +39,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -96,54 +97,70 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 import es.gob.valet.utils.UtilsHTTP;
 
 /**
- * <p>Class that represents a TSL validation operation process through a CRL.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 03/04/2023.
+ * <p>
+ * Class that represents a TSL validation operation process through a CRL.
+ * </p>
+ * <b>Project:</b>
+ * <p>
+ * Platform for detection and validation of certificates recognized in European
+ * TSL.
+ * </p>
+ * 
+ * @version 1.7, 24/07/2023.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
-	 * Constant attribute that represents the name of the parameter to identify the OCSP request <code>content-type</code>.
+	 * Constant attribute that represents the name of the parameter to identify
+	 * the OCSP request <code>content-type</code>.
 	 */
 	private static final String OCSP_REQUEST_CONTENTTYPE = "application/ocsp-request";
 
 	/**
-	 * Constant attribute that represents the name of the parameter to identify the OCSP response <code>content-type</code>.
+	 * Constant attribute that represents the name of the parameter to identify
+	 * the OCSP response <code>content-type</code>.
 	 */
 	private static final String OCSP_RESPONSE_CONTENTTYPE = "application/ocsp-response";
 
 	/**
-	 * Constant attribute that represents the token for OCSP Response Status 'SUCCESSFUL'.
+	 * Constant attribute that represents the token for OCSP Response Status
+	 * 'SUCCESSFUL'.
 	 */
 	private static final String OCSP_RESPONSE_STATUS_SUCCESSFUL = "SUCCESSFUL";
 
 	/**
-	 * Constant attribute that represents the token for OCSP Response Status 'MALFORMED_REQUEST'.
+	 * Constant attribute that represents the token for OCSP Response Status
+	 * 'MALFORMED_REQUEST'.
 	 */
 	private static final String OCSP_RESPONSE_STATUS_MALFORMED_REQUEST = "MALFORMED_REQUEST";
 
 	/**
-	 * Constant attribute that represents the token for OCSP Response Status 'INTERNAL_ERROR'.
+	 * Constant attribute that represents the token for OCSP Response Status
+	 * 'INTERNAL_ERROR'.
 	 */
 	private static final String OCSP_RESPONSE_STATUS_INTERNAL_ERROR = "INTERNAL_ERROR";
 
 	/**
-	 * Constant attribute that represents the token for OCSP Response Status 'TRY_LATER'.
+	 * Constant attribute that represents the token for OCSP Response Status
+	 * 'TRY_LATER'.
 	 */
 	private static final String OCSP_RESPONSE_STATUS_TRY_LATER = "TRY_LATER";
 
 	/**
-	 * Constant attribute that represents the token for OCSP Response Status 'SIG_REQUIRED'.
+	 * Constant attribute that represents the token for OCSP Response Status
+	 * 'SIG_REQUIRED'.
 	 */
 	private static final String OCSP_RESPONSE_STATUS_SIG_REQUIRED = "SIG_REQUIRED";
 
 	/**
-	 * Constant attribute that represents the token for OCSP Response Status 'UNAUTHORIZED'.
+	 * Constant attribute that represents the token for OCSP Response Status
+	 * 'UNAUTHORIZED'.
 	 */
 	private static final String OCSP_RESPONSE_STATUS_UNAUTHORIZED = "UNAUTHORIZED";
 
 	/**
-	 * Constant attribute that represents the token for OCSP Response Status 'UNKNOWN'.
+	 * Constant attribute that represents the token for OCSP Response Status
+	 * 'UNKNOWN'.
 	 */
 	private static final String OCSP_RESPONSE_STATUS_UNKNOWN = "UNKNOWN";
 
@@ -166,10 +183,16 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificate(java.security.cert.X509Certificate, java.util.Date, es.gob.valet.tsl.parsing.impl.common.TSPService, es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance, boolean, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
+	 * 
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificate(java.security.cert.X509Certificate,
+	 *      java.util.Date, es.gob.valet.tsl.parsing.impl.common.TSPService,
+	 *      es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance,
+	 *      boolean,
+	 *      es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
 	 */
 	@Override
-	public void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, ServiceHistoryInstance shi, boolean isHistoricServiceInf, TSLValidatorResult validationResult) {
+	public void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService,
+			ServiceHistoryInstance shi, boolean isHistoricServiceInf, TSLValidatorResult validationResult) {
 
 		// Obtenemos los datos que identificarán al firmante de la respuesta
 		// OCSP.
@@ -186,7 +209,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			if (supplyPointsURIList != null && !supplyPointsURIList.isEmpty()) {
 
 				// Creamos el CertificateID que se usará en las peticiones OCSP.
-				CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(), validationResult.getIssuerSubjectName(), validationResult.getIssuerPublicKey());
+				CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(),
+						validationResult.getIssuerSubjectName(), validationResult.getIssuerPublicKey());
 
 				// Si hemos podido generar el CertID, continuamos.
 				if (certificateId != null) {
@@ -202,19 +226,20 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 					// Iniciamos la variable que contendrá el valor
 					// del Nonce.
-					byte[ ] nonceByteArray = null;
+					byte[] nonceByteArray = null;
 
 					// Recorremos los distintos puntos de distribución hasta que
 					// obtengamos una respuesta OCSP.
 					String ocspUri = null;
-					for (URI uri: supplyPointsURIList) {
+					for (URI uri : supplyPointsURIList) {
 
 						// Creamos el valor para la extensión Nonce.
 						nonceByteArray = buildNonce();
 
 						// Construimos y mandamos la petición OCSP.
-						LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL255, new Object[ ] { uri }));
-						ocspResponse = buildAndSendOCSPRequest(certificateId, nonceByteArray, uri, readTimeout, connectionTimeout);
+						LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL255, new Object[] { uri }));
+						ocspResponse = buildAndSendOCSPRequest(certificateId, nonceByteArray, uri, readTimeout,
+								connectionTimeout);
 
 						// Si la respuesta no es nula, comprobamos quien la
 						// firma.
@@ -229,8 +254,10 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 							// mismo emisor del certificado
 							// a validar, o por la identidad digital del
 							// servicio de donde se obtuvo el SupplyPoint.
-							if (checkOCSPResponseIsValid(ocspResponse, nonceByteArray, validationDate, validationResult, true, null, null)) {
-								LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL256, new Object[ ] { uri }));
+							if (checkOCSPResponseIsValid(ocspResponse, nonceByteArray, validationDate, validationResult,
+									true, null, null)) {
+								LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL256,
+										new Object[] { uri }));
 								ocspUri = uri.toString();
 								break;
 							} else {
@@ -244,7 +271,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					// Si hemos obtenido una respuesta...
 					if (ocspResponse != null) {
 
-						checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, ocspUri, timeIntervalAllowed, validationResult);
+						checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, ocspUri,
+								timeIntervalAllowed, validationResult);
 
 						// Si se ha determinado un estado, guardamos la
 						// información
@@ -269,14 +297,16 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * Creates a new Nonce Value to add in the OCSP Request.
-	 * @return a byte array that represents the Nonce value. If there is some problem
-	 * building, then returns <code>null</code>.
+	 * 
+	 * @return a byte array that represents the Nonce value. If there is some
+	 *         problem building, then returns <code>null</code>.
 	 */
-	private byte[ ] buildNonce() {
+	private byte[] buildNonce() {
 
-		byte[ ] result = new byte[NumberConstants.NUM16];
+		byte[] result = new byte[NumberConstants.NUM16];
 
-		SecureRandom sRandom = UtilsProviders.getSecureRandomForSeedAlgorithmProviderName(UtilsProviders.SEED_ALGORITHM_SHA1PRNG, null);
+		SecureRandom sRandom = UtilsProviders
+				.getSecureRandomForSeedAlgorithmProviderName(UtilsProviders.SEED_ALGORITHM_SHA1PRNG, null);
 		if (sRandom != null) {
 			sRandom.nextBytes(result);
 		} else {
@@ -288,8 +318,12 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Extracts the information about the OCSP Response Signer from the TSP Service.
-	 * @param shi TSL - TSP Service History Information from which extract the information to validate the certificate.
+	 * Extracts the information about the OCSP Response Signer from the TSP
+	 * Service.
+	 * 
+	 * @param shi
+	 *            TSL - TSP Service History Information from which extract the
+	 *            information to validate the certificate.
 	 */
 	private void extractOCSPResponseSignerData(ServiceHistoryInstance shi) {
 
@@ -302,16 +336,23 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Builds the CertificateID to use in a OCSP Request. It can be builded from the certificate to validate and
-	 * the certifite of its issuer, or the subject name and public key of the issuer.
-	 * @param cert X509v3 Certificate to validate.
-	 * @param issuerCert X509v3 certificate of the issuer.
-	 * @param issuerSubjectName Subject Name of the issuer of the certificate to validate.
-	 * @param issuerPublicKey Public Key of the certificate of the certificate to validate.
-	 * @return CertificateID to use for the OCSP requests, or <code>null</code> if there are note sufficient information
-	 * to build it.
+	 * Builds the CertificateID to use in a OCSP Request. It can be builded from
+	 * the certificate to validate and the certifite of its issuer, or the
+	 * subject name and public key of the issuer.
+	 * 
+	 * @param cert
+	 *            X509v3 Certificate to validate.
+	 * @param issuerCert
+	 *            X509v3 certificate of the issuer.
+	 * @param issuerSubjectName
+	 *            Subject Name of the issuer of the certificate to validate.
+	 * @param issuerPublicKey
+	 *            Public Key of the certificate of the certificate to validate.
+	 * @return CertificateID to use for the OCSP requests, or <code>null</code>
+	 *         if there are note sufficient information to build it.
 	 */
-	private CertificateID createCertificateID(X509Certificate cert, X509Certificate issuerCert, String issuerSubjectName, PublicKey issuerPublicKey) {
+	private CertificateID createCertificateID(X509Certificate cert, X509Certificate issuerCert,
+			String issuerSubjectName, PublicKey issuerPublicKey) {
 
 		CertificateID result = null;
 
@@ -322,7 +363,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 				DigestCalculatorProvider bcDigestProvider = new BcDigestCalculatorProvider();
 				DigestCalculator dc = bcDigestProvider.get(CertificateID.HASH_SHA1);
-				result = new CertificateID(dc, new X509CertificateHolder(issuerCert.getEncoded()), cert.getSerialNumber());
+				result = new CertificateID(dc, new X509CertificateHolder(issuerCert.getEncoded()),
+						cert.getSerialNumber());
 
 			}
 			// Si tenemos el subject name y la clave pública del emisor...
@@ -343,7 +385,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				dcOs.close();
 				ASN1OctetString issuerPublicKeyHash = new DEROctetString(dc.getDigest());
 
-				CertID certId = new CertID(CertificateID.HASH_SHA1, issuerNameHash, issuerPublicKeyHash, new ASN1Integer(cert.getSerialNumber()));
+				CertID certId = new CertID(CertificateID.HASH_SHA1, issuerNameHash, issuerPublicKeyHash,
+						new ASN1Integer(cert.getSerialNumber()));
 				result = new CertificateID(certId);
 
 			}
@@ -360,15 +403,26 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Builds and send a OCSP Request with the input CertificateID to the input URI. Then parses and returns the response.
-	 * @param certificateId {@link CertificateID} to send in the OCSP request. It can not be <code>null</code>.
-	 * @param nonceByteArray Nonce to assign in the extensions in the OCSP Request. It can not be <code>null</code>.
-	 * @param uri URI where send the request. It can not be <code>null</code>.
-	 * @param readTimeout Read timeout in milliseconds.
-	 * @param connectionTimeout Connection timeout in milliseconds.
-	 * @return The parsed OCSP response, or <code>null</code> if there is some problem.
+	 * Builds and send a OCSP Request with the input CertificateID to the input
+	 * URI. Then parses and returns the response.
+	 * 
+	 * @param certificateId
+	 *            {@link CertificateID} to send in the OCSP request. It can not
+	 *            be <code>null</code>.
+	 * @param nonceByteArray
+	 *            Nonce to assign in the extensions in the OCSP Request. It can
+	 *            not be <code>null</code>.
+	 * @param uri
+	 *            URI where send the request. It can not be <code>null</code>.
+	 * @param readTimeout
+	 *            Read timeout in milliseconds.
+	 * @param connectionTimeout
+	 *            Connection timeout in milliseconds.
+	 * @return The parsed OCSP response, or <code>null</code> if there is some
+	 *         problem.
 	 */
-	private OCSPResp buildAndSendOCSPRequest(CertificateID certificateId, byte[ ] nonceByteArray, URI uri, int readTimeout, int connectionTimeout) {
+	private OCSPResp buildAndSendOCSPRequest(CertificateID certificateId, byte[] nonceByteArray, URI uri,
+			int readTimeout, int connectionTimeout) {
 
 		OCSPResp result = null;
 
@@ -384,14 +438,17 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				// Creamos las extensiones necesarias.
 				List<Extension> extensionList = new ArrayList<Extension>();
 				// El tipo de respuestas aceptadas: Basic OCSP Response.
-				ASN1Sequence acceptableResponseTypesSequence = new DERSequence(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-				Extension acceptableResponseTypesExtension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_response, false, acceptableResponseTypesSequence.getEncoded());
+				ASN1Sequence acceptableResponseTypesSequence = new DERSequence(
+						OCSPObjectIdentifiers.id_pkix_ocsp_basic);
+				Extension acceptableResponseTypesExtension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_response,
+						false, acceptableResponseTypesSequence.getEncoded());
 				extensionList.add(acceptableResponseTypesExtension);
 				// Extensión Nonce: La añadimos si no es nula.
 				if (nonceByteArray != null) {
 					// Iniciamos la variable que contendrá el valor de la
 					// extensión Nonce.
-					Extension nonceExtension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false, nonceByteArray);
+					Extension nonceExtension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false,
+							nonceByteArray);
 					// La añadimos al grupo de extensiones.
 					extensionList.add(nonceExtension);
 				}
@@ -403,20 +460,25 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				String ocspUri = uri.toString();
 
 				// Se realiza la petición HTTP.
-				byte[ ] ocspResponseBytes = UtilsHTTP.getResponseByHttpPostWithEntity(ocspUri, connectionTimeout, readTimeout, ocspReq.getEncoded(), OCSP_REQUEST_CONTENTTYPE, OCSP_RESPONSE_CONTENTTYPE, null, null);
+				byte[] ocspResponseBytes = UtilsHTTP.getResponseByHttpPostWithEntity(ocspUri, connectionTimeout,
+						readTimeout, ocspReq.getEncoded(), OCSP_REQUEST_CONTENTTYPE, OCSP_RESPONSE_CONTENTTYPE, null,
+						null);
 
 				// Creamos la respuesta.
 				result = new OCSPResp(ocspResponseBytes);
 
 			} catch (Exception e) {
-				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL128, new Object[ ] { uri.toString() }), e);
+				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL128, new Object[] { uri.toString() }),
+						e);
 				result = null;
 			}
 
 			// Si en este punto la respuesta es nula, es
 			// que no la hemos podido obtener o parsear.
 			if (result == null) {
-				AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM004_EVENT_000, new Object[ ] { uri.toString() }));
+				AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP,
+						Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM004_EVENT_000,
+								new Object[] { uri.toString() }));
 			}
 
 		}
@@ -426,18 +488,33 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Checks if the OCSP response is valid and its signed by one of the collected digital identities.
-	 * @param ocspResponse OCSP response to analyze. It can not be null.
-	 * @param nonce Byte array that represents the nonce.
-	 * @param validationDate Validation date to check the certificate status revocation.
-	 * @param validationResult Object where must be stored the validation result data.
-	 * @param checkOcspResponseSigner Flag that indicates if it must be checked if the signer of the ocsp response
-	 * is valid.
-	 * @param tsp Trust Service Provider to use for checks the issuer of the CRL/OCSP Response.
-	 * @param tslValidator TSL validator to verify if some TSP service is accomplished with the qualified (or not) certificate to check the OCSP response.
-	 * @return <code>true</code> if the OCSP response is valid, otherwise <code>false</code>.
+	 * Checks if the OCSP response is valid and its signed by one of the
+	 * collected digital identities.
+	 * 
+	 * @param ocspResponse
+	 *            OCSP response to analyze. It can not be null.
+	 * @param nonce
+	 *            Byte array that represents the nonce.
+	 * @param validationDate
+	 *            Validation date to check the certificate status revocation.
+	 * @param validationResult
+	 *            Object where must be stored the validation result data.
+	 * @param checkOcspResponseSigner
+	 *            Flag that indicates if it must be checked if the signer of the
+	 *            ocsp response is valid.
+	 * @param tsp
+	 *            Trust Service Provider to use for checks the issuer of the
+	 *            CRL/OCSP Response.
+	 * @param tslValidator
+	 *            TSL validator to verify if some TSP service is accomplished
+	 *            with the qualified (or not) certificate to check the OCSP
+	 *            response.
+	 * @return <code>true</code> if the OCSP response is valid, otherwise
+	 *         <code>false</code>.
 	 */
-	private boolean checkOCSPResponseIsValid(OCSPResp ocspResponse, byte[ ] nonce, Date validationDate, TSLValidatorResult validationResult, boolean checkOcspResponseSigner, TrustServiceProvider tsp, ATSLValidator tslValidator) {
+	private boolean checkOCSPResponseIsValid(OCSPResp ocspResponse, byte[] nonce, Date validationDate,
+			TSLValidatorResult validationResult, boolean checkOcspResponseSigner, TrustServiceProvider tsp,
+			ATSLValidator tslValidator) {
 
 		boolean result = false;
 
@@ -462,10 +539,12 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 							// Comprobamos si esta ha sido generada por un
 							// responder
 							// (incluye los certificados).
-							X509CertificateHolder[ ] basicOcspResponseSignerCerts = basicOcspResponse.getCerts();
+							X509CertificateHolder[] basicOcspResponseSignerCerts = basicOcspResponse.getCerts();
 							if (basicOcspResponseSignerCerts != null && basicOcspResponseSignerCerts.length > 0) {
 
-								result = checkOCSPResponseIssuedBySomeDigitalIdentity(basicOcspResponse, basicOcspResponseSignerCerts, validationDate, validationResult, tsp, tslValidator);
+								result = checkOCSPResponseIssuedBySomeDigitalIdentity(basicOcspResponse,
+										basicOcspResponseSignerCerts, validationDate, validationResult, tsp,
+										tslValidator);
 
 							}
 							// Si no incluye los certificados, tenemos que
@@ -475,7 +554,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 							// por el mismo emisor del certificado a validar.
 							else {
 
-								result = checkOCSPResponseIssuerSameThanCertificateToValidate(basicOcspResponse, validationResult);
+								result = checkOCSPResponseIssuerSameThanCertificateToValidate(basicOcspResponse,
+										validationResult);
 
 							}
 
@@ -499,7 +579,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 		} else {
 
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL135, new Object[ ] { translateOcspResponseStatusToString(ocspResponse.getStatus()) }));
+			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL135,
+					new Object[] { translateOcspResponseStatusToString(ocspResponse.getStatus()) }));
 
 		}
 
@@ -508,14 +589,19 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Checks if the extension Nonce matches with the input Nonce. If the input nonce is <code>null</code>, or
-	 * the basic OCSP response has not the nonce extension, then returns <code>true</code>.
-	 * @param basicOcspResponse Basic OCSP response to check.
-	 * @param nonce Nonce to compare.
-	 * @return <code>true</code> if the input nonce is <code>null</code>, or does not exist the nonce extension
-	 * in the basic ocsp response, or matches one to other. Otherwise <code>false</code>.
+	 * Checks if the extension Nonce matches with the input Nonce. If the input
+	 * nonce is <code>null</code>, or the basic OCSP response has not the nonce
+	 * extension, then returns <code>true</code>.
+	 * 
+	 * @param basicOcspResponse
+	 *            Basic OCSP response to check.
+	 * @param nonce
+	 *            Nonce to compare.
+	 * @return <code>true</code> if the input nonce is <code>null</code>, or
+	 *         does not exist the nonce extension in the basic ocsp response, or
+	 *         matches one to other. Otherwise <code>false</code>.
 	 */
-	private boolean checkOCSPResponseNonce(BasicOCSPResp basicOcspResponse, byte[ ] nonce) {
+	private boolean checkOCSPResponseNonce(BasicOCSPResp basicOcspResponse, byte[] nonce) {
 
 		boolean result = true;
 
@@ -529,7 +615,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			if (nonceExtension != null) {
 
 				// Obtenemos su valor.
-				byte[ ] responseNonce = nonceExtension.getExtnValue().getOctets();
+				byte[] responseNonce = nonceExtension.getExtnValue().getOctets();
 				// Si no es nulo...
 				if (responseNonce != null) {
 
@@ -547,36 +633,52 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Checks if the OCSP response is signed by the issuer of the certificate to validate.
-	 * @param basicOcspResponse Basic OCSP Response to check.
-	 * @param basicOcspResponseSignerCerts Array with the certificates in the Basic OCSP Response to check. If this parameter
-	 * is <code>null</code>, then is extracted from the basic OCSP response.
-	 * @param validationDate Validation date to check the certificate status revocation.
-	 * @param validationResult Validation Result Object representation that contains the information about the certificate to validate.
-	 * @param tsp Trust Service Provider to use for checks the issuer of the CRL/OCSP Response.
-	 * @param tslValidator TSL validator to verify if some TSP service is accomplished with the qualified (or not) certificate to check the OCSP response.
-	 * @return <code>true</code> if the basic ocspe response is signed by the issuer of the certificate
-	 * to validate, otherwise <code>false</code>.
+	 * Checks if the OCSP response is signed by the issuer of the certificate to
+	 * validate.
+	 * 
+	 * @param basicOcspResponse
+	 *            Basic OCSP Response to check.
+	 * @param basicOcspResponseSignerCerts
+	 *            Array with the certificates in the Basic OCSP Response to
+	 *            check. If this parameter is <code>null</code>, then is
+	 *            extracted from the basic OCSP response.
+	 * @param validationDate
+	 *            Validation date to check the certificate status revocation.
+	 * @param validationResult
+	 *            Validation Result Object representation that contains the
+	 *            information about the certificate to validate.
+	 * @param tsp
+	 *            Trust Service Provider to use for checks the issuer of the
+	 *            CRL/OCSP Response.
+	 * @param tslValidator
+	 *            TSL validator to verify if some TSP service is accomplished
+	 *            with the qualified (or not) certificate to check the OCSP
+	 *            response.
+	 * @return <code>true</code> if the basic ocspe response is signed by the
+	 *         issuer of the certificate to validate, otherwise
+	 *         <code>false</code>.
 	 */
-	private boolean checkOCSPResponseIssuedBySomeDigitalIdentity(BasicOCSPResp basicOcspResponse, X509CertificateHolder[ ] basicOcspResponseSignerCerts, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
+	private boolean checkOCSPResponseIssuedBySomeDigitalIdentity(BasicOCSPResp basicOcspResponse,
+			X509CertificateHolder[] basicOcspResponseSignerCerts, Date validationDate,
+			TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
 
 		boolean result = false;
 
 		// Recorremos los X509CertificateHolder hasta encontrar el firmante...
-		X509CertificateHolder[ ] basicOcspResponseSignerCertsArray = basicOcspResponseSignerCerts;
+		X509CertificateHolder[] basicOcspResponseSignerCertsArray = basicOcspResponseSignerCerts;
 		if (basicOcspResponseSignerCertsArray == null) {
 			basicOcspResponseSignerCertsArray = basicOcspResponse.getCerts();
 		}
 		Certificate signerCert = null;
 		if (basicOcspResponseSignerCertsArray != null) {
-			for (X509CertificateHolder signerCertX509CertHolder: basicOcspResponseSignerCertsArray) {
+			for (X509CertificateHolder signerCertX509CertHolder : basicOcspResponseSignerCertsArray) {
 				try {
-					if (basicOcspResponse.isSignatureValid(new JcaContentVerifierProviderBuilder().build(signerCertX509CertHolder))) {
+					if (basicOcspResponse.isSignatureValid(
+							new JcaContentVerifierProviderBuilder().build(signerCertX509CertHolder))) {
 						signerCert = signerCertX509CertHolder.toASN1Structure();
 						break;
 					}
-				} catch (OperatorCreationException | CertificateException
-						| OCSPException e) {
+				} catch (OperatorCreationException | CertificateException | OCSPException e) {
 					continue;
 				}
 			}
@@ -591,7 +693,10 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				// haya sido emitido por este
 				if (validationResult.getIssuerCert() != null) {
 					X509Certificate signerCertX509 = UtilsCertificate.getX509Certificate(signerCert.getEncoded());
-					result = signerCert.equals(UtilsCertificate.getBouncyCastleCertificate(validationResult.getIssuerCert())) || UtilsCertificate.getCertificateIssuerId(signerCertX509).equals(UtilsCertificate.getCertificateId(validationResult.getIssuerCert()));
+					result = signerCert
+							.equals(UtilsCertificate.getBouncyCastleCertificate(validationResult.getIssuerCert()))
+							|| UtilsCertificate.getCertificateIssuerId(signerCertX509)
+									.equals(UtilsCertificate.getCertificateId(validationResult.getIssuerCert()));
 				}
 				// result = validationResult.getIssuerCert() != null &&
 				// signerCert.equals(UtilsCertificate.getBouncyCastleCertificate(validationResult.getIssuerCert()));
@@ -605,7 +710,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// firmar peticiones OCSP, comprobamos las identidades digitales.
 			if (!result && checkIfSignerCertCanSignOCSPResponses(signerCert)) {
 
-				result = checkIfSignerCertIsEqualToSomeDigitalIdentity(signerCert, validationDate, validationResult, tsp, tslValidator);
+				result = checkIfSignerCertIsEqualToSomeDigitalIdentity(signerCert, validationDate, validationResult,
+						tsp, tslValidator);
 
 			}
 
@@ -622,7 +728,9 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					subject = null;
 					issuer = null;
 				} finally {
-					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM004_EVENT_001, new Object[ ] { subject, issuer }));
+					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP,
+							Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM004_EVENT_001,
+									new Object[] { subject, issuer }));
 				}
 
 			}
@@ -634,10 +742,13 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Checks if the input certificate has the OCSPSigning extended key usage enabled.
-	 * @param cert x509v3 certificate to check.
-	 * @return <code>true</code> if the input certificate has the OCSPSigning extended key usage
-	 * enabled, otherwise <code>false</code>.
+	 * Checks if the input certificate has the OCSPSigning extended key usage
+	 * enabled.
+	 * 
+	 * @param cert
+	 *            x509v3 certificate to check.
+	 * @return <code>true</code> if the input certificate has the OCSPSigning
+	 *         extended key usage enabled, otherwise <code>false</code>.
 	 */
 	private boolean checkIfSignerCertCanSignOCSPResponses(Certificate cert) {
 
@@ -652,9 +763,9 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// Obtenemos los propósitos del certificado, y buscamos entre
 			// estos el que determina que está habilitado para firmar respuestas
 			// OCSP.
-			KeyPurposeId[ ] keyPurposeIdsArray = extendedKeyUsage.getUsages();
+			KeyPurposeId[] keyPurposeIdsArray = extendedKeyUsage.getUsages();
 
-			for (KeyPurposeId keyPurposeId: keyPurposeIdsArray) {
+			for (KeyPurposeId keyPurposeId : keyPurposeIdsArray) {
 
 				if (KeyPurposeId.id_kp_OCSPSigning.equals(keyPurposeId)) {
 					result = true;
@@ -671,14 +782,26 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * Checks if the input certificate matches with some digital identity.
-	 * @param cert X509v3 certificate to check.
-	 * @param validationDate Validation date to check the certificate status revocation.
-	 * @param validationResult Validation Result Object representation that contains the information about the certificate to validate.
-	 * @param tsp Trust Service Provider to use for checks the issuer of the CRL/OCSP Response.
-	 * @param tslValidator TSL validator to verify if some TSP service is accomplished with the qualified (or not) certificate to check the OCSP response.
-	 * @return <code>true</code> if the input certificate matches with some digital identity., otherwise <code>false</code>.
+	 * 
+	 * @param cert
+	 *            X509v3 certificate to check.
+	 * @param validationDate
+	 *            Validation date to check the certificate status revocation.
+	 * @param validationResult
+	 *            Validation Result Object representation that contains the
+	 *            information about the certificate to validate.
+	 * @param tsp
+	 *            Trust Service Provider to use for checks the issuer of the
+	 *            CRL/OCSP Response.
+	 * @param tslValidator
+	 *            TSL validator to verify if some TSP service is accomplished
+	 *            with the qualified (or not) certificate to check the OCSP
+	 *            response.
+	 * @return <code>true</code> if the input certificate matches with some
+	 *         digital identity., otherwise <code>false</code>.
 	 */
-	private boolean checkIfSignerCertIsEqualToSomeDigitalIdentity(Certificate cert, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
+	private boolean checkIfSignerCertIsEqualToSomeDigitalIdentity(Certificate cert, Date validationDate,
+			TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
 
 		boolean result = false;
 
@@ -718,7 +841,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					if (tspService.isThereSomeServiceHistory()) {
 
 						List<ServiceHistoryInstance> shiList = tspService.getAllServiceHistory();
-						for (ServiceHistoryInstance shiFromList: shiList) {
+						for (ServiceHistoryInstance shiFromList : shiList) {
 							if (shiFromList.getServiceStatusStartingTime().before(validationDate)) {
 								if (shiFromList.isServiceValidAndUsable()) {
 									shi = shiFromList;
@@ -735,10 +858,12 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				// firmante de la respuesta OCSP con este.
 				// Si el servicio es de tipo OCSP y es acorde con el tipo del
 				// certificado... (qualified o no)...
-				if (shi != null && tslValidator.checkIfTSPServiceTypeIsOCSPCompatible(shi, isCertQualified) && tslValidator.checkIfTSPServiceStatusIsOK(shi.getServiceStatus().toString())) {
+				if (shi != null && tslValidator.checkIfTSPServiceTypeIsOCSPCompatible(shi, isCertQualified)
+						&& tslValidator.checkIfTSPServiceStatusIsOK(shi.getServiceStatus().toString())) {
 
 					// Construimos un procesador de identidad digital con este.
-					DigitalIdentitiesProcessor dipAux = new DigitalIdentitiesProcessor(tspService.getServiceInformation().getAllDigitalIdentities());
+					DigitalIdentitiesProcessor dipAux = new DigitalIdentitiesProcessor(
+							tspService.getServiceInformation().getAllDigitalIdentities());
 
 					// Lo usamos para tratar de verificar la CRL.
 					result = checkIfSignerCertIsEqualToSomeDigitalIdentityUsingDigitalIdentitiesProcessor(cert, dipAux);
@@ -761,11 +886,17 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * Checks if the input certificate matches with some digital identity.
-	 * @param cert X509v3 certificate to check.
-	 * @param dipToUse Digital Identities Processor to use for search some identity that matches with the input certificate.
-	 * @return <code>true</code> if the input certificate matches with some digital identity., otherwise <code>false</code>.
+	 * 
+	 * @param cert
+	 *            X509v3 certificate to check.
+	 * @param dipToUse
+	 *            Digital Identities Processor to use for search some identity
+	 *            that matches with the input certificate.
+	 * @return <code>true</code> if the input certificate matches with some
+	 *         digital identity., otherwise <code>false</code>.
 	 */
-	private boolean checkIfSignerCertIsEqualToSomeDigitalIdentityUsingDigitalIdentitiesProcessor(Certificate cert, DigitalIdentitiesProcessor dipToUse) {
+	private boolean checkIfSignerCertIsEqualToSomeDigitalIdentityUsingDigitalIdentitiesProcessor(Certificate cert,
+			DigitalIdentitiesProcessor dipToUse) {
 
 		boolean result = false;
 
@@ -783,7 +914,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			if (dipToUse.isThereSomeX509CertificateDigitalIdentity()) {
 
 				List<X509Certificate> certDiList = dipToUse.getX509certList();
-				for (X509Certificate certDi: certDiList) {
+				for (X509Certificate certDi : certDiList) {
 					try {
 						if (UtilsCertificate.equals(x509cert, certDi)) {
 							result = true;
@@ -798,16 +929,17 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 			// Por último, si aún no hemos encontrado coincidencia, tratamos de
 			// comprobarlo verificando clave pública y subject.
-			if (!result && dipToUse.isThereSomeX509PublicKeyDigitalIdentity() && dipToUse.isThereSomeX509SubjectNameDigitalIdentity()) {
+			if (!result && dipToUse.isThereSomeX509PublicKeyDigitalIdentity()
+					&& dipToUse.isThereSomeX509SubjectNameDigitalIdentity()) {
 
 				try {
 					// Primero buscamos si alguna clave pública coincide con la
 					// del
 					// certificado.
 					boolean publicKeyFinded = false;
-					byte[ ] certPublicKeyBytes = x509cert.getPublicKey().getEncoded();
+					byte[] certPublicKeyBytes = x509cert.getPublicKey().getEncoded();
 					List<PublicKey> publicKeyDiList = dipToUse.getX509publicKeysList();
-					for (PublicKey publicKeyDi: publicKeyDiList) {
+					for (PublicKey publicKeyDi : publicKeyDiList) {
 						if (Arrays.equals(certPublicKeyBytes, publicKeyDi.getEncoded())) {
 							publicKeyFinded = true;
 							break;
@@ -821,7 +953,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 						String certSubject = UtilsCertificate.getCertificateId(x509cert);
 						List<String> subjectNameDiList = dipToUse.getX509SubjectNameList();
-						for (String subjectNameDi: subjectNameDiList) {
+						for (String subjectNameDi : subjectNameDiList) {
 							if (certSubject.equals(UtilsCertificate.canonicalizarIdCertificado(subjectNameDi))) {
 								result = true;
 								break;
@@ -882,13 +1014,20 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Checks if the OCSP response is signed by the issuer of the certificate to validate.
-	 * @param basicOcspResponse Basic OCSP Response to check.
-	 * @param validationResult Validation Result Object representation that contains the information about the certificate to validate.
-	 * @return <code>true</code> if the basic ocspe response is signed by the issuer of the certificate
-	 * to validate, otherwise <code>false</code>.
+	 * Checks if the OCSP response is signed by the issuer of the certificate to
+	 * validate.
+	 * 
+	 * @param basicOcspResponse
+	 *            Basic OCSP Response to check.
+	 * @param validationResult
+	 *            Validation Result Object representation that contains the
+	 *            information about the certificate to validate.
+	 * @return <code>true</code> if the basic ocspe response is signed by the
+	 *         issuer of the certificate to validate, otherwise
+	 *         <code>false</code>.
 	 */
-	private boolean checkOCSPResponseIssuerSameThanCertificateToValidate(BasicOCSPResp basicOcspResponse, TSLValidatorResult validationResult) {
+	private boolean checkOCSPResponseIssuerSameThanCertificateToValidate(BasicOCSPResp basicOcspResponse,
+			TSLValidatorResult validationResult) {
 
 		boolean result = false;
 
@@ -929,7 +1068,10 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * Translate the input status for the OCSP response to a {@link String}.
-	 * @param status Number that represents the status of a OCSP response to translate.
+	 * 
+	 * @param status
+	 *            Number that represents the status of a OCSP response to
+	 *            translate.
 	 * @return OCSP response status in {@link String} value.
 	 */
 	private String translateOcspResponseStatusToString(int status) {
@@ -937,33 +1079,33 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		String result = null;
 
 		switch (status) {
-			case OCSPResp.SUCCESSFUL:
-				result = OCSP_RESPONSE_STATUS_SUCCESSFUL;
-				break;
+		case OCSPResp.SUCCESSFUL:
+			result = OCSP_RESPONSE_STATUS_SUCCESSFUL;
+			break;
 
-			case OCSPResp.MALFORMED_REQUEST:
-				result = OCSP_RESPONSE_STATUS_MALFORMED_REQUEST;
-				break;
+		case OCSPResp.MALFORMED_REQUEST:
+			result = OCSP_RESPONSE_STATUS_MALFORMED_REQUEST;
+			break;
 
-			case OCSPResp.INTERNAL_ERROR:
-				result = OCSP_RESPONSE_STATUS_INTERNAL_ERROR;
-				break;
+		case OCSPResp.INTERNAL_ERROR:
+			result = OCSP_RESPONSE_STATUS_INTERNAL_ERROR;
+			break;
 
-			case OCSPResp.TRY_LATER:
-				result = OCSP_RESPONSE_STATUS_TRY_LATER;
-				break;
+		case OCSPResp.TRY_LATER:
+			result = OCSP_RESPONSE_STATUS_TRY_LATER;
+			break;
 
-			case OCSPResp.SIG_REQUIRED:
-				result = OCSP_RESPONSE_STATUS_SIG_REQUIRED;
-				break;
+		case OCSPResp.SIG_REQUIRED:
+			result = OCSP_RESPONSE_STATUS_SIG_REQUIRED;
+			break;
 
-			case OCSPResp.UNAUTHORIZED:
-				result = OCSP_RESPONSE_STATUS_UNAUTHORIZED;
-				break;
+		case OCSPResp.UNAUTHORIZED:
+			result = OCSP_RESPONSE_STATUS_UNAUTHORIZED;
+			break;
 
-			default:
-				result = OCSP_RESPONSE_STATUS_UNKNOWN;
-				break;
+		default:
+			result = OCSP_RESPONSE_STATUS_UNKNOWN;
+			break;
 		}
 
 		return result;
@@ -971,23 +1113,34 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Checks in the OCSP response the revocation status of the certificate and sets the result.
-	 * @param certificateId CertificateID of the certificate to check its revocation status.
-	 * @param validationDate Validation date to use for check the revocation status.
-	 * @param uri {@link String} that represents the URI that localizes the OCSP server from which has
-	 * been obtained the Basic OCSP Response.
-	 * @param ocspResponse OCSP response to analyze.
-	 * @param timeIntervalAllowed Time interval allowed (in seconds) for the OCSP response.
-	 * @param validationResult Object where must be stored the validation result data.
+	 * Checks in the OCSP response the revocation status of the certificate and
+	 * sets the result.
+	 * 
+	 * @param certificateId
+	 *            CertificateID of the certificate to check its revocation
+	 *            status.
+	 * @param validationDate
+	 *            Validation date to use for check the revocation status.
+	 * @param uri
+	 *            {@link String} that represents the URI that localizes the OCSP
+	 *            server from which has been obtained the Basic OCSP Response.
+	 * @param ocspResponse
+	 *            OCSP response to analyze.
+	 * @param timeIntervalAllowed
+	 *            Time interval allowed (in seconds) for the OCSP response.
+	 * @param validationResult
+	 *            Object where must be stored the validation result data.
 	 */
-	private void checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate, OCSPResp ocspResponse, String uri, int timeIntervalAllowed, TSLValidatorResult validationResult) {
+	private void checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate, OCSPResp ocspResponse,
+			String uri, int timeIntervalAllowed, TSLValidatorResult validationResult) {
 
 		try {
 			// Obtenemos el objeto que representa a la respuesta básica.
 			BasicOCSPResp basicOcspResponse = (BasicOCSPResp) ocspResponse.getResponseObject();
 
 			// Continuamos el proceso en otro método.
-			checkCertificateInOCSPResponse(certificateId, validationDate, basicOcspResponse, uri, timeIntervalAllowed, validationResult);
+			checkCertificateInOCSPResponse(certificateId, validationDate, basicOcspResponse, uri, timeIntervalAllowed,
+					validationResult);
 
 		} catch (OCSPException e) {
 
@@ -998,18 +1151,29 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Checks in the OCSP response the revocation status of the certificate and sets the result.
-	 * @param certificateId CertificateID of the certificate to check its revocation status.
-	 * @param validationDate Validation date to use for check the revocation status.
-	 * @param basicOcspResponse Basic OCSP response to analyze.
-	 * @param uri {@link String} that represents the URI that localizes the OCSP server from which has
-	 * been obtained the Basic OCSP Response.
-	 * @param timeIntervalAllowed Time interval allowed (in seconds) for the OCSP response.
-	 * @param validationResult Object where must be stored the validation result data.
-	 * @return Flag that indicates if the OCSP response includes the single response for the input
-	 * certificate Id (<code>true</code>), or not (<code>false</code>).
+	 * Checks in the OCSP response the revocation status of the certificate and
+	 * sets the result.
+	 * 
+	 * @param certificateId
+	 *            CertificateID of the certificate to check its revocation
+	 *            status.
+	 * @param validationDate
+	 *            Validation date to use for check the revocation status.
+	 * @param basicOcspResponse
+	 *            Basic OCSP response to analyze.
+	 * @param uri
+	 *            {@link String} that represents the URI that localizes the OCSP
+	 *            server from which has been obtained the Basic OCSP Response.
+	 * @param timeIntervalAllowed
+	 *            Time interval allowed (in seconds) for the OCSP response.
+	 * @param validationResult
+	 *            Object where must be stored the validation result data.
+	 * @return Flag that indicates if the OCSP response includes the single
+	 *         response for the input certificate Id (<code>true</code>), or not
+	 *         (<code>false</code>).
 	 */
-	private boolean checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate, BasicOCSPResp basicOcspResponse, String uri, int timeIntervalAllowed, TSLValidatorResult validationResult) {
+	private boolean checkCertificateInOCSPResponse(CertificateID certificateId, Date validationDate,
+			BasicOCSPResp basicOcspResponse, String uri, int timeIntervalAllowed, TSLValidatorResult validationResult) {
 
 		// Inicialmente consideramos el resultado como que no se ha encontrado.
 		boolean result = false;
@@ -1017,13 +1181,13 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		try {
 
 			// Obtenemos todos los SingleResponses contenidos.
-			SingleResp[ ] singleResponsesArray = basicOcspResponse.getResponses();
+			SingleResp[] singleResponsesArray = basicOcspResponse.getResponses();
 
 			// Si hay, los recorremos y buscamos el correspondiente al
 			// certificado a validar.
 			SingleResp singleResponse = null;
 			if (singleResponsesArray != null) {
-				for (SingleResp singleResp: singleResponsesArray) {
+				for (SingleResp singleResp : singleResponsesArray) {
 
 					CertificateID singleRespCertificateId = singleResp.getCertID();
 					if (singleRespCertificateId != null && singleRespCertificateId.equals(certificateId)) {
@@ -1041,7 +1205,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			validationResult.setResultFromDPorAIA(Boolean.TRUE);
 
 			// Comprobamos el estado de revocación del certificado.
-			result = checkCertificateInOCSPResponse(validationDate, singleResponse, timeIntervalAllowed, validationResult);
+			result = checkCertificateInOCSPResponse(validationDate, singleResponse, timeIntervalAllowed,
+					validationResult);
 
 		} catch (Exception e) {
 
@@ -1054,15 +1219,23 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * Checks in the Basic OCSP response the revocation status of the certificate and sets the result.
-	 * @param validationDate Validation date to use for check the revocation status.
-	 * @param singleResponse Single Response from the basic OCSP response to analyze.
-	 * @param timeIntervalAllowed Time interval allowed (in seconds) for the OCSP response.
-	 * @param validationResult Object where must be stored the validation result data.
-	 * @result Flag that indicates if the input single response is allowed in the time interval and date
-	 * (<code>true</code>) or not (<code>false</code>).
+	 * Checks in the Basic OCSP response the revocation status of the
+	 * certificate and sets the result.
+	 * 
+	 * @param validationDate
+	 *            Validation date to use for check the revocation status.
+	 * @param singleResponse
+	 *            Single Response from the basic OCSP response to analyze.
+	 * @param timeIntervalAllowed
+	 *            Time interval allowed (in seconds) for the OCSP response.
+	 * @param validationResult
+	 *            Object where must be stored the validation result data.
+	 * @result Flag that indicates if the input single response is allowed in
+	 *         the time interval and date (<code>true</code>) or not
+	 *         (<code>false</code>).
 	 */
-	private boolean checkCertificateInOCSPResponse(Date validationDate, SingleResp singleResponse, int timeIntervalAllowed, TSLValidatorResult validationResult) {
+	private boolean checkCertificateInOCSPResponse(Date validationDate, SingleResp singleResponse,
+			int timeIntervalAllowed, TSLValidatorResult validationResult) {
 
 		// Inicialmente consideramos que no lo cumple.
 		boolean result = false;
@@ -1070,7 +1243,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		try {
 
 			// Si la hemos obtenido, y el intervalo temporal es válido...
-			if (singleResponse != null && checkTimeIntervalAllowed(singleResponse, timeIntervalAllowed, validationDate)) {
+			if (singleResponse != null
+					&& checkTimeIntervalAllowed(singleResponse, timeIntervalAllowed, validationDate)) {
 
 				// Extraemos el estado de revocación de la respuesta.
 				CertificateStatus certStatus = singleResponse.getCertStatus();
@@ -1103,7 +1277,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 						// de validación,
 						// o el motivo es eliminado de la CRL,
 						// el certificado es válido.
-						if (revocationDate != null && revocationDate.after(validationDate) || reasonCode >= 0 && reasonCode == CRLReason.REMOVE_FROM_CRL.ordinal()) {
+						if (revocationDate != null && revocationDate.after(validationDate)
+								|| reasonCode >= 0 && reasonCode == CRLReason.REMOVE_FROM_CRL.ordinal()) {
 
 							validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_VALID);
 
@@ -1148,34 +1323,45 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * Checks if time interval allowed is OK in the single response OCSP.
-	 * @param singleResponse Single OCSP Response.
-	 * @param timeIntervalAllowedSeconds Time Interval Allowed in seconds.
-	 * @param validationDate Validation date to use for check the revocation status.
+	 * 
+	 * @param singleResponse
+	 *            Single OCSP Response.
+	 * @param timeIntervalAllowedSeconds
+	 *            Time Interval Allowed in seconds.
+	 * @param validationDate
+	 *            Validation date to use for check the revocation status.
 	 * @return <code>true</code> if the Single OCSP Response is valid regards
-	 * the time interval allowed, otherwise <code>false</code>.
+	 *         the time interval allowed, otherwise <code>false</code>.
 	 */
-	private boolean checkTimeIntervalAllowed(SingleResp singleResponse, int timeIntervalAllowedSeconds, Date validationDate) {
+	private boolean checkTimeIntervalAllowed(SingleResp singleResponse, int timeIntervalAllowedSeconds,
+			Date validationDate) {
 
 		boolean result = true;
 
-		//Se comprueba si el intervalo de tiempo permitido si la fecha de validación es la fecha actual o muy cercano al momento de validación (consideramos un margen de 5 minutos)
+		// Se comprueba si el intervalo de tiempo permitido si la fecha de
+		// validación es la fecha actual o muy cercano al momento de validación
+		// (consideramos un margen de 5 minutos)
 		long currentTime = System.currentTimeMillis();
-		
+
 		// se obtiene la fecha de validación
 		long validationDateMillisSeconds = validationDate.getTime();
-		
-		
-		//Según RFC6960, la comprobación debe hacerse con la hora del sistema (hora actual) no se puede comprobar el intervalo con fechas pasadas.
-		if(currentTime-validationDateMillisSeconds < NumberConstants.NUM300000_LONG){
+
+		// Según RFC6960, la comprobación debe hacerse con la hora del sistema
+		// (hora actual) no se puede comprobar el intervalo con fechas pasadas.
+		if (currentTime - validationDateMillisSeconds < NumberConstants.NUM300000_LONG) {
 			// Calculamos el intervalo permitido en milisegundos.
-			long timeIntervalAllowedMilliSeconds = Integer.valueOf(timeIntervalAllowedSeconds).longValue() * Integer.valueOf(NumberConstants.NUM1000).longValue();
+			long timeIntervalAllowedMilliSeconds = Integer.valueOf(timeIntervalAllowedSeconds).longValue()
+					* Integer.valueOf(NumberConstants.NUM1000).longValue();
 			// Extraemos la fecha hasta cuando es válida la respuesta.
 			Date nextUpdate = singleResponse.getNextUpdate();
-			// Si la hemos obtenido y la fecha de próxima actualización es anterior
-			// a la actual menos el intervalo permitido, significa que la respuesta
+			// Si la hemos obtenido y la fecha de próxima actualización es
+			// anterior
+			// a la actual menos el intervalo permitido, significa que la
+			// respuesta
 			// no
 			// es válida.
-			if (nextUpdate != null && nextUpdate.getTime() < validationDateMillisSeconds - timeIntervalAllowedMilliSeconds) {
+			if (nextUpdate != null
+					&& nextUpdate.getTime() < validationDateMillisSeconds - timeIntervalAllowedMilliSeconds) {
 				result = false;
 			}
 
@@ -1184,16 +1370,16 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			if (result) {
 
 				Date thisUpdate = singleResponse.getThisUpdate();
-				// Si no la hemos obtenido, o es posterior a la fecha actual más el
+				// Si no la hemos obtenido, o es posterior a la fecha actual más
+				// el
 				// intervalo permitido, no pude ser válida al venir del futuro.
-				if (thisUpdate == null || thisUpdate.getTime() > validationDateMillisSeconds + timeIntervalAllowedMilliSeconds) {
+				if (thisUpdate == null
+						|| thisUpdate.getTime() > validationDateMillisSeconds + timeIntervalAllowedMilliSeconds) {
 					result = false;
 				}
 
 			}
 		}
-		
-		
 
 		return result;
 
@@ -1201,10 +1387,16 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#searchRevocationValueCompatible(java.security.cert.X509Certificate, org.bouncycastle.cert.ocsp.BasicOCSPResp, java.security.cert.X509CRL, java.util.Date, es.gob.valet.tsl.parsing.impl.common.TSPService, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
+	 * 
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#searchRevocationValueCompatible(java.security.cert.X509Certificate,
+	 *      org.bouncycastle.cert.ocsp.BasicOCSPResp,
+	 *      java.security.cert.X509CRL, java.util.Date,
+	 *      es.gob.valet.tsl.parsing.impl.common.TSPService,
+	 *      es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
 	 */
 	@Override
-	public void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult) {
+	public void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl,
+			Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult) {
 
 		// Obtenemos los datos que identificarán al firmante de la respuesta
 		// OCSP.
@@ -1214,39 +1406,52 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		// el firmante de la respuesta OCSP coincide con alguna de estas,
 		// o es el mismo emisor del certificado a validar,
 		// significa que la respuesta es compatible con la TSL.
-		if (dip.isThereSomeDigitalIdentity() && (checkOCSPResponseIssuedBySomeDigitalIdentity(basicOcspResponse, null, validationDate, validationResult, null, null) || checkOCSPResponseIssuerSameThanCertificateToValidate(basicOcspResponse, validationResult))) {
+		if (dip.isThereSomeDigitalIdentity() && (checkOCSPResponseIssuedBySomeDigitalIdentity(basicOcspResponse, null,
+				validationDate, validationResult, null, null)
+				|| checkOCSPResponseIssuerSameThanCertificateToValidate(basicOcspResponse, validationResult))) {
 
 			// Asignamos la respuesta OCSP al resultado.
 			validationResult.setRevocationValueBasicOCSPResponse(basicOcspResponse);
 
 			// Hacemos uso de esta para comprobar el estado de revocación del
 			// certificado.
-			checkCertificateInBasicOCSPResponseRevocationValue(cert, validationDate, basicOcspResponse, null, validationResult);
+			checkCertificateInBasicOCSPResponseRevocationValue(cert, validationDate, basicOcspResponse, null,
+					validationResult);
 
 		}
 
 	}
 
 	/**
-	 * Checks in the Basic OCSP response the revocation status of the certificate and sets the result.
-	 * @param cert Certificate X509v3 to validate its revocation.
-	 * @param validationDate Validation date to use for check the revocation status.
-	 * @param basicOcspResponse Basic OCSP response to analyze.
-	 * @param uri {@link String} that represents the URI that localizes the OCSP server from which has
-	 * been obtained the Basic OCSP Response.
-	 * @param validationResult Object in which must be stored the validation result data.
+	 * Checks in the Basic OCSP response the revocation status of the
+	 * certificate and sets the result.
+	 * 
+	 * @param cert
+	 *            Certificate X509v3 to validate its revocation.
+	 * @param validationDate
+	 *            Validation date to use for check the revocation status.
+	 * @param basicOcspResponse
+	 *            Basic OCSP response to analyze.
+	 * @param uri
+	 *            {@link String} that represents the URI that localizes the OCSP
+	 *            server from which has been obtained the Basic OCSP Response.
+	 * @param validationResult
+	 *            Object in which must be stored the validation result data.
 	 */
-	private void checkCertificateInBasicOCSPResponseRevocationValue(X509Certificate cert, Date validationDate, BasicOCSPResp basicOcspResponse, String uri, TSLValidatorResult validationResult) {
+	private void checkCertificateInBasicOCSPResponseRevocationValue(X509Certificate cert, Date validationDate,
+			BasicOCSPResp basicOcspResponse, String uri, TSLValidatorResult validationResult) {
 
 		try {
 
 			// Generamos el CertificateID.
-			CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(), validationResult.getIssuerSubjectName(), validationResult.getIssuerPublicKey());
+			CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(),
+					validationResult.getIssuerSubjectName(), validationResult.getIssuerPublicKey());
 			// Obtenemos la propiedad que determina el intervalo permitido.
 			int timeIntervalAllowed = TSLProperties.getOcspTimeIntervalAllowed();
 			// Finalmente comprobamos el estado de revocación del certificado en
 			// la respuesta OCSP.
-			checkCertificateInOCSPResponse(certificateId, validationDate, basicOcspResponse, uri, timeIntervalAllowed, validationResult);
+			checkCertificateInOCSPResponse(certificateId, validationDate, basicOcspResponse, uri, timeIntervalAllowed,
+					validationResult);
 
 		} catch (Exception e) {
 			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL125), e);
@@ -1256,10 +1461,17 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificateUsingDistributionPoints(java.security.cert.X509Certificate, boolean, boolean, java.util.Date, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult, es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider, es.gob.valet.tsl.certValidation.impl.common.ATSLValidator)
+	 * 
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#validateCertificateUsingDistributionPoints(java.security.cert.X509Certificate,
+	 *      boolean, boolean, java.util.Date,
+	 *      es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult,
+	 *      es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider,
+	 *      es.gob.valet.tsl.certValidation.impl.common.ATSLValidator)
 	 */
 	@Override
-	public boolean validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
+	public boolean validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isCACert,
+			boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult,
+			TrustServiceProvider tsp, ATSLValidator tslValidator) {
 
 		// Inicialmente se considera que no se ha conseguido comprobar el estado
 		// de revocación del certificado.
@@ -1269,7 +1481,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		// la autoridad.
 		AuthorityInformationAccess aia = null;
 		try {
-			aia = AuthorityInformationAccess.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions());
+			aia = AuthorityInformationAccess.fromExtensions(
+					UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions());
 		} catch (Exception e) {
 			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL186), e);
 		}
@@ -1283,101 +1496,119 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// En ese caso hay que intentar buscar el emisor de la SubCA dentro
 			// del mismo TSP.
 			if (isCACert && !UtilsCertificate.isSelfSigned(cert)) {
-				searchAndSetIssuerCertFromTSPforSubCACert(cert, validationDate, validationResult, tslValidator, tsp);
-
-
+				if (tsp != null && validationResult.getIssuerCert() == null) {
+					searchAndSetIssuerCertFromTSPforSubCACert(cert, validationDate, validationResult, tslValidator,
+							tsp);
+				}
 			}
+			if (validationResult.getIssuerCert() != null) {
+				// Creamos el CertificateID que se usará en las peticiones OCSP.
+				CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(),
+						validationResult.getIssuerSubjectName(), validationResult.getIssuerPublicKey());
 
-			// Creamos el CertificateID que se usará en las peticiones OCSP.
-			CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(), validationResult.getIssuerSubjectName(), validationResult.getIssuerPublicKey());
+				// Si hemos podido generar el CertificateID, continuamos.
+				if (certificateId != null) {
 
-			// Si hemos podido generar el CertificateID, continuamos.
-			if (certificateId != null) {
+					// Obtenemos las propiedades que determinan los
+					// timeouts
+					// de lectura y conexión configurados.
+					int readTimeout = TSLProperties.getOcspReadTimeout();
+					int connectionTimeout = TSLProperties.getOcspConnectionTimeout();
+					int timeIntervalAllowed = TSLProperties.getOcspTimeIntervalAllowed();
 
-				// Obtenemos las propiedades que determinan los
-				// timeouts
-				// de lectura y conexión configurados.
-				int readTimeout = TSLProperties.getOcspReadTimeout();
-				int connectionTimeout = TSLProperties.getOcspConnectionTimeout();
-				int timeIntervalAllowed = TSLProperties.getOcspTimeIntervalAllowed();
+					// Iniciamos la variable que contendrá la respuesta OCSP.
+					OCSPResp ocspResponse = null;
+					// Iniciamos la variable que contendrá el valor de la
+					// extensión Nonce.
+					byte[] nonce = null;
 
-				// Iniciamos la variable que contendrá la respuesta OCSP.
-				OCSPResp ocspResponse = null;
-				// Iniciamos la variable que contendrá el valor de la
-				// extensión Nonce.
-				byte[ ] nonce = null;
+					// Los vamos recorriendo uno a uno hasta que encontremos un
+					// servicio OCSP que se pueda usar.
+					AccessDescription[] accessDescArray = aia.getAccessDescriptions();
+					String uri = null;
+					for (AccessDescription accessDescription : accessDescArray) {
 
-				// Los vamos recorriendo uno a uno hasta que encontremos un
-				// servicio OCSP que se pueda usar.
-				AccessDescription[ ] accessDescArray = aia.getAccessDescriptions();
-				String uri = null;
-				for (AccessDescription accessDescription: accessDescArray) {
+						if (OCSPObjectIdentifiers.id_pkix_ocsp.equals(accessDescription.getAccessMethod())) {
 
-					if (OCSPObjectIdentifiers.id_pkix_ocsp.equals(accessDescription.getAccessMethod())) {
+							// Obtenemos la URI de acceso al OCSP.
+							GeneralName accessLocationGeneralName = accessDescription.getAccessLocation();
+							if (accessLocationGeneralName.getTagNo() == GeneralName.uniformResourceIdentifier) {
 
-						// Obtenemos la URI de acceso al OCSP.
-						GeneralName accessLocationGeneralName = accessDescription.getAccessLocation();
-						if (accessLocationGeneralName.getTagNo() == GeneralName.uniformResourceIdentifier) {
+								String ocspUriString = ((DERIA5String) accessLocationGeneralName.getName()).getString();
 
-							String ocspUriString = ((DERIA5String) accessLocationGeneralName.getName()).getString();
+								// La convertimos a objeto URI.
+								URI ocspUri = URI.create(ocspUriString);
 
-							// La convertimos a objeto URI.
-							URI ocspUri = URI.create(ocspUriString);
+								// Creamos el valor para la extensión Nonce.
+								nonce = buildNonce();
 
-							// Creamos el valor para la extensión Nonce.
-							nonce = buildNonce();
+								// Construimos y mandamos la petición OCSP.
+								ocspResponse = buildAndSendOCSPRequest(certificateId, nonce, ocspUri, readTimeout,
+										connectionTimeout);
 
-							// Construimos y mandamos la petición OCSP.
-							ocspResponse = buildAndSendOCSPRequest(certificateId, nonce, ocspUri, readTimeout, connectionTimeout);
-
-							// Si la respuesta no es nula, comprobamos si está
-							// bien
-							// formada y el nonce.
-							if (ocspResponse != null) {
-								if (!checkOCSPResponseIsValid(ocspResponse, nonce, validationDate, validationResult, !isTsaCertificate, tsp, tslValidator)) {
-									ocspResponse = null;
-									LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL223));
-								} else {
-									uri = ocspUriString;
-									break;
+								// Si la respuesta no es nula, comprobamos si
+								// está
+								// bien
+								// formada y el nonce.
+								if (ocspResponse != null) {
+									if (!checkOCSPResponseIsValid(ocspResponse, nonce, validationDate, validationResult,
+											!isTsaCertificate, tsp, tslValidator)) {
+										ocspResponse = null;
+										LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL223));
+									} else {
+										uri = ocspUriString;
+										break;
+									}
 								}
+
 							}
 
 						}
 
 					}
 
+					// Si hemos obtenido una respuesta...
+					if (ocspResponse != null) {
+
+						checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, uri,
+								timeIntervalAllowed, validationResult);
+
+					} else {
+
+						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL134));
+
+					}
+
 				}
-
-				// Si hemos obtenido una respuesta...
-				if (ocspResponse != null) {
-
-					checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, uri, timeIntervalAllowed, validationResult);
-
-				} else {
-
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL134));
-
-				}
+			} else {
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL404));
 
 			}
-
 		}
-
 		return result;
 
 	}
 
 	/**
-	 * Method that search the issuer of the input certificate (intermediate CA) in the same Trust Service Provider
-	 * in which has been detected.
-	 * @param cert X509 Certificate to analyze that represents a intermediate CA.
-	 * @param validationDate Validation date to take as reference.
-	 * @param validationResult Object where must be stored the validation result data.
-	 * @param tslValidator TSL validator to verify if some TSP service is accomplished with the qualified (or not) certificate to check the OCSP Response.
-	 * @param tsp Trust Service Provider to use for checks the issuer of the OCSP Response.
+	 * Method that search the issuer of the input certificate (intermediate CA)
+	 * in the same Trust Service Provider in which has been detected.
+	 * 
+	 * @param cert
+	 *            X509 Certificate to analyze that represents a intermediate CA.
+	 * @param validationDate
+	 *            Validation date to take as reference.
+	 * @param validationResult
+	 *            Object where must be stored the validation result data.
+	 * @param tslValidator
+	 *            TSL validator to verify if some TSP service is accomplished
+	 *            with the qualified (or not) certificate to check the OCSP
+	 *            Response.
+	 * @param tsp
+	 *            Trust Service Provider to use for checks the issuer of the
+	 *            OCSP Response.
 	 */
-	private void searchAndSetIssuerCertFromTSPforSubCACert(X509Certificate cert, Date validationDate, TSLValidatorResult validationResult, ATSLValidator tslValidator, TrustServiceProvider tsp) {
+	private void searchAndSetIssuerCertFromTSPforSubCACert(X509Certificate cert, Date validationDate,
+			TSLValidatorResult validationResult, ATSLValidator tslValidator, TrustServiceProvider tsp) {
 
 		// Inicialmente no lo hemos encontrado.
 		boolean issuerFinded = false;
@@ -1411,7 +1642,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					if (tspService.isThereSomeServiceHistory()) {
 
 						List<ServiceHistoryInstance> shiList = tspService.getAllServiceHistory();
-						for (ServiceHistoryInstance shiFromList: shiList) {
+						for (ServiceHistoryInstance shiFromList : shiList) {
 							if (shiFromList.getServiceStatusStartingTime().before(validationDate)) {
 								if (shiFromList.isServiceValidAndUsable()) {
 									shi = shiFromList;
@@ -1432,7 +1663,9 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 					// Comprobamos si el servicio es de tipo CA (certificados
 					// cualificados o no).
-					if (tslValidator.checkIfTSPServiceTypeIsCAQC(tspServiceType) || tslValidator.checkIfTSPServiceTypeIsCAPKC(tspServiceType) || tslValidator.checkIfTSPServiceTypeIsNationalRootCAQC(tspServiceType)) {
+					if (tslValidator.checkIfTSPServiceTypeIsCAQC(tspServiceType)
+							|| tslValidator.checkIfTSPServiceTypeIsCAPKC(tspServiceType)
+							|| tslValidator.checkIfTSPServiceTypeIsNationalRootCAQC(tspServiceType)) {
 
 						// Comprobamos si dicho servicio representa al emisor
 						// del certificado...
@@ -1442,12 +1675,14 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 						if (digitalIdentitiesList != null && !digitalIdentitiesList.isEmpty()) {
 
 							// Creamos el procesador de identidades digitales.
-							DigitalIdentitiesProcessor dipCAService = new DigitalIdentitiesProcessor(digitalIdentitiesList);
+							DigitalIdentitiesProcessor dipCAService = new DigitalIdentitiesProcessor(
+									digitalIdentitiesList);
 
 							// Procesamos el certificado a validar y modificamos
 							// el resultado si
 							// fuera necesario.
-							issuerFinded = dipCAService.checkIfCertificateIsIssuedBySomeIdentity(cert, validationResult);
+							issuerFinded = dipCAService.checkIfCertificateIsIssuedBySomeIdentity(cert,
+									validationResult);
 
 						}
 
@@ -1468,7 +1703,9 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	@Override
-	public boolean validateCertificateChainUsingDistributionPoints(X509Certificate cert, Vector<X509Certificate> certificateChain, boolean isCA, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult) {
+	public boolean validateCertificateChainUsingDistributionPoints(X509Certificate cert,
+			Vector<X509Certificate> certificateChain, boolean isCA, boolean isTsaCertificate, Date validationDate,
+			TSLValidatorResult validationResult) {
 
 		// Inicialmente se considera que no se ha conseguido comprobar el estado
 		// de revocación del certificado.
@@ -1478,7 +1715,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		// la autoridad.
 		AuthorityInformationAccess aia = null;
 		try {
-			aia = AuthorityInformationAccess.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions());
+			aia = AuthorityInformationAccess.fromExtensions(
+					UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions());
 		} catch (Exception e) {
 			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL186), e);
 		}
@@ -1486,79 +1724,86 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		// Si la información recuperada no es nula, y al menos hay un
 		// elemento...
 		if (aia != null && aia.getAccessDescriptions() != null && aia.getAccessDescriptions().length > 0) {
+			if (validationResult.getIssuerCert() != null) {
+				// Creamos el CertificateID que se usará en las peticiones OCSP.
+				CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(), null, null);
 
-			// Creamos el CertificateID que se usará en las peticiones OCSP.
-			CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(), null, null);
+				// Si hemos podido generar el CertificateID, continuamos.
+				if (certificateId != null) {
 
-			// Si hemos podido generar el CertificateID, continuamos.
-			if (certificateId != null) {
+					// Obtenemos las propiedades que determinan los
+					// timeouts
+					// de lectura y conexión configurados.
+					int readTimeout = TSLProperties.getOcspReadTimeout();
+					int connectionTimeout = TSLProperties.getOcspConnectionTimeout();
+					int timeIntervalAllowed = TSLProperties.getOcspTimeIntervalAllowed();
 
-				// Obtenemos las propiedades que determinan los
-				// timeouts
-				// de lectura y conexión configurados.
-				int readTimeout = TSLProperties.getOcspReadTimeout();
-				int connectionTimeout = TSLProperties.getOcspConnectionTimeout();
-				int timeIntervalAllowed = TSLProperties.getOcspTimeIntervalAllowed();
+					// Iniciamos la variable que contendrá la respuesta OCSP.
+					OCSPResp ocspResponse = null;
+					// Iniciamos la variable que contendrá el valor de la
+					// extensión Nonce.
+					byte[] nonce = null;
 
-				// Iniciamos la variable que contendrá la respuesta OCSP.
-				OCSPResp ocspResponse = null;
-				// Iniciamos la variable que contendrá el valor de la
-				// extensión Nonce.
-				byte[ ] nonce = null;
+					// Los vamos recorriendo uno a uno hasta que encontremos un
+					// servicio OCSP que se pueda usar.
+					AccessDescription[] accessDescArray = aia.getAccessDescriptions();
+					String uri = null;
+					for (AccessDescription accessDescription : accessDescArray) {
 
-				// Los vamos recorriendo uno a uno hasta que encontremos un
-				// servicio OCSP que se pueda usar.
-				AccessDescription[ ] accessDescArray = aia.getAccessDescriptions();
-				String uri = null;
-				for (AccessDescription accessDescription: accessDescArray) {
+						if (OCSPObjectIdentifiers.id_pkix_ocsp.equals(accessDescription.getAccessMethod())) {
 
-					if (OCSPObjectIdentifiers.id_pkix_ocsp.equals(accessDescription.getAccessMethod())) {
+							// Obtenemos la URI de acceso al OCSP.
+							GeneralName accessLocationGeneralName = accessDescription.getAccessLocation();
+							if (accessLocationGeneralName.getTagNo() == GeneralName.uniformResourceIdentifier) {
 
-						// Obtenemos la URI de acceso al OCSP.
-						GeneralName accessLocationGeneralName = accessDescription.getAccessLocation();
-						if (accessLocationGeneralName.getTagNo() == GeneralName.uniformResourceIdentifier) {
+								String ocspUriString = ((DERIA5String) accessLocationGeneralName.getName()).getString();
 
-							String ocspUriString = ((DERIA5String) accessLocationGeneralName.getName()).getString();
+								// La convertimos a objeto URI.
+								URI ocspUri = URI.create(ocspUriString);
 
-							// La convertimos a objeto URI.
-							URI ocspUri = URI.create(ocspUriString);
+								// Creamos el valor para la extensión Nonce.
+								nonce = buildNonce();
 
-							// Creamos el valor para la extensión Nonce.
-							nonce = buildNonce();
+								// Construimos y mandamos la petición OCSP.
+								ocspResponse = buildAndSendOCSPRequest(certificateId, nonce, ocspUri, readTimeout,
+										connectionTimeout);
 
-							// Construimos y mandamos la petición OCSP.
-							ocspResponse = buildAndSendOCSPRequest(certificateId, nonce, ocspUri, readTimeout, connectionTimeout);
-
-							// Si la respuesta no es nula, comprobamos si está
-							// bien
-							// formada y el nonce.
-							if (ocspResponse != null) {
-								if (!checkOCSPResponseIsValid(ocspResponse, nonce, validationDate, validationResult, !isTsaCertificate, null, null)) {
-									ocspResponse = null;
-									LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL223));
-								} else {
-									uri = ocspUriString;
-									break;
+								// Si la respuesta no es nula, comprobamos si
+								// está
+								// bien
+								// formada y el nonce.
+								if (ocspResponse != null) {
+									if (!checkOCSPResponseIsValid(ocspResponse, nonce, validationDate, validationResult,
+											!isTsaCertificate, null, null)) {
+										ocspResponse = null;
+										LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL223));
+									} else {
+										uri = ocspUriString;
+										break;
+									}
 								}
+
 							}
 
 						}
 
 					}
 
+					// Si hemos obtenido una respuesta...
+					if (ocspResponse != null) {
+						checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, uri,
+								timeIntervalAllowed, validationResult);
+					} else {
+
+						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL134));
+
+					}
+
 				}
-
-				// Si hemos obtenido una respuesta...
-				if (ocspResponse != null) {
-					checkCertificateInOCSPResponse(certificateId, validationDate, ocspResponse, uri, timeIntervalAllowed, validationResult);
-				} else {
-
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL134));
-
-				}
+			} else {
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL404));
 
 			}
-
 		}
 
 		return result;
