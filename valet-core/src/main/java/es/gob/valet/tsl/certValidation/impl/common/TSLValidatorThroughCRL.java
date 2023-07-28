@@ -84,7 +84,7 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 1.8, 24/07/2023.
+ * @version 1.8, 24/07/2023
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -127,8 +127,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 *      es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
 	 */
 	@Override
-	public void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService,
-			ServiceHistoryInstance shi, boolean isHistoricServiceInf, TSLValidatorResult validationResult) {
+	public void validateCertificate(X509Certificate cert, Date validationDate, TSPService tspService, ServiceHistoryInstance shi, boolean isHistoricServiceInf, TSLValidatorResult validationResult) {
 
 		// Obtenemos los datos que identificarán al emisor de la CRL.
 		extractCRLIssuerData(tspService);
@@ -155,12 +154,12 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 				// Recorremos los distintos puntos de distribución hasta que
 				// obtengamos la CRL.
 				String uriSelected = null;
-				for (URI uri : supplyPointsURIList) {
+				for (URI uri: supplyPointsURIList) {
 
 					try {
 
 						// Tratamos de obtener la CRL.
-						LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL252, new Object[] { uri }));
+						LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL252, new Object[ ] { uri }));
 						crl = downloadCRLFromSupplyPoint(uri, timeoutConnection, timeoutRead);
 
 						// Si hemos obtenido la CRL, y comprobamos que es válida
@@ -179,21 +178,17 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 							// la identidad digital del servicio de donde se
 							// obtuvo el SupplyPoint.
 							if (checkCRLisValid(crl, validationDate, true, validationResult, null, null)) {
-								LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL253,
-										new Object[] { uri }));
+								LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL253, new Object[ ] { uri }));
 								uriSelected = uri.toString();
 								break;
 							} else {
-								LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL254,
-										new Object[] { uri }));
+								LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL254, new Object[ ] { uri }));
 								crl = null;
 							}
 						} else {
 							// Lanzamos la alarma notificando que no se tiene
 							// acceso o no es posible parsear la CRL.
-							AlarmsManager.getInstance().registerAlarmEvent(
-									IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(
-											ICoreGeneralMessages.ALM003_EVENT_000, new Object[] { uri.toString() }));
+							AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_000, new Object[ ] { uri.toString() }));
 						}
 
 					} catch (NullPointerException e) {
@@ -243,7 +238,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			List<ServiceHistoryInstance> listServiceHistory = tspServiceDetected.getAllServiceHistory();
 			List<DigitalID> identitiesList = new ArrayList<DigitalID>();
 			if (!listServiceHistory.isEmpty()) {
-				for (ServiceHistoryInstance shi : listServiceHistory) {
+				for (ServiceHistoryInstance shi: listServiceHistory) {
 					identitiesList.addAll(shi.getAllDigitalIdentities());
 				}
 			}
@@ -290,7 +285,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 		} else {
 
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL120, new Object[] { uri }));
+			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL120, new Object[ ] { uri }));
 
 		}
 
@@ -325,13 +320,11 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 			String searchFilter = null;
 			if (!UtilsStringChar.isNullOrEmptyTrim(conditions)) {
-				String[] allConds = conditions.split(
-						UtilsStringChar.SYMBOL_ESCAPED_BACKSLASH_STRING + UtilsStringChar.SYMBOL_QUESTION_MARK_STRING);
+				String[ ] allConds = conditions.split(UtilsStringChar.SYMBOL_ESCAPED_BACKSLASH_STRING + UtilsStringChar.SYMBOL_QUESTION_MARK_STRING);
 				if (allConds != null) {
 					for (int index = 0; index < allConds.length; index++) {
 						if (allConds[index].startsWith("objectclass=")) {
-							searchFilter = UtilsStringChar.SYMBOL_OPEN_BRACKET_STRING + allConds[index]
-									+ UtilsStringChar.SYMBOL_CLOSE_BRACKET_STRING;
+							searchFilter = UtilsStringChar.SYMBOL_OPEN_BRACKET_STRING + allConds[index] + UtilsStringChar.SYMBOL_CLOSE_BRACKET_STRING;
 						}
 					}
 				}
@@ -342,12 +335,11 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			}
 
 			// Obtenemos la CRL por LDAP.
-			result = UtilsLDAP.getCRLfromLDAP(urlServer, null, null, pathLDAP, searchFilter, null, connectionTimeout,
-					readTimeout, true);
+			result = UtilsLDAP.getCRLfromLDAP(urlServer, null, null, pathLDAP, searchFilter, null, connectionTimeout, readTimeout, true);
 
 		} catch (CommonUtilsException e) {
 
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL117, new Object[] { fullUri }), e);
+			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL117, new Object[ ] { fullUri }), e);
 
 		}
 
@@ -378,7 +370,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			httpUri = uri.toString();
 
 			// Descargamos la CRL en un array de bytes.
-			byte[] buffer = UtilsHTTP.getDataFromURI(httpUri, connectionTimeout, readTimeout, null, null, null);
+			byte[ ] buffer = UtilsHTTP.getDataFromURI(httpUri, connectionTimeout, readTimeout, null, null, null);
 
 			if (buffer != null) {
 
@@ -389,7 +381,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 		} catch (CommonUtilsException e) {
 
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL118, new Object[] { httpUri }), e);
+			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL118, new Object[ ] { httpUri }), e);
 
 		}
 
@@ -433,7 +425,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 		} catch (Exception e) {
 
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL119, new Object[] { ftpUri }), e);
+			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL119, new Object[ ] { ftpUri }), e);
 
 		} finally {
 
@@ -469,16 +461,14 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 * @return <code>true</code> if the CRL has been verified, otherwise
 	 *         <code>false</code>.
 	 */
-	private boolean checkCRLisValid(X509CRL crl, Date validationDate, boolean checkIssuerOfCRL,
-			TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
+	private boolean checkCRLisValid(X509CRL crl, Date validationDate, boolean checkIssuerOfCRL, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
 
 		boolean result = true;
 
 		// Comprobamos que la fecha de próxima actualización es posterior a la
 		// de validación.
 		if (crl.getNextUpdate() != null && crl.getNextUpdate().before(validationDate)) {
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL124,
-					new Object[] { validationDate.toString(), crl.getNextUpdate().toString() }));
+			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL124, new Object[ ] { validationDate.toString(), crl.getNextUpdate().toString() }));
 			result = false;
 		}
 
@@ -518,8 +508,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 					// Almacenamos en una variable si el certificado es
 					// detectado o
 					// no.
-					boolean isCertQualified = validationResult
-							.getMappingType() == ITSLValidatorResult.MAPPING_TYPE_QUALIFIED;
+					boolean isCertQualified = validationResult.getMappingType() == ITSLValidatorResult.MAPPING_TYPE_QUALIFIED;
 
 					// Obtenemos la lista de servicios.
 					List<TSPService> tspServiceList = tsp.getAllTSPServices();
@@ -551,7 +540,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 							if (tspService.isThereSomeServiceHistory()) {
 
 								List<ServiceHistoryInstance> shiList = tspService.getAllServiceHistory();
-								for (ServiceHistoryInstance shiFromList : shiList) {
+								for (ServiceHistoryInstance shiFromList: shiList) {
 									if (shiFromList.getServiceStatusStartingTime().before(validationDate)) {
 										if (shiFromList.isServiceValidAndUsable()) {
 											shi = shiFromList;
@@ -569,13 +558,11 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 						// Si el servicio es de tipo CRL y es acorde con el tipo
 						// del
 						// certificado... (qualified o no)...
-						if (shi != null && tslValidator.checkIfTSPServiceTypeIsCRLCompatible(shi, isCertQualified)
-								&& tslValidator.checkIfTSPServiceStatusIsOK(shi.getServiceStatus().toString())) {
+						if (shi != null && tslValidator.checkIfTSPServiceTypeIsCRLCompatible(shi, isCertQualified) && tslValidator.checkIfTSPServiceStatusIsOK(shi.getServiceStatus().toString())) {
 
 							// Construimos un procesador de identidad digital
 							// con este.
-							DigitalIdentitiesProcessor dipAux = new DigitalIdentitiesProcessor(
-									shi.getAllDigitalIdentities());
+							DigitalIdentitiesProcessor dipAux = new DigitalIdentitiesProcessor(shi.getAllDigitalIdentities());
 
 							// Lo usamos para tratar de verificar la CRL.
 							result = checkCRLisValidWithDigitalIdentitiesProcessor(crl, dipAux);
@@ -601,14 +588,10 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			// es porque no se confía en su emisor.
 			if (!result) {
 				try {
-					LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL293,
-							new Object[] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
-					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL,
-							Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_001,
-									new Object[] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+					LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_001, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
 				} catch (CommonUtilsException e) {
-					LOGGER.error(
-							Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL294, new Object[] { e.getMessage() }));
+					LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));
 				}
 			}
 
@@ -641,7 +624,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		if (!result && digIdProc.isThereSomeX509CertificateDigitalIdentity()) {
 
 			List<X509Certificate> x509CertList = digIdProc.getX509certList();
-			for (X509Certificate x509issuerCRLCert : x509CertList) {
+			for (X509Certificate x509issuerCRLCert: x509CertList) {
 				try {
 					crl.verify(x509issuerCRLCert.getPublicKey());
 					result = true;
@@ -659,7 +642,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		if (!result && digIdProc.isThereSomeX509PublicKeyDigitalIdentity()) {
 
 			List<PublicKey> publicKeyList = digIdProc.getX509publicKeysList();
-			for (PublicKey publicKeyIssuer : publicKeyList) {
+			for (PublicKey publicKeyIssuer: publicKeyList) {
 				try {
 					crl.verify(publicKeyIssuer);
 					result = true;
@@ -752,8 +735,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 * @param validationResult
 	 *            Object where must be stored the validation result data.
 	 */
-	private void searchCertInCRL(X509Certificate cert, Date validationDate, X509CRL crl,
-			TSLValidatorResult validationResult) {
+	private void searchCertInCRL(X509Certificate cert, Date validationDate, X509CRL crl, TSLValidatorResult validationResult) {
 
 		try {
 
@@ -847,8 +829,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 *      es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
 	 */
 	@Override
-	public void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl,
-			Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult) {
+	public void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult) {
 
 		// Obtenemos los datos que identificarán al emisor de la CRL.
 		// extractCRLIssuerData(shi);
@@ -857,8 +838,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		// Si hemos obtenido al menos una identidad digital, y
 		// si la CRL está emitida por alguna de las entidades
 		// digitales.
-		if (dip.isThereSomeDigitalIdentity()
-				&& checkCRLisValid(crl, validationDate, true, validationResult, null, null)) {
+		if (dip.isThereSomeDigitalIdentity() && checkCRLisValid(crl, validationDate, true, validationResult, null, null)) {
 
 			// Si es así, asignamos la CRL a aplicar.
 			validationResult.setRevocationValueCRL(crl);
@@ -879,9 +859,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 *      es.gob.valet.tsl.certValidation.impl.common.ATSLValidator)
 	 */
 	@Override
-	public boolean validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isCACert,
-			boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult,
-			TrustServiceProvider tsp, ATSLValidator tslValidator) {
+	public boolean validateCertificateUsingDistributionPoints(X509Certificate cert, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
 
 		// Inicialmente se considera que no se ha conseguido comprobar el estado
 		// de revocación del certificado.
@@ -891,10 +869,9 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		CRLDistPoint crlDps = null;
 		ASN1InputStream dIn = null;
 		try {
-			Extensions extensions = UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate()
-					.getExtensions();
+			Extensions extensions = UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions();
 			Extension ext = extensions.getExtension(Extension.cRLDistributionPoints);
-			byte[] octs = ext.getExtnValue().getOctets();
+			byte[ ] octs = ext.getExtnValue().getOctets();
 			dIn = new ASN1InputStream(octs);
 			crlDps = CRLDistPoint.getInstance(dIn.readObject());
 		} catch (Exception e1) {
@@ -911,7 +888,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		// Si lo hemos obtenido...
 		if (crlDps != null) {
 			// Si la extensión no está vacía...
-			DistributionPoint[] crlDpsArray = crlDps.getDistributionPoints();
+			DistributionPoint[ ] crlDpsArray = crlDps.getDistributionPoints();
 			if (crlDpsArray != null && crlDpsArray.length > 0) {
 
 				// Los vamos recorriendo uno a uno hasta encontrar una CRL que
@@ -964,9 +941,9 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 						// La ruta CRL siempre vendrá en un
 						// uniformResourceIdentifier (tipo 6 - IA5String)
-						GeneralName[] generalNames = GeneralNames.getInstance(dpName.getName()).getNames();
+						GeneralName[ ] generalNames = GeneralNames.getInstance(dpName.getName()).getNames();
 						List<URI> uriDistPointsList = new ArrayList<URI>();
-						for (GeneralName gn : generalNames) {
+						for (GeneralName gn: generalNames) {
 							if (gn.getTagNo() == GeneralName.uniformResourceIdentifier) {
 								String uriString = ((DERIA5String) gn.getName()).getString();
 								try {
@@ -1001,15 +978,11 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 									// Lanzamos la alarma notificando que no se
 									// tiene acceso o no es posible parsear la
 									// CRL.
-									AlarmsManager.getInstance().registerAlarmEvent(
-											IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL,
-											Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_000,
-													new Object[] { uri.toString() }));
+									AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_000, new Object[ ] { uri.toString() }));
 								}
 								// Si la CRL es nula o no es válida respecto a
 								// la fecha de validación, la descartamos.
-								if (crl != null && !checkCRLisValid(crl, validationDate, !isTsaCertificate && !isCACert,
-										validationResult, tsp, tslValidator)) {
+								if (crl != null && !checkCRLisValid(crl, validationDate, !isTsaCertificate && !isCACert, validationResult, tsp, tslValidator)) {
 									crl = null;
 								}
 								// Si no es nula, guardamos la URI.
@@ -1064,9 +1037,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	}
 
 	@Override
-	public boolean validateCertificateChainUsingDistributionPoints(X509Certificate cert,
-			Vector<X509Certificate> certificateChain, boolean isCACert, boolean isTsaCertificate, Date validationDate,
-			TSLValidatorResult validationResult) {
+	public boolean validateCertificateChainUsingDistributionPoints(X509Certificate cert, Vector<X509Certificate> certificateChain, boolean isCACert, boolean isTsaCertificate, Date validationDate, TSLValidatorResult validationResult) {
 
 		// Inicialmente se considera que no se ha conseguido comprobar el estado
 		// de revocación del certificado.
@@ -1076,10 +1047,9 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		CRLDistPoint crlDps = null;
 		ASN1InputStream dIn = null;
 		try {
-			Extensions extensions = UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate()
-					.getExtensions();
+			Extensions extensions = UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions();
 			Extension ext = extensions.getExtension(Extension.cRLDistributionPoints);
-			byte[] octs = ext.getExtnValue().getOctets();
+			byte[ ] octs = ext.getExtnValue().getOctets();
 			dIn = new ASN1InputStream(octs);
 			crlDps = CRLDistPoint.getInstance(dIn.readObject());
 		} catch (Exception e1) {
@@ -1096,7 +1066,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		// Si lo hemos obtenido...
 		if (crlDps != null) {
 			// Si la extensión no está vacía...
-			DistributionPoint[] crlDpsArray = crlDps.getDistributionPoints();
+			DistributionPoint[ ] crlDpsArray = crlDps.getDistributionPoints();
 			if (crlDpsArray != null && crlDpsArray.length > 0) {
 
 				// Los vamos recorriendo uno a uno hasta encontrar una CRL que
@@ -1149,9 +1119,9 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 						// La ruta CRL siempre vendrá en un
 						// uniformResourceIdentifier (tipo 6 - IA5String)
-						GeneralName[] generalNames = GeneralNames.getInstance(dpName.getName()).getNames();
+						GeneralName[ ] generalNames = GeneralNames.getInstance(dpName.getName()).getNames();
 						List<URI> uriDistPointsList = new ArrayList<URI>();
-						for (GeneralName gn : generalNames) {
+						for (GeneralName gn: generalNames) {
 							if (gn.getTagNo() == GeneralName.uniformResourceIdentifier) {
 								String uriString = ((DERIA5String) gn.getName()).getString();
 								try {
@@ -1186,16 +1156,12 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 									// Lanzamos la alarma notificando que no se
 									// tiene acceso o no es posible parsear la
 									// CRL.
-									AlarmsManager.getInstance().registerAlarmEvent(
-											IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL,
-											Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_000,
-													new Object[] { uri.toString() }));
+									AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_000, new Object[ ] { uri.toString() }));
 								}
 								// Si la CRL es nula o no es válida respecto a
 								// la fecha de validación, la descartamos.
 								boolean checkIssuerOfCRL = !isTsaCertificate && !isCACert;
-								if (crl != null && !checkCRLisValidCertificateChain(crl, validationDate,
-										checkIssuerOfCRL, certificateChain)) {
+								if (crl != null && !checkCRLisValidCertificateChain(crl, validationDate, checkIssuerOfCRL, certificateChain)) {
 									crl = null;
 								}
 								// Si no es nula, guardamos la URI.
@@ -1272,16 +1238,14 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 * @return <code>true</code> if the CRL has been verified, otherwise
 	 *         <code>false</code>.
 	 */
-	private boolean checkCRLisValidCertificateChain(X509CRL crl, Date validationDate, boolean checkIssuerOfCRL,
-			Vector<X509Certificate> certificateChain) {
+	private boolean checkCRLisValidCertificateChain(X509CRL crl, Date validationDate, boolean checkIssuerOfCRL, Vector<X509Certificate> certificateChain) {
 
 		boolean result = true;
 
 		// Comprobamos que la fecha de próxima actualización es posterior a la
 		// de validación.
 		if (crl.getNextUpdate() != null && crl.getNextUpdate().before(validationDate)) {
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL124,
-					new Object[] { validationDate.toString(), crl.getNextUpdate().toString() }));
+			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL124, new Object[ ] { validationDate.toString(), crl.getNextUpdate().toString() }));
 			result = false;
 		}
 
@@ -1290,10 +1254,10 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		if (result && checkIssuerOfCRL) {
 			try {
 				List<PublicKey> publicKeyList = new ArrayList<PublicKey>();
-				for (X509Certificate cer : certificateChain) {
+				for (X509Certificate cer: certificateChain) {
 					publicKeyList.add(cer.getPublicKey());
 				}
-				for (PublicKey publicKeyIssuer : publicKeyList) {
+				for (PublicKey publicKeyIssuer: publicKeyList) {
 					try {
 						crl.verify(publicKeyIssuer);
 						result = true;
@@ -1304,21 +1268,17 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 				}
 			} catch (Exception e) {
-				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL348, new Object[] { e.getMessage() }));
+				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL348, new Object[ ] { e.getMessage() }));
 			}
 
 			// Si hemos llegado a este punto y no se confía en la CRL,
 			// es porque no se confía en su emisor.
 			if (!result) {
 				try {
-					LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL293,
-							new Object[] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
-					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL,
-							Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_001,
-									new Object[] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+					LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_001, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
 				} catch (CommonUtilsException e) {
-					LOGGER.error(
-							Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL294, new Object[] { e.getMessage() }));
+					LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));
 				}
 			}
 

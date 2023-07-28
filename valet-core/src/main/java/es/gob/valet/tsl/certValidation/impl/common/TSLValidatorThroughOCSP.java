@@ -1725,7 +1725,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		// Si la información recuperada no es nula, y al menos hay un
 		// elemento...
 		if (aia != null && aia.getAccessDescriptions() != null && aia.getAccessDescriptions().length > 0) {
-
+			if (validationResult.getIssuerCert() != null) {
 			// Creamos el CertificateID que se usará en las peticiones OCSP.
 			CertificateID certificateId = createCertificateID(cert, validationResult.getIssuerCert(), null, null);
 
@@ -1799,6 +1799,10 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 				}
 
+			}
+			}else{
+				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL399));
+		
 			}
 
 		}
