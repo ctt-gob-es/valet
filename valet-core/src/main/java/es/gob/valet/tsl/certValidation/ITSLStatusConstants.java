@@ -43,7 +43,7 @@ public interface ITSLStatusConstants {
 	/**
 	 * Constant attribute that represents the token 'PROCESS_PASSED_WITH_WARNING'.
 	 */
-	String PROCESS_FAILED_WARNING ="PROCESS_PASSED_WITH_WARNING";
+	String PROCESS_PASSED_WITH_WARNING ="PROCESS_PASSED_WITH_WARNING";
 	/**
 	 * Constant attribute that represents the token 'WARNING_T1_DUPLICATION'.
 	 */

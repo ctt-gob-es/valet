@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 03/04/2023.
+ * @version 1.9, 24/07/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -77,7 +77,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 03/04/2023.
+ * @version 1.9, 24/07/2023.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -216,7 +216,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 * @param shi TSL - TSP Service History Information from which extract the information to validate the certificate.
 	 */
 	private void extractCRLIssuerData(TSPService tspServiceDetected) {
-
+		if (tspServiceDetected != null) {
 		// Obtenemos la lista de identidades digitales para analizarlas.
 		List<ServiceHistoryInstance> listServiceHistory = tspServiceDetected.getAllServiceHistory();
 		List<DigitalID> identitiesList = new ArrayList<DigitalID>();
@@ -229,7 +229,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 		// Creamos el procesador de identidades digitales.
 		dip = new DigitalIdentitiesProcessor(identitiesList);
-
+		}
 	}
 
 	/**

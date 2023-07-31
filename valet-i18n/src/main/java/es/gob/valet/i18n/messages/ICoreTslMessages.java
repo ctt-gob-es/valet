@@ -2129,6 +2129,18 @@ public interface ICoreTslMessages {
 	 */
 	String LOGMTSL402 = "logMTSL402";
 	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL403</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL403 = "logMTSL403";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL404</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL404 = "logMTSL404";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL405</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL405 = "logMTSL405";
+	/**
 	 * Constant attribute that represents the name of the property <code>errorQcSubStatus1</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	String ERROR_QC_SUBSTATUS1 = "errorQcSubStatus1";
