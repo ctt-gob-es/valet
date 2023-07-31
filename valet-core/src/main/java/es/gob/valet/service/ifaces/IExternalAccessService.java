@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/07/2023.</p>
  * @author Gobierno de España.
- * @version 1.3, 26/07/2023.
+ * @version 1.4, 31/07/2023.
  */
 package es.gob.valet.service.ifaces;
 
@@ -34,7 +34,7 @@ import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the ExternalAccess entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 26/07/2023.
+ * @version 1.4, 31/07/2023.
  */
 public interface IExternalAccessService {
 	
@@ -63,4 +63,9 @@ public interface IExternalAccessService {
 	 * @param originUrl paramenter that contain origin url.
 	 */
 	void testConnExternalAccessAndSaveResult(String uriTslLocation, String originUrl);
+
+	/**
+	 * Method that realize test connection to external access and update result in BD. 
+	 */
+	void realizeTestAndUpdateResult();
 }
