@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.2, 31/07/2023.
+ * @version 2.3, 01/08/2023.
  */
 package es.gob.valet.tsl.access;
 
@@ -43,6 +43,8 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
@@ -75,6 +77,8 @@ import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdCons
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.rest.elements.json.DateString;
+import es.gob.valet.service.ifaces.IExternalAccessService;
+import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
@@ -82,6 +86,7 @@ import es.gob.valet.tsl.certValidation.impl.TSLValidatorFactory;
 import es.gob.valet.tsl.certValidation.impl.TSLValidatorMappingCalculator;
 import es.gob.valet.tsl.certValidation.impl.common.DigitalIdentitiesProcessor;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
+import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 import es.gob.valet.tsl.exceptions.TSLException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
@@ -97,7 +102,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.2, 31/07/2023.
+ * @version 2.3, 01/08/2023.
  */
 public final class TSLManager {
 
@@ -142,7 +147,7 @@ public final class TSLManager {
 	 * european list of trusted lists splitted by commas.
 	 */
 	private String setOfURLStringThatRepresentsEuLOTLinString = null;
-
+	
 	/**
 	 * Constructor method for the class TSLManager.java.
 	 */
@@ -2062,7 +2067,9 @@ public final class TSLManager {
 				// de
 				// TSLs.
 				updateMapTslMappingTree(td.getTslCountryRegion().getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
-
+				
+				// Se actualizan los accessos externos con las url de los distintos distribution point que contenga la tsl.
+				this.updateExternalAccess(tslObject);
 			} catch (Exception e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171), e);
 			}
@@ -2071,6 +2078,22 @@ public final class TSLManager {
 
 		return result;
 
+	}
+
+	/**
+	 * Method that update external access from TSL.
+	 * 
+	 * @param tslObject TSL object representation to use.
+	 * @throws TSLCertificateValidationException if occurs any error.
+	 */
+	@Transactional(propagation = Propagation.REQUIRED)
+	private void updateExternalAccess(ITSLObject tslObject) throws TSLCertificateValidationException {
+		List<String> listUrlDistributionPointDPResult = new ArrayList<>();
+		List<String> listUrlIssuerResult = new ArrayList<>();
+		List<String> listUrlDistributionPointCRLResult = new ArrayList<>();
+		List<String> listUrlDistributionPointOCSPResult = new ArrayList<>();
+		ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).extractUrlToDistributionPoints(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, tslObject);
+		ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).iterateAllUrl(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult);
 	}
 
 	/**
@@ -2522,6 +2545,9 @@ public final class TSLManager {
 			// se actualiza la información en los datos del arbol de mapeos de
 			// TSLs.
 			updateMapTslMappingTree(td.getTslCountryRegion().getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
+			
+			// Se actualizan los accessos externos con las url de los distintos distribution point que contenga la tsl.
+			this.updateExternalAccess(tslObject);
 		} catch (
 
 		Exception e) {

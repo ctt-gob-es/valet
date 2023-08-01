@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 31/07/2023.
+ * @version 1.4, 01/08/2023.
  */
 package es.gob.valet.service.impl;
 
@@ -105,7 +105,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 31/07/2023.
+ * @version 1.4, 01/08/2023.
  */
 @Service("ExternalAccessService")
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -176,7 +176,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	private static final String DISTRIBUTIONPOINTOCSP = "DistributionPointOCSP";
 	
 	/**
-	 * 
+	 * Method that is executed after putting the class into service.
 	 */
 	@PostConstruct
 	public void init() {
@@ -357,6 +357,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * {@inheritDoc}
 	 * @see es.gob.valet.service.ifaces.IExternalAccessService#realizeTestAndUpdateResult()
 	 */
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void realizeTestAndUpdateResult() {
 		// Obtenemos todas las url de la BD.
 		List<ExternalAccess> listExternalAccess = repository.findAll();
@@ -376,7 +377,6 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * 
 	 * @throws Exception Any exception that occurs during the execution.
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void prepareUrlExternalAccess() {
 		try {
 			// Obtenemos todas las regiones dadas de alta en base de datos.
@@ -392,40 +392,55 @@ public class ExternalAccessService implements IExternalAccessService {
     			// Obtenemos todas las url de todas las TSL.
     			this.obtainAllUrl(tcrList, listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult);
     			
-    			// Recorreremos todas las urls obtenidas.
-    			if(!listUrlDistributionPointDPResult.isEmpty()) {
-    				// Eliminamos los duplicados
-    				List<String> listUrlDistributionPointDPWithoutDuplicate = listUrlDistributionPointDPResult.stream().distinct().collect(Collectors.toList());
-    				for (String urlDistributionPoint: listUrlDistributionPointDPWithoutDuplicate) {
-    					this.testConnExternalAccessAndSaveResult(urlDistributionPoint, DISTRIBUTIONPOINT);
-					}
-    			}
-    			if(!listUrlIssuerResult.isEmpty()) {
-    				// Eliminamos los duplicados
-    				List<String> listUrlIssuerWithoutDuplicate = listUrlIssuerResult.stream().distinct().collect(Collectors.toList());
-    				for (String urlIssuerAlternativeName: listUrlIssuerWithoutDuplicate) {
-    					this.testConnExternalAccessAndSaveResult(urlIssuerAlternativeName, ISSUERALTERNATIVENAME);
-					}
-    			}
-    			if(!listUrlDistributionPointCRLResult.isEmpty()) {
-    				// Eliminamos los duplicados
-    				List<String> listUrlDistributionPointCRLWithoutDuplicate = listUrlDistributionPointCRLResult.stream().distinct().collect(Collectors.toList());
-    				for (String urlDistributionPointCRL: listUrlDistributionPointCRLWithoutDuplicate) {
-    					this.testConnExternalAccessAndSaveResult(urlDistributionPointCRL, DISTRIBUTIONPOINTCRL);
-					}
-    			}
-    			if(!listUrlDistributionPointOCSPResult.isEmpty()) {
-    				// Eliminamos los duplicados
-    				List<String> listUrlDistributionPointOCSPWithoutDuplicate = listUrlDistributionPointOCSPResult.stream().distinct().collect(Collectors.toList());
-    				for (String urlDistributionPointOCSP: listUrlDistributionPointOCSPWithoutDuplicate) {
-    					this.testConnExternalAccessAndSaveResult(urlDistributionPointOCSP, DISTRIBUTIONPOINTOCSP);
-					}
-    			}
+    			// Recorremos todas las urls obtenidas de lsa TSL.
+    			this.iterateAllUrl(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult);
     		}
 		} catch (Exception e) {
 			String msg = Language.getResCoreTsl(ICoreTslMessages.LOGMTSL400);
 			LOGGER.error(msg, e);
 		}
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#iterateAllUrl(java.util.List, java.util.List, java.util.List, java.util.List)
+	 */
+	public void iterateAllUrl(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult) {
+		try {
+			// Recorreremos todas las urls obtenidas.
+			if(!listUrlDistributionPointDPResult.isEmpty()) {
+				// Eliminamos los duplicados
+				List<String> listUrlDistributionPointDPWithoutDuplicate = listUrlDistributionPointDPResult.stream().distinct().collect(Collectors.toList());
+				for (String urlDistributionPoint: listUrlDistributionPointDPWithoutDuplicate) {
+					this.testConnExternalAccessAndSaveResult(urlDistributionPoint, DISTRIBUTIONPOINT);
+				}
+			}
+			if(!listUrlIssuerResult.isEmpty()) {
+				// Eliminamos los duplicados
+				List<String> listUrlIssuerWithoutDuplicate = listUrlIssuerResult.stream().distinct().collect(Collectors.toList());
+				for (String urlIssuerAlternativeName: listUrlIssuerWithoutDuplicate) {
+					this.testConnExternalAccessAndSaveResult(urlIssuerAlternativeName, ISSUERALTERNATIVENAME);
+				}
+			}
+			if(!listUrlDistributionPointCRLResult.isEmpty()) {
+				// Eliminamos los duplicados
+				List<String> listUrlDistributionPointCRLWithoutDuplicate = listUrlDistributionPointCRLResult.stream().distinct().collect(Collectors.toList());
+				for (String urlDistributionPointCRL: listUrlDistributionPointCRLWithoutDuplicate) {
+					this.testConnExternalAccessAndSaveResult(urlDistributionPointCRL, DISTRIBUTIONPOINTCRL);
+				}
+			}
+			if(!listUrlDistributionPointOCSPResult.isEmpty()) {
+				// Eliminamos los duplicados
+				List<String> listUrlDistributionPointOCSPWithoutDuplicate = listUrlDistributionPointOCSPResult.stream().distinct().collect(Collectors.toList());
+				for (String urlDistributionPointOCSP: listUrlDistributionPointOCSPWithoutDuplicate) {
+					this.testConnExternalAccessAndSaveResult(urlDistributionPointOCSP, DISTRIBUTIONPOINTOCSP);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		
 	}
 
 	/**
@@ -445,52 +460,63 @@ public class ExternalAccessService implements IExternalAccessService {
 	private void obtainAllUrl(List<TslCountryRegion> tcrList, List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult) throws TSLCacheException, TSLArgumentException, TSLParsingException, TSLMalformedException, TSLCertificateValidationException {
 		// Por cada una de las regiones almacenaremos las urls de acceso.
 		for (TslCountryRegion tcr: tcrList) {
-			// Obtenemos el TSL Data asociado.
-			TslData td = iTslDataService.getTslDataById(tcr.getTslData().getIdTslData(), true, false);
-			// Si no es nulo, continuamos.
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL398, new Object[] { tcr.getCountryRegionCode() }));
-			if (td != null) {
-				// Tratamos de parsearlo.
-				ITSLObject tslObject =  TSLManager.getInstance().buildAndCheckTSL(td);
-				// Si lo hemos conseguido parsear...
-				if (tslObject != null) {
-					// Accedemos a la url del punto de distribución en caso de que exista. Solo existe una por TSL.
-					if (tslObject.getSchemeInformation().isThereSomeDistributionPoint()) {
-						for (int i = 0; i < tslObject.getSchemeInformation().getDistributionPoints().size(); i++) {
-							if (!tslObject.getSchemeInformation().getDistributionPoints().get(i).toString().endsWith(".pdf") && !tslObject.getSchemeInformation().getDistributionPoints().get(i).toString().endsWith(".PDF")) {
-								String uriTslLocation =  tslObject.getSchemeInformation().getDistributionPoints().get(i).toString();
-								listUrlDistributionPointDPResult.add(uriTslLocation);
-								break;
-							}
-						}
-					}
-					
-					// Obtenemos los certificados de la TSL
-					List<X509Certificate> listX509Certificate = TSLManager.getInstance().getListCertificatesTSL(tslObject);
-					for (X509Certificate x509Certificate: listX509Certificate) {
-						WrapperX509Cert wrapperX509Cert = new WrapperX509Cert(x509Certificate);
-						
-						// Buscamos la url del IssuerAlternativeName
-						String urlIssuerAlternativeName = wrapperX509Cert.getIssuerAlternativeName();
-						if(null != urlIssuerAlternativeName && !UtilsStringChar.isNullOrEmpty(urlIssuerAlternativeName)) {
-							listUrlIssuerResult.add(urlIssuerAlternativeName);
-						}
-						
-						// Buscamos la url del DistributionPointCRL
-						List<String> listUrlDistributionPointCRL = this.searchUrlDistributionPointCrl(x509Certificate);
-						if(!listUrlDistributionPointCRL.isEmpty()) {
-							listUrlDistributionPointCRLResult.addAll(listUrlDistributionPointCRL);
-						}
-						
-						// Buscamos la url del DistributionPointOCSP
-						List<String> listUrlDistributionPointOCSP = this.searchUrlDistributionPointOcsp(x509Certificate);
-						if(!listUrlDistributionPointOCSP.isEmpty()) {
-							listUrlDistributionPointOCSPResult.addAll(listUrlDistributionPointOCSP);
-						}
+			if(null != tcr.getTslData().getIdTslData()) {
+				// Obtenemos el TSL Data asociado.
+				TslData td = iTslDataService.getTslDataById(tcr.getTslData().getIdTslData(), true, false);
+				// Si no es nulo, continuamos.
+				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL398, new Object[] { tcr.getCountryRegionCode() }));
+				if (td != null) {
+					// Tratamos de parsearlo.
+					ITSLObject tslObject =  TSLManager.getInstance().buildAndCheckTSL(td);
+					this.extractUrlToDistributionPoints(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, tslObject);
+				}
+				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL399, new Object[] { tcr.getCountryRegionCode() }));
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#extractUrlToDistributionPoints(java.util.List, java.util.List, java.util.List, java.util.List, es.gob.valet.tsl.parsing.ifaces.ITSLObject)
+	 */
+	public void extractUrlToDistributionPoints(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, ITSLObject tslObject) throws TSLCertificateValidationException {
+		// Si lo hemos conseguido parsear...
+		if (tslObject != null) {
+			// Accedemos a la url del punto de distribución en caso de que exista. Solo existe una por TSL.
+			if (tslObject.getSchemeInformation().isThereSomeDistributionPoint()) {
+				for (int i = 0; i < tslObject.getSchemeInformation().getDistributionPoints().size(); i++) {
+					if (!tslObject.getSchemeInformation().getDistributionPoints().get(i).toString().endsWith(".pdf") && !tslObject.getSchemeInformation().getDistributionPoints().get(i).toString().endsWith(".PDF")) {
+						String uriTslLocation =  tslObject.getSchemeInformation().getDistributionPoints().get(i).toString();
+						listUrlDistributionPointDPResult.add(uriTslLocation);
+						break;
 					}
 				}
 			}
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL399, new Object[] { tcr.getCountryRegionCode() }));
+			
+			// Obtenemos los certificados de la TSL
+			List<X509Certificate> listX509Certificate = TSLManager.getInstance().getListCertificatesTSL(tslObject);
+			for (X509Certificate x509Certificate: listX509Certificate) {
+				WrapperX509Cert wrapperX509Cert = new WrapperX509Cert(x509Certificate);
+				
+				// Buscamos la url del IssuerAlternativeName
+				String urlIssuerAlternativeName = wrapperX509Cert.getIssuerAlternativeName();
+				if(null != urlIssuerAlternativeName && !UtilsStringChar.isNullOrEmpty(urlIssuerAlternativeName)) {
+					listUrlIssuerResult.add(urlIssuerAlternativeName);
+				}
+				
+				// Buscamos la url del DistributionPointCRL
+				List<String> listUrlDistributionPointCRL = this.searchUrlDistributionPointCrl(x509Certificate);
+				if(!listUrlDistributionPointCRL.isEmpty()) {
+					listUrlDistributionPointCRLResult.addAll(listUrlDistributionPointCRL);
+				}
+				
+				// Buscamos la url del DistributionPointOCSP
+				List<String> listUrlDistributionPointOCSP = this.searchUrlDistributionPointOcsp(x509Certificate);
+				if(!listUrlDistributionPointOCSP.isEmpty()) {
+					listUrlDistributionPointOCSPResult.addAll(listUrlDistributionPointOCSP);
+				}
+			}
 		}
 	}
 	
