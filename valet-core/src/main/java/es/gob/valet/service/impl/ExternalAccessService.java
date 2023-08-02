@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 01/08/2023.
+ * @version 1.5, 02/08/2023.
  */
 package es.gob.valet.service.impl;
 
@@ -105,7 +105,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 01/08/2023.
+ * @version 1.5, 02/08/2023.
  */
 @Service("ExternalAccessService")
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -497,24 +497,29 @@ public class ExternalAccessService implements IExternalAccessService {
 			// Obtenemos los certificados de la TSL
 			List<X509Certificate> listX509Certificate = TSLManager.getInstance().getListCertificatesTSL(tslObject);
 			for (X509Certificate x509Certificate: listX509Certificate) {
-				WrapperX509Cert wrapperX509Cert = new WrapperX509Cert(x509Certificate);
-				
-				// Buscamos la url del IssuerAlternativeName
-				String urlIssuerAlternativeName = wrapperX509Cert.getIssuerAlternativeName();
-				if(null != urlIssuerAlternativeName && !UtilsStringChar.isNullOrEmpty(urlIssuerAlternativeName)) {
-					listUrlIssuerResult.add(urlIssuerAlternativeName);
-				}
-				
-				// Buscamos la url del DistributionPointCRL
-				List<String> listUrlDistributionPointCRL = this.searchUrlDistributionPointCrl(x509Certificate);
-				if(!listUrlDistributionPointCRL.isEmpty()) {
-					listUrlDistributionPointCRLResult.addAll(listUrlDistributionPointCRL);
-				}
-				
-				// Buscamos la url del DistributionPointOCSP
-				List<String> listUrlDistributionPointOCSP = this.searchUrlDistributionPointOcsp(x509Certificate);
-				if(!listUrlDistributionPointOCSP.isEmpty()) {
-					listUrlDistributionPointOCSPResult.addAll(listUrlDistributionPointOCSP);
+				// Controlamos las posibles excepciones que se puedan producir al analizar el certificado. Si falla continuamos con el proceso.
+				try {
+					WrapperX509Cert wrapperX509Cert = new WrapperX509Cert(x509Certificate);
+					
+					// Buscamos la url del IssuerAlternativeName
+					String urlIssuerAlternativeName = wrapperX509Cert.getIssuerAlternativeName();
+					if(null != urlIssuerAlternativeName && !UtilsStringChar.isNullOrEmpty(urlIssuerAlternativeName)) {
+						listUrlIssuerResult.add(urlIssuerAlternativeName);
+					}
+					
+					// Buscamos la url del DistributionPointCRL
+					List<String> listUrlDistributionPointCRL = this.searchUrlDistributionPointCrl(x509Certificate);
+					if(!listUrlDistributionPointCRL.isEmpty()) {
+						listUrlDistributionPointCRLResult.addAll(listUrlDistributionPointCRL);
+					}
+					
+					// Buscamos la url del DistributionPointOCSP
+					List<String> listUrlDistributionPointOCSP = this.searchUrlDistributionPointOcsp(x509Certificate);
+					if(!listUrlDistributionPointOCSP.isEmpty()) {
+						listUrlDistributionPointOCSPResult.addAll(listUrlDistributionPointOCSP);
+					}
+				} catch (Exception e) {
+					LOGGER.error(e);
 				}
 			}
 		}
