@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/07/2023.</p>
  * @author Gobierno de España.
- * @version 1.1, 31/07/2023.
+ * @version 1.2, 03/08/2023.
  */
 package es.gob.valet.tasks;
 
@@ -40,7 +40,7 @@ import es.gob.valet.spring.config.ApplicationContextProvider;
 /**
  * <p>Class that contains the task of performing connection tests and storing the result in the database.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 31/07/2023.
+ * @version 1.2, 03/08/2023.
  */
 public class ExternalAccessConnectionTestTask extends Task {
 	/**
@@ -97,7 +97,7 @@ public class ExternalAccessConnectionTestTask extends Task {
 	@Override
 	protected final void doActionOfTheTask() throws Exception {
 		// Realizamos el test de conexión y actualiazamos el resultado.
-		ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).realizeTestAndUpdateResult();
+		ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).prepareUrlExternalAccessForTask();
 	}
 
 }
