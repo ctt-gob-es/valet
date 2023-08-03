@@ -309,7 +309,6 @@ public abstract class ATSLValidator implements ITSLValidator {
 					resultQC.setQcStatus(ITSLStatusConstants.PROCESS_FAILED);
 					// PRO-4.4.4-35 b)
 					resultQC.setQcSubStatus(resultQCDateIssue.getQcSubStatus());
-					resultQC.setQcSubStatus(resultQCDateIssue.getQcSubStatus());
 					resultQC.setInfoQcResult(resultQCDateIssue.getInfoQcResult());
 					resultQC.setQcResults(resultQCDateIssue.getQcResults());
 					resultQC.setEndProcedure(Boolean.TRUE);
@@ -321,6 +320,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 							resultQC.setQcStatus(ITSLStatusConstants.PROCESS_FAILED);
 							// PRO-4.4.4-36 a) 2)
 							resultQC.getQcSubStatus().add(Language.getResCoreTsl(ICoreTslMessages.ERROR_QC_SUBSTATUS2));
+							resultQC.setInfoQcResult(resultQCDateIssue.getInfoQcResult());
+							resultQC.getQcResults().clear();
+							resultQC.setEndProcedure(Boolean.TRUE);
 						}
 						// PRO-4.4.4-36 b)
 						if (checkQCSubStatusWarning(resultQCDateIssue.getQcSubStatus())) {

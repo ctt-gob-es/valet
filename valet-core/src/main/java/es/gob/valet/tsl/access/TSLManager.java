@@ -2362,6 +2362,15 @@ public final class TSLManager {
 
 				// Lo eliminamos el mapeo la caché compartida.
 				ConfigurationCacheFacade.tslRemoveMappingFromCountryRegion(crc, null);
+				
+				
+				// Se elimina el país de la caché compartida
+				ConfigurationCacheFacade.tslRemoveTSLCountryRegion(crc);
+				
+				//se elimina de base de datos
+				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().deleteTslCountryRegionById(idCountryRegion);
+				
+
 			}
 
 		} catch (Exception e) {
