@@ -322,7 +322,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							resultQC.getQcSubStatus().add(Language.getResCoreTsl(ICoreTslMessages.ERROR_QC_SUBSTATUS2));
 							LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.ERROR_QC_SUBSTATUS2));
 							resultQC.setInfoQcResult(resultQCDateIssue.getInfoQcResult());
-							resultQC.setQcResults(resultQCDateIssue.getQcResults());
+							resultQC.getQcResults().clear();
 							resultQC.setEndProcedure(Boolean.TRUE);
 						}
 						// PRO-4.4.4-36 b)
@@ -3583,11 +3583,6 @@ public abstract class ATSLValidator implements ITSLValidator {
 			}
 
 		} else {
-			// Según la ETSI, si un certificado no es detectado en la TSL, el
-			// certificado es NOT_QUALIFIED
-			if (validationResult.hasBeenDetectedTheCertificate()) {
-
-			}
 			// El certificado no ha sido detectado por la TSL.
 			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL203));
 
