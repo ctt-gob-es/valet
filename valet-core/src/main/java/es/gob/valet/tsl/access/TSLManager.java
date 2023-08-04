@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.4, 03/08/2023.
+ * @version 2.5, 04/08/2023.
  */
 package es.gob.valet.tsl.access;
 
@@ -47,7 +47,6 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
 import es.gob.valet.commons.utils.CryptographicConstants;
-import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsCountryLanguage;
@@ -100,7 +99,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.4, 03/08/2023.
+ * @version 2.5, 04/08/2023.
  */
 public final class TSLManager {
 
@@ -2067,7 +2066,7 @@ public final class TSLManager {
 				updateMapTslMappingTree(td.getTslCountryRegion().getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
 				
 				// Se actualizan los accessos externos con las url de los distintos distribution point que contenga la tsl.
-				ApplicationContextProvider.getApplicationContext().getBean(ExternalAccessService.class).new ExternalAccessServiceThread(NumberConstants.NUM2, tslObject).start();
+				ApplicationContextProvider.getApplicationContext().getBean(ExternalAccessService.class).new ExternalAccessServiceThread(ExternalAccessService.OPERATION2, tslObject).start();
 			} catch (Exception e) {
 				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171), e);
 			}
@@ -2332,7 +2331,10 @@ public final class TSLManager {
 						idCountryRegion = countryRegion.getIdTslCountryRegion();
 					}
 				}
-
+				
+				// Parseamos la TSL.
+				ITSLObject tslObjectParser = buildAndCheckTSL(tslDataService.getTslDataById(tslDataId, false, false));
+				
 				// Lo eliminamos de base de datos.
 				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().deleteTslData(tslDataId);
 
@@ -2352,7 +2354,8 @@ public final class TSLManager {
 				//se elimina de base de datos
 				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().deleteTslCountryRegionById(idCountryRegion);
 				
-
+				// Eliminamos los acceso externos.
+				ApplicationContextProvider.getApplicationContext().getBean(ExternalAccessService.class).new ExternalAccessServiceThread(ExternalAccessService.OPERATION3, tslObjectParser).start();
 			}
 
 		} catch (Exception e) {
@@ -2538,7 +2541,7 @@ public final class TSLManager {
 			updateMapTslMappingTree(td.getTslCountryRegion().getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
 			
 			// Se actualizan los accessos externos con las url de los distintos distribution point que contenga la tsl.
-			ApplicationContextProvider.getApplicationContext().getBean(ExternalAccessService.class).new ExternalAccessServiceThread(NumberConstants.NUM2, tslObject).start();
+			ApplicationContextProvider.getApplicationContext().getBean(ExternalAccessService.class).new ExternalAccessServiceThread(ExternalAccessService.OPERATION2, tslObject).start();
 		} catch (
 
 		Exception e) {

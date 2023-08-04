@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 03/08/2023.
+ * @version 1.7, 04/08/2023.
  */
 package es.gob.valet.service.impl;
 
@@ -107,7 +107,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 03/08/2023.
+ * @version 1.7, 04/08/2023.
  */
 @Service("ExternalAccessService")
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -178,12 +178,37 @@ public class ExternalAccessService implements IExternalAccessService {
 	private static final String DISTRIBUTIONPOINTOCSP = "DistributionPointOCSP";
 	
 	/**
+	 * Constant attribute that represents the token 'iterateAndSaveUrl'.
+	 */
+	private static final String ITERATEANDSAVEURL = "iterateAndSaveUrl";
+	
+	/**
+	 * Constant attribute that represents the token 'iterateAndDeleteUrl'.
+	 */
+	private static final String ITERATEANDDELETEURL = "iterateAndDeleteUrl";
+	
+	/**
+	 * Constant attribute that represents the token '1'.
+	 */
+	public static final int OPERATION1 = 1;
+	
+	/**
+	 * Constant attribute that represents the token '2'.
+	 */
+	public static final int OPERATION2 = 2;
+	
+	/**
+	 * Constant attribute that represents the token '3'.
+	 */
+	public static final int OPERATION3 = 3;
+	
+	/**
 	 * Method that is executed after putting the all beans spring in service.
 	 */
 	@EventListener
 	public void afterConstruct(ContextRefreshedEvent event) {
 		// Después de haber inicializado correctamente todo el contexto de spring, realizamos los test de conexión a servicios externos. 
-		Thread externalAccessServiceThread = new ExternalAccessServiceThread(NumberConstants.NUM1, null);
+		Thread externalAccessServiceThread = new ExternalAccessServiceThread(OPERATION1, null);
 		externalAccessServiceThread.start();
 	}
 	
@@ -237,6 +262,11 @@ public class ExternalAccessService implements IExternalAccessService {
 			externalAccess.setLastConn(new Date());
 		}
 		
+		return externalAccess;
+	}
+
+	public ExternalAccess getExternalAccess(String uriTslLocation) {
+		ExternalAccess externalAccess = externalAccessRepository.findByUrl(uriTslLocation);
 		return externalAccess;
 	}
 
@@ -376,7 +406,7 @@ public class ExternalAccessService implements IExternalAccessService {
 		List<String> listlistExternalAccessDistributionPointCRL = listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINTCRL)).map(ExternalAccess::getUrl).collect(Collectors.toList());
 		List<String> listlistExternalAccessDistributionPointOCSP = listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINTOCSP)).map(ExternalAccess::getUrl).collect(Collectors.toList());
 		
-		this.iterateAllUrl(listlistExternalAccessDistributionPoint, listlistExternalAccessIssuerAlternativeName, listlistExternalAccessDistributionPointCRL, listlistExternalAccessDistributionPointOCSP);
+		this.makeChangesToExternalAccess(listlistExternalAccessDistributionPoint, listlistExternalAccessIssuerAlternativeName, listlistExternalAccessDistributionPointCRL, listlistExternalAccessDistributionPointOCSP, ITERATEANDSAVEURL);
 		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL407, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
 	}
 	
@@ -404,7 +434,7 @@ public class ExternalAccessService implements IExternalAccessService {
     			this.obtainAllUrlToRegionTSL(tcrList, listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult);
     			
     			// Recorremos todas las urls obtenidas de las TSL.
-    			this.iterateAllUrl(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult);
+    			this.makeChangesToExternalAccess(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, ITERATEANDSAVEURL);
     		}
 		} catch (Exception e) {
 			String msg = Language.getResCoreTsl(ICoreTslMessages.LOGMTSL400);
@@ -419,7 +449,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @param tslObject TSL object representation to use.
 	 * @throws TSLCertificateValidationException if occurs any error.
 	 */
-	public void prepareUrlExternalAccessForTSL(ITSLObject tslObject) throws TSLCertificateValidationException {
+	public void prepareUrlExternalAccessToTSL(ITSLObject tslObject) throws TSLCertificateValidationException {
 		long timeProcess = System.currentTimeMillis();
 		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL410));
 		List<String> listUrlDistributionPointDPResult = new ArrayList<>();
@@ -427,51 +457,123 @@ public class ExternalAccessService implements IExternalAccessService {
 		List<String> listUrlDistributionPointCRLResult = new ArrayList<>();
 		List<String> listUrlDistributionPointOCSPResult = new ArrayList<>();
 		this.extractUrlToDistributionPoints(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, tslObject);
-		this.iterateAllUrl(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult);
+		this.makeChangesToExternalAccess(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, ITERATEANDSAVEURL);
 		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL411, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
+	}
+
+	/**
+	 * Method that delete external access from TSL.
+	 * 
+	 * @param tslObject TSL object representation to use.
+	 * @throws TSLCertificateValidationException if occurs any error.
+	 */
+	public void prepareUrlExternalAccessToDelete(ITSLObject tslObject) throws TSLCertificateValidationException {
+		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL412, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory() }));
+		List<String> listUrlDistributionPointDPResult = new ArrayList<>();
+		List<String> listUrlIssuerResult = new ArrayList<>();
+		List<String> listUrlDistributionPointCRLResult = new ArrayList<>();
+		List<String> listUrlDistributionPointOCSPResult = new ArrayList<>();
+		this.extractUrlToDistributionPoints(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, tslObject);
+		this.makeChangesToExternalAccess(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, ITERATEANDDELETEURL);
+		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL413, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory() }));
 	}
 	
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ifaces.IExternalAccessService#iterateAllUrl(java.util.List, java.util.List, java.util.List, java.util.List)
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#makeChangesToExternalAccess(java.util.List, java.util.List, java.util.List, java.util.List, java.lang.String)
 	 */
 	@Transactional(propagation = Propagation.REQUIRED)
-	public synchronized void iterateAllUrl(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult) {
+	public synchronized void makeChangesToExternalAccess(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, String action) {
 		try {
 			List<ExternalAccess> listExternalAccessResult = new ArrayList<>();
-			// Recorreremos todas las urls obtenidas.
-			
-			// Eliminamos los duplicados en puntos de distribución
-			List<String> listUrlDistributionPointDPWithoutDuplicate = listUrlDistributionPointDPResult.stream().distinct().collect(Collectors.toList());
-			for (String urlDistributionPoint: listUrlDistributionPointDPWithoutDuplicate) {
-				listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlDistributionPoint, DISTRIBUTIONPOINT));
+			if(action.equals(ITERATEANDSAVEURL)) {
+				// Recorreremos todas las urls obtenidas y realizamos test de conexión.
+				this.iterateAllUrlAndTestConn(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, listExternalAccessResult);
+				
+				// Almacenamos los resultados de los test
+				externalAccessRepository.saveAll(listExternalAccessResult);
+			} else if(action.equals(ITERATEANDDELETEURL)) {
+				// Recorreremos todas las urls obtenidas.
+				this.iterateAllUrl(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, listExternalAccessResult);
+				
+				// Eliminamos los puntos de distribución de la TSL.
+				externalAccessRepository.deleteAll(listExternalAccessResult);
 			}
-			
-			// Eliminamos los duplicados en puntos de distribución de issuers alternative name
-			List<String> listUrlIssuerWithoutDuplicate = listUrlIssuerResult.stream().distinct().collect(Collectors.toList());
-			for (String urlIssuerAlternativeName: listUrlIssuerWithoutDuplicate) {
-				listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlIssuerAlternativeName, ISSUERALTERNATIVENAME));
-			}
-			
-			// Eliminamos los duplicados en puntos de distribución de crl
-			List<String> listUrlDistributionPointCRLWithoutDuplicate = listUrlDistributionPointCRLResult.stream().distinct().collect(Collectors.toList());
-			for (String urlDistributionPointCRL: listUrlDistributionPointCRLWithoutDuplicate) {
-				listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlDistributionPointCRL, DISTRIBUTIONPOINTCRL));
-			}
-			
-			// Eliminamos los duplicados en puntos de distribución de ocsp
-			List<String> listUrlDistributionPointOCSPWithoutDuplicate = listUrlDistributionPointOCSPResult.stream().distinct().collect(Collectors.toList());
-			for (String urlDistributionPointOCSP: listUrlDistributionPointOCSPWithoutDuplicate) {
-				listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlDistributionPointOCSP, DISTRIBUTIONPOINTOCSP));
-			}
-			
-			// Almacenamos los resultados de los test
-			externalAccessRepository.saveAll(listExternalAccessResult);
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
 		
+	}
+
+	/**
+	 * Method that iterate all url and obtain external access.
+	 *
+	 * @param listUrlDistributionPointDPResult parameter that store all url valid who distribution point.
+	 * @param listUrlIssuerResult parameter that store all url valid who issuer.
+	 * @param listUrlDistributionPointCRLResult parameter that store all url valid who CRL.
+	 * @param listUrlDistributionPointOCSPResult parameter that store all url valid who OCSP.
+	 * @param listExternalAccessResult parameter that store all external access.
+	 */
+	private void iterateAllUrl(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, List<ExternalAccess> listExternalAccessResult) {
+		// Eliminamos los duplicados en puntos de distribución
+		List<String> listUrlDistributionPointDPWithoutDuplicate = listUrlDistributionPointDPResult.stream().distinct().collect(Collectors.toList());
+		for (String urlDistributionPoint: listUrlDistributionPointDPWithoutDuplicate) {
+			listExternalAccessResult.add(this.getExternalAccess(urlDistributionPoint));
+		}
+		
+		// Eliminamos los duplicados en puntos de distribución de issuers alternative name
+		List<String> listUrlIssuerWithoutDuplicate = listUrlIssuerResult.stream().distinct().collect(Collectors.toList());
+		for (String urlIssuerAlternativeName: listUrlIssuerWithoutDuplicate) {
+			listExternalAccessResult.add(this.getExternalAccess(urlIssuerAlternativeName));
+		}
+		
+		// Eliminamos los duplicados en puntos de distribución de crl
+		List<String> listUrlDistributionPointCRLWithoutDuplicate = listUrlDistributionPointCRLResult.stream().distinct().collect(Collectors.toList());
+		for (String urlDistributionPointCRL: listUrlDistributionPointCRLWithoutDuplicate) {
+			listExternalAccessResult.add(this.getExternalAccess(urlDistributionPointCRL));
+		}
+		
+		// Eliminamos los duplicados en puntos de distribución de ocsp
+		List<String> listUrlDistributionPointOCSPWithoutDuplicate = listUrlDistributionPointOCSPResult.stream().distinct().collect(Collectors.toList());
+		for (String urlDistributionPointOCSP: listUrlDistributionPointOCSPWithoutDuplicate) {
+			listExternalAccessResult.add(this.getExternalAccess(urlDistributionPointOCSP));
+		}
+	}
+
+	/**
+	 * Method that iterate all url, obtain external access and realize test conection.
+	 *
+	 * @param listUrlDistributionPointDPResult parameter that store all url valid who distribution point.
+	 * @param listUrlIssuerResult parameter that store all url valid who issuer.
+	 * @param listUrlDistributionPointCRLResult parameter that store all url valid who CRL.
+	 * @param listUrlDistributionPointOCSPResult parameter that store all url valid who OCSP.
+	 * @param listExternalAccessResult parameter that store all external access.
+	 */
+	private void iterateAllUrlAndTestConn(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, List<ExternalAccess> listExternalAccessResult) {
+		// Eliminamos los duplicados en puntos de distribución
+		List<String> listUrlDistributionPointDPWithoutDuplicate = listUrlDistributionPointDPResult.stream().distinct().collect(Collectors.toList());
+		for (String urlDistributionPoint: listUrlDistributionPointDPWithoutDuplicate) {
+			listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlDistributionPoint, DISTRIBUTIONPOINT));
+		}
+		
+		// Eliminamos los duplicados en puntos de distribución de issuers alternative name
+		List<String> listUrlIssuerWithoutDuplicate = listUrlIssuerResult.stream().distinct().collect(Collectors.toList());
+		for (String urlIssuerAlternativeName: listUrlIssuerWithoutDuplicate) {
+			listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlIssuerAlternativeName, ISSUERALTERNATIVENAME));
+		}
+		
+		// Eliminamos los duplicados en puntos de distribución de crl
+		List<String> listUrlDistributionPointCRLWithoutDuplicate = listUrlDistributionPointCRLResult.stream().distinct().collect(Collectors.toList());
+		for (String urlDistributionPointCRL: listUrlDistributionPointCRLWithoutDuplicate) {
+			listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlDistributionPointCRL, DISTRIBUTIONPOINTCRL));
+		}
+		
+		// Eliminamos los duplicados en puntos de distribución de ocsp
+		List<String> listUrlDistributionPointOCSPWithoutDuplicate = listUrlDistributionPointOCSPResult.stream().distinct().collect(Collectors.toList());
+		for (String urlDistributionPointOCSP: listUrlDistributionPointOCSPWithoutDuplicate) {
+			listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlDistributionPointOCSP, DISTRIBUTIONPOINTOCSP));
+		}
 	}
 
 	/**
@@ -724,13 +826,19 @@ public class ExternalAccessService implements IExternalAccessService {
 		@Override
 		public void run() {
 			switch (this.operation) {
-				case NumberConstants.NUM1:
+				case OPERATION1:
 					prepareUrlExternalAccessAfterInitPlatform();
 					break;
-				
-				case NumberConstants.NUM2:
+				case OPERATION2:
 					try {
-						prepareUrlExternalAccessForTSL(tslObject);
+						prepareUrlExternalAccessToTSL(tslObject);
+					} catch (TSLCertificateValidationException e) {
+						LOGGER.error(e);
+					}
+					break;
+				case OPERATION3:
+					try {
+						prepareUrlExternalAccessToDelete(tslObject);
 					} catch (TSLCertificateValidationException e) {
 						LOGGER.error(e);
 					}
@@ -738,7 +846,6 @@ public class ExternalAccessService implements IExternalAccessService {
 				default:
 					break;
 			}
-			
 		}
 	}
 }

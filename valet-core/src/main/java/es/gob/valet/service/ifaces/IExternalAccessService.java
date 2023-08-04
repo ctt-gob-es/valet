@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/07/2023.</p>
  * @author Gobierno de España.
- * @version 1.6, 03/08/2023.
+ * @version 1.7, 04/08/2023.
  */
 package es.gob.valet.service.ifaces;
 
@@ -38,7 +38,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the ExternalAccess entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 03/08/2023.
+ * @version 1.7, 04/08/2023.
  */
 public interface IExternalAccessService {
 	
@@ -87,13 +87,14 @@ public interface IExternalAccessService {
 	void extractUrlToDistributionPoints(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, ITSLObject tslObject) throws TSLCertificateValidationException;
 	
 	/**
-	 * Method that iterate all url obtains from distribution points.
+	 * Method that make changes in external access. We can save/update externall access or delete. Here we will check for indeterminism over operations on the EXTERNAL_ACCCESS table.
 	 * 
 	 * @param listUrlDistributionPointDPResult parameter that store all url valid who distribution point.
 	 * @param listUrlIssuerResult parameter that store all url valid who issuer.
 	 * @param listUrlDistributionPointCRLResult parameter that store all url valid who CRL.
 	 * @param listUrlDistributionPointOCSPResult parameter that store all url valid who OCSP.
+	 * @param action parameter that contain action to realize.
 	 */
-	void iterateAllUrl(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult);
+	void makeChangesToExternalAccess(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, String action);
 	
 }
