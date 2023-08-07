@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 04/08/2023.
+ * @version 1.8, 07/08/2023.
  */
 package es.gob.valet.service.impl;
 
@@ -43,6 +43,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
@@ -72,8 +73,6 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
@@ -107,7 +106,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 04/08/2023.
+ * @version 1.8, 07/08/2023.
  */
 @Service("ExternalAccessService")
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -205,9 +204,9 @@ public class ExternalAccessService implements IExternalAccessService {
 	/**
 	 * Method that is executed after putting the all beans spring in service.
 	 */
-	@EventListener
-	public void afterConstruct(ContextRefreshedEvent event) {
-		// Después de haber inicializado correctamente todo el contexto de spring, realizamos los test de conexión a servicios externos. 
+	@PostConstruct
+	public void init() {
+		// Antes poner en servicio este bean de spring, realizaremos los test de conexión a servicios externos.
 		Thread externalAccessServiceThread = new ExternalAccessServiceThread(OPERATION1, null);
 		externalAccessServiceThread.start();
 	}
