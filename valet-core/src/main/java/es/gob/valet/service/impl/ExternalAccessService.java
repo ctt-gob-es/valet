@@ -75,6 +75,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,6 +92,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.repository.ExternalAccessRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.ExternalAccessTablesRepository;
+import es.gob.valet.persistence.configuration.model.specification.ExternalAccessSpecification;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.service.ifaces.IExternalAccessService;
@@ -106,7 +108,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 07/08/2023.
+ * @version 1.9, 08/08/2023.
  */
 @Service("ExternalAccessService")
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -140,6 +142,8 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	@Autowired
 	private ITslDataService iTslDataService;
+	
+	private ExternalAccessSpecification externalAccessSpecification;
 	
 	/**
 	 * Attribute that represent protocol http.
@@ -222,6 +226,18 @@ public class ExternalAccessService implements IExternalAccessService {
 
 	/**
 	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
+	 */
+	@Override
+	public List<ExternalAccess>  getAllList(ExternalAccess request, Date fromDate,Date toDate) {
+		externalAccessSpecification = new ExternalAccessSpecification(request);
+		Specification<ExternalAccess> specificationExternalAccess = externalAccessSpecification.getExternalAccess(request, fromDate, toDate);
+		return externalAccessRepository.findAll(specificationExternalAccess);
+	}
+
+
+	/**
+	 * {@inheritDoc}
 	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getUrlDataById(java.lang.Long)
 	 */
 	@Override
@@ -239,6 +255,7 @@ public class ExternalAccessService implements IExternalAccessService {
 
 	}
 
+	
 	/**
 	 * 
 	 * {@inheritDoc}

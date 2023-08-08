@@ -21,7 +21,7 @@
 		<valet.project.name>valET</valet.project.name>
 
 		<!-- Propiedades relativas a la configuración Java. -->
-		<java.1.8.home>C:\Java\jdk1.8.0_131</java.1.8.home>
+		<java.1.8.home>C:\Users\sonia.camacho\Documents\programas\java\jdk1.8.0_131</java.1.8.home>
 		<java.1.8.version>1.8.0_131</java.1.8.version>
 		<!-- Para la correcta ejecución maven, establecer la variable java.1.8.home 
 			hacia la ruta absoluta de donde se disponga la jdk -->

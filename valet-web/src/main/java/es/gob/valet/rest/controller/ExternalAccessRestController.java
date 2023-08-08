@@ -55,9 +55,17 @@ import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 import es.gob.valet.service.ifaces.IExternalAccessService;
 
 /**
- * <p>Class that manages the REST request related to the Applications administration and JSON communication.</p>
- * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 26/07/2023.
+ * <p>
+ * Class that manages the REST request related to the Applications
+ * administration and JSON communication.
+ * </p>
+ * <b>Project:</b>
+ * <p>
+ * Platform for detection and validation of certificates recognized in European
+ * TSL.
+ * </p>
+ * 
+ * @version 1.1, 08/08/2023.
  */
 @RestController
 public class ExternalAccessRestController {
@@ -66,79 +74,51 @@ public class ExternalAccessRestController {
 	 * Attribute that represents the object that manages the log of the class.
 	 */
 	private static final Logger LOGGER = LogManager.getLogger(ExternalAccessRestController.class);
-	
+
 	/**
-	 * Attribute that represents the value search entered for the user in the input search.
+	 * Attribute that represents the value search entered for the user in the input
+	 * search.
 	 */
 	private static final String REQ_PARAM_VALUE_SEARCH = "valueSearch";
-	
+
 	/**
-	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
+	 * Attribute that represents the injected interface that provides CRUD
+	 * operations for the persistence.
 	 */
 	@Autowired
 	private IExternalAccessService iExternalAccessService;
-	
+
 	/**
-	 * Method that search in tree value enter for user in searching. 
+	 * Method that search in tree value enter for user in searching.
 	 * 
 	 * @param valueSearch parameter that contain value enter for user in searching.
-	 * @param response parameter that represents posibility errors in process.
-	 * @return 
+	 * @param response    parameter that represents posibility errors in process.
+	 * @return
 	 * @return tree with nodes found.
 	 */
 
 	@RequestMapping(value = "/searchExternalAccess", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public DataTablesOutput<ExternalAccess> searchExternalAccess(@RequestBody ExternalAccessForm externalAccessForm, HttpServletResponse response) {
-		// IExternalAccessService appService = ManagerPersistenceConfigurationServices.getInstance().getExternalAccessValetService();
+	public DataTablesOutput<ExternalAccess> searchExternalAccess(@RequestBody ExternalAccessForm externalAccessForm,
+			HttpServletResponse response) {
+		// IExternalAccessService appService =
+		// ManagerPersistenceConfigurationServices.getInstance().getExternalAccessValetService();
 		return null;
 	}
 
-	
 	/**
 	 * Method to load the datatable with all the mappings corresponding to the selected TSL .
 	 * @param idCountryRegion Parameter that represents a country/region identifier.
 	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
 	 */
-	/*
-	 * @RequestMapping(path = "/externalAccessDatatable", method =
-	 * RequestMethod.GET)
-	 * 
-	 * @JsonView(DataTablesOutput.View.class) public @ResponseBody
-	 * DataTablesOutput<ExternalAccess> loadExternalAccessBySearch(
-	 * 
-	 * @RequestParam("url") String url,
-	 * 
-	 * @RequestParam("dateFrom") Date dateFrom,
-	 * 
-	 * @RequestParam("dateTo") Date dateTo, @RequestParam("state") Boolean state) {
-	 * DataTablesOutput<ExternalAccess> dtOutput = new
-	 * DataTablesOutput<ExternalAccess>();
-	 * 
-	 * @NotEmpty DataTablesInput input = new DataTablesInput();
-	 * IExternalAccessService externalAccessService =
-	 * ManagerPersistenceConfigurationServices.getInstance().
-	 * getExternalAccessValetService();
-	 * 
-	 * List<ExternalAccess> listExternalAccess = new ArrayList<ExternalAccess>();
-	 * 
-	 * if (url != null) { // obtenemos todos los mapeos de esa url
-	 * listExternalAccess = (List<ExternalAccess>)
-	 * externalAccessService.getDataUrlByUrl(url);
-	 * 
-	 * dtOutput.setData(listExternalAccess); }
-	 * 
-	 * dtOutput = externalAccessService.getAll(input);
-	 * 
-	 * return dtOutput; }
-	 */
 	@RequestMapping(value = "/externalAccessDatatable", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody DataTablesOutput<ExternalAccess> loadExternalAccessBySearch(@RequestBody ExternalAccessForm externalAccessForm) {
 		DataTablesOutput<ExternalAccess> dtOutput = new DataTablesOutput<ExternalAccess>();
-		@NotEmpty DataTablesInput input = new DataTablesInput();
 		
 		List<ExternalAccess> listExternalAccess = new ArrayList<ExternalAccess>();
 		Date toDate =null;
 		Date fromDate=null;
+		ExternalAccess externalAccess = new ExternalAccess();
+
 		try {
 			
 			if((externalAccessForm.getDateFrom()!=null && externalAccessForm.getDateFrom()!="")) {
@@ -151,14 +131,15 @@ public class ExternalAccessRestController {
 			if(toDate!=null && fromDate!=null && !fromDate.before(toDate)) {
 				throw new Exception("La fecha 'desde' debe ser anterior a la fecha 'hasta'.");
 			}
-		if (externalAccessForm.getUrl() != null) {
+			if(externalAccessForm.getStateConn() !=null) {
+				externalAccess.setStateConn(externalAccessForm.getStateConn());
+			}
+			if(externalAccessForm.getUrl() !=null || !externalAccessForm.getUrl().isEmpty()) {
+				externalAccess.setUrl(externalAccessForm.getUrl());
+			}
 			// obtenemos todos los mapeos de esa url
-			listExternalAccess = (List<ExternalAccess>) iExternalAccessService.getDataUrlByUrl(externalAccessForm.getUrl());
-
+			listExternalAccess = iExternalAccessService.getAllList(externalAccess,fromDate,toDate);
 			dtOutput.setData(listExternalAccess);
-		}
-		
-		dtOutput = iExternalAccessService.getAll(input);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -169,11 +150,11 @@ public class ExternalAccessRestController {
 		}
 	
 	}
-	
-	
-	
+
 	/**
-	 * Method that maps the list applications to the controller and forwards the list of applications to the view.
+	 * Method that maps the list applications to the controller and forwards the
+	 * list of applications to the view.
+	 * 
 	 * @param input Holder object for datatable attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
@@ -183,42 +164,23 @@ public class ExternalAccessRestController {
 		DataTablesOutput<ExternalAccess> tablaVacia = new DataTablesOutput<ExternalAccess>();
 		return tablaVacia;
 	}
-		
-	
+
 	/**
-	 * Method that maps the try connection  to the controller and saves it
-	 * in the persistence.
+	 * Method that maps the try connection to the controller and saves it in the
+	 * persistence.
 	 *
-	 * @param appForm
-	 *            Object that represents the backing application form.
-	
+	 * @param appForm Object that represents the backing application form.
+	 * 
 	 * @return {@link DataTablesOutput<ApplicationValet>}
 	 */
 
 	@RequestMapping(value = "/tryConn", method = RequestMethod.POST)
-	public @ResponseBody DataTablesOutput<ApplicationValet> tryConn(@RequestParam(value="valores") String[] valores) {
+	public @ResponseBody DataTablesOutput<ApplicationValet> tryConn(@RequestParam(value = "valores") String[] valores) {
 		DataTablesOutput<ApplicationValet> dtOutput = new DataTablesOutput<>();
-	
+
 		return dtOutput;
 
 	}
-	
-	/**
-	 * Method that maps the report externalAccess to the controller and saves it
-	 * in the persistence.
-	 *
-	 * @param appForm
-	 *            Object that represents the backing application form.
-	
-	 * @return {@link DataTablesOutput<ApplicationValet>}
-	 */
-	@JsonView(DataTablesOutput.View.class)
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/report", method = RequestMethod.POST)
-	public @ResponseBody DataTablesOutput<ApplicationValet> reportExternalAccess(@RequestBody ExternalAccessForm externalAccessForm) {
-		DataTablesOutput<ApplicationValet> dtOutput = new DataTablesOutput<>();
-	
-		return dtOutput;
 
-	}
+	
 }

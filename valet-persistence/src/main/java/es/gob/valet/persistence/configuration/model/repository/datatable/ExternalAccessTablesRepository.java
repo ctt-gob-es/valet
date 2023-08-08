@@ -37,7 +37,7 @@ import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 /** 
  * <p>Interface that provides CRUD functionality for the ExternalAccess entity and DataTables.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18 sept. 2018.
+ * @version 1.0, 08/08/2023.
  */
 public interface ExternalAccessTablesRepository extends DataTablesRepository<ExternalAccess, Long> {
 

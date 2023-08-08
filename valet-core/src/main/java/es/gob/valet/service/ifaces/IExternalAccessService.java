@@ -25,6 +25,7 @@
  */
 package es.gob.valet.service.ifaces;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -38,7 +39,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the ExternalAccess entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 04/08/2023.
+ * @version 1.8, 08/08/2023.
  */
 public interface IExternalAccessService {
 	
@@ -96,5 +97,11 @@ public interface IExternalAccessService {
 	 * @param action parameter that contain action to realize.
 	 */
 	void makeChangesToExternalAccess(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, String action);
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
+	 */
+	List<ExternalAccess> getAllList(ExternalAccess request, Date fromDate, Date toDate);
 	
 }

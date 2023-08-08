@@ -134,23 +134,7 @@ function createDatatable(){
 		responsive: true, 
 		altEditor: true,
 	    autoWidth: false, // This parameter must be set to false
-		buttons: [{text: btnGenerateReport,name: 'report', 
-			action: function ( e, dt, node, config ) {
-				  
-		    	$.ajax(actionReport, {
-				dataType: 'json',
-				contentType:'application/json',
-				data : JSON.stringify($("#externalAccessForm").serializeJSON()),
-		    		type : 'POST',
-	       		success: function(data){
-											
-		    		},
-		    		error: function(data){
-
-		    		}
-		    });
-	        }
-		}, 
+		buttons: [{ extend: 'excelHtml5', text: btnGenerateReport }, 
 			{text:btnTryConn, name:'tryConn', 
 				action: function ( e, dt, node, config ) {
 					debugger;
@@ -259,10 +243,7 @@ function search(){
 	 var dateFrom =$('#dateFromId').val();
 	 var dateTo =$('#dateToId').val();
 	 var state = $('#stateConn').val();
-	 if(url=="" && dateFrom =="" && dateTo=="" && state==""){
-		 $('#messageSearchExternalAccess').html("Es necesario rellenar al menos un campo del formulario de búsqueda.");
-		 $('#messageSearchExternalAccess').addClass('alert alert-danger');
-	 }else{
+	 
 		//borramos los datos de la tabla anteriores
 		 tbl.clear().draw();
 		//llamamos al controlador para recuperar la información
@@ -289,9 +270,6 @@ function search(){
 				}
 			}
 		 });//fin ajax
-
-	 }
-	 
 }
 
 function cleanForm(f){

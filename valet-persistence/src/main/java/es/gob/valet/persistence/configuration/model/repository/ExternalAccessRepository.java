@@ -29,6 +29,7 @@ import java.util.List;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
@@ -38,11 +39,11 @@ import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 /**
  * <p>Interface that provides CRUD functionality for the ExternalAccess entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.1, 08/08/2023.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public interface ExternalAccessRepository extends JpaRepository<ExternalAccess, Long> {
+public interface ExternalAccessRepository extends JpaRepository<ExternalAccess, Long>, JpaSpecificationExecutor<ExternalAccess> {
 
 	/**
 	 *	Method that gets all the urls.
