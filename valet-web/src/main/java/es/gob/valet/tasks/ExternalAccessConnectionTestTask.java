@@ -24,7 +24,9 @@
  */
 package es.gob.valet.tasks;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +37,7 @@ import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.task.Task;
 import es.gob.valet.service.ifaces.IExternalAccessService;
+import es.gob.valet.service.impl.ExternalAccessService;
 import es.gob.valet.spring.config.ApplicationContextProvider;
 
 /**
@@ -96,8 +99,7 @@ public class ExternalAccessConnectionTestTask extends Task {
 	 */
 	@Override
 	protected final void doActionOfTheTask() throws Exception {
-		// Realizamos el test de conexión y actualiazamos el resultado.
-		ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).prepareUrlExternalAccessForTask();
+		ApplicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class).operationsOnExternalAccess(ExternalAccessService.OPERATION4, null,null);
 	}
 
 }

@@ -80,19 +80,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.gob.valet.alarms.AlarmsManager;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
+import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
+import es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.repository.ExternalAccessRepository;
+import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.ExternalAccessTablesRepository;
 import es.gob.valet.persistence.configuration.model.specification.ExternalAccessSpecification;
+import es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.service.ifaces.IExternalAccessService;
@@ -142,6 +147,9 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	@Autowired
 	private ITslDataService iTslDataService;
+	
+	@Autowired
+	private TslCountryRegionRepository tslCountryRegionRepository;
 	
 	private ExternalAccessSpecification externalAccessSpecification;
 	
@@ -204,6 +212,10 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * Constant attribute that represents the token '3'.
 	 */
 	public static final int OPERATION3 = 3;
+
+	public static final int OPERATION4 = 4;
+	
+	public static final int OPERATION5 = 5;
 	
 	/**
 	 * Method that is executed after putting the all beans spring in service.
@@ -254,14 +266,13 @@ public class ExternalAccessService implements IExternalAccessService {
 		return externalAccessRepository.findByUrl(url);
 
 	}
-
 	
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getExternalAccessAndTestConn(java.lang.String, java.lang.String)
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getExternalAccessAndTestConn(java.lang.String, java.lang.String, ExternalAccessDTO)
 	 */
-	public ExternalAccess getExternalAccessAndTestConn(String uriTslLocation, String originUrl) {
+	public ExternalAccess getExternalAccessAndTestConn(String uriTslLocation, String originUrl, ExternalAccessDTO externalAccessDTO) {
 		ExternalAccess externalAccess = externalAccessRepository.findByUrl(uriTslLocation);
 		// Realizamos el test de conexión con la url
 		boolean stateConn = this.testConnUrl(uriTslLocation);
@@ -273,6 +284,9 @@ public class ExternalAccessService implements IExternalAccessService {
 			externalAccess.setOriginUrl(originUrl);
 			externalAccess.setStateConn(stateConn);
 			externalAccess.setLastConn(new Date());
+			TslCountryRegion tslCountryRegion = new TslCountryRegion();
+			tslCountryRegion.setIdTslCountryRegion(externalAccessDTO.getIdCountryRegion());
+			externalAccess.setTslCountryRegion(tslCountryRegion);
 		} else {
 			externalAccess.setStateConn(stateConn);
 			externalAccess.setLastConn(new Date());
@@ -417,22 +431,47 @@ public class ExternalAccessService implements IExternalAccessService {
 		// Obtenemos todas las url de la BD.
 		List<ExternalAccess> listExternalAccess = externalAccessRepository.findAll();
 		
-		List<String> listlistExternalAccessDistributionPoint = listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINT)).map(ExternalAccess::getUrl).collect(Collectors.toList());
-		List<String> listlistExternalAccessIssuerAlternativeName = listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(ISSUERALTERNATIVENAME)).map(ExternalAccess::getUrl).collect(Collectors.toList());
-		List<String> listlistExternalAccessDistributionPointCRL = listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINTCRL)).map(ExternalAccess::getUrl).collect(Collectors.toList());
-		List<String> listlistExternalAccessDistributionPointOCSP = listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINTOCSP)).map(ExternalAccess::getUrl).collect(Collectors.toList());
+		ExternalAccessDTO externalAccessDTO = new ExternalAccessDTO();
+		externalAccessDTO.setListUrlDistributionPointCRLResult(listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINTCRL)).map(ExternalAccess::getUrl).collect(Collectors.toList()));
+		externalAccessDTO.setListUrlDistributionPointDPResult(listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINT)).map(ExternalAccess::getUrl).collect(Collectors.toList()));
+		externalAccessDTO.setListUrlDistributionPointOCSPResult(listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINTOCSP)).map(ExternalAccess::getUrl).collect(Collectors.toList()));
+		externalAccessDTO.setListUrlIssuerResult(listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(ISSUERALTERNATIVENAME)).map(ExternalAccess::getUrl).collect(Collectors.toList()));
 		
-		this.makeChangesToExternalAccess(listlistExternalAccessDistributionPoint, listlistExternalAccessIssuerAlternativeName, listlistExternalAccessDistributionPointCRL, listlistExternalAccessDistributionPointOCSP, ITERATEANDSAVEURL);
+		this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDSAVEURL);
+		
+		String messageHead = "La alarma se envió desde la tarea de Test de conexión a accesos externos. Las url´s que se muestran a continuación han fallado en los test de conexión.";
+		this.launchAlarmIfTestConnFail(externalAccessDTO.getListExternalAccessResult(), messageHead);
+		
 		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL407, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
 	}
 	
+	public void prepareUrlExternalAccessForTestConn(List<Long> listIdUrl) {
+		long timeProcess = System.currentTimeMillis();
+//		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL406));
+		if(null != listIdUrl && !listIdUrl.isEmpty()) {
+			// Obtenemos todas las url de la BD.
+			List<ExternalAccess> listExternalAccess = externalAccessRepository.findByIdUrlInQuery(listIdUrl);
+			
+			ExternalAccessDTO externalAccessDTO = new ExternalAccessDTO();
+			externalAccessDTO.setListUrlDistributionPointCRLResult(listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINTCRL)).map(ExternalAccess::getUrl).collect(Collectors.toList()));
+			externalAccessDTO.setListUrlDistributionPointDPResult(listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINT)).map(ExternalAccess::getUrl).collect(Collectors.toList()));
+			externalAccessDTO.setListUrlDistributionPointOCSPResult(listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(DISTRIBUTIONPOINTOCSP)).map(ExternalAccess::getUrl).collect(Collectors.toList()));
+			externalAccessDTO.setListUrlIssuerResult(listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(ISSUERALTERNATIVENAME)).map(ExternalAccess::getUrl).collect(Collectors.toList()));
+			
+			this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDSAVEURL);
+			
+			String messageHead = "La alarma se envió desde la funcionaliad 'Probar Conexiones'. Las url´s que se muestran a continuación han fallado en los test de conexión.";
+			this.launchAlarmIfTestConnFail(externalAccessDTO.getListExternalAccessResult(), messageHead);
+		}
+//		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL407, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
+	}
 	
 	/**
 	 * Method that obtain url with distribution point TSL and realize test about this url.
 	 * 
 	 * @throws Exception Any exception that occurs during the execution.
 	 */
-	public void prepareUrlExternalAccessAfterInitPlatform() {
+	public void prepareUrlExternalAccessInitPlatform() {
 		long timeProcess = System.currentTimeMillis();
 		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL408));
 		try {
@@ -441,22 +480,53 @@ public class ExternalAccessService implements IExternalAccessService {
     		// Si la lista obtenida no es nula ni vacía, contianuamos.
     		if (tcrList != null && !tcrList.isEmpty()) {
     			
-    			List<String> listUrlDistributionPointDPResult = new ArrayList<>();
-    			List<String> listUrlIssuerResult = new ArrayList<>();
-    			List<String> listUrlDistributionPointCRLResult = new ArrayList<>();
-    			List<String> listUrlDistributionPointOCSPResult = new ArrayList<>();
-    			
     			// Obtenemos todas las url de todas las TSL.
-    			this.obtainAllUrlToRegionTSL(tcrList, listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult);
+    			List<ExternalAccessDTO> listExternalAccessDTO = this.obtainAllUrlToRegionTSL(tcrList);
     			
-    			// Recorremos todas las urls obtenidas de las TSL.
-    			this.makeChangesToExternalAccess(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, ITERATEANDSAVEURL);
+    			// Recorremos todas las urls obtenidas de las TSL y almacenamos el resultado de haber realizado cambios en accesos externos.
+    			List<ExternalAccess> listExternalAccessResult = new ArrayList<>();
+    			for (ExternalAccessDTO externalAccessDTO: listExternalAccessDTO) {
+    				this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDSAVEURL);
+    				listExternalAccessResult.addAll(externalAccessDTO.getListExternalAccessResult());
+    			}
+    			
+    			String messageHead = "La alarma se envió desde el inicio de la plataforma. Las url´s que se muestran a continuación han fallado en los test de conexión.";
+    			this.launchAlarmIfTestConnFail(listExternalAccessResult, messageHead);
     		}
 		} catch (Exception e) {
 			String msg = Language.getResCoreTsl(ICoreTslMessages.LOGMTSL400);
 			LOGGER.error(msg, e);
 		}
 		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL409, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
+	}
+
+	private void launchAlarmIfTestConnFail(List<ExternalAccess> listExternalAccessResult, String messageHead) {
+		// Filtramos aquellos accesos externos resultantes que hayan dado error en el test de conexión. Si es asi enviaremos la alarma.
+		StringBuffer messageMail = new StringBuffer();
+		if(null != listExternalAccessResult.stream().filter(p -> p.getStateConn() == false).findAny()) {
+			messageMail.append(messageHead);
+			messageMail.append(System.lineSeparator());
+			List<TslCountryRegion> listTslCountryRegion = tslCountryRegionRepository.findAll();
+			for (TslCountryRegion tslCountryRegion: listTslCountryRegion) {
+				List<ExternalAccess> listExternalAccessTestConnKo =  listExternalAccessResult.stream().filter(p -> p.getStateConn() == false && p.getTslCountryRegion().getIdTslCountryRegion().equals(tslCountryRegion.getIdTslCountryRegion())).collect(Collectors.toList());
+				if(null != listExternalAccessTestConnKo && !listExternalAccessTestConnKo.isEmpty()) {
+					this.createMessageMail(tslCountryRegion, listExternalAccessTestConnKo, messageMail);
+				}
+			}
+			// Lanzamos la alarma correspondiente...
+			AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM009_CONNECTION_FAIL, messageMail.toString());
+		}
+	}
+
+	private void createMessageMail(TslCountryRegion tslCountryRegion, List<ExternalAccess> listExternalAccessTestConnKo, StringBuffer messageMail) {
+		messageMail.append(System.lineSeparator());
+		messageMail.append("País: " + tslCountryRegion.getCountryRegionName());
+		for (ExternalAccess externalAccess: listExternalAccessTestConnKo) {
+			messageMail.append(System.lineSeparator());
+			messageMail.append(externalAccess.getUrl());
+			messageMail.append(";");
+			messageMail.append(new UtilsDate(externalAccess.getLastConn()));
+		}
 	}
 
 	/**
@@ -468,12 +538,9 @@ public class ExternalAccessService implements IExternalAccessService {
 	public void prepareUrlExternalAccessToTSL(ITSLObject tslObject) throws TSLCertificateValidationException {
 		long timeProcess = System.currentTimeMillis();
 		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL410));
-		List<String> listUrlDistributionPointDPResult = new ArrayList<>();
-		List<String> listUrlIssuerResult = new ArrayList<>();
-		List<String> listUrlDistributionPointCRLResult = new ArrayList<>();
-		List<String> listUrlDistributionPointOCSPResult = new ArrayList<>();
-		this.extractUrlToDistributionPoints(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, tslObject);
-		this.makeChangesToExternalAccess(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, ITERATEANDSAVEURL);
+		ExternalAccessDTO externalAccessDTO = new ExternalAccessDTO();
+		this.extractUrlToDistributionPoints(externalAccessDTO, tslObject);
+		this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDSAVEURL);
 		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL411, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
 	}
 
@@ -485,110 +552,95 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	public void prepareUrlExternalAccessToDelete(ITSLObject tslObject) throws TSLCertificateValidationException {
 		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL412, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory() }));
-		List<String> listUrlDistributionPointDPResult = new ArrayList<>();
-		List<String> listUrlIssuerResult = new ArrayList<>();
-		List<String> listUrlDistributionPointCRLResult = new ArrayList<>();
-		List<String> listUrlDistributionPointOCSPResult = new ArrayList<>();
-		this.extractUrlToDistributionPoints(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, tslObject);
-		this.makeChangesToExternalAccess(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, ITERATEANDDELETEURL);
+		ExternalAccessDTO externalAccessDTO = new ExternalAccessDTO();
+		this.extractUrlToDistributionPoints(externalAccessDTO, tslObject);
+		this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDDELETEURL);
 		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL413, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory() }));
 	}
 	
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ifaces.IExternalAccessService#makeChangesToExternalAccess(java.util.List, java.util.List, java.util.List, java.util.List, java.lang.String)
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#makeChangesToExternalAccess(ExternalAccessDTO, java.lang.String)
 	 */
 	@Transactional(propagation = Propagation.REQUIRED)
-	public synchronized void makeChangesToExternalAccess(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, String action) {
+	public synchronized void makeChangesToExternalAccess(ExternalAccessDTO externalAccessDTO, String action) {
 		try {
-			List<ExternalAccess> listExternalAccessResult = new ArrayList<>();
 			if(action.equals(ITERATEANDSAVEURL)) {
 				// Recorreremos todas las urls obtenidas y realizamos test de conexión.
-				this.iterateAllUrlAndTestConn(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, listExternalAccessResult);
+				this.iterateAllUrlAndTestConn(externalAccessDTO);
 				
 				// Almacenamos los resultados de los test
-				externalAccessRepository.saveAll(listExternalAccessResult);
+				externalAccessRepository.saveAll(externalAccessDTO.getListExternalAccessResult());
 			} else if(action.equals(ITERATEANDDELETEURL)) {
 				// Recorreremos todas las urls obtenidas.
-				this.iterateAllUrl(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, listExternalAccessResult);
+				this.iterateAllUrl(externalAccessDTO);
 				
 				// Eliminamos los puntos de distribución de la TSL.
-				externalAccessRepository.deleteAll(listExternalAccessResult);
+				externalAccessRepository.deleteAll(externalAccessDTO.getListExternalAccessResult());
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
-		
 	}
 
 	/**
 	 * Method that iterate all url and obtain external access.
-	 *
-	 * @param listUrlDistributionPointDPResult parameter that store all url valid who distribution point.
-	 * @param listUrlIssuerResult parameter that store all url valid who issuer.
-	 * @param listUrlDistributionPointCRLResult parameter that store all url valid who CRL.
-	 * @param listUrlDistributionPointOCSPResult parameter that store all url valid who OCSP.
-	 * @param listExternalAccessResult parameter that store all external access.
+	 * @param externalAccessDTO TODO
 	 */
-	private void iterateAllUrl(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, List<ExternalAccess> listExternalAccessResult) {
+	private void iterateAllUrl(ExternalAccessDTO externalAccessDTO) {
 		// Eliminamos los duplicados en puntos de distribución
-		List<String> listUrlDistributionPointDPWithoutDuplicate = listUrlDistributionPointDPResult.stream().distinct().collect(Collectors.toList());
+		List<String> listUrlDistributionPointDPWithoutDuplicate = externalAccessDTO.getListUrlDistributionPointDPResult().stream().distinct().collect(Collectors.toList());
 		for (String urlDistributionPoint: listUrlDistributionPointDPWithoutDuplicate) {
-			listExternalAccessResult.add(this.getExternalAccess(urlDistributionPoint));
+			externalAccessDTO.getListExternalAccessResult().add(this.getExternalAccess(urlDistributionPoint));
 		}
 		
 		// Eliminamos los duplicados en puntos de distribución de issuers alternative name
-		List<String> listUrlIssuerWithoutDuplicate = listUrlIssuerResult.stream().distinct().collect(Collectors.toList());
+		List<String> listUrlIssuerWithoutDuplicate = externalAccessDTO.getListUrlIssuerResult().stream().distinct().collect(Collectors.toList());
 		for (String urlIssuerAlternativeName: listUrlIssuerWithoutDuplicate) {
-			listExternalAccessResult.add(this.getExternalAccess(urlIssuerAlternativeName));
+			externalAccessDTO.getListExternalAccessResult().add(this.getExternalAccess(urlIssuerAlternativeName));
 		}
 		
 		// Eliminamos los duplicados en puntos de distribución de crl
-		List<String> listUrlDistributionPointCRLWithoutDuplicate = listUrlDistributionPointCRLResult.stream().distinct().collect(Collectors.toList());
+		List<String> listUrlDistributionPointCRLWithoutDuplicate = externalAccessDTO.getListUrlDistributionPointCRLResult().stream().distinct().collect(Collectors.toList());
 		for (String urlDistributionPointCRL: listUrlDistributionPointCRLWithoutDuplicate) {
-			listExternalAccessResult.add(this.getExternalAccess(urlDistributionPointCRL));
+			externalAccessDTO.getListExternalAccessResult().add(this.getExternalAccess(urlDistributionPointCRL));
 		}
 		
 		// Eliminamos los duplicados en puntos de distribución de ocsp
-		List<String> listUrlDistributionPointOCSPWithoutDuplicate = listUrlDistributionPointOCSPResult.stream().distinct().collect(Collectors.toList());
+		List<String> listUrlDistributionPointOCSPWithoutDuplicate = externalAccessDTO.getListUrlDistributionPointOCSPResult().stream().distinct().collect(Collectors.toList());
 		for (String urlDistributionPointOCSP: listUrlDistributionPointOCSPWithoutDuplicate) {
-			listExternalAccessResult.add(this.getExternalAccess(urlDistributionPointOCSP));
+			externalAccessDTO.getListExternalAccessResult().add(this.getExternalAccess(urlDistributionPointOCSP));
 		}
 	}
 
 	/**
 	 * Method that iterate all url, obtain external access and realize test conection.
-	 *
-	 * @param listUrlDistributionPointDPResult parameter that store all url valid who distribution point.
-	 * @param listUrlIssuerResult parameter that store all url valid who issuer.
-	 * @param listUrlDistributionPointCRLResult parameter that store all url valid who CRL.
-	 * @param listUrlDistributionPointOCSPResult parameter that store all url valid who OCSP.
-	 * @param listExternalAccessResult parameter that store all external access.
+	 * @param externalAccessDTO TODO
 	 */
-	private void iterateAllUrlAndTestConn(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, List<ExternalAccess> listExternalAccessResult) {
+	private void iterateAllUrlAndTestConn(ExternalAccessDTO externalAccessDTO) {
 		// Eliminamos los duplicados en puntos de distribución
-		List<String> listUrlDistributionPointDPWithoutDuplicate = listUrlDistributionPointDPResult.stream().distinct().collect(Collectors.toList());
+		List<String> listUrlDistributionPointDPWithoutDuplicate = externalAccessDTO.getListUrlDistributionPointDPResult().stream().distinct().collect(Collectors.toList());
 		for (String urlDistributionPoint: listUrlDistributionPointDPWithoutDuplicate) {
-			listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlDistributionPoint, DISTRIBUTIONPOINT));
+			externalAccessDTO.getListExternalAccessResult().add(this.getExternalAccessAndTestConn(urlDistributionPoint, DISTRIBUTIONPOINT, externalAccessDTO));
 		}
 		
 		// Eliminamos los duplicados en puntos de distribución de issuers alternative name
-		List<String> listUrlIssuerWithoutDuplicate = listUrlIssuerResult.stream().distinct().collect(Collectors.toList());
+		List<String> listUrlIssuerWithoutDuplicate = externalAccessDTO.getListUrlIssuerResult().stream().distinct().collect(Collectors.toList());
 		for (String urlIssuerAlternativeName: listUrlIssuerWithoutDuplicate) {
-			listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlIssuerAlternativeName, ISSUERALTERNATIVENAME));
+			externalAccessDTO.getListExternalAccessResult().add(this.getExternalAccessAndTestConn(urlIssuerAlternativeName, ISSUERALTERNATIVENAME, externalAccessDTO));
 		}
 		
 		// Eliminamos los duplicados en puntos de distribución de crl
-		List<String> listUrlDistributionPointCRLWithoutDuplicate = listUrlDistributionPointCRLResult.stream().distinct().collect(Collectors.toList());
+		List<String> listUrlDistributionPointCRLWithoutDuplicate = externalAccessDTO.getListUrlDistributionPointCRLResult().stream().distinct().collect(Collectors.toList());
 		for (String urlDistributionPointCRL: listUrlDistributionPointCRLWithoutDuplicate) {
-			listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlDistributionPointCRL, DISTRIBUTIONPOINTCRL));
+			externalAccessDTO.getListExternalAccessResult().add(this.getExternalAccessAndTestConn(urlDistributionPointCRL, DISTRIBUTIONPOINTCRL, externalAccessDTO));
 		}
 		
 		// Eliminamos los duplicados en puntos de distribución de ocsp
-		List<String> listUrlDistributionPointOCSPWithoutDuplicate = listUrlDistributionPointOCSPResult.stream().distinct().collect(Collectors.toList());
+		List<String> listUrlDistributionPointOCSPWithoutDuplicate = externalAccessDTO.getListUrlDistributionPointOCSPResult().stream().distinct().collect(Collectors.toList());
 		for (String urlDistributionPointOCSP: listUrlDistributionPointOCSPWithoutDuplicate) {
-			listExternalAccessResult.add(this.getExternalAccessAndTestConn(urlDistributionPointOCSP, DISTRIBUTIONPOINTOCSP));
+			externalAccessDTO.getListExternalAccessResult().add(this.getExternalAccessAndTestConn(urlDistributionPointOCSP, DISTRIBUTIONPOINTOCSP, externalAccessDTO));
 		}
 	}
 
@@ -606,7 +658,8 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @throws TSLMalformedException if occurs any error.
 	 * @throws TSLCertificateValidationException if occurs any error.
 	 */
-	private void obtainAllUrlToRegionTSL(List<TslCountryRegion> tcrList, List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult) throws TSLCacheException, TSLArgumentException, TSLParsingException, TSLMalformedException, TSLCertificateValidationException {
+	private List<ExternalAccessDTO> obtainAllUrlToRegionTSL(List<TslCountryRegion> tcrList) throws TSLCacheException, TSLArgumentException, TSLParsingException, TSLMalformedException, TSLCertificateValidationException {
+		List<ExternalAccessDTO> listExternalAccessDTO = new ArrayList<>();
 		// Por cada una de las regiones almacenaremos las urls de acceso.
 		for (TslCountryRegion tcr: tcrList) {
 			if(null != tcr.getTslData().getIdTslData()) {
@@ -618,19 +671,23 @@ public class ExternalAccessService implements IExternalAccessService {
 				if (td != null) {
 					// Tratamos de parsearlo.
 					ITSLObject tslObject =  TSLManager.getInstance().buildAndCheckTSL(td);
-					this.extractUrlToDistributionPoints(listUrlDistributionPointDPResult, listUrlIssuerResult, listUrlDistributionPointCRLResult, listUrlDistributionPointOCSPResult, tslObject);
+					ExternalAccessDTO externalAccessDTO = new ExternalAccessDTO();
+					externalAccessDTO.setIdCountryRegion(tcr.getIdTslCountryRegion());
+					this.extractUrlToDistributionPoints(externalAccessDTO, tslObject);
+					listExternalAccessDTO.add(externalAccessDTO);
 				}
 				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL399, new Object[] { tcr.getCountryRegionCode(), (System.currentTimeMillis() - initProcess) }));
 			}
 		}
+		return listExternalAccessDTO;
 	}
 
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ifaces.IExternalAccessService#extractUrlToDistributionPoints(java.util.List, java.util.List, java.util.List, java.util.List, es.gob.valet.tsl.parsing.ifaces.ITSLObject)
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#extractUrlToDistributionPoints(ExternalAccessDTO, es.gob.valet.tsl.parsing.ifaces.ITSLObject)
 	 */
-	public void extractUrlToDistributionPoints(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, ITSLObject tslObject) throws TSLCertificateValidationException {
+	public void extractUrlToDistributionPoints(ExternalAccessDTO externalAccessDTO, ITSLObject tslObject) throws TSLCertificateValidationException {
 		// Si lo hemos conseguido parsear...
 		if (tslObject != null) {
 			// Accedemos a la url del punto de distribución en caso de que exista. Solo existe una por TSL.
@@ -638,7 +695,7 @@ public class ExternalAccessService implements IExternalAccessService {
 				for (int i = 0; i < tslObject.getSchemeInformation().getDistributionPoints().size(); i++) {
 					if (!tslObject.getSchemeInformation().getDistributionPoints().get(i).toString().endsWith(".pdf") && !tslObject.getSchemeInformation().getDistributionPoints().get(i).toString().endsWith(".PDF")) {
 						String uriTslLocation =  tslObject.getSchemeInformation().getDistributionPoints().get(i).toString();
-						listUrlDistributionPointDPResult.add(uriTslLocation);
+						externalAccessDTO.getListUrlDistributionPointDPResult().add(uriTslLocation);
 						break;
 					}
 				}
@@ -654,19 +711,19 @@ public class ExternalAccessService implements IExternalAccessService {
 					// Buscamos la url del IssuerAlternativeName
 					String urlIssuerAlternativeName = wrapperX509Cert.getIssuerAlternativeName();
 					if(null != urlIssuerAlternativeName && !UtilsStringChar.isNullOrEmpty(urlIssuerAlternativeName)) {
-						listUrlIssuerResult.add(urlIssuerAlternativeName);
+						externalAccessDTO.getListUrlIssuerResult().add(urlIssuerAlternativeName);
 					}
 					
 					// Buscamos la url del DistributionPointCRL
 					List<String> listUrlDistributionPointCRL = this.searchUrlDistributionPointCrl(x509Certificate);
 					if(!listUrlDistributionPointCRL.isEmpty()) {
-						listUrlDistributionPointCRLResult.addAll(listUrlDistributionPointCRL);
+						externalAccessDTO.getListUrlDistributionPointCRLResult().addAll(listUrlDistributionPointCRL);
 					}
 					
 					// Buscamos la url del DistributionPointOCSP
 					List<String> listUrlDistributionPointOCSP = this.searchUrlDistributionPointOcsp(x509Certificate);
 					if(!listUrlDistributionPointOCSP.isEmpty()) {
-						listUrlDistributionPointOCSPResult.addAll(listUrlDistributionPointOCSP);
+						externalAccessDTO.getListUrlDistributionPointOCSPResult().addAll(listUrlDistributionPointOCSP);
 					}
 				} catch (Exception e) {
 					LOGGER.error(e);
@@ -811,6 +868,36 @@ public class ExternalAccessService implements IExternalAccessService {
 		return listUrlDistributionPointCRL;
 	}
 	
+	public synchronized void operationsOnExternalAccess(int operation, TSLObject tslObject, List<Long> listIdUrl) {
+		switch (operation) {
+			case OPERATION1:
+				prepareUrlExternalAccessInitPlatform();
+				break;
+			case OPERATION2:
+				try {
+					prepareUrlExternalAccessToTSL(tslObject);
+				} catch (TSLCertificateValidationException e) {
+					LOGGER.error(e);
+				}
+				break;
+			case OPERATION3:
+				try {
+					prepareUrlExternalAccessToDelete(tslObject);
+				} catch (TSLCertificateValidationException e) {
+					LOGGER.error(e);
+				}
+				break;
+			case OPERATION4:
+				prepareUrlExternalAccessForTask();
+				break;
+			case OPERATION5:
+				prepareUrlExternalAccessForTestConn(listIdUrl);
+				break;
+			default:
+				break;
+		}
+	}
+	
 	/**
 	 * 
 	 * <p>Class to generate threads in distribution point extraction operations for TSL.</p>
@@ -841,27 +928,7 @@ public class ExternalAccessService implements IExternalAccessService {
 		 */
 		@Override
 		public void run() {
-			switch (this.operation) {
-				case OPERATION1:
-					prepareUrlExternalAccessAfterInitPlatform();
-					break;
-				case OPERATION2:
-					try {
-						prepareUrlExternalAccessToTSL(tslObject);
-					} catch (TSLCertificateValidationException e) {
-						LOGGER.error(e);
-					}
-					break;
-				case OPERATION3:
-					try {
-						prepareUrlExternalAccessToDelete(tslObject);
-					} catch (TSLCertificateValidationException e) {
-						LOGGER.error(e);
-					}
-					break;
-				default:
-					break;
-			}
+			operationsOnExternalAccess(this.operation, this.tslObject, null);
 		}
 	}
 }

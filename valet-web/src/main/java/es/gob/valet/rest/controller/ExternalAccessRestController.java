@@ -53,6 +53,7 @@ import es.gob.valet.form.ExternalAccessForm;
 import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 import es.gob.valet.service.ifaces.IExternalAccessService;
+import es.gob.valet.service.impl.ExternalAccessService;
 
 /**
  * <p>
@@ -177,7 +178,10 @@ public class ExternalAccessRestController {
 	@RequestMapping(value = "/tryConn", method = RequestMethod.POST)
 	public @ResponseBody DataTablesOutput<ApplicationValet> tryConn(@RequestParam(value = "valores") String[] valores) {
 		DataTablesOutput<ApplicationValet> dtOutput = new DataTablesOutput<>();
-
+		
+		List<Long> listIdUrl = new ArrayList<Long>();
+		iExternalAccessService.operationsOnExternalAccess(ExternalAccessService.OPERATION5, null, listIdUrl);
+		
 		return dtOutput;
 
 	}

@@ -31,9 +31,11 @@ import java.util.List;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
+import es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
+import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 
 /**
  * <p>Interface that provides communication with the operations of the persistence layer
@@ -62,15 +64,6 @@ public interface IExternalAccessService {
 	ExternalAccess getDataUrlByUrl(String url);
 
 	/**
-	 * Method that test a connection with url and save this test. 
-	 * 
-	 * @param uriTslLocation parameter that contain url.
-	 * @param originUrl paramenter that contain origin url.
-	 * @return object found in bd and conection tested.
-	 */
-	ExternalAccess getExternalAccessAndTestConn(String uriTslLocation, String originUrl);
-
-	/**
 	 * Method that realize test connection to external access and update result in BD. 
 	 */
 	void prepareUrlExternalAccessForTask();
@@ -85,7 +78,7 @@ public interface IExternalAccessService {
 	 * @param tslObject TSL object representation to use.
 	 * @throws TSLCertificateValidationException if occurs any error.
 	 */
-	void extractUrlToDistributionPoints(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, ITSLObject tslObject) throws TSLCertificateValidationException;
+	void extractUrlToDistributionPoints(ExternalAccessDTO externalAccessDTO, ITSLObject tslObject) throws TSLCertificateValidationException;
 	
 	/**
 	 * Method that make changes in external access. We can save/update externall access or delete. Here we will check for indeterminism over operations on the EXTERNAL_ACCCESS table.
@@ -95,8 +88,9 @@ public interface IExternalAccessService {
 	 * @param listUrlDistributionPointCRLResult parameter that store all url valid who CRL.
 	 * @param listUrlDistributionPointOCSPResult parameter that store all url valid who OCSP.
 	 * @param action parameter that contain action to realize.
+	 * @param idCountryRegion TODO
 	 */
-	void makeChangesToExternalAccess(List<String> listUrlDistributionPointDPResult, List<String> listUrlIssuerResult, List<String> listUrlDistributionPointCRLResult, List<String> listUrlDistributionPointOCSPResult, String action);
+	void makeChangesToExternalAccess(ExternalAccessDTO externalAccessDTO, String action);
 
 	/**
 	 * {@inheritDoc}
@@ -104,4 +98,5 @@ public interface IExternalAccessService {
 	 */
 	List<ExternalAccess> getAllList(ExternalAccess request, Date fromDate, Date toDate);
 	
+	void operationsOnExternalAccess(int operation, TSLObject tslObject, List<Long> listIdUrl);
 }

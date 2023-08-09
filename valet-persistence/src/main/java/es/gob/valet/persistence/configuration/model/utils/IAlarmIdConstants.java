@@ -70,5 +70,10 @@ public interface IAlarmIdConstants {
 	 * Constant attribute that represents the ID for the Alarm 008: Se ha registrado un certificado emisor en el Almacén de Confianza CA.
 	 */
 	String ALM008_REGISTER_KEYSTORE_CA = "ALM008";
+	
+	/**
+	 * Constant attribute that represents the ID for the Alarm 009: Conexiones fallidas.
+	 */
+	String ALM009_CONNECTION_FAIL = "ALM009";
 
 }

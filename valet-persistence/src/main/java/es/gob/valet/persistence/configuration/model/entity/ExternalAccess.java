@@ -86,6 +86,8 @@ public class ExternalAccess implements Serializable {
 	 */
 	private Date lastConn;
 
+	private TslCountryRegion tslCountryRegion;
+	
 	/**
 	 * Gets the value of the attribute {@link #idUrl}.
 	 * @return the value of the attribute {@link #idUrl}.
@@ -180,5 +182,87 @@ public class ExternalAccess implements Serializable {
 		this.lastConn = lastConnParam;
 	}
 
+	
+	/**
+	 * Gets the value of the attribute {@link #tslCountryRegion}.
+	 * @return the value of the attribute {@link #tslCountryRegion}.
+	 */
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ID_COUNTRY_REGION")
+	public TslCountryRegion getTslCountryRegion() {
+		return tslCountryRegion;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #tslCountryRegion}.
+	 * @param tslCountryRegion The value for the attribute {@link #tslCountryRegion}.
+	 */
+	public void setTslCountryRegion(TslCountryRegion tslCountryRegion) {
+		this.tslCountryRegion = tslCountryRegion;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((idUrl == null) ? 0 : idUrl.hashCode());
+		result = prime * result + ((lastConn == null) ? 0 : lastConn.hashCode());
+		result = prime * result + ((originUrl == null) ? 0 : originUrl.hashCode());
+		result = prime * result + ((stateConn == null) ? 0 : stateConn.hashCode());
+		result = prime * result + ((tslCountryRegion == null) ? 0 : tslCountryRegion.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ExternalAccess other = (ExternalAccess) obj;
+		if (idUrl == null) {
+			if (other.idUrl != null)
+				return false;
+		} else if (!idUrl.equals(other.idUrl))
+			return false;
+		if (lastConn == null) {
+			if (other.lastConn != null)
+				return false;
+		} else if (!lastConn.equals(other.lastConn))
+			return false;
+		if (originUrl == null) {
+			if (other.originUrl != null)
+				return false;
+		} else if (!originUrl.equals(other.originUrl))
+			return false;
+		if (stateConn == null) {
+			if (other.stateConn != null)
+				return false;
+		} else if (!stateConn.equals(other.stateConn))
+			return false;
+		if (tslCountryRegion == null) {
+			if (other.tslCountryRegion != null)
+				return false;
+		} else if (!tslCountryRegion.equals(other.tslCountryRegion))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		return true;
+	}
 	
 }

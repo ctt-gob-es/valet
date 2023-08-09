@@ -30,6 +30,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
@@ -64,4 +65,7 @@ public interface ExternalAccessRepository extends JpaRepository<ExternalAccess, 
 	 * @return Object that represents a UrlData from the persistence.
 	 */
 	ExternalAccess findByUrl(String url);
+	
+	@Query("SELECT EA FROM ExternalAccess EA WHERE EA.idUrl IN (?1)")
+	List<ExternalAccess> findByIdUrlInQuery(List<Long> listIdUrl);
 }
