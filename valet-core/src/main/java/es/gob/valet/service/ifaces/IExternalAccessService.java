@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/07/2023.</p>
  * @author Gobierno de España.
- * @version 1.7, 04/08/2023.
+ * @version 1.9, 10/08/2023.
  */
 package es.gob.valet.service.ifaces;
 
@@ -41,7 +41,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the ExternalAccess entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 08/08/2023.
+ * @version 1.9, 10/08/2023.
  */
 public interface IExternalAccessService {
 	
@@ -71,10 +71,7 @@ public interface IExternalAccessService {
 	/**
 	 * Method that extract all distribution point from TSL.
 	 * 
-	 * @param listUrlDistributionPointDPResult parameter that store all url valid who distribution point.
-	 * @param listUrlIssuerResult parameter that store all url valid who issuer.
-	 * @param listUrlDistributionPointCRLResult parameter that store all url valid who CRL.
-	 * @param listUrlDistributionPointOCSPResult parameter that store all url valid who OCSP.
+	 * @param externalAccessDTO parameter that contain all information about operation.
 	 * @param tslObject TSL object representation to use.
 	 * @throws TSLCertificateValidationException if occurs any error.
 	 */
@@ -83,12 +80,8 @@ public interface IExternalAccessService {
 	/**
 	 * Method that make changes in external access. We can save/update externall access or delete. Here we will check for indeterminism over operations on the EXTERNAL_ACCCESS table.
 	 * 
-	 * @param listUrlDistributionPointDPResult parameter that store all url valid who distribution point.
-	 * @param listUrlIssuerResult parameter that store all url valid who issuer.
-	 * @param listUrlDistributionPointCRLResult parameter that store all url valid who CRL.
-	 * @param listUrlDistributionPointOCSPResult parameter that store all url valid who OCSP.
+	 * @param externalAccessDTO parameter that contain all information about operation.
 	 * @param action parameter that contain action to realize.
-	 * @param idCountryRegion TODO
 	 */
 	void makeChangesToExternalAccess(ExternalAccessDTO externalAccessDTO, String action);
 
@@ -98,5 +91,12 @@ public interface IExternalAccessService {
 	 */
 	List<ExternalAccess> getAllList(ExternalAccess request, Date fromDate, Date toDate);
 	
+	/**
+	 * Method that syncronize all operations about EXTERNAL_ACCESS table.
+	 * 
+	 * @param operation parameter that contain number operation.
+	 * @param tslObject TSL object representation to use.
+	 * @param listIdUrl parameter that contain id for realize test connection.
+	 */
 	void operationsOnExternalAccess(int operation, TSLObject tslObject, List<Long> listIdUrl);
 }

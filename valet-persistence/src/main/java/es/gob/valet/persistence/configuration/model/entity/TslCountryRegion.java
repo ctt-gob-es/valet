@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 28/10/2018.
+ * @version 1.3, 10/08/2023.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -48,7 +48,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class the maps the <i>TSL_COUNTRY_REGION</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 28/10/2018.
+ * @version 1.3, 10/08/2023.
  */
 @Entity
 @Table(name = "TSL_COUNTRY_REGION")
@@ -79,6 +79,11 @@ public class TslCountryRegion implements Serializable {
 	 */
 	private List<TslCountryRegionMapping> listTslCountryRegionMappings;
 
+	/**
+	 * Attribute that represents the list of external access associated to this TSL Country/Region.
+	 */
+	private List<ExternalAccess> listExternalAccess;
+	
 	/**
 	 * Attribute that represents the TSL data associated to this country/region (if it is defined).
 	 */
@@ -156,6 +161,23 @@ public class TslCountryRegion implements Serializable {
 	 */
 	public void setListTslCountryRegionMapping(List<TslCountryRegionMapping> listTslCountryRegionMappingsParam) {
 		this.listTslCountryRegionMappings = listTslCountryRegionMappingsParam;
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #listExternalAccess}.
+	 * @return the value of the attribute {@link #listExternalAccess}.
+	 */
+	@OneToMany(mappedBy = "tslCountryRegion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public List<ExternalAccess> getListExternalAccess() {
+		return listExternalAccess;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #listExternalAccess}.
+	 * @param listExternalAccess The value for the attribute {@link #listExternalAccess}.
+	 */
+	public void setListExternalAccess(List<ExternalAccess> listExternalAccess) {
+		this.listExternalAccess = listExternalAccess;
 	}
 
 	/**

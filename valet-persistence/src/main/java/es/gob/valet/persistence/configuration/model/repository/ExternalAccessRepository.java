@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 10/08/2023.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -33,14 +33,12 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import es.gob.valet.persistence.configuration.model.entity.Keystore;
-import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 
 /**
  * <p>Interface that provides CRUD functionality for the ExternalAccess entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 08/08/2023.
+ * @version 1.2, 10/08/2023.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -66,6 +64,12 @@ public interface ExternalAccessRepository extends JpaRepository<ExternalAccess, 
 	 */
 	ExternalAccess findByUrl(String url);
 	
+	/**
+	 * Method that obtain all external access contain in list of id.
+	 * 
+	 * @param listIdUrl parameter that contain id for realize test connection.
+	 * @return list object found in BD.
+	 */
 	@Query("SELECT EA FROM ExternalAccess EA WHERE EA.idUrl IN (?1)")
 	List<ExternalAccess> findByIdUrlInQuery(List<Long> listIdUrl);
 }
