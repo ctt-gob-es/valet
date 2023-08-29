@@ -38,6 +38,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,6 +51,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.form.ExternalAccessForm;
+import es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO;
 import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 import es.gob.valet.service.ifaces.IExternalAccessService;
@@ -112,10 +114,10 @@ public class ExternalAccessRestController {
 	 * @return {@link DataTablesOutput<TslCountryRegionMapping>}
 	 */
 	@RequestMapping(value = "/externalAccessDatatable", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody DataTablesOutput<ExternalAccess> loadExternalAccessBySearch(@RequestBody ExternalAccessForm externalAccessForm) {
-		DataTablesOutput<ExternalAccess> dtOutput = new DataTablesOutput<ExternalAccess>();
+	public @ResponseBody DataTablesOutput<ExternalAccessDTO> loadExternalAccessBySearch(@RequestBody ExternalAccessForm externalAccessForm) {
+		DataTablesOutput<ExternalAccessDTO> dtOutput = new DataTablesOutput<ExternalAccessDTO>();
 		
-		List<ExternalAccess> listExternalAccess = new ArrayList<ExternalAccess>();
+		List<ExternalAccessDTO> listExternalAccess = new ArrayList<ExternalAccessDTO>();
 		Date toDate =null;
 		Date fromDate=null;
 		ExternalAccess externalAccess = new ExternalAccess();
@@ -139,7 +141,7 @@ public class ExternalAccessRestController {
 				externalAccess.setUrl(externalAccessForm.getUrl());
 			}
 			// obtenemos todos los mapeos de esa url
-			listExternalAccess = iExternalAccessService.getAllList(externalAccess,fromDate,toDate);
+			listExternalAccess = iExternalAccessService.getAllListDTO(externalAccess,fromDate,toDate);
 			dtOutput.setData(listExternalAccess);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -166,23 +168,21 @@ public class ExternalAccessRestController {
 		return tablaVacia;
 	}
 
-	/**
-	 * Method that maps the try connection to the controller and saves it in the
-	 * persistence.
-	 *
-	 * @param appForm Object that represents the backing application form.
-	 * 
-	 * @return {@link DataTablesOutput<ApplicationValet>}
-	 */
-
+	
 	@RequestMapping(value = "/tryConn", method = RequestMethod.POST)
-	public @ResponseBody DataTablesOutput<ApplicationValet> tryConn(@RequestParam(value = "valores") String[] valores) {
-		DataTablesOutput<ApplicationValet> dtOutput = new DataTablesOutput<>();
-		
-		List<Long> listIdUrl = new ArrayList<Long>();
-		iExternalAccessService.operationsOnExternalAccess(ExternalAccessService.OPERATION5, null, listIdUrl);
-		
-		return dtOutput;
+	public ExternalAccessDTO tryConn(@RequestParam(value = "id") Long id, Model model) {
+		ExternalAccess externalAccess = iExternalAccessService.getUrlDataById(id);
+		ExternalAccessDTO externalDTO =  new ExternalAccessDTO();
+		try {
+			externalAccess = iExternalAccessService.getExternalAccessAndTestConn(externalAccess.getUrl(), externalAccess.getOriginUrl(), null);
+			externalDTO.setIdUrl(externalAccess.getIdUrl());
+			externalDTO.setUrl(externalAccess.getUrl());
+			externalDTO.setStateConn(externalAccess.getStateConn());
+		}catch (Exception e) {
+			//TODO: rellenar con error en caso de que algo vaya mal
+			
+		}
+		return externalDTO;
 
 	}
 

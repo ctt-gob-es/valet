@@ -211,3 +211,7 @@
   overflow: auto;
   overflow-x: hidden
 }
+
+breakWord {
+	 word-break: break-all;
+}

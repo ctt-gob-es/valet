@@ -65,7 +65,7 @@
 						th:field="*{idUrl}" />
 				</form>
 				<h4 class="c-grey-900 mB-20" th:text="#{table.externalAccess.title}"></h4>
-
+				<div id="messageTableExternalAccess" role="alert"></div>
 				<table id="externalAccessTable"
 					class="table table-striped table-bordered" cellspacing="0"
 					width="100%">
@@ -95,7 +95,8 @@ var getExternalAccessInicial =/*[[@{/externalAccessDatatableInicial}]]*/;
 var getExternalAccess =/*[[@{/externalAccessDatatable}]]*/;
 var eaTemplate = /*[[@{/addexternalAccess}]]*/;
 var actionReport = /*[[@{/report}]]*/;
-var actionTryConn = /*[[@{/tryConn}]]*/;
+var actionTryConnModel = /*[[@{/tryConnModel}]]*/;
+var messageSelectTableToTry = /*[[#{table.externalAccess.tryConnError}]]*/;
 
 $(document).ready(function() {
 	debugger;
@@ -138,7 +139,10 @@ function createDatatable(){
 			{text:btnTryConn, name:'tryConn', 
 				action: function ( e, dt, node, config ) {
 					debugger;
-			    	 var valoresCheck = [];
+					loading();
+					$('#messageTableExternalAccess').html('');
+					$('#messageTableExternalAccess').removeClass('alert alert-danger');
+			    	 var valores = [];
 			         var table = $("#externalAccessTable").DataTable();
 			         var data = table.rows().nodes();
 			         data.each(function (value, index) {
@@ -146,23 +150,51 @@ function createDatatable(){
 			             var check = value.cells[4].children[0].checked;
 			             if (check)
 			             {
-			                 valoresCheck.push(valor);
+			            	 valores.push(valor);
 			             }            
 			         }); 
-				$.ajax({
-					url : actionTryConn,
-					type : 'POST',
-					data :{
-						'valores':valoresCheck
-						},
-			    		
-		        		success: function(data){
-												
-			    		},
-			    		error: function(data){
-
-			    		}
-			    })
+			         if(valores.length>0){
+			        	 hide();
+			        	 //Funciona como get, falla para listado grande
+			        	/*  $.ajax({
+	      						url : actionTryConnModel+'?valores='+valores,
+	      						type : 'GET',
+	      						 success: function(data){
+	 				 	        	// Se oculta la capa 'cargando...'
+	 				 	    		$('#modal').html(data);
+	 				 				$('#modalTryConnExAccess').modal('show');
+	 				 	        },
+	 				 	        error:function(data){
+	 				 	        	// Se oculta la capa 'cargando...'
+	 				 	    		var msgError =  data.responseText;
+	 				 	    		$('#messageTableExternalAccess').html(msgError);
+	 								$('#messageTableExternalAccess').addClass('alert alert-danger');
+	 							}	
+	      					}); */
+			        		$.ajax({
+			        			  type: "GET",
+			        			  url: actionTryConnModel,
+			        			 // data: "valores="+valores,
+			        			  contentType : "application/json",
+			        			  success: function(data){
+		 				 	        	// Se oculta la capa 'cargando...'
+		 				 	    		$('#modal').html(data);
+		 				 				$('#modalTryConnExAccess').modal('show');
+		 				 	        },
+		 				 	        error:function(data){
+		 				 	        	// Se oculta la capa 'cargando...'
+		 				 	    		var msgError =  data.responseText;
+		 				 	    		$('#messageTableExternalAccess').html(msgError);
+		 								$('#messageTableExternalAccess').addClass('alert alert-danger');
+		 							}
+			        		});
+	      					
+			         }else{
+							//poner mensaje de que debe de seleccionar 1
+							hide();
+							$('#messageTableExternalAccess').html(messageSelectTableToTry);
+							$('#messageTableExternalAccess').addClass('alert alert-danger');
+						}
 				}
 			    }],
 		"iTotalRecords": "totalElements",
@@ -214,16 +246,15 @@ function createDatatable(){
 }
 
 $('#selectAll').click(function(event) {   
-    if(this.checked) {
-        // Iterate each checkbox
-        $(':checkbox').each(function() {
-            this.checked = true;                        
-        });
-    } else {
-        $(':checkbox').each(function() {
-            this.checked = false;                       
-        });
-    }
+	 var cells = tbl.cells().nodes();
+	 tbl.rows().nodes();
+	    $(cells).find(':checkbox').prop('checked', $(this).is(':checked'));
+	    if ($(this).is(':checked')) {
+	    	this.checked = true; ;
+	    }
+	    else {
+	    	this.checked = false; 
+	    }
 }); 
 
 
@@ -233,7 +264,7 @@ function search(){
 	 debugger;
 	 var getExternalAccess =/*[[@{/externalAccessDatatable}]]*/;
 	 var formData = JSON.stringify($("#searchEAForm").serializeJSON());
-	 
+	 loading();
 	 //Borramos el mensaje de alerta si lo hubiese por una búsqueda anterior.
 	 $('#searchEAForm').find(".alert").html('');
 	 $('#searchEAForm').find(".alert").removeClass('alert alert-danger');
@@ -254,6 +285,7 @@ function search(){
 			 dataType :"json",
 			 contentType:"application/json",
 			success: function(data, error){
+				hide();
 				if(data.error != "" && data.error != null){
 					$('#messageSearchExternalAccess').html(data.error);
 					$('#messageSearchExternalAccess').addClass('alert alert-danger');
@@ -264,6 +296,7 @@ function search(){
 				}
 			 },
 			 error: function(data){
+				 hide();
 				 if(data.error != "" && data.error != null){
 					$('#messageUpdateTaskId').html(data.error);
 					$('#messageUpdateTaskId').addClass('alert alert-danger');

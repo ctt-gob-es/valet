@@ -26,6 +26,7 @@ package es.gob.valet.persistence.configuration.model.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
@@ -72,6 +73,31 @@ public class ExternalAccessDTO implements Serializable {
 	 * Attribute that represents id country region.
 	 */
 	private Long idCountryRegion;
+	
+	/**
+	 * Attribute that represents the object ID.
+	 */
+	private Long idUrl;
+
+	/**
+	 * Attribute that represents the url.
+	 */
+	private String url;
+
+	/**
+	 * Attribute that represents the url.
+	 */
+	private String originUrl;
+	
+	/**
+	 * Attribute that indicates if the connection is OK (true) or not (false).
+	 */
+	private Boolean stateConn;
+
+	/**
+	 * Attribute that represents the last url connection.
+	 */
+	private Date lastConn;
 
 	/**
 	 * Gets the value of the attribute {@link #listUrlDistributionPointCRLResult}.
@@ -167,6 +193,76 @@ public class ExternalAccessDTO implements Serializable {
 	 */
 	public void setListExternalAccessResult(List<ExternalAccess> listExternalAccessResult) {
 		this.listExternalAccessResult = listExternalAccessResult;
+	}
+
+	/**
+	 * @return the idUrl
+	 */
+	public Long getIdUrl() {
+		return idUrl;
+	}
+
+	/**
+	 * @param idUrl the idUrl to set
+	 */
+	public void setIdUrl(Long idUrl) {
+		this.idUrl = idUrl;
+	}
+
+	/**
+	 * @return the url
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+	/**
+	 * @param url the url to set
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	/**
+	 * @return the originUrl
+	 */
+	public String getOriginUrl() {
+		return originUrl;
+	}
+
+	/**
+	 * @param originUrl the originUrl to set
+	 */
+	public void setOriginUrl(String originUrl) {
+		this.originUrl = originUrl;
+	}
+
+	/**
+	 * @return the stateConn
+	 */
+	public Boolean getStateConn() {
+		return stateConn;
+	}
+
+	/**
+	 * @param stateConn the stateConn to set
+	 */
+	public void setStateConn(Boolean stateConn) {
+		this.stateConn = stateConn;
+	}
+
+	/**
+	 * @return the lastConn
+	 */
+	public Date getLastConn() {
+		return lastConn;
+	}
+
+	/**
+	 * @param lastConn the lastConn to set
+	 */
+	public void setLastConn(Date lastConn) {
+		this.lastConn = lastConn;
 	}
 
 }

@@ -97,6 +97,29 @@ public interface IExternalAccessService {
 	 * @param operation parameter that contain number operation.
 	 * @param tslObject TSL object representation to use.
 	 * @param listIdUrl parameter that contain id for realize test connection.
+	 * @param externalAccess parameter that contain the object of ExternalAccessDTO
 	 */
 	void operationsOnExternalAccess(int operation, TSLObject tslObject, List<Long> listIdUrl);
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
+	 */
+	List<ExternalAccessDTO> getAllListDTO(ExternalAccess request, Date fromDate, Date toDate);
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
+	 */
+	List<ExternalAccessDTO> getListDTObyId(List<Long> ids);
+
+	/**
+	 * Method that realize test of connection url and save result operation.
+	 * 
+	 * @param uriTslLocation parameter that contain url.
+	 * @param originUrl the originUrl to set
+	 * @param externalAccessDTO parameter that contain all information about operation.
+	 * @return object persist in BD.
+	 */
+	ExternalAccess getExternalAccessAndTestConn(String uriTslLocation, String originUrl,
+			ExternalAccessDTO externalAccessDTO);
 }

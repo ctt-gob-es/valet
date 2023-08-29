@@ -25,18 +25,30 @@
 package es.gob.valet.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import es.gob.valet.form.ApplicationForm;
 import es.gob.valet.form.ExternalAccessForm;
+import es.gob.valet.form.UserFormEdit;
+import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
+import es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO;
 import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
+import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
+import es.gob.valet.persistence.configuration.model.entity.UserValet;
+import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
+import es.gob.valet.service.ifaces.IExternalAccessService;
 
 /**
  * <p>Class that manages the request related to the Applications administration.</p>
@@ -51,6 +63,14 @@ public class ExternalAccessController {
 	 */
 	private static final String FIELD_ID_APPLICATION = "idApplication";
 
+
+	/**
+	 * Attribute that represents the injected interface that provides CRUD
+	 * operations for the persistence.
+	 */
+	@Autowired
+	private IExternalAccessService iExternalAccessService;
+	
 	/**
 	 * Method that maps the list applicatios to the controller and forwards the list of Applications to the view.
 	 *
@@ -72,33 +92,38 @@ public class ExternalAccessController {
 	 * @return String that represents the name of the view to forward.
 	 * @throws IOException If the method fails.
 	 */
-	@RequestMapping(value = "/addexternalAccess")
+	@RequestMapping(value = "/addexternalAccess" )
 	public String addexternalAccess(Model model) throws IOException {
 		ExternalAccessForm externalAccessForm = new ExternalAccessForm();
 		model.addAttribute("externalAccessform", externalAccessForm);
 		return "fragments/externalAccessAdmin.html";
 	}
+
 	
-	/**
-	 * Method that loads the information of the selected application.
-	 * @param idApplication Parameter that represents the ID of the application.
-	 * @param model Parameter that represents holder object for model attributes.
-	 * @return String that represents the name of the viwe to foward.
+	/*
+	 * @RequestMapping(value = "tryConnModel") public String
+	 * tryConnModel(@RequestParam("valores") String valores, Model model) { String
+	 * view="modal/externalAccess/externalAccessTryConnModel"; List<Long> ids =
+	 * Arrays.asList(valores.split(",")).stream().map(s ->
+	 * Long.parseLong(s.trim())).collect(Collectors.toList());
+	 * 
+	 * List<ExternalAccessDTO> listExternalAccess =
+	 * iExternalAccessService.getListDTObyId(ids);
+	 * model.addAttribute("externalAccessList", listExternalAccess); return view;
+	 * 
+	 * }
 	 */
-	@RequestMapping(value = "/loadExdternalAccessByid", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public String loadApplicationById(@RequestParam(FIELD_ID_APPLICATION) Long idApplication, Model model) {
-		ExternalAccessForm externalAccessform = new ExternalAccessForm();
+	@RequestMapping(value = "tryConnModel")
+	public  String tryConnModel(//@RequestParam(name="valores") String valores, 
+			Model model) {
+		String view="modal/externalAccess/externalAccessTryConnModel";
+	   //List<Long> ids = Arrays.asList(valores.split(",")).stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
 
-		//TODO: poner la recuperación de la información
-		ApplicationValet appValet = ManagerPersistenceConfigurationServices.getInstance().getApplicationValetService().getApplicationById(idApplication);
+		//List<ExternalAccessDTO> listExternalAccess =  iExternalAccessService.getListDTObyId(ids);
+		//model.addAttribute("externalAccessList", listExternalAccess);
+		return view;
 		
-		
-		model.addAttribute("externalAccessform", externalAccessform);
-		return "fragments/externalAccessAdmin.html";
-
 	}
-	
-	
-
+		
 
 }

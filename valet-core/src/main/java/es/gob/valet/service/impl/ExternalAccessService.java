@@ -220,11 +220,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * Constant attribute that represents the token '4'.
 	 */
 	public static final int OPERATION4 = 4;
-	
-	/**
-	 * Constant attribute that represents the token '5'.
-	 */
-	public static final int OPERATION5 = 5;
+
 	
 	/**
 	 * Method that is executed after putting the all beans spring in service.
@@ -255,6 +251,63 @@ public class ExternalAccessService implements IExternalAccessService {
 		Specification<ExternalAccess> specificationExternalAccess = externalAccessSpecification.getExternalAccess(request, fromDate, toDate);
 		return externalAccessRepository.findAll(specificationExternalAccess);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
+	 */
+	@Override
+	public List<ExternalAccessDTO>  getAllListDTO(ExternalAccess request, Date fromDate,Date toDate) {
+		externalAccessSpecification = new ExternalAccessSpecification(request);
+		Specification<ExternalAccess> specificationExternalAccess = externalAccessSpecification.getExternalAccess(request, fromDate, toDate);
+		List<ExternalAccess>  listExternalAccess = externalAccessRepository.findAll(specificationExternalAccess);
+		return createListExternalAccessDTO(listExternalAccess);
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
+	 */
+	@Override
+	public List<ExternalAccessDTO>  getListDTObyId(List<Long> ids) {
+		List<ExternalAccess>  listExternalAccess  = new ArrayList<>();
+		if(ids.size()>1000) {
+			for (int i = 0; i < ids.size();i=i+1000) {
+				List<Long> registros = new ArrayList<>();
+				if((i+1000)<ids.size()) {
+					registros = ids.subList(i, i+1000);
+				}else {
+					registros = ids.subList(i, ids.size());
+				}
+				listExternalAccess.addAll(externalAccessRepository.findByIdUrlInQuery(registros));
+		    } 
+		}else {
+			listExternalAccess = externalAccessRepository.findByIdUrlInQuery(ids);
+		}
+		return createListExternalAccessDTO(listExternalAccess);
+		
+	}
+	
+	/**
+	 * 
+	 * @param listExternalAccess
+	 * @return
+	 */
+	public List<ExternalAccessDTO> createListExternalAccessDTO(List<ExternalAccess> listExternalAccess){
+		 List<ExternalAccessDTO> listExternalAccessDTO = new ArrayList<ExternalAccessDTO>();
+		 for(ExternalAccess externalAccess: listExternalAccess) {
+			 ExternalAccessDTO externalAccessDTO = new ExternalAccessDTO();
+			 externalAccessDTO.setIdUrl(externalAccess.getIdUrl());
+			 externalAccessDTO.setLastConn(externalAccess.getLastConn());
+			 externalAccessDTO.setUrl(externalAccess.getUrl());
+			 externalAccessDTO.setStateConn(externalAccess.getStateConn());
+			 externalAccessDTO.setOriginUrl(externalAccess.getOriginUrl());
+			 listExternalAccessDTO.add(externalAccessDTO);
+		 }
+		return listExternalAccessDTO;
+		
+	}
 
 
 	/**
@@ -284,7 +337,8 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @param externalAccessDTO parameter that contain all information about operation.
 	 * @return object persist in BD.
 	 */
-	private ExternalAccess getExternalAccessAndTestConn(String uriTslLocation, String originUrl, ExternalAccessDTO externalAccessDTO) {
+	@Override
+	public ExternalAccess getExternalAccessAndTestConn(String uriTslLocation, String originUrl, ExternalAccessDTO externalAccessDTO) {
 		ExternalAccess externalAccess = externalAccessRepository.findByUrl(uriTslLocation);
 		// Realizamos el test de conexión con la url
 		boolean stateConn = this.testConnUrl(uriTslLocation);
@@ -958,9 +1012,6 @@ public class ExternalAccessService implements IExternalAccessService {
 			case OPERATION4:
 				prepareUrlExternalAccessForTask();
 				break;
-			case OPERATION5:
-				prepareUrlExternalAccessForTestConn(listIdUrl);
-				break;
 			default:
 				break;
 		}
@@ -999,4 +1050,6 @@ public class ExternalAccessService implements IExternalAccessService {
 			operationsOnExternalAccess(this.operation, this.tslObject, null);
 		}
 	}
+
+
 }

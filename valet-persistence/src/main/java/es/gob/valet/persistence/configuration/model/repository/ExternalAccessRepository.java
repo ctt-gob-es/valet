@@ -72,4 +72,4 @@ public interface ExternalAccessRepository extends JpaRepository<ExternalAccess, 
 	 */
 	@Query("SELECT EA FROM ExternalAccess EA WHERE EA.idUrl IN (?1)")
 	List<ExternalAccess> findByIdUrlInQuery(List<Long> listIdUrl);
-}
+	}
