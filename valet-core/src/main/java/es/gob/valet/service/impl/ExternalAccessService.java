@@ -43,7 +43,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
@@ -113,7 +112,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 10/08/2023.
+ * @version 2.0, 04/09/2023.
  */
 @Service("ExternalAccessService")
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -220,17 +219,6 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * Constant attribute that represents the token '4'.
 	 */
 	public static final int OPERATION4 = 4;
-
-	
-	/**
-	 * Method that is executed after putting the all beans spring in service.
-	 */
-	@PostConstruct
-	public void init() {
-		// Antes poner en servicio este bean de spring, realizaremos los test de conexión a servicios externos.
-		Thread externalAccessServiceThread = new ExternalAccessServiceThread(OPERATION1, null);
-		externalAccessServiceThread.start();
-	}
 	
 	/**
 	 * {@inheritDoc}

@@ -49,6 +49,7 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
+import es.gob.valet.service.impl.ExternalAccessService;
 import es.gob.valet.tasks.HiddenTasksManager;
 import es.gob.valet.tasks.TasksManager;
 import es.gob.valet.tsl.access.TSLManager;
@@ -58,7 +59,7 @@ import es.gob.valet.utils.UtilsProxy;
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.12, 03/04/2022.
+ * @version 2.0, 04/09/2023.
  */
 @Configuration
 @EnableAutoConfiguration
@@ -91,6 +92,12 @@ public class ApplicationConfig {
 	@Autowired
 	private ManagerPersistenceServices managerPersistenceServices;
 
+	/**
+	 * Attribute that represents the service object for accessing the repository of external service.
+	 */
+	@Autowired
+	ExternalAccessService externalAccessService;
+	
 	/**
 	 * Method that initializes differents elements for this class and for the application boot.
 	 */
@@ -164,6 +171,9 @@ public class ApplicationConfig {
 			// Cargamos las tareas de la administración.
 			TasksManager.loadTasks();
 
+			// Realizaremos los test de conexión a servicios externos.
+			Thread externalAccessServiceThread = externalAccessService.new ExternalAccessServiceThread(ExternalAccessService.OPERATION1, null);
+			externalAccessServiceThread.start();
 		}
 
 		// Se inicia la caché de certificados emisores
