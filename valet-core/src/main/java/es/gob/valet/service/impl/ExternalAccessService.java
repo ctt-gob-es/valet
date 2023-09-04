@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 10/08/2023.
+ * @version 2.0, 04/09/2023.
  */
 package es.gob.valet.service.impl;
 
@@ -784,7 +784,7 @@ public class ExternalAccessService implements IExternalAccessService {
 						if(uriTslLocation.indexOf(HTTP) != -1 || uriTslLocation.indexOf(HTTPS) != -1 || uriTslLocation.indexOf(LDAP) != -1) {
 							externalAccessDTO.getListUrlDistributionPointDPResult().add(uriTslLocation);
 						} else {
-							LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL416, new Object[ ] { uriTslLocation }));
+							LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL416, new Object[ ] { uriTslLocation }));
 						}
 						break;
 					}
@@ -805,7 +805,7 @@ public class ExternalAccessService implements IExternalAccessService {
 						if(urlIssuerAlternativeName.indexOf(HTTP) != -1|| urlIssuerAlternativeName.indexOf(LDAP) != -1) {
 							externalAccessDTO.getListUrlIssuerResult().add(urlIssuerAlternativeName);
 						} else {
-							LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL416, new Object[ ] { urlIssuerAlternativeName }));
+							LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL416, new Object[ ] { urlIssuerAlternativeName }));
 						}
 					}
 					
