@@ -600,7 +600,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	private void createMessageMail(TslCountryRegion tslCountryRegion, List<ExternalAccess> listExternalAccessTestConnKo, StringBuffer messageMail) {
 		messageMail.append(System.lineSeparator()).append(System.lineSeparator());
-		messageMail.append(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM009_EVENT_004, new Object[ ] { tslCountryRegion.getCountryRegionName(), tslCountryRegion.getTslData().getTslImpl().getVersion() }));
+		messageMail.append(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM009_EVENT_004, new Object[ ] { tslCountryRegion.getCountryRegionName(), tslCountryRegion.getTslData().getSequenceNumber()}));
 		for (ExternalAccess externalAccess: listExternalAccessTestConnKo) {
 			messageMail.append(System.lineSeparator());
 			messageMail.append(externalAccess.getUrl());
