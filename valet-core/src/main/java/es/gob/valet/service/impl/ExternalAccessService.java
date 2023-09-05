@@ -43,6 +43,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
@@ -225,17 +226,6 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	public static String messageError = new String();
 
-	
-	/**
-	 * Method that is executed after putting the all beans spring in service.
-	 */
-	@PostConstruct
-	public void init() {
-		// Antes poner en servicio este bean de spring, realizaremos los test de conexión a servicios externos.
-		Thread externalAccessServiceThread = new ExternalAccessServiceThread(OPERATION1, null);
-		externalAccessServiceThread.start();
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
