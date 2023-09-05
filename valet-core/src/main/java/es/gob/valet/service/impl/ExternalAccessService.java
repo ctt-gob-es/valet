@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 10/08/2023.
+ * @version 2.0, 04/09/2023.
  */
 package es.gob.valet.service.impl;
 
@@ -43,7 +43,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
@@ -311,7 +310,6 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	public List<ExternalAccessDTO> createListExternalAccessDTO(List<ExternalAccess> listExternalAccess){
 		 List<ExternalAccessDTO> listExternalAccessDTO = new ArrayList<ExternalAccessDTO>();
-
 		 for(ExternalAccess externalAccess: listExternalAccess) {
 			 ExternalAccessDTO externalAccessDTO = new ExternalAccessDTO();
 			 externalAccessDTO.setIdUrl(externalAccess.getIdUrl());
