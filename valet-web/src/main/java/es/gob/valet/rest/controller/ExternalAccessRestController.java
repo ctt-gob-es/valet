@@ -140,8 +140,9 @@ public class ExternalAccessRestController {
 			if(externalAccessForm.getUrl() !=null || !externalAccessForm.getUrl().isEmpty()) {
 				externalAccess.setUrl(externalAccessForm.getUrl());
 			}
-			// obtenemos todos los mapeos de esa url
-			listExternalAccess = iExternalAccessService.getAllListDTO(externalAccess,fromDate,toDate);
+			
+			listExternalAccess = iExternalAccessService.getAllListDTOByFilter(externalAccess,fromDate,toDate);
+			
 			dtOutput.setData(listExternalAccess);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -175,12 +176,14 @@ public class ExternalAccessRestController {
 		ExternalAccessDTO externalDTO =  new ExternalAccessDTO();
 		try {
 			externalAccess = iExternalAccessService.getExternalAccessAndTestConn(externalAccess.getUrl(), externalAccess.getOriginUrl(), null);
+			
 			externalDTO.setIdUrl(externalAccess.getIdUrl());
 			externalDTO.setUrl(externalAccess.getUrl());
 			externalDTO.setStateConn(externalAccess.getStateConn());
+			externalDTO.setMessageError(iExternalAccessService.getMessageErrorValue());
 		}catch (Exception e) {
 			//TODO: rellenar con error en caso de que algo vaya mal
-			
+			LOGGER.error(e.getCause());
 		}
 		return externalDTO;
 

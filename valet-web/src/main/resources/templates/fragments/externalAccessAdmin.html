@@ -155,31 +155,16 @@ function createDatatable(){
 			         }); 
 			         if(valores.length>0){
 			        	 hide();
-			        	 //Funciona como get, falla para listado grande
-			        	/*  $.ajax({
-	      						url : actionTryConnModel+'?valores='+valores,
-	      						type : 'GET',
-	      						 success: function(data){
-	 				 	        	// Se oculta la capa 'cargando...'
-	 				 	    		$('#modal').html(data);
-	 				 				$('#modalTryConnExAccess').modal('show');
-	 				 	        },
-	 				 	        error:function(data){
-	 				 	        	// Se oculta la capa 'cargando...'
-	 				 	    		var msgError =  data.responseText;
-	 				 	    		$('#messageTableExternalAccess').html(msgError);
-	 								$('#messageTableExternalAccess').addClass('alert alert-danger');
-	 							}	
-	      					}); */
 			        		$.ajax({
 			        			  type: "GET",
 			        			  url: actionTryConnModel,
-			        			 // data: "valores="+valores,
 			        			  contentType : "application/json",
+			        			  async:false,
 			        			  success: function(data){
 		 				 	        	// Se oculta la capa 'cargando...'
 		 				 	    		$('#modal').html(data);
 		 				 				$('#modalTryConnExAccess').modal('show');
+		 				 				
 		 				 	        },
 		 				 	        error:function(data){
 		 				 	        	// Se oculta la capa 'cargando...'
@@ -188,7 +173,7 @@ function createDatatable(){
 		 								$('#messageTableExternalAccess').addClass('alert alert-danger');
 		 							}
 			        		});
-	      					
+			        		
 			         }else{
 							//poner mensaje de que debe de seleccionar 1
 							hide();
@@ -200,17 +185,6 @@ function createDatatable(){
 		"iTotalRecords": "totalElements",
 		"iTotalDisplayRecords": "numberOfElements",
 		"processing": false,
-		//"serverSide": true,
-		/* "ajax":{
-			"url":getExternalAccessInicial, 
-			"dataSrc": "data",
-			"data": function (data){
-				debugger;
-				//datos a pasar al modal
-				data.formId = "externalAccessform";
-				data.addTemplate = eaTemplate;
-			}
-		}, */
 		"language": {
 			"url":"js/datatables/i18n/spanish.json",
 			select: {
@@ -222,7 +196,9 @@ function createDatatable(){
 		},
 		"columns":[
 			 {"data": "idUrl","visible":false},
-			 {"data": "url","width":"35%"},
+			 {"data": "url","width":"35%",render: function (data, type, full, meta) {
+                 return  "<span style='word-break: break-word;'>" + data + "</span>";
+             }},
 			 {"data": "originUrl", "width":"15%"},
 			 {"data": "stateConn", "width":"15%","render": function(data, type, row){
 				 if (data == false) {
@@ -257,7 +233,12 @@ $('#selectAll').click(function(event) {
 	    }
 }); 
 
-
+$('#modalTryConnExAccess').on('load',function(){
+	debugger;
+	if($('#modalTryConnExAccess').hasClass('show')){
+		tryConn();
+	}
+});
 
 
 function search(){

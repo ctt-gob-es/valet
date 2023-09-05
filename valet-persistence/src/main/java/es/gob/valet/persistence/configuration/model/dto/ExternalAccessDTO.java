@@ -98,6 +98,12 @@ public class ExternalAccessDTO implements Serializable {
 	 * Attribute that represents the last url connection.
 	 */
 	private Date lastConn;
+	
+	/**
+	 * Attribute that represents the messageError in the connection.
+	 */
+	private String messageError;
+	
 
 	/**
 	 * Gets the value of the attribute {@link #listUrlDistributionPointCRLResult}.
@@ -263,6 +269,20 @@ public class ExternalAccessDTO implements Serializable {
 	 */
 	public void setLastConn(Date lastConn) {
 		this.lastConn = lastConn;
+	}
+
+	/**
+	 * @return the messageError
+	 */
+	public String getMessageError() {
+		return messageError;
+	}
+
+	/**
+	 * @param messageError the messageError to set
+	 */
+	public void setMessageError(String messageError) {
+		this.messageError = messageError;
 	}
 
 }

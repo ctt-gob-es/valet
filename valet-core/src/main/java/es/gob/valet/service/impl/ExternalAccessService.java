@@ -220,6 +220,11 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * Constant attribute that represents the token '4'.
 	 */
 	public static final int OPERATION4 = 4;
+	
+	/**
+	 * Object to send the error in connection url.
+	 */
+	public static String messageError = new String();
 
 	
 	/**
@@ -257,10 +262,20 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
 	 */
 	@Override
-	public List<ExternalAccessDTO>  getAllListDTO(ExternalAccess request, Date fromDate,Date toDate) {
+	public List<ExternalAccessDTO>  getAllListDTOByFilter(ExternalAccess request, Date fromDate,Date toDate) {
 		externalAccessSpecification = new ExternalAccessSpecification(request);
 		Specification<ExternalAccess> specificationExternalAccess = externalAccessSpecification.getExternalAccess(request, fromDate, toDate);
 		List<ExternalAccess>  listExternalAccess = externalAccessRepository.findAll(specificationExternalAccess);
+		return createListExternalAccessDTO(listExternalAccess);
+		
+	}
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
+	 */
+	@Override
+	public List<ExternalAccessDTO>  getAllListDTO() {
+		List<ExternalAccess>  listExternalAccess = externalAccessRepository.findAll();
 		return createListExternalAccessDTO(listExternalAccess);
 		
 	}
@@ -296,6 +311,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	public List<ExternalAccessDTO> createListExternalAccessDTO(List<ExternalAccess> listExternalAccess){
 		 List<ExternalAccessDTO> listExternalAccessDTO = new ArrayList<ExternalAccessDTO>();
+
 		 for(ExternalAccess externalAccess: listExternalAccess) {
 			 ExternalAccessDTO externalAccessDTO = new ExternalAccessDTO();
 			 externalAccessDTO.setIdUrl(externalAccess.getIdUrl());
@@ -471,22 +487,28 @@ public class ExternalAccessService implements IExternalAccessService {
 			}
 			
 			urlConnected = true;
+			messageError="";
 		} catch (SocketException e) {
 			// Se considera que el socket se cerró cuando se estaba escribiendo datos en el flujo de salida y el servidor nos está avisando con RST.
 			urlConnected = true;
 			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL401, new Object[ ] { uriTslLocation }));
+			messageError= e.getCause().toString();
 		} catch (IOException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
+			messageError= e.getCause().toString();
 		} catch (NoSuchAlgorithmException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ERROR_SERVICE_01));
+			messageError= e.getCause().toString();
 		} catch (KeyManagementException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ERROR_SERVICE_02));
+			messageError= e.getCause().toString();
 		} catch (NamingException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
+			messageError= e.getCause().toString();
 		}
 		
 		return urlConnected;
@@ -1049,6 +1071,27 @@ public class ExternalAccessService implements IExternalAccessService {
 		public void run() {
 			operationsOnExternalAccess(this.operation, this.tslObject, null);
 		}
+	}
+
+	/**
+	 * @return the messageError
+	 */
+	@Override
+	public String getMessageErrorValue() {
+		return getMessageError();
+	}
+	/**
+	 * @return the messageError
+	 */
+	public static String getMessageError() {
+		return messageError;
+	}
+
+	/**
+	 * @param messageError the messageError to set
+	 */
+	public static void setMessageError(String messageError) {
+		ExternalAccessService.messageError = messageError;
 	}
 
 

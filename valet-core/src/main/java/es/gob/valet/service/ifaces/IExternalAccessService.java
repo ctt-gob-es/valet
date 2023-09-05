@@ -104,7 +104,7 @@ public interface IExternalAccessService {
 	 * {@inheritDoc}
 	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
 	 */
-	List<ExternalAccessDTO> getAllListDTO(ExternalAccess request, Date fromDate, Date toDate);
+	List<ExternalAccessDTO> getAllListDTOByFilter(ExternalAccess request, Date fromDate, Date toDate);
 	
 	/**
 	 * {@inheritDoc}
@@ -122,4 +122,16 @@ public interface IExternalAccessService {
 	 */
 	ExternalAccess getExternalAccessAndTestConn(String uriTslLocation, String originUrl,
 			ExternalAccessDTO externalAccessDTO);
+
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.IExternalAccessService#getAll(java.lang.Long)
+	 */
+	List<ExternalAccessDTO> getAllListDTO();
+
+	/**
+	 * Method that return the value of message error in connection url.
+	 * @return the messageError
+	 */
+	String getMessageErrorValue();
 }
