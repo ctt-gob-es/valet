@@ -31,6 +31,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -187,6 +189,30 @@ public class ExternalAccessRestController {
 		}
 		return externalDTO;
 
+	}
+	
+	@RequestMapping(value = "/tryConns", method = RequestMethod.POST)
+	public @ResponseBody List<ExternalAccessDTO> tryConns(@RequestParam("ids[]") List<Long> ids, Model model) {
+		
+		List<ExternalAccessDTO> listExternalAccess = new ArrayList<>();
+		
+		for(Long id: ids) {
+		ExternalAccess externalAccess = iExternalAccessService.getUrlDataById(id);
+		ExternalAccessDTO externalDTO =  new ExternalAccessDTO();
+		try {
+			externalAccess = iExternalAccessService.getExternalAccessAndTestConn(externalAccess.getUrl(), externalAccess.getOriginUrl(), null);
+			
+			externalDTO.setIdUrl(externalAccess.getIdUrl());
+			externalDTO.setUrl(externalAccess.getUrl());
+			externalDTO.setStateConn(externalAccess.getStateConn());
+			externalDTO.setMessageError(iExternalAccessService.getMessageErrorValue());
+		}catch (Exception e) {
+			//TODO: rellenar con error en caso de que algo vaya mal
+			LOGGER.error(e.getCause());
+		}
+		listExternalAccess.add(externalDTO);
+		}
+		return listExternalAccess;
 	}
 
 	

@@ -480,23 +480,33 @@ public class ExternalAccessService implements IExternalAccessService {
 			// Se considera que el socket se cerró cuando se estaba escribiendo datos en el flujo de salida y el servidor nos está avisando con RST.
 			urlConnected = true;
 			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL401, new Object[ ] { uriTslLocation }));
-			messageError= e.getCause().toString();
+			if(e.getCause() != null) {
+				messageError= e.getCause().toString();
+			}
 		} catch (IOException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
-			messageError= e.getCause().toString();
+			if(e.getCause() != null) {
+				messageError= e.getCause().toString();
+			}
 		} catch (NoSuchAlgorithmException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ERROR_SERVICE_01));
-			messageError= e.getCause().toString();
+			if(e.getCause() != null) {
+				messageError= e.getCause().toString();
+			}
 		} catch (KeyManagementException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ERROR_SERVICE_02));
-			messageError= e.getCause().toString();
+			if(e.getCause() != null) {
+				messageError= e.getCause().toString();
+			}
 		} catch (NamingException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
-			messageError= e.getCause().toString();
+			if(e.getCause() != null) {
+				messageError= e.getCause().toString();
+			}
 		}
 		
 		return urlConnected;
@@ -622,7 +632,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	private void createMessageMail(TslCountryRegion tslCountryRegion, List<ExternalAccess> listExternalAccessTestConnKo, StringBuffer messageMail) {
 		messageMail.append(System.lineSeparator()).append(System.lineSeparator());
-		messageMail.append(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM009_EVENT_004, new Object[ ] { tslCountryRegion.getCountryRegionName(), tslCountryRegion.getTslData().getTslImpl().getVersion() }));
+		messageMail.append(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM009_EVENT_004, new Object[ ] { tslCountryRegion.getCountryRegionName(), tslCountryRegion.getTslData().getSequenceNumber()}));
 		for (ExternalAccess externalAccess: listExternalAccessTestConnKo) {
 			messageMail.append(System.lineSeparator());
 			messageMail.append(externalAccess.getUrl());
@@ -827,7 +837,7 @@ public class ExternalAccessService implements IExternalAccessService {
 						if(urlIssuerAlternativeName.indexOf(HTTP) != -1|| urlIssuerAlternativeName.indexOf(LDAP) != -1) {
 							externalAccessDTO.getListUrlIssuerResult().add(urlIssuerAlternativeName);
 						} else {
-							LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL416, new Object[ ] { urlIssuerAlternativeName }));
+							LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL416, new Object[ ] { urlIssuerAlternativeName }));
 						}
 					}
 					

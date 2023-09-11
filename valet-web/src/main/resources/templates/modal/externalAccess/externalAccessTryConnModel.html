@@ -46,12 +46,13 @@ var getExternalAccessInicial =/*[[@{/externalAccessDatatableInicial}]]*/;
 var getExternalAccess =/*[[@{/externalAccessDatatable}]]*/;
 var eaTemplate = /*[[@{/addexternalAccess}]]*/;
 var actionTryConn = /*[[@{/tryConn}]]*/;
+var actionTryConns = /*[[@{/tryConns}]]*/;
 var messageSelectTableToTry = /*[[#{table.externalAccess.tryConnError}]]*/;
 $(document).ready(function() {
 	$('#idButtonClosedX').hide();
     $('#idButtonClosed').hide();
     createDatatable();
-    setTimeout(tryConn, 1000);
+    setTimeout(tryConn, 500);
 });
 
 
@@ -99,9 +100,9 @@ function createDatatable(){
 	})
 }
 
-$(document).on('click', '.some-class', function(){ 
+$(document).on('click', '.some-class', function(e){ 
 	debugger;
-
+	 e.stopImmediatePropagation();
 	var tr = $(this).closest('tr');
     var row = tblModal.row( tr );
 
@@ -126,6 +127,7 @@ $(document).on('click', '.some-class', function(){
 
 function tryConn() {
 	debugger;
+    loading();
 
 	var valores = [];
     var table = $("#externalAccessTable").DataTable();
@@ -138,12 +140,13 @@ function tryConn() {
        	 valores.push(valor);
         }            
     }); 
-	
-	var rows = valores;
+	TryConnsAjax(valores);
+
+	/* var rows = valores;
 	for (i = 0; i < rows.length; i++){
 		id= rows[i];
 		TryConnAjax(id);
-	}
+	} */
 }
 
 
@@ -165,6 +168,7 @@ function TryConnAjax(id){
 		complete: function(data){
 			contador++;
 			if(contador == longitud){
+				hide();
 				$('#idButtonClosedX').show();
 			    $('#idButtonClosed').show();
 			}
@@ -172,6 +176,38 @@ function TryConnAjax(id){
 	});
 }
 	
+	
+function TryConnsAjax(ids){
+	longitud++
+	$.ajax({
+		url : actionTryConns,
+		data: {'ids':ids},
+		type: 'POST',
+		success: function(data){
+	        	debugger;
+	        	if(data.error != "" && data.error != null){
+					$('#messageSearchExternalAccess').html(data.error);
+					$('#messageSearchExternalAccess').addClass('alert alert-danger');
+				}else{
+				 data.forEach(reg => {
+					 tblModal.row.add(reg).draw();
+				}); 
+				}
+	        },
+	        error:function(data){
+	        	// Se oculta la capa 'cargando...'
+	        	hide();
+		}, 
+		complete: function(data){
+			contador++;
+			if(contador == longitud){
+				hide();
+				$('#idButtonClosedX').show();
+			    $('#idButtonClosed').show();
+			}
+		}
+	});
+}
 
 
 
