@@ -39,6 +39,8 @@ var tblModal;
 var id;
 var contador = 0;
 var longitud = 0;
+var ids = [];
+var contadorBloque=0;
 var btnGenerateReport =  /*[[#{table.externalAccess.report}]]*/;
 var btnTryConn = /*[[#{table.externalAccess.tryConn}]]*/;
 var btnDelApp  = /*[[#{table.app.btn.del}]]*/;
@@ -101,7 +103,7 @@ function createDatatable(){
 }
 
 $(document).on('click', '.some-class', function(e){ 
-	debugger;
+	
 	 e.stopImmediatePropagation();
 	var tr = $(this).closest('tr');
     var row = tblModal.row( tr );
@@ -127,8 +129,7 @@ $(document).on('click', '.some-class', function(e){
 
 function tryConn() {
 	debugger;
-    loading();
-
+    //loading();
 	var valores = [];
     var table = $("#externalAccessTable").DataTable();
     var data = table.rows().nodes();
@@ -140,25 +141,32 @@ function tryConn() {
        	 valores.push(valor);
         }            
     }); 
-	TryConnsAjax(valores);
 
-	/* var rows = valores;
-	for (i = 0; i < rows.length; i++){
-		id= rows[i];
-		TryConnAjax(id);
-	} */
+	var rows = valores;
+	for (i = 0; i <= rows.length; i++){
+		contadorBloque ++
+		if(contadorBloque<=10){
+			ids.push(rows[i]);
+		}
+		if(contadorBloque == 10 || i == rows.length){
+			var valoresIds = ids;
+			ids = [];
+			contadorBloque=0;
+			TryConnsAjax(valoresIds);
+			
+		}
+	} 
 }
 
 
 
 function TryConnAjax(id){
-	longitud++
 	$.ajax({
 		url : actionTryConn,
 		data: {'id':id},
 		type : 'POST',
 		 success: function(data){
-	        	debugger;
+	        	
 	        	tblModal.row.add(data).draw();
 	        },
 	        error:function(data){
@@ -184,14 +192,12 @@ function TryConnsAjax(ids){
 		data: {'ids':ids},
 		type: 'POST',
 		success: function(data){
-	        	debugger;
+	        	
 	        	if(data.error != "" && data.error != null){
 					$('#messageSearchExternalAccess').html(data.error);
 					$('#messageSearchExternalAccess').addClass('alert alert-danger');
 				}else{
-				 data.forEach(reg => {
-					 tblModal.row.add(reg).draw();
-				}); 
+					 tblModal.rows.add(data).draw();
 				}
 	        },
 	        error:function(data){
@@ -201,13 +207,49 @@ function TryConnsAjax(ids){
 		complete: function(data){
 			contador++;
 			if(contador == longitud){
-				hide();
+				//hide();
 				$('#idButtonClosedX').show();
 			    $('#idButtonClosed').show();
+
 			}
 		}
 	});
 }
+
+
+function functPromesa(ids) {
+		  longitud++
+		  return $.ajax({
+				url : actionTryConns,
+				data: {'ids':ids},
+				type: 'POST',
+				success: function(data){
+			        	
+			        	if(data.error != "" && data.error != null){
+							$('#messageSearchExternalAccess').html(data.error);
+							$('#messageSearchExternalAccess').addClass('alert alert-danger');
+						}else{
+						 data.forEach(reg => {
+							 tblModal.row.add(reg).draw();
+						}); 
+						}
+			        },
+			        error:function(data){
+			        	// Se oculta la capa 'cargando...'
+			        	hide();
+				}, 
+				complete: function(data){
+					contador++;
+					if(contador == longitud){
+						hide();
+						$('#idButtonClosedX').show();
+					    $('#idButtonClosed').show();
+					}
+				}
+			});
+	}
+
+
 
 
 

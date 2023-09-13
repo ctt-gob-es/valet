@@ -482,30 +482,40 @@ public class ExternalAccessService implements IExternalAccessService {
 			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL401, new Object[ ] { uriTslLocation }));
 			if(e.getCause() != null) {
 				messageError= e.getCause().toString();
+			}else {
+				messageError= "Error tipo SocketException";
 			}
 		} catch (IOException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
 			if(e.getCause() != null) {
 				messageError= e.getCause().toString();
+			}else {
+				messageError= "Error tipo IOException";
 			}
 		} catch (NoSuchAlgorithmException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ERROR_SERVICE_01));
 			if(e.getCause() != null) {
 				messageError= e.getCause().toString();
+			}else {
+				messageError= "Error tipo NoSuchAlgorithmException";
 			}
 		} catch (KeyManagementException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ERROR_SERVICE_02));
 			if(e.getCause() != null) {
 				messageError= e.getCause().toString();
+			}else {
+				messageError= "Error tipo KeyManagementException";
 			}
 		} catch (NamingException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
 			if(e.getCause() != null) {
 				messageError= e.getCause().toString();
+			}else {
+				messageError= "Error tipo NamingException";
 			}
 		}
 		
