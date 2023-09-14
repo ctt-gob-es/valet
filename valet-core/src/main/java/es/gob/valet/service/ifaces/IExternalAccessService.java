@@ -134,4 +134,15 @@ public interface IExternalAccessService {
 	 * @return the messageError
 	 */
 	String getMessageErrorValue();
+
+	/**
+	 * Method that realize test of connection url and save result operation.
+	 * 
+	 * @param uriTslLocation parameter that contain url.
+	 * @param originUrl the originUrl to set
+	 * @param externalAccessDTO parameter that contain all information about operation.
+	 * @return object persist in BD.
+	 */
+	ExternalAccess getExternalAccessTestConnAndSave(String uriTslLocation, String originUrl,
+			ExternalAccessDTO externalAccessDTO);
 }
