@@ -64,10 +64,10 @@ public class TslDataService implements ITslDataService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#getAllTsl(org.springframework.data.jpa.datatables.mapping.DataTablesInput)
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#obtainAllTslToDatatable(org.springframework.data.jpa.datatables.mapping.DataTablesInput)
 	 */
 	@Override
-	public DataTablesOutput<TslData> getAllTsl(DataTablesInput input) {
+	public DataTablesOutput<TslData> obtainAllTslToDatatable(DataTablesInput input) {
 		return dtRepository.findAll(input);
 	}
 

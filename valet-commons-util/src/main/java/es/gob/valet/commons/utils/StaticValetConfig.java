@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.16, 03/04/2023.
+ * @version 2.0, 15/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -40,7 +40,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.16, 03/04/2023.
+ * @version 2.0, 15/09/2023.
  */
 public final class StaticValetConfig {
 
@@ -106,6 +106,7 @@ public final class StaticValetConfig {
 	/**
 	 * Attribute that represents the key for the property that indicates the password for the AES algorithm.
 	 */
+	@SuppressWarnings("squid:S2068")
 	public static final String AES_PASSWORD = "aes.password";
 
 	/**

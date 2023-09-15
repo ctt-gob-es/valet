@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.16, 03/04/2023.
+ * @version 2.0, 15/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -86,7 +86,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.16, 03/04/2023.
+ * @version 2.0, 15/09/2023.
  */
 @RestController
 public class TslRestController {
@@ -195,7 +195,7 @@ public class TslRestController {
 	@RequestMapping(path = "/tsldatatable", method = RequestMethod.GET)
 	public DataTablesOutput<TslData> loadTslDataTable(@NotEmpty DataTablesInput input) {
 		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
-		return tslDataService.getAllTsl(input);
+		return tslDataService.obtainAllTslToDatatable(input);
 
 	}
 

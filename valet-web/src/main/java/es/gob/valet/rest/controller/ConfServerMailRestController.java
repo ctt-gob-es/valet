@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 22/06/2023.
+ * @version 1.6, 15/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -48,7 +48,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * <p>Class that manages the REST requests related to the ConfServerMails administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 22/06/2023.
+ * @version 1.6, 15/09/2023.
  */
 @RestController
 public class ConfServerMailRestController {
@@ -60,6 +60,7 @@ public class ConfServerMailRestController {
 	/**
 	 * Constant that represents the default text string of the password displayed in edit mode.
 	 */
+	@SuppressWarnings("squid:S2068")
 	private static final String PASSWORD_EDIT = "********";
 	
 	/**

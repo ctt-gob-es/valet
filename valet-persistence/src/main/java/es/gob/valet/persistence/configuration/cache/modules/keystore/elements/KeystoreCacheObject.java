@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 15/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.keystore.elements;
 
@@ -31,14 +31,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectCloneException;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectStreamException;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
@@ -48,7 +47,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
 /**
  * <p>Class that represents a keystore in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 15/09/2023.
  */
 public class KeystoreCacheObject extends ConfigurationCacheObject {
 
@@ -378,119 +377,6 @@ public class KeystoreCacheObject extends ConfigurationCacheObject {
 	 */
 	public final void setHasBackup(boolean hasBackupParam) {
 		this.hasBackup = hasBackupParam;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#writeReplace()
-	 */
-	@Override
-	protected final Object writeReplace() throws ConfigurationCacheObjectStreamException {
-		LOGGER.debug(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG004));
-		KeystoreCacheObject kc = new KeystoreCacheObject();
-		kc.setIdKeystore(idKeystore);
-		kc.setName(name);
-		kc.setTokenName(tokenName);
-		kc.setPassword(password);
-		kc.setKeystoreType(keystoreType);
-		kc.setVersion(version);
-		kc.setHardware(isHardware);
-		kc.setAliasMap(aliasMap);
-		kc.setHasBackup(hasBackup);
-		if (isHardware) {
-			kc.setKeystoreBytes(null);
-		} else {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			try {
-				keystore.store(baos, new String(UtilsAESCipher.getInstance().decryptMessage(password)).toCharArray());
-			} catch (Exception e) {
-				throw new ConfigurationCacheObjectStreamException(e.getMessage());
-			}
-			kc.setKeystoreBytes(baos.toByteArray());
-		}
-		kc.setKeystore(null);
-		LOGGER.debug(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG005));
-		return kc;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#readResolve()
-	 */
-	@Override
-	protected final Object readResolve() throws ConfigurationCacheObjectStreamException {
-		LOGGER.debug(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG006));
-		KeystoreCacheObject kc = new KeystoreCacheObject();
-		kc.setIdKeystore(idKeystore);
-		kc.setName(name);
-		kc.setTokenName(tokenName);
-		kc.setPassword(password);
-		kc.setKeystoreType(keystoreType);
-		kc.setVersion(version);
-		kc.setHardware(isHardware);
-		kc.setAliasMap(aliasMap);
-		kc.setHasBackup(hasBackup);
-		if (isHardware) {
-			kc.setKeystore(null);
-		} else {
-			try {
-				KeyStore ks = KeyStore.getInstance(keystoreType);
-				ByteArrayInputStream bais = new ByteArrayInputStream(keystoreBytes);
-				ks.load(bais, new String(UtilsAESCipher.getInstance().decryptMessage(password)).toCharArray());
-				kc.setKeystore(ks);
-			} catch (Exception e) {
-				throw new ConfigurationCacheObjectStreamException(e.getMessage());
-			}
-		}
-		kc.setKeystoreBytes(null);
-		return kc;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#clone()
-	 */
-	@Override
-	public final ConfigurationCacheObject clone() throws ConfigurationCacheObjectCloneException {
-		KeystoreCacheObject kco = new KeystoreCacheObject();
-		kco.setIdKeystore(idKeystore);
-		if (name != null) {
-			kco.setName(name);
-		}
-		if (tokenName != null) {
-			kco.setTokenName(tokenName);
-		}
-		kco.setHardware(isHardware);
-		if (password != null) {
-			kco.setPassword(password);
-		}
-		if (keystoreType != null) {
-			kco.setKeystoreType(keystoreType);
-		}
-		kco.setHardware(isHardware);
-		kco.setAliasMap(aliasMap);
-		kco.setVersion(version);
-		kco.setHasBackup(hasBackup);
-		try {
-			if (keystore != null) {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				keystore.store(baos, new String(UtilsAESCipher.getInstance().decryptMessage(password)).toCharArray());
-				byte[ ] arrayBytesKeystore = baos.toByteArray().clone();
-				KeyStore ks = KeyStore.getInstance(keystoreType);
-				ByteArrayInputStream bais = new ByteArrayInputStream(arrayBytesKeystore);
-				ks.load(bais, new String(UtilsAESCipher.getInstance().decryptMessage(password)).toCharArray());
-				kco.setKeystore(ks);
-			} else if (keystoreBytes != null) {
-				kco.setKeystoreBytes(keystoreBytes.clone());
-			} else {
-				kco.setKeystore(null);
-				kco.setKeystoreBytes(null);
-			}
-
-		} catch (Exception e) {
-			throw new ConfigurationCacheObjectCloneException(e.getMessage());
-		}
-		return kco;
 	}
 
 }

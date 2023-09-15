@@ -21,22 +21,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 22/10/2018.
+ * @version 1.1, 15/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.common.impl;
 
 import java.io.Serializable;
 
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectCloneException;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectStreamException;
-
 /**
  * <p>Abstract class that represents a configuration object in the cache.</p>
  * <p>All the objects that extends this class must implements the interfaces {@link Cloneable} and {@link Serializable}.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 22/10/2018.
+ * @version 1.1, 15/09/2023.
  */
-public abstract class ConfigurationCacheObject implements Cloneable, Serializable {
+public abstract class ConfigurationCacheObject implements Serializable {
 
 	/**
 	 * Constant attribute that represents the serial version UID. 
@@ -49,27 +46,4 @@ public abstract class ConfigurationCacheObject implements Cloneable, Serializabl
 	public ConfigurationCacheObject() {
 		super();
 	}
-
-	/**
-	 * Method that builds a new {@link ConfigurationCacheObject} object so contain the same configuration object that the object where is executed.
-	 * This method is executed before serialize the object.
-	 * @return an object that represents the object that invokes the method, but this new object can be serialized.
-	 * @throws ConfigurationCacheObjectStreamException If the method fails in the data streaming.
-	 */
-	protected abstract Object writeReplace() throws ConfigurationCacheObjectStreamException;
-
-	/**
-	 * Method that builds the configuration object from the bytes array that represents it. This method is executed before to unserialize the object.
-	 * @return an object that represents the object that invokes the method, but with the restored data configuration.
-	 * @throws ConfigurationCacheObjectStreamException If the method fails in the data streaming.
-	 */
-	protected abstract Object readResolve() throws ConfigurationCacheObjectStreamException;
-
-	/**
-	 * {@inheritDoc}
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public abstract ConfigurationCacheObject clone() throws ConfigurationCacheObjectCloneException;
-
 }
