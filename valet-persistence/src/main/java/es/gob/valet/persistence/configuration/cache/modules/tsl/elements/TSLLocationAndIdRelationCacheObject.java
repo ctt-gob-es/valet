@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 07/12/2018.
+ * @version 1.2, 15/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
@@ -29,15 +29,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectCloneException;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectStreamException;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 
 /**
  * <p>Class that represents a collection that stores the relation between a TSL Location
  * and its information into the configuration cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 07/12/2018.
+ * @version 1.2, 15/09/2023.
  */
 public class TSLLocationAndIdRelationCacheObject extends ConfigurationCacheObject {
 
@@ -140,56 +138,6 @@ public class TSLLocationAndIdRelationCacheObject extends ConfigurationCacheObjec
 
 		// Lo eliminamos del Map.
 		relationMap.remove(tdco.getTslLocationUri());
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#writeReplace()
-	 */
-	@Override
-	protected Object writeReplace() throws ConfigurationCacheObjectStreamException {
-
-		try {
-			return this.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new ConfigurationCacheObjectStreamException(e.getMessage());
-		}
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#readResolve()
-	 */
-	@Override
-	protected Object readResolve() throws ConfigurationCacheObjectStreamException {
-
-		try {
-			return this.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new ConfigurationCacheObjectStreamException(e.getMessage());
-		}
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#clone()
-	 */
-	@Override
-	public ConfigurationCacheObject clone() throws ConfigurationCacheObjectCloneException {
-
-		TSLLocationAndIdRelationCacheObject tlairco = new TSLLocationAndIdRelationCacheObject();
-
-		Set<String> keys = relationMap.keySet();
-		for (String tslLocation: keys) {
-
-			tlairco.relationMap.put(tslLocation, relationMap.get(tslLocation));
-
-		}
-
-		return tlairco;
 
 	}
 

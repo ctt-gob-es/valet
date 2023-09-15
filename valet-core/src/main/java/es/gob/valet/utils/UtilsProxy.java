@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 15/09/2023.
  */
 package es.gob.valet.utils;
 
@@ -60,7 +60,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * to obtain the data necessary to establish a connection via PROXY. Besides this load will be done in the initialization
  * of the platform, and this class is responsible for setting the data in the virtual machine.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 15/09/2023.
  */
 public final class UtilsProxy {
 
@@ -92,6 +92,7 @@ public final class UtilsProxy {
 	/**
 	 * Constant attribute that represents the system property key 'http.proxyPassword'.
 	 */
+	@SuppressWarnings("squid:S2068")
 	private static final String SYSPROP_HTTP_PROXYPASSWORD = "http.proxyPassword";
 
 	/**
@@ -102,6 +103,7 @@ public final class UtilsProxy {
 	/**
 	 * Constant attribute that represents the system property key 'http.auth.ntlm.password'.
 	 */
+	@SuppressWarnings("squid:S2068")
 	private static final String SYSPROP_HTTP_AUTH_NTLM_PASSWORD = "http.auth.ntlm.password";
 
 	/**
@@ -142,6 +144,7 @@ public final class UtilsProxy {
 	/**
 	 * Constant attribute that represents the system property key 'https.proxyPassword'.
 	 */
+	@SuppressWarnings("squid:S2068")
 	private static final String SYSPROP_HTTPS_PROXYPASSWORD = "https.proxyPassword";
 
 	/**
@@ -152,6 +155,7 @@ public final class UtilsProxy {
 	/**
 	 * Constant attribute that represents the system property key 'https.auth.ntlm.password'.
 	 */
+	@SuppressWarnings("squid:S2068")
 	private static final String SYSPROP_HTTPS_AUTH_NTLM_PASSWORD = "https.auth.ntlm.password";
 
 	/**

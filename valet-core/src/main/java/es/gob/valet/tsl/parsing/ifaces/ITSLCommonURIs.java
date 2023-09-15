@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 21/08/2019.
+ * @version 1.2, 15/09/2023.
  */
 package es.gob.valet.tsl.parsing.ifaces;
 
@@ -29,7 +29,7 @@ package es.gob.valet.tsl.parsing.ifaces;
  * <p>Interface that contains the string representation of the differents URI used
  * in the XML implementations of the TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 21/08/2019.
+ * @version 1.2, 15/09/2023.
  */
 public interface ITSLCommonURIs {
 
@@ -422,6 +422,7 @@ public interface ITSLCommonURIs {
 	/**
 	 * Issuer of PIN- or password-based identity credentials.
 	 */
+	@SuppressWarnings("squid:S2068")
 	String TSL_SERVICETYPE_PPWD = "http://uri.etsi.org/TrstSvc/Svctype/PPwd";
 
 	/**
@@ -494,6 +495,7 @@ public interface ITSLCommonURIs {
 	 * Issuer of PIN- or password-based identity credentials that cannot be identified by a specific
 	 * PKI-based public key.
 	 */
+	@SuppressWarnings("squid:S2068")
 	String TSL_SERVICETYPE_PPWD_NOTHAVINGPKIID = "http://uri.etsi.org/TrstSvc/Svctype/PPwd/nothavingPKIid";
 
 	/**

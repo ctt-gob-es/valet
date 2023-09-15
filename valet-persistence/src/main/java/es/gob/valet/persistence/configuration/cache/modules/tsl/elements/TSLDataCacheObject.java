@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 29/10/2018.
+ * @version 1.2, 15/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
@@ -33,8 +33,6 @@ import java.util.List;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectCloneException;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectStreamException;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
@@ -42,7 +40,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Class that represents a TSL Data Object representation in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 29/10/2018.
+ * @version 1.2, 15/09/2023.
  */
 public class TSLDataCacheObject extends ConfigurationCacheObject {
 
@@ -321,62 +319,6 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 	 */
 	public void setX509CertificateList(List<X509Certificate> x509CertificateList) {
 		this.x509CertificateList = x509CertificateList;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#writeReplace()
-	 */
-	@Override
-	protected Object writeReplace() throws ConfigurationCacheObjectStreamException {
-
-		try {
-			return this.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new ConfigurationCacheObjectStreamException(e.getMessage());
-		}
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#readResolve()
-	 */
-	@Override
-	protected Object readResolve() throws ConfigurationCacheObjectStreamException {
-
-		try {
-			return this.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new ConfigurationCacheObjectStreamException(e.getMessage());
-		}
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#clone()
-	 */
-	@Override
-	public ConfigurationCacheObject clone() throws ConfigurationCacheObjectCloneException {
-
-		TSLDataCacheObject tdco = new TSLDataCacheObject();
-
-		tdco.setTslDataId(getTslDataId());
-		tdco.setTslImplId(getTslImplId());
-		tdco.setTslLocationUri(getTslLocationUri());
-		tdco.setLegibleDocumentAdded(isLegibleDocumentAdded());
-		tdco.setIssueDate((Date) getIssueDate().clone());
-		if (getNextUpdateDate() != null) {
-			tdco.setNextUpdateDate((Date) getNextUpdateDate().clone());
-		}
-		tdco.setSequenceNumber(getSequenceNumber());
-		tdco.setTslObject(getTslObject());
-		tdco.setNewTSLAvailable(getNewTSLAvailable());
-		tdco.setLastNewTSLAvailableFind(getLastNewTSLAvailableFind());
-tdco.setX509CertificateList(getX509CertificateList());
-		return tdco;
-
 	}
 
 }

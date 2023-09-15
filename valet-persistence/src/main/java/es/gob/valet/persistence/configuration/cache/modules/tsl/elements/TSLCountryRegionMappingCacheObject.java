@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 15/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
@@ -28,8 +28,6 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectCloneException;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectStreamException;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
@@ -38,7 +36,7 @@ import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdCons
 /**
  * <p>Class that represents a TSL mapping in the configuration cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/10/2018.
+ * @version 1.1, 15/09/2023.
  */
 public class TSLCountryRegionMappingCacheObject extends ConfigurationCacheObject implements Comparable<TSLCountryRegionMappingCacheObject> {
 
@@ -205,55 +203,6 @@ public class TSLCountryRegionMappingCacheObject extends ConfigurationCacheObject
 	 */
 	public final void setAssociationType(long associationTypeParam) {
 		this.associationType = associationTypeParam;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#writeReplace()
-	 */
-	@Override
-	protected Object writeReplace() throws ConfigurationCacheObjectStreamException {
-
-		try {
-			return this.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new ConfigurationCacheObjectStreamException(e.getMessage());
-		}
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#readResolve()
-	 */
-	@Override
-	protected Object readResolve() throws ConfigurationCacheObjectStreamException {
-
-		try {
-			return this.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new ConfigurationCacheObjectStreamException(e.getMessage());
-		}
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject#clone()
-	 */
-	@Override
-	public ConfigurationCacheObject clone() throws ConfigurationCacheObjectCloneException {
-
-		TSLCountryRegionMappingCacheObject tcrmco = new TSLCountryRegionMappingCacheObject();
-
-		tcrmco.setMappingId(getMappingId());
-		tcrmco.setIdentificator(getIdentificator());
-		tcrmco.setDescription(getDescription());
-		tcrmco.setValue(getValue());
-		tcrmco.setAssociationType(getAssociationType());
-
-		return tcrmco;
-
 	}
 
 	/**
