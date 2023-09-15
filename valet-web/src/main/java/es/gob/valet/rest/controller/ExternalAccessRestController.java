@@ -52,6 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import es.gob.valet.commons.utils.UtilsDate;
+import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.ExternalAccessForm;
 import es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO;
 import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
@@ -185,9 +186,15 @@ public class ExternalAccessRestController {
 			
 			externalDTO.setIdUrl(externalAccess.getIdUrl());
 			externalDTO.setUrl(externalAccess.getUrl());
-			externalDTO.setStateConn(externalAccess.getStateConn());
+			
+			if(externalAccess.getStateConn() != null) {
+				externalDTO.setStateConn(externalAccess.getStateConn());
+			}else {
+				externalDTO.setStateConn(Boolean.FALSE);
+			}
 			if(!externalAccess.getStateConn()) {
-				externalDTO.setMessageError(iExternalAccessService.getMessageErrorValue());
+				String msgError = UtilsStringChar.isNullOrEmpty(iExternalAccessService.getMessageErrorValue()) ? "Error Desconocido" : iExternalAccessService.getMessageErrorValue();
+				externalDTO.setMessageError(msgError);
 			}else {
 				externalDTO.setMessageError("");
 			}

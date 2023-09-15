@@ -28,6 +28,7 @@ package es.gob.valet.service.impl;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -503,7 +504,17 @@ public class ExternalAccessService implements IExternalAccessService {
 			}else {
 				messageError= "Error tipo SocketException";
 			}
-		} catch (IOException e) {
+			
+	} catch (SocketTimeoutException e) {
+		// Se considera que el socket se cerró cuando se estaba escribiendo datos en el flujo de salida y el servidor nos está avisando con RST.
+		urlConnected = false;
+		LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL401, new Object[ ] { uriTslLocation }));
+		if(e.getCause() != null) {
+			messageError= e.getCause().toString();
+		}else {
+			messageError= "Error tipo SocketTimeoutException";
+		}
+	}catch (IOException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
 			if(e.getCause() != null) {
@@ -534,6 +545,15 @@ public class ExternalAccessService implements IExternalAccessService {
 				messageError= e.getCause().toString();
 			}else {
 				messageError= "Error tipo NamingException";
+			}
+		} catch (Exception e) {
+			urlConnected = false;
+			if(e.getCause() != null) {
+				messageError= e.getCause().toString();
+				LOGGER.error(messageError);
+
+			}else {
+				messageError= "Error no controlado. Por favor, pruebe de nuevo.";
 			}
 		}
 		

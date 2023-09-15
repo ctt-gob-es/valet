@@ -85,11 +85,11 @@ function createDatatable(){
              }},
 			 {"data": "stateConn", "width":"15%","render": function(data, type, row){
 				 if (data == false) {
-						return "<i class='ti-close' style='color: #e62d2d;font-weight: bold;'></i>";
+						return "<span value='1' style='visibility: hidden;'>1</span><i class='ti-close' style='color: #e62d2d;font-weight: bold;'></i>";
 	     		} else if (data == true){
-						return "<i class='ti-check' style='color: #3da03b;font-weight: bold;'></i>";
+						return "<span value='0' style='visibility: hidden;'>0</span><i class='ti-check' style='color: #3da03b;font-weight: bold;'></i>";
 					} else {
-						return "<i class='ti-close' style='color: #e62d2d;font-weight: bold;'></i>";
+						return "<span value='1' style='visibility: hidden;'>1</span><i class='ti-close' style='color: #e62d2d;font-weight: bold;'></i>";
 					}
 			 }},
 			 {"data":"messageError","width":"10%", "render":function(data,type,row){
@@ -190,6 +190,16 @@ function TryConnsAjax(ids){
 		}
 	});
 }
+
+$('#idButtonClosedX').click(function(event) {   
+	debugger;
+	search();
+});
+
+$('#idButtonClosed').click(function(event) {   
+	debugger;
+	search();
+});
 
  
 </script>
