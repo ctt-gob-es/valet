@@ -364,6 +364,24 @@ public class ExternalAccessService implements IExternalAccessService {
 		
 		return externalAccess;
 	}
+	
+	/**
+	 * Method that realize test of connection url and save result operation.
+	 * 
+	 * @param uriTslLocation parameter that contain url.
+	 * @param originUrl the originUrl to set
+	 * @param externalAccessDTO parameter that contain all information about operation.
+	 * @return object persist in BD.
+	 */
+	@Override
+	public ExternalAccess getExternalAccessTestConnAndSave(String uriTslLocation, String originUrl, ExternalAccessDTO externalAccessDTO) {
+		ExternalAccess externalAccess = getExternalAccessAndTestConn(uriTslLocation, originUrl, null);
+
+		// Almacenamos los resultados de los test
+		externalAccessRepository.saveAndFlush(externalAccess);
+		
+		return externalAccess;
+	}
 
 	/**
 	 * Method that get external access found.
@@ -384,7 +402,8 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	private boolean testConnUrl(String uriTslLocation) {
 		boolean urlConnected = false;
-		
+		messageError="";
+
 		try {
 			if(uriTslLocation.indexOf(LDAP) != -1) {
 				Hashtable<String, String> environment = new Hashtable<String, String>();
@@ -475,37 +494,46 @@ public class ExternalAccessService implements IExternalAccessService {
 			}
 			
 			urlConnected = true;
-			messageError="";
 		} catch (SocketException e) {
 			// Se considera que el socket se cerró cuando se estaba escribiendo datos en el flujo de salida y el servidor nos está avisando con RST.
 			urlConnected = true;
 			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL401, new Object[ ] { uriTslLocation }));
 			if(e.getCause() != null) {
 				messageError= e.getCause().toString();
+			}else {
+				messageError= "Error tipo SocketException";
 			}
 		} catch (IOException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
 			if(e.getCause() != null) {
 				messageError= e.getCause().toString();
+			}else {
+				messageError= "Error tipo IOException";
 			}
 		} catch (NoSuchAlgorithmException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ERROR_SERVICE_01));
 			if(e.getCause() != null) {
 				messageError= e.getCause().toString();
+			}else {
+				messageError= "Error tipo NoSuchAlgorithmException";
 			}
 		} catch (KeyManagementException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ERROR_SERVICE_02));
 			if(e.getCause() != null) {
 				messageError= e.getCause().toString();
+			}else {
+				messageError= "Error tipo KeyManagementException";
 			}
 		} catch (NamingException e) {
 			urlConnected = false;
 			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
 			if(e.getCause() != null) {
 				messageError= e.getCause().toString();
+			}else {
+				messageError= "Error tipo NamingException";
 			}
 		}
 		

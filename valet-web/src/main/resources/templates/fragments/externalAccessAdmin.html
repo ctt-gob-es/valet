@@ -101,7 +101,7 @@ var messageSelectTableToTry = /*[[#{table.externalAccess.tryConnError}]]*/;
 $(document).ready(function() {
 	debugger;
 
-createDatatable()
+createDatatable(dataSet);
 
 //función para configurar el elemento datetimepicker
 $('#datetimepicker1').datetimepicker({
@@ -127,7 +127,7 @@ $('#datetimepicker2').datetimepicker({
 });// documentReady
 
 
-function createDatatable(){
+function createDatatable(dataSet){
 	tbl = $('#externalAccessTable').DataTable({
 		data: dataSet,
 		dom: 'Bfrtip',
@@ -245,6 +245,7 @@ function search(){
 	 debugger;
 	 var getExternalAccess =/*[[@{/externalAccessDatatable}]]*/;
 	 var formData = JSON.stringify($("#searchEAForm").serializeJSON());
+	 var d =$("#searchEAForm").serializeJSON();
 	 loading();
 	 //Borramos el mensaje de alerta si lo hubiese por una búsqueda anterior.
 	 $('#searchEAForm').find(".alert").html('');
@@ -258,6 +259,53 @@ function search(){
 	 
 		//borramos los datos de la tabla anteriores
 		 tbl.clear().draw();
+	 	 $('#selectAll').prop('checked', false); 
+		//llamamos al controlador para recuperar la información
+
+		 $.ajax({
+			 type: "POST",
+			 url: getExternalAccess,
+			 data: formData,
+			 dataType :"json",
+			 contentType:"application/json",
+			success: function(data, error){
+				hide();
+				if(data.error != "" && data.error != null){
+					$('#messageSearchExternalAccess').html(data.error);
+					$('#messageSearchExternalAccess').addClass('alert alert-danger');
+				}else{
+					tbl.rows.add(data.data).draw();
+
+				}
+			 },
+			 error: function(data){
+				 hide();
+				 if(data.error != "" && data.error != null){
+					$('#messageUpdateTaskId').html(data.error);
+					$('#messageUpdateTaskId').addClass('alert alert-danger');
+				}
+			}
+		 });//fin ajax
+}
+
+function searchOK(){
+	 debugger;
+	 var getExternalAccess =/*[[@{/externalAccessDatatable}]]*/;
+	 var formData = JSON.stringify($("#searchEAForm").serializeJSON());
+	 loading();
+	 //Borramos el mensaje de alerta si lo hubiese por una búsqueda anterior.
+	 $('#searchEAForm').find(".alert").html('');
+	 $('#searchEAForm').find(".alert").removeClass('alert alert-danger');
+		
+	 //controlamos que al menos 1 registro esté en el formulario relleno para la búsqueda:
+	 var url =$('#urlInput').val();
+	 var dateFrom =$('#dateFromId').val();
+	 var dateTo =$('#dateToId').val();
+	 var state = $('#stateConn').val();
+	 
+		//borramos los datos de la tabla anteriores
+		 tbl.clear().draw();
+	 	 $('#selectAll').prop('checked', false); 
 		//llamamos al controlador para recuperar la información
 		$.ajax({
 			 type: "POST",
@@ -296,7 +344,6 @@ function cleanForm(f){
 	
 	$(f).find(".alert").html('');
 	$(f).find(".alert").removeClass('alert alert-danger');
-
 }
 
  

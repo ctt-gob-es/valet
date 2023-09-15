@@ -172,25 +172,6 @@ public class ExternalAccessRestController {
 	}
 
 	
-	@RequestMapping(value = "/tryConn", method = RequestMethod.POST)
-	public ExternalAccessDTO tryConn(@RequestParam(value = "id") Long id, Model model) {
-		ExternalAccess externalAccess = iExternalAccessService.getUrlDataById(id);
-		ExternalAccessDTO externalDTO =  new ExternalAccessDTO();
-		try {
-			externalAccess = iExternalAccessService.getExternalAccessAndTestConn(externalAccess.getUrl(), externalAccess.getOriginUrl(), null);
-			
-			externalDTO.setIdUrl(externalAccess.getIdUrl());
-			externalDTO.setUrl(externalAccess.getUrl());
-			externalDTO.setStateConn(externalAccess.getStateConn());
-			externalDTO.setMessageError(iExternalAccessService.getMessageErrorValue());
-		}catch (Exception e) {
-			//TODO: rellenar con error en caso de que algo vaya mal
-			LOGGER.error(e.getCause());
-		}
-		return externalDTO;
-
-	}
-	
 	@RequestMapping(value = "/tryConns", method = RequestMethod.POST)
 	public @ResponseBody List<ExternalAccessDTO> tryConns(@RequestParam("ids[]") List<Long> ids, Model model) {
 		
@@ -200,12 +181,16 @@ public class ExternalAccessRestController {
 		ExternalAccess externalAccess = iExternalAccessService.getUrlDataById(id);
 		ExternalAccessDTO externalDTO =  new ExternalAccessDTO();
 		try {
-			externalAccess = iExternalAccessService.getExternalAccessAndTestConn(externalAccess.getUrl(), externalAccess.getOriginUrl(), null);
+			externalAccess = iExternalAccessService.getExternalAccessTestConnAndSave(externalAccess.getUrl(), externalAccess.getOriginUrl(), null);
 			
 			externalDTO.setIdUrl(externalAccess.getIdUrl());
 			externalDTO.setUrl(externalAccess.getUrl());
 			externalDTO.setStateConn(externalAccess.getStateConn());
-			externalDTO.setMessageError(iExternalAccessService.getMessageErrorValue());
+			if(!externalAccess.getStateConn()) {
+				externalDTO.setMessageError(iExternalAccessService.getMessageErrorValue());
+			}else {
+				externalDTO.setMessageError("");
+			}
 		}catch (Exception e) {
 			//TODO: rellenar con error en caso de que algo vaya mal
 			LOGGER.error(e.getCause());
