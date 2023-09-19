@@ -16,35 +16,35 @@
 
 /**
  * <b>File:</b><p>es.gob.valet.commons.utils.GeneralConstants.java.</p>
- * <b>Description:</b><p>Interface that contains general constants.</p>
+ * <b>Description:</b><p>Class that contains general constants.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 30/09/2022.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
 /**
- * <p>Interface that contains general constants.</p>
+ * <p>Class that contains general constants.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 30/09/2022.
+ * @version 1.4, 19/09/2023.
  */
-public interface GeneralConstants {
+public class GeneralConstants {
 
 	/**
 	 * Constant attribute that represents the number to identify the daily planner type.
 	 */
-	Long PLANNING_TYPE_DAYLY = 0L;
+	public static final Long PLANNING_TYPE_DAYLY = 0L;
 
 	/**
 	 * Constant attribute that represents the number to identify the periodic planner type.
 	 */
-	Long PLANNING_TYPE_PERIODIC = 1L;
+	public static final Long PLANNING_TYPE_PERIODIC = 1L;
 
 	/**
 	 * Constant attribute that represents the number to identify the planner type by date.
 	 */
-	Long PLANNING_TYPE_DATE = 2L;
+	public static final Long PLANNING_TYPE_DATE = 2L;
 	
 	/**
 	 * Constant attribute that represents the Valet Logger name.

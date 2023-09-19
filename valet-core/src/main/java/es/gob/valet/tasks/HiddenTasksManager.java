@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.tasks;
 
@@ -45,7 +45,7 @@ import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsDeploymentType;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.quartz.planner.IPlanner;
 import es.gob.valet.quartz.planner.PlannerDate;
 import es.gob.valet.quartz.planner.PlannerPeriod;
@@ -57,7 +57,7 @@ import es.gob.valet.quartz.task.Task;
  * <p>Class that manages the named 'Hidden Tasks'. This tasks are from/for
  * the system, and the final user (administrator) don't manage these.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 public final class HiddenTasksManager {
 
@@ -334,9 +334,9 @@ public final class HiddenTasksManager {
 
 			tasksOmmitedSet.add(taskName);
 			if (validTarget) {
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_000, new Object[ ] { taskName }));
+				LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_000, new Object[ ] { taskName }));
 			} else {
-				LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_006, new Object[ ] { taskName }));
+				LOGGER.info(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_006, new Object[ ] { taskName }));
 			}
 
 		}
@@ -358,7 +358,7 @@ public final class HiddenTasksManager {
 		// tarea.
 		if (UtilsStringChar.isNullOrEmptyTrim(result)) {
 
-			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_TARGET }));
+			LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_TARGET }));
 
 		} else {
 
@@ -396,7 +396,7 @@ public final class HiddenTasksManager {
 		// tarea.
 		if (UtilsStringChar.isNullOrEmptyTrim(classNameString)) {
 
-			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_CLASS }));
+			LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_CLASS }));
 
 		} else {
 
@@ -405,9 +405,9 @@ public final class HiddenTasksManager {
 			try {
 				result = (Class<Task>) Class.forName(classNameString);
 			} catch (ClassNotFoundException e) {
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_CLASS }), e);
+				LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_CLASS }), e);
 			} catch (ClassCastException e) {
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_CLASS }), e);
+				LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_CLASS }), e);
 			}
 
 		}
@@ -433,7 +433,7 @@ public final class HiddenTasksManager {
 		// tarea.
 		if (UtilsStringChar.isNullOrEmptyTrim(periodString)) {
 
-			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_PERIOD }));
+			LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_PERIOD }));
 
 		} else {
 
@@ -442,7 +442,7 @@ public final class HiddenTasksManager {
 			try {
 				result = Long.parseLong(periodString);
 			} catch (NumberFormatException e) {
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_PERIOD }), e);
+				LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_PERIOD }), e);
 			}
 
 		}
@@ -470,7 +470,7 @@ public final class HiddenTasksManager {
 		// tarea.
 		if (UtilsStringChar.isNullOrEmptyTrim(startDateString)) {
 
-			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_STARTDATE }));
+			LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_001, new Object[ ] { taskName, PROPERTY_TASK_STARTDATE }));
 
 		} else {
 
@@ -517,7 +517,7 @@ public final class HiddenTasksManager {
 						tempTaskProperties.put(PROPERTY_TASK_STARTDATE + UtilsStringChar.SYMBOL_HYPHEN_STRING + TASK_STARTDATE_NOW, Boolean.FALSE);
 						tempTaskProperties.put(PROPERTY_TASK_STARTDATE + UtilsStringChar.SYMBOL_HYPHEN_STRING + TASK_STARTDATE_WAIT_PERIOD, Boolean.FALSE);
 					} catch (ParseException e) {
-						LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_002, new Object[ ] { taskName, PROPERTY_TASK_STARTDATE, UtilsDate.FORMAT_DATE_TIME_SECONDS }));
+						LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_002, new Object[ ] { taskName, PROPERTY_TASK_STARTDATE, UtilsDate.FORMAT_DATE_TIME_SECONDS }));
 					}
 					break;
 
@@ -679,7 +679,7 @@ public final class HiddenTasksManager {
 				// Eliminamos la tarea del hashtable de actuales.
 				actualHiddenTasks.remove(taskToRemove);
 			} catch (ValetSchedulerException e) {
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_003, new Object[ ] { taskToRemove }), e);
+				LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_003, new Object[ ] { taskToRemove }), e);
 			}
 
 		}
@@ -710,7 +710,7 @@ public final class HiddenTasksManager {
 				IPlanner planner = createPlanner(taskStartDate, taskPeriod.longValue());
 				HiddenTasksScheduler.getInstance().addOrReplacePlannerInTask(taskToUpdate, planner, taskClass, null);
 			} catch (ValetSchedulerException e) {
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_004, new Object[ ] { taskToUpdate }), e);
+				LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_004, new Object[ ] { taskToUpdate }), e);
 			}
 
 		}
@@ -765,7 +765,7 @@ public final class HiddenTasksManager {
 			HiddenTasksScheduler.getInstance().addOrReplacePlannerInTask(taskName, planner, taskClass, dataForTheTask);
 			result = true;
 		} catch (ValetSchedulerException e) {
-			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.HIDDEN_TASK_MNG_005, new Object[ ] { taskName }), e);
+			LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.HIDDEN_TASK_MNG_005, new Object[ ] { taskName }), e);
 		}
 		return result;
 

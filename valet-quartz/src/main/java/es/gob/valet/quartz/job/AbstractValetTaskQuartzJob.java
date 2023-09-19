@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.quartz.job;
 
@@ -37,14 +37,14 @@ import org.quartz.JobExecutionException;
 import org.quartz.SchedulerException;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
+import es.gob.valet.i18n.messages.QuartzGeneralMessages;
 import es.gob.valet.quartz.scheduler.AbstractQuartzScheduler;
 
 /**
  * <p>Class that represents a scheduler task in valET. This class must be extends
  * for all the scheduler task classes in valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 public abstract class AbstractValetTaskQuartzJob implements Job {
 
@@ -71,7 +71,7 @@ public abstract class AbstractValetTaskQuartzJob implements Job {
 			for (JobExecutionContext job: jobs) {
 				if (job.getTrigger().equals(jobExecContext.getTrigger()) && !job.getFireInstanceId().equals(jobExecContext.getFireInstanceId())) {
 					String keyName = jobExecContext.getJobDetail().getKey().getName();
-					LOGGER.warn(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ32, new Object[ ] { keyName }));
+					LOGGER.warn(Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOGMQ32, new Object[ ] { keyName }));
 					return;
 				}
 
@@ -103,11 +103,11 @@ public abstract class AbstractValetTaskQuartzJob implements Job {
 
 		} catch (TaskValetException e) {
 
-			LOGGER.error(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ00, new Object[ ] { jobExecContext.getJobDetail().getKey().getName() }));
+			LOGGER.error(Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOGMQ00, new Object[ ] { jobExecContext.getJobDetail().getKey().getName() }));
 			throw new JobExecutionException(e);
 
 		} catch (SchedulerException e) {
-			LOGGER.error(Language.getResQuartzGeneral(IQuartzGeneralMessages.LOGMQ33));
+			LOGGER.error(Language.getResQuartzGeneral(QuartzGeneralMessages.LOGMQ33));
 			throw new JobExecutionException(e);
 
 		}

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 03/04/2023.
+ * @version 1.5, 19/09/2023.
  */
 package es.gob.valet.utils;
 
@@ -31,9 +31,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.crypto.keystore.KeystoreFactory;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.tsl.access.TSLManager;
@@ -41,7 +41,7 @@ import es.gob.valet.tsl.access.TSLManager;
 /**
  * <p>Utilities class for local cache operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 03/04/2023.
+ * @version 1.5, 19/09/2023.
  */
 public final class UtilsCache {
 
@@ -77,7 +77,7 @@ public final class UtilsCache {
 
 		try {
 
-			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_005));
+			LOGGER.info(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_CACHE_005));
 
 			// Ejecutamos la recarga completa de la caché si se ha solicitado
 			// la ejecución completa del proceso.
@@ -90,10 +90,10 @@ public final class UtilsCache {
 			KeystoreFactory.forceReloadKeystoreFactory();
 
 			// Recargamos los datos del proxy.
-			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_008));
+			LOGGER.info(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_CACHE_008));
 			long startOperationTime = Calendar.getInstance().getTimeInMillis();
 			UtilsProxy.loadProxyConfiguration();
-			LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_021, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
+			LOGGER.info(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_CACHE_021, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 
 			// TODO Recargamos los certificados de confianza.
 			// LOGGER.info(Language.getResCoreGeneral(LOG_COREUTILS_009));
@@ -104,10 +104,10 @@ public final class UtilsCache {
 			// startOperationTime }));
 
 			// Cargamos las TSL.
-			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_010));
+			LOGGER.info(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_CACHE_010));
 			startOperationTime = Calendar.getInstance().getTimeInMillis();
 			TSLManager.getInstance().reloadTSLCache();
-			LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_023, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
+			LOGGER.info(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_CACHE_023, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 
 			// Recargamos las distintas listas de objetos cacheadas en memoria.
 			loadAllAdditionalCachedObjectList();
@@ -117,13 +117,13 @@ public final class UtilsCache {
 			// ManagerBOs.getInstance().getMPMManagerBOs().getMPMManager().markAsSync(ClusterManager.getInstance().getThisNodeName());
 			// }
 
-			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_011));
+			LOGGER.info(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_CACHE_011));
 
 		} catch (ConfigurationCacheException e) {
 
-			String errorMsg = Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_000);
+			String errorMsg = Language.getResCoreGeneral(CoreGeneralMessages.UTILS_CACHE_000);
 			LOGGER.error(errorMsg);
-			throw new ConfigurationCacheException(IValetException.COD_191, errorMsg, e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, errorMsg, e);
 
 		} finally {
 
@@ -134,7 +134,7 @@ public final class UtilsCache {
 			// Parseamos a cadena.
 			String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(totalTime), TimeUnit.MILLISECONDS.toMinutes(totalTime) % TimeUnit.HOURS.toMinutes(1), TimeUnit.MILLISECONDS.toSeconds(totalTime) % TimeUnit.MINUTES.toSeconds(1));
 			// Lo imprimimos.
-			LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_018, new Object[ ] { hms }));
+			LOGGER.info(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_CACHE_018, new Object[ ] { hms }));
 
 		}
 

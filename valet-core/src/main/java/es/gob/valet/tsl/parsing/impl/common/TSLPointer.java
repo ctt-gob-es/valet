@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -31,16 +31,16 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 
 /**
  * <p>Class that defines a TSL pointer with all its information not dependent
  * of the specification or version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class TSLPointer implements Serializable {
 
@@ -57,7 +57,7 @@ public class TSLPointer implements Serializable {
 	/**
 	 * Attribute that represents the list of service digital identities associted to this TSL pointer.
 	 */
-	private List<ServiceDigitalIdentity> serviceDigitalIdentities = null;
+	private transient List<ServiceDigitalIdentity> serviceDigitalIdentities = null;
 
 	/**
 	 * Constructor method for the class TSLPointer.java.
@@ -77,7 +77,7 @@ public class TSLPointer implements Serializable {
 		try {
 			tslLocation = new URI(uriTSLLocation);
 		} catch (URISyntaxException e) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL009, new Object[ ] { uriTSLLocation }), e);
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL009, new Object[ ] { uriTSLLocation }), e);
 		}
 	}
 

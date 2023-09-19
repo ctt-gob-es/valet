@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -43,12 +43,12 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 
 /**
  * <p>Utilities class that provides functionality to manage and work with OCSP request and responses.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public final class UtilsOCSP {
 
@@ -120,7 +120,7 @@ public final class UtilsOCSP {
 					result = Arrays.equals(issuerNameHash.getOctets(), certificateId.getIssuerNameHash());
 				}
 			} catch (OperatorCreationException | IOException e) {
-				throw new CommonUtilsException(IValetException.COD_200, e.getMessage(), e);
+				throw new CommonUtilsException(ValetExceptionConstants.COD_200, e.getMessage(), e);
 			}
 
 		}

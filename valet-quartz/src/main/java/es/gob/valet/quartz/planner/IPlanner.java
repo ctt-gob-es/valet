@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/01/2019.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.quartz.planner;
 
@@ -31,24 +31,9 @@ import es.gob.valet.persistence.configuration.model.entity.Planner;
 /**
  * <p>Interface that defines the methods for the planners.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/01/2019.
+ * @version 1.3, 19/09/2023.
  */
 public interface IPlanner {
-
-	/**
-	 * Constant attribute that represents the number to identify the daily planner type.
-	 */
-	int PLANNER_TYPE_DIARY = 0;
-
-	/**
-	 * Constant attribute that represents the number to identify the periodic planner type.
-	 */
-	int PLANNER_TYPE_PERIOD = 1;
-
-	/**
-	 * Constant attribute that represents the number to identify the planner type by date.
-	 */
-	int PLANNER_TYPE_DATE = 2;
 
 	/**
 	 * Method that obtain the milliseconds necessary for the next execution. The method returns a negative number

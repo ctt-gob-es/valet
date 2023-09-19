@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 04/10/2022.
+ * @version 2.0, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -55,14 +55,14 @@ import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.10, 22/02/2023.
+ * @version 2.0, 19/09/2023.
  */
 public final class UtilsCertificate {
 
@@ -91,13 +91,13 @@ public final class UtilsCertificate {
 			if (x509 != null) {
 				return x509;
 			} else {
-				throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000));
+				throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_000));
 			}
 
 		} catch (CertificateException e) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
 		} catch (Exception e) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
 		} finally {
 			UtilsResources.safeCloseInputStream(is);
 		}
@@ -117,7 +117,7 @@ public final class UtilsCertificate {
 			try {
 				return getBouncyCastleCertificate(x509cert.getEncoded());
 			} catch (CertificateEncodingException e) {
-				throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
+				throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
 			}
 		}
 
@@ -133,7 +133,7 @@ public final class UtilsCertificate {
 		try {
 			return org.bouncycastle.asn1.x509.Certificate.getInstance(certificate);
 		} catch (Exception e) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_000), e);
 		}
 	}
 
@@ -293,13 +293,13 @@ public final class UtilsCertificate {
 		try {
 			cert.verify(publicKey);
 		} catch (InvalidKeyException e) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_001), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_001), e);
 		} catch (CertificateException e) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_002), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_002), e);
 		} catch (NoSuchAlgorithmException e) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_003), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_003), e);
 		} catch (NoSuchProviderException e) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_004), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_004), e);
 		} catch (SignatureException e) {
 			// La firma no coincide.
 			return false;
@@ -473,7 +473,7 @@ public final class UtilsCertificate {
 				}
 
 			} catch (CertificateParsingException e) {
-				throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_005), e);
+				throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_005), e);
 			}
 
 		}

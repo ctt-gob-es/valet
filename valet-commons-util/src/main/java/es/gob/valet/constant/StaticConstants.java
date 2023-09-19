@@ -16,25 +16,25 @@
 
 /** 
  * <b>File:</b><p>es.gob.valet.constant.StaticConstants.java.</p>
- * <b>Description:</b><p> Interface that contains the static constants for the static configuration.</p>
+ * <b>Description:</b><p> Class that contains the static constants for the static configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/12/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 15/09/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.constant;
 
 
 /** 
- * <p>Interface that contains the static constants for the static configuration.</p>
+ * <p>Class that contains the static constants for the static configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 15/09/2023.
+ * @version 1.2, 19/09/2023.
  */
 public class StaticConstants {
 	/**
 	 * Attribute that represents the password for the system keystores.
 	 */
-	@SuppressWarnings("squid:S2068")
+	@SuppressWarnings("squid:S2068") // It is considered false positive if the property name is refactored, it is no longer vulnerable.
 	public static final String AES_PASSWORD = "aes.password";
 	
 	/**

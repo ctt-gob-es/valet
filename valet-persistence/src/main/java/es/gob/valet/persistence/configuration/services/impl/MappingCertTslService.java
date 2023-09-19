@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.11, 03/04/2023.
+ * @version 2.0, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -54,8 +54,8 @@ import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceGeneralMessages;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.PersistenceGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingExportDTO;
@@ -73,7 +73,7 @@ import es.gob.valet.persistence.utils.ImportUtils;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Mapping Certificate TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.11, 03/04/2023.
+ * @version 2.0, 19/09/2023.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -180,7 +180,7 @@ public class MappingCertTslService implements IMappingCertTslService {
 
 			// Añadimos el TSPService a la lista resultado
 			BootstrapTreeNode bootstrapTreeNodeTSPService = new BootstrapTreeNode();
-			String TspServiceNameWithDateExpiration = tslMappingDTO.getTspServiceName() + " - " + Language.getResWebGeneral(IWebGeneralMessages.END) + ": " + tslMappingDTO.getExpirationDate().substring(NumberConstants.NUM0, NumberConstants.NUM10);
+			String TspServiceNameWithDateExpiration = tslMappingDTO.getTspServiceName() + " - " + Language.getResWebGeneral(WebGeneralMessages.END) + ": " + tslMappingDTO.getExpirationDate().substring(NumberConstants.NUM0, NumberConstants.NUM10);
 			bootstrapTreeNodeTSPService.setText(TspServiceNameWithDateExpiration);
 			bootstrapTreeNodeTSPService.setIcon(BootstrapTreeNode.ICON_CERTIFICATE);
 			bootstrapTreeNodeTSPService.setNodeId(tslMappingDTO.getTspServiceName());
@@ -193,7 +193,7 @@ public class MappingCertTslService implements IMappingCertTslService {
 		} else {
 			// Añadimos el TSPService a la lista resultado
 			BootstrapTreeNode bootstrapTreeNodeTSPService = new BootstrapTreeNode();
-			String TspServiceNameWithDateExpiration = tslMappingDTO.getTspServiceName() + " - " + Language.getResWebGeneral(IWebGeneralMessages.END) + ": " + tslMappingDTO.getExpirationDate().substring(NumberConstants.NUM0, NumberConstants.NUM10);
+			String TspServiceNameWithDateExpiration = tslMappingDTO.getTspServiceName() + " - " + Language.getResWebGeneral(WebGeneralMessages.END) + ": " + tslMappingDTO.getExpirationDate().substring(NumberConstants.NUM0, NumberConstants.NUM10);
 			bootstrapTreeNodeTSPService.setText(TspServiceNameWithDateExpiration);
 			bootstrapTreeNodeTSPService.setIcon(BootstrapTreeNode.ICON_CERTIFICATE);
 			bootstrapTreeNodeTSPService.setNodeId(tslMappingDTO.getTspServiceName());
@@ -364,7 +364,7 @@ public class MappingCertTslService implements IMappingCertTslService {
 		this.percentage = NumberConstants.NUM20;
 		// Comprobamos que se ha indicado el archivo JSON con los mapeos a
 		// importar.
-		ImportUtils.checkIsFileNotNull(importMappingLogicalfieldFile, Language.getResPersistenceGeneral(IPersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_FILE_EMPTY));
+		ImportUtils.checkIsFileNotNull(importMappingLogicalfieldFile, Language.getResPersistenceGeneral(PersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_FILE_EMPTY));
 		// Evaluamos que el fichero no supere el tamaño máximo
 		Integer maxFileSize = Integer.parseInt(env.getProperty("max.fileSize"));
 		ImportUtils.checkIsFileMaxSize(originalFilename, importMappingLogicalfieldFile, maxFileSize);
@@ -425,14 +425,14 @@ public class MappingCertTslService implements IMappingCertTslService {
 				listTslMappingNew.add(tslMapping);
 			}
 		} catch (JsonParseException e) { // No es un archivo con formato json
-			String msgError = Language.getResPersistenceGeneral(IPersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_FORMAT_INCORRECT);
+			String msgError = Language.getResPersistenceGeneral(PersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_FORMAT_INCORRECT);
 			LOGGER.error(msgError);
 			throw new ImportException(msgError);
 		} catch (UnrecognizedPropertyException e) { // No es un json con
 													// propiedades de la
 													// instancia
 													// TslMappingImportDTO
-			String msgError = Language.getResPersistenceGeneral(IPersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_TSL_MAPPING_NOT_INSTANCE);
+			String msgError = Language.getResPersistenceGeneral(PersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_TSL_MAPPING_NOT_INSTANCE);
 			LOGGER.error(msgError);
 			throw new ImportException(msgError);
 		}

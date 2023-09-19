@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -35,7 +35,7 @@ import java.util.Map;
  * <p>Class that defines a TSP Service Information with all its information
  * not dependent of the specification or TSL version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class ServiceInformation extends ServiceHistoryInstance {
 
@@ -49,20 +49,20 @@ public class ServiceInformation extends ServiceHistoryInstance {
 	 * can obtain service-specific information provided by the scheme operator in all presented
 	 * languages.
 	 */
-	private Map<String, List<URI>> schemeServiceDefinitionURIs = null;
+	private transient Map<String, List<URI>> schemeServiceDefinitionURIs = null;
 
 	/**
 	 * Attribute that represents one or more URIs where users (subscribers, relying parties)
 	 * can access the service.
 	 */
-	private List<URI> serviceSupplyPointsTSL = null;
+	private transient List<URI> serviceSupplyPointsTSL = null;
 
 	/**
 	 * Attribute that represents the URI(s) where users (subscribers, relying parties)
 	 * can obtain service-specific information provided by the TSP in all presented
 	 * languages.
 	 */
-	private Map<String, List<URI>> serviceDefinitionURIs = null;
+	private transient Map<String, List<URI>> serviceDefinitionURIs = null;
 
 	/**
 	 * Constructor method for the class ServiceInformation.java.

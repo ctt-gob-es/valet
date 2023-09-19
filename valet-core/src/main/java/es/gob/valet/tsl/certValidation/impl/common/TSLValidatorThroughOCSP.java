@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 24/07/2023.
+ * @version 1.8, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -39,8 +39,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -84,17 +84,17 @@ import es.gob.valet.commons.utils.UtilsProviders;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
-import es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
+import es.gob.valet.persistence.configuration.model.utils.AlarmIdConstants;
 import es.gob.valet.tsl.access.TSLProperties;
-import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
 import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 import es.gob.valet.utils.UtilsHTTP;
+import es.gob.valet.utils.ValidatorResultConstants;
 
 /**
  * <p>
@@ -106,7 +106,7 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 1.7, 24/07/2023.
+ * @version 1.8, 19/09/2023.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -237,7 +237,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 						nonceByteArray = buildNonce();
 
 						// Construimos y mandamos la petición OCSP.
-						LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL255, new Object[] { uri }));
+						LOGGER.debug(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL255, new Object[] { uri }));
 						ocspResponse = buildAndSendOCSPRequest(certificateId, nonceByteArray, uri, readTimeout,
 								connectionTimeout);
 
@@ -256,13 +256,13 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 							// servicio de donde se obtuvo el SupplyPoint.
 							if (checkOCSPResponseIsValid(ocspResponse, nonceByteArray, validationDate, validationResult,
 									true, null, null)) {
-								LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL256,
+								LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL256,
 										new Object[] { uri }));
 								ocspUri = uri.toString();
 								break;
 							} else {
 								ocspResponse = null;
-								LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL223));
+								LOGGER.debug(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL223));
 							}
 						}
 
@@ -283,7 +283,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 					} else {
 
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL134));
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL134));
 
 					}
 
@@ -393,7 +393,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 		} catch (Exception e) {
 
-			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL126), e);
+			LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL126), e);
 			result = null;
 
 		}
@@ -468,7 +468,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				result = new OCSPResp(ocspResponseBytes);
 
 			} catch (Exception e) {
-				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL128, new Object[] { uri.toString() }),
+				LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL128, new Object[] { uri.toString() }),
 						e);
 				result = null;
 			}
@@ -476,8 +476,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// Si en este punto la respuesta es nula, es
 			// que no la hemos podido obtener o parsear.
 			if (result == null) {
-				AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP,
-						Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM004_EVENT_000,
+				AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP,
+						Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM004_EVENT_000,
 								new Object[] { uri.toString() }));
 			}
 
@@ -569,17 +569,17 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 				} else {
 
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL136));
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL136));
 
 				}
 
 			} catch (OCSPException e) {
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL136));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL136));
 			}
 
 		} else {
 
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL135,
+			LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL135,
 					new Object[] { translateOcspResponseStatusToString(ocspResponse.getStatus()) }));
 
 		}
@@ -728,8 +728,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					subject = null;
 					issuer = null;
 				} finally {
-					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP,
-							Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM004_EVENT_001,
+					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP,
+							Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM004_EVENT_001,
 									new Object[] { subject, issuer }));
 				}
 
@@ -811,7 +811,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 			// Almacenamos en una variable si el certificado es cualificado o
 			// no.
-			boolean isCertQualified = validationResult.getMappingType() == ITSLValidatorResult.MAPPING_TYPE_QUALIFIED;
+			boolean isCertQualified = validationResult.getMappingType() == ValidatorResultConstants.MAPPING_TYPE_QUALIFIED;
 
 			// Obtenemos la lista de servicios.
 			List<TSPService> tspServiceList = tsp.getAllTSPServices();
@@ -1054,12 +1054,12 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 			} else {
 
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL138));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL138));
 
 			}
 
 		} catch (Exception e) {
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL137));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL137));
 		}
 
 		return result;
@@ -1144,7 +1144,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 		} catch (OCSPException e) {
 
-			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL142), e);
+			LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL142), e);
 
 		}
 
@@ -1210,7 +1210,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 		} catch (Exception e) {
 
-			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL142), e);
+			LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL142), e);
 
 		}
 
@@ -1259,7 +1259,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 					// Por defecto, indicamos como resultado que el
 					// certificado se encuentra revocado.
-					validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_REVOKED);
+					validationResult.setResult(ValidatorResultConstants.RESULT_DETECTED_STATE_REVOKED);
 
 					// Si además contiene información sobre la revocación...
 					if (revokedCertStatus.hasRevocationReason()) {
@@ -1280,7 +1280,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 						if (revocationDate != null && revocationDate.after(validationDate)
 								|| reasonCode >= 0 && reasonCode == CRLReason.REMOVE_FROM_CRL.ordinal()) {
 
-							validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_VALID);
+							validationResult.setResult(ValidatorResultConstants.RESULT_DETECTED_STATE_VALID);
 
 						} else {
 
@@ -1297,7 +1297,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				// Si es desconocido...
 				else if (certStatus instanceof UnknownStatus) {
 
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL141));
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL141));
 
 				}
 				// Si es good...
@@ -1305,7 +1305,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 					// Indicamos como resultado que el certificado es
 					// válido.
-					validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_VALID);
+					validationResult.setResult(ValidatorResultConstants.RESULT_DETECTED_STATE_VALID);
 
 				}
 
@@ -1314,7 +1314,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			}
 
 		} catch (Exception e) {
-			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL142), e);
+			LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL142), e);
 		}
 
 		return result;
@@ -1454,7 +1454,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					validationResult);
 
 		} catch (Exception e) {
-			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL125), e);
+			LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL125), e);
 		}
 
 	}
@@ -1484,7 +1484,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			aia = AuthorityInformationAccess.fromExtensions(
 					UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions());
 		} catch (Exception e) {
-			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL186), e);
+			LOGGER.error(Language.getResCoreTsl(CoreTslMessages.LOGMTSL186), e);
 		}
 
 		// Si la información recuperada no es nula, y al menos hay un
@@ -1554,7 +1554,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 									if (!checkOCSPResponseIsValid(ocspResponse, nonce, validationDate, validationResult,
 											!isTsaCertificate, tsp, tslValidator)) {
 										ocspResponse = null;
-										LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL223));
+										LOGGER.debug(Language.getResCoreTsl(CoreTslMessages.LOGMTSL223));
 									} else {
 										uri = ocspUriString;
 										break;
@@ -1575,13 +1575,13 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 					} else {
 
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL134));
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL134));
 
 					}
 
 				}
 			} else {
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL404));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL404));
 
 			}
 		}
@@ -1695,9 +1695,9 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		}
 
 		if (issuerFinded) {
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL264));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL264));
 		} else {
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL265));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL265));
 		}
 
 	}
@@ -1718,7 +1718,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			aia = AuthorityInformationAccess.fromExtensions(
 					UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions());
 		} catch (Exception e) {
-			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL186), e);
+			LOGGER.error(Language.getResCoreTsl(CoreTslMessages.LOGMTSL186), e);
 		}
 
 		// Si la información recuperada no es nula, y al menos hay un
@@ -1776,7 +1776,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 									if (!checkOCSPResponseIsValid(ocspResponse, nonce, validationDate, validationResult,
 											!isTsaCertificate, null, null)) {
 										ocspResponse = null;
-										LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL223));
+										LOGGER.debug(Language.getResCoreTsl(CoreTslMessages.LOGMTSL223));
 									} else {
 										uri = ocspUriString;
 										break;
@@ -1795,13 +1795,13 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 								timeIntervalAllowed, validationResult);
 					} else {
 
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL134));
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL134));
 
 					}
 
 				}
 			} else {
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL404));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL404));
 
 			}
 		}

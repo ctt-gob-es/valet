@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.commons.utils.connection.ssl;
 
@@ -45,12 +45,12 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Class that represents a custom SSL Sockect Factory for HTTP Client.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 public class ValetSSLSocketFactory implements LayeredConnectionSocketFactory {
 
@@ -189,7 +189,7 @@ public class ValetSSLSocketFactory implements LayeredConnectionSocketFactory {
 
 		String value = StaticValetConfig.getProperty(StaticValetConfig.SSL_RESTRICTED_CIPHER_SUITES);
 		if (UtilsStringChar.isNullOrEmptyTrim(value)) {
-			LOGGER.debug(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_SSL_SOCKET_000));
+			LOGGER.debug(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_SSL_SOCKET_000));
 		} else {
 			result = value.split(UtilsStringChar.SYMBOL_COMMA_STRING);
 		}
@@ -208,7 +208,7 @@ public class ValetSSLSocketFactory implements LayeredConnectionSocketFactory {
 		String value = StaticValetConfig.getProperty(StaticValetConfig.SSL_RESTRICTED_PROTOCOLS);
 		String[ ] resultArray = null;
 		if (UtilsStringChar.isNullOrEmptyTrim(value)) {
-			LOGGER.debug(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_SSL_SOCKET_001));
+			LOGGER.debug(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_SSL_SOCKET_001));
 		} else {
 			resultArray = value.split(UtilsStringChar.SYMBOL_COMMA_STRING);
 		}

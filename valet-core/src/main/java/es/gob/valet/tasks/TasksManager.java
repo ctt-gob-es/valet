@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.tasks;
 
@@ -30,9 +30,9 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.Planner;
 import es.gob.valet.persistence.configuration.model.entity.Task;
@@ -42,12 +42,13 @@ import es.gob.valet.quartz.planner.PlannerDate;
 import es.gob.valet.quartz.planner.PlannerPeriod;
 import es.gob.valet.quartz.scheduler.TasksScheduler;
 import es.gob.valet.quartz.scheduler.ValetSchedulerException;
+import es.gob.valet.quartz.utils.PlannerConstants;
 
 /**
  * <p>Class that manages the named 'Tasks'. This tasks are only managed
  * by administrators of the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 public final class TasksManager {
 
@@ -68,7 +69,7 @@ public final class TasksManager {
 	 */
 	public static void loadTasks() {
 
-		LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.TASK_MNG_000));
+		LOGGER.info(Language.getResCoreGeneral(CoreGeneralMessages.TASK_MNG_000));
 
 		// Obtenemos la lista de tareas.
 		List<Task> tasksList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTaskService().getAllTask();
@@ -76,7 +77,7 @@ public final class TasksManager {
 		// Si la lista de tareas no es nula ni vacía...
 		if (tasksList != null && !tasksList.isEmpty()) {
 
-			LOGGER.debug(Language.getFormatResCoreGeneral(ICoreGeneralMessages.TASK_MNG_001, new Object[ ] { tasksList.size() }));
+			LOGGER.debug(Language.getFormatResCoreGeneral(CoreGeneralMessages.TASK_MNG_001, new Object[ ] { tasksList.size() }));
 
 			// Se recorren todas las tareas...
 			for (Task task: tasksList) {
@@ -98,7 +99,7 @@ public final class TasksManager {
 						loadTasksAux(task, taskName, implementationClassName);
 
 					} catch (ClassNotFoundException e) {
-						LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.TASK_MNG_004, new Object[ ] { implementationClassName, taskName }), e);
+						LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.TASK_MNG_004, new Object[ ] { implementationClassName, taskName }), e);
 					}
 
 				}
@@ -126,7 +127,7 @@ public final class TasksManager {
 		// Si al menos hay un planificador...
 		if (plannersList != null && !plannersList.isEmpty()) {
 
-			LOGGER.debug(Language.getFormatResCoreGeneral(ICoreGeneralMessages.TASK_MNG_002, new Object[ ] { taskName, implementationClassName }));
+			LOGGER.debug(Language.getFormatResCoreGeneral(CoreGeneralMessages.TASK_MNG_002, new Object[ ] { taskName, implementationClassName }));
 
 			TasksScheduler tasksScheduler = TasksScheduler.getInstance();
 			for (Planner planner: plannersList) {
@@ -135,7 +136,7 @@ public final class TasksManager {
 				try {
 					tasksScheduler.addOrReplacePlannerInTask(taskName, calculatedPlanner, (Class<es.gob.valet.quartz.task.Task>) Class.forName(implementationClassName), null);
 				} catch (ValetSchedulerException e) {
-					LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.TASK_MNG_003, new Object[ ] { taskName }), e);
+					LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.TASK_MNG_003, new Object[ ] { taskName }), e);
 				}
 			}
 
@@ -151,11 +152,11 @@ public final class TasksManager {
 	public static IPlanner getCalculatedPlannerFromDataBase(Planner planner) {
 		IPlanner result = null;
 		switch (planner.getPlannerType().getIdPlannerType().intValue()) {
-			case IPlanner.PLANNER_TYPE_DIARY:
-			case IPlanner.PLANNER_TYPE_PERIOD:
+			case PlannerConstants.PLANNER_TYPE_DIARY:
+			case PlannerConstants.PLANNER_TYPE_PERIOD:
 				result = new PlannerPeriod(planner);
 				break;
-			case IPlanner.PLANNER_TYPE_DATE:
+			case PlannerConstants.PLANNER_TYPE_DATE:
 				result = new PlannerDate(planner);
 				break;
 			default:
@@ -194,13 +195,13 @@ public final class TasksManager {
 
 			}
 		} catch (ValetSchedulerException e) {
-			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.TASK_MNG_003, new Object[ ] { taskName });
+			String errorMsg = Language.getFormatResCoreGeneral(CoreGeneralMessages.TASK_MNG_003, new Object[ ] { taskName });
 			LOGGER.error(errorMsg, e);
-			throw new TaskValetException(IValetException.COD_185, errorMsg, e);
+			throw new TaskValetException(ValetExceptionConstants.COD_185, errorMsg, e);
 		} catch (ClassNotFoundException e) {
-			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.TASK_MNG_004, new Object[ ] { implementationClassName, taskName });
+			String errorMsg = Language.getFormatResCoreGeneral(CoreGeneralMessages.TASK_MNG_004, new Object[ ] { implementationClassName, taskName });
 			LOGGER.error(errorMsg, e);
-			throw new TaskValetException(IValetException.COD_185, errorMsg, e);
+			throw new TaskValetException(ValetExceptionConstants.COD_185, errorMsg, e);
 		}
 
 	}

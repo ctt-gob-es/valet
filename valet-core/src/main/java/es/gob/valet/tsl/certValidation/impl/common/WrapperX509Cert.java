@@ -21,11 +21,10 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 22/02/2023.
+ * @version 1.6, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
-import java.io.IOException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -53,14 +52,14 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 
 /**
  * <p>Wrapper class for a X.509v3 Certificate. This class provides methods to
  * calculate/extract some information of the certificate.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 22/02/2023.
+ * @version 1.6, 19/09/2023.
  */
 public class WrapperX509Cert {
 
@@ -99,7 +98,7 @@ public class WrapperX509Cert {
 		try {
 			x509CertBC = UtilsCertificate.getBouncyCastleCertificate(cert);
 		} catch (CommonUtilsException e) {
-			throw new TSLCertificateValidationException(IValetException.COD_187, e.getMessage(), e);
+			throw new TSLCertificateValidationException(ValetExceptionConstants.COD_187, e.getMessage(), e);
 		}
 		certExtAnalyzer = new TSLCertificateExtensionAnalyzer(x509CertBC);
 	}
@@ -371,22 +370,12 @@ public class WrapperX509Cert {
 
 			// Recuperamos el listado de Distribution Points de tipo CRL.
 			CRLDistPoint crlDps = null;
-			ASN1InputStream dIn = null;
-			try {
-				Extension ext = x509CertBC.getTBSCertificate().getExtensions().getExtension(Extension.cRLDistributionPoints);
-				byte[ ] octs = ext.getExtnValue().getOctets();
-				dIn = new ASN1InputStream(octs);
+			Extension ext = x509CertBC.getTBSCertificate().getExtensions().getExtension(Extension.cRLDistributionPoints);
+			byte[ ] octs = ext.getExtnValue().getOctets();
+			try (ASN1InputStream dIn = new ASN1InputStream(octs)){
 				crlDps = CRLDistPoint.getInstance(dIn.readObject());
 			} catch (Exception e1) {
 				crlDps = null;
-			} finally {
-				if (dIn != null) {
-					try {
-						dIn.close();
-					} catch (IOException e) {
-						dIn = null;
-					}
-				}
 			}
 
 			// Si lo hemos obtenido...

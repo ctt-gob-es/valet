@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -29,18 +29,18 @@ import java.security.cert.X509Certificate;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
 /**
  * <p>Class that represents a Key Usage Bit Identifier.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class KeyUsageBit implements Serializable {
 
@@ -175,11 +175,11 @@ public class KeyUsageBit implements Serializable {
 			isValid = isValid || name.equals(NAME_ENCIPHERONLY) || name.equals(NAME_DECIPHERONLY);
 
 			if (!isValid) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL025, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_KEYUSAGE, name }));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL025, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_KEYUSAGE, name }));
 			}
 
 		} else {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL024, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_KEYUSAGE, ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_KEYUSAGE_NAME }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL024, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_KEYUSAGE, TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_KEYUSAGE_NAME }));
 		}
 
 	}

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.tasks;
 
@@ -30,7 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IRestTasksMessages;
+import es.gob.valet.i18n.messages.RestTasksMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.task.Task;
@@ -39,7 +39,7 @@ import es.gob.valet.utils.UtilsCache;
 /**
  * <p>Class that represents a task to reload the cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 public class ReloadCacheTask extends Task {
 
@@ -54,7 +54,7 @@ public class ReloadCacheTask extends Task {
 	 */
 	@Override
 	protected void initialMessage() {
-		LOGGER.info(Language.getResRestTasks(IRestTasksMessages.RELOAD_CACHE_000));
+		LOGGER.info(Language.getResRestTasks(RestTasksMessages.RELOAD_CACHE_000));
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class ReloadCacheTask extends Task {
 			UtilsCache.reloadConfigurationLocalCache(true);
 		} catch (ConfigurationCacheException e) {
 			// Se produjo un error durante la recarga de la caché.
-			LOGGER.error(Language.getFormatResRestTasks(IRestTasksMessages.RELOAD_CACHE_002), e);
+			LOGGER.error(Language.getFormatResRestTasks(RestTasksMessages.RELOAD_CACHE_002), e);
 		}
 
 	}
@@ -79,7 +79,7 @@ public class ReloadCacheTask extends Task {
 	 */
 	@Override
 	protected void endMessage() {
-		LOGGER.info(Language.getResRestTasks(IRestTasksMessages.RELOAD_CACHE_001));
+		LOGGER.info(Language.getResRestTasks(RestTasksMessages.RELOAD_CACHE_001));
 	}
 
 	/**

@@ -20,17 +20,17 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.quartz.job;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.exceptions.ValetException;
 
 /** 
  * <p>Class that manages exceptions produced by any valET Task.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.3, 19/09/2023.
  */
 public class TaskValetException extends ValetException {
 
@@ -48,7 +48,7 @@ public class TaskValetException extends ValetException {
 
 	/**
 	 * Constructor method for the class TaskValetException.java.
-	 * @param errorCode Error code for the exception. It can be obtained from {@link IValetException}.
+	 * @param errorCode Error code for the exception. It can be obtained from {@link ValetExceptionConstants}.
 	 * @param description Description of the exception.
 	 */
 	public TaskValetException(final String errorCode, final String description) {
@@ -57,7 +57,7 @@ public class TaskValetException extends ValetException {
 
 	/**
 	 * Constructor method for the class TaskValetException.java.
-	 * @param errorCode Error code for the exception. It can be obtained from {@link IValetException}.
+	 * @param errorCode Error code for the exception. It can be obtained from {@link ValetExceptionConstants}.
 	 * @param description Description of the exception.
 	 * @param excep Exception object that causes the error.
 	 */

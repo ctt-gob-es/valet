@@ -20,26 +20,28 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 15/09/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
+import java.io.Serializable;
+
 import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
-import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.AssociationTypeIdConstants;
 
 /**
  * <p>Class that represents a TSL mapping in the configuration cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 15/09/2023.
+ * @version 1.2, 19/09/2023.
  */
-public class TSLCountryRegionMappingCacheObject extends ConfigurationCacheObject implements Comparable<TSLCountryRegionMappingCacheObject> {
-
+public class TSLCountryRegionMappingCacheObject extends ConfigurationCacheObject implements Comparable<TSLCountryRegionMappingCacheObject>, Serializable {
+	
 	/**
 	 * Constant attribute that represents the serial version UID.
 	 */
@@ -72,7 +74,7 @@ public class TSLCountryRegionMappingCacheObject extends ConfigurationCacheObject
 
 	/**
 	 * Attribute that represents the association type.
-	 * It only can be {@link IAssociationTypeIdConstants#ID_FREE_ASSOCIATION} or {@link IAssociationTypeIdConstants#ID_SIMPLE_ASSOCIATION}.
+	 * It only can be {@link AssociationTypeIdConstants#ID_FREE_ASSOCIATION} or {@link AssociationTypeIdConstants#ID_SIMPLE_ASSOCIATION}.
 	 */
 	private long associationType = -1;
 
@@ -95,7 +97,7 @@ public class TSLCountryRegionMappingCacheObject extends ConfigurationCacheObject
 		// Si el pojo recibido es nulo, se lanza una excepción ya que no se
 		// puede inicializar el objeto.
 		if (tcrm == null) {
-			throw new TSLCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG090));
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG090));
 		} else {
 
 			setMappingId(tcrm.getIdTslCountryRegionMapping().longValue());

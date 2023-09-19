@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.audit.utils;
 
@@ -30,20 +30,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.audit.access.EventsCollector;
-import es.gob.valet.audit.access.IEventsCollectorConstants;
+import es.gob.valet.audit.access.EventsCollectorConstants;
 import es.gob.valet.audit.exception.AuditTraceException;
 import es.gob.valet.commons.utils.CryptographicConstants;
 import es.gob.valet.commons.utils.UtilsCrypto;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 
 /**
  * <p>Class that provides methods for registering the most commons audit traces associated to the services of the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 public final class CommonsServicesAuditTraces {
 
@@ -59,9 +59,9 @@ public final class CommonsServicesAuditTraces {
 	private static Map<Integer, String[ ]> operationFieldsNamesMap = new ConcurrentHashMap<Integer, String[ ]>();
 
 	static {
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_SERVICE_START_RS, new String[ ] { IEventsCollectorConstants.FIELD_NAME_APPID, IEventsCollectorConstants.FIELD_NAME_DELAPPID });
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_SERVICE_END_RS, new String[ ] { IEventsCollectorConstants.FIELD_NAME_RS_RES_CODE, IEventsCollectorConstants.FIELD_NAME_RS_RES_DESC });
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_SERVICE_DCITIV_PARAMS, new String[ ] { IEventsCollectorConstants.FIELD_NAME_RS_PARAM_GETINFO, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_CHECKREVSTATUS, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_RETREVEVID, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_CRLS, IEventsCollectorConstants.FIELD_NAME_RS_PARAM_OCSPS });
+		operationFieldsNamesMap.put(EventsCollectorConstants.OPERATION_SERVICE_START_RS, new String[ ] { EventsCollectorConstants.FIELD_NAME_APPID, EventsCollectorConstants.FIELD_NAME_DELAPPID });
+		operationFieldsNamesMap.put(EventsCollectorConstants.OPERATION_SERVICE_END_RS, new String[ ] { EventsCollectorConstants.FIELD_NAME_RS_RES_CODE, EventsCollectorConstants.FIELD_NAME_RS_RES_DESC });
+		operationFieldsNamesMap.put(EventsCollectorConstants.OPERATION_SERVICE_DCITIV_PARAMS, new String[ ] { EventsCollectorConstants.FIELD_NAME_RS_PARAM_GETINFO, EventsCollectorConstants.FIELD_NAME_RS_PARAM_CHECKREVSTATUS, EventsCollectorConstants.FIELD_NAME_RS_PARAM_RETREVEVID, EventsCollectorConstants.FIELD_NAME_RS_PARAM_CRLS, EventsCollectorConstants.FIELD_NAME_RS_PARAM_OCSPS });
 	}
 
 	/**
@@ -92,7 +92,7 @@ public final class CommonsServicesAuditTraces {
 	public static void addOpenTransactionTrace(String transactionId, int serviceId, byte[ ] messageByteArray) throws AuditTraceException {
 
 		if (UtilsStringChar.isNullOrEmptyTrim(transactionId)) {
-			throw new AuditTraceException(IValetException.COD_202, Language.getResCoreGeneral(ICoreGeneralMessages.CSAT_000));
+			throw new AuditTraceException(ValetExceptionConstants.COD_202, Language.getResCoreGeneral(CoreGeneralMessages.CSAT_000));
 		} else {
 			String hashMessageInBase64 = null;
 			if (messageByteArray != null && messageByteArray.length > 0) {
@@ -100,7 +100,7 @@ public final class CommonsServicesAuditTraces {
 					hashMessageInBase64 = UtilsCrypto.calculateDigestReturnB64String(CryptographicConstants.HASH_ALGORITHM_SHA512, messageByteArray, null);
 					EventsCollector.openTransaction(transactionId, serviceId, CryptographicConstants.HASH_ALGORITHM_SHA512, hashMessageInBase64);
 				} catch (CommonUtilsException e) {
-					throw new AuditTraceException(IValetException.COD_202, e.getMessage(), e);
+					throw new AuditTraceException(ValetExceptionConstants.COD_202, e.getMessage(), e);
 				}
 			}
 		}
@@ -118,7 +118,7 @@ public final class CommonsServicesAuditTraces {
 	public static void addCloseTransactionTrace(String transactionId, byte[ ] messageByteArray) {
 
 		if (UtilsStringChar.isNullOrEmptyTrim(transactionId)) {
-			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CSAT_002));
+			LOGGER.error(Language.getResCoreGeneral(CoreGeneralMessages.CSAT_002));
 		} else {
 			try {
 				String hashMessageInBase64 = null;
@@ -126,10 +126,10 @@ public final class CommonsServicesAuditTraces {
 					hashMessageInBase64 = UtilsCrypto.calculateDigestReturnB64String(CryptographicConstants.HASH_ALGORITHM_SHA512, messageByteArray, null);
 					EventsCollector.closeTransaction(transactionId, CryptographicConstants.HASH_ALGORITHM_SHA512, hashMessageInBase64);
 				} else {
-					LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CSAT_001));
+					LOGGER.error(Language.getResCoreGeneral(CoreGeneralMessages.CSAT_001));
 				}
 			} catch (CommonUtilsException e) {
-				LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CSAT_001));
+				LOGGER.error(Language.getResCoreGeneral(CoreGeneralMessages.CSAT_001));
 			}
 		}
 
@@ -142,17 +142,17 @@ public final class CommonsServicesAuditTraces {
 	 * @param delegatedAppId Delegated application that identifies the client.
 	 */
 	public static void addStartRSTrace(String transactionId, String applicationId, String delegatedAppId) {
-		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_SERVICE_START_RS, applicationId, delegatedAppId);
+		EventsCollector.addTrace(transactionId, EventsCollectorConstants.OPERATION_SERVICE_START_RS, applicationId, delegatedAppId);
 	}
 
 	/**
 	 * Registers a trace with the result of the rest service.
 	 * @param transactionId	Audit transaction identifier.
-	 * @param resultCode Result code of the rest service. It could be {@value IEventsCollectorConstants#RESULT_CODE_SERVICE_OK} or {@value IEventsCollectorConstants#RESULT_CODE_SERVICE_ERROR}.
+	 * @param resultCode Result code of the rest service. It could be {@value EventsCollectorConstants#RESULT_CODE_SERVICE_OK} or {@value EventsCollectorConstants#RESULT_CODE_SERVICE_ERROR}.
 	 * @param resultDesc Description of the result of the rest service. It could be an error description.
 	 */
 	public static void addEndRSTrace(String transactionId, String resultCode, String resultDesc) {
-		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_SERVICE_END_RS, resultCode, resultDesc);
+		EventsCollector.addTrace(transactionId, EventsCollectorConstants.OPERATION_SERVICE_END_RS, resultCode, resultDesc);
 	}
 
 	/**
@@ -165,7 +165,7 @@ public final class CommonsServicesAuditTraces {
 	 * @param thereIsBasicOcspResponses Flag that indicates if there is some BasicOcspResponse to use in the request.
 	 */
 	public static void addRSDetectCertParamsInfo(String transactionId, boolean getInfo, boolean checkRevStatus, boolean returnRevocationEvidence, boolean thereIsCrls, boolean thereIsBasicOcspResponses) {
-		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_SERVICE_DCITIV_PARAMS, Boolean.toString(getInfo), Boolean.toString(checkRevStatus), Boolean.toString(returnRevocationEvidence), Boolean.toString(thereIsCrls), Boolean.toString(thereIsBasicOcspResponses));
+		EventsCollector.addTrace(transactionId, EventsCollectorConstants.OPERATION_SERVICE_DCITIV_PARAMS, Boolean.toString(getInfo), Boolean.toString(checkRevStatus), Boolean.toString(returnRevocationEvidence), Boolean.toString(thereIsCrls), Boolean.toString(thereIsBasicOcspResponses));
 	}
 
 }

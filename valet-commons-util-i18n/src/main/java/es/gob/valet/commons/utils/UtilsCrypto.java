@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -31,14 +31,14 @@ import java.security.Provider;
 import org.apache.commons.codec.binary.Base64;
 
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Utilities class for cryptographics operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public final class UtilsCrypto {
 
@@ -69,7 +69,7 @@ public final class UtilsCrypto {
 		} else if (algorithmURI.equalsIgnoreCase(CryptographicConstants.HASH_ALGORITHM_XML_MD5)) {
 			return CryptographicConstants.HASH_ALGORITHM_MD5;
 		} else {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CRYPTO_000, new Object[ ] { algorithmURI }));
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CRYPTO_000, new Object[ ] { algorithmURI }));
 		}
 	}
 
@@ -89,11 +89,11 @@ public final class UtilsCrypto {
 
 		// Si el algoritmo no está definido, lanzamos excepción...
 		if (UtilsStringChar.isNullOrEmptyTrim(algorithm)) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CRYPTO_001));
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CRYPTO_001));
 		}
 		// Si no hay datos, lanzamos excepción...
 		else if (data == null || data.length == 0) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CRYPTO_002));
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CRYPTO_002));
 		} else {
 
 			// Intentamos calcular el hash sobre los datos...
@@ -106,7 +106,7 @@ public final class UtilsCrypto {
 					result = MessageDigest.getInstance(algorithm, provider).digest(data);
 				}
 			} catch (NoSuchAlgorithmException e) {
-				throw new CommonUtilsException(IValetException.COD_200, Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CRYPTO_000, new Object[ ] { algorithm }));
+				throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CRYPTO_000, new Object[ ] { algorithm }));
 			}
 
 		}

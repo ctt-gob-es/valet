@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/03/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 02/03/2022.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.rest.elements;
 
@@ -31,7 +31,7 @@ import java.util.List;
 /** 
  * <p>Class that represents the certificate chain of the certificate being validated.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 02/03/2022.
+ * @version 1.1, 19/09/2023.
  */
 public class CertificateChain implements Serializable {
 
@@ -43,7 +43,7 @@ public class CertificateChain implements Serializable {
 	/**
 	 * Attribute that represents the list of certificates that make up the certification chain.
 	 */
-	List<Certificate> certificates;
+	private List<Certificate> certificates;
 
 	
 	/**

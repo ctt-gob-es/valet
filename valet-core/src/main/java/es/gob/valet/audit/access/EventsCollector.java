@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.audit.access;
 
@@ -40,7 +40,7 @@ import es.gob.valet.rest.elements.json.DateString;
  * <p>Class that represents an audit events collector. This class must be
  * used to register all the audit traces occurred in the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 public final class EventsCollector {
 
@@ -81,7 +81,7 @@ public final class EventsCollector {
 	 */
 	public static void openTransaction(String transactionId, int serviceId, String hashAlgorithm, String hashMessageB64) {
 
-		AUDIT_LOGGER.info(createTrace(transactionId, serviceId, IEventsCollectorConstants.OPERATION_SERVICE_OPEN_TRACE, null, new DateString(Calendar.getInstance().getTime()), hashMessageB64, hashAlgorithm));
+		AUDIT_LOGGER.info(createTrace(transactionId, serviceId, EventsCollectorConstants.OPERATION_SERVICE_OPEN_TRACE, null, new DateString(Calendar.getInstance().getTime()), hashMessageB64, hashAlgorithm));
 
 	}
 
@@ -94,7 +94,7 @@ public final class EventsCollector {
 	 */
 	public static void closeTransaction(String transactionId, String hashAlgorithm, String hashMessageB64) {
 
-		AUDIT_LOGGER.info(createTrace(transactionId, 0, IEventsCollectorConstants.OPERATION_SERVICE_CLOSE_TRACE, null, new DateString(Calendar.getInstance().getTime()), hashMessageB64, hashAlgorithm));
+		AUDIT_LOGGER.info(createTrace(transactionId, 0, EventsCollectorConstants.OPERATION_SERVICE_CLOSE_TRACE, null, new DateString(Calendar.getInstance().getTime()), hashMessageB64, hashAlgorithm));
 
 	}
 
@@ -207,29 +207,29 @@ public final class EventsCollector {
 
 		switch (operationId) {
 			// Si es una operación de servicio...
-			case IEventsCollectorConstants.OPERATION_SERVICE_OPEN_TRACE:
-			case IEventsCollectorConstants.OPERATION_SERVICE_CLOSE_TRACE:
-			case IEventsCollectorConstants.OPERATION_SERVICE_START_RS:
-			case IEventsCollectorConstants.OPERATION_SERVICE_END_RS:
-			case IEventsCollectorConstants.OPERATION_SERVICE_DCITIV_PARAMS:
+			case EventsCollectorConstants.OPERATION_SERVICE_OPEN_TRACE:
+			case EventsCollectorConstants.OPERATION_SERVICE_CLOSE_TRACE:
+			case EventsCollectorConstants.OPERATION_SERVICE_START_RS:
+			case EventsCollectorConstants.OPERATION_SERVICE_END_RS:
+			case EventsCollectorConstants.OPERATION_SERVICE_DCITIV_PARAMS:
 				result = CommonsServicesAuditTraces.getOperationFieldsNames(operationId);
 				break;
 
 			// Si es una operación de certificado...
-			case IEventsCollectorConstants.OPERATION_CERT_INFO:
-			case IEventsCollectorConstants.OPERATION_CERT_ISTSA:
-			case IEventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO:
-			case IEventsCollectorConstants.OPERATION_CERT_CRL_INFO:
-			case IEventsCollectorConstants.OPERATION_CERT_MAPPING_FIELDS:
+			case EventsCollectorConstants.OPERATION_CERT_INFO:
+			case EventsCollectorConstants.OPERATION_CERT_ISTSA:
+			case EventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO:
+			case EventsCollectorConstants.OPERATION_CERT_CRL_INFO:
+			case EventsCollectorConstants.OPERATION_CERT_MAPPING_FIELDS:
 				result = CommonsCertificatesAuditTraces.getOperationFieldsNames(operationId);
 				break;
 
 			// Si es una operación de TSL...
-			case IEventsCollectorConstants.OPERATION_TSL_TSLLOCATION:
-			case IEventsCollectorConstants.OPERATION_TSL_COUNTRY_REGION:
-			case IEventsCollectorConstants.OPERATION_TSL_FINDED:
-			case IEventsCollectorConstants.OPERATION_TSL_CERT_DETECTED:
-			case IEventsCollectorConstants.OPERATION_TSL_CERT_VALIDATED:
+			case EventsCollectorConstants.OPERATION_TSL_TSLLOCATION:
+			case EventsCollectorConstants.OPERATION_TSL_COUNTRY_REGION:
+			case EventsCollectorConstants.OPERATION_TSL_FINDED:
+			case EventsCollectorConstants.OPERATION_TSL_CERT_DETECTED:
+			case EventsCollectorConstants.OPERATION_TSL_CERT_VALIDATED:
 				result = CommonsTslAuditTraces.getOperationFieldsNames(operationId);
 				break;
 
@@ -259,36 +259,36 @@ public final class EventsCollector {
 		StringBuilder traceSb = new StringBuilder();
 
 		// Siempre se añade el identificador de transacción.
-		traceSb.append(IEventsCollectorConstants.FIELD_NAME_ID).append(TOKEN_SEPARATOR).append(transactionId).append(SEPARATOR);
+		traceSb.append(EventsCollectorConstants.FIELD_NAME_ID).append(TOKEN_SEPARATOR).append(transactionId).append(SEPARATOR);
 
 		// Según la operación...
 		switch (operationId) {
 
 			// Si se trata de apertura de traza, indicamos el servicio,
 			// el nombre de la operación 'open', y el hash de la petición.
-			case IEventsCollectorConstants.OPERATION_SERVICE_OPEN_TRACE:
-				traceSb.append(IEventsCollectorConstants.FIELD_NAME_SV).append(TOKEN_SEPARATOR).append(serviceId).append(SEPARATOR);
-				traceSb.append(IEventsCollectorConstants.FIELD_NAME_OP).append(TOKEN_SEPARATOR).append(IEventsCollectorConstants.FIELD_VALUE_OPEN_TRACE).append(SEPARATOR);
+			case EventsCollectorConstants.OPERATION_SERVICE_OPEN_TRACE:
+				traceSb.append(EventsCollectorConstants.FIELD_NAME_SV).append(TOKEN_SEPARATOR).append(serviceId).append(SEPARATOR);
+				traceSb.append(EventsCollectorConstants.FIELD_NAME_OP).append(TOKEN_SEPARATOR).append(EventsCollectorConstants.FIELD_VALUE_OPEN_TRACE).append(SEPARATOR);
 				if (messageHashInBase64 != null) {
-					traceSb.append(IEventsCollectorConstants.FIELD_NAME_HA).append(TOKEN_SEPARATOR).append(hashAlgorithmApplied).append(SEPARATOR);
-					traceSb.append(IEventsCollectorConstants.FIELD_NAME_HM).append(TOKEN_SEPARATOR).append(messageHashInBase64).append(SEPARATOR);
+					traceSb.append(EventsCollectorConstants.FIELD_NAME_HA).append(TOKEN_SEPARATOR).append(hashAlgorithmApplied).append(SEPARATOR);
+					traceSb.append(EventsCollectorConstants.FIELD_NAME_HM).append(TOKEN_SEPARATOR).append(messageHashInBase64).append(SEPARATOR);
 				}
 				break;
 
 			// Si se trata de apertura de traza, indicamos el nombre de la
 			// operación 'close', y el hash de la respuesta.
-			case IEventsCollectorConstants.OPERATION_SERVICE_CLOSE_TRACE:
-				traceSb.append(IEventsCollectorConstants.FIELD_NAME_OP).append(TOKEN_SEPARATOR).append(IEventsCollectorConstants.FIELD_VALUE_CLOSE_TRACE).append(SEPARATOR);
+			case EventsCollectorConstants.OPERATION_SERVICE_CLOSE_TRACE:
+				traceSb.append(EventsCollectorConstants.FIELD_NAME_OP).append(TOKEN_SEPARATOR).append(EventsCollectorConstants.FIELD_VALUE_CLOSE_TRACE).append(SEPARATOR);
 				if (messageHashInBase64 != null) {
-					traceSb.append(IEventsCollectorConstants.FIELD_NAME_HA).append(TOKEN_SEPARATOR).append(hashAlgorithmApplied).append(SEPARATOR);
-					traceSb.append(IEventsCollectorConstants.FIELD_NAME_HM).append(TOKEN_SEPARATOR).append(messageHashInBase64).append(SEPARATOR);
+					traceSb.append(EventsCollectorConstants.FIELD_NAME_HA).append(TOKEN_SEPARATOR).append(hashAlgorithmApplied).append(SEPARATOR);
+					traceSb.append(EventsCollectorConstants.FIELD_NAME_HM).append(TOKEN_SEPARATOR).append(messageHashInBase64).append(SEPARATOR);
 				}
 				break;
 
 			// Si no es ni apertura ni cierre, simplemente indicamos
 			// la operación.
 			default:
-				traceSb.append(IEventsCollectorConstants.FIELD_NAME_OP).append(TOKEN_SEPARATOR).append(operationId).append(SEPARATOR);
+				traceSb.append(EventsCollectorConstants.FIELD_NAME_OP).append(TOKEN_SEPARATOR).append(operationId).append(SEPARATOR);
 				break;
 		}
 

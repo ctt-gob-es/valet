@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -31,15 +31,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLQualificationEvalProcessException;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeOtherCriteria;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
 
@@ -47,7 +47,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * <p>Class that represents a list of assertions related to certificate contents
  * (e.g. key usage) and status (e.g. additional assessment) used to filter certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class CriteriaList implements Serializable {
 
@@ -79,17 +79,17 @@ public class CriteriaList implements Serializable {
 	/**
 	 * Attribute that represents the key usage list.
 	 */
-	private List<KeyUsage> keyUsageList = null;
+	private transient List<KeyUsage> keyUsageList = null;
 
 	/**
 	 * Attribute that represents the policy set list.
 	 */
-	private List<PoliciesList> policySetList = null;
+	private transient List<PoliciesList> policySetList = null;
 
 	/**
 	 * Attribute that represents the sublist of criteria list.
 	 */
-	private List<CriteriaList> criteriaListList = null;
+	private transient List<CriteriaList> criteriaListList = null;
 
 	/**
 	 * Attribute that represents the description of the criteria list.
@@ -250,9 +250,9 @@ public class CriteriaList implements Serializable {
 
 		// Comprobamos que el tipo se encuentre entre los válidos.
 		if (UtilsStringChar.isNullOrEmptyTrim(assertType)) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL037, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST, ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_ASSERT }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL037, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST, TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_ASSERT }));
 		} else if (!assertType.equals(ASSERT_ALL) && !assertType.equals(ASSERT_ATLEASTONE) && !assertType.equals(ASSERT_NONE)) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL025, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_ASSERT, assertType }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL025, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_ASSERT, assertType }));
 		}
 
 		// Comprobamos la lista de KeyUsage, la cual podría estar vacía.
@@ -362,7 +362,7 @@ public class CriteriaList implements Serializable {
 			try {
 				result = otherCriteria.checkCertificateWithThisCriteria(cert);
 			} catch (TSLCertificateValidationException e) {
-				throw new TSLQualificationEvalProcessException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL145), e);
+				throw new TSLQualificationEvalProcessException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL145), e);
 			}
 
 		}
@@ -413,7 +413,7 @@ public class CriteriaList implements Serializable {
 			try {
 				result = otherCriteria.checkCertificateWithThisCriteria(cert);
 			} catch (TSLCertificateValidationException e) {
-				throw new TSLQualificationEvalProcessException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL145), e);
+				throw new TSLQualificationEvalProcessException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL145), e);
 			}
 
 		}

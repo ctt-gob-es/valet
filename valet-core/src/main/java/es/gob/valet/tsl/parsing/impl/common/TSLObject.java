@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 03/04/2023.
+ * @version 1.6, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -34,25 +34,25 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
 import org.w3.x2000.x09.xmldsig.SignatureType;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
 import es.gob.valet.tsl.exceptions.TSLEncodingException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLBuilder;
 import es.gob.valet.tsl.parsing.ifaces.ITSLChecker;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.TSLBuilderFactory;
 import es.gob.valet.tsl.parsing.impl.TSLCheckerFactory;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 
 /**
  * <p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 03/04/2023.
+ * @version 1.6, 19/09/2023.
  */
 public class TSLObject implements ITSLObject {
 
@@ -93,12 +93,12 @@ public class TSLObject implements ITSLObject {
 	/**
 	 * Attribute that represents a list with all the Trust Services Providers associated to this TSL.
 	 */
-	private List<TrustServiceProvider> trustServiceProviderList = null;
+	private transient List<TrustServiceProvider> trustServiceProviderList = null;
 
 	/**
 	 * Attribute that represents the signature of the TSL.
 	 */
-	private SignatureType signature = null;
+	private transient SignatureType signature = null;
 
 	/**
 	 * Attribute that represents the full TSL.
@@ -123,7 +123,7 @@ public class TSLObject implements ITSLObject {
 	public TSLObject(String tslSpecificationParam, String tslSpecificationVersionParam) throws TSLArgumentException {
 		this();
 		if (UtilsStringChar.isNullOrEmptyTrim(tslSpecificationParam) || UtilsStringChar.isNullOrEmptyTrim(tslSpecificationVersionParam)) {
-			throw new TSLArgumentException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL021));
+			throw new TSLArgumentException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL021));
 		}
 		tslSpecification = tslSpecificationParam;
 		tslSpecificationVersion = tslSpecificationVersionParam;
@@ -165,7 +165,7 @@ public class TSLObject implements ITSLObject {
 
 		// Si la entrada es nula, lanzamos excepción.
 		if (tag == null) {
-			throw new TSLArgumentException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL013, new Object[ ] { ITSLElementsAndAttributes.ATTRIBUTE_TSL_TAG }));
+			throw new TSLArgumentException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL013, new Object[ ] { TSLElementsAndAttributes.ATTRIBUTE_TSL_TAG }));
 		} else {
 			tslTag = tag;
 		}
@@ -208,7 +208,7 @@ public class TSLObject implements ITSLObject {
 
 		// Si la entrada es nula, lanzamos excepción.
 		if (si == null) {
-			throw new TSLArgumentException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL014, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SCHEME_INFORMATION }));
+			throw new TSLArgumentException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL014, new Object[ ] { TSLElementsAndAttributes.ELEMENT_SCHEME_INFORMATION }));
 		} else {
 			schemeInformation = si;
 		}
@@ -239,7 +239,7 @@ public class TSLObject implements ITSLObject {
 
 		// Si la entrada es nula, lanzamos excepción.
 		if (tsp == null) {
-			throw new TSLArgumentException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL015, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TRUST_SERVICE_PROVIDER }));
+			throw new TSLArgumentException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL015, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TRUST_SERVICE_PROVIDER }));
 		} else {
 			trustServiceProviderList.add(tsp);
 		}
@@ -333,12 +333,12 @@ public class TSLObject implements ITSLObject {
 		boolean restoreBackup = false;
 		String msgError = new String();
 		try {
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL343));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL343));
 			// Construimos la TSL a partir del XML.
 			fullTSLxml = getTSLBuilder().buildTSLFromXML(is);
 			// Comprobamos que los valores establecidos son los correctos.
 			if(schemeInformation != null){
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL347));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL347));
 				getTSLChecker().checkTSLValues(checkSignature, fullTSLxml);
 			}
 			
@@ -348,15 +348,15 @@ public class TSLObject implements ITSLObject {
 
 		} catch (TSLParsingException | TSLMalformedException e) {
 			restoreBackup = true;
-			msgError = Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL266, new Object[] {e.getErrorDescription()});
+			msgError = Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL266, new Object[] {e.getErrorDescription()});
 			if (!cache) {
 				throw e;
 			}
 		} finally {
 			if(schemeInformation != null && !UtilsStringChar.isNullOrEmpty(schemeInformation.getSchemeTerritory())){
-				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL345, new Object[]{schemeInformation.getSchemeTerritory()}));
+				LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL345, new Object[]{schemeInformation.getSchemeTerritory()}));
 			}else{
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL346));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL346));
 			}
 			// Si hubiera que restaurar los datos originales debido a un fallo
 			// en el parseo

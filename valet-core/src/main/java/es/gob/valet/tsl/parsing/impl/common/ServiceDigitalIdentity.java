@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -33,7 +33,7 @@ import java.util.List;
  * <p>Class that defines a Service Digital Identity with all its information not dependent
  * of the specification or TSL version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class ServiceDigitalIdentity implements Serializable {
 
@@ -46,7 +46,7 @@ public class ServiceDigitalIdentity implements Serializable {
 	 * Attribute that represents the list of digital identities associated to this
 	 * service digital identity.
 	 */
-	private List<DigitalID> digitalIdentities = null;
+	private transient List<DigitalID> digitalIdentities = null;
 
 	/**
 	 * Constructor method for the class ServiceDigitalIdentity.java.

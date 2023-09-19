@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>13 jun. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 13 jun. 2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.spring.config;
 
@@ -35,13 +35,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.service.impl.UserDetailServiceImpl;
 
 /** 
  * <p>Class that enables and configures the security of the Valet application. </p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 13 jun. 2018.
+ * @version 1.1, 19/09/2023.
  */
 @Configuration
 @EnableWebSecurity
@@ -101,7 +101,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	   	.and()
 		.invalidSessionUrl("/invalidSession");
 		} catch (Exception e) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_WEB_SECURITY_001));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_WEB_SECURITY_001));
 		}
     }
        

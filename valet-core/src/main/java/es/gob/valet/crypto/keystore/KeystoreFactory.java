@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 06/11/2018.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.crypto.keystore;
 
@@ -29,9 +29,9 @@ import java.util.Map;
 
 import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.utils.CryptographyValidationUtils;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
@@ -39,7 +39,7 @@ import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.
 /**
  * <p>Class that manages the generation of the class which manages the keystores in the system.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 06/11/2018.
+ * @version 1.4, 19/09/2023.
  */
 public final class KeystoreFactory {
 
@@ -65,7 +65,7 @@ public final class KeystoreFactory {
 
 		// Comprobamos que no sea nulo...
 		if (idKeystore == null) {
-			throw new CryptographyException(IValetException.COD_190, Language.getResCoreGeneral(ICoreGeneralMessages.KEYSTORE_FACTORY_001));
+			throw new CryptographyException(ValetExceptionConstants.COD_190, Language.getResCoreGeneral(CoreGeneralMessages.KEYSTORE_FACTORY_001));
 		}
 
 		// Lo intentamos obtener del map...
@@ -78,11 +78,11 @@ public final class KeystoreFactory {
 			try {
 				kco = ConfigurationCacheFacade.keystoreGetKeystoreCacheObject(idKeystore);
 			} catch (KeystoreCacheException e) {
-				throw new CryptographyException(IValetException.COD_190, Language.getFormatResCoreGeneral(ICoreGeneralMessages.KEYSTORE_FACTORY_002, new Object[ ] { idKeystore }), e);
+				throw new CryptographyException(ValetExceptionConstants.COD_190, Language.getFormatResCoreGeneral(CoreGeneralMessages.KEYSTORE_FACTORY_002, new Object[ ] { idKeystore }), e);
 			}
 
 			// Comprobamos que no sea nulo...
-			CryptographyValidationUtils.checkIsNotNull(kco, Language.getFormatResCoreGeneral(ICoreGeneralMessages.KEYSTORE_FACTORY_002, new Object[ ] { idKeystore }));
+			CryptographyValidationUtils.checkIsNotNull(kco, Language.getFormatResCoreGeneral(CoreGeneralMessages.KEYSTORE_FACTORY_002, new Object[ ] { idKeystore }));
 
 			// Comprobamos si vamos a acceder a un Keystore hardware o no...
 			if (kco.isHardware()) {

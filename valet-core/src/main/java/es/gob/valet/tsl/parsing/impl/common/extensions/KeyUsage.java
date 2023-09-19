@@ -23,7 +23,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -33,12 +33,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
 /**
@@ -47,7 +47,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * KeyUsage Extension is present in the certificate and all key usage bits provided are matched with
  * the corresponding bit in the certificate KeyUsage Extension.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class KeyUsage implements Serializable {
 
@@ -60,7 +60,7 @@ public class KeyUsage implements Serializable {
 	 * Attribute that represents the list with the differente key usages.
 	 * The maximum elements is {@link NumberConstants#NUM9}.
 	 */
-	private List<KeyUsageBit> keyUsageBitList = null;
+	private transient List<KeyUsageBit> keyUsageBitList = null;
 
 	/**
 	 * Constructor method for the class KeyUsage.java.
@@ -117,7 +117,7 @@ public class KeyUsage implements Serializable {
 
 		// La lista debe tener entre 1 y 9 elementos.
 		if (keyUsageBitList.isEmpty() || keyUsageBitList.size() > NumberConstants.NUM9) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL026, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_KEYUSAGE }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL026, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_KEYUSAGE }));
 		}
 
 		// Comprobamos cada uno de los KeyUsageBit.

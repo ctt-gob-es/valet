@@ -20,18 +20,18 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.quartz.task;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.quartz.job.AbstractValetTaskQuartzJob;
 import es.gob.valet.quartz.job.TaskValetException;
 
 /** 
  * <p>Class that represents a scheduler task and the action that realizes it.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.1, 19/09/2023.
  */
 public abstract class Task extends AbstractValetTaskQuartzJob {
 
@@ -48,7 +48,7 @@ public abstract class Task extends AbstractValetTaskQuartzJob {
 		try {
 			doActionOfTheTask();
 		} catch (Exception e) {
-			throw new TaskValetException(IValetException.COD_185, e.getMessage(), e);
+			throw new TaskValetException(ValetExceptionConstants.COD_185, e.getMessage(), e);
 		}
 
 		endMessage();

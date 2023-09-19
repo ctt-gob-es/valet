@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 03/04/2023.
+ * @version 1.7, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -34,7 +34,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
@@ -46,14 +47,14 @@ import org.w3.x2000.x09.xmldsig.RSAKeyValueType;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.certValidation.ResultServiceInformation;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 
 /**
  * <p>Class that represents a Digital Identities Processor.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 03/04/2023.
+ * @version 1.7, 19/09/2023.
  */
 public class DigitalIdentitiesProcessor {
 
@@ -313,7 +314,7 @@ public class DigitalIdentitiesProcessor {
 			try {
 				partialResult = UtilsCertificate.verify(issuerCert, cert);
 			} catch (CommonUtilsException e) {
-				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL110));
+				LOGGER.debug(Language.getResCoreTsl(CoreTslMessages.LOGMTSL110));
 			}
 
 			// Si se ha encontrado el emisor del certificado y no lo habíamos
@@ -326,7 +327,7 @@ public class DigitalIdentitiesProcessor {
 				try {
 					resultSI.getInfoCertificateIssuer().setIssuerSubjectName(UtilsCertificate.getCertificateId(issuerCert));
 				} catch (CommonUtilsException e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL182));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL182));
 				}
 				try {
 					if (!UtilsCertificate.isSelfSigned(cert)) {
@@ -334,7 +335,7 @@ public class DigitalIdentitiesProcessor {
 						resultSI.getInfoCertificateIssuer().setIssuerSKIbytes(ski.getKeyIdentifier());
 					}
 				} catch (Exception e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL183));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL183));
 				}
 				break;
 			}
@@ -354,7 +355,7 @@ public class DigitalIdentitiesProcessor {
 				try {
 					partialResult = UtilsCertificate.verify(issuerPublicKey, cert);
 				} catch (CommonUtilsException e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL112));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL112));
 				}
 				// Si se ha encontrado el emisor del certificado y no
 				// lo habíamos detectado ya,
@@ -386,7 +387,7 @@ public class DigitalIdentitiesProcessor {
 					String certIssuer = UtilsCertificate.getCertificateIssuerId(cert);
 					partialResult = caSubject.equals(certIssuer);
 				} catch (CommonUtilsException e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL111));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL111));
 				}
 				// Si se ha detectado el emisor del certificado y no lo habíamos
 				// detectado
@@ -428,7 +429,7 @@ public class DigitalIdentitiesProcessor {
 					}
 
 				} catch (Exception e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL114));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL114));
 				}
 
 				if (akiBytes != null) {
@@ -484,7 +485,7 @@ public class DigitalIdentitiesProcessor {
 					break;
 				}
 			} catch (CommonUtilsException e) {
-				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL196));
+				LOGGER.debug(Language.getResCoreTsl(CoreTslMessages.LOGMTSL196));
 			}
 
 		}
@@ -522,7 +523,7 @@ public class DigitalIdentitiesProcessor {
 			try {
 				partialResult = UtilsCertificate.verify(issuerCert, cert);
 			} catch (CommonUtilsException e) {
-				LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL110));
+				LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL110));
 			}
 
 			// Si se ha encontrado el emisor del certificado y no lo habíamos
@@ -535,7 +536,7 @@ public class DigitalIdentitiesProcessor {
 				try {
 					validationResult.setIssuerSubjectName(UtilsCertificate.getCertificateId(issuerCert));
 				} catch (CommonUtilsException e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL182));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL182));
 				}
 				try {
 					if (!UtilsCertificate.isSelfSigned(cert)) {
@@ -543,7 +544,7 @@ public class DigitalIdentitiesProcessor {
 						validationResult.setIssuerSKIbytes(ski.getKeyIdentifier());
 					}
 				} catch (Exception e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL183));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL183));
 				}
 				break;
 			}
@@ -563,7 +564,7 @@ public class DigitalIdentitiesProcessor {
 				try {
 					partialResult = UtilsCertificate.verify(issuerPublicKey, cert);
 				} catch (CommonUtilsException e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL112));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL112));
 				}
 				// Si se ha encontrado el emisor del certificado y no
 				// lo habíamos detectado ya,
@@ -595,7 +596,7 @@ public class DigitalIdentitiesProcessor {
 					String certIssuer = UtilsCertificate.getCertificateIssuerId(cert);
 					partialResult = caSubject.equals(certIssuer);
 				} catch (CommonUtilsException e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL111));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL111));
 				}
 				// Si se ha detectado el emisor del certificado y no lo habíamos
 				// detectado
@@ -637,7 +638,7 @@ public class DigitalIdentitiesProcessor {
 					}
 
 				} catch (Exception e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL114));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL114));
 				}
 
 				if (akiBytes != null) {

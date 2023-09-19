@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/10/2019.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.statistics.persistence.bo.interfaz;
 
@@ -35,76 +35,9 @@ import es.gob.valet.statistics.persistence.dto.ValidationDTO;
 /** 
  * <p>Interface that publics the operations associated to statistics of system.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/10/2019.
+ * @version 1.1, 19/09/2023.
  */
 public interface IPentahoManagementBO extends Serializable {
-
-	/**
-	 * Constants that represents the separator used in the event file for separating the field identifier and value. 
-	 */
-	String TOKEN_SEPARATOR = "=";
-	/**
-	 * Constants that represents the separator used in the event file for separating of audit fields. 
-	 */
-	String SEPARATOR = ";";
-
-	/**
-	 * Attribute that represents the token used to indicate the transaction identifier in the event file. 
-	 */
-	String TOKEN_ID_TRANSACION = "ID";
-
-	/**
-	 * Attribute that represents the token used to indicate the service identifier in the event file. 
-	 */
-	String TOKEN_ID_SERVICE = "SV";
-
-	/**
-	 * Attribute that represents the token used to indicate the trace identifier in the event file. 
-	 */
-	String TOKEN_OP = "OP";
-
-	/**
-	 * Attribute that represents the token used to indicate the open transaction trace. 
-	 */
-	String OPEN_TRACE_TOKEN = "open";
-
-	/**
-	 * Attribute that represents the token used to indicate the close transaction trace. 
-	 */
-	String CLOSE_TRACE_TOKEN = "close";
-
-	/**
-	 * Constant that identifies the 'application identifier' field.
-	 */
-	String TOKEN_APP_ID = "APPID";
-
-	/**
-	 * Constant that identifies the  'delegated application identifier' field.
-	 */
-	String TOKEN_DEL_APP_ID = "DELAPPID";
-
-	/**
-	 * Constant that code of 'Result' field.
-	 */
-	String TOKEN_RESULT = "RS_RES_CODE";
-
-	/**
-	 * Constant that represents the country issuing the TSL.
-	 */
-	String TOKEN_COUNTRY = "TSL_CR";
-
-	/**
-	 *  Attribute that represents the Trust Service Provider in which the certificate was detected.
-	 */
-	String TOKEN_TSP_NAME = "TSL_TSPNAME";
-	/**
-	 * Attribute that represents the Trust Service Provider Service in which the certificate was detected.
-	 */
-	String TOKEN_TSP_SERVICE = "TSL_TSPSERVICENAME";
-	/**
-	 * Attribute that represents the Trust Service Provider Service Historic in which the certificate was detected.
-	 */
-	String TOKEN_TSP_SERVICE_HIST = "TSL_TSPSERVICEHISTNAME";
 
 	/**
 	 * Method that stores an entity (POJO) into the database.

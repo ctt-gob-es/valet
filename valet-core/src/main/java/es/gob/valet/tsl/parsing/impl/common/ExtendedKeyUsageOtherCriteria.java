@@ -21,29 +21,30 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
+import java.io.Serializable;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 
 /**
  * <p>Class that represents a implementation for a specific Other Criteria
  * Any Type: ExtendedKeyUsage element.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
-public class ExtendedKeyUsageOtherCriteria extends OtherCriteria {
+public class ExtendedKeyUsageOtherCriteria extends OtherCriteria implements Serializable {
 
 	/**
 	 * Constant attribute that represents the serial version UID.
@@ -58,7 +59,7 @@ public class ExtendedKeyUsageOtherCriteria extends OtherCriteria {
 	/**
 	 * Attribute that represents the list of Extended Key Usage OID.
 	 */
-	private List<String> oidList = null;
+	private transient List<String> oidList = null;
 
 	/**
 	 * Constructor method for the class ExtendedKeyUsageOtherCriteria.java.
@@ -83,7 +84,7 @@ public class ExtendedKeyUsageOtherCriteria extends OtherCriteria {
 	 */
 	@Override
 	protected final String getOtherCriteriaType() {
-		return ITSLElementsAndAttributes.ELEMENT_OTHER_CRITERIA_EXTENDEDKEYUSAGE_LOCALNAME;
+		return TSLElementsAndAttributes.ELEMENT_OTHER_CRITERIA_EXTENDEDKEYUSAGE_LOCALNAME;
 	}
 
 	/**
@@ -115,7 +116,7 @@ public class ExtendedKeyUsageOtherCriteria extends OtherCriteria {
 		try {
 			extendedKeyUsageList = x509cert.getExtendedKeyUsage();
 		} catch (CertificateParsingException e) {
-			throw new TSLCertificateValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL082), e);
+			throw new TSLCertificateValidationException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL082), e);
 		}
 		if (extendedKeyUsageList != null && extendedKeyUsageList.containsAll(oidList)) {
 			result = true;
@@ -134,7 +135,7 @@ public class ExtendedKeyUsageOtherCriteria extends OtherCriteria {
 
 		// Debe existir al menos un OID.
 		if (oidList.isEmpty()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL081));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL081));
 		}
 
 	}

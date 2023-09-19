@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.3, 22/06/2023.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.alarms;
 
@@ -41,9 +41,9 @@ import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsGrayLog;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.quartz.task.Task;
 import es.gob.valet.tasks.HiddenTasksManager;
 import es.gob.valet.tasks.TempBlockedAlarmTask;
@@ -55,7 +55,7 @@ import es.gob.valet.utils.threads.EMailTimeLimitedOperation;
  * the general manager of alarms module and provides the necessary logic interface
  * for the other modules can interact with this one.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 22/06/2023.
+ * @version 1.4, 19/09/2023.
  */
 public final class AlarmsManager {
 
@@ -93,7 +93,7 @@ public final class AlarmsManager {
 	 * @param alarmMsg Alarm Message.
 	 */
 	public synchronized void registerAlarmEvent(String alarmId, String alarmMsg) {
-		LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_018, new Object[]{alarmId, alarmMsg}));
+		LOGGER.info(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_018, new Object[]{alarmId, alarmMsg}));
 
 		// Comprobamos que los parámetros de entrada son correctos.
 		if (checkParametersBeforeRegisterAlarm(alarmId, alarmMsg)) {
@@ -120,14 +120,14 @@ public final class AlarmsManager {
 					try {
 						sendEMailAlarm(alarmId, alarmMsg, false);
 					} catch (AlarmException e) {
-						LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_000), e);
+						LOGGER.error(Language.getResCoreGeneral(CoreGeneralMessages.ALARM_MNG_000), e);
 					}
 
 				}
 
 			} else {
 
-				LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_001, new Object[ ] { alarmId }));
+				LOGGER.warn(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_001, new Object[ ] { alarmId }));
 
 			}
 
@@ -144,12 +144,12 @@ public final class AlarmsManager {
 	private boolean checkParametersBeforeRegisterAlarm(String alarmId, String alarmMsg) {
 
 		if (UtilsStringChar.isNullOrEmptyTrim(alarmId)) {
-			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_002));
+			LOGGER.error(Language.getResCoreGeneral(CoreGeneralMessages.ALARM_MNG_002));
 			return false;
 		}
 
 		if (UtilsStringChar.isNullOrEmptyTrim(alarmMsg)) {
-			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_003, new Object[ ] { alarmId }));
+			LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_003, new Object[ ] { alarmId }));
 			return false;
 		}
 
@@ -174,12 +174,12 @@ public final class AlarmsManager {
 		// Si la lista es vacía o nula, no mandamos el mensaje.
 		if (destinationAddressesList == null || destinationAddressesList.isEmpty()) {
 
-			LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_004, new Object[ ] { alarmId }));
+			LOGGER.warn(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_004, new Object[ ] { alarmId }));
 
 		} else {
 
 			// Construimos el asunto del correo.
-			String subject = Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_016, new Object[ ] { StaticValetConfig.getProperty(StaticValetConfig.INSTANCE_NAME_ID), alarmId, AlarmsConfiguration.getInstance().getDescriptionAlarm(alarmId) });
+			String subject = Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_016, new Object[ ] { StaticValetConfig.getProperty(StaticValetConfig.INSTANCE_NAME_ID), alarmId, AlarmsConfiguration.getInstance().getDescriptionAlarm(alarmId) });
 
 			// Construimos el cuerpo inicial del correo.
 			String bodyInitialMessage = UtilsDate.getSystemDate(UtilsDate.FORMAT_DATE_TIME_STANDARD);
@@ -198,13 +198,13 @@ public final class AlarmsManager {
 				// Si hay que añadir la indicación de alarma bloqueada...
 				if (addBlockedInformation) {
 					etlo.appendToBodyMessageWithNewLine(UtilsStringChar.EMPTY_STRING);
-					etlo.appendToBodyMessageWithNewLine(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_005, new Object[ ] { alarmId, StaticValetConfig.getProperty(StaticValetConfig.INSTANCE_NAME_ID), AlarmsConfiguration.getInstance().getBlockTimeInMilliseconds(alarmId) }));
+					etlo.appendToBodyMessageWithNewLine(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_005, new Object[ ] { alarmId, StaticValetConfig.getProperty(StaticValetConfig.INSTANCE_NAME_ID), AlarmsConfiguration.getInstance().getBlockTimeInMilliseconds(alarmId) }));
 				}
 
 				// Se envía el mensaje.
 				etlo.startOperation();
 			} catch (EMailException e) {
-				throw new AlarmException(IValetException.COD_201, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_006, new Object[ ] { alarmId }), e);
+				throw new AlarmException(ValetExceptionConstants.COD_201, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_006, new Object[ ] { alarmId }), e);
 			}
 
 		}
@@ -238,14 +238,14 @@ public final class AlarmsManager {
 				try {
 					addAlarmThatCouldBeBlockedEvent(alarmId, alarmMsg);
 				} catch (AlarmException e) {
-					LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_007, new Object[ ] { alarmId }), e);
+					LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_007, new Object[ ] { alarmId }), e);
 				}
 				break;
 			case ALARM_OP_REMOVE_ALARM_BLOCK_AND_SEND_MAIL:
 				removeAlarmBlockAndSendMail(alarmId);
 				break;
 			default:
-				LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_008));
+				LOGGER.error(Language.getResCoreGeneral(CoreGeneralMessages.ALARM_MNG_008));
 				break;
 		}
 
@@ -289,7 +289,7 @@ public final class AlarmsManager {
 			// Si la lista es vacía o nula, no mandamos el mensaje.
 			if (destinationAddressesList == null || destinationAddressesList.isEmpty()) {
 
-				LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_009, new Object[ ] { alarmId }));
+				LOGGER.warn(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_009, new Object[ ] { alarmId }));
 
 			} else {
 
@@ -297,11 +297,11 @@ public final class AlarmsManager {
 				try {
 					sendEMailAlarm(alarmId, alarmMsg, true);
 				} catch (AlarmException e) {
-					LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_010, new Object[ ] { alarmId }), e);
+					LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_010, new Object[ ] { alarmId }), e);
 				}
 
 				// Construimos el asunto del correo.
-				String subject = Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_011, new Object[ ] { StaticValetConfig.getProperty(StaticValetConfig.INSTANCE_NAME_ID), alarmId, AlarmsConfiguration.getInstance().getDescriptionAlarm(alarmId) });
+				String subject = Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_011, new Object[ ] { StaticValetConfig.getProperty(StaticValetConfig.INSTANCE_NAME_ID), alarmId, AlarmsConfiguration.getInstance().getDescriptionAlarm(alarmId) });
 
 				// Construimos el cuerpo inicial del correo.
 				String bodyInitialMessage = UtilsDate.getSystemDate(UtilsDate.FORMAT_DATE_TIME_STANDARD);
@@ -317,13 +317,13 @@ public final class AlarmsManager {
 					etlo.appendToBodyMessage(UtilsStringChar.SPECIAL_BLANK_SPACE_STRING);
 					etlo.appendToBodyMessage(UtilsStringChar.SYMBOL_HYPHEN_STRING);
 					etlo.appendToBodyMessage(UtilsStringChar.SPECIAL_BLANK_SPACE_STRING);
-					etlo.appendToBodyMessageWithNewLine(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_012, new Object[ ] { AlarmsConfiguration.getInstance().getBlockTimeInMilliseconds(alarmId) }));
+					etlo.appendToBodyMessageWithNewLine(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_012, new Object[ ] { AlarmsConfiguration.getInstance().getBlockTimeInMilliseconds(alarmId) }));
 
 					// Lo añadimos al map.
 					alarmBlockedGroupEventMailMap.put(alarmId, etlo);
 
 				} catch (EMailException e) {
-					throw new AlarmException(IValetException.COD_201, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_013, new Object[ ] { alarmId }), e);
+					throw new AlarmException(ValetExceptionConstants.COD_201, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_013, new Object[ ] { alarmId }), e);
 				}
 
 				// Activamos la tarea que desbloqueará la alarma.
@@ -353,14 +353,14 @@ public final class AlarmsManager {
 			etlo.appendToBodyMessage(UtilsStringChar.SPECIAL_BLANK_SPACE_STRING);
 			etlo.appendToBodyMessage(UtilsStringChar.SYMBOL_HYPHEN_STRING);
 			etlo.appendToBodyMessage(UtilsStringChar.SPECIAL_BLANK_SPACE_STRING);
-			etlo.appendToBodyMessageWithNewLine(Language.getResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_014));
+			etlo.appendToBodyMessageWithNewLine(Language.getResCoreGeneral(CoreGeneralMessages.ALARM_MNG_014));
 
 			// Enviamos el correo.
 			etlo.startOperation();
 
 		} else {
 
-			LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_015, new Object[ ] { alarmId }));
+			LOGGER.warn(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_015, new Object[ ] { alarmId }));
 
 		}
 
@@ -396,7 +396,7 @@ public final class AlarmsManager {
 			dataForTheTask.put(TempBlockedAlarmTask.KEY_ALARM_ID, alarmId);
 			HiddenTasksManager.addOrUpdateHiddenTask(taskName, taskClass, dateToSendMailAndUnblockAlarm, 0l, dataForTheTask);
 		} catch (ClassNotFoundException e) {
-			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALARM_MNG_017, new Object[ ] { alarmId }), e);
+			LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALARM_MNG_017, new Object[ ] { alarmId }), e);
 		}
 
 	}

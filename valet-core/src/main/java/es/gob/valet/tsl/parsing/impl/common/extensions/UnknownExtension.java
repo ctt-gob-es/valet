@@ -20,22 +20,22 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
-import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
-import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
+import es.gob.valet.utils.TSLBuilderConstants;
 
 /**
  * <p>Class that represents an Unknown TSL extension.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class UnknownExtension extends Extension {
 
@@ -53,14 +53,14 @@ public class UnknownExtension extends Extension {
 	 * @param isCritical Flag to indicate if this extension is critical (<code>true</code>) or not (<code>false</code>).
 	 * @param extensionType Extension type. Refer to its location inside the XML. It could be one of the following:
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 * @param elementName Local name of the extension.
 	 */
 	public UnknownExtension(boolean isCritical, int extensionType, String elementName) {
-		super(isCritical, extensionType, IAnyTypeExtension.IMPL_UNKNOWN_EXTENSION);
+		super(isCritical, extensionType, TSLBuilderConstants.IMPL_UNKNOWN_EXTENSION);
 		extensionName = elementName;
 	}
 
@@ -90,7 +90,7 @@ public class UnknownExtension extends Extension {
 
 		// Si la extensión es desconocida y crítica, debe producirse un error.
 		if (isCritical) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL038, new Object[ ] { extensionName, extensionTypeToString(getExtensionType()) }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL038, new Object[ ] { extensionName, extensionTypeToString(getExtensionType()) }));
 		}
 
 	}

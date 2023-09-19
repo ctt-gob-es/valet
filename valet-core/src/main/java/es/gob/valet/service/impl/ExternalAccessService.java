@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 04/09/2023.
+ * @version 2.1, 19/09/2023.
  */
 package es.gob.valet.service.impl;
 
@@ -44,7 +44,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
@@ -86,9 +85,10 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsStringChar;
+import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
@@ -98,7 +98,7 @@ import es.gob.valet.persistence.configuration.model.repository.ExternalAccessRep
 import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.ExternalAccessTablesRepository;
 import es.gob.valet.persistence.configuration.model.specification.ExternalAccessSpecification;
-import es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.AlarmIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.service.ifaces.IExternalAccessService;
@@ -114,7 +114,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 10/08/2023.
+ * @version 2.1, 19/09/2023.
  */
 @Service("ExternalAccessService")
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -403,8 +403,8 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	private boolean testConnUrl(String uriTslLocation) {
 		boolean urlConnected = false;
-		messageError="";
-
+		setMessageError("");
+		
 		try {
 			if(uriTslLocation.indexOf(LDAP) != -1) {
 				Hashtable<String, String> environment = new Hashtable<String, String>();
@@ -443,30 +443,32 @@ public class ExternalAccessService implements IExternalAccessService {
 
 						@Override
 						public void checkClientTrusted(X509Certificate[ ] certs, String authType) {
+							// Método que chequea a partir de unos parametros, la confiabilidad del cliente que se conecta al servidor
 						}
 
 						@Override
 						public void checkServerTrusted(X509Certificate[ ] certs, String authType) {
+							// Método que chequea a partir de unos parametros, la confiabilidad del servidor elegido
 						}
 
 						@Override
 						public void checkClientTrusted(X509Certificate[ ] xcs, String string, Socket socket) throws CertificateException {
-
+							// Método que chequea a partir de unos parametros, la confiabilidad del cliente que se conecta al servidor
 						}
 
 						@Override
 						public void checkServerTrusted(X509Certificate[ ] xcs, String string, Socket socket) throws CertificateException {
-
+							// Método que chequea a partir de unos parametros, la confiabilidad del servidor elegido
 						}
 
 						@Override
 						public void checkClientTrusted(X509Certificate[ ] xcs, String string, SSLEngine ssle) throws CertificateException {
-
+							// Método que chequea a partir de unos parametros, la confiabilidad del cliente que se conecta al servidor
 						}
 
 						@Override
 						public void checkServerTrusted(X509Certificate[ ] xcs, String string, SSLEngine ssle) throws CertificateException {
-
+							// Método que chequea a partir de unos parametros, la confiabilidad del servidor elegido
 						}
 
 					} };
@@ -498,62 +500,62 @@ public class ExternalAccessService implements IExternalAccessService {
 		} catch (SocketException e) {
 			// Se considera que el socket se cerró cuando se estaba escribiendo datos en el flujo de salida y el servidor nos está avisando con RST.
 			urlConnected = true;
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL401, new Object[ ] { uriTslLocation }));
+			LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL401, new Object[ ] { uriTslLocation }));
 			if(e.getCause() != null) {
-				messageError= e.getCause().toString();
+				setMessageError(e.getCause().toString());
 			}else {
-				messageError= "Error tipo SocketException";
+				setMessageError(Language.getResCoreTsl(CoreTslMessages.LOGMTSL417));
 			}
 			
 	} catch (SocketTimeoutException e) {
 		// Se considera que el socket se cerró cuando se estaba escribiendo datos en el flujo de salida y el servidor nos está avisando con RST.
 		urlConnected = false;
-		LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL401, new Object[ ] { uriTslLocation }));
+		LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL401, new Object[ ] { uriTslLocation }));
 		if(e.getCause() != null) {
-			messageError= e.getCause().toString();
+			setMessageError(e.getCause().toString());
 		}else {
-			messageError= "Error tipo SocketTimeoutException";
+			setMessageError(Language.getResCoreTsl(CoreTslMessages.LOGMTSL418));
 		}
 	}catch (IOException e) {
 			urlConnected = false;
-			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
+			LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
 			if(e.getCause() != null) {
-				messageError= e.getCause().toString();
+				setMessageError(e.getCause().toString());
 			}else {
-				messageError= "Error tipo IOException";
+				setMessageError(Language.getResCoreTsl(CoreTslMessages.LOGMTSL419));
 			}
 		} catch (NoSuchAlgorithmException e) {
 			urlConnected = false;
-			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ERROR_SERVICE_01));
+			LOGGER.error(Language.getResCoreGeneral(CoreGeneralMessages.ERROR_SERVICE_01));
 			if(e.getCause() != null) {
-				messageError= e.getCause().toString();
+				setMessageError(e.getCause().toString());
 			}else {
-				messageError= "Error tipo NoSuchAlgorithmException";
+				setMessageError(Language.getResCoreTsl(CoreTslMessages.LOGMTSL420));
 			}
 		} catch (KeyManagementException e) {
 			urlConnected = false;
-			LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.ERROR_SERVICE_02));
+			LOGGER.error(Language.getResCoreGeneral(CoreGeneralMessages.ERROR_SERVICE_02));
 			if(e.getCause() != null) {
-				messageError= e.getCause().toString();
+				setMessageError(e.getCause().toString());
 			}else {
-				messageError= "Error tipo KeyManagementException";
+				setMessageError(Language.getResCoreTsl(CoreTslMessages.LOGMTSL421));
 			}
 		} catch (NamingException e) {
 			urlConnected = false;
-			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
+			LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL402, new Object[ ] { uriTslLocation }));
 			if(e.getCause() != null) {
-				messageError= e.getCause().toString();
+				setMessageError(e.getCause().toString());
 			}else {
-				messageError= "Error tipo NamingException";
+				setMessageError(Language.getResCoreTsl(CoreTslMessages.LOGMTSL422));
 			}
 		} catch (Exception e) {
 			urlConnected = false;
 			if(e.getCause() != null) {
-				messageError= e.getCause().toString();
+				setMessageError(e.getCause().toString());
 				LOGGER.error(messageError);
 
 			}else {
-				messageError= "Error no controlado. Por favor, pruebe de nuevo.";
+				setMessageError(Language.getResCoreTsl(CoreTslMessages.LOGMTSL423));
 			}
 		}
 		
@@ -567,7 +569,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	public void prepareUrlExternalAccessForTask() {
 		long timeProcess = System.currentTimeMillis();
-		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL406));
+		LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL406));
 		// Obtenemos todas las url de la BD.
 		List<ExternalAccess> listExternalAccess = externalAccessRepository.findAll();
 		
@@ -582,10 +584,10 @@ public class ExternalAccessService implements IExternalAccessService {
 		this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDSAVEURL);
 		
 		// Enviamos la alarmma en caso de que en el resultado de los cambios realizados haya algun test que haya fallado.
-		String messageHead = Language.getResCoreGeneral(ICoreGeneralMessages.ALM009_EVENT_001);
+		String messageHead = Language.getResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_001);
 		this.launchAlarmIfTestConnFail(externalAccessDTO.getListExternalAccessResult(), messageHead);
 		
-		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL407, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL407, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
 	}
 	
 	/**
@@ -595,7 +597,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	public void prepareUrlExternalAccessForTestConn(List<Long> listIdUrl) {
 		long timeProcess = System.currentTimeMillis();
-		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL414));
+		LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL414));
 		if(null != listIdUrl && !listIdUrl.isEmpty()) {
 			// Obtenemos todas las url de la BD.
 			List<ExternalAccess> listExternalAccess = externalAccessRepository.findByIdUrlInQuery(listIdUrl);
@@ -607,10 +609,10 @@ public class ExternalAccessService implements IExternalAccessService {
 			externalAccessDTO.setListUrlIssuerResult(listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(ISSUERALTERNATIVENAME)).map(ExternalAccess::getUrl).collect(Collectors.toList()));
 			
 			this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDSAVEURL);
-			String messageHead = Language.getResCoreGeneral(ICoreGeneralMessages.ALM009_EVENT_002);
+			String messageHead = Language.getResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_002);
 			this.launchAlarmIfTestConnFail(externalAccessDTO.getListExternalAccessResult(), messageHead);
 		}
-		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL415, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL415, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
 	}
 	
 	/**
@@ -620,7 +622,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	public void prepareUrlExternalAccessInitPlatform() {
 		long timeProcess = System.currentTimeMillis();
-		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL408));
+		LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL408));
 		try {
 			// Obtenemos todas las regiones dadas de alta en base de datos.
     		List<TslCountryRegion> tcrList = iTslCountryRegionService.getAllTslCountryRegion(false);
@@ -638,14 +640,14 @@ public class ExternalAccessService implements IExternalAccessService {
     			}
     			
     			// Enviamos la alarmma en caso de que en el resultado de los cambios realizados haya algun test que haya fallado.
-    			String messageHead = Language.getResCoreGeneral(ICoreGeneralMessages.ALM009_EVENT_003);
+    			String messageHead = Language.getResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_003);
     			this.launchAlarmIfTestConnFail(listExternalAccessResult, messageHead);
     		}
 		} catch (Exception e) {
-			String msg = Language.getResCoreTsl(ICoreTslMessages.LOGMTSL400);
+			String msg = Language.getResCoreTsl(CoreTslMessages.LOGMTSL400);
 			LOGGER.error(msg, e);
 		}
-		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL409, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL409, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
 	}
 
 	/**
@@ -667,7 +669,7 @@ public class ExternalAccessService implements IExternalAccessService {
 				}
 			}
 			// Lanzamos la alarma correspondiente...
-			AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM009_CONNECTION_FAIL, messageMail.toString());
+			AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM009_CONNECTION_FAIL, messageMail.toString());
 		}
 	}
 
@@ -680,7 +682,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	private void createMessageMail(TslCountryRegion tslCountryRegion, List<ExternalAccess> listExternalAccessTestConnKo, StringBuffer messageMail) {
 		messageMail.append(System.lineSeparator()).append(System.lineSeparator());
-		messageMail.append(Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM009_EVENT_004, new Object[ ] { tslCountryRegion.getCountryRegionName(), tslCountryRegion.getTslData().getSequenceNumber()}));
+		messageMail.append(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_004, new Object[ ] { tslCountryRegion.getCountryRegionName(), tslCountryRegion.getTslData().getSequenceNumber()}));
 		for (ExternalAccess externalAccess: listExternalAccessTestConnKo) {
 			messageMail.append(System.lineSeparator());
 			messageMail.append(externalAccess.getUrl());
@@ -697,7 +699,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	public void prepareUrlExternalAccessToTSL(ITSLObject tslObject) throws TSLCertificateValidationException {
 		long timeProcess = System.currentTimeMillis();
-		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL410));
+		LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL410));
 		// Generamos un nuevo DTO con la información de las URL del país a insertar/editar.
 		ExternalAccessDTO externalAccessDTO = new ExternalAccessDTO();
 		externalAccessDTO.setIdCountryRegion(tslCountryRegionRepository.findByCountryRegionCode(tslObject.getSchemeInformation().getSchemeTerritory()).getIdTslCountryRegion());
@@ -705,7 +707,7 @@ public class ExternalAccessService implements IExternalAccessService {
 		this.extractUrlToDistributionPoints(externalAccessDTO, tslObject);
 		// Realizamos los cambios en la bd, en base al resultado del test de conexión.
 		this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDSAVEURL);
-		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL411, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL411, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
 	}
 
 	/**
@@ -715,14 +717,14 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @throws TSLCertificateValidationException if occurs any error.
 	 */
 	public void prepareUrlExternalAccessToDelete(ITSLObject tslObject) throws TSLCertificateValidationException {
-		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL412, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory() }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL412, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory() }));
 		// Generamos un nuevo DTO con la información de las URL del país a eliminar.
 		ExternalAccessDTO externalAccessDTO = new ExternalAccessDTO();
 		List<ExternalAccess> listExternalAccess = externalAccessRepository.findAll().stream().filter(p -> p.getTslCountryRegion().getCountryRegionCode().equals(tslObject.getSchemeInformation().getSchemeTerritory())).collect(Collectors.toList());
 		externalAccessDTO.setListExternalAccessResult(listExternalAccess);
 		// Realizamos los cambios en la bd, en base al resultado del test de conexión.
 		this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDDELETEURL);
-		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL413, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory() }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL413, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory() }));
 	}
 	
 	/**
@@ -832,7 +834,7 @@ public class ExternalAccessService implements IExternalAccessService {
 				TslData td = iTslDataService.getTslDataById(tcr.getTslData().getIdTslData(), true, false);
 				long initProcess = System.currentTimeMillis();
 				// Si no es nulo, continuamos.
-				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL398, new Object[] { tcr.getCountryRegionCode() }));
+				LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL398, new Object[] { tcr.getCountryRegionCode() }));
 				if (td != null) {
 					// Tratamos de parsearlo.
 					ITSLObject tslObject =  TSLManager.getInstance().buildAndCheckTSL(td);
@@ -841,7 +843,7 @@ public class ExternalAccessService implements IExternalAccessService {
 					this.extractUrlToDistributionPoints(externalAccessDTO, tslObject);
 					listExternalAccessDTO.add(externalAccessDTO);
 				}
-				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL399, new Object[] { tcr.getCountryRegionCode(), (System.currentTimeMillis() - initProcess) }));
+				LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL399, new Object[] { tcr.getCountryRegionCode(), (System.currentTimeMillis() - initProcess) }));
 			}
 		}
 		return listExternalAccessDTO;
@@ -864,7 +866,7 @@ public class ExternalAccessService implements IExternalAccessService {
 						if(uriTslLocation.indexOf(HTTP) != -1 || uriTslLocation.indexOf(HTTPS) != -1 || uriTslLocation.indexOf(LDAP) != -1) {
 							externalAccessDTO.getListUrlDistributionPointDPResult().add(uriTslLocation);
 						} else {
-							LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL416, new Object[ ] { uriTslLocation }));
+							LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL416, new Object[ ] { uriTslLocation }));
 						}
 						break;
 					}
@@ -885,7 +887,7 @@ public class ExternalAccessService implements IExternalAccessService {
 						if(urlIssuerAlternativeName.indexOf(HTTP) != -1|| urlIssuerAlternativeName.indexOf(LDAP) != -1) {
 							externalAccessDTO.getListUrlIssuerResult().add(urlIssuerAlternativeName);
 						} else {
-							LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL416, new Object[ ] { urlIssuerAlternativeName }));
+							LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL416, new Object[ ] { urlIssuerAlternativeName }));
 						}
 					}
 					
@@ -921,7 +923,7 @@ public class ExternalAccessService implements IExternalAccessService {
 		try {
 			aia = AuthorityInformationAccess.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(x509Certificate).getTBSCertificate().getExtensions());
 		} catch (Exception e) {
-			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL186), e);
+			LOGGER.error(Language.getResCoreTsl(CoreTslMessages.LOGMTSL186), e);
 		}
 		
 		// Si la información recuperada no es nula, y al menos hay un
@@ -942,7 +944,7 @@ public class ExternalAccessService implements IExternalAccessService {
 						if(ocspUriString.indexOf(HTTP) != -1|| ocspUriString.indexOf(LDAP) != -1) {
 							listUrlDistributionPointOCSP.add(ocspUriString);
 						} else {
-							LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL416, new Object[ ] { ocspUriString }));
+							LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL416, new Object[ ] { ocspUriString }));
 						}
 					}
 				}
@@ -961,23 +963,18 @@ public class ExternalAccessService implements IExternalAccessService {
 		
 		// Recuperamos el listado de Distribution Points de tipo CRL.
 		CRLDistPoint crlDps = null;
-		ASN1InputStream dIn = null;
+		byte[ ] octs = null;
 		try {
 			Extensions extensions = UtilsCertificate.getBouncyCastleCertificate(x509Certificate).getTBSCertificate().getExtensions();
 			Extension ext = extensions.getExtension(Extension.cRLDistributionPoints);
-			byte[ ] octs = ext.getExtnValue().getOctets();
-			dIn = new ASN1InputStream(octs);
-			crlDps = CRLDistPoint.getInstance(dIn.readObject());
-		} catch (Exception e1) {
+			octs = ext.getExtnValue().getOctets();
+		} catch (CommonUtilsException e) {
 			crlDps = null;
-		} finally {
-			if (dIn != null) {
-				try {
-					dIn.close();
-				} catch (IOException e) {
-					dIn = null;
-				}
-			}
+		}
+		try (ASN1InputStream dIn = new ASN1InputStream(octs)){
+			crlDps = CRLDistPoint.getInstance(dIn.readObject());
+		} catch (Exception e) {
+			crlDps = null;
 		}
 		// Si lo hemos obtenido...
 		if (crlDps != null) {
@@ -1042,7 +1039,7 @@ public class ExternalAccessService implements IExternalAccessService {
 								if(uriSelected.indexOf(HTTP) != -1|| uriSelected.indexOf(LDAP) != -1) {
 									listUrlDistributionPointCRL.add(uriSelected);
 								} else {
-									LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL416, new Object[ ] { uriSelected }));
+									LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL416, new Object[ ] { uriSelected }));
 								}
 							}
 						}

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 03/04/2023.
+ * @version 1.8, 19/09/2023.
  */
 package es.gob.valet.rest.client;
 
@@ -44,8 +44,10 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.exceptions.ValetRestException;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.RestGeneralMessages;
 import es.gob.valet.rest.elements.DetectCertInTslInfoAndValidationResponse;
 import es.gob.valet.rest.elements.TslInformationResponse;
 import es.gob.valet.rest.elements.TslInformationVersionsResponse;
@@ -56,7 +58,7 @@ import es.gob.valet.rest.services.ITslRestService;
 /**
  * <p>Class that implements a client for Valet rest services.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 03/04/2023.
+ * @version 1.8, 19/09/2023.
  */
 public class ValetClient {
 
@@ -154,19 +156,19 @@ public class ValetClient {
 				response = restService.detectCertInTslInfoAndValidation(application, delegatedApp, tslLocationB4, new ByteArrayB64(certByteArray), dateString, getInfo, checkRevStatus, returnRevocationEvidence, crlsByteArrayB64List, basicOcspResponsesByteArrayB64List, returnCertificateChain);
 			} catch (ProcessingException e) {
 				if (e.getCause().getClass().equals(UnknownHostException.class)) {
-					throw new ValetRestUnknownHostException(IValetException.COD_193, "Error trying to connect to Valet rest services. Unknown host. The address of the host could not be determined.");
+					throw new ValetRestUnknownHostException(ValetExceptionConstants.COD_193, "Error trying to connect to Valet rest services. Unknown host. The address of the host could not be determined.");
 				} else if (e.getCause().getClass().equals(SocketTimeoutException.class)) {
-					throw new ValetRestTimeoutException(IValetException.COD_194, "Error trying to connect to Valet rest services. Network connection timeout. The service didn't response after seconds configured as 'timeout'.");
+					throw new ValetRestTimeoutException(ValetExceptionConstants.COD_194, "Error trying to connect to Valet rest services. Network connection timeout. The service didn't response after seconds configured as 'timeout'.");
 				} else if (e.getCause().getClass().equals(ConnectException.class)) {
-					throw new ValetRestConnectionRefusedException(IValetException.COD_195, "Error trying to connect to Valet rest services. Connection refused. Error occurred while attempting to connect a socket to a remote address and port.");
+					throw new ValetRestConnectionRefusedException(ValetExceptionConstants.COD_195, "Error trying to connect to Valet rest services. Connection refused. Error occurred while attempting to connect a socket to a remote address and port.");
 				} else {
 					// If child exception of ProcessingException is unknown
-					throw new ValetRestException(IValetException.COD_196, "Error trying to connect to Valet rest services. Connection no available. There are internal processing errors on the server.");
+					throw new ValetRestException(ValetExceptionConstants.COD_196, "Error trying to connect to Valet rest services. Connection no available. There are internal processing errors on the server.");
 				}
 			} catch (NotFoundException e) {
-				throw new ValetRestHostNotFoundException(IValetException.COD_197, "Error trying to connect to Valet rest services. Not found. The resource requested by client was not found on the server.");
+				throw new ValetRestHostNotFoundException(ValetExceptionConstants.COD_197, "Error trying to connect to Valet rest services. Not found. The resource requested by client was not found on the server.");
 			} catch (Exception e) {
-				throw new ValetRestException(IValetException.COD_198, "Error trying to connect to Valet rest services. Connection no available.", e);
+				throw new ValetRestException(ValetExceptionConstants.COD_198, "Error trying to connect to Valet rest services. Connection no available.", e);
 			}
 		} else {
 			System.out.println("Conexión no válida");
@@ -217,19 +219,19 @@ public class ValetClient {
 				}
 			} catch (ProcessingException e) {
 				if (e.getCause().getClass().equals(UnknownHostException.class)) {
-					throw new ValetRestUnknownHostException(IValetException.COD_193, "Error trying to connect to Valet rest services. Unknown host. The address of the host could not be determined.");
+					throw new ValetRestUnknownHostException(ValetExceptionConstants.COD_193, "Error trying to connect to Valet rest services. Unknown host. The address of the host could not be determined.");
 				} else if (e.getCause().getClass().equals(SocketTimeoutException.class)) {
-					throw new ValetRestTimeoutException(IValetException.COD_194, "Error trying to connect to Valet rest services. Network connection timeout. The service didn't response after seconds configured as 'timeout'.");
+					throw new ValetRestTimeoutException(ValetExceptionConstants.COD_194, "Error trying to connect to Valet rest services. Network connection timeout. The service didn't response after seconds configured as 'timeout'.");
 				} else if (e.getCause().getClass().equals(ConnectException.class)) {
-					throw new ValetRestConnectionRefusedException(IValetException.COD_195, "Error trying to connect to Valet rest services. Connection refused. Error occurred while attempting to connect a socket to a remote address and port.");
+					throw new ValetRestConnectionRefusedException(ValetExceptionConstants.COD_195, "Error trying to connect to Valet rest services. Connection refused. Error occurred while attempting to connect a socket to a remote address and port.");
 				} else {
 					// If child exception of ProcessingException is unknown
-					throw new ValetRestException(IValetException.COD_196, "Error trying to connect to Valet rest services. Connection no available. There are internal processing errors on the server.");
+					throw new ValetRestException(ValetExceptionConstants.COD_196, "Error trying to connect to Valet rest services. Connection no available. There are internal processing errors on the server.");
 				}
 			} catch (NotFoundException e) {
-				throw new ValetRestHostNotFoundException(IValetException.COD_197, "Error trying to connect to Valet rest services. Not found. The resource requested by client was not found on the server.");
+				throw new ValetRestHostNotFoundException(ValetExceptionConstants.COD_197, "Error trying to connect to Valet rest services. Not found. The resource requested by client was not found on the server.");
 			} catch (Exception e) {
-				throw new ValetRestException(IValetException.COD_198, "Error trying to connect to Valet rest services. Connection no available.", e);
+				throw new ValetRestException(ValetExceptionConstants.COD_198, "Error trying to connect to Valet rest services. Connection no available.", e);
 			}
 		} else {
 			System.out.println("Conexión no válida");
@@ -256,22 +258,22 @@ public class ValetClient {
 				}
 			} catch (ProcessingException e) {
 				if (e.getCause().getClass().equals(UnknownHostException.class)) {
-					throw new ValetRestUnknownHostException(IValetException.COD_193, "Error trying to connect to Valet rest services. Unknown host. The address of the host could not be determined.");
+					throw new ValetRestUnknownHostException(ValetExceptionConstants.COD_193, Language.getResRestGeneral(RestGeneralMessages.REST_LOG050));
 				} else if (e.getCause().getClass().equals(SocketTimeoutException.class)) {
-					throw new ValetRestTimeoutException(IValetException.COD_194, "Error trying to connect to Valet rest services. Network connection timeout. The service didn't response after seconds configured as 'timeout'.");
+					throw new ValetRestTimeoutException(ValetExceptionConstants.COD_194, Language.getResRestGeneral(RestGeneralMessages.REST_LOG051));
 				} else if (e.getCause().getClass().equals(ConnectException.class)) {
-					throw new ValetRestConnectionRefusedException(IValetException.COD_195, "Error trying to connect to Valet rest services. Connection refused. Error occurred while attempting to connect a socket to a remote address and port.");
+					throw new ValetRestConnectionRefusedException(ValetExceptionConstants.COD_195, Language.getResRestGeneral(RestGeneralMessages.REST_LOG052));
 				} else {
 					// If child exception of ProcessingException is unknown
-					throw new ValetRestException(IValetException.COD_196, "Error trying to connect to Valet rest services. Connection no available. There are internal processing errors on the server.");
+					throw new ValetRestException(ValetExceptionConstants.COD_196, Language.getResRestGeneral(RestGeneralMessages.REST_LOG053));
 				}
 			} catch (NotFoundException e) {
-				throw new ValetRestHostNotFoundException(IValetException.COD_197, "Error trying to connect to Valet rest services. Not found. The resource requested by client was not found on the server.");
+				throw new ValetRestHostNotFoundException(ValetExceptionConstants.COD_197, Language.getResRestGeneral(RestGeneralMessages.REST_LOG054));
 			} catch (Exception e) {
-				throw new ValetRestException(IValetException.COD_198, "Error trying to connect to Valet rest services. Connection no available.", e);
+				throw new ValetRestException(ValetExceptionConstants.COD_198, Language.getResRestGeneral(RestGeneralMessages.REST_LOG055), e);
 			}
 		} else {
-			System.out.println("Conexión no válida");
+			LOGGER.warn(Language.getResRestGeneral(RestGeneralMessages.REST_LOG056));
 		}
 
 		return response;

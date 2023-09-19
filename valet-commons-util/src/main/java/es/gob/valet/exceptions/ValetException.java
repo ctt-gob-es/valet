@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 03/04/2023.
+ * @version 1.5, 19/09/2023.
  */
 package es.gob.valet.exceptions;
 
@@ -29,14 +29,14 @@ import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.UtilsXML;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Class for encapsulate exceptions thrown by the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 03/04/2023.
+ * @version 1.5, 19/09/2023.
  */
-public class ValetException extends Exception implements IValetException {
+public class ValetException extends Exception {
 
 	/**
 	 * Constant  ttribute that represents the serial version UID.
@@ -76,7 +76,7 @@ public class ValetException extends Exception implements IValetException {
 	 * @param errorDescParam Description for the error.
 	 */
 	public ValetException(final String errorCodeParam, final String errorDescParam) {
-		super(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
+		super(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
 		errorCode = errorCodeParam;
 		errorDesc = errorDescParam;
 		// Solamente en trace escribimos el mensaje y la excepción, por si es
@@ -84,7 +84,7 @@ public class ValetException extends Exception implements IValetException {
 		// posteriormente para ocultarla pero es necesario tenerla en cuenta
 		// para
 		// desarrollo.
-		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
+		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.EXCEPTION_001), this);
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class ValetException extends Exception implements IValetException {
 	 * @param exceptionParam Exception that causes the error.
 	 */
 	public ValetException(final String errorCodeParam, final String errorDescParam, final Exception exceptionParam) {
-		super(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
+		super(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, errorDescParam }));
 		errorCode = errorCodeParam;
 		errorDesc = errorDescParam;
 		exception = exceptionParam;
@@ -103,11 +103,11 @@ public class ValetException extends Exception implements IValetException {
 		// posteriormente para ocultarla pero es necesario tenerla en cuenta
 		// para
 		// desarrollo.
-		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
+		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.EXCEPTION_001), this);
 	}
 
 	public ValetException(final String errorCodeParam, final Exception exceptionParam) {
-		super(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, exceptionParam }));
+		super(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.EXCEPTION_000, new Object[ ] { errorCodeParam, exceptionParam }));
 		errorCode = errorCodeParam;
 		exception = exceptionParam;
 		// Solamente en trace escribimos el mensaje y la excepción, por si es
@@ -115,7 +115,7 @@ public class ValetException extends Exception implements IValetException {
 		// posteriormente para ocultarla pero es necesario tenerla en cuenta
 		// para
 		// desarrollo.
-		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
+		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.EXCEPTION_001), this);
 	}
 	
 	/**
@@ -124,7 +124,7 @@ public class ValetException extends Exception implements IValetException {
 	 */
 	public ValetException(final String errorDescParam) {
 		errorDesc = errorDescParam;
-		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
+		LOGGER.trace(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.EXCEPTION_001), this);
 	}
 	
 	/**
@@ -183,9 +183,9 @@ public class ValetException extends Exception implements IValetException {
 	public final String toString() {
 
 		if (exception == null) {
-			return Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_002, new Object[ ] { errorCode, errorDesc });
+			return Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.EXCEPTION_002, new Object[ ] { errorCode, errorDesc });
 		} else {
-			return Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_003, new Object[ ] { errorCode, errorDesc, exception.toString() });
+			return Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.EXCEPTION_003, new Object[ ] { errorCode, errorDesc, exception.toString() });
 		}
 
 	}

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -39,7 +39,7 @@ import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
  * <p>Class that defines the TSL Scheme Information with all its information not dependent
  * of the specification or TSL version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class SchemeInformation implements Serializable {
 
@@ -67,7 +67,7 @@ public class SchemeInformation implements Serializable {
 	 * Attribute that represents the formal name under which the scheme operator
 	 * does business or is given its mandate in all presented languages.
 	 */
-	private Map<String, List<String>> schemeOperatorNames = null;
+	private transient Map<String, List<String>> schemeOperatorNames = null;
 
 	/**
 	 * Attribute that represents specify the address of the legal identity, for both
@@ -80,13 +80,13 @@ public class SchemeInformation implements Serializable {
 	/**
 	 * Attribute that represents the name under which the scheme operates.
 	 */
-	private Map<String, String> schemeNames = null;
+	private transient Map<String, String> schemeNames = null;
 
 	/**
 	 * Attribute that represents he URI(s) where users (subscribers, relying parties)
 	 * can obtain scheme-specific information in all presented languages.
 	 */
-	private Map<String, List<URI>> schemeInformationURIs = null;
+	private transient Map<String, List<URI>> schemeInformationURIs = null;
 
 	/**
 	 * Attribute that represents the identifier of the status determination approach.
@@ -96,7 +96,7 @@ public class SchemeInformation implements Serializable {
 	/**
 	 * Attribute that contain one or more registered URIs in all presented languages.
 	 */
-	private Map<String, List<URI>> schemeTypeCommunityRules = null;
+	private transient Map<String, List<URI>> schemeTypeCommunityRules = null;
 
 	/**
 	 * Attribute that represents he country or territory in which the
@@ -110,7 +110,7 @@ public class SchemeInformation implements Serializable {
 	 * constraints and conditions under which the TSL is maintained and offered, in all
 	 * presented languages.
 	 */
-	private Map<String, URI> policies = null;
+	private transient Map<String, URI> policies = null;
 
 	/**
 	 * Attribute that represents the scheme's notices concerning the legal status of
@@ -118,7 +118,7 @@ public class SchemeInformation implements Serializable {
 	 * the scheme is established and/or any constraints and conditions under which
 	 * the TSL is maintained and offered, in all presented languages.
 	 */
-	private Map<String, String> legalNotices = null;
+	private transient Map<String, String> legalNotices = null;
 
 	/**
 	 * Attribute that represents duration over which historical information in the
@@ -129,7 +129,7 @@ public class SchemeInformation implements Serializable {
 	/**
 	 * Attribute that represents a list with pointers to other TSL.
 	 */
-	private List<TSLPointer> pointersToOtherTSL = null;
+	private transient List<TSLPointer> pointersToOtherTSL = null;
 
 	/**
 	 * Attribute that represents the date and time on which the list was issued.
@@ -147,12 +147,12 @@ public class SchemeInformation implements Serializable {
 	 * and where updates to the current TSL can be found. If multiple distribution points are specified,
 	 * they all must provide identical copies of the current TSL or its updated versions.
 	 */
-	private List<URI> distributionPoints = null;
+	private transient List<URI> distributionPoints = null;
 
 	/**
 	 * Attribute that represents a list with all the extensions associated to this Scheme Information.
 	 */
-	private List<IAnyTypeExtension> schemeInformationExtensions = null;
+	private transient List<IAnyTypeExtension> schemeInformationExtensions = null;
 
 	/**
 	 * Constructor method for the class SchemeInformation.java.

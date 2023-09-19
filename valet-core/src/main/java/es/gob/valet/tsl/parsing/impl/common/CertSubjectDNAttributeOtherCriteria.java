@@ -21,10 +21,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
+import java.io.Serializable;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -35,20 +36,20 @@ import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 
 /**
  * <p>Class that represents a implementation for a specific Other Criteria
  * Any Type: CertSubjectDNAttributeOtherCriteria element.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
-public class CertSubjectDNAttributeOtherCriteria extends OtherCriteria {
+public class CertSubjectDNAttributeOtherCriteria extends OtherCriteria implements Serializable {
 
 	/**
 	 * Constant attribute that represents the serial version UID.
@@ -58,7 +59,7 @@ public class CertSubjectDNAttributeOtherCriteria extends OtherCriteria {
 	/**
 	 * Attribute that represents the list of Cert Subject DN Attributes OID.
 	 */
-	private List<String> oidList = null;
+	private transient List<String> oidList = null;
 
 	/**
 	 * Constructor method for the class CertSubjectDNAttributeOtherCriteria.java.
@@ -83,7 +84,7 @@ public class CertSubjectDNAttributeOtherCriteria extends OtherCriteria {
 	 */
 	@Override
 	protected final String getOtherCriteriaType() {
-		return ITSLElementsAndAttributes.ELEMENT_OTHER_CRITERIA_CERTSUBJECTDNATTRIBUTE_LOCALNAME;
+		return TSLElementsAndAttributes.ELEMENT_OTHER_CRITERIA_CERTSUBJECTDNATTRIBUTE_LOCALNAME;
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class CertSubjectDNAttributeOtherCriteria extends OtherCriteria {
 		try {
 			jcaX509cert = new JcaX509CertificateHolder(x509cert);
 		} catch (CertificateEncodingException e) {
-			throw new TSLCertificateValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL084), e);
+			throw new TSLCertificateValidationException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL084), e);
 		}
 
 		X500Name x500name = jcaX509cert.getSubject();
@@ -140,7 +141,7 @@ public class CertSubjectDNAttributeOtherCriteria extends OtherCriteria {
 
 		// Debe existir al menos un OID.
 		if (oidList.isEmpty()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL083));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL083));
 		}
 
 	}

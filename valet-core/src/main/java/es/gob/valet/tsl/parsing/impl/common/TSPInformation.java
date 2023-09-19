@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -38,7 +38,7 @@ import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
  * <p>Class that defines a TSP Information with all its information not dependent
  * of the specification or TSL version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class TSPInformation implements Serializable {
 
@@ -52,14 +52,14 @@ public class TSPInformation implements Serializable {
 	 * in all the presented languages:
 	 * Map<Language, List<Names>>.
 	 */
-	private Map<String, List<String>> tspNames = null;
+	private transient Map<String, List<String>> tspNames = null;
 
 	/**
 	 * Attribute that represents the trade name of the legal entity responsible for the TSP
 	 * in all the presented languages:
 	 * Map<Language, List<TradeNames>>.
 	 */
-	private Map<String, List<String>> tspTradeNames = null;
+	private transient Map<String, List<String>> tspTradeNames = null;
 
 	/**
 	 * Attribute that represents the the address of the legal entity responsible for the TSP
@@ -71,12 +71,12 @@ public class TSPInformation implements Serializable {
 	 * Attribute that represents the URI(s) where users (subscribers, relying parties)
 	 * can obtain TSP-specific information in all presented languages.
 	 */
-	private Map<String, List<URI>> tspURIs = null;
+	private transient Map<String, List<URI>> tspURIs = null;
 
 	/**
 	 * Attribute that represents a list with all the extensions associated to this TSP Information.
 	 */
-	private List<IAnyTypeExtension> tspInformationExtensions = null;
+	private transient List<IAnyTypeExtension> tspInformationExtensions = null;
 
 	/**
 	 * Constructor method for the class TSPInformation.java.

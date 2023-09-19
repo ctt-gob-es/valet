@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 03/04/2023.
+ * @version 1.8, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.engine;
 
@@ -32,9 +32,9 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.application.engine.ApplicationCacheFacade;
@@ -55,7 +55,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Facade for all the configuration cache objects of the configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 03/04/2023.
+ * @version 1.8, 19/09/2023.
  */
 public final class ConfigurationCacheFacade {
 
@@ -295,13 +295,13 @@ public final class ConfigurationCacheFacade {
 	public static void initializeConfigurationCache(boolean inLoadingCache) {
 
 		// Indicamos que se van a inicializar los datos de la caché compartida.
-		LOGGER.info(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG010));
+		LOGGER.info(Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG010));
 
 		try {
 			// Comprobamos si ya está inicializada.
 			if (TSLCache.getInstance().isInitialized(inLoadingCache)) {
 
-				LOGGER.warn(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG011));
+				LOGGER.warn(Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG011));
 
 			} else {
 
@@ -311,12 +311,12 @@ public final class ConfigurationCacheFacade {
 				// Una vez se han cargado todos los datos, marcamos que la caché
 				// ha sido inicializada.
 				TSLCache.getInstance().setInitializedFlag(true, inLoadingCache);
-				LOGGER.info(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG012));
+				LOGGER.info(Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG012));
 
 			}
 
 		} catch (ConfigurationCacheException e) {
-			LOGGER.error(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG031), e);
+			LOGGER.error(Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG031), e);
 		}
 
 	}
@@ -334,27 +334,27 @@ public final class ConfigurationCacheFacade {
 
 		// Se inicializan todas los almacenes de certificados en la caché de
 		// configuración...
-		LOGGER.info(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG050));
+		LOGGER.info(Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG050));
 		initTime = Calendar.getInstance().getTimeInMillis();
 		try {
 			getKeystoreCacheFacade().initializeAllKeystores(inLoadingCache);
 		} catch (Exception e) {
-			LOGGER.error(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG051), e);
+			LOGGER.error(Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG051), e);
 		}
 		endTime = Calendar.getInstance().getTimeInMillis();
-		LOGGER.info(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG052, new Object[ ] { Long.toString(endTime - initTime) }));
+		LOGGER.info(Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG052, new Object[ ] { Long.toString(endTime - initTime) }));
 
 		// Se inicializan todas las aplicaciones en la caché
 		// compartida...
-		LOGGER.info(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG013));
+		LOGGER.info(Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG013));
 		initTime = Calendar.getInstance().getTimeInMillis();
 		try {
 			getApplicationCacheFacade().initializeAllApplications(inLoadingCache);
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG014), e);
+			LOGGER.error(Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG014), e);
 		}
 		endTime = Calendar.getInstance().getTimeInMillis();
-		LOGGER.info(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG040, new Object[ ] { Long.toString(endTime - initTime) }));
+		LOGGER.info(Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG040, new Object[ ] { Long.toString(endTime - initTime) }));
 
 	}
 
@@ -366,7 +366,7 @@ public final class ConfigurationCacheFacade {
 	public static void reloadConfigurationCache() throws ConfigurationCacheException {
 
 		// Iniciamos la caché auxiliar.
-		LOGGER.info(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG038));
+		LOGGER.info(Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG038));
 		TSLCache.getInstance().startsAuxiliarCache();
 
 		// Recargamos toda la información de la caché.
@@ -374,7 +374,7 @@ public final class ConfigurationCacheFacade {
 
 		// Sustituimos la actual por la auxiliar.
 		int sleepTimeBeforeStopCache = getSleepTimeBeforeStopCache();
-		LOGGER.info(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG039, new Object[ ] { sleepTimeBeforeStopCache }));
+		LOGGER.info(Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG039, new Object[ ] { sleepTimeBeforeStopCache }));
 		TSLCache.getInstance().assignAsPrincipalAuxiliarCache(sleepTimeBeforeStopCache);
 
 	}
@@ -393,7 +393,7 @@ public final class ConfigurationCacheFacade {
 			String valueInStaticProperty = StaticValetConfig.getProperty(StaticValetConfig.CACHE_IDLETIMEBEFORESTOPCACHE);
 			result = Integer.parseInt(valueInStaticProperty) * NumberConstants.NUM1000;
 		} catch (NumberFormatException e) {
-			LOGGER.error(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG036), e);
+			LOGGER.error(Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG036), e);
 			result = NumberConstants.NUM30000;
 		}
 
@@ -420,7 +420,7 @@ public final class ConfigurationCacheFacade {
 		// se comprueba que el parámetro de entrada no sea nulo y que se
 		// encuentre definido el identificador
 		if (av == null || av.getIdApplication() == null) {
-			throw new ApplicationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG005));
+			throw new ApplicationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG005));
 		} else {
 			// Se realiza la recarga.
 			getApplicationCacheFacade().addUpdateApplication(av);

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -28,23 +28,24 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
-import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
-import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
-import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
+import es.gob.valet.utils.TSLBuilderConstants;
+import es.gob.valet.utils.TSLCommonURIs;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 
 /**
  * <p>Class that represents a TSL extension that provide additional information on a service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 public class AdditionalServiceInformation extends Extension {
 
@@ -73,13 +74,13 @@ public class AdditionalServiceInformation extends Extension {
 	 * @param isCritical Flag to indicate if this extension is critical (<code>true</code>) or not (<code>false</code>).
 	 * @param extensionType Extension type. Refer to its location inside the XML. It could be one of the following:
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 */
 	private AdditionalServiceInformation(boolean isCritical, int extensionType) {
-		super(isCritical, extensionType, IAnyTypeExtension.IMPL_ADDITIONAL_SERVICE_INFORMATION);
+		super(isCritical, extensionType, TSLBuilderConstants.IMPL_ADDITIONAL_SERVICE_INFORMATION);
 	}
 
 	/**
@@ -88,9 +89,9 @@ public class AdditionalServiceInformation extends Extension {
 	 * @param isCritical Flag to indicate if this extension is critical (<code>true</code>) or not (<code>false</code>).
 	 * @param extensionType Extension type. Refer to its location inside the XML. It could be one of the following:
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 */
 	public AdditionalServiceInformation(URI uriServInf, boolean isCritical, int extensionType) {
@@ -150,8 +151,8 @@ public class AdditionalServiceInformation extends Extension {
 
 		// Esta extensión tan solo puede ser del tipo
 		// 'ServiceInformationExtension'.
-		if (getExtensionType() != IAnyTypeExtension.TYPE_SERVICE_INFORMATION) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL031, new Object[ ] { extensionTypeToString(IAnyTypeExtension.TYPE_SERVICE_INFORMATION), extensionTypeToString(getExtensionType()) }));
+		if (getExtensionType() != TSLBuilderConstants.TYPE_SERVICE_INFORMATION) {
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL031, new Object[ ] { extensionTypeToString(TSLBuilderConstants.TYPE_SERVICE_INFORMATION), extensionTypeToString(getExtensionType()) }));
 		}
 
 	}
@@ -165,21 +166,21 @@ public class AdditionalServiceInformation extends Extension {
 
 		// El atributo uri es obligatorio.
 		if (uri == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL024, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_ADDITIONALSERVICEINFORMATION, ITSLElementsAndAttributes.ELEMENT_EXTENSION_ADDITIONALSERVICEINFORMATION_URI }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL024, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_ADDITIONALSERVICEINFORMATION, TSLElementsAndAttributes.ELEMENT_EXTENSION_ADDITIONALSERVICEINFORMATION_URI }));
 		}
 
 		// Pasamos a cadena la URI para poder compararla.
 		String uriString = uri.toString();
 
 		// La URI debe ser una de las permitidas.
-		boolean isValid = uriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_ROOTCAQC) || uriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESIGNATURES) || uriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESEALS);
-		isValid = isValid || uriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORWEBSITEAUTHENTICATION);
+		boolean isValid = uriString.equals(TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_ROOTCAQC) || uriString.equals(TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESIGNATURES) || uriString.equals(TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESEALS);
+		isValid = isValid || uriString.equals(TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORWEBSITEAUTHENTICATION);
 
 		if (!isValid) {
 			if (isCritical) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL033, new Object[ ] { uriString }));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL033, new Object[ ] { uriString }));
 			} else {
-				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL232, new Object[ ] { shi.getServiceNameInLanguage(Locale.UK.getLanguage()), uriString }));
+				LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL232, new Object[ ] { shi.getServiceNameInLanguage(Locale.UK.getLanguage()), uriString }));
 			}
 		}
 
@@ -188,8 +189,8 @@ public class AdditionalServiceInformation extends Extension {
 
 		// Comprobamos las restricciones respecto a la URI y el tipo de servicio
 		// asociado.
-		if (ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_ROOTCAQC.equals(uriString) && !ITSLCommonURIs.TSL_SERVICETYPE_CA_QC.equals(serviceType)) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL089, new Object[ ] { ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_ROOTCAQC, ITSLCommonURIs.TSL_SERVICETYPE_CA_QC }));
+		if (TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_ROOTCAQC.equals(uriString) && !TSLCommonURIs.TSL_SERVICETYPE_CA_QC.equals(serviceType)) {
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL089, new Object[ ] { TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_ROOTCAQC, TSLCommonURIs.TSL_SERVICETYPE_CA_QC }));
 		}
 
 	}

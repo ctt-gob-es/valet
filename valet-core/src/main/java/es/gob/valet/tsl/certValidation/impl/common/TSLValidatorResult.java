@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 22/02/2023.
+ * @version 1.5, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -33,7 +33,7 @@ import java.util.Map;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 import es.gob.valet.tsl.exceptions.TSLValidationException;
@@ -41,11 +41,12 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
 import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
+import es.gob.valet.utils.ValidatorResultConstants;
 
 /**
  * <p>Class that represents a TSL validation result.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 22/02/2023.
+ * @version 1.5, 19/09/2023.
  */
 public class TSLValidatorResult implements ITSLValidatorResult {
 
@@ -77,7 +78,7 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	/**
 	 * Attribute that represents the result of the validation, initially not detected.
 	 */
-	private int result = ITSLValidatorResult.RESULT_NOT_DETECTED;
+	private int result = ValidatorResultConstants.RESULT_NOT_DETECTED;
 
 	/**
 	 * Attribute that represents a flag to determine if the result has been obtained from a
@@ -164,17 +165,17 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	/**
 	 * Attribute that represents the mapping that indicates the type of the certificate.
 	 */
-	private int mappingType = ITSLValidatorResult.MAPPING_TYPE_UNKNOWN;
+	private int mappingType = ValidatorResultConstants.MAPPING_TYPE_UNKNOWN;
 
 	/**
 	 * Attribute that represents the mapping that indicates the classification of the certificate.
 	 */
-	private int mappingClassification = ITSLValidatorResult.MAPPING_CLASSIFICATION_OTHER_UNKNOWN;
+	private int mappingClassification = ValidatorResultConstants.MAPPING_CLASSIFICATION_OTHER_UNKNOWN;
 
 	/**
 	 * Attribute that represents the mapping that indicates if the certificate is in QSCD.
 	 */
-	private int mappingQSCD = ITSLValidatorResult.MAPPING_QSCD_UNKNOWN;
+	private int mappingQSCD = ValidatorResultConstants.MAPPING_QSCD_UNKNOWN;
 	
 	/**
 	 * Attribute that represents the mapping that indicates additional information returned by ETSI TS 119 615 v.1.1.1.
@@ -241,7 +242,7 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 		try {
 			tslCertExtAnalyzer = new TSLCertificateExtensionAnalyzer(cert);
 		} catch (TSLCertificateValidationException e) {
-			throw new TSLValidationException(IValetException.COD_187, e.getErrorDescription(), e);
+			throw new TSLValidationException(ValetExceptionConstants.COD_187, e.getErrorDescription(), e);
 		}
 		if (tslObject != null) {
 			tslCountryRegionCode = tslObject.getSchemeInformation().getSchemeTerritory();
@@ -363,7 +364,7 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 */
 	@Override
 	public boolean hasBeenDetectedTheCertificate() {
-		return result != ITSLValidatorResult.RESULT_NOT_DETECTED;
+		return result != ValidatorResultConstants.RESULT_NOT_DETECTED;
 	}
 
 	/**
@@ -372,7 +373,7 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 */
 	@Override
 	public boolean hasBeenDetectedTheCertificateWithUnknownState() {
-		return result == ITSLValidatorResult.RESULT_DETECTED_STATE_UNKNOWN;
+		return result == ValidatorResultConstants.RESULT_DETECTED_STATE_UNKNOWN;
 	}
 
 	/**
@@ -812,7 +813,7 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 	 */
 	public final void resetAllData() {
 
-		setResult(ITSLValidatorResult.RESULT_NOT_DETECTED);
+		setResult(ValidatorResultConstants.RESULT_NOT_DETECTED);
 		setResultFromServiceStatus(null);
 		setResultFromDPorAIA(null);
 		setRevocationDate(null);
@@ -827,9 +828,9 @@ public class TSLValidatorResult implements ITSLValidatorResult {
 		setTSPServiceHistoryInformationInstanceForDetect(null);
 		setTspServiceHistoryInformationInstanceNameForValidate(null);
 		setTspServiceHistoryInformationInstanceForValidate(null);
-		setMappingType(ITSLValidatorResult.MAPPING_TYPE_UNKNOWN);
-		setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_OTHER_UNKNOWN);
-		setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_UNKNOWN);
+		setMappingType(ValidatorResultConstants.MAPPING_TYPE_UNKNOWN);
+		setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_OTHER_UNKNOWN);
+		setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_UNKNOWN);
 		clearIssuerData();
 		setMappings(null);
 		setRevocationValueBasicOCSPResponse(null);

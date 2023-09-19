@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 15/09/2023.
+ * @version 1.6, 19/09/2023.
  */
 package es.gob.valet.controller;
 
@@ -37,7 +37,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailSer
 /**
  * <p>Class that manages the requests related to the ConfServerMail administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 15/09/2023.
+ * @version 1.6, 19/09/2023.
  */
 @Controller
 public class ConfServerMailController {
@@ -45,7 +45,7 @@ public class ConfServerMailController {
 	/**
 	 * Constant that represents the default text string of the password displayed in edit mode.
 	 */
-	@SuppressWarnings("squid:S2068")
+	@SuppressWarnings("squid:S2068") // It is considered false positive if the property name is refactored, it is no longer vulnerable.
 	private static final String PASSWORD_EDIT = "********";
 
 	/**

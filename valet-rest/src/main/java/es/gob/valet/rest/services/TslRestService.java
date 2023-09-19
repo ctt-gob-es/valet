@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.23, 12/06/2023.
+ * @version 2.0, 19/09/2023.
  */
 package es.gob.valet.rest.services;
 
@@ -57,7 +57,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.gob.valet.audit.access.IEventsCollectorConstants;
+import es.gob.valet.audit.access.EventsCollectorConstants;
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsServicesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
@@ -67,15 +67,15 @@ import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IRestGeneralMessages;
+import es.gob.valet.i18n.messages.RestGeneralMessages;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
-import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
 import es.gob.valet.rest.elements.CertDetectedInTSL;
 import es.gob.valet.rest.elements.Certificate;
 import es.gob.valet.rest.elements.CertificateChain;
@@ -95,11 +95,12 @@ import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.impl.common.CertificateChainValidator;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
+import es.gob.valet.utils.ValidatorResultConstants;
 
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.23, 12/06/2023.
+ * @version 2.0, 19/09/2023.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -136,16 +137,16 @@ public class TslRestService implements ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(PARAM_GET_INFO) final Boolean getInfo, @FormParam(PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List, @FormParam(PARAM_RETURN_CERT_CHAIN) Boolean returnCertificateChain) throws ValetRestException {
+	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(TslMappingConstants.PARAM_APPLICATION) final String application, @FormParam(TslMappingConstants.PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(TslMappingConstants.PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(TslMappingConstants.PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(TslMappingConstants.PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(TslMappingConstants.PARAM_GET_INFO) final Boolean getInfo, @FormParam(TslMappingConstants.PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(TslMappingConstants.PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(TslMappingConstants.PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(TslMappingConstants.PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List, @FormParam(TslMappingConstants.PARAM_RETURN_CERT_CHAIN) Boolean returnCertificateChain) throws ValetRestException {
 		// CHECKSTYLE:ON
 		long startOperationTime = Calendar.getInstance().getTimeInMillis();
 		// Añadimos la información ThreadContext al log y obtenemos un número único
 		// para la transacción.
-		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION);
+		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, TslMappingConstants.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION);
 
 		// Si no se ha especificado la aplicación delegada, establecemos el
 		// token 'NOT_SPECIFIED'.
-		String delegatedAppAux = delegatedApp == null ? IEventsCollectorConstants.FIELD_VALUE_DELAPPID_NOTSPECIFIED : delegatedApp;
+		String delegatedAppAux = delegatedApp == null ? EventsCollectorConstants.FIELD_VALUE_DELAPPID_NOTSPECIFIED : delegatedApp;
 
 		// Miramos el número de CRLs y OCSPs recibidos para el log.
 		int numCRLs = crlsByteArrayB64List == null ? 0 : crlsByteArrayB64List.size();
@@ -165,7 +166,7 @@ public class TslRestService implements ITslRestService {
 
 		// Indicamos la recepción del servicio junto con los parámetros de
 		// entrada.
-		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG001, new Object[ ] { application, delegatedAppAux, tslLocation, certByteArrayB64, detectionDate, getInfo, checkRevStatus, returnRevocationEvidence, numCRLs, numOCSPs }));
+		LOGGER.info(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG001, new Object[ ] { application, delegatedAppAux, tslLocation, certByteArrayB64, detectionDate, getInfo, checkRevStatus, returnRevocationEvidence, numCRLs, numOCSPs }));
 
 		// Inicialmente consideramos que todo es OK para proceder.
 		boolean allIsOk = true;
@@ -179,7 +180,7 @@ public class TslRestService implements ITslRestService {
 			allIsOk = false;
 			LOGGER.error(resultCheckParams);
 			result = new DetectCertInTslInfoAndValidationResponse();
-			result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+			result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
 			result.setDescription(resultCheckParams);
 		}
 
@@ -191,16 +192,16 @@ public class TslRestService implements ITslRestService {
 			try {
 				aco = ConfigurationCacheFacade.applicationGetApplication(application, false);
 			} catch (ApplicationCacheException e) {
-				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG036, new Object[ ] { application }), e);
+				LOGGER.error(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG036, new Object[ ] { application }), e);
 			}
 
 			if (aco == null) {
 
 				allIsOk = false;
-				String errorMsg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG037, new Object[ ] { application });
+				String errorMsg = Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG037, new Object[ ] { application });
 				LOGGER.error(errorMsg);
 				result = new DetectCertInTslInfoAndValidationResponse();
-				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
 				result.setDescription(errorMsg);
 
 			}
@@ -214,10 +215,10 @@ public class TslRestService implements ITslRestService {
 				x509cert = UtilsCertificate.getX509Certificate(certByteArrayB64.getByteArray());
 			} catch (CommonUtilsException e) {
 				allIsOk = false;
-				LOGGER.error(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG012));
+				LOGGER.error(Language.getResRestGeneral(RestGeneralMessages.REST_LOG012));
 				result = new DetectCertInTslInfoAndValidationResponse();
-				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
-				result.setDescription(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG012));
+				result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setDescription(Language.getResRestGeneral(RestGeneralMessages.REST_LOG012));
 			}
 		}
 
@@ -228,10 +229,10 @@ public class TslRestService implements ITslRestService {
 			thereIsSomeRevocationEvidence = thereIsSomeRevocationEvidence || basicOcspResponsesByteArrayB64List != null && !basicOcspResponsesByteArrayB64List.isEmpty();
 			if (!checkRevStatus && !thereIsSomeRevocationEvidence) {
 				allIsOk = false;
-				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG004));
+				LOGGER.error(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG004));
 				result = new DetectCertInTslInfoAndValidationResponse();
-				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
-				result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG004));
+				result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setDescription(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG004));
 			}
 		}
 
@@ -262,10 +263,10 @@ public class TslRestService implements ITslRestService {
 					if (limitDate.before(detectionDateAux)) {
 
 						allIsOk = false;
-						String errorMsg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG006, new Object[ ] { detectionDate });
+						String errorMsg = Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG006, new Object[ ] { detectionDate });
 						LOGGER.error(errorMsg);
 						result = new DetectCertInTslInfoAndValidationResponse();
-						result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+						result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
 						result.setDescription(errorMsg);
 
 					}
@@ -273,10 +274,10 @@ public class TslRestService implements ITslRestService {
 				} catch (ParseException e) {
 
 					allIsOk = false;
-					String errorMsg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG033, new Object[ ] { detectionDate, UtilsDate.FORMAT_DATE_TIME_JSON });
+					String errorMsg = Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG033, new Object[ ] { detectionDate, UtilsDate.FORMAT_DATE_TIME_JSON });
 					LOGGER.error(errorMsg);
 					result = new DetectCertInTslInfoAndValidationResponse();
-					result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+					result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
 					result.setDescription(errorMsg);
 
 				}
@@ -306,10 +307,10 @@ public class TslRestService implements ITslRestService {
 			} catch (CommonUtilsException e) {
 
 				allIsOk = false;
-				String errorMsg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG034);
+				String errorMsg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG034);
 				LOGGER.error(errorMsg);
 				result = new DetectCertInTslInfoAndValidationResponse();
-				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
 				result.setDescription(errorMsg);
 
 			}
@@ -335,10 +336,10 @@ public class TslRestService implements ITslRestService {
 			} catch (IOException | OCSPException e) {
 
 				allIsOk = false;
-				String errorMsg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG035);
+				String errorMsg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG035);
 				LOGGER.error(errorMsg);
 				result = new DetectCertInTslInfoAndValidationResponse();
-				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
 				result.setDescription(errorMsg);
 
 			}
@@ -357,34 +358,34 @@ public class TslRestService implements ITslRestService {
 				// Si se ha comprobado que todos los parámetros son correctos,
 				// abrimos la transacción
 				// en auditoría.
-				CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, IEventsCollectorConstants.SERVICE_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION_ID, extractRequestByteArray());
+				CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, EventsCollectorConstants.SERVICE_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION_ID, extractRequestByteArray());
 				CommonsServicesAuditTraces.addStartRSTrace(auditTransNumber, application, delegatedAppAux);
 				result = executeServiceDetectCertInTslInfoAndValidation(auditTransNumber, application, delegatedAppAux, tslLocation, x509cert, detectionDateAux, getInfo.booleanValue(), checkRevStatus.booleanValue(), returnRevocationEvidence, crlArray, basicOcspRespArray, returnCertificateChain);
-				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_OK, result.getDescription());
+				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, EventsCollectorConstants.RESULT_CODE_SERVICE_OK, result.getDescription());
 				// Calculamos la representación en bytes del resultado, y si la
 				// obtenemos correctamente, cerramos la transacción.
 				byte[ ] resultByteArray = buildResultByteArray(result);
 				CommonsServicesAuditTraces.addCloseTransactionTrace(auditTransNumber, resultByteArray);
 			} catch (TSLManagingException e) {
 				result = new DetectCertInTslInfoAndValidationResponse();
-				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
-				result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG009, new Object[ ] { ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }));
-				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, result.getDescription());
+				result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
+				result.setDescription(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG009, new Object[ ] { TslMappingConstants.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }));
+				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, EventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, result.getDescription());
 				// Calculamos la representación en bytes del resultado, y si la
 				// obtenemos correctamente, cerramos la transacción.
 				byte[ ] resultByteArray = buildResultByteArray(result);
 				CommonsServicesAuditTraces.addCloseTransactionTrace(auditTransNumber, resultByteArray);
-				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG010, new Object[ ] { ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }), e);
+				LOGGER.error(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG010, new Object[ ] { TslMappingConstants.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }), e);
 			} catch (Exception e) {
-				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, e.getMessage());
+				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, EventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, e.getMessage());
 				LoggingInformationNDC.unregisterNdcInf();
-				throw new ValetRestException(IValetException.COD_200, Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG011, new Object[ ] { ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }), e);
+				throw new ValetRestException(ValetExceptionConstants.COD_200, Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG011, new Object[ ] { TslMappingConstants.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }), e);
 			}
 
 		}
 
 		
-		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG041, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
+		LOGGER.info(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG041, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		// Limpiamos la información ThreadContext.
 		LoggingInformationNDC.unregisterNdcInf();
 		return result;
@@ -404,7 +405,7 @@ public class TslRestService implements ITslRestService {
 		try {
 			result = om.writeValueAsBytes(httpServletRequest.getParameterMap());
 		} catch (JsonProcessingException e) {
-			LOGGER.error(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG039));
+			LOGGER.error(Language.getResRestGeneral(RestGeneralMessages.REST_LOG039));
 			throw e;
 		}
 		return result;
@@ -423,7 +424,7 @@ public class TslRestService implements ITslRestService {
 		try {
 			result = om.writeValueAsBytes(resultObjectService);
 		} catch (JsonProcessingException e) {
-			LOGGER.error(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG038), e);
+			LOGGER.error(Language.getResRestGeneral(RestGeneralMessages.REST_LOG038), e);
 		}
 		return result;
 
@@ -441,7 +442,7 @@ public class TslRestService implements ITslRestService {
 	private String checkParamsDetectCertInTslInfoAndValidationResponse(final String application, final ByteArrayB64 certByteArray, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevoEvid) {
 
 		StringBuffer result = new StringBuffer();
-		result.append(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG003, new Object[ ] { ITslRestService.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }));
+		result.append(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG003, new Object[ ] { TslMappingConstants.SERVICENAME_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION }));
 		boolean checkError = false;
 
 		// Check received parameters
@@ -449,7 +450,7 @@ public class TslRestService implements ITslRestService {
 			checkError = true;
 			result.append(UtilsStringChar.EMPTY_STRING);
 			result.append(UtilsStringChar.SYMBOL_OPEN_BRACKET_STRING);
-			result.append(ITslRestService.PARAM_APPLICATION);
+			result.append(TslMappingConstants.PARAM_APPLICATION);
 			result.append(UtilsStringChar.SYMBOL_CLOSE_BRACKET_STRING);
 		}
 
@@ -457,7 +458,7 @@ public class TslRestService implements ITslRestService {
 			checkError = true;
 			result.append(UtilsStringChar.EMPTY_STRING);
 			result.append(UtilsStringChar.SYMBOL_OPEN_BRACKET_STRING);
-			result.append(ITslRestService.PARAM_CERTIFICATE);
+			result.append(TslMappingConstants.PARAM_CERTIFICATE);
 			result.append(UtilsStringChar.SYMBOL_CLOSE_BRACKET_STRING);
 		}
 
@@ -465,7 +466,7 @@ public class TslRestService implements ITslRestService {
 			checkError = true;
 			result.append(UtilsStringChar.EMPTY_STRING);
 			result.append(UtilsStringChar.SYMBOL_OPEN_BRACKET_STRING);
-			result.append(ITslRestService.PARAM_GET_INFO);
+			result.append(TslMappingConstants.PARAM_GET_INFO);
 			result.append(UtilsStringChar.SYMBOL_CLOSE_BRACKET_STRING);
 		}
 
@@ -473,13 +474,13 @@ public class TslRestService implements ITslRestService {
 			checkError = true;
 			result.append(UtilsStringChar.EMPTY_STRING);
 			result.append(UtilsStringChar.SYMBOL_OPEN_BRACKET_STRING);
-			result.append(ITslRestService.PARAM_CHECK_REV_STATUS);
+			result.append(TslMappingConstants.PARAM_CHECK_REV_STATUS);
 			result.append(UtilsStringChar.SYMBOL_CLOSE_BRACKET_STRING);
 		} else if (returnRevoEvid == null) {
 			checkError = true;
 			result.append(UtilsStringChar.EMPTY_STRING);
 			result.append(UtilsStringChar.SYMBOL_OPEN_BRACKET_STRING);
-			result.append(ITslRestService.PARAM_RETURN_REV_EVID);
+			result.append(TslMappingConstants.PARAM_RETURN_REV_EVID);
 			result.append(UtilsStringChar.SYMBOL_CLOSE_BRACKET_STRING);
 		}
 
@@ -558,12 +559,12 @@ public class TslRestService implements ITslRestService {
 
 			String msg = null;
 			if (UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
-				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG013, UtilsCertificate.getCountryOfTheCertificateString(x509cert));
+				msg = Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG013, UtilsCertificate.getCountryOfTheCertificateString(x509cert));
 			} else {
-				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG014, tslLocation);
+				msg = Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG014, tslLocation);
 			}
 			LOGGER.info(msg);
-			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_NOT_FINDED);
+			result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_NOT_FINDED);
 			result.setDescription(msg);
 
 		} else {
@@ -572,12 +573,12 @@ public class TslRestService implements ITslRestService {
 			// la respuesta del servicio.
 			String msg = null;
 			if (UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
-				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG015, new Object[ ] { UtilsCertificate.getCountryOfTheCertificateString(x509cert), detectionDate });
+				msg = Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG015, new Object[ ] { UtilsCertificate.getCountryOfTheCertificateString(x509cert), detectionDate });
 			} else {
-				msg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG016, new Object[ ] { tslLocation, detectionDate });
+				msg = Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG016, new Object[ ] { tslLocation, detectionDate });
 			}
 			// LOGGER.info(msg);
-			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED);
+			result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED);
 			result.setDescription(msg);
 
 			// Obtenemos el objeto de caché que representa la TSL.
@@ -601,12 +602,12 @@ public class TslRestService implements ITslRestService {
 			if (getInfo || checkRevStatus) {
 
 				// Si no se ha detectado el certificado en la TSL...
-				if (tslValidatorResult.getResult() == ITSLValidatorResult.RESULT_NOT_DETECTED) {
+				if (tslValidatorResult.getResult() == ValidatorResultConstants.RESULT_NOT_DETECTED) {
 
 					// Lo marcamos en la respuesta.
-					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG017);
+					msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG017);
 					LOGGER.info(msg);
-					result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_NOT_DETECTED);
+					result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_NOT_DETECTED);
 					result.setDescription(msg);
 
 				}
@@ -614,9 +615,9 @@ public class TslRestService implements ITslRestService {
 				else {
 					if (tslValidatorResult.getTSPServiceForDetect() != null) {
 					// Lo marcamos en la respuesta.
-					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG018);
+					msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG018);
 					// LOGGER.info(msg);
-					result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED);
+					result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED);
 					result.setDescription(msg);
 
 					// Creamos el objeto que representa la información común
@@ -675,21 +676,21 @@ public class TslRestService implements ITslRestService {
 						// En función del resultado (sabemos que ha sido
 						// detectado)...
 						switch (tslRevocationStatus.getRevocationStatus()) {
-							case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_UNKNOWN:
-								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG021);
+							case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_UNKNOWN:
+								msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG021);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
 								break;
 
-							case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_VALID:
-								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG022);
+							case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_VALID:
+								msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG022);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
 								addRevocationInfoInResult(tslRevocationStatus, tslValidatorResult, returnRevocationEvidence);
 								break;
 
-							case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED:
-								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG023);
+							case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED:
+								msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG023);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
 								if (!tslRevocationStatus.getIsFromServStat()) {
@@ -697,20 +698,20 @@ public class TslRestService implements ITslRestService {
 								}
 								break;
 
-							case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_CERTCHAIN_NOTVALID:
-								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG024);
+							case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_CERTCHAIN_NOTVALID:
+								msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG024);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
 								break;
 
-							case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED_SERVICESTATUS:
-								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG025);
+							case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED_SERVICESTATUS:
+								msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG025);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
 								break;
 
-							case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_CERTCHAIN_NOTVALID_SERVICESTATUS:
-								msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG026);
+							case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_CERTCHAIN_NOTVALID_SERVICESTATUS:
+								msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG026);
 								LOGGER.info(msg);
 								tslRevocationStatus.setRevocationDesc(msg);
 								break;
@@ -727,7 +728,7 @@ public class TslRestService implements ITslRestService {
 					// si se ha solicitado obtener la cadena de
 					// certificación y las evidencias de revocación
 					if (returnCertificateChain) {
-						LOGGER.info(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG048));
+						LOGGER.info(Language.getResRestGeneral(RestGeneralMessages.REST_LOG048));
 						CertificateChain certChain = null;
 						List<Certificate> listCertificates = new ArrayList<Certificate>();
 
@@ -741,9 +742,9 @@ public class TslRestService implements ITslRestService {
 						certDetectedInTsl.setCertificateChain(certChain);
 					
 						if(certChain!= null && certChain.getCertificates() != null && !certChain.getCertificates().isEmpty()){
-							LOGGER.info(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG049));
+							LOGGER.info(Language.getResRestGeneral(RestGeneralMessages.REST_LOG049));
 						} else{
-							LOGGER.warn(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG047));
+							LOGGER.warn(Language.getResRestGeneral(RestGeneralMessages.REST_LOG047));
 						}
 						
 
@@ -796,26 +797,26 @@ public class TslRestService implements ITslRestService {
 			if (checkRevStatus) {
 
 				// Comprobamos si se ha obtenido la información de revocación.
-				boolean revStatusInfoObtained = certDetectedInTsl.getTslRevocStatus().getRevocationStatus() != ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_UNKNOWN;
+				boolean revStatusInfoObtained = certDetectedInTsl.getTslRevocStatus().getRevocationStatus() != TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_UNKNOWN;
 
 				if (infoCertObtained) {
 
 					if (revStatusInfoObtained) {
-						msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG032);
-						result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_COLLECTED_REVSTATUS_COLLECTED);
+						msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG032);
+						result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_COLLECTED_REVSTATUS_COLLECTED);
 					} else {
-						msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG031);
-						result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_COLLECTED_REVSTATUS_NOT_COLLECTED);
+						msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG031);
+						result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_COLLECTED_REVSTATUS_NOT_COLLECTED);
 					}
 
 				} else {
 
 					if (revStatusInfoObtained) {
-						msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG030);
-						result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_NOT_COLLECTED_REVSTATUS_COLLECTED);
+						msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG030);
+						result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_NOT_COLLECTED_REVSTATUS_COLLECTED);
 					} else {
-						msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG029);
-						result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_NOT_COLLECTED_REVSTATUS_NOT_COLLECTED);
+						msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG029);
+						result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_NOT_COLLECTED_REVSTATUS_NOT_COLLECTED);
 					}
 
 				}
@@ -827,13 +828,13 @@ public class TslRestService implements ITslRestService {
 
 				if (infoCertObtained) {
 
-					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG020);
-					result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_COLLECTED);
+					msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG020);
+					result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_COLLECTED);
 
 				} else {
 
-					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG019);
-					result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_NOT_COLLECTED);
+					msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG019);
+					result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_INFO_NOT_COLLECTED);
 
 				}
 
@@ -846,17 +847,17 @@ public class TslRestService implements ITslRestService {
 		else {
 
 			// Comprobamos si se ha obtenido la información de revocación.
-			boolean revStatusInfoObtained = certDetectedInTsl.getTslRevocStatus().getRevocationStatus() != ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_UNKNOWN;
+			boolean revStatusInfoObtained = certDetectedInTsl.getTslRevocStatus().getRevocationStatus() != TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_UNKNOWN;
 
 			if (revStatusInfoObtained) {
 
-				msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG027);
-				result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_REVSTATUS_COLLECTED);
+				msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG027);
+				result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_REVSTATUS_COLLECTED);
 
 			} else {
 
-				msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG028);
-				result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_REVSTATUS_NOT_COLLECTED);
+				msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG028);
+				result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_DETECTCERTINTSLINFOVALIDATION_TSL_FINDED_CERT_DETECTED_REVSTATUS_NOT_COLLECTED);
 
 			}
 
@@ -919,11 +920,11 @@ public class TslRestService implements ITslRestService {
 		// Si es OCSP...
 		if (tslValidatorResult.getRevocationValueBasicOCSPResponse() != null) {
 			if (returnRevocationEvidence) {
-				tslRevocationStatus.setEvidenceType(ITslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_OCSP);
+				tslRevocationStatus.setEvidenceType(TslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_OCSP);
 				tslRevocationStatus.setEvidence(new ByteArrayB64(tslValidatorResult.getRevocationValueBasicOCSPResponse().getEncoded()));
 			}
 			// Si el estado es revocado, devolvemos la razón y fecha.
-			if (tslRevocationStatus.getRevocationStatus().intValue() == ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
+			if (tslRevocationStatus.getRevocationStatus().intValue() == TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
 				tslRevocationStatus.setRevocationReason(tslValidatorResult.getRevocationReason());
 				tslRevocationStatus.setRevocationDate(new DateString(tslValidatorResult.getRevocationDate()));
 			}
@@ -931,11 +932,11 @@ public class TslRestService implements ITslRestService {
 		// Si es CRL...
 		else if (tslValidatorResult.getRevocationValueCRL() != null) {
 			if (returnRevocationEvidence) {
-				tslRevocationStatus.setEvidenceType(ITslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_CRL);
+				tslRevocationStatus.setEvidenceType(TslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_CRL);
 				tslRevocationStatus.setEvidence(new ByteArrayB64(tslValidatorResult.getRevocationValueCRL().getEncoded()));
 			}
 			// Si el estado es revocado, devolvemos la razón y fecha.
-			if (tslRevocationStatus.getRevocationStatus().intValue() == ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
+			if (tslRevocationStatus.getRevocationStatus().intValue() == TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
 				tslRevocationStatus.setRevocationReason(tslValidatorResult.getRevocationReason());
 				tslRevocationStatus.setRevocationDate(new DateString(tslValidatorResult.getRevocationDate()));
 			}
@@ -954,15 +955,15 @@ public class TslRestService implements ITslRestService {
 	@Path("/getTslInformation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public TslInformationResponse getTslInformation(@FormParam(PARAM_APPLICATION) final String application, @FormParam(PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(PARAM_COUNTRY_REGION_CODE) final String countryRegionCode, @FormParam(PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(PARAM_GET_TSL_XML_DATA) final Boolean getTslXmlData) throws ValetRestException {
+	public TslInformationResponse getTslInformation(@FormParam(TslMappingConstants.PARAM_APPLICATION) final String application, @FormParam(TslMappingConstants.PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(TslMappingConstants.PARAM_COUNTRY_REGION_CODE) final String countryRegionCode, @FormParam(TslMappingConstants.PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(TslMappingConstants.PARAM_GET_TSL_XML_DATA) final Boolean getTslXmlData) throws ValetRestException {
 		// CHECKSTYLE:ON
 		long startOperationTime = Calendar.getInstance().getTimeInMillis();
 		// Generamos el identificador de transacción.
-		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_GET_TSL_INFORMATION);
+		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, TslMappingConstants.SERVICENAME_GET_TSL_INFORMATION);
 
 		// Si no se ha especificado la aplicación delegada, establecemos el
 		// token 'NOT_SPECIFIED'.
-		String delegatedAppAux = delegatedApp == null ? IEventsCollectorConstants.FIELD_VALUE_DELAPPID_NOTSPECIFIED : delegatedApp;
+		String delegatedAppAux = delegatedApp == null ? EventsCollectorConstants.FIELD_VALUE_DELAPPID_NOTSPECIFIED : delegatedApp;
 
 		// tslLocation si no es nulo o vacío viene codificado en Base64, se
 		// decodifica.
@@ -978,7 +979,7 @@ public class TslRestService implements ITslRestService {
 
 		// Indicamos la recepción del servicio junto con los parámetros de
 		// entrada.
-		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG002, new Object[ ] { application, delegatedAppAux, countryRegionCode, tslLocation, getTslXmlData }));
+		LOGGER.info(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG002, new Object[ ] { application, delegatedAppAux, countryRegionCode, tslLocation, getTslXmlData }));
 
 		// Inicialmente consideramos que todo es OK para proceder.
 		boolean allIsOk = true;
@@ -992,7 +993,7 @@ public class TslRestService implements ITslRestService {
 			allIsOk = false;
 			LOGGER.error(resultCheckParams);
 			result = new TslInformationResponse();
-			result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+			result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
 			result.setDescription(resultCheckParams);
 		}
 
@@ -1004,16 +1005,16 @@ public class TslRestService implements ITslRestService {
 			try {
 				aco = ConfigurationCacheFacade.applicationGetApplication(application, false);
 			} catch (ApplicationCacheException e) {
-				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG036, new Object[ ] { application }), e);
+				LOGGER.error(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG036, new Object[ ] { application }), e);
 			}
 
 			if (aco == null) {
 
 				allIsOk = false;
-				String errorMsg = Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG037, new Object[ ] { application });
+				String errorMsg = Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG037, new Object[ ] { application });
 				LOGGER.error(errorMsg);
 				result = new TslInformationResponse();
-				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+				result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
 				result.setDescription(errorMsg);
 
 			}
@@ -1024,10 +1025,10 @@ public class TslRestService implements ITslRestService {
 		// Sólo se debe especificar el país/región o la localización de la TSL.
 		if (allIsOk && ((UtilsStringChar.isNullOrEmpty(countryRegionCode) && UtilsStringChar.isNullOrEmpty(tslLocation)) || (!UtilsStringChar.isNullOrEmpty(countryRegionCode) && !UtilsStringChar.isNullOrEmpty(tslLocation)))) {
 			allIsOk = false;
-			LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG005));
+			LOGGER.error(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG005));
 			result = new TslInformationResponse();
-			result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
-			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG005));
+			result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_INPUT_PARAMETERS);
+			result.setDescription(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG005));
 		}
 
 		// Si todo ha ido bien, continuamos con el proceso de ejecución del
@@ -1038,10 +1039,10 @@ public class TslRestService implements ITslRestService {
 				// Si se ha comprobado que todos los parámetros son correctos,
 				// abrimos la transacción
 				// en auditoría.
-				CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, IEventsCollectorConstants.SERVICE_GET_TSL_INFORMATION_ID, extractRequestByteArray());
+				CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, EventsCollectorConstants.SERVICE_GET_TSL_INFORMATION_ID, extractRequestByteArray());
 				CommonsServicesAuditTraces.addStartRSTrace(auditTransNumber, application, delegatedAppAux);
 				result = executeServiceGetTslInformation(auditTransNumber, application, delegatedAppAux, countryRegionCode, tslLocation, getTslXmlData);
-				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_OK, result.getDescription());
+				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, EventsCollectorConstants.RESULT_CODE_SERVICE_OK, result.getDescription());
 				// Calculamos la representación en bytes del resultado, y si la
 				// obtenemos correctamente, cerramos la transacción.
 				byte[ ] resultByteArray = buildResultByteArray(result);
@@ -1049,22 +1050,22 @@ public class TslRestService implements ITslRestService {
 
 			} catch (TSLManagingException e) {
 				result = new TslInformationResponse();
-				result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
-				result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG009, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION }));
-				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, result.getDescription());
+				result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
+				result.setDescription(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG009, new Object[ ] { TslMappingConstants.SERVICENAME_GET_TSL_INFORMATION }));
+				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, EventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, result.getDescription());
 				// Calculamos la representación en bytes del resultado, y si la
 				// obtenemos correctamente, cerramos la transacción.
 				byte[ ] resultByteArray = buildResultByteArray(result);
 				CommonsServicesAuditTraces.addCloseTransactionTrace(auditTransNumber, resultByteArray);
-				LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG010, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION }), e);
+				LOGGER.error(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG010, new Object[ ] { TslMappingConstants.SERVICENAME_GET_TSL_INFORMATION }), e);
 			} catch (Exception e) {
-				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, e.getMessage());
+				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, EventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, e.getMessage());
 				LoggingInformationNDC.unregisterNdcInf();
-				throw new ValetRestException(IValetException.COD_200, Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG011, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION }), e);
+				throw new ValetRestException(ValetExceptionConstants.COD_200, Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG011, new Object[ ] { TslMappingConstants.SERVICENAME_GET_TSL_INFORMATION }), e);
 			}
 
 		}
-		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG042, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
+		LOGGER.info(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG042, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		// Limpiamos la información ThreadContext.
 		LoggingInformationNDC.unregisterNdcInf();
 
@@ -1080,14 +1081,14 @@ public class TslRestService implements ITslRestService {
 	private String checkParamsGetTslInformation(final String application, final Boolean getTslXmlData) {
 
 		StringBuffer result = new StringBuffer();
-		result.append(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG003, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION }));
+		result.append(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG003, new Object[ ] { TslMappingConstants.SERVICENAME_GET_TSL_INFORMATION }));
 		boolean checkError = false;
 
 		if (UtilsStringChar.isNullOrEmptyTrim(application)) {
 			checkError = true;
 			result.append(UtilsStringChar.EMPTY_STRING);
 			result.append(UtilsStringChar.SYMBOL_OPEN_BRACKET_STRING);
-			result.append(ITslRestService.PARAM_APPLICATION);
+			result.append(TslMappingConstants.PARAM_APPLICATION);
 			result.append(UtilsStringChar.SYMBOL_CLOSE_BRACKET_STRING);
 		}
 
@@ -1095,7 +1096,7 @@ public class TslRestService implements ITslRestService {
 			checkError = true;
 			result.append(UtilsStringChar.EMPTY_STRING);
 			result.append(UtilsStringChar.SYMBOL_OPEN_BRACKET_STRING);
-			result.append(ITslRestService.PARAM_GET_TSL_XML_DATA);
+			result.append(TslMappingConstants.PARAM_GET_TSL_XML_DATA);
 			result.append(UtilsStringChar.SYMBOL_CLOSE_BRACKET_STRING);
 		}
 
@@ -1138,15 +1139,15 @@ public class TslRestService implements ITslRestService {
 		// Construimos la respuesta en función de si se ha encontrado o no.
 		if (tsldco == null) {
 
-			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_GETTSLINFORMATION_TSL_INFORMATION_NOT_FINDED);
-			result.setDescription(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG007));
+			result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_GETTSLINFORMATION_TSL_INFORMATION_NOT_FINDED);
+			result.setDescription(Language.getResRestGeneral(RestGeneralMessages.REST_LOG007));
 			// Añadimos la traza de auditoría indicando que no se ha encontrado.
 			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, false, null, null, null, null);
 
 		} else {
 
-			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_GETTSLINFORMATION_TSL_INFORMATION_FINDED);
-			result.setDescription(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG008));
+			result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_GETTSLINFORMATION_TSL_INFORMATION_FINDED);
+			result.setDescription(Language.getResRestGeneral(RestGeneralMessages.REST_LOG008));
 
 			ITSLObject tslObject = (ITSLObject) tsldco.getTslObject();
 
@@ -1189,17 +1190,17 @@ public class TslRestService implements ITslRestService {
 		// Se inicia el resultado a devolver
 		TslInformationVersionsResponse result = null;
 		// Generamos el identificador de transacción.
-		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS);
-		LOGGER.info(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG043));
+		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, TslMappingConstants.SERVICENAME_GET_TSL_INFORMATION_VERSIONS);
+		LOGGER.info(Language.getResRestGeneral(RestGeneralMessages.REST_LOG043));
 		try {
 			// Se abre la transacción de auditoría
-			CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, IEventsCollectorConstants.SERVICE_GET_TSL_INFO_VERSIONS_ID, extractRequestByteArray());
+			CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, EventsCollectorConstants.SERVICE_GET_TSL_INFO_VERSIONS_ID, extractRequestByteArray());
 			CommonsServicesAuditTraces.addStartRSTrace(auditTransNumber, INTERNAL_TASK_APP, INTERNAL_TASK_DELEGATE_APP);
 			Map<String, Integer> tslCountryVersion = TSLManager.getInstance().getTslInfoVersions();
 			result = new TslInformationVersionsResponse();
-			result.setStatus(ITslRestServiceStatusResult.STATUS_SERVICE_TSLINFOVERSIONS_OK);
+			result.setStatus(TslRestServiceStatusResult.STATUS_SERVICE_TSLINFOVERSIONS_OK);
 			int numTsl = tslCountryVersion != null ? tslCountryVersion.size() : 0;
-			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG040, new Object[ ] { numTsl }));
+			result.setDescription(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG040, new Object[ ] { numTsl }));
 			result.setTslVersionsMap(tslCountryVersion);
 			// se calcula la representación en bytes del resultado, y si la
 			// obtenemos correctamente, cerramos la transacción.
@@ -1207,20 +1208,20 @@ public class TslRestService implements ITslRestService {
 			CommonsServicesAuditTraces.addCloseTransactionTrace(auditTransNumber, resultByteArray);
 		} catch (TSLManagingException e) {
 			result = new TslInformationVersionsResponse();
-			result.setStatus(ITslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
-			result.setDescription(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG009, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS }));
-			CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, result.getDescription());
+			result.setStatus(TslRestServiceStatusResult.STATUS_ERROR_EXECUTING_SERVICE);
+			result.setDescription(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG009, new Object[ ] { TslMappingConstants.SERVICENAME_GET_TSL_INFORMATION_VERSIONS }));
+			CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, EventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, result.getDescription());
 			// Calculamos la representación en bytes del resultado, y si la
 			// obtenemos correctamente, cerramos la transacción.
 			byte[ ] resultByteArray = buildResultByteArray(result);
 			CommonsServicesAuditTraces.addCloseTransactionTrace(auditTransNumber, resultByteArray);
-			LOGGER.error(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG010, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS }), e);
+			LOGGER.error(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG010, new Object[ ] { TslMappingConstants.SERVICENAME_GET_TSL_INFORMATION_VERSIONS }), e);
 		} catch (Exception e) {
-			CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, IEventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, e.getMessage());
+			CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, EventsCollectorConstants.RESULT_CODE_SERVICE_ERROR, e.getMessage());
 			LoggingInformationNDC.unregisterNdcInf();
-			throw new ValetRestException(IValetException.COD_200, Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG011, new Object[ ] { ITslRestService.SERVICENAME_GET_TSL_INFORMATION_VERSIONS }), e);
+			throw new ValetRestException(ValetExceptionConstants.COD_200, Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG011, new Object[ ] { TslMappingConstants.SERVICENAME_GET_TSL_INFORMATION_VERSIONS }), e);
 		}
-		LOGGER.info(Language.getFormatResRestGeneral(IRestGeneralMessages.REST_LOG044, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
+		LOGGER.info(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG044, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 		// devolvemos el resultado
 		// Limpiamos la información ThreadContext.
 		LoggingInformationNDC.unregisterNdcInf();
@@ -1277,9 +1278,9 @@ public class TslRestService implements ITslRestService {
 			}
 
 		} catch (CommonUtilsException | CertificateEncodingException e) {
-			throw new ValetRestException(IValetException.COD_190, Language.getFormatResCoreGeneral(IRestGeneralMessages.REST_LOG045, new Object[ ] { IKeystoreIdConstants.ID_CA_TRUSTSTORE }), e);
+			throw new ValetRestException(ValetExceptionConstants.COD_190, Language.getFormatResCoreGeneral(RestGeneralMessages.REST_LOG045, new Object[ ] { KeystoreIdConstants.ID_CA_TRUSTSTORE }), e);
 		} catch (Exception e) {
-			throw new ValetRestException(IValetException.COD_205, Language.getFormatResCoreGeneral(IRestGeneralMessages.REST_LOG046, new Object[ ] { e.getMessage() }), e);
+			throw new ValetRestException(ValetExceptionConstants.COD_205, Language.getFormatResCoreGeneral(RestGeneralMessages.REST_LOG046, new Object[ ] { e.getMessage() }), e);
 		}
 
 		return listCertificates;

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 03/04/2023.
+ * @version 1.9, 19/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -42,7 +42,7 @@ import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.form.TaskForm;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.Planner;
 import es.gob.valet.persistence.configuration.model.entity.Task;
@@ -54,7 +54,7 @@ import es.gob.valet.tasks.TasksManager;
 /**
  * <p>Class that manages the REST request related to the Task's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 03/04/2023.
+ * @version 1.9, 19/09/2023.
  */
 @RestController
 public class TaskRestController {
@@ -83,7 +83,7 @@ public class TaskRestController {
 
 			// validamos las fechas
 			if (!validateInitDate(taskForm)) {
-				taskForm.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATE_DATE));
+				taskForm.setError(Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATE_DATE));
 			} else {
 				// se obtiene el planificador
 				IPlannerService plannerService = ManagerPersistenceConfigurationServices.getInstance().getPlannerService();
@@ -118,20 +118,20 @@ public class TaskRestController {
 
 				TasksManager.addOrUpdateTask(updatedTask);
 				String taskName = Language.getResPersistenceConstants(task.getTokenName());
-				String infoMsg = Language.getFormatResWebGeneral(IWebGeneralMessages.INFO_UPDATE_TASK_OK, new Object[ ] { taskName });
+				String infoMsg = Language.getFormatResWebGeneral(WebGeneralMessages.INFO_UPDATE_TASK_OK, new Object[ ] { taskName });
 				LOGGER.info(infoMsg);
 				taskForm.setMsgOk(infoMsg);
 
 			}
 		} catch (ParseException e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_PARSE_DATE, new Object[ ] { e.getMessage() }));
-			taskForm.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_PARSE_DATE, new Object[ ] { e.getMessage() }));
+			taskForm.setError(Language.getResWebGeneral(WebGeneralMessages.ERROR_UPDATE_TASK_WEB));
 		} catch (TaskValetException e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TASK, new Object[ ] { e.getMessage() }));
-			taskForm.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_UPDATE_TASK, new Object[ ] { e.getMessage() }));
+			taskForm.setError(Language.getResWebGeneral(WebGeneralMessages.ERROR_UPDATE_TASK_WEB));
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB, new Object[ ] { e.getMessage() }));
-			taskForm.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_TASK_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_UPDATE_TASK_WEB, new Object[ ] { e.getMessage() }));
+			taskForm.setError(Language.getResWebGeneral(WebGeneralMessages.ERROR_UPDATE_TASK_WEB));
 		}
 
 		return taskForm;

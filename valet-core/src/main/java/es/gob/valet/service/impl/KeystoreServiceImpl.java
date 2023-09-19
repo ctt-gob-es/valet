@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/12/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.service.impl;
 
@@ -43,12 +43,12 @@ import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.AESCipher;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsKeystore;
-import es.gob.valet.constant.IKeystoreConstants;
+import es.gob.valet.constant.KeystoreConstants;
 import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.i18n.ICoreLogMessages;
+import es.gob.valet.i18n.CoreLogMessages;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.CStatusCertificate;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
@@ -63,7 +63,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 /** 
  * <p>Class .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 @Service("keystoreServiceImpl")
 public class KeystoreServiceImpl implements IKeystoreService{
@@ -92,7 +92,7 @@ public class KeystoreServiceImpl implements IKeystoreService{
 	public void saveCertificateKeystoreCA(byte[] certificateInBytes, String alias) throws KeyStoreException {
 		try {
     		// Obtenemos el almacen de Entidad perteneciente a CA
-    		Keystore keystoreEntity = keystoreRepository.findByIdKeystore(IKeystoreConstants.ID_CA_TRUSTED_KEYSTORE);
+    		Keystore keystoreEntity = keystoreRepository.findByIdKeystore(KeystoreConstants.ID_CA_TRUSTED_KEYSTORE);
     		// Obtenemos la password encriptada del blob, la cual está almacenada en BD
     		String passwordKeystoreBlob = this.getKeystoreDecodedPassword(keystoreEntity);
     		// Obtenemos el keystore java de CA
@@ -104,7 +104,7 @@ public class KeystoreServiceImpl implements IKeystoreService{
     		// Comprobamos que no exista el certificado dentro del keystore.
 			Certificate certificate = keystoreJava.getCertificate(alias);
 			if(null != certificate) {
-				throw new KeyStoreException(Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_074, new Object[ ] { alias }));
+				throw new KeyStoreException(Language.getFormatResCoreGeneral(CoreGeneralMessages.STANDARD_KEYSTORE_074, new Object[ ] { alias }));
 			} else {
 				// Se obtiene X509Certificate y el WrapperX509Cert
 				X509Certificate certToAdd = UtilsCertificate.getX509Certificate(certificateInBytes);
@@ -119,7 +119,7 @@ public class KeystoreServiceImpl implements IKeystoreService{
 				SystemCertificate systemCertificate = new SystemCertificate();
 				systemCertificate.setAlias(alias);
 				Keystore ks = new Keystore();
-				ks.setIdKeystore(IKeystoreConstants.ID_CA_TRUSTED_KEYSTORE);
+				ks.setIdKeystore(KeystoreConstants.ID_CA_TRUSTED_KEYSTORE);
 				systemCertificate.setKeystore(ks);
 				systemCertificate.setIssuer(wrapperX509CertAdd.getIssuer());
 				systemCertificate.setSubject(wrapperX509CertAdd.getSubject());
@@ -133,7 +133,7 @@ public class KeystoreServiceImpl implements IKeystoreService{
 				CertificateCacheManager.getInstance().loadListCertificateCA();
 			}
     	} catch (CryptographyException | CommonUtilsException | TSLCertificateValidationException | NoSuchAlgorithmException | CertificateException | CipherException | IOException e) {
-			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008, new Object[]{e.getMessage()});
+			String errorMsg = Language.getFormatResCoreGeneral(CoreGeneralMessages.STANDARD_KEYSTORE_008, new Object[]{e.getMessage()});
 			LOGGER.error(errorMsg);
 		} 
 	}
@@ -147,7 +147,7 @@ public class KeystoreServiceImpl implements IKeystoreService{
 		try {
 			return new String(AESCipher.getInstance().decryptMessage(keystore.getPassword()));
 		} catch (Exception e) {
-			String errorMsg = Language.getFormatResCoreValet(ICoreLogMessages.ERRORCORE013, new Object[ ] { Language.getResPersistenceConstants(keystore.getTokenName()) });
+			String errorMsg = Language.getFormatResCoreValet(CoreLogMessages.ERRORCORE013, new Object[ ] { Language.getResPersistenceConstants(keystore.getTokenName()) });
 			LOGGER.error(errorMsg, e);
 			throw new CryptographyException(errorMsg, e);
 		}

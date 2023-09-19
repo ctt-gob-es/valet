@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.tasks;
 
@@ -32,14 +32,14 @@ import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.alarms.AlarmsManager;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTasksMessages;
+import es.gob.valet.i18n.messages.CoreTasksMessages;
 import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.task.Task;
 
 /**
  * <p>Class that represents a task to send an accumulative mail for a blocked alarm.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 public class TempBlockedAlarmTask extends Task {
 
@@ -64,7 +64,7 @@ public class TempBlockedAlarmTask extends Task {
 	 */
 	@Override
 	protected void initialMessage() {
-		LOGGER.info(Language.getFormatResCoreTasks(ICoreTasksMessages.TEMP_BLOCKED_ALARM_000, new Object[ ] { alarmId }));
+		LOGGER.info(Language.getFormatResCoreTasks(CoreTasksMessages.TEMP_BLOCKED_ALARM_000, new Object[ ] { alarmId }));
 	}
 
 	/**
@@ -76,9 +76,9 @@ public class TempBlockedAlarmTask extends Task {
 
 		try {
 			AlarmsManager.getInstance().finishAlarmBlockade(alarmId);
-			LOGGER.info(Language.getFormatResCoreTasks(ICoreTasksMessages.TEMP_BLOCKED_ALARM_003, new Object[ ] { alarmId }));
+			LOGGER.info(Language.getFormatResCoreTasks(CoreTasksMessages.TEMP_BLOCKED_ALARM_003, new Object[ ] { alarmId }));
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResCoreTasks(ICoreTasksMessages.TEMP_BLOCKED_ALARM_002, new Object[ ] { alarmId }));
+			LOGGER.error(Language.getFormatResCoreTasks(CoreTasksMessages.TEMP_BLOCKED_ALARM_002, new Object[ ] { alarmId }));
 		}
 
 	}
@@ -89,7 +89,7 @@ public class TempBlockedAlarmTask extends Task {
 	 */
 	@Override
 	protected void endMessage() {
-		LOGGER.info(Language.getFormatResCoreTasks(ICoreTasksMessages.TEMP_BLOCKED_ALARM_001, new Object[ ] { alarmId }));
+		LOGGER.info(Language.getFormatResCoreTasks(CoreTasksMessages.TEMP_BLOCKED_ALARM_001, new Object[ ] { alarmId }));
 	}
 
 	/**

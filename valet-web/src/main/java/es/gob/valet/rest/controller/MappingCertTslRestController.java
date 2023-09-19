@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.11, 03/04/2023.
+ * @version 2.0, 19/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -81,7 +81,7 @@ import es.gob.valet.commons.utils.UtilsFile;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.dto.MappingTslDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
@@ -91,11 +91,12 @@ import es.gob.valet.persistence.utils.BootstrapTreeNode;
 import es.gob.valet.tsl.access.TslInformationTree;
 import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
+import es.gob.valet.utils.GeneralConstantsValetWeb;
 
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.11, 03/04/2023.
+ * @version 2.0, 19/09/2023.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
@@ -279,14 +280,14 @@ public class MappingCertTslRestController {
 	private Map<String, String> validateInputsUpdate(MultipartFile fileCertificateTsl) throws IOException {
 		Map<String, String> mErrors = new HashMap<String, String>();
 		if (fileCertificateTsl == null || fileCertificateTsl.getSize() == 0 || fileCertificateTsl.getBytes() == null || fileCertificateTsl.getBytes().length == 0) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
-			mErrors.put(FIELD_FILE_CERTIFICATE_TSL_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
+			mErrors.put(FIELD_FILE_CERTIFICATE_TSL_ID + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
 		} else {
 			try {
 				UtilsCertificate.getX509Certificate(fileCertificateTsl.getBytes());
 			} catch (CommonUtilsException e) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_INCORRECT), e);
-				mErrors.put(FIELD_FILE_CERTIFICATE_TSL_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_CERT_INCORRECT));
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATION_CERT_INCORRECT), e);
+				mErrors.put(FIELD_FILE_CERTIFICATE_TSL_ID + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATION_CERT_INCORRECT));
 			}
 		}
 		return mErrors;
@@ -467,19 +468,19 @@ public class MappingCertTslRestController {
 	private Map<String, String> validateInputsSave(MappingTslDTO mappingTslDTO) {
 		Map<String, String> mErrors = new HashMap<>();
 		if(UtilsStringChar.isNullOrEmpty(mappingTslDTO.getLogicalFieldId())) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_EMPTY));
-			mErrors.put(FIELD_IDENTIFICATOR_LOGICAL_FIELD + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_EMPTY));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_EMPTY));
+			mErrors.put(FIELD_IDENTIFICATOR_LOGICAL_FIELD + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_EMPTY));
 		} else if (!mappingTslDTO.getLogicalFieldId().equals(mappingTslDTO.getLogicalFieldIdAux())
 				&& iMappingCertTslService.existsTspServiceNameAndIdentificator(mappingTslDTO.getTslServiceDTO().getTspServiceName(), mappingTslDTO.getLogicalFieldId())) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_DUPLICATE));
-			mErrors.put(FIELD_IDENTIFICATOR_LOGICAL_FIELD + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_DUPLICATE));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_DUPLICATE));
+			mErrors.put(FIELD_IDENTIFICATOR_LOGICAL_FIELD + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATION_IDENTIFICATOR_DUPLICATE));
 		}
 		if (UtilsStringChar.isNullOrEmpty(mappingTslDTO.getLogicalFieldValue())) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
-			mErrors.put(FIELD_VALUE_LOGICAL_FIELD_FREE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
+			mErrors.put(FIELD_VALUE_LOGICAL_FIELD_FREE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
 		} else if(mappingTslDTO.getLogicalFieldValue().equals(String.valueOf(NumberConstants.NUM_NEG_1))) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
-			mErrors.put(FIELD_VALUE_LOGICAL_FIELD_SIMPLE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
+			mErrors.put(FIELD_VALUE_LOGICAL_FIELD_SIMPLE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_VALIDATION_VALUE_EMPTY));
 		}
  		return mErrors;
 	}
@@ -593,7 +594,7 @@ public class MappingCertTslRestController {
 		} catch(OutOfMemoryError e) {
 			response.setStatus(VALIDATIONSMAPPINGCERTTSL);
 			Integer maxFileSize = Integer.parseInt(env.getProperty("max.fileSize")); 
-			res = Language.getFormatResWebGeneral(IWebGeneralMessages.WRONG_FILE_SIZE,
+			res = Language.getFormatResWebGeneral(WebGeneralMessages.WRONG_FILE_SIZE,
 					new Object[] { importMappingLogicalfieldFile.getOriginalFilename(),
 							UtilsFile.getStringSizeLengthFile(importMappingLogicalfieldFile.getSize()), UtilsFile.getStringSizeLengthFile(maxFileSize)});
 		}

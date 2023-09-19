@@ -24,22 +24,22 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
-import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
-import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
-import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
+import es.gob.valet.utils.TSLBuilderConstants;
+import es.gob.valet.utils.TSLCommonURIs;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 
 /**
  * <p>Class that represents a qualification criteria extension. The qualification criteria
@@ -48,7 +48,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * The certificate is qualified with all the qualifiers obtained with the application of all the qualification
  * elements.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class Qualifications extends Extension {
 
@@ -60,20 +60,20 @@ public class Qualifications extends Extension {
 	/**
 	 * Attribute that represents the qualifications extension list.
 	 */
-	private List<QualificationElement> qualificationsList = null;
+	private transient List<QualificationElement> qualificationsList = null;
 
 	/**
 	 * Constructor method for the class Qualifications.java.
 	 * @param isCritical Flag to indicate if this extension is critical (<code>true</code>) or not (<code>false</code>).
 	 * @param extensionType Extension type. Refer to its location inside the XML. It could be one of the following:
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 */
 	public Qualifications(boolean isCritical, int extensionType) {
-		super(isCritical, extensionType, IAnyTypeExtension.IMPL_QUALIFICATIONS);
+		super(isCritical, extensionType, TSLBuilderConstants.IMPL_QUALIFICATIONS);
 		qualificationsList = new ArrayList<QualificationElement>();
 	}
 
@@ -112,8 +112,8 @@ public class Qualifications extends Extension {
 
 		// Esta extensión tan solo puede ser del tipo
 		// 'ServiceInformationExtension'.
-		if (getExtensionType() != IAnyTypeExtension.TYPE_SERVICE_INFORMATION) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL035, new Object[ ] { extensionTypeToString(IAnyTypeExtension.TYPE_SERVICE_INFORMATION), extensionTypeToString(getExtensionType()) }));
+		if (getExtensionType() != TSLBuilderConstants.TYPE_SERVICE_INFORMATION) {
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL035, new Object[ ] { extensionTypeToString(TSLBuilderConstants.TYPE_SERVICE_INFORMATION), extensionTypeToString(getExtensionType()) }));
 		}
 
 	}
@@ -127,13 +127,13 @@ public class Qualifications extends Extension {
 
 		// El tipo de servicio debe ser "CA/QC".
 		String serviceType = shi.getServiceTypeIdentifier().toString();
-		if (!serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_CA_QC)) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL023, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATIONS, serviceType }));
+		if (!serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_CA_QC)) {
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL023, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATIONS, serviceType }));
 		}
 
 		// La lista de "Qualifications" no puede ser vacía.
 		if (qualificationsList.isEmpty()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL026, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATIONS }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL026, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATIONS }));
 		} else {
 			for (QualificationElement qualificationElement: qualificationsList) {
 				qualificationElement.checkExtensionValueSpec119612Vers020101(tsl, shi, isCritical);

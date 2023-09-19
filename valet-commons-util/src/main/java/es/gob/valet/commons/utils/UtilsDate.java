@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 01/02/2019.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -36,7 +36,7 @@ import java.util.TimeZone;
  * <p>Class that provides methods for managing dates.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI
  * certificates and electronic signature.</p>
- * @version 1.3, 22/02/2023.
+ * @version 1.4, 19/09/2023.
  */
 public class UtilsDate {
 
@@ -652,6 +652,8 @@ public class UtilsDate {
 							}
 						}
 						break wloop;
+					default:
+						return null;
 				}
 			}
 			// Verificación 14: El día debe ser válido para el mes obtenido

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>16/02/2023.</p>
  * @author Gobierno de España.
- * @version 1.0, 16/02/2023.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -31,7 +31,7 @@ import java.security.cert.X509Certificate;
 /** 
  * <p>Class that represents the information of the issuer certificate obtained from the TSL of the certificate to be validated. .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 16/02/2023.
+ * @version 1.1, 19/09/2023.
  */
 public class InfoCertificateIssuer implements Serializable {
 
@@ -59,11 +59,7 @@ public class InfoCertificateIssuer implements Serializable {
 	 * Attribute that represents the issuer Subject Key Identifier of the certificate to validate in bytes.
 	 */
 	private byte[ ] issuerSKIbytes = null;
-	/**
-	 * Constructor method for the class InfoCertificateIssuer.java. 
-	 */
-	public InfoCertificateIssuer() {
-	}
+	
 	/**
 	 * Gets the value of the attribute {@link #issuerCert}.
 	 * @return the value of the attribute {@link #issuerCert}.

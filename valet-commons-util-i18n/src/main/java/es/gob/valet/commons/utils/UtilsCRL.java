@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -59,14 +59,14 @@ import org.bouncycastle.asn1.x509.TBSCertList.CRLEntry;
 import org.bouncycastle.jce.provider.X509CRLEntryObject;
 
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Utilities class that provides functionality to manage and work with X.509 CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 public final class UtilsCRL {
 
@@ -132,9 +132,9 @@ public final class UtilsCRL {
 				CertificateFactory cf = CertificateFactory.getInstance(UtilsCertificate.X509_TYPE);
 				result = (X509CRL) cf.generateCRL(isCRL);
 			} catch (CertificateException e) {
-				throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CRL_000), e);
+				throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CRL_000), e);
 			} catch (CRLException e) {
-				throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CRL_001), e);
+				throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CRL_001), e);
 			}
 
 		}
@@ -204,16 +204,16 @@ public final class UtilsCRL {
 					// Mensaje indicando que la CRL no es indirecta y su emisor
 					// no se encuentra entre los admitidos.
 					if (possibleCrlEntryIssuers == null || possibleCrlEntryIssuers.length == 0) {
-						LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CRL_002, new Object[ ] { caName.toString(), certIssuer.toString() }));
+						LOGGER.warn(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CRL_002, new Object[ ] { caName.toString(), certIssuer.toString() }));
 					} else {
-						LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CRL_003, new Object[ ] { caName.toString(), certIssuer.toString() }));
+						LOGGER.warn(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CRL_003, new Object[ ] { caName.toString(), certIssuer.toString() }));
 					}
 
 				}
 
 			} catch (CRLException e) {
 
-				throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CRL_004), e);
+				throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CRL_004), e);
 
 			}
 

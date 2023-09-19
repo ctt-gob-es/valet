@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 15/09/2023.
+ * @version 1.7, 19/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -38,17 +38,18 @@ import org.springframework.web.bind.annotation.RestController;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.ConfServerMailForm;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
 import es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailService;
 import es.gob.valet.persistence.utils.UtilsAESCipher;
+import es.gob.valet.utils.GeneralConstantsValetWeb;
 
 /**
  * <p>Class that manages the REST requests related to the ConfServerMails administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 15/09/2023.
+ * @version 1.7, 19/09/2023.
  */
 @RestController
 public class ConfServerMailRestController {
@@ -60,7 +61,7 @@ public class ConfServerMailRestController {
 	/**
 	 * Constant that represents the default text string of the password displayed in edit mode.
 	 */
-	@SuppressWarnings("squid:S2068")
+	@SuppressWarnings("squid:S2068") // It is considered false positive if the property name is refactored, it is no longer vulnerable.
 	private static final String PASSWORD_EDIT = "********";
 	
 	/**
@@ -146,17 +147,17 @@ public class ConfServerMailRestController {
 				confServerMailService.saveConfServerMail(confMail);
 				// se muestra un mensaje indicando que se ha actualizado
 				// correctamente.
-				LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.CMS_005));
-				csmFormUpdated.setMsgOk(Language.getResWebGeneral(IWebGeneralMessages.CMS_005));
+				LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.CMS_005));
+				csmFormUpdated.setMsgOk(Language.getResWebGeneral(WebGeneralMessages.CMS_005));
 				}else{
 					csmFormUpdated.setError(json.toString());
 				}
 			} catch (Exception e) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.CMS_006), e);
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.CMS_006), e);
 				if (confServerMailForm == null) {
 					csmFormUpdated = new ConfServerMailForm();
 				}
-				csmFormUpdated.setError(Language.getFormatResWebGeneral(IWebGeneralMessages.CMS_007));
+				csmFormUpdated.setError(Language.getFormatResWebGeneral(WebGeneralMessages.CMS_007));
 			}
 		
 
@@ -175,49 +176,49 @@ public class ConfServerMailRestController {
 	private JSONObject validateConfServerMailParam(ConfServerMailForm csmform, JSONObject json) {
 
 		if (UtilsStringChar.isNullOrEmpty(csmform.getIssuerMail())) {
-			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_001);
+			String msgError = Language.getResWebGeneral(WebGeneralMessages.CMS_001);
 			LOGGER.error(msgError);
-			json.put(FIELD_ISSUER_MAIL + "_span", msgError);
+			json.put(FIELD_ISSUER_MAIL + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 		} 
 		if (UtilsStringChar.isNullOrEmpty(csmform.getHostMail())) {
-			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_002);
+			String msgError = Language.getResWebGeneral(WebGeneralMessages.CMS_002);
 			LOGGER.error(msgError);
-			json.put(FIELD_HOST_MAIL + "_span", msgError);
+			json.put(FIELD_HOST_MAIL + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 		} 
 		if (csmform.getPortMail() == null) {
-			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_003);
+			String msgError = Language.getResWebGeneral(WebGeneralMessages.CMS_003);
 			LOGGER.error(msgError);
-			json.put(FIELD_PORT_MAIL + "_span", msgError);
+			json.put(FIELD_PORT_MAIL + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 		} 
 		
 		if(csmform.getUseAuthenticationMail()){
 			if(UtilsStringChar.isNullOrEmpty(csmform.getUserMail()) || UtilsStringChar.isNullOrEmpty(csmform.getPasswordMail())){
-			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_004);
+			String msgError = Language.getResWebGeneral(WebGeneralMessages.CMS_004);
 			LOGGER.error(msgError);
-			json.put(FIELD_USER_MAIL + "_span", msgError);
+			json.put(FIELD_USER_MAIL + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 			}
 		}
 		if (csmform.getConnectionTimeout() == null) {
-			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_008);
+			String msgError = Language.getResWebGeneral(WebGeneralMessages.CMS_008);
 			LOGGER.error(msgError);
-			json.put(FIELD_CONNECTION_TIMEOUT + "_span", msgError);
+			json.put(FIELD_CONNECTION_TIMEOUT + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 		} else{
 			if(csmform.getConnectionTimeout().intValue() < 0){
-				String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_010);
+				String msgError = Language.getResWebGeneral(WebGeneralMessages.CMS_010);
 				LOGGER.error(msgError);
-				json.put(FIELD_CONNECTION_TIMEOUT + "_span", msgError);
+				json.put(FIELD_CONNECTION_TIMEOUT + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 			}
 		}
 		
 		if (csmform.getReadingTimeout() == null) {
-			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_009);
+			String msgError = Language.getResWebGeneral(WebGeneralMessages.CMS_009);
 			LOGGER.error(msgError);
-			json.put(FIELD_READING_TIMEOUT + "_span", msgError);
+			json.put(FIELD_READING_TIMEOUT + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 		} else {
 			if(csmform.getReadingTimeout().intValue() < 0){
-				String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_010);
+				String msgError = Language.getResWebGeneral(WebGeneralMessages.CMS_010);
 				LOGGER.error(msgError);
-				json.put(FIELD_READING_TIMEOUT + "_span", msgError);
+				json.put(FIELD_READING_TIMEOUT + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 			}
 		}
 		return json;

@@ -21,10 +21,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 15/09/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,9 +36,9 @@ import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCac
  * <p>Class that represents a collection that stores the relation between a TSL Location
  * and its information into the configuration cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 15/09/2023.
+ * @version 1.3, 19/09/2023.
  */
-public class TSLLocationAndIdRelationCacheObject extends ConfigurationCacheObject {
+public class TSLLocationAndIdRelationCacheObject extends ConfigurationCacheObject implements Serializable {
 
 	/**
 	 * Constant attribute that represents the serial version UID.
@@ -53,7 +54,7 @@ public class TSLLocationAndIdRelationCacheObject extends ConfigurationCacheObjec
 	 * Attribute that represents the map that stores the relation between the TSL location
 	 * and its identifier.
 	 */
-	private Map<String, Long> relationMap = null;
+	private transient Map<String, Long> relationMap = null;
 
 	/**
 	 * Constructor method for the class TSLLocationAndIdRelationCacheObject.java.

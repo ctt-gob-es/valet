@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/10/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 20/10/2022.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.spring.config;
 
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 /** 
  * <p>Class that allows access to spring context beans.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 20/10/2022.
+ * @version 1.1, 19/09/2023.
  */
 @Component
 public class ApplicationContextProvider implements ApplicationContextAware {
@@ -57,7 +57,15 @@ public class ApplicationContextProvider implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext ac)
             throws BeansException {
-        context = ac;
+    	setContext(ac);
     }
 
+	/**
+	 * Sets the value of the attribute {@link #context}.
+	 * @param context The value for the attribute {@link #context}.
+	 */
+	public static void setContext(ApplicationContext context) {
+		ApplicationContextProvider.context = context;
+	}
+    
 }

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>16/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 03/04/2023.
+ * @version 1.6, 19/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.ProxyForm;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.COperationMode;
 import es.gob.valet.persistence.configuration.model.entity.Proxy;
 import es.gob.valet.persistence.configuration.services.ifaces.ICOperationModeService;
@@ -48,7 +48,7 @@ import es.gob.valet.utils.UtilsProxy;
 /**
  * <p>Class that manages the REST request related to the proxy configuration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 03/04/2023.
+ * @version 1.6, 19/09/2023.
  */
 @RestController
 public class ProxyRestController {
@@ -78,7 +78,7 @@ public class ProxyRestController {
 	public @ResponseBody ProxyForm saveProxy(@RequestBody ProxyForm proxyForm) {
 
 		ProxyForm proxyFormUpdated = proxyForm;
-		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.INFO_PROXY_INIT));
+		LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.INFO_PROXY_INIT));
 
 		try {
 			Proxy proxy = proxyService.getProxyById(proxyForm.getIdProxy());
@@ -116,14 +116,14 @@ public class ProxyRestController {
 			proxyService.saveProxy(proxy);
 			// Se actualiza la configuración de las utilidades del proxy.
 			UtilsProxy.loadProxyConfiguration();
-			LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.INFO_MODIFY_PROXY_OK));
-			proxyFormUpdated.setMsgOk(Language.getResWebGeneral(IWebGeneralMessages.INFO_MODIFY_PROXY_OK));
+			LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.INFO_MODIFY_PROXY_OK));
+			proxyFormUpdated.setMsgOk(Language.getResWebGeneral(WebGeneralMessages.INFO_MODIFY_PROXY_OK));
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_MODIFY_PROXY, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_MODIFY_PROXY, new Object[ ] { e.getMessage() }));
 			if (proxyForm == null) {
 				proxyFormUpdated = new ProxyForm();
 			}
-			proxyFormUpdated.setError(Language.getResWebGeneral(IWebGeneralMessages.ERROR_MODIFY_PROXY_WEB));
+			proxyFormUpdated.setError(Language.getResWebGeneral(WebGeneralMessages.ERROR_MODIFY_PROXY_WEB));
 		}
 
 		return proxyFormUpdated;

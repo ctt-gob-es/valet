@@ -22,28 +22,28 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
 import java.util.Date;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
-import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
-import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
-import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
+import es.gob.valet.utils.TSLBuilderConstants;
+import es.gob.valet.utils.TSLCommonURIs;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 
 /**
  * <p>Class that represents a TSL extension that indicates the time from which
  * on the service issues CRL and/or OCSP responses that keep revocation notices for revoked certificates
  * also after they have expired.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class ExpiredCertsRevocationInfo extends Extension {
 
@@ -62,13 +62,13 @@ public class ExpiredCertsRevocationInfo extends Extension {
 	 * @param isCritical Flag to indicate if this extension is critical (<code>true</code>) or not (<code>false</code>).
 	 * @param extensionType Extension type. Refer to its location inside the XML. It could be one of the following:
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 */
 	private ExpiredCertsRevocationInfo(boolean isCritical, int extensionType) {
-		super(isCritical, extensionType, IAnyTypeExtension.IMPL_EXPIRED_CERTS_REVOCATION_INFO);
+		super(isCritical, extensionType, TSLBuilderConstants.IMPL_EXPIRED_CERTS_REVOCATION_INFO);
 	}
 
 	/**
@@ -77,9 +77,9 @@ public class ExpiredCertsRevocationInfo extends Extension {
 	 * @param isCritical Flag to indicate if this extension is critical (<code>true</code>) or not (<code>false</code>).
 	 * @param extensionType Extension type. Refer to its location inside the XML. It could be one of the following:
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 */
 	public ExpiredCertsRevocationInfo(Date expired, boolean isCritical, int extensionType) {
@@ -112,8 +112,8 @@ public class ExpiredCertsRevocationInfo extends Extension {
 
 		// Esta extensión tan solo puede ser del tipo
 		// 'ServiceInformationExtension'.
-		if (getExtensionType() != IAnyTypeExtension.TYPE_SERVICE_INFORMATION) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL032, new Object[ ] { extensionTypeToString(IAnyTypeExtension.TYPE_SERVICE_INFORMATION), extensionTypeToString(getExtensionType()) }));
+		if (getExtensionType() != TSLBuilderConstants.TYPE_SERVICE_INFORMATION) {
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL032, new Object[ ] { extensionTypeToString(TSLBuilderConstants.TYPE_SERVICE_INFORMATION), extensionTypeToString(getExtensionType()) }));
 		}
 
 	}
@@ -127,18 +127,18 @@ public class ExpiredCertsRevocationInfo extends Extension {
 
 		// Según la especificación, la extensión NO puede ser crítica.
 		if (isCritical) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL022, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_EXPIREDCERTSREVOCATIONINFO }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL022, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_EXPIREDCERTSREVOCATIONINFO }));
 		}
 
 		// El tipo del servicio asociado debe ser CA(PKC), CA(QC),
 		// NationalRootCA-QC, OCPS, OCSP(QC), CRL o CRL(QC).
 		String serviceType = shi.getServiceTypeIdentifier().toString();
 
-		boolean isServiceTypeOK = serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_CA_PKC) || serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_CA_QC) || serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_NATIONALROOTCA);
-		isServiceTypeOK = isServiceTypeOK || serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP) || serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP_QC);
-		isServiceTypeOK = isServiceTypeOK || serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL) || serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL_QC);
+		boolean isServiceTypeOK = serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_CA_PKC) || serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_CA_QC) || serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_NATIONALROOTCA);
+		isServiceTypeOK = isServiceTypeOK || serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP) || serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP_QC);
+		isServiceTypeOK = isServiceTypeOK || serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL) || serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL_QC);
 		if (!isServiceTypeOK) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL023, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_EXPIREDCERTSREVOCATIONINFO, serviceType }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL023, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_EXPIREDCERTSREVOCATIONINFO, serviceType }));
 		}
 
 	}

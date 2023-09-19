@@ -20,10 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 22/05/2019.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,38 +39,43 @@ import org.bouncycastle.asn1.x509.qualified.QCStatement;
 
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
-import es.gob.valet.tsl.parsing.ifaces.ITSLOIDs;
+import es.gob.valet.utils.TSLOIDs;
 
 /**
  * <p>Utilities wrapper for analyze the extensions defined in a specific X509v3 certificate.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 22/05/2019.
+ * @version 1.3, 19/09/2023.
  */
-public class TSLCertificateExtensionAnalyzer {
+public class TSLCertificateExtensionAnalyzer implements Serializable {
+
+	/**
+	 * Attribute that represents . 
+	 */
+	private static final long serialVersionUID = -4578950624262094688L;
 
 	/**
 	 * Attribute that represents the certificate to analyze.
 	 */
-	private Certificate certBc = null;
+	private transient Certificate certBc = null;
 
 	/**
 	 * Attribute that represents the list of QcStatements OIDs extracted from the certificate.
 	 */
-	private List<String> qcStatementsOids = null;
+	private transient List<String> qcStatementsOids = null;
 
 	/**
 	 * Attribute that represents the list of QcStatements Ext EU Types OIDs extracted from the certificate.
 	 */
-	private List<String> qcStatementExtEuTypeOids = null;
+	private transient List<String> qcStatementExtEuTypeOids = null;
 
 	/**
 	 * Attribute that represents the list of Certification Policies - Policy Information OIDs extracted from the certificate.
 	 */
-	private List<String> policyInformationsOids = null;
+	private transient List<String> policyInformationsOids = null;
 
 	/**
 	 * Constructor method for the class TSLCertificateExtensionAnalyzer.java.
@@ -90,14 +96,14 @@ public class TSLCertificateExtensionAnalyzer {
 
 		// Si la entrada es nula lanzamos excepción.
 		if (cert == null) {
-			throw new TSLCertificateValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL243));
+			throw new TSLCertificateValidationException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL243));
 		}
 
 		// Calculamos ahora la representación del certificado como objeto IAIK.
 		try {
 			certBc = UtilsCertificate.getBouncyCastleCertificate(cert);
 		} catch (CommonUtilsException e) {
-			throw new TSLCertificateValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL180), e);
+			throw new TSLCertificateValidationException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL180), e);
 		}
 
 		// Extraemos y analizamos las extensiones que pueda tener.
@@ -117,7 +123,7 @@ public class TSLCertificateExtensionAnalyzer {
 
 		// Si la entrada es nula lanzamos excepción.
 		if (cert == null) {
-			throw new TSLCertificateValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL243));
+			throw new TSLCertificateValidationException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL243));
 		}
 
 		// Almacenamos el certificado.
@@ -142,7 +148,7 @@ public class TSLCertificateExtensionAnalyzer {
 		try {
 			qcStatements = (ASN1Sequence) certBc.getTBSCertificate().getExtensions().getExtensionParsedValue(Extension.qCStatements);
 		} catch (Exception e) {
-			throw new TSLCertificateValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL244), e);
+			throw new TSLCertificateValidationException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL244), e);
 		}
 
 		// Si la hemos obtenido, la analizamos.
@@ -159,7 +165,7 @@ public class TSLCertificateExtensionAnalyzer {
 				qcStatementsOids.add(qcStatementOid);
 				// Analizamos si se trata del EuType, en cuyo caso obtenemos
 				// la información que contenga.
-				if (ITSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE.getId().equals(qcStatementOid)) {
+				if (TSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE.getId().equals(qcStatementOid)) {
 					extractQcStatementExtEuTypeInformation(qcStatement);
 				}
 
@@ -172,7 +178,7 @@ public class TSLCertificateExtensionAnalyzer {
 		try {
 			certificatePolicies = CertificatePolicies.fromExtensions(certBc.getTBSCertificate().getExtensions());
 		} catch (Exception e) {
-			throw new TSLCertificateValidationException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL245), e);
+			throw new TSLCertificateValidationException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL245), e);
 		}
 
 		// Si hemos recuperado las políticas de certificación...

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.cache.impl.javaConcurrentMap;
 
@@ -35,15 +35,15 @@ import es.gob.valet.cache.exceptions.CacheValetException;
 import es.gob.valet.cache.ifaces.ICacheValet;
 import es.gob.valet.cache.impl.ACacheValet;
 import es.gob.valet.cache.utils.GiveSomeTimeBeforeStopCacheThread;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICacheGeneralMessages;
+import es.gob.valet.i18n.messages.CacheGeneralMessages;
 
 /**
  * <p>Implementation of the {@link ICacheValet} that extends the {@link ACacheValet}
  * implemented with the Java Concurrent HashMap.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 public class ConcurrentMapCacheValet extends ACacheValet {
 
@@ -77,7 +77,7 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 	 */
 	public ConcurrentMapCacheValet() {
 
-		LOGGER.debug(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_001));
+		LOGGER.debug(Language.getResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_JCM_001));
 
 		// Creamos la TreeCache.
 		if (concurrentMapCache == null) {
@@ -102,7 +102,7 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 		// Si finalmente se ha obtenido...
 		if (concurrentMapCache != null) {
 
-			LOGGER.debug(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_002));
+			LOGGER.debug(Language.getResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_JCM_002));
 
 			// Levantamos la bandera indicando que se ha creado de forma
 			// correcta la Caché.
@@ -110,7 +110,7 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 
 		} else {
 
-			LOGGER.error(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_003));
+			LOGGER.error(Language.getResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_JCM_003));
 
 		}
 
@@ -132,16 +132,16 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 	@Override
 	protected void stopCacheImplementation() throws CacheValetException {
 
-		LOGGER.debug(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_004));
+		LOGGER.debug(Language.getResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_JCM_004));
 		// Si no se ha creado aún, lanzamos una excepción.
 		if (!isCreationFlag()) {
-			throw new CacheValetException(IValetException.COD_153, Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_005));
+			throw new CacheValetException(ValetExceptionConstants.COD_153, Language.getResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_JCM_005));
 		}
 		setCreationFlag(false);
 		setInstance(null);
 		concurrentMapCache.clear();
-		concurrentMapCache = null;
-		LOGGER.debug(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_006));
+		setConcurrentMapCache(null);
+		LOGGER.debug(Language.getResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_JCM_006));
 
 	}
 
@@ -240,15 +240,15 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 
 		if (concurrentMapCacheReloading != null) {
 			concurrentMapCacheReloading.clear();
-			concurrentMapCacheReloading = null;
-			concurrentMapCacheReloadingName = null;
+			setConcurrentMapCacheReloading(null);
+			setConcurrentMapCacheReloadingName(null);
 		}
 
 		// Creamos la caché.
-		concurrentMapCacheReloadingName = Long.toString(System.currentTimeMillis());
-		concurrentMapCacheReloading = new ConcurrentHashMap<Object, Object>();
+		setConcurrentMapCacheReloadingName(Long.toString(System.currentTimeMillis()));
+		setConcurrentMapCacheReloading(new ConcurrentHashMap<Object, Object>());
 
-		LOGGER.info(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_JCM_007, new Object[ ] { concurrentMapCacheReloadingName }));
+		LOGGER.info(Language.getFormatResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_JCM_007, new Object[ ] { concurrentMapCacheReloadingName }));
 
 	}
 
@@ -264,11 +264,11 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 			ConcurrentMap<Object, Object> cmAux = concurrentMapCache;
 			String cmNameAux = concurrentMapCacheName;
 
-			concurrentMapCache = concurrentMapCacheReloading;
-			concurrentMapCacheName = concurrentMapCacheReloadingName;
+			setConcurrentMapCache(concurrentMapCacheReloading);
+			setConcurrentMapCacheName(concurrentMapCacheReloadingName);
 
-			concurrentMapCacheReloading = null;
-			concurrentMapCacheReloadingName = null;
+			setConcurrentMapCacheReloading(null);
+			setConcurrentMapCacheReloadingName(null);
 
 			// Detenemos la caché anterior.
 			giveSomeTimeBeforeStopCache(cmAux, cmNameAux, millisecondsBeforeStopCache);
@@ -297,6 +297,38 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 	@Override
 	public boolean isReloadingCacheAtTheMoment() {
 		return concurrentMapCacheReloading != null;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #concurrentMapCache}.
+	 * @param concurrentMapCache The value for the attribute {@link #concurrentMapCache}.
+	 */
+	public static void setConcurrentMapCache(ConcurrentMap<Object, Object> concurrentMapCache) {
+		ConcurrentMapCacheValet.concurrentMapCache = concurrentMapCache;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #concurrentMapCacheName}.
+	 * @param concurrentMapCacheName The value for the attribute {@link #concurrentMapCacheName}.
+	 */
+	public static void setConcurrentMapCacheName(String concurrentMapCacheName) {
+		ConcurrentMapCacheValet.concurrentMapCacheName = concurrentMapCacheName;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #concurrentMapCacheReloading}.
+	 * @param concurrentMapCacheReloading The value for the attribute {@link #concurrentMapCacheReloading}.
+	 */
+	public static void setConcurrentMapCacheReloading(ConcurrentMap<Object, Object> concurrentMapCacheReloading) {
+		ConcurrentMapCacheValet.concurrentMapCacheReloading = concurrentMapCacheReloading;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #concurrentMapCacheReloadingName}.
+	 * @param concurrentMapCacheReloadingName The value for the attribute {@link #concurrentMapCacheReloadingName}.
+	 */
+	public static void setConcurrentMapCacheReloadingName(String concurrentMapCacheReloadingName) {
+		ConcurrentMapCacheValet.concurrentMapCacheReloadingName = concurrentMapCacheReloadingName;
 	}
 
 }

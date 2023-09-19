@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 22/06/2023.
+ * @version 1.6, 19/09/2023.
  */
 package es.gob.valet.utils.threads;
 
@@ -50,9 +50,9 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.commons.utils.threads.ATimeLimitedOperation;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
 import es.gob.valet.persistence.exceptions.CipherException;
@@ -63,7 +63,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * is specified to define the e-mail and the necessary functionality is contributed to realize the sending
  * as an independent thread via SMTP server. This thread will be time limited.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 22/06/2023.
+ * @version 1.6, 19/09/2023.
  */
 public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
@@ -145,7 +145,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		super();
 		ConfServerMail csm = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getConfServerMailService().getAllConfServerMail();
 		if (csm == null) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_015));
+			throw new EMailException(ValetExceptionConstants.COD_201, Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_015));
 		} else {
 			initializeServerMailConfiguration(csm);
 		}
@@ -164,7 +164,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	
 		// Comprobamos que haya destinatarios a los que enviar el e-mail
 		if (listAddresseesParam == null || listAddresseesParam.isEmpty()) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_005));
+			throw new EMailException(ValetExceptionConstants.COD_201, Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_005));
 		} else {
 			for (String mailAddress: listAddresseesParam) {
 				if (checkEmailAdress(mailAddress)) {
@@ -174,21 +174,21 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 						continue;
 					}
 				} else {
-					LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_008, new Object[ ] { mailAddress }));
+					LOGGER.warn(Language.getFormatResCoreGeneral(CoreGeneralMessages.EMAIL_008, new Object[ ] { mailAddress }));
 				}
 			}
 			if (mailAddresses.isEmpty()) {
-				throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_005));
+				throw new EMailException(ValetExceptionConstants.COD_201, Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_005));
 			}
 		}
 		// Comprobamos que se haya indicado un asunto
 		if (subjectParam == null) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_006));
+			throw new EMailException(ValetExceptionConstants.COD_201, Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_006));
 		}
 		subject = subjectParam;
 		// Comprobamos que se haya indicado un mensaje
 		if (message == null) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_007));
+			throw new EMailException(ValetExceptionConstants.COD_201, Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_007));
 		}
 		messageBuilder = new StringBuilder(message);
 	
@@ -203,11 +203,11 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
 		mailServerIssuer = csm.getIssuerMail();
 		if (!checkEmailAdress(mailServerIssuer)) {
-			LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_000));
+			LOGGER.warn(Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_000));
 		}
 		mailServerHost = csm.getHostMail();
 		if (UtilsStringChar.isNullOrEmptyTrim(mailServerHost)) {
-			throw new EMailException(IValetException.COD_201, Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_001));
+			throw new EMailException(ValetExceptionConstants.COD_201, Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_001));
 		}
 		boolean validPort = true;
 		Long portLong = csm.getPortMail();
@@ -218,7 +218,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 			validPort = false;
 		}
 		if (!validPort) {
-			LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_002));
+			LOGGER.warn(Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_002));
 			mailServerPort = NumberConstants.NUM25;
 		}
 		
@@ -242,12 +242,12 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 				try {
 					mailServerAuthPassword = new String(UtilsAESCipher.getInstance().decryptMessage(mailServerAuthPassword));
 				} catch (CipherException e) {
-					LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_003));
+					LOGGER.warn(Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_003));
 					mailServerAuthPassword = null;
 				}
 			}
 			if (mailServerAuthUserName == null || mailServerAuthPassword == null) {
-				LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_004));
+				LOGGER.warn(Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_004));
 				mailServerAuthUseAuthentication = false;
 				mailServerAuthUserName = null;
 				mailServerAuthPassword = null;
@@ -338,27 +338,27 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	 */
 	private void sendException(Exception mex) {
 
-		LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_009, new Object[] {subject}));
+		LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.EMAIL_009, new Object[] {subject}));
 
 		Exception ex = mex;
 		do {
 			if (ex instanceof SendFailedException) {
 				SendFailedException sfex = (SendFailedException) ex;
 				Address[ ] invalid = sfex.getInvalidAddresses();
-				sendExceptionAux(ICoreGeneralMessages.EMAIL_010, invalid);
+				sendExceptionAux(CoreGeneralMessages.EMAIL_010, invalid);
 
 				Address[ ] validUnsent = sfex.getValidUnsentAddresses();
-				sendExceptionAux(ICoreGeneralMessages.EMAIL_011, validUnsent);
+				sendExceptionAux(CoreGeneralMessages.EMAIL_011, validUnsent);
 
 				Address[ ] validSent = sfex.getValidSentAddresses();
-				sendExceptionAux(ICoreGeneralMessages.EMAIL_012, validSent);
+				sendExceptionAux(CoreGeneralMessages.EMAIL_012, validSent);
 			}
 			else if(ex instanceof SocketTimeoutException || ex instanceof MailConnectException){
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_016, ex.getMessage()));
+				LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.EMAIL_016, ex.getMessage()));
 				ex = null;
 			}
 			else {
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_017, ex.getMessage()));
+				LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.EMAIL_017, ex.getMessage()));
 				ex = null;
 			}
 		}
@@ -375,7 +375,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		LOGGER.error(Language.getResCoreGeneral(errorMsg));
 		if (arrayAddress != null) {
 			for (int i = 0; i < arrayAddress.length; i++) {
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.EMAIL_013, new Object[ ] { arrayAddress[i] }));
+				LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.EMAIL_013, new Object[ ] { arrayAddress[i] }));
 			}
 		}
 	}
@@ -392,7 +392,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 			e.printStackTrace(pw);
 			return SEPARATOR + UtilsStringChar.SPECIAL_SYSTEM_LINE_SEPARATOR_STRING + sw.toString() + SEPARATOR + UtilsStringChar.SPECIAL_SYSTEM_LINE_SEPARATOR_STRING;
 		} catch (Exception e2) {
-			return Language.getResCoreGeneral(ICoreGeneralMessages.EMAIL_014);
+			return Language.getResCoreGeneral(CoreGeneralMessages.EMAIL_014);
 		} finally {
 			// Cerramos recursos
 			UtilsResources.safeCloseWriter(pw);

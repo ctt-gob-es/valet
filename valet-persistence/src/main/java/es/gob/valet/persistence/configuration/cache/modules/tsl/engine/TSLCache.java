@@ -20,16 +20,16 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 29/10/2018.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.engine;
 
 import java.io.Serializable;
 
 import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCache;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
@@ -44,7 +44,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Class to handle the TSL configuration cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 29/10/2018.
+ * @version 1.2, 19/09/2023.
  */
 public final class TSLCache extends ConfigurationCache {
 
@@ -134,7 +134,7 @@ public final class TSLCache extends ConfigurationCache {
 
 		// Si el parámetro de entrada es nulo, lanzamos excepción.
 		if (tcr == null) {
-			throw new TSLCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG094));
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG094));
 		}
 
 		TSLCountryRegionCacheObject tcrco = new TSLCountryRegionCacheObject(tcr);
@@ -157,7 +157,7 @@ public final class TSLCache extends ConfigurationCache {
 
 		// Si el parámetro de entrada es nulo, lanzamos excepción.
 		if (tcrco == null) {
-			throw new TSLCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG094));
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG094));
 		}
 
 		// Se construye la ruta en la caché mediante el código del país/región.
@@ -169,7 +169,7 @@ public final class TSLCache extends ConfigurationCache {
 		try {
 			result = (TSLCountryRegionCacheObject) addConfigurationCacheObject(path, tcrco, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new TSLCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 
 		return result;
@@ -194,7 +194,7 @@ public final class TSLCache extends ConfigurationCache {
 		try {
 			return (TSLCountryRegionCacheObject) getConfigurationCacheObject(path, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new TSLCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 
 	}
@@ -223,7 +223,7 @@ public final class TSLCache extends ConfigurationCache {
 			try {
 				clearObjectPathFromConfigurationCache(path, inLoadingCache);
 			} catch (ConfigurationCacheException e) {
-				throw new TSLCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+				throw new TSLCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 			}
 
 		}
@@ -243,7 +243,7 @@ public final class TSLCache extends ConfigurationCache {
 
 		// Si el parámetro de entrada es nulo, lanzamos excepción.
 		if (td == null) {
-			throw new TSLCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG095));
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG095));
 		}
 
 		TSLDataCacheObject tdco = new TSLDataCacheObject(td, tslObjectSerializable);
@@ -266,7 +266,7 @@ public final class TSLCache extends ConfigurationCache {
 
 		// Si el parámetro de entrada es nulo, lanzamos excepción.
 		if (tdco == null) {
-			throw new TSLCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG095));
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG095));
 		}
 
 		// Se construye la ruta en la caché mediante ID de la TSL.
@@ -278,7 +278,7 @@ public final class TSLCache extends ConfigurationCache {
 		try {
 			result = (TSLDataCacheObject) addConfigurationCacheObject(path, tdco, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new TSLCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 
 		// Almacenamos también la relación entre TSL Location y sus datos.
@@ -306,7 +306,7 @@ public final class TSLCache extends ConfigurationCache {
 		try {
 			return (TSLDataCacheObject) getConfigurationCacheObject(path, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new TSLCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 
 	}
@@ -335,7 +335,7 @@ public final class TSLCache extends ConfigurationCache {
 			try {
 				clearObjectPathFromConfigurationCache(path, inLoadingCache);
 			} catch (ConfigurationCacheException e) {
-				throw new TSLCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+				throw new TSLCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 			}
 
 			// Eliminamos también la relación entre TSL location y sus datos.
@@ -360,7 +360,7 @@ public final class TSLCache extends ConfigurationCache {
 		try {
 			clearNodePathFromConfigurationCache(path, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new TSLCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 
 	}
@@ -381,7 +381,7 @@ public final class TSLCache extends ConfigurationCache {
 		try {
 			return (TSLLocationAndIdRelationCacheObject) getConfigurationCacheObject(path, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new TSLCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 
 	}
@@ -402,7 +402,7 @@ public final class TSLCache extends ConfigurationCache {
 		try {
 			addConfigurationCacheObject(path, tlairco, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new TSLCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 
 	}
@@ -417,7 +417,7 @@ public final class TSLCache extends ConfigurationCache {
 
 		// Si el parámetro de entrada es nulo, lanzamos excepción.
 		if (tdco == null) {
-			throw new TSLCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG064));
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG064));
 		}
 
 		// Obtenemos el objeto con las relaciones de la caché.
@@ -446,7 +446,7 @@ public final class TSLCache extends ConfigurationCache {
 
 		// Si el parámetro de entrada es nulo, lanzamos excepción.
 		if (tdco == null) {
-			throw new TSLCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG065));
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG065));
 		}
 
 		// Obtenemos el objeto con las relaciones de la caché.
@@ -471,7 +471,7 @@ public final class TSLCache extends ConfigurationCache {
 	 */
 	@Override
 	protected String getTypeElement() {
-		return Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG070);
+		return Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG070);
 	}
 
 	/**
@@ -518,7 +518,7 @@ public final class TSLCache extends ConfigurationCache {
 	@Override
 	protected String getMsgNotConditionForUpdateAccomplished(ConfigurationCacheObject cachedCco, ConfigurationCacheObject cco) {
 
-		return Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG093);
+		return Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG093);
 
 	}
 

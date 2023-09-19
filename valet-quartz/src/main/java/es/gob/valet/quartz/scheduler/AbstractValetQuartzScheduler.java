@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.quartz.scheduler;
 
@@ -33,16 +33,16 @@ import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
+import es.gob.valet.i18n.messages.QuartzGeneralMessages;
 import es.gob.valet.quartz.job.AbstractValetTaskQuartzJob;
 import es.gob.valet.quartz.planner.IPlanner;
 
 /**
  * <p>Class that represents an abstract quartz scheduler for valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 public abstract class AbstractValetQuartzScheduler extends AbstractQuartzScheduler {
 
@@ -77,7 +77,7 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 
 			if (nextExecutionDate == null) {
 
-				LOGGER.warn(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ01, new Object[ ] { taskNameParam }));
+				LOGGER.warn(Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOGMQ01, new Object[ ] { taskNameParam }));
 
 			} else {
 
@@ -100,8 +100,8 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 				try {
 					result = addOrReplaceJobTrigger(nextExecutionDate, periodInMillis, numberOfReps, taskNameParam, planner.getIdentifier(), taskClass, jobDataMap);
 				} catch (SchedulerException e) {
-					String errorMsg = Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ02, new Object[ ] { taskNameParam, getSchedulerGroup() });
-					throw new ValetSchedulerException(IValetException.COD_184, errorMsg, e);
+					String errorMsg = Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOGMQ02, new Object[ ] { taskNameParam, getSchedulerGroup() });
+					throw new ValetSchedulerException(ValetExceptionConstants.COD_184, errorMsg, e);
 				}
 
 			}
@@ -123,8 +123,8 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 		try {
 			return removeJob(taskName);
 		} catch (SchedulerException e) {
-			String errorMsg = Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ03, new Object[ ] { taskName, getSchedulerGroup() });
-			throw new ValetSchedulerException(IValetException.COD_184, errorMsg, e);
+			String errorMsg = Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOGMQ03, new Object[ ] { taskName, getSchedulerGroup() });
+			throw new ValetSchedulerException(ValetExceptionConstants.COD_184, errorMsg, e);
 		}
 
 	}
@@ -141,8 +141,8 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 		try {
 			return removeTrigger(taskName, plannerId);
 		} catch (SchedulerException e) {
-			String errorMsg = Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ04, new Object[ ] { taskName, getSchedulerGroup() });
-			throw new ValetSchedulerException(IValetException.COD_184, errorMsg, e);
+			String errorMsg = Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOGMQ04, new Object[ ] { taskName, getSchedulerGroup() });
+			throw new ValetSchedulerException(ValetExceptionConstants.COD_184, errorMsg, e);
 		}
 
 	}
@@ -199,8 +199,8 @@ public abstract class AbstractValetQuartzScheduler extends AbstractQuartzSchedul
 		try {
 			return checkIfExistJob(taskName);
 		} catch (SchedulerException e) {
-			String errorMsg = Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOGMQ05, new Object[ ] { taskName, getSchedulerGroup() });
-			throw new ValetSchedulerException(IValetException.COD_185, errorMsg, e);
+			String errorMsg = Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOGMQ05, new Object[ ] { taskName, getSchedulerGroup() });
+			throw new ValetSchedulerException(ValetExceptionConstants.COD_185, errorMsg, e);
 		}
 
 	}

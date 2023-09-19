@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/12/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 26/07/2023.
+ * @version 2.1, 19/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -31,22 +31,18 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -55,10 +51,8 @@ import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.ExternalAccessForm;
 import es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO;
-import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 import es.gob.valet.service.ifaces.IExternalAccessService;
-import es.gob.valet.service.impl.ExternalAccessService;
 
 /**
  * <p>
@@ -71,7 +65,7 @@ import es.gob.valet.service.impl.ExternalAccessService;
  * TSL.
  * </p>
  * 
- * @version 1.1, 08/08/2023.
+ * @version 2.1, 19/09/2023.
  */
 @RestController
 public class ExternalAccessRestController {
