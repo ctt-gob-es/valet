@@ -97,6 +97,9 @@ var eaTemplate = /*[[@{/addexternalAccess}]]*/;
 var actionReport = /*[[@{/report}]]*/;
 var actionTryConnModel = /*[[@{/tryConnModel}]]*/;
 var messageSelectTableToTry = /*[[#{table.externalAccess.tryConnError}]]*/;
+var messageError = /*[[#{select.stateConn.value.error}]]*/;
+var messageCorrect = /*[[#{select.stateConn.value.ok}]]*/;
+
 
 $(document).ready(function() {
 	debugger;
@@ -202,11 +205,11 @@ function createDatatable(dataSet){
 			 {"data": "originUrl", "width":"15%"},
 			 {"data": "stateConn", "width":"15%","render": function(data, type, row){
 				 if (data == false) {
-						return 'Error';
+						return messageError;
 	     		} else if (data == true){
-						return 'OK';
+						return messageCorrect;
 					} else {
-						return 'Error';
+						return messageError;
 					}
 			 }},
 			 {"data": "lastConn", "width":"25%" ,"render": function(data, type, row){
@@ -239,6 +242,7 @@ $('#modalTryConnExAccess').on('load',function(){
 		tryConn();
 	}
 });
+
 
 
 function search(){

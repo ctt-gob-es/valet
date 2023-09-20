@@ -85,16 +85,16 @@ function createDatatable(){
              }},
 			 {"data": "stateConn", "width":"15%","render": function(data, type, row){
 				 if (data == false) {
-						return "<span value='1' style='visibility: hidden;'>1</span><i class='ti-close' style='color: #e62d2d;font-weight: bold;'></i>";
+						return "<div style='display:block; text-align:center; margin:0 auto;'><span value='1' style='visibility: hidden;'>1</span><i class='ti-close' style='color: #e62d2d;font-weight: bold;'></i></div>";
 	     		} else if (data == true){
-						return "<span value='0' style='visibility: hidden;'>0</span><i class='ti-check' style='color: #3da03b;font-weight: bold;'></i>";
+						return "<div style='display:block; text-align:center; margin:0 auto;'><span value='0' style='visibility: hidden;'>0</span><i class='ti-check' style='color: #3da03b;font-weight: bold;'></i></div>";
 					} else {
-						return "<span value='1' style='visibility: hidden;'>1</span><i class='ti-close' style='color: #e62d2d;font-weight: bold;'></i>";
+						return "<div style='display:block; text-align:center; margin:0 auto;'><span value='1' style='visibility: hidden;'>1</span><i class='ti-close' style='color: #e62d2d;font-weight: bold;'></i></div>";
 					}
 			 }},
 			 {"data":"messageError","width":"10%", "render":function(data,type,row){
 				 if (data != "") {
-					 return "<button id='openDetails' class='some-class'><span class='ti-angle-double-down' style='color: #e62d2d;font-weight: bold;'></span></button>";
+					 return "<div style='display:block; text-align:center; margin:0 auto;'><span  id='openDetails' class='some-class ti-angle-double-down' style='color: #7a2828;font-weight: bold;'></span></div>";
 					 
 				 }else{ return null;}
 			 }}
