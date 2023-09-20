@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.commons.utils.connection;
 
@@ -30,12 +30,12 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Utilities class relating to general connections properties and operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 public final class UtilsConnection {
 
@@ -61,16 +61,16 @@ public final class UtilsConnection {
 		try {
 			String value = StaticValetConfig.getProperty(StaticValetConfig.CONECTION_MAXSIZE);
 			if (UtilsStringChar.isNullOrEmptyTrim(value)) {
-				LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CONNECTION_001, new Object[ ] { StaticValetConfig.CONECTION_MAXSIZE, result }));
+				LOGGER.warn(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CONNECTION_001, new Object[ ] { StaticValetConfig.CONECTION_MAXSIZE, result }));
 			} else {
 				try {
 					result = Integer.parseInt(value);
 				} catch (Exception e) {
-					LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CONNECTION_000, new Object[ ] { StaticValetConfig.CONECTION_MAXSIZE, result }));
+					LOGGER.warn(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CONNECTION_000, new Object[ ] { StaticValetConfig.CONECTION_MAXSIZE, result }));
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CONNECTION_001, new Object[ ] { StaticValetConfig.CONECTION_MAXSIZE, result }));
+			LOGGER.warn(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CONNECTION_001, new Object[ ] { StaticValetConfig.CONECTION_MAXSIZE, result }));
 		}
 		return result;
 

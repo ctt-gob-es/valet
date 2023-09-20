@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -41,16 +41,16 @@ import org.w3.x2000.x09.xmldsig.KeyValueType;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 
 /**
  * <p>Class that defines a Digital Identity with all its information not dependent
  * of the specification or TSL version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class DigitalID implements Serializable {
 
@@ -170,7 +170,7 @@ public class DigitalID implements Serializable {
 		try {
 			this.x509cert = UtilsCertificate.getX509Certificate(x509certBytesDI);
 		} catch (CommonUtilsException e) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL010), e);
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL010), e);
 		}
 
 	}
@@ -190,7 +190,7 @@ public class DigitalID implements Serializable {
 	 */
 	public final void setX509SubjectName(String x509SubjectNameDI) throws TSLParsingException {
 		if (UtilsStringChar.isNullOrEmptyTrim(x509SubjectNameDI)) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL011));
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL011));
 		}
 		this.x509SubjectName = x509SubjectNameDI;
 	}
@@ -211,7 +211,7 @@ public class DigitalID implements Serializable {
 	public final void setKeyValue(KeyValueType keyValueDI) throws TSLParsingException {
 
 		if (keyValueDI == null || !keyValueDI.isSetDSAKeyValue() && !keyValueDI.isSetRSAKeyValue()) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL012));
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL012));
 		}
 		this.keyValue = keyValueDI;
 	}

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.statistics;
 
@@ -51,7 +51,7 @@ import es.gob.valet.statistics.persistence.dto.ValidationDTO;
 /** 
  * <p>Class for reading the event file and registering the information contained in this file in the Pentaho database schemas .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 public final class EventFileReaderPentaho {
 
@@ -91,27 +91,94 @@ public final class EventFileReaderPentaho {
 	private static int totalTransactionsLog = 0;
 
 	/**
+	 * Constants that represents the separator used in the event file for separating the field identifier and value. 
+	 */
+	private static final String TOKEN_SEPARATOR = "=";
+	/**
+	 * Constants that represents the separator used in the event file for separating of audit fields. 
+	 */
+	private static final String SEPARATOR = ";";
+
+	/**
+	 * Attribute that represents the token used to indicate the transaction identifier in the event file. 
+	 */
+	private static final String TOKEN_ID_TRANSACION = "ID";
+
+	/**
+	 * Attribute that represents the token used to indicate the service identifier in the event file. 
+	 */
+	private static final String TOKEN_ID_SERVICE = "SV";
+
+	/**
+	 * Attribute that represents the token used to indicate the trace identifier in the event file. 
+	 */
+	private static final String TOKEN_OP = "OP";
+
+	/**
+	 * Attribute that represents the token used to indicate the open transaction trace. 
+	 */
+	private static final String OPEN_TRACE_TOKEN = "open";
+
+	/**
+	 * Attribute that represents the token used to indicate the close transaction trace. 
+	 */
+	private static final String CLOSE_TRACE_TOKEN = "close";
+
+	/**
+	 * Constant that identifies the 'application identifier' field.
+	 */
+	private static final String TOKEN_APP_ID = "APPID";
+
+	/**
+	 * Constant that identifies the  'delegated application identifier' field.
+	 */
+	private static final String TOKEN_DEL_APP_ID = "DELAPPID";
+
+	/**
+	 * Constant that code of 'Result' field.
+	 */
+	private static final String TOKEN_RESULT = "RS_RES_CODE";
+
+	/**
+	 * Constant that represents the country issuing the TSL.
+	 */
+	private static final String TOKEN_COUNTRY = "TSL_CR";
+
+	/**
+	 *  Attribute that represents the Trust Service Provider in which the certificate was detected.
+	 */
+	private static final String TOKEN_TSP_NAME = "TSL_TSPNAME";
+	/**
+	 * Attribute that represents the Trust Service Provider Service in which the certificate was detected.
+	 */
+	private static final String TOKEN_TSP_SERVICE = "TSL_TSPSERVICENAME";
+	/**
+	 * Attribute that represents the Trust Service Provider Service Historic in which the certificate was detected.
+	 */
+	private static final String TOKEN_TSP_SERVICE_HIST = "TSL_TSPSERVICEHISTNAME";
+	
+	/**
 	 * Attribute that represents the text 'OP=open'. 
 	 */
-	private static final String COD_OP_OPEN = IPentahoManagementBO.TOKEN_OP + IPentahoManagementBO.TOKEN_SEPARATOR + IPentahoManagementBO.OPEN_TRACE_TOKEN;
+	private static final String COD_OP_OPEN = TOKEN_OP + TOKEN_SEPARATOR + OPEN_TRACE_TOKEN;
 
 	/**
 	 * Attribute that represents the text 'OP=2'. 
 	 */
-	private static final String COD_OP_2 = IPentahoManagementBO.TOKEN_OP + IPentahoManagementBO.TOKEN_SEPARATOR + NumberConstants.NUM2;
+	private static final String COD_OP_2 = TOKEN_OP + TOKEN_SEPARATOR + NumberConstants.NUM2;
 	/**
 	 * Attribute that represents the text 'OP=3'. 
 	 */
-	private static final String COD_OP_3 = IPentahoManagementBO.TOKEN_OP + IPentahoManagementBO.TOKEN_SEPARATOR + NumberConstants.NUM3;
+	private static final String COD_OP_3 = TOKEN_OP + TOKEN_SEPARATOR + NumberConstants.NUM3;
 	/**
 	 * Attribute that represents the text 'OP=13'. 
 	 */
-	private static final String COD_OP_13 = IPentahoManagementBO.TOKEN_OP + IPentahoManagementBO.TOKEN_SEPARATOR + NumberConstants.NUM13;
+	private static final String COD_OP_13 = TOKEN_OP + TOKEN_SEPARATOR + NumberConstants.NUM13;
 
 	/**
 	 * Attribute that represents the text 'OP=close'. 
 	 */
-	private static final String COD_OP_CLOSE = IPentahoManagementBO.TOKEN_OP + IPentahoManagementBO.TOKEN_SEPARATOR + IPentahoManagementBO.CLOSE_TRACE_TOKEN;
+	private static final String COD_OP_CLOSE = TOKEN_OP + TOKEN_SEPARATOR + CLOSE_TRACE_TOKEN;
 	
 	/**
 	 * Attribute representing the value 'UNDEFINED' result code.
@@ -164,7 +231,7 @@ public final class EventFileReaderPentaho {
 	public void readAndSave() throws ValetStatisticsException {
 
 		// fecha para comprobar el tiempo de ejecutión del proceso
-		dateStart = new Date();
+		setDateStart(new Date());
 
 		// se borran toda la información que hubiera en el mapa y en las listas
 		// de transacciones que se usan el proceso
@@ -210,13 +277,7 @@ public final class EventFileReaderPentaho {
 	 * @throws ValetStatisticsException when an error has occurred.
 	 */
 	private static void fillTransactionMap() throws ValetStatisticsException {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(pathLogFileToRead));
-		} catch (FileNotFoundException e1) {
-			throw new ValetStatisticsException(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG003, new Object[ ] { e1.getMessage() }));
-		}
-		try {
+		try (BufferedReader reader = new BufferedReader(new FileReader(pathLogFileToRead))){
 			String line = reader.readLine();
 			while (line != null) {
 				LOGGER.debug(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG004, new Object[ ] { line }));
@@ -245,17 +306,10 @@ public final class EventFileReaderPentaho {
 				}
 				line = reader.readLine();
 			}
+		} catch (FileNotFoundException e1) {
+			throw new ValetStatisticsException(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG003, new Object[ ] { e1.getMessage() }));
 		} catch (IOException e) {
 			throw new ValetStatisticsException(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG005, new Object[ ] { e.getMessage() }));
-		} finally {
-			try {
-				reader.close();
-				if (tranErrors > 0) {
-					LOGGER.debug(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG014, new Object[ ] { tranErrors, totalTransactionsLog }));
-				}
-			} catch (IOException e) {
-				throw new ValetStatisticsException(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG006, new Object[ ] { e.getMessage() }));
-			}
 		}
 	}
 
@@ -265,7 +319,7 @@ public final class EventFileReaderPentaho {
 	 * @param line Line to be passed.
 	 */
 	private static void setupLogDate(String line) {
-		String[ ] parts = line.split(IPentahoManagementBO.SEPARATOR);
+		String[ ] parts = line.split(SEPARATOR);
 
 		// set Log date on the first transaction
 		if (logDate == null) {
@@ -282,8 +336,8 @@ public final class EventFileReaderPentaho {
 	private static void openTransaction(String line) {
 		LOGGER.trace(Language.getResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG010));
 		Map<String, String> infoTransaction = getTokens(line);
-		Long transactionId = new Long(infoTransaction.remove(IPentahoManagementBO.TOKEN_ID_TRANSACION));
-		String svString = infoTransaction.remove(IPentahoManagementBO.TOKEN_ID_SERVICE);
+		Long transactionId = new Long(infoTransaction.remove(TOKEN_ID_TRANSACION));
+		String svString = infoTransaction.remove(TOKEN_ID_SERVICE);
 
 		TransactionDTO entry = new TransactionDTO();
 		// se obtiene el servicio
@@ -303,7 +357,7 @@ public final class EventFileReaderPentaho {
 	private static void saveInfoTSL(String line) {
 		LOGGER.trace(Language.getResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG019));
 		Map<String, String> infoTransaction = getTokens(line);
-		String transactionIdString = infoTransaction.remove(IPentahoManagementBO.TOKEN_ID_TRANSACION);
+		String transactionIdString = infoTransaction.remove(TOKEN_ID_TRANSACION);
 		Long transactionId = Long.valueOf(transactionIdString);
 
 		TransactionDTO transactionDTO = pendingTransactionMap.get(transactionId);
@@ -315,10 +369,10 @@ public final class EventFileReaderPentaho {
 		pendingValidationDTO.setDate(transactionDTO.getDate());
 
 		// se obtiene la información de las TSL
-		String country = infoTransaction.remove(IPentahoManagementBO.TOKEN_COUNTRY);
-		String tspName = infoTransaction.remove(IPentahoManagementBO.TOKEN_TSP_NAME);
-		String tspService = infoTransaction.remove(IPentahoManagementBO.TOKEN_TSP_SERVICE);
-		String tspServiceHistoric = infoTransaction.remove(IPentahoManagementBO.TOKEN_TSP_SERVICE_HIST);
+		String country = infoTransaction.remove(TOKEN_COUNTRY);
+		String tspName = infoTransaction.remove(TOKEN_TSP_NAME);
+		String tspService = infoTransaction.remove(TOKEN_TSP_SERVICE);
+		String tspServiceHistoric = infoTransaction.remove(TOKEN_TSP_SERVICE_HIST);
 
 		pendingValidationDTO.setCountry(country);
 		pendingValidationDTO.setTspName(tspName);
@@ -337,7 +391,7 @@ public final class EventFileReaderPentaho {
 	private static void saveInfoApplication(String line) {
 		Map<String, String> infoTransaction = getTokens(line);
 		String transactionIdString = "";
-		transactionIdString = infoTransaction.remove(IPentahoManagementBO.TOKEN_ID_TRANSACION);
+		transactionIdString = infoTransaction.remove(TOKEN_ID_TRANSACION);
 		Long transactionId = Long.valueOf(transactionIdString);
 
 		TransactionDTO pendingTransactionDTO = pendingTransactionMap.get(transactionId);
@@ -348,8 +402,8 @@ public final class EventFileReaderPentaho {
 			String error = Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG015, new Object[ ] { transactionIdString });
 			LOGGER.error(error);
 		} else {
-			String appId = infoTransaction.remove(IPentahoManagementBO.TOKEN_APP_ID);
-			String delappId = infoTransaction.remove(IPentahoManagementBO.TOKEN_DEL_APP_ID);
+			String appId = infoTransaction.remove(TOKEN_APP_ID);
+			String delappId = infoTransaction.remove(TOKEN_DEL_APP_ID);
 			pendingTransactionDTO.setApplication(appId);
 			pendingTransactionDTO.setDelegatedApplication(delappId);
 			pendingTransactionMap.put(transactionId, pendingTransactionDTO);
@@ -414,7 +468,7 @@ public final class EventFileReaderPentaho {
 		String transactionIdString = "";
 
 		try {
-			transactionIdString = infoTransaction.remove(IPentahoManagementBO.TOKEN_ID_TRANSACION);
+			transactionIdString = infoTransaction.remove(TOKEN_ID_TRANSACION);
 			LOGGER.debug(Language.getFormatResStandaloneStatisticsGeneral(StandaloneStatisticsLogConstants.EFRP_LOG012, new Object[ ] { transactionIdString }));
 			Long transactionId = new Long(transactionIdString);
 			totalTransactionsLog++;
@@ -423,7 +477,7 @@ public final class EventFileReaderPentaho {
 
 			if (pendingTransactionDto != null ) {
 				if (line.contains(COD_OP_3)) {
-					String codResult = infoTransaction.remove(IPentahoManagementBO.TOKEN_RESULT);
+					String codResult = infoTransaction.remove(TOKEN_RESULT);
 					pendingTransactionDto.setCodResult(codResult);
 
 					pendingTransactionMap.remove(transactionId);
@@ -486,5 +540,12 @@ public final class EventFileReaderPentaho {
 		}
 
 	}
-
+	
+	/**
+	 * Sets the value of the attribute {@link #dateStart}.
+	 * @param dateStart The value for the attribute {@link #dateStart}.
+	 */
+	public static void setDateStart(Date dateStart) {
+		EventFileReaderPentaho.dateStart = dateStart;
+	}	
 }

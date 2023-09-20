@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/10/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.persistence.utils;
 
@@ -29,14 +29,14 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
 import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.commons.utils.UtilsFile;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceGeneralMessages;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.PersistenceGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.exceptions.ImportException;
 
 /**
  * <p>Class with utilities for import processes.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023
+ * @version 1.2, 19/09/2023.
  */
 public class ImportUtils {
 
@@ -58,7 +58,7 @@ public class ImportUtils {
 	 */
 	public static void checkIsJsonExtension(String originalFilename) throws ImportException {
 		if(!originalFilename.toLowerCase().contains(JSON_EXTENSION)) {
-			throw new ImportException(Language.getResPersistenceGeneral(IPersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_EXTENSION_INCORRECT));
+			throw new ImportException(Language.getResPersistenceGeneral(PersistenceGeneralMessages.ERROR_IMPORTING_JSON_MAPPING_EXTENSION_INCORRECT));
 		}
 	}
 	
@@ -72,7 +72,7 @@ public class ImportUtils {
 	 */
 	public static void checkIsFileMaxSize(String originalFilename, byte[] file, Integer maxFileSize) throws ImportException {
 		if(file.length > maxFileSize) {
-			throw new ImportException(Language.getFormatResWebGeneral(IWebGeneralMessages.WRONG_FILE_SIZE, new Object[ ] { originalFilename, UtilsFile.getStringSizeLengthFile(file.length), UtilsFile.getStringSizeLengthFile(maxFileSize) }));
+			throw new ImportException(Language.getFormatResWebGeneral(WebGeneralMessages.WRONG_FILE_SIZE, new Object[ ] { originalFilename, UtilsFile.getStringSizeLengthFile(file.length), UtilsFile.getStringSizeLengthFile(maxFileSize) }));
 		}
 	}
 

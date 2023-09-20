@@ -21,20 +21,20 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeOtherCriteria;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
-import es.gob.valet.tsl.parsing.ifaces.ITSLSpecificationsVersions;
+import es.gob.valet.utils.TSLSpecificationsVersions;
 
 /**
  * <p>Abstract class that represents a TSL Other Criteria with could contains
  * differents elements regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public abstract class OtherCriteria implements IAnyTypeOtherCriteria {
 
@@ -64,10 +64,10 @@ public abstract class OtherCriteria implements IAnyTypeOtherCriteria {
 
 		// Según la especificación...
 		switch (tslSpecification) {
-			case ITSLSpecificationsVersions.SPECIFICATION_119612:
+			case TSLSpecificationsVersions.SPECIFICATION_119612:
 				// Según la versión...
 				switch (tslSpecificationVersion) {
-					case ITSLSpecificationsVersions.VERSION_020101:
+					case TSLSpecificationsVersions.VERSION_020101:
 						checkOtherCriteriaValueSpec119612Vers020101();
 						break;
 					default:

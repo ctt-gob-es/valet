@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 15/09/2023.
+ * @version 2.1, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -33,14 +33,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
+import es.gob.valet.i18n.messages.QuartzGeneralMessages;
 import es.gob.valet.i18n.utils.UtilsTomcat;
 
 /**
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 15/09/2023.
+ * @version 2.1, 19/09/2023.
  */
 public final class StaticValetConfig {
 
@@ -106,8 +106,8 @@ public final class StaticValetConfig {
 	/**
 	 * Attribute that represents the key for the property that indicates the password for the AES algorithm.
 	 */
-	@SuppressWarnings("squid:S2068")
-	public static final String AES_PASSWORD = "aes.password";
+	@SuppressWarnings("squid:S2068") // It is considered false positive if the property name is refactored, it is no longer vulnerable.
+	public static final String AES_PASSWORD = "aes.password"; 
 
 	/**
 	 * Attribute that represents the key for the property that indicates the flag to indicate if it is
@@ -277,21 +277,17 @@ public final class StaticValetConfig {
 	public static boolean reloadStaticValetConfigProperties() {
 
 		boolean result = false;
-
+		
 		synchronized (StaticValetConfig.class) {
 			if (staticProperties == null) {
 				staticProperties = new Properties();
-				FileInputStream configStream = null;
-				try {
-					LOGGER.info(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOG2, new Object[ ] { STATIC_VALET_FILENAME }));
-					configStream = new FileInputStream(UtilsTomcat.createAbsolutePath(UtilsTomcat.getValetConfigDir(), STATIC_VALET_FILENAME));
+				try (FileInputStream configStream = new FileInputStream(UtilsTomcat.createAbsolutePath(UtilsTomcat.getValetConfigDir(), STATIC_VALET_FILENAME))) {
+					LOGGER.info(Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOG2, new Object[ ] { STATIC_VALET_FILENAME }));
 					staticProperties.load(configStream);
-					LOGGER.info(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOG2, new Object[ ] { staticProperties }));
+					LOGGER.info(Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOG2, new Object[ ] { staticProperties }));
 					result = true;
 				} catch (IOException e) {
-					LOGGER.error(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOG3, new Object[ ] { STATIC_VALET_FILENAME, e.getMessage() }), e);
-				} finally {
-					UtilsResources.safeCloseInputStream(configStream);
+					LOGGER.error(Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOG3, new Object[ ] { STATIC_VALET_FILENAME, e.getMessage() }), e);
 				}
 			}
 		}

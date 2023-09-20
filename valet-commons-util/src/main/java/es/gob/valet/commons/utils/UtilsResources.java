@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -34,12 +34,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Class that provides functionality to control resources.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 public final class UtilsResources {
 
@@ -64,7 +64,7 @@ public final class UtilsResources {
 			try {
 				is.close();
 			} catch (IOException e) {
-				LOGGER.error(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { is.getClass().getName() }), e);
+				LOGGER.error(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { is.getClass().getName() }), e);
 			}
 		}
 	}
@@ -78,7 +78,7 @@ public final class UtilsResources {
 			try {
 				os.close();
 			} catch (IOException e) {
-				LOGGER.error(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { os.getClass().getName() }), e);
+				LOGGER.error(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { os.getClass().getName() }), e);
 			}
 		}
 	}
@@ -106,7 +106,7 @@ public final class UtilsResources {
 			try {
 				br.close();
 			} catch (IOException e) {
-				LOGGER.error(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { br.getClass().getName() }), e);
+				LOGGER.error(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { br.getClass().getName() }), e);
 			}
 		}
 	}
@@ -120,7 +120,7 @@ public final class UtilsResources {
 			try {
 				wr.close();
 			} catch (IOException e) {
-				LOGGER.error(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { wr.getClass().getName() }), e);
+				LOGGER.error(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { wr.getClass().getName() }), e);
 			}
 		}
 	}

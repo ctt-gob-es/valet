@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -40,12 +40,12 @@ import biz.paluch.logging.gelf.intern.GelfMessage;
 import biz.paluch.logging.gelf.intern.GelfSender;
 import biz.paluch.logging.gelf.intern.sender.GelfUDPSender;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Utilities class for the use of GrayLog.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 public final class UtilsGrayLog {
 
@@ -185,14 +185,14 @@ public final class UtilsGrayLog {
 
 			if (!initializationError) {
 				grayLogEnabled = false;
-				LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_004));
+				LOGGER.error(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_GRAYLOG_004));
 			} else {
-				LOGGER.info(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_005));
+				LOGGER.info(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_GRAYLOG_005));
 			}
 
 		} else {
 
-			LOGGER.info(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_006));
+			LOGGER.info(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_GRAYLOG_006));
 
 		}
 
@@ -257,7 +257,7 @@ public final class UtilsGrayLog {
 			} catch (IOException e) {
 				grayLogMessageSender = null;
 				initializationError = true;
-				LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_001), e);
+				LOGGER.error(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_GRAYLOG_001), e);
 			}
 
 		}
@@ -297,7 +297,7 @@ public final class UtilsGrayLog {
 
 		} catch (UnknownHostException e) {
 
-			LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_007), e);
+			LOGGER.error(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_GRAYLOG_007), e);
 			grayLogSourceHostName = TOKEN_VALUE_UNKNWON;
 
 		}
@@ -363,12 +363,12 @@ public final class UtilsGrayLog {
 					if (grayLogMessageSender != null) {
 						grayLogMessageSender.sendMessage(gm);
 					}else{
-						LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_008));
+						LOGGER.error(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_GRAYLOG_008));
 					}
 
 				} else {
 
-					LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_003, new Object[ ] { errorCode, message }));
+					LOGGER.warn(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_GRAYLOG_003, new Object[ ] { errorCode, message }));
 
 				}
 
@@ -376,7 +376,7 @@ public final class UtilsGrayLog {
 
 		} else {
 
-			LOGGER.debug(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_002));
+			LOGGER.debug(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_GRAYLOG_002));
 
 		}
 
@@ -392,9 +392,9 @@ public final class UtilsGrayLog {
 	private static String getParsedEventMessageForGrayLog(String eventCode, String resourceInfo, String message) {
 
 		if (UtilsStringChar.isNullOrEmptyTrim(resourceInfo)) {
-			return Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_000, new Object[ ] { eventCode, UtilsStringChar.EMPTY_STRING, message });
+			return Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_GRAYLOG_000, new Object[ ] { eventCode, UtilsStringChar.EMPTY_STRING, message });
 		} else {
-			return Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_GRAYLOG_000, new Object[ ] { eventCode, resourceInfo, message });
+			return Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_GRAYLOG_000, new Object[ ] { eventCode, resourceInfo, message });
 		}
 
 	}

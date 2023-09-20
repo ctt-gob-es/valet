@@ -20,19 +20,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.crypto.utils;
 
 import java.util.List;
 
 import es.gob.valet.crypto.exception.CryptographyException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 
 /**
  * <p>Class with utilities for the validation of objects for cryptography module.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 19/09/2023.
  */
 public final class CryptographyValidationUtils {
 
@@ -51,7 +51,7 @@ public final class CryptographyValidationUtils {
 	 */
 	public static void checkIsNotNull(Object o, String msg) throws CryptographyException {
 		if (o == null) {
-			throw new CryptographyException(IValetException.COD_190, msg);
+			throw new CryptographyException(ValetExceptionConstants.COD_190, msg);
 		}
 	}
 
@@ -63,7 +63,7 @@ public final class CryptographyValidationUtils {
 	 */
 	public static void checkIsNotNullAndNotEmpty(List<?> list, String msg) throws CryptographyException {
 		if (list == null || list.size() == 0) {
-			throw new CryptographyException(IValetException.COD_190, msg);
+			throw new CryptographyException(ValetExceptionConstants.COD_190, msg);
 		}
 	}
 

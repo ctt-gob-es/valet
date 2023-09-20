@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 15/09/2023.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -47,14 +47,14 @@ import com.novell.ldap.LDAPSearchResults;
 import com.novell.ldap.LDAPSocketFactory;
 
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Utilities class relating to connections and LDAP protocol.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 15/09/2023.
+ * @version 1.4, 19/09/2023.
  */
 public final class UtilsLDAP {
 
@@ -180,7 +180,7 @@ public final class UtilsLDAP {
 			try {
 				lc.bind(ldapVersion, user, password.getBytes(StandardCharsets.UTF_8), sCons);
 			} catch (LDAPException e) {
-				throw new CommonUtilsException(IValetException.COD_200, Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_LDAP_001, new Object[ ] { urlServer, defaultPort, user }), e);
+				throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_001, new Object[ ] { urlServer, defaultPort, user }), e);
 			}
 
 		}
@@ -210,11 +210,11 @@ public final class UtilsLDAP {
 					// CRL.
 					if (ldapAttribute == null) {
 
-						throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_LDAP_002));
+						throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_002));
 
 					} else {
 
-						LOGGER.debug(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_LDAP_003));
+						LOGGER.debug(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_003));
 						crlByteArray = (byte[ ]) ldapAttribute.getByteValue();
 
 						// Se eliminan los 5 primeros caracteres
@@ -228,21 +228,21 @@ public final class UtilsLDAP {
 
 				} else {
 
-					LOGGER.debug(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_LDAP_003));
+					LOGGER.debug(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_003));
 					crlByteArray = ldapAttribute.getByteValue();
 
 				}
 
 			} else {
 
-				LOGGER.info(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_LDAP_004));
+				LOGGER.info(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_004));
 
 			}
 
 		} catch (LDAPException e) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_LDAP_005), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_005), e);
 		} catch (DecoderException e) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_LDAP_005), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_005), e);
 		}
 
 		return crlByteArray;
@@ -265,7 +265,7 @@ public final class UtilsLDAP {
 			// GrayLog.
 			UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, UtilsGrayLog.TOKEN_VALUE_CODERROR_ERROR_CON, "ldap://" + urlServer + ":" + defaultPort, e.getMessage());
 			// Relanzamos la excepción.
-			throw new CommonUtilsException(IValetException.COD_200, Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_LDAP_000, new Object[ ] { urlServer, defaultPort }), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_000, new Object[ ] { urlServer, defaultPort }), e);
 		}
 
 	}

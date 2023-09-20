@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -36,7 +36,7 @@ import java.util.Map;
  * <p>Class that represents an Address with all its information
  * not dependent of the specification or TSL version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class Address implements Serializable {
 
@@ -48,12 +48,12 @@ public class Address implements Serializable {
 	/**
 	 * Attribute that represents the postal addresses in all the presented languages.
 	 */
-	private Map<String, List<PostalAddress>> postalAddresses = null;
+	private transient Map<String, List<PostalAddress>> postalAddresses = null;
 
 	/**
 	 * Attribute that represents the electronic addresses in all the presented languages.
 	 */
-	private Map<String, List<URI>> electronicAddresses = null;
+	private transient Map<String, List<URI>> electronicAddresses = null;
 
 	/**
 	 * Constructor method for the class Address.java.

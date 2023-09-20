@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.5, 04/08/2023.
+ * @version 2.6, 19/09/2023.
  */
 package es.gob.valet.tsl.access;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -55,9 +56,10 @@ import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
@@ -71,13 +73,13 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
-import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.AssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.rest.elements.json.DateString;
 import es.gob.valet.service.impl.ExternalAccessService;
 import es.gob.valet.spring.config.ApplicationContextProvider;
-import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
+import es.gob.valet.tasks.FindNewTslRevisionsTaskConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.impl.TSLValidatorFactory;
@@ -89,17 +91,17 @@ import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.exceptions.TSLValidationException;
-import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
 import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
+import es.gob.valet.utils.TSLCommonURIs;
 
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.5, 04/08/2023.
+ * @version 2.6, 19/09/2023.
  */
 public final class TSLManager {
 
@@ -146,6 +148,11 @@ public final class TSLManager {
 	private String setOfURLStringThatRepresentsEuLOTLinString = null;
 	
 	/**
+	 * Attribute that represents a date not specified.
+	 */
+	private static final String DATE_NOT_SPECIFIED = "Not specified";
+	
+	/**
 	 * Constructor method for the class TSLManager.java.
 	 */
 	private TSLManager() {
@@ -180,9 +187,9 @@ public final class TSLManager {
 
 		TSLObject tslObject = getTSLFromTheCountry(x509Cert, date);
 		if (tslObject == null) {
-			LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL238, new Object[ ] { UtilsCertificate.getCountryOfTheCertificateString(x509Cert), date }));
+			LOGGER.debug(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL238, new Object[ ] { UtilsCertificate.getCountryOfTheCertificateString(x509Cert), date }));
 		} else {
-			LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL239, new Object[ ] { UtilsCertificate.getCountryOfTheCertificateString(x509Cert), date, tslObject.getSchemeInformation().getTslSequenceNumber() }));
+			LOGGER.debug(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL239, new Object[ ] { UtilsCertificate.getCountryOfTheCertificateString(x509Cert), date, tslObject.getSchemeInformation().getTslSequenceNumber() }));
 			result = true;
 		}
 
@@ -212,7 +219,7 @@ public final class TSLManager {
 			String countryCode = UtilsCertificate.getCountryOfTheCertificateString(x509Cert);
 			// Si no lo hemos obtenido... mensaje.
 			if (UtilsStringChar.isNullOrEmptyTrim(countryCode)) {
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL102));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL102));
 			} else {
 				result = getTSLFromTheCountry(countryCode, date);
 			}
@@ -241,11 +248,11 @@ public final class TSLManager {
 
 			// Obtenemos la TSL del país/región indicados.
 			TSLDataCacheObject tdco = null;
-			String dateString = date == null ? "Not specified" : date.toString();
+			String dateString = date == null ? DATE_NOT_SPECIFIED : date.toString();
 			try {
 				tdco = getTSLDataFromCountryRegion(countryCode);
 			} catch (TSLManagingException e) {
-				throw new TSLManagingException(IValetException.COD_191, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL103, new Object[ ] { countryCode, dateString }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_191, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL103, new Object[ ] { countryCode, dateString }), e);
 			}
 
 			// Si lo hemos obtenido...
@@ -258,7 +265,7 @@ public final class TSLManager {
 					// Establecemos como resultado esta TSL.
 					result = (TSLObject) tdco.getTslObject();
 				}else{
-					LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL396, new Object[] {date.toString(), countryCode}));
+					LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL396, new Object[] {date.toString(), countryCode}));
 				}
 
 				
@@ -286,9 +293,9 @@ public final class TSLManager {
 
 		TSLObject tslObject = getTSLfromTSLLocation(tslLocation, date);
 		if (tslObject == null) {
-			LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL240, new Object[ ] { tslLocation, date }));
+			LOGGER.debug(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL240, new Object[ ] { tslLocation, date }));
 		} else {
-			LOGGER.debug(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL241, new Object[ ] { tslLocation, date, tslObject.getSchemeInformation().getTslSequenceNumber() }));
+			LOGGER.debug(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL241, new Object[ ] { tslLocation, date, tslObject.getSchemeInformation().getTslSequenceNumber() }));
 			result = true;
 		}
 
@@ -316,11 +323,11 @@ public final class TSLManager {
 
 			// Obtenemos la TSL con dicha localización.
 			TSLDataCacheObject tdco = null;
-			String dateString = date == null ? "Not specified" : date.toString();
+			String dateString = date == null ? DATE_NOT_SPECIFIED : date.toString();
 			try {
 				tdco = getTSLDataFromTSLLocation(tslLocation);
 			} catch (TSLManagingException e) {
-				throw new TSLManagingException(IValetException.COD_191, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL103, new Object[ ] { tslLocation, dateString }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_191, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL103, new Object[ ] { tslLocation, dateString }), e);
 			}
 			// Si lo hemos recuperado...
 			if (tdco != null) {
@@ -496,9 +503,9 @@ public final class TSLManager {
 			} catch (TSLManagingException e) {
 
 				try {
-					throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { UtilsCertificate.getCertificateIssuerId(cert), cert.getSerialNumber().toString() }), e);
+					throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL149, new Object[ ] { UtilsCertificate.getCertificateIssuerId(cert), cert.getSerialNumber().toString() }), e);
 				} catch (CommonUtilsException cue) {
-					throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { UtilsStringChar.EMPTY_STRING, cert.getSerialNumber().toString() }), e);
+					throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL149, new Object[ ] { UtilsStringChar.EMPTY_STRING, cert.getSerialNumber().toString() }), e);
 				}
 
 			}
@@ -616,7 +623,7 @@ public final class TSLManager {
 	 */
 	private ITSLValidatorResult validateX509withTSL(String auditTransNumber, X509Certificate cert, Date validationDate, boolean checkStatusRevocation, boolean calculateMappings, TSLObject tslObject) throws TSLManagingException {
 
-		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL199, new Object[ ] { tslObject.getSchemeInformation().getTslVersionIdentifier(), tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL199, new Object[ ] { tslObject.getSchemeInformation().getTslVersionIdentifier(), tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }));
 
 		ITSLValidatorResult result = null;
 
@@ -642,9 +649,9 @@ public final class TSLManager {
 		try {
 			result = tslValidator.validateCertificateWithTSL(auditTransNumber, cert, isCACert, isTsaCertificate, validationDateToUse, checkStatusRevocation);
 		} catch (TSLArgumentException e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
 		} catch (TSLValidationException e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
 		}
 
 		// Si no se ha producido excepción, el resultado no es nulo,
@@ -671,13 +678,13 @@ public final class TSLManager {
 		try {
 			boolean result = UtilsCertificate.hasCertKeyPurposeTimeStamping(cert);
 			if (result) {
-				LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL200));
+				LOGGER.debug(Language.getResCoreTsl(CoreTslMessages.LOGMTSL200));
 			}
 			// Añadimos la traza de auditoría...
 			CommonsCertificatesAuditTraces.addCertIsTsaCert(auditTransNumber, result);
 			return result;
 		} catch (CommonUtilsException e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL195), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL195), e);
 		}
 
 	}
@@ -712,7 +719,7 @@ public final class TSLManager {
 
 			// Añadimos la traza de auditoría indicando que no se ha encontrado.
 			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, false, null, null, null, null);
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL269));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL269));
 
 		} else {
 
@@ -721,7 +728,7 @@ public final class TSLManager {
 			DateString tslIssued = new DateString(tslObject.getSchemeInformation().getListIssueDateTime());
 			DateString tslNextUpdate = new DateString(tslObject.getSchemeInformation().getNextUpdate());
 			CommonsTslAuditTraces.addTslFindedTrace(auditTransNumber, true, tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber(), tslIssued, tslNextUpdate);
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL279));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL279));
 			// Continuamos el proceso...
 			result = validateX509withRevocationValues(auditTransNumber, cert, validationDateToUse, crls, ocsps, tslObject, calculateMappings);
 
@@ -801,7 +808,7 @@ public final class TSLManager {
 		// ocurrirá si se encuentra
 		// la TSL correspondiente y se detecta el tipo de certificado dentro de
 		// esta.
-		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL199, new Object[ ] { tslObject.getSchemeInformation().getTslVersionIdentifier(), tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL199, new Object[ ] { tslObject.getSchemeInformation().getTslVersionIdentifier(), tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }));
 		ITSLValidatorResult result = verifiesRevocationValuesForX509withTSL(auditTransNumber, cert, crls, ocspResponses, tslObject, date);
 
 		// Calculamos los mapeos si procede.
@@ -856,9 +863,9 @@ public final class TSLManager {
 			try {
 				result = tslValidator.verifiesRevocationValuesForX509withTSL(auditTransNumber, cert, isCACert, isTsaCertificate, crls, ocsps, validationDateToUse);
 			} catch (TSLArgumentException e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
 			} catch (TSLValidationException e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL149, new Object[ ] { tslObject.getSchemeInformation().getSchemeTerritory(), tslObject.getSchemeInformation().getTslSequenceNumber() }), e);
 			}
 
 		}
@@ -890,7 +897,7 @@ public final class TSLManager {
 			try {
 				tslCrmcoSet = ConfigurationCacheFacade.tslGetMappingFromCountryRegion(countryCode);
 			} catch (Exception e) {
-				LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL150), e);
+				LOGGER.error(Language.getResCoreTsl(CoreTslMessages.LOGMTSL150), e);
 			}
 			// Los calculamos y establecemos en el resultado.
 			calculateMappingsForCertificateAndSetInResult(auditTransNumber, cert, tslCrmcoSet, tslValidationResult);
@@ -920,7 +927,7 @@ public final class TSLManager {
 		try {
 			TSLValidatorMappingCalculator.extractMappingsFromCertificate(cert, mappings, tslCrmcoSet);
 		} catch (TSLValidationException e) {
-			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL152), e);
+			LOGGER.error(Language.getResCoreTsl(CoreTslMessages.LOGMTSL152), e);
 		}
 
 		// Obtenemos los mapings de campos lógicos.
@@ -929,7 +936,7 @@ public final class TSLManager {
 		try{
 			TSLValidatorMappingCalculator.extractMappingsFromTSPService(cert, mappings, tspServiceName);
 		}catch (TSLValidationException e) {
-			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL355), e);
+			LOGGER.error(Language.getResCoreTsl(CoreTslMessages.LOGMTSL355), e);
 		}
 		
 		
@@ -957,7 +964,7 @@ public final class TSLManager {
 	 */
 	public void reloadTSLCache() {
 
-		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL154));
+		LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL154));
 
 		try {
 
@@ -1010,10 +1017,10 @@ public final class TSLManager {
 
 			}
 
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL155));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL155));
 
 		} catch (Exception e) {
-			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL153), e);
+			LOGGER.error(Language.getResCoreTsl(CoreTslMessages.LOGMTSL153), e);
 		}
 	}
 
@@ -1032,7 +1039,7 @@ public final class TSLManager {
 			}
 
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL354, new Object[ ] { e.getMessage() }), e);
+			LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL354, new Object[ ] { e.getMessage() }), e);
 		}
 	}
 
@@ -1053,7 +1060,7 @@ public final class TSLManager {
 	 * @return List of TslMappingDTO.
 	 */
 	private List<TslMappingDTO> getListTslMappingTree(String codeCountry, String version, ITSLObject tslObject) {
-		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL349));
+		LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL349));
 		List<TslMappingDTO> result = new ArrayList<TslMappingDTO>();
 		boolean error = Boolean.FALSE;
 		// Recuperamos la lista de TSP y vamos analizando uno a uno.
@@ -1083,7 +1090,7 @@ public final class TSLManager {
 							// cualificados o no).
 							String tspServiceType = shi.getServiceTypeIdentifier().toString();
 							if (!UtilsStringChar.isNullOrEmpty(tspServiceType)) {
-								if (tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_CA_QC) || tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_CA_PKC) || tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_NATIONALROOTCA)) {
+								if (tspServiceType.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICETYPE_CA_QC) || tspServiceType.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICETYPE_CA_PKC) || tspServiceType.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICETYPE_NATIONALROOTCA)) {
 									TslMappingDTO tmDto = new TslMappingDTO(codeCountry, version, tspName);
 
 									String tspServiceName = shi.getServiceNameInLanguage(Locale.UK.getLanguage());
@@ -1098,11 +1105,11 @@ public final class TSLManager {
 
 										} catch (CommonUtilsException e) {
 											error = Boolean.TRUE;
-											LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL351, new Object[ ] { codeCountry, tspName, tspServiceName }));
+											LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL351, new Object[ ] { codeCountry, tspName, tspServiceName }));
 
 										} catch (CertificateEncodingException e) {
 											error = Boolean.TRUE;
-											LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL352, new Object[ ] { codeCountry, tspName, tspServiceName }));
+											LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL352, new Object[ ] { codeCountry, tspName, tspServiceName }));
 										}
 										tmDto.setDigitalIdentity(digitalId);
 										String expDate = UtilsCertificate.getValidTo(x509cert);
@@ -1120,7 +1127,7 @@ public final class TSLManager {
 				}
 
 			}
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL350));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL350));
 		}
 		return result;
 	}
@@ -1149,21 +1156,15 @@ public final class TSLManager {
 
 				// Generamos el objeto resultante.
 				result = new TSLObject(td.getTslImpl().getSpecification(), td.getTslImpl().getVersion());
-
-				ByteArrayInputStream bais = null;
-				try {
-
-					// Creamos un InputStream del array de bytes.
-					bais = new ByteArrayInputStream(td.getXmlDocument());
+				
+				// Creamos un InputStream del array de bytes.
+				try (ByteArrayInputStream bais = new ByteArrayInputStream(td.getXmlDocument())){
 
 					// Finalmente contruimos la TSL y la chequeamos.
 					result.buildTSLFromXMLcheckValuesCache(bais);
 
-				} finally {
-
-					// Aunque falle, cerramos el InputStream.
-					UtilsResources.safeCloseInputStream(bais);
-
+				} catch (IOException e) {
+					LOGGER.error(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { "ByteArrayInputStream" }), e);
 				}
 
 			}
@@ -1225,7 +1226,7 @@ public final class TSLManager {
 
 		} catch (TSLCacheException | TSLArgumentException | TSLParsingException
 				| TSLMalformedException e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL197), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL197), e);
 		}
 
 		return result;
@@ -1276,7 +1277,7 @@ public final class TSLManager {
 		try {
 			ctiList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService().getAllCTSLImpl();
 		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL158), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL158), e);
 		}
 
 		// Los recorremos y vamos añadiendo en el map.
@@ -1313,7 +1314,7 @@ public final class TSLManager {
 			try {
 				result = ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(countryRegion) != null;
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL159), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL159), e);
 			}
 		}
 
@@ -1336,7 +1337,7 @@ public final class TSLManager {
 		try {
 			result = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getAllCodeTslCountryRegion();
 		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL160), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL160), e);
 		}
 
 		return result;
@@ -1357,7 +1358,7 @@ public final class TSLManager {
 			try {
 				result = ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(countryRegionCode.toUpperCase());
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL161, new Object[ ] { countryRegionCode }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL161, new Object[ ] { countryRegionCode }), e);
 			}
 		}
 
@@ -1405,7 +1406,7 @@ public final class TSLManager {
 				}
 
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL162, new Object[ ] { tslcrId }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL162, new Object[ ] { tslcrId }), e);
 			}
 
 		}
@@ -1439,7 +1440,7 @@ public final class TSLManager {
 				}
 
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL163, new Object[ ] { countryRegionCode }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL163, new Object[ ] { countryRegionCode }), e);
 			}
 
 		}
@@ -1460,7 +1461,7 @@ public final class TSLManager {
 			try {
 				result = ConfigurationCacheFacade.tslGetMappingFromCountryRegion(countryRegionCode);
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL164, new Object[ ] { countryRegionCode }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL164, new Object[ ] { countryRegionCode }), e);
 			}
 		}
 
@@ -1482,7 +1483,7 @@ public final class TSLManager {
 
 			ConfigurationCacheFacade.tslRemoveMappingFromCountryRegion(countryRegionCode, null);
 		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL268, new Object[ ] { countryRegionCode }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL268, new Object[ ] { countryRegionCode }), e);
 		}
 	}
 
@@ -1567,8 +1568,8 @@ public final class TSLManager {
 	 * @param mappingIdentificator Mapping identificator.
 	 * @param mappingDescription Mapping Description. It is the only one that can be <code>null</code>.
 	 * @param mappingValue Mapping value.
-	 * @param associationType Association type for the mapping. It only must be {@link IAssociationTypeIdConstants#ID_FREE_ASSOCIATION}
-	 * or {@link IAssociationTypeIdConstants#ID_SIMPLE_ASSOCIATION}.
+	 * @param associationType Association type for the mapping. It only must be {@link AssociationTypeIdConstants#ID_FREE_ASSOCIATION}
+	 * or {@link AssociationTypeIdConstants#ID_SIMPLE_ASSOCIATION}.
 	 * @return TSL Country/Region Mapping data base object representation that has been added. <code>null</code> if there is
 	 * some problem with the input parameters, adding the mapping to the data base or if the TSL Country/Region is not defined.
 	 * @throws TSLManagingException In case of some error adding the new mapping to the data base and cache.
@@ -1619,7 +1620,7 @@ public final class TSLManager {
 
 			} catch (Exception e) {
 
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL165, new Object[ ] { countryRegionCode }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL165, new Object[ ] { countryRegionCode }), e);
 
 			}
 
@@ -1635,8 +1636,8 @@ public final class TSLManager {
 	 * @param mappingIdentificator Mapping identificator to assign.
 	 * @param mappingDescription Mapping description. It is the only one that can be <code>null</code>.
 	 * @param mappingValue Mapping value to assign.
-	 * @param associationType Association type for the mapping. It only must be {@link IAssociationTypeIdConstants#ID_FREE_ASSOCIATION}
-	 * or {@link IAssociationTypeIdConstants#ID_SIMPLE_ASSOCIATION}.
+	 * @param associationType Association type for the mapping. It only must be {@link AssociationTypeIdConstants#ID_FREE_ASSOCIATION}
+	 * or {@link AssociationTypeIdConstants#ID_SIMPLE_ASSOCIATION}.
 	 * @return TSL Country/Region Mapping data base object representation that has been updated. <code>null</code> if there is
 	 * some problem with the input parameters, adding the mapping to the data base or if the TSL Country/Region is not defined.
 	 * @throws TSLManagingException In case of some error updating a TSL mapping.
@@ -1678,7 +1679,7 @@ public final class TSLManager {
 				}
 
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL166, new Object[ ] { mappingId }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL166, new Object[ ] { mappingId }), e);
 			}
 
 		}
@@ -1706,7 +1707,7 @@ public final class TSLManager {
 				// se actualiza el mapa mapTslMappingTree
 				deleteMapTslMappingTree(countryRegionCode);
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL167, new Object[ ] { mappingId, countryRegionCode }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL167, new Object[ ] { mappingId, countryRegionCode }), e);
 			}
 
 		}
@@ -1768,7 +1769,7 @@ public final class TSLManager {
 				}
 
 			} catch (TSLException | TSLCacheException e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL168, new Object[ ] { countryRegionCode }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL168, new Object[ ] { countryRegionCode }), e);
 			}
 
 		}
@@ -1823,7 +1824,7 @@ public final class TSLManager {
 				}
 
 			} catch (TSLException | TSLCacheException e) {
-				throw new TSLManagingException(IValetException.COD_191, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL103, new Object[ ] { tslLocation, "Not specified" }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_191, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL103, new Object[ ] { tslLocation, DATE_NOT_SPECIFIED }), e);
 			}
 
 		}
@@ -1844,7 +1845,7 @@ public final class TSLManager {
 		try {
 			return ConfigurationCacheFacade.tslGetTSLDataCacheObject(tslDataId);
 		} catch (TSLCacheException e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL174, new Object[ ] { tslDataId }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL174, new Object[ ] { tslDataId }), e);
 		}
 
 	}
@@ -1959,7 +1960,7 @@ public final class TSLManager {
 			}
 
 		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL175, new Object[ ] { tslDataId }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL175, new Object[ ] { tslDataId }), e);
 		}
 
 		return result;
@@ -1982,7 +1983,7 @@ public final class TSLManager {
 			return td.getLegibleDocument();
 
 		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL176, new Object[ ] { tslDataId }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL176, new Object[ ] { tslDataId }), e);
 		}
 
 	}
@@ -2014,14 +2015,14 @@ public final class TSLManager {
 
 				tslObject.buildTSLFromXMLcheckValues(bais);
 			} catch (TSLMalformedException e) {
-				if (e.getErrorCode() != null && e.getErrorCode().equals(IValetException.COD_204)) {
-					throw new TSLManagingException(IValetException.COD_204, e.getMessage(), e);
+				if (e.getErrorCode() != null && e.getErrorCode().equals(ValetExceptionConstants.COD_204)) {
+					throw new TSLManagingException(ValetExceptionConstants.COD_204, e.getMessage(), e);
 				} else {
-					throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
+					throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL170), e);
 				}
 
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL170), e);
 			} finally {
 				UtilsResources.safeCloseInputStream(bais);
 			}
@@ -2068,7 +2069,7 @@ public final class TSLManager {
 				// Se actualizan los accessos externos con las url de los distintos distribution point que contenga la tsl.
 				ApplicationContextProvider.getApplicationContext().getBean(ExternalAccessService.class).new ExternalAccessServiceThread(ExternalAccessService.OPERATION2, tslObject).start();
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL171), e);
 			}
 
 		}
@@ -2143,7 +2144,7 @@ public final class TSLManager {
 		td.setIssueDate(tslObject.getSchemeInformation().getListIssueDateTime());
 		td.setExpirationDate(tslObject.getSchemeInformation().getNextUpdate());
 		td.setSequenceNumber(tslObject.getSchemeInformation().getTslSequenceNumber());
-		td.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
+		td.setNewTSLAvailable(FindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
 
 		// Lo añadimos en base de datos.
 		td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().saveTSL(td);
@@ -2167,7 +2168,7 @@ public final class TSLManager {
 			try {
 				td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslDataById(tslDataId, false, false);
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL190, new Object[ ] { tslDataId, newDP }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL190, new Object[ ] { tslDataId, newDP }), e);
 			}
 
 			// Si se encuentra en la BD se actualiza...
@@ -2183,7 +2184,7 @@ public final class TSLManager {
 				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tdco.getTslObject());
 			}
 		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL190, new Object[ ] { tslDataId, newDP }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL190, new Object[ ] { tslDataId, newDP }), e);
 		}
 	}
 
@@ -2202,7 +2203,7 @@ public final class TSLManager {
 			try {
 				td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslDataById(tslDataId, false, false);
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL191, new Object[ ] { tslDataId, newTSLAvailable }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL191, new Object[ ] { tslDataId, newTSLAvailable }), e);
 			}
 
 			// Si se encuentra en la BD...
@@ -2219,7 +2220,7 @@ public final class TSLManager {
 			}
 
 		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL191, new Object[ ] { tslDataId, newTSLAvailable }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL191, new Object[ ] { tslDataId, newTSLAvailable }), e);
 		}
 	}
 
@@ -2238,7 +2239,7 @@ public final class TSLManager {
 			try {
 				td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslDataById(tslDataId, false, false);
 			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL192, new Object[ ] { tslDataId, UtilsDate.toString(UtilsDate.FORMAT_DATE, date) }), e);
+				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL192, new Object[ ] { tslDataId, UtilsDate.toString(UtilsDate.FORMAT_DATE, date) }), e);
 			}
 
 			// Si se encuentra en la BD se actualiza
@@ -2254,7 +2255,7 @@ public final class TSLManager {
 				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tdco.getTslObject());
 			}
 		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL192, new Object[ ] { tslDataId, UtilsDate.toString(UtilsDate.FORMAT_DATE, date) }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL192, new Object[ ] { tslDataId, UtilsDate.toString(UtilsDate.FORMAT_DATE, date) }), e);
 		}
 
 	}
@@ -2285,7 +2286,7 @@ public final class TSLManager {
 
 		} catch (Exception e) {
 
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL177, new Object[ ] { tslDataId }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL177, new Object[ ] { tslDataId }), e);
 
 		}
 
@@ -2359,7 +2360,7 @@ public final class TSLManager {
 			}
 
 		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL173, new Object[ ] { tslDataId, crc }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL173, new Object[ ] { tslDataId, crc }), e);
 		}
 
 	}
@@ -2403,7 +2404,7 @@ public final class TSLManager {
 			result = initialDate.equals(dateToCheck) || initialDate.before(dateToCheck);
 
 			if (!result) {
-				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL225, new Object[ ] { dateToCheck, initialDate }));
+				LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL225, new Object[ ] { dateToCheck, initialDate }));
 			}
 
 		}
@@ -2466,14 +2467,14 @@ public final class TSLManager {
 					tslObject.buildTSLFromXMLcheckValues(bais);
 
 				} catch (TSLMalformedException e) {
-					if (e.getErrorCode() != null && e.getErrorCode().equals(IValetException.COD_204)) {
-						throw new TSLManagingException(IValetException.COD_204, e.getMessage(), e);
+					if (e.getErrorCode() != null && e.getErrorCode().equals(ValetExceptionConstants.COD_204)) {
+						throw new TSLManagingException(ValetExceptionConstants.COD_204, e.getMessage(), e);
 					} else {
-						throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
+						throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL170), e);
 					}
 
 				} catch (Exception e) {
-					throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL170), e);
+					throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL170), e);
 				} finally {
 					UtilsResources.safeCloseInputStream(bais);
 				}
@@ -2486,11 +2487,11 @@ public final class TSLManager {
 				int sequenceNew = tslObject.getSchemeInformation().getTslSequenceNumber();
 				if (sequenceNew >= sequenceOld) {
 					// No Existe una nueva versión de la TSL.
-					td.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
+					td.setNewTSLAvailable(FindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
 					td.setLastNewTSLAvailableFind(null);
 				} else {
 					// No Existe una nueva versión de la TSL.
-					td.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NEW_TSL_AVAILABLE);
+					td.setNewTSLAvailable(FindNewTslRevisionsTaskConstants.NEW_TSL_AVAILABLE);
 					td.setLastNewTSLAvailableFind(Calendar.getInstance().getTime());
 				}
 
@@ -2546,7 +2547,7 @@ public final class TSLManager {
 
 		Exception e) {
 
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL259, new Object[ ] { tslDataId }), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL259, new Object[ ] { tslDataId }), e);
 
 		}
 		return result;
@@ -2567,13 +2568,13 @@ public final class TSLManager {
 			// Como mínimo añadimos las dos URL conocidas a fecha de 20/08/2019:
 			// -
 			// https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml
-			setOfURLStringThatRepresentsEuLOTL.add(ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_1);
-			setOfURLStringThatRepresentsEuLOTLinString = ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_1;
+			setOfURLStringThatRepresentsEuLOTL.add(TSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_1);
+			setOfURLStringThatRepresentsEuLOTLinString = TSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_1;
 			// - https://ec.europa.eu/tools/lotl/eu-lotl.xml
-			setOfURLStringThatRepresentsEuLOTL.add(ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_2);
+			setOfURLStringThatRepresentsEuLOTL.add(TSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_2);
 			setOfURLStringThatRepresentsEuLOTLinString += UtilsStringChar.SYMBOL_COMMA_STRING;
 			setOfURLStringThatRepresentsEuLOTLinString += UtilsStringChar.SPECIAL_BLANK_SPACE_STRING;
-			setOfURLStringThatRepresentsEuLOTLinString += ITSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_2;
+			setOfURLStringThatRepresentsEuLOTLinString += TSLCommonURIs.TSL_EU_LIST_OF_THE_LISTS_2;
 
 			// Ahora recolectamos las establecidas en la configuración estática,
 			// y añadimos aquellas que
@@ -2630,7 +2631,7 @@ public final class TSLManager {
 		try {
 			tslCountryVersionList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslCountryVersionAvailable();
 		} catch (Exception e) {
-			throw new TSLManagingException(IValetException.COD_203, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL267), e);
+			throw new TSLManagingException(ValetExceptionConstants.COD_203, Language.getResCoreTsl(CoreTslMessages.LOGMTSL267), e);
 		}
 
 		// Si el listado no es nulo ni vacío,

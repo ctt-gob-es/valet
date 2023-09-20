@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.ifaces;
 
@@ -32,49 +32,9 @@ import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 /**
  * <p>Interface that defines the common method for any type extensions in a TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public interface IAnyTypeExtension extends Serializable {
-
-	/**
-	 * Constant attribute that identifies a extension how 'Schemne Extension'.
-	 */
-	int TYPE_SCHEME = 0;
-
-	/**
-	 * Constant attribute that identifies a extension how 'TSP Information Extension'.
-	 */
-	int TYPE_TSP_INFORMATION = 1;
-
-	/**
-	 * Constant attribute that identifies a extension how 'Service Information Extension'.
-	 */
-	int TYPE_SERVICE_INFORMATION = 2;
-
-	/**
-	 * Constant attribute that represents the implementation extension: AdditionalServiceInformation.
-	 */
-	int IMPL_ADDITIONAL_SERVICE_INFORMATION = 0;
-
-	/**
-	 * Constant attribute that represents the implementation extension: ExpiredCertsRevocationInfo.
-	 */
-	int IMPL_EXPIRED_CERTS_REVOCATION_INFO = 1;
-
-	/**
-	 * Constant attribute that represents the implementation extension: Qualifications.
-	 */
-	int IMPL_QUALIFICATIONS = 2;
-
-	/**
-	 * Constant attribute that represents the implementation extension: TakenOverBy.
-	 */
-	int IMPL_TAKENOVERBY = 3;
-
-	/**
-	 * Constant attribute that represents the implementation extension: UnknownExtension.
-	 */
-	int IMPL_UNKNOWN_EXTENSION = 4;
 
 	/**
 	 * Checks if the extension is critical or not.

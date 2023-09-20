@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -32,19 +32,19 @@ import java.util.Map;
 
 import es.gob.valet.commons.utils.UtilsCountryLanguage;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
-import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
-import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
+import es.gob.valet.utils.TSLBuilderConstants;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 
 /**
  * <p>Class that represents a TakenOverBy TSL extension.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class TakenOverBy extends Extension {
 
@@ -63,13 +63,13 @@ public class TakenOverBy extends Extension {
 	 * in all the presented languages:
 	 * Map<Language, List<Names>>.
 	 */
-	private Map<String, List<String>> tspNames = null;
+	private transient Map<String, List<String>> tspNames = null;
 
 	/**
 	 * Attribute that represents the formal name under which the scheme operator
 	 * does business or is given its mandate in all presented languages.
 	 */
-	private Map<String, String> schemeOperatorNames = null;
+	private transient Map<String, String> schemeOperatorNames = null;
 
 	/**
 	 * Attribute that represents he country or territory in which the
@@ -82,13 +82,13 @@ public class TakenOverBy extends Extension {
 	 * @param isCritical Flag to indicate if this extension is critical (<code>true</code>) or not (<code>false</code>).
 	 * @param extensionType Extension type. Refer to its location inside the XML. It could be one of the following:
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 */
 	public TakenOverBy(boolean isCritical, int extensionType) {
-		super(isCritical, extensionType, IAnyTypeExtension.IMPL_TAKENOVERBY);
+		super(isCritical, extensionType, TSLBuilderConstants.IMPL_TAKENOVERBY);
 		tspNames = new HashMap<String, List<String>>();
 		schemeOperatorNames = new HashMap<String, String>();
 	}
@@ -220,8 +220,8 @@ public class TakenOverBy extends Extension {
 
 		// Esta extensión tan solo puede ser del tipo
 		// 'ServiceInformationExtension'.
-		if (getExtensionType() != IAnyTypeExtension.TYPE_SERVICE_INFORMATION) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL032, new Object[ ] { extensionTypeToString(IAnyTypeExtension.TYPE_SERVICE_INFORMATION), extensionTypeToString(getExtensionType()) }));
+		if (getExtensionType() != TSLBuilderConstants.TYPE_SERVICE_INFORMATION) {
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL032, new Object[ ] { extensionTypeToString(TSLBuilderConstants.TYPE_SERVICE_INFORMATION), extensionTypeToString(getExtensionType()) }));
 		}
 
 	}
@@ -235,16 +235,16 @@ public class TakenOverBy extends Extension {
 
 		// Todos los atributos de esta extensión deben tener un valor asignado.
 		if (uri == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL024, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_LOCALNAME, ITSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_URI }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL024, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_LOCALNAME, TSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_URI }));
 		}
 		if (tspNames.isEmpty()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL024, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_LOCALNAME, ITSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_TSPNAME }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL024, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_LOCALNAME, TSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_TSPNAME }));
 		}
 		if (schemeOperatorNames.isEmpty()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL024, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_LOCALNAME, ITSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_SCHEMEOPERATORNAME }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL024, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_LOCALNAME, TSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_SCHEMEOPERATORNAME }));
 		}
 		if (UtilsStringChar.isNullOrEmptyTrim(schemeTerritory) || !UtilsCountryLanguage.checkCountryCode(schemeTerritory)) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL024, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_LOCALNAME, ITSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_SCHEMETERRITORY }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL024, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_LOCALNAME, TSLElementsAndAttributes.ELEMENT_EXTENSION_TAKENOVERBY_SCHEMETERRITORY }));
 		}
 
 	}

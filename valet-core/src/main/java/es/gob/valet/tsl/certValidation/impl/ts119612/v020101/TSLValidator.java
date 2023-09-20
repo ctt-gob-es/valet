@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version  1.8, 03/04/2023.
+ * @version 1.9, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.ts119612.v020101;
 
@@ -29,35 +29,37 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
-import es.gob.valet.rest.services.ITslMappingConstants;
+import es.gob.valet.i18n.messages.CoreTslMessages;
+import es.gob.valet.rest.services.TslMappingConstants;
 import es.gob.valet.tsl.certValidation.CertificateExtension;
 import es.gob.valet.tsl.certValidation.SIResult;
 import es.gob.valet.tsl.certValidation.TspServiceQualifier;
-import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorOtherConstants;
-import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
+import es.gob.valet.tsl.certValidation.ifaces.TSLValidatorOtherConstants;
 import es.gob.valet.tsl.certValidation.impl.TSLValidatorMappingCalculator;
 import es.gob.valet.tsl.certValidation.impl.common.ATSLValidator;
 import es.gob.valet.tsl.certValidation.impl.common.TSLCertificateExtensionAnalyzer;
 import es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult;
 import es.gob.valet.tsl.exceptions.TSLValidationException;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
-import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
-import es.gob.valet.tsl.parsing.ifaces.ITSLOIDs;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.extensions.AdditionalServiceInformation;
+import es.gob.valet.utils.TSLBuilderConstants;
+import es.gob.valet.utils.TSLCommonURIs;
+import es.gob.valet.utils.TSLOIDs;
+import es.gob.valet.utils.ValidatorResultConstants;
 
 /**
  * <p>Class that represents a TSL Validator implementation for the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version  1.8, 03/04/2023.
+ * @version 1.9, 19/09/2023.
  */
 public class TSLValidator extends ATSLValidator {
 
@@ -81,7 +83,7 @@ public class TSLValidator extends ATSLValidator {
 	@Override
 	protected boolean checkIfTSLisFromEuropeanMember() {
 		String tslType = getTSLObject().getSchemeInformation().getTslType().toString();
-		return tslType.equalsIgnoreCase(ITSLCommonURIs.TSL_TYPE_EUGENERIC) || tslType.equalsIgnoreCase(ITSLCommonURIs.TSL_TYPE_EULISTOFTHELIST);
+		return tslType.equalsIgnoreCase(TSLCommonURIs.TSL_TYPE_EUGENERIC) || tslType.equalsIgnoreCase(TSLCommonURIs.TSL_TYPE_EULISTOFTHELIST);
 	}
 
 	/**
@@ -90,7 +92,7 @@ public class TSLValidator extends ATSLValidator {
 	 */
 	@Override
 	protected boolean checkIfTSLisListOfLists(String tslType) {
-		return tslType.equalsIgnoreCase(ITSLCommonURIs.TSL_TYPE_EULISTOFTHELIST) || tslType.startsWith(ITSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX) && tslType.endsWith(ITSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX);
+		return tslType.equalsIgnoreCase(TSLCommonURIs.TSL_TYPE_EULISTOFTHELIST) || tslType.startsWith(TSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX) && tslType.endsWith(TSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX);
 	}
 
 	/**
@@ -108,7 +110,7 @@ public class TSLValidator extends ATSLValidator {
 	 */
 	@Override
 	public boolean checkIfTSPServiceTypeIsCAPKC(String tspServiceType) {
-		return tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_CA_PKC);
+		return tspServiceType.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICETYPE_CA_PKC);
 	}
 
 	/**
@@ -117,7 +119,7 @@ public class TSLValidator extends ATSLValidator {
 	 */
 	@Override
 	public boolean checkIfTSPServiceTypeIsCAQC(String tspServiceType) {
-		return tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_CA_QC);
+		return tspServiceType.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICETYPE_CA_QC);
 	}
 
 	/**
@@ -126,7 +128,7 @@ public class TSLValidator extends ATSLValidator {
 	 */
 	@Override
 	protected boolean checkIfTSPServiceTypeIsNationalRootCAQC(String tspServiceType) {
-		return tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_NATIONALROOTCA);
+		return tspServiceType.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICETYPE_NATIONALROOTCA);
 	}
 
 	/**
@@ -135,7 +137,7 @@ public class TSLValidator extends ATSLValidator {
 	 */
 	@Override
 	protected boolean checkIfTSPServiceTypeIsTSAQualified(String tspServiceType) {
-		return tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_TSA_QTST);
+		return tspServiceType.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICETYPE_TSA_QTST);
 	}
 
 	/**
@@ -144,7 +146,7 @@ public class TSLValidator extends ATSLValidator {
 	 */
 	@Override
 	protected boolean checkIfTSPServiceTypeIsTSANonQualified(String tspServiceType) {
-		return tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_TSA) || tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_TSA_TSSQC) || tspServiceType.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICETYPE_TSA_TSS_ADESQC_AND_QES);
+		return tspServiceType.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICETYPE_TSA) || tspServiceType.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICETYPE_TSA_TSSQC) || tspServiceType.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICETYPE_TSA_TSS_ADESQC_AND_QES);
 	}
 
 	/**
@@ -172,12 +174,12 @@ public class TSLValidator extends ATSLValidator {
 			for (IAnyTypeExtension extension: extensionsList) {
 
 				// Si es del tipo AdditionalServiceInformation...
-				if (extension.getImplementationExtension() == IAnyTypeExtension.IMPL_ADDITIONAL_SERVICE_INFORMATION) {
+				if (extension.getImplementationExtension() == TSLBuilderConstants.IMPL_ADDITIONAL_SERVICE_INFORMATION) {
 
 					// La añadimos a la lista final.
 					AdditionalServiceInformation ext = (AdditionalServiceInformation) extension;
 					asiList.add((AdditionalServiceInformation) extension);
-					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL311, new Object[ ] { ext.getUri().toString() }));
+					LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL311, new Object[ ] { ext.getUri().toString() }));
 				}
 
 			}
@@ -201,18 +203,18 @@ public class TSLValidator extends ATSLValidator {
 
 				// En función de la URI, vamos marcando las banderas.
 				switch (asi.getUri().toString()) {
-					case ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_ROOTCAQC:
+					case TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_ROOTCAQC:
 						break;
 
-					case ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESIGNATURES:
+					case TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESIGNATURES:
 						asiForESIG = true;
 						break;
 
-					case ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESEALS:
+					case TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESEALS:
 						asiForESeal = true;
 						break;
 
-					case ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORWEBSITEAUTHENTICATION:
+					case TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORWEBSITEAUTHENTICATION:
 						asiForWSA = true;
 						break;
 
@@ -231,26 +233,26 @@ public class TSLValidator extends ATSLValidator {
 			extractInfoTslCertExtAnalycer(tslCertExtAnalyzer);
 			// Vamos comprobando de mayor requirimiento a menos...
 			// Primero autenticación servidor...
-			result = asiForWSA && (tslCertExtAnalyzer.hasQcStatementEuTypeExtensionOid(ITSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE_WEB.getId()) || tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_WSA_CERTS_LIST));
+			result = asiForWSA && (tslCertExtAnalyzer.hasQcStatementEuTypeExtensionOid(TSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE_WEB.getId()) || tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(TSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_WSA_CERTS_LIST));
 			if (result) {
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL312));
-				validationResult.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_WSA);
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL312));
+				validationResult.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_WSA);
 
 			} else {
 
 				// Sello...
-				result = asiForESeal && (tslCertExtAnalyzer.hasQcStatementEuTypeExtensionOid(ITSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE_ESEAL.getId()) || tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_ESEAL_CERTS_LIST));
+				result = asiForESeal && (tslCertExtAnalyzer.hasQcStatementEuTypeExtensionOid(TSLOIDs.OID_QCSTATEMENT_EXT_EUTYPE_ESEAL.getId()) || tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(TSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_ESEAL_CERTS_LIST));
 				if (result) {
 
-					validationResult.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_ESEAL);
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL317));
+					validationResult.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_ESEAL);
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL317));
 				} else {
 
-					result = asiForESIG && (tslCertExtAnalyzer.isThereSomeQcStatementExtension() || tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(ITSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_ESIG_CERTS_LIST));
+					result = asiForESIG && (tslCertExtAnalyzer.isThereSomeQcStatementExtension() || tslCertExtAnalyzer.hasSomeCertPolPolInfExtensionOid(TSLValidatorOtherConstants.POLICYIDENTIFIERS_OIDS_FOR_ESIG_CERTS_LIST));
 					if (result) {
 
-						validationResult.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_ESIG);
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL318));
+						validationResult.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_ESIG);
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL318));
 					}
 
 				}
@@ -272,56 +274,56 @@ public class TSLValidator extends ATSLValidator {
 
 		switch (qualifierUriString) {
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHSSCD:
-				validationResult.setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_YES);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHSSCD:
+				validationResult.setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_YES);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOSSCD:
-				validationResult.setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_NO);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOSSCD:
+				validationResult.setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_NO);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATUSASINCERT:
-				validationResult.setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_ASINCERT);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATUSASINCERT:
+				validationResult.setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_ASINCERT);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD:
-				validationResult.setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_YES);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD:
+				validationResult.setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_YES);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD:
-				validationResult.setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_NO);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD:
+				validationResult.setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_NO);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT:
-				validationResult.setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_ASINCERT);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT:
+				validationResult.setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_ASINCERT);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF:
-				validationResult.setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_YES_MANAGEDONBEHALF);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF:
+				validationResult.setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_YES_MANAGEDONBEHALF);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORLEGALPERSON:
-				validationResult.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_LEGALPERSON);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORLEGALPERSON:
+				validationResult.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_LEGALPERSON);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESIG:
-				validationResult.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_ESIG);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESIG:
+				validationResult.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_ESIG);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESEAL:
-				validationResult.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_ESEAL);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESEAL:
+				validationResult.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_ESEAL);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORWSA:
-				validationResult.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_WSA);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORWSA:
+				validationResult.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_WSA);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_NOTQUALIFIED:
-				validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_NOTQUALIFIED:
+				validationResult.setMappingType(ValidatorResultConstants.MAPPING_TYPE_NONQUALIFIED);
 				break;
 
-			case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATEMENT:
-				validationResult.setMappingType(ITSLValidatorResult.MAPPING_TYPE_QUALIFIED);
+			case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATEMENT:
+				validationResult.setMappingType(ValidatorResultConstants.MAPPING_TYPE_QUALIFIED);
 				break;
 
 			default:
@@ -358,10 +360,10 @@ public class TSLValidator extends ATSLValidator {
 			// - Si el certificado se encuentra (o no) en un SSCD/QSCD.
 			// - Que el certificado haya sido emitido para una "legal person" o
 			// para ESIG, ESEAL o WSA.
-			result = ITslMappingConstants.MAPPING_VALUE_YES.equals(mappingQualifiedCert) && !ITslMappingConstants.MAPPING_VALUE_UNKNOWN.equals(mappingQscd);
+			result = TslMappingConstants.MAPPING_VALUE_YES.equals(mappingQualifiedCert) && !TslMappingConstants.MAPPING_VALUE_UNKNOWN.equals(mappingQscd);
 			if (result) {
-				result = ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_LEGALPERSON.equals(mappingClassification) || ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG.equals(mappingClassification);
-				result = result || ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL.equals(mappingClassification) || ITslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA.equals(mappingClassification);
+				result = TslMappingConstants.MAPPING_VALUE_CLASSIFICATION_LEGALPERSON.equals(mappingClassification) || TslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESIG.equals(mappingClassification);
+				result = result || TslMappingConstants.MAPPING_VALUE_CLASSIFICATION_ESEAL.equals(mappingClassification) || TslMappingConstants.MAPPING_VALUE_CLASSIFICATION_WSA.equals(mappingClassification);
 			}
 
 		} catch (TSLValidationException e) {
@@ -369,7 +371,7 @@ public class TSLValidator extends ATSLValidator {
 			// En caso de no parsear el certificado, se muestra error, y se
 			// considera
 			// no detectado.
-			LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL197), e);
+			LOGGER.error(Language.getResCoreTsl(CoreTslMessages.LOGMTSL197), e);
 
 		}
 
@@ -384,10 +386,10 @@ public class TSLValidator extends ATSLValidator {
 	@Override
 	public boolean checkIfTSPServiceStatusIsOK(String serviceStatus) {
 
-		boolean result = serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_GRANTED) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_RECOGNISEDATNATIONALLEVEL);
-		result = result || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_UNDERSUPERVISION) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONINCESSATION);
-		result = result || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITED) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SETBYNATIONALLAW);
-		result = result || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN);
+		boolean result = serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_GRANTED) || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_RECOGNISEDATNATIONALLEVEL);
+		result = result || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_UNDERSUPERVISION) || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONINCESSATION);
+		result = result || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITED) || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SETBYNATIONALLAW);
+		result = result || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN);
 		return result;
 
 	}
@@ -405,11 +407,11 @@ public class TSLValidator extends ATSLValidator {
 		if (serviceStatusStartingTime.before(validationDate)) {
 
 			boolean statusOK = checkIfTSPServiceStatusIsOK(serviceStatus);
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL319, new Object[ ] { serviceStatus }));
-			boolean statusChainNotValid = serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONCEASED) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONCEASED);
+			LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL319, new Object[ ] { serviceStatus }));
+			boolean statusChainNotValid = serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONCEASED) || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONCEASED);
 
-			boolean statusRevoked = serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONREVOKED) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONREVOKED);
-			statusRevoked = statusRevoked || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDBYNATIONALLAW) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDATNATIONALLEVEL);
+			boolean statusRevoked = serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONREVOKED) || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONREVOKED);
+			statusRevoked = statusRevoked || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDBYNATIONALLAW) || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDATNATIONALLEVEL);
 
 			// Si el estado del servicio es OK, establecemos
 			// que se detecta el certificado.
@@ -420,8 +422,8 @@ public class TSLValidator extends ATSLValidator {
 				// se considera que su estado de revocación es OK.
 				if (isCACert) {
 
-					validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_VALID);
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL288));
+					validationResult.setResult(ValidatorResultConstants.RESULT_DETECTED_STATE_VALID);
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL288));
 
 				}
 				// Al ser tipo final, se establece el estado a detectado
@@ -430,19 +432,19 @@ public class TSLValidator extends ATSLValidator {
 				// revocación.
 				else {
 
-					validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_UNKNOWN);
+					validationResult.setResult(ValidatorResultConstants.RESULT_DETECTED_STATE_UNKNOWN);
 					//LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL289));
 				}
 
 			} else if (statusChainNotValid) {
 
-				validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID_SERVICESTATUS);
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL290));
+				validationResult.setResult(ValidatorResultConstants.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID_SERVICESTATUS);
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL290));
 
 			} else if (statusRevoked) {
 
-				validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_REVOKED_SERVICESTATUS);
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL291));
+				validationResult.setResult(ValidatorResultConstants.RESULT_DETECTED_STATE_REVOKED_SERVICESTATUS);
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL291));
 
 			}
 
@@ -462,13 +464,13 @@ public class TSLValidator extends ATSLValidator {
 		// Si el certificado es cualificado (qualified)...
 		if (isCertQualified) {
 
-			result = shi.getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL_QC);
+			result = shi.getServiceTypeIdentifier().toString().equals(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL_QC);
 
 		}
 		// Si no es cualificado...
 		else {
 
-			result = shi.getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL);
+			result = shi.getServiceTypeIdentifier().toString().equals(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL);
 
 		}
 
@@ -488,13 +490,13 @@ public class TSLValidator extends ATSLValidator {
 		// Si el certificado es cualificado (qualified)...
 		if (isCertQualified) {
 
-			result = shi.getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP_QC);
+			result = shi.getServiceTypeIdentifier().toString().equals(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP_QC);
 
 		}
 		// Si no es cualificado...
 		else {
 
-			result = shi.getServiceTypeIdentifier().toString().equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP);
+			result = shi.getServiceTypeIdentifier().toString().equals(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP);
 
 		}
 
@@ -508,24 +510,24 @@ public class TSLValidator extends ATSLValidator {
 	private void extractInfoTslCertExtAnalycer(TSLCertificateExtensionAnalyzer tslCertExtAnalyzer) {
 		// se obtienen la informacion para pintarla en el log
 		if (tslCertExtAnalyzer != null) {
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL313));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL313));
 			if (tslCertExtAnalyzer.getPolicyInformationsOids() != null && !tslCertExtAnalyzer.getPolicyInformationsOids().isEmpty()) {
 				String polInfOidsCert = String.join(",", tslCertExtAnalyzer.getPolicyInformationsOids());
 				if (!UtilsStringChar.isNullOrEmpty(polInfOidsCert)) {
-					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL315, new Object[ ] { polInfOidsCert }));
+					LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL315, new Object[ ] { polInfOidsCert }));
 				}
 			}
 
 			if (tslCertExtAnalyzer.getQcStatementsOids() != null && !tslCertExtAnalyzer.getQcStatementsOids().isEmpty()) {
 				String qcStatementOids = String.join(",", tslCertExtAnalyzer.getQcStatementsOids());
 				if (!UtilsStringChar.isNullOrEmpty(qcStatementOids)) {
-					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL314, new Object[ ] { qcStatementOids }));
+					LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL314, new Object[ ] { qcStatementOids }));
 				}
 			}
 			if (tslCertExtAnalyzer.getQcStatementExtEuTypeOids() != null && !tslCertExtAnalyzer.getQcStatementExtEuTypeOids().isEmpty()) {
 				String qcStatementsExtEuTypeOids = String.join(",", tslCertExtAnalyzer.getQcStatementExtEuTypeOids());
 				if (!UtilsStringChar.isNullOrEmpty(qcStatementsExtEuTypeOids)) {
-					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL316, new Object[ ] { qcStatementsExtEuTypeOids }));
+					LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL316, new Object[ ] { qcStatementsExtEuTypeOids }));
 				}
 			}
 		}
@@ -556,10 +558,10 @@ public class TSLValidator extends ATSLValidator {
 				ce.setQcType3(Boolean.TRUE);
 			}
 
-			if (tslCertExtAnalyzer.hasCertPolPolInfExtensionOid(ITSLOIDs.OID_POLICY_IDENTIFIER_QCP_PUBLIC_WITH_SSCD.getId())) {
+			if (tslCertExtAnalyzer.hasCertPolPolInfExtensionOid(TSLOIDs.OID_POLICY_IDENTIFIER_QCP_PUBLIC_WITH_SSCD.getId())) {
 				ce.setPolicyIdQCP_SSCD(Boolean.TRUE);
 			}
-			if (tslCertExtAnalyzer.hasCertPolPolInfExtensionOid(ITSLOIDs.OID_POLICY_IDENTIFIER_QCP_PUBLIC.getId())) {
+			if (tslCertExtAnalyzer.hasCertPolPolInfExtensionOid(TSLOIDs.OID_POLICY_IDENTIFIER_QCP_PUBLIC.getId())) {
 				ce.setPolicyIdQCP(Boolean.TRUE);
 			}
 			if (tslCertExtAnalyzer.hasQcStatementExtensionOid(ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.getId())) {
@@ -577,55 +579,55 @@ public class TSLValidator extends ATSLValidator {
 	protected void analyzeQuelifier(TspServiceQualifier tspServiceQualifier, String qualifierUriString) {
 		switch (qualifierUriString) {
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHSSCD:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHSSCD:
 			tspServiceQualifier.setQcWithSSCD(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOSSCD:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOSSCD:
 			tspServiceQualifier.setQcNoSSCD(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATUSASINCERT:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATUSASINCERT:
 			tspServiceQualifier.setQcSSCDStatusAsInCert(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD:
 			tspServiceQualifier.setQcWithQSCD(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD:
 			tspServiceQualifier.setQcNoQSCD(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT:
 			tspServiceQualifier.setQcQSCDStatusAsInCert(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF:
 			tspServiceQualifier.setQcQSCDManagedOnBehalf(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORLEGALPERSON:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORLEGALPERSON:
 			tspServiceQualifier.setQcForLegalPerson(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESIG:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESIG:
 			tspServiceQualifier.setQcForESig(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESEAL:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESEAL:
 			tspServiceQualifier.setQcForESeal(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORWSA:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORWSA:
 			tspServiceQualifier.setQcForWSA(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_NOTQUALIFIED:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_NOTQUALIFIED:
 			tspServiceQualifier.setNotQualified(Boolean.TRUE);
 			break;
 
-		case ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATEMENT:
+		case TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATEMENT:
 			tspServiceQualifier.setQcStatement(Boolean.TRUE);
 			break;
 
@@ -645,7 +647,7 @@ public class TSLValidator extends ATSLValidator {
 
 		// Inicialmente consideramos que no se han definido extensiones
 		// AdditionalServiceInformation.
-		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL363, new Object[ ] { siResult.getTspName() }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL363, new Object[ ] { siResult.getTspName() }));
 		// Primero recolectamos todas las extensiones del tipo
 		// AdditionalServiceInformation.
 		List<AdditionalServiceInformation> asiList = new ArrayList<AdditionalServiceInformation>();
@@ -660,12 +662,12 @@ public class TSLValidator extends ATSLValidator {
 			for (IAnyTypeExtension extension: extensionsList) {
 
 				// Si es del tipo AdditionalServiceInformation...
-				if (extension.getImplementationExtension() == IAnyTypeExtension.IMPL_ADDITIONAL_SERVICE_INFORMATION) {
+				if (extension.getImplementationExtension() == TSLBuilderConstants.IMPL_ADDITIONAL_SERVICE_INFORMATION) {
 
 					// La añadimos a la lista final.
 					AdditionalServiceInformation ext = (AdditionalServiceInformation) extension;
 					asiList.add((AdditionalServiceInformation) extension);
-					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL311, new Object[ ] { ext.getUri().toString() }));
+					LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL311, new Object[ ] { ext.getUri().toString() }));
 				}
 
 			}
@@ -679,21 +681,21 @@ public class TSLValidator extends ATSLValidator {
 
 				// En función de la URI, vamos marcando las banderas.
 				switch (asi.getUri().toString()) {
-					case ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_ROOTCAQC:
+					case TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_ROOTCAQC:
 						break;
 
-					case ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESIGNATURES:
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL364));
+					case TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESIGNATURES:
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL364));
 						siResult.setAsiForESIG(true);
 						break;
 
-					case ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESEALS:
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL365));
+					case TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORESEALS:
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL365));
 						siResult.setAsiForESeal(true);
 						break;
 
-					case ITSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORWEBSITEAUTHENTICATION:
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL366));
+					case TSLCommonURIs.TSL_SERVINFEXT_ADDSERVINFEXT_FORWEBSITEAUTHENTICATION:
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL366));
 						siResult.setAsiForWSA(true);
 						break;
 

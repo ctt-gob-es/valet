@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.utils;
 
@@ -77,14 +77,14 @@ import es.gob.valet.commons.utils.connection.UtilsConnection;
 import es.gob.valet.commons.utils.connection.auth.JCIFSNTLMSchemeFactory;
 import es.gob.valet.commons.utils.connection.ssl.ValetSSLSocketFactory;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 
 /**
  * <p>Utilities class relating to connections and HTTP/S protocol.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 public final class UtilsHTTP {
 
@@ -284,21 +284,21 @@ public final class UtilsHTTP {
 			try {
 
 				if (client != null) {
-					LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_009, new Object[ ] { uriString }));
+					LOGGER.info(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_009, new Object[ ] { uriString }));
 					// Se ejecuta la conexión con el método creado.
 					response = client.execute(target, method);
 
 					// Si todo ha ido bien...
 					if (response == null) {
 
-						throw new CommonUtilsException(IValetException.COD_200, Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_006));
+						throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_006));
 
 					} else {
 
 						// Si todo ha ido bien...
 						if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 
-							LOGGER.debug(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_010));
+							LOGGER.debug(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_010));
 
 							HttpEntity entity = response.getEntity();
 							if (entity != null) {
@@ -306,13 +306,13 @@ public final class UtilsHTTP {
 								// Cogemos el stream del 'body' de respuesta.
 								in = entity.getContent();
 
-								LOGGER.debug(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_000));
+								LOGGER.debug(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_000));
 
 								// Obtenemos el tamaño de los datos para crear
 								// el array.
 								int length = (int) entity.getContentLength();
 
-								LOGGER.debug(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_011));
+								LOGGER.debug(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_011));
 
 								// Si el tamaño de los datos es -1 es porque se
 								// trata de
@@ -323,22 +323,21 @@ public final class UtilsHTTP {
 								// realizar la
 								// descarga sin este.
 								if (length == -1) {
-
 									// Creamos un BufferedInputStream para
 									// realizar la
 									// lectura de los datos.
-									BufferedInputStream bis = new BufferedInputStream(in);
-									// Creamos un buffer intermedio.
-									byte[ ] buffer = new byte[NumberConstants.NUM1024];
 									// Creamos un ByteArrayOutputStream para ir
 									// almacenando
 									// los datos.
-									ByteArrayOutputStream baos = new ByteArrayOutputStream();
-									// Creamos un contador de bytes para limitar
-									// la
-									// descarga.
-									int contadorBytes = 0;
-									try {
+									try (BufferedInputStream bis = new BufferedInputStream(in);ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+										// Creamos un buffer intermedio.
+										byte[ ] buffer = new byte[NumberConstants.NUM1024];
+										
+										// Creamos un contador de bytes para limitar
+										// la
+										// descarga.
+										int contadorBytes = 0;
+										
 										// Leemos todos los datos mientras no
 										// superen el
 										// límite
@@ -351,24 +350,20 @@ public final class UtilsHTTP {
 											readed = bis.read(buffer);
 											contadorBytes += readed;
 										}
-									} finally {
-										// Cerramos recursos
-										UtilsResources.safeCloseOutputStream(baos);
-										UtilsResources.safeCloseInputStream(bis);
-									}
-									// Si hemos excedido el tamaño máximo
-									// permitido en
-									// las
-									// descargas lanzamos excepción.
-									if (contadorBytes > UtilsConnection.getMaxSizeConnection()) {
-										throw new CommonUtilsException(IValetException.COD_200, Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_001, new Object[ ] { UtilsConnection.getMaxSizeConnection() }));
-									}
+										// Si hemos excedido el tamaño máximo
+										// permitido en
+										// las
+										// descargas lanzamos excepción.
+										if (contadorBytes > UtilsConnection.getMaxSizeConnection()) {
+											throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_001, new Object[ ] { UtilsConnection.getMaxSizeConnection() }));
+										}
 
-									res = baos.toByteArray();
-
+										res = baos.toByteArray();
+									}
+								
 								} else {
 									if (length > UtilsConnection.getMaxSizeConnection()) {
-										throw new CommonUtilsException(IValetException.COD_200, Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_002, new Object[ ] { length, UtilsConnection.getMaxSizeConnection() }));
+										throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_002, new Object[ ] { length, UtilsConnection.getMaxSizeConnection() }));
 									}
 
 									// Creamos el array resultante.
@@ -389,10 +384,10 @@ public final class UtilsHTTP {
 									// los
 									// datos del stream... excepción.
 									if (bytesLeidos != length) {
-										throw new CommonUtilsException(IValetException.COD_200, Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_003));
+										throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_003));
 									}
 
-									LOGGER.debug(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_004));
+									LOGGER.debug(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_004));
 								}
 							}
 						}
@@ -401,7 +396,7 @@ public final class UtilsHTTP {
 						// ha
 						// habido algún problema
 						else {
-							throw new CommonUtilsException(IValetException.COD_200, Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_005, new Object[ ] { response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase() }));
+							throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_005, new Object[ ] { response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase() }));
 						}
 
 					}
@@ -424,11 +419,11 @@ public final class UtilsHTTP {
 			}
 
 			if (res == null) {
-				throw new CommonUtilsException(IValetException.COD_200, Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_007, new Object[ ] { uriString }));
+				throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_007, new Object[ ] { uriString }));
 			}
 
 		} catch (UnsupportedOperationException | IOException e) {
-			throw new CommonUtilsException(IValetException.COD_200, e.getMessage(), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, e.getMessage(), e);
 		}
 
 		return res;
@@ -492,7 +487,7 @@ public final class UtilsHTTP {
 		CloseableHttpResponse response = null;
 
 		if (inputData == null) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_008));
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_008));
 		}
 
 		method.setEntity(new ByteArrayEntity(inputData));
@@ -530,20 +525,20 @@ public final class UtilsHTTP {
 		try {
 
 			if (client != null) {
-				LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_009, new Object[ ] { uriString }));
+				LOGGER.info(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_009, new Object[ ] { uriString }));
 				// Se ejecuta la conexión con el método creado.
 				response = client.execute(target, method);
 
 				// Si todo ha ido bien...
 				if (response == null) {
 
-					throw new ClientProtocolException(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_006));
+					throw new ClientProtocolException(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_006));
 
 				} else {
 
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 
-						LOGGER.debug(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_010));
+						LOGGER.debug(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_010));
 
 						HttpEntity entity = response.getEntity();
 						if (entity != null) {
@@ -558,10 +553,10 @@ public final class UtilsHTTP {
 							// Comprobamos que el tipo de la respuesta es el
 							// adecuado.
 							if (entity.getContentType() != null && (entity.getContentType().getValue() == null || !entity.getContentType().getValue().equals(OUTPUT_CONTENT_TYPE_OCSP_RESPONSE))) {
-								LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_012, new Object[ ] { OUTPUT_CONTENT_TYPE_OCSP_RESPONSE, entity.getContentType().getValue() }));
+								LOGGER.warn(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_012, new Object[ ] { OUTPUT_CONTENT_TYPE_OCSP_RESPONSE, entity.getContentType().getValue() }));
 							}
 
-							LOGGER.debug(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_011));
+							LOGGER.debug(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_011));
 
 							// Si el tamaño de los datos es -1 es porque se
 							// trata de una
@@ -571,23 +566,21 @@ public final class UtilsHTTP {
 							// descarga
 							// sin este.
 							if (length == -1) {
-
+								
 								// Creamos un BufferedInputStream para realizar
 								// la
 								// lectura
 								// de los datos.
-								BufferedInputStream bis = new BufferedInputStream(in);
-								// Creamos un buffer intermedio.
-								byte[ ] buffer = new byte[NumberConstants.NUM1024];
 								// Creamos un ByteArrayOutputStream para ir
 								// almacenando
 								// los
 								// datos.
-								ByteArrayOutputStream baos = new ByteArrayOutputStream();
-								// Creamos un contador de bytes para limitar la
-								// descarga.
-								int contadorBytes = 0;
-								try {
+								try (BufferedInputStream bis = new BufferedInputStream(in);ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+									// Creamos un buffer intermedio.
+									byte[ ] buffer = new byte[NumberConstants.NUM1024];
+									// Creamos un contador de bytes para limitar la
+									// descarga.
+									int contadorBytes = 0;
 									// Leemos todos los datos mientras no
 									// superen el
 									// límite
@@ -599,24 +592,20 @@ public final class UtilsHTTP {
 										readed = bis.read(buffer);
 										contadorBytes += readed;
 									}
-								} finally {
-									// Cerramos recursos
-									UtilsResources.safeCloseOutputStream(baos);
-									UtilsResources.safeCloseInputStream(bis);
-								}
-								// Si hemos excedido el tamaño máximo permitido
-								// en las
-								// descargas lanzamos excepción.
-								if (contadorBytes > UtilsConnection.getMaxSizeConnection()) {
-									throw new ClientProtocolException(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_001, new Object[ ] { UtilsConnection.getMaxSizeConnection() }));
-								}
+									
+									// Si hemos excedido el tamaño máximo permitido
+									// en las
+									// descargas lanzamos excepción.
+									if (contadorBytes > UtilsConnection.getMaxSizeConnection()) {
+										throw new ClientProtocolException(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_001, new Object[ ] { UtilsConnection.getMaxSizeConnection() }));
+									}
 
-								result = baos.toByteArray();
-
+									result = baos.toByteArray();
+								} 
 							} else {
 
 								if (length > UtilsConnection.getMaxSizeConnection()) {
-									throw new ClientProtocolException(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_002, new Object[ ] { length, UtilsConnection.getMaxSizeConnection() }));
+									throw new ClientProtocolException(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_002, new Object[ ] { length, UtilsConnection.getMaxSizeConnection() }));
 								}
 
 								// Creamos el array resultante.
@@ -636,11 +625,11 @@ public final class UtilsHTTP {
 								// los
 								// datos del stream... excepción.
 								if (bytesLeidos != length) {
-									throw new ClientProtocolException(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_003));
+									throw new ClientProtocolException(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_003));
 								}
 							}
 
-							LOGGER.debug(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_004));
+							LOGGER.debug(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_004));
 						}
 					}
 					// En cambio, si no se ha ejecutado correctamente la
@@ -648,7 +637,7 @@ public final class UtilsHTTP {
 					// habido algún problema...
 					else {
 
-						throw new ClientProtocolException(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_005, new Object[ ] { response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase() }));
+						throw new ClientProtocolException(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_005, new Object[ ] { response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase() }));
 
 					}
 
@@ -662,7 +651,7 @@ public final class UtilsHTTP {
 			// GrayLog.
 			UtilsGrayLog.writeMessageInGrayLog(UtilsGrayLog.LEVEL_ERROR, UtilsGrayLog.TOKEN_VALUE_CODERROR_ERROR_CON, uriString, e.getMessage());
 			// Relanzamos la excepción.
-			throw new CommonUtilsException(IValetException.COD_200, e.getMessage(), e);
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, e.getMessage(), e);
 
 		} finally {
 			// En cualquier caso cerramos el recurso.
@@ -676,7 +665,7 @@ public final class UtilsHTTP {
 					client.close();
 				}
 			} catch (IOException e) {
-				LOGGER.warn(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_013), e);
+				LOGGER.warn(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_013), e);
 			} finally {
 				response = null;
 				client = null;
@@ -685,7 +674,7 @@ public final class UtilsHTTP {
 		}
 
 		if (result == null) {
-			throw new CommonUtilsException(IValetException.COD_200, Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_HTTP_014, new Object[ ] { uriString }));
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_HTTP_014, new Object[ ] { uriString }));
 		}
 
 		return result;

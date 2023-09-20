@@ -21,23 +21,24 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
-import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
-import es.gob.valet.tsl.parsing.ifaces.ITSLSpecificationsVersions;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
+import es.gob.valet.utils.TSLBuilderConstants;
+import es.gob.valet.utils.TSLSpecificationsVersions;
 
 /**
  * <p>Abstract class that represents a TSL Extension with could contains differents elements
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public abstract class Extension implements IAnyTypeExtension {
 
@@ -55,9 +56,9 @@ public abstract class Extension implements IAnyTypeExtension {
 	 * Attribute that represents the extension type, refers to its location inside the XML.
 	 * It could be one of the following:<br>
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 */
 	private int type = -1;
@@ -66,11 +67,11 @@ public abstract class Extension implements IAnyTypeExtension {
 	 * Attribute that represents the implementation of the extension.
 	 * It must be one of the following:<br>
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#IMPL_ADDITIONAL_SERVICE_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#IMPL_EXPIRED_CERTS_REVOCATION_INFO}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#IMPL_QUALIFICATIONS}</li>
-	 *  <li>Scheme Extension: {@link IAnyTypeExtension#IMPL_TAKENOVERBY}</li>
-	 *  <li>Scheme Extension: {@link IAnyTypeExtension#IMPL_UNKNOWN_EXTENSION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#IMPL_ADDITIONAL_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#IMPL_EXPIRED_CERTS_REVOCATION_INFO}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#IMPL_QUALIFICATIONS}</li>
+	 *  <li>Scheme Extension: {@link TSLBuilderConstants#IMPL_TAKENOVERBY}</li>
+	 *  <li>Scheme Extension: {@link TSLBuilderConstants#IMPL_UNKNOWN_EXTENSION}</li>
 	 * </ul>
 	 */
 	private int implementation = -1;
@@ -87,17 +88,17 @@ public abstract class Extension implements IAnyTypeExtension {
 	 * @param isCritical Flag to indicate if this extension is critical (<code>true</code>) or not (<code>false</code>).
 	 * @param extensionType Extension type. Refer to its location inside the XML. It could be one of the following:<br>
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 * @param implementationExtension Implementation Extension. It must be one of the following:<br>
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#IMPL_ADDITIONAL_SERVICE_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#IMPL_EXPIRED_CERTS_REVOCATION_INFO}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#IMPL_QUALIFICATIONS}</li>
-	 *  <li>Scheme Extension: {@link IAnyTypeExtension#IMPL_TAKENOVERBY}</li>
-	 *  <li>Scheme Extension: {@link IAnyTypeExtension#IMPL_UNKNOWN_EXTENSION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#IMPL_ADDITIONAL_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#IMPL_EXPIRED_CERTS_REVOCATION_INFO}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#IMPL_QUALIFICATIONS}</li>
+	 *  <li>Scheme Extension: {@link TSLBuilderConstants#IMPL_TAKENOVERBY}</li>
+	 *  <li>Scheme Extension: {@link TSLBuilderConstants#IMPL_UNKNOWN_EXTENSION}</li>
 	 * </ul>
 	 */
 	protected Extension(boolean isCritical, int extensionType, int implementationExtension) {
@@ -136,9 +137,9 @@ public abstract class Extension implements IAnyTypeExtension {
 	 * Gets a string name representation of the specified extension type.
 	 * @param extensionType Extension type. Refer to its location inside the XML. It could be one of the following:
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 * @return string name representation of the specified extension type.
 	 */
@@ -146,20 +147,20 @@ public abstract class Extension implements IAnyTypeExtension {
 
 		String result = null;
 		switch (extensionType) {
-			case IAnyTypeExtension.TYPE_SCHEME:
-				result = Language.getResCoreTsl(ICoreTslMessages.LOGMTSL027);
+			case TSLBuilderConstants.TYPE_SCHEME:
+				result = Language.getResCoreTsl(CoreTslMessages.LOGMTSL027);
 				break;
 
-			case IAnyTypeExtension.TYPE_TSP_INFORMATION:
-				result = Language.getResCoreTsl(ICoreTslMessages.LOGMTSL028);
+			case TSLBuilderConstants.TYPE_TSP_INFORMATION:
+				result = Language.getResCoreTsl(CoreTslMessages.LOGMTSL028);
 				break;
 
-			case IAnyTypeExtension.TYPE_SERVICE_INFORMATION:
-				result = Language.getResCoreTsl(ICoreTslMessages.LOGMTSL029);
+			case TSLBuilderConstants.TYPE_SERVICE_INFORMATION:
+				result = Language.getResCoreTsl(CoreTslMessages.LOGMTSL029);
 				break;
 
 			default:
-				result = Language.getResCoreTsl(ICoreTslMessages.LOGMTSL030);
+				result = Language.getResCoreTsl(CoreTslMessages.LOGMTSL030);
 				break;
 		}
 
@@ -180,10 +181,10 @@ public abstract class Extension implements IAnyTypeExtension {
 		String tslSpecificationVersion = tsl.getSpecificationVersion();
 
 		switch (tslSpecification) {
-			case ITSLSpecificationsVersions.SPECIFICATION_119612:
+			case TSLSpecificationsVersions.SPECIFICATION_119612:
 
 				switch (tslSpecificationVersion) {
-					case ITSLSpecificationsVersions.VERSION_020101:
+					case TSLSpecificationsVersions.VERSION_020101:
 						checkExtensionTypeSpec119612Vers020101();
 						checkExtensionValueSpec119612Vers020101(tsl, shi, isCritical());
 						break;

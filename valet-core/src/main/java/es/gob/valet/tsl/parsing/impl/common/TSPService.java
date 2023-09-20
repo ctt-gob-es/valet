@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -33,7 +33,7 @@ import java.util.List;
  * <p>Class that defines a TSP Service with all its information not dependent
  * of the specification or TSL version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 19/09/2023.
  */
 public class TSPService implements Serializable {
 
@@ -50,7 +50,7 @@ public class TSPService implements Serializable {
 	/**
 	 * Attribute that represents all the service history information about this TSP.
 	 */
-	private List<ServiceHistoryInstance> shiList = null;
+	private transient List<ServiceHistoryInstance> shiList = null;
 
 	/**
 	 * Constructor method for the class TSPService.java.

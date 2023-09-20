@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 11/09/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.persistence;
 
@@ -39,7 +39,7 @@ import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationSer
  * <p>Manager singleton instance for the use of the persistence services
  * of the differents schemes.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 11/09/2018.
+ * @version 1.1, 19/09/2023.
  */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -63,7 +63,7 @@ public class ManagerPersistenceServices {
 	 */
 	@PostConstruct
 	public void init() {
-		instance = this;
+		setInstance(this);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class ManagerPersistenceServices {
 	 */
 	@PreDestroy
 	public final void destroy() {
-		instance = null;
+		setInstance(null);
 	}
 
 	/**
@@ -86,6 +86,15 @@ public class ManagerPersistenceServices {
 	 */
 	public final ManagerPersistenceConfigurationServices getManagerPersistenceConfigurationServices() {
 		return managerPersistenceConfigurationServices;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #instance}.
+	 * @param instance The value for the attribute {@link #instance}.
+	 */
+	public static void setInstance(ManagerPersistenceServices instance) {
+		ManagerPersistenceServices.instance = instance;
 	}
 
 }

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 15/09/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
@@ -30,9 +30,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
@@ -40,9 +40,9 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Class that represents a TSL Data Object representation in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 15/09/2023.
+ * @version 1.3, 19/09/2023.
  */
-public class TSLDataCacheObject extends ConfigurationCacheObject {
+public class TSLDataCacheObject extends ConfigurationCacheObject implements Serializable {
 
 	/**
 	 * Constant attribute that represents the serial version UID.
@@ -99,7 +99,7 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 	 */
 	private Date lastNewTSLAvailableFind = null;
 	
-	private List<X509Certificate> x509CertificateList = null;
+	private transient List<X509Certificate> x509CertificateList = null;
 
 	/**
 	 * Constructor method for the class TSLDataCacheObject.java.
@@ -122,7 +122,7 @@ public class TSLDataCacheObject extends ConfigurationCacheObject {
 		// Si el pojo recibido es nulo, se lanza una excepción ya que no se
 		// puede inicializar el objeto.
 		if (td == null || tslObjectSerializable == null) {
-			throw new TSLCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG091));
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG091));
 		} else {
 
 			setTslDataId(td.getIdTslData().longValue());

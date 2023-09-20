@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 15/09/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.keystore.elements;
 
@@ -34,9 +34,9 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
@@ -47,7 +47,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
 /**
  * <p>Class that represents a keystore in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 15/09/2023.
+ * @version 1.3, 19/09/2023.
  */
 public class KeystoreCacheObject extends ConfigurationCacheObject {
 
@@ -184,7 +184,7 @@ public class KeystoreCacheObject extends ConfigurationCacheObject {
 				}
 			}
 		} catch (Exception e) {
-			throw new KeystoreCacheException(IValetException.COD_190, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG002), e);
+			throw new KeystoreCacheException(ValetExceptionConstants.COD_190, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG002), e);
 		}
 	}
 

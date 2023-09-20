@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.14, 03/04/2023.
+ * @version 2.0, 19/09/2023.
  */
 package es.gob.valet.controller;
 
@@ -44,14 +44,14 @@ import es.gob.valet.form.ConstantsForm;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
-import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.AssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
@@ -60,7 +60,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.14, 03/04/2023.
+ *  @version 2.0, 19/09/2023.
  */
 @Controller
 public class TslController {
@@ -93,6 +93,28 @@ public class TslController {
 	private static final String FIELD_MAPPING_VALUE = "value";
 
 	/**
+	 * Constant that represents the parameter 'mappingtslform'.
+	 */
+	private static final String MAPPINGTSLFORM_ATTR = "mappingtslform";
+
+	/**
+	 * Constant that represents the parameter 'mappingedittslform'.
+	 */
+	private static final String MAPPINGEDITTSLFORM_ATTR = "mappingedittslform";
+
+	/**
+	 * Constant that represents the parameter 'listTypes'.
+	 */
+	private static final String LISTTYPES_ATTR = "listTypes";
+
+	/**
+	 * Constant that represents the parameter 'listAssocSimpleValues'.
+	 */
+	private static final String LISTASSOCSIMPLEVALUES_ATTR = "listAssocSimpleValues";
+	
+	
+	
+	/**
 	 * Method that maps the list TSLs to the controller and forwards the list of TSLs to the view.
 	 *
 	 * @param model Holder object for model attributes.
@@ -119,7 +141,7 @@ public class TslController {
 			Map<String, Set<String>> mapTslSV = TSLManager.getInstance().getsTSLRelationSpecificationAndVersion();
 			listSpecifications.addAll(mapTslSV.keySet());
 		} catch (TSLManagingException e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_LOAD_ADD_TSL, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_LOAD_ADD_TSL, new Object[ ] { e.getMessage() }));
 		}
 
 		TslForm tslForm = new TslForm();
@@ -178,7 +200,7 @@ public class TslController {
 			}
 
 		} catch (TSLManagingException e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_LOAD_EDIT_TSL, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_LOAD_EDIT_TSL, new Object[ ] { e.getMessage() }));
 		}
 
 		model.addAttribute("isLegible", tslForm.getIsLegible());
@@ -204,18 +226,18 @@ public class TslController {
 			mappingTslForm.setNameCountryRegion(tslcrco.getName());
 
 		} catch (TSLManagingException e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_LOAD_TSL_MAPPING, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_LOAD_TSL_MAPPING, new Object[ ] { e.getMessage() }));
 		}
 		// mappingTslForm.setNameCountryRegion(tslCountryRegionService.getNameCountryRegionById(idCountryRegion));
-		model.addAttribute("mappingtslform", mappingTslForm);
-		model.addAttribute("mappingedittslform", mappingTslEditForm);
+		model.addAttribute(MAPPINGTSLFORM_ATTR, mappingTslForm);
+		model.addAttribute(MAPPINGEDITTSLFORM_ATTR, mappingTslEditForm);
 
 		// se cargan los tipos de asociaciones
 		List<ConstantsForm> associationTypes = loadAssociationType();
-		model.addAttribute("listTypes", associationTypes);
+		model.addAttribute(LISTTYPES_ATTR, associationTypes);
 		// Se cargan las opciones para la asociación simple.
 		List<ConstantsForm> associationSimpleValues = loadSimpleAssociationValues();
-		model.addAttribute("listAssocSimpleValues", associationSimpleValues);
+		model.addAttribute(LISTASSOCSIMPLEVALUES_ATTR, associationSimpleValues);
 		return "fragments/tslmapping.html";
 	}
 
@@ -239,9 +261,9 @@ public class TslController {
 		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
 		mappingTslForm.setMappingIdentificator(tslcrmco.getMappingIdentificator());
 		mappingTslForm.setIdMappingType(tslcrmco.getAssociationType().getIdAssociationType());
-		if (mappingTslForm.getIdMappingType().equals(IAssociationTypeIdConstants.ID_FREE_ASSOCIATION)) {
+		if (mappingTslForm.getIdMappingType().equals(AssociationTypeIdConstants.ID_FREE_ASSOCIATION)) {
 			mappingTslForm.setMappingFreeValue(tslcrmco.getMappingValue());
-		} else if (mappingTslForm.getIdMappingType().equals(IAssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION)) {
+		} else if (mappingTslForm.getIdMappingType().equals(AssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION)) {
 			mappingTslForm.setMappingSimpleValue(tslcrmco.getMappingValue());
 		}
 		mappingTslForm.setIdTslCountryRegion(tslcrmco.getTslCountryRegion().getIdTslCountryRegion());
@@ -250,11 +272,11 @@ public class TslController {
 	
 		// se cargan los tipos de asociaciones
 		List<ConstantsForm> associationTypes = loadAssociationType();
-		model.addAttribute("listTypes", associationTypes);
+		model.addAttribute(LISTTYPES_ATTR, associationTypes);
 		// Se cargan las opciones para la asociación simple.
 		List<ConstantsForm> associationSimpleValues = loadSimpleAssociationValues();
-		model.addAttribute("listAssocSimpleValues", associationSimpleValues);
-		model.addAttribute("mappingtslform", mappingTslForm);
+		model.addAttribute(LISTASSOCSIMPLEVALUES_ATTR, associationSimpleValues);
+		model.addAttribute(MAPPINGTSLFORM_ATTR, mappingTslForm);
 		return "modal/tsl/mappingEditForm";
 	}
 
@@ -269,13 +291,13 @@ public class TslController {
 
 		// Se cargan los tipos de asociaciones
 		List<ConstantsForm> associationTypes = loadAssociationType();
-		model.addAttribute("listTypes", associationTypes);
+		model.addAttribute(LISTTYPES_ATTR, associationTypes);
 		// Se cargan las opciones para la asociación simple.
 		List<ConstantsForm> associationSimpleValues = loadSimpleAssociationValues();
-		model.addAttribute("listAssocSimpleValues", associationSimpleValues);
+		model.addAttribute(LISTASSOCSIMPLEVALUES_ATTR, associationSimpleValues);
 		MappingTslForm mappingTslForm = new MappingTslForm();
 		mappingTslForm.setCodeCountryRegion(codeCountryRegion);
-		model.addAttribute("mappingtslform", mappingTslForm);
+		model.addAttribute(MAPPINGTSLFORM_ATTR, mappingTslForm);
 		return "modal/tsl/mappingForm";
 
 	}
@@ -294,7 +316,7 @@ public class TslController {
 		mappingTslForm.setIdTslCountryRegionMapping(idTslCountryRegionMapping);
 		mappingTslForm.setRowIndexMapping(rowIndexMapping);
 		mappingTslForm.setCodeCountryRegion(codeRegionCountry);
-		model.addAttribute("mappingtslform", mappingTslForm);
+		model.addAttribute(MAPPINGTSLFORM_ATTR, mappingTslForm);
 		return "modal/tsl/mappingDelete";
 	}
 
@@ -323,28 +345,28 @@ public class TslController {
 
 		List<ConstantsForm> result = new ArrayList<ConstantsForm>();
 
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_CERT_VERSION).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_CERTVERSION)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SUBJECT)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_ISSUER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_ISSUER)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_COMMON_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_GIVEN_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SURNAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_COUNTRY).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_PSEUDONYM).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SERIALNUMBER)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SIGALG_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGNAME)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SIGALG_OID).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_SIGALGOID)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_VALID_FROM).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDFROM)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_VALID_TO).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_VALIDTO)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_CERTPOL_INFO_OIDS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CERTPOLINFOOIDS)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_QC_STATEMENTS_OIDS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATOIDS)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATEUTYPEOIDS)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT_ALT_NAME).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_SUBJECTALTNAME)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_IS_CA).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_BASICCONSTRAINTISCA)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_KEY_USAGE).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_KEYUSAGE)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_CRL_DISTRIBUTION_POINTS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT)));
-		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_AUTHORITY_INFORMATION_ACCESS).longValue(), Language.getResWebGeneral(IWebGeneralMessages.MAPPING_SIMPLE_EXTENSION_AIA)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_CERT_VERSION).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_CERTVERSION)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_SUBJECT)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_ISSUER).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_ISSUER)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_COMMON_NAME).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_GIVEN_NAME).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SURNAME).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_COUNTRY).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_PSEUDONYM).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_SERIALNUMBER)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SIGALG_NAME).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_SIGALGNAME)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SIGALG_OID).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_SIGALGOID)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_VALID_FROM).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_VALIDFROM)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_VALID_TO).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_VALIDTO)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_CERTPOL_INFO_OIDS).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CERTPOLINFOOIDS)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_QC_STATEMENTS_OIDS).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATOIDS)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATEUTYPEOIDS)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT_ALT_NAME).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_SUBJECTALTNAME)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_IS_CA).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_BASICCONSTRAINTISCA)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_KEY_USAGE).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_KEYUSAGE)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_CRL_DISTRIBUTION_POINTS).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT)));
+		result.add(new ConstantsForm(Integer.valueOf(CertificateConstants.INFOCERT_AUTHORITY_INFORMATION_ACCESS).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_AIA)));
 		
 
 		return result;

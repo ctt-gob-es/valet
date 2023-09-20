@@ -20,20 +20,18 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/07/2023.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/08/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.tasks;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.task.Task;
 import es.gob.valet.service.ifaces.IExternalAccessService;
@@ -43,7 +41,7 @@ import es.gob.valet.spring.config.ApplicationContextProvider;
 /**
  * <p>Class that contains the task of performing connection tests and storing the result in the database.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/08/2023.
+ * @version 1.3, 19/09/2023.
  */
 public class ExternalAccessConnectionTestTask extends Task {
 	/**
@@ -63,7 +61,7 @@ public class ExternalAccessConnectionTestTask extends Task {
 	@Override
 	protected final void initialMessage() {
 
-		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.TASK_EXT_ACC_CONN_TEST_INIT_MSG));
+		LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.TASK_EXT_ACC_CONN_TEST_INIT_MSG));
 	}
 
 	/**
@@ -72,7 +70,7 @@ public class ExternalAccessConnectionTestTask extends Task {
 	 */
 	@Override
 	protected final void endMessage() {
-		LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_EXT_ACC_CONN_TEST_END_MSG, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
+		LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_EXT_ACC_CONN_TEST_END_MSG, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 	}
 
 	/**

@@ -15,12 +15,12 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult.java.</p>
+ * <b>File:</b><p>es.gob.valet.tsl.certValidation.ifaces.ValidatorResultConstants.java.</p>
  * <b>Description:</b><p>Interface that represents a validation result using TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 22/02/2023.
+ * @version 1.5, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation.ifaces;
 
@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
-import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.tsl.certValidation.impl.common.TSLCertificateExtensionAnalyzer;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
@@ -40,51 +39,9 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Interface that represents a validation result using TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 22/02/2023.
+ * @version 1.5, 19/09/2023.
  */
 public interface ITSLValidatorResult {
-
-	/**
-	 * Constant attribute that represents a validation result:
-	 * The certificate has not been detected with the TSL.
-	 */
-	int RESULT_NOT_DETECTED = 0;
-
-	/**
-	 * Constant attribute that represents a validation result:
-	 * The certificate has been detected by the TSL, but its state is unknown.
-	 */
-	int RESULT_DETECTED_STATE_UNKNOWN = 1;
-
-	/**
-	 * Constant attribute that represents a validation result:
-	 * The certificate has been detected by the TSL and its state is valid.
-	 */
-	int RESULT_DETECTED_STATE_VALID = 2;
-
-	/**
-	 * Constant attribute that represents a validation result:
-	 * The certificate has been detected by the TSL and its state is revoked.
-	 */
-	int RESULT_DETECTED_STATE_REVOKED = NumberConstants.NUM3;
-
-	/**
-	 * Constant attribute that represents a validation result:
-	 * The certificate has been detected by the TSL and its certificate chain is not valid (expired).
-	 */
-	int RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID = NumberConstants.NUM4;
-
-	/**
-	 * Constant attribute that represents a validation result:
-	 * The certificate has been detected by the TSL and the service status is revoked.
-	 */
-	int RESULT_DETECTED_STATE_REVOKED_SERVICESTATUS = NumberConstants.NUM5;
-
-	/**
-	 * Constant attribute that represents a validation result:
-	 * The certificate has been detected by the TSL and the service status is not valid.
-	 */
-	int RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID_SERVICESTATUS = NumberConstants.NUM6;
 
 	/**
 	 * Gets the TSL Country/Region Code.
@@ -242,21 +199,6 @@ public interface ITSLValidatorResult {
 	ServiceHistoryInstance getTSPServiceHistoryInformationInstanceForValidate();
 
 	/**
-	 * Constant attribute that represents the value for a mapping certificate type unknown.
-	 */
-	int MAPPING_TYPE_UNKNOWN = 0;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate type non qualified.
-	 */
-	int MAPPING_TYPE_NONQUALIFIED = 1;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate type qualified.
-	 */
-	int MAPPING_TYPE_QUALIFIED = 2;
-
-	/**
 	 * Gets the mapping type of the validated certificate. It only can be one of the following:<br>
 	 * <ul>
 	 *   <li>{@link ITSLValidatorResult#MAPPING_TYPE_UNKNOWN}</li>
@@ -273,41 +215,6 @@ public interface ITSLValidatorResult {
 	String getMappingETSIResult();
 
 	/**
-	 * Constant attribute that represents the value for a mapping certificate classification other/unknown.
-	 */
-	int MAPPING_CLASSIFICATION_OTHER_UNKNOWN = 0;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate classification natural person.
-	 */
-	int MAPPING_CLASSIFICATION_NATURAL_PERSON = 1;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate classification legal person.
-	 */
-	int MAPPING_CLASSIFICATION_LEGALPERSON = 2;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate classification ESEAL.
-	 */
-	int MAPPING_CLASSIFICATION_ESEAL = NumberConstants.NUM3;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate classification ESIG.
-	 */
-	int MAPPING_CLASSIFICATION_ESIG = NumberConstants.NUM4;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate classification WSA.
-	 */
-	int MAPPING_CLASSIFICATION_WSA = NumberConstants.NUM5;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate classification TSA.
-	 */
-	int MAPPING_CLASSIFICATION_TSA = NumberConstants.NUM6;
-
-	/**
 	 * Gets the mapping classification of the validated certificate. It only can be one of the following:<br>
 	 * <ul>
 	 *   <li>{@link ITSLValidatorResult#MAPPING_CLASSIFICATION_OTHER_UNKNOWN}</li>
@@ -321,31 +228,6 @@ public interface ITSLValidatorResult {
 	 * @return the mapping classification of the validated certificate.
 	 */
 	int getMappingClassification();
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate QSCD unknown.
-	 */
-	int MAPPING_QSCD_UNKNOWN = 0;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate no QSCD.
-	 */
-	int MAPPING_QSCD_NO = 1;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate QSCD.
-	 */
-	int MAPPING_QSCD_YES = 2;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate QSCD specified in the attributes.
-	 */
-	int MAPPING_QSCD_ASINCERT = NumberConstants.NUM3;
-
-	/**
-	 * Constant attribute that represents the value for a mapping certificate QSCD managed by TSP.
-	 */
-	int MAPPING_QSCD_YES_MANAGEDONBEHALF = NumberConstants.NUM4;
 
 	/**
 	 * Gets the mapping QSCD of the validated certificate. It only can be one of the following:<br>

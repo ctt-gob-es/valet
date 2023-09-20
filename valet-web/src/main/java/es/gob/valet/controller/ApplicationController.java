@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 11/12/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.controller;
 
@@ -40,7 +40,7 @@ import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 /**
  * <p>Class that manages the request related to the Applications administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 11/12/2018.
+ * @version 1.1, 19/09/2023.
  */
 @Controller
 public class ApplicationController {
@@ -49,6 +49,11 @@ public class ApplicationController {
 	 * Constant that represents the parameter 'idApplication'.
 	 */
 	private static final String FIELD_ID_APPLICATION = "idApplication";
+	
+	/**
+	 * Constant that represents the parameter 'appform'.
+	 */
+	private static final String APPFORM_ATTR = "appform";
 
 	/**
 	 * Method that maps the list applicatios to the controller and forwards the list of Applications to the view.
@@ -59,7 +64,7 @@ public class ApplicationController {
 	@RequestMapping(value = "appadmin", method = RequestMethod.GET)
 	public String index(Model model) {
 		ApplicationForm appForm = new ApplicationForm();
-		model.addAttribute("appform", appForm);
+		model.addAttribute(APPFORM_ATTR, appForm);
 		return "fragments/appadmin.html";
 	}
 
@@ -73,7 +78,7 @@ public class ApplicationController {
 	@RequestMapping(value = "/addapp")
 	public String addApplication(Model model) throws IOException {
 		ApplicationForm appForm = new ApplicationForm();
-		model.addAttribute("appform", appForm);
+		model.addAttribute(APPFORM_ATTR, appForm);
 		return "modal/application/appForm.html";
 	}
 
@@ -95,7 +100,7 @@ public class ApplicationController {
 		appForm.setResponsibleSurnames(appValet.getResponsibleSurnames());
 		appForm.setResponsibleMail(appValet.getResponsibleMail());
 		appForm.setResponsiblePhone(appValet.getResponsiblePhone());
-		model.addAttribute("appform", appForm);
+		model.addAttribute(APPFORM_ATTR, appForm);
 		return "modal/application/appEditForm.html";
 
 	}

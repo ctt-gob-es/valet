@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/12/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 23/12/2022.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -42,12 +42,12 @@ import org.apache.commons.codec.binary.Base64;
 import es.gob.valet.constant.StaticConstants;
 import es.gob.valet.exceptions.CipherException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilLogMessages;
+import es.gob.valet.i18n.messages.CommonsUtilLogMessages;
 
 /** 
  * <p>Class to decode and encode password using AES algorithm.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 23/12/2022.
+ * @version 1.1, 19/09/2023.
  */
 public class AESCipher implements Serializable {
 	/**
@@ -100,7 +100,7 @@ public class AESCipher implements Serializable {
 			cipher.init(Cipher.DECRYPT_MODE, key, ivspec);
 			return cipher.doFinal(Base64.decodeBase64(msg));
 		} catch (InvalidKeyException | IllegalBlockSizeException e) {
-			throw new CipherException(Language.getResCommonsUtilsValet(ICommonsUtilLogMessages.ERRORUTILS002));
+			throw new CipherException(Language.getResCommonsUtilsValet(CommonsUtilLogMessages.ERRORUTILS002));
 		} catch (BadPaddingException e) {
 			Cipher cipher;
 			try {
@@ -109,13 +109,13 @@ public class AESCipher implements Serializable {
 				return cipher.doFinal(Base64.decodeBase64(msg));
 			} catch (InvalidKeyException | IllegalBlockSizeException
 					| BadPaddingException e1) {
-				throw new CipherException(Language.getResCommonsUtilsValet(ICommonsUtilLogMessages.ERRORUTILS002));
+				throw new CipherException(Language.getResCommonsUtilsValet(CommonsUtilLogMessages.ERRORUTILS002));
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
-				throw new CipherException(Language.getResCommonsUtilsValet(ICommonsUtilLogMessages.ERRORUTILS002));
+				throw new CipherException(Language.getResCommonsUtilsValet(CommonsUtilLogMessages.ERRORUTILS002));
 			}
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
-			throw new CipherException(Language.getResCommonsUtilsValet(ICommonsUtilLogMessages.ERRORUTILS002));
+			throw new CipherException(Language.getResCommonsUtilsValet(CommonsUtilLogMessages.ERRORUTILS002));
 		}
 	}
 }

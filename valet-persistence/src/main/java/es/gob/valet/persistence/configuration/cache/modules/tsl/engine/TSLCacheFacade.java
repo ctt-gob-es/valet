@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 04/12/2018.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.engine;
 
@@ -29,9 +29,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionMappingCacheObject;
@@ -45,7 +45,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Facade for all the TSL configuration cache objects operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 04/12/2018.
+ * @version 1.3, 19/09/2023.
  */
 public final class TSLCacheFacade {
 
@@ -218,7 +218,7 @@ public final class TSLCacheFacade {
 
 		// Si el parámetro de entrada es nulo, lanzamos excepción.
 		if (UtilsStringChar.isNullOrEmptyTrim(tslLocation)) {
-			throw new TSLCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG066));
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG066));
 		}
 
 		// Obtenemos el objeto con las relaciones de la caché.

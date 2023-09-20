@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>2 oct. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.form;
 
@@ -29,17 +29,10 @@ import java.util.List;
 /** 
  * <p>Class that represents the backing form for editing a Task.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 19/09/2023.
  */
 
 public class TaskForm {
-
-	/**
-	 * Constructor method for the class TaskForm.java. 
-	 */
-	public TaskForm() {
-		
-	}
 
 	/**
 	 * Attribute that represents the object ID of Task.

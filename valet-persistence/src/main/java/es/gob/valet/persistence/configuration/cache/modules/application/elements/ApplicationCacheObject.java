@@ -20,13 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 15/09/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.application.elements;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
@@ -34,7 +34,7 @@ import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 /**
  * <p>Class that represents an application in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 15/09/2023.
+ * @version 1.2, 19/09/2023.
  */
 public class ApplicationCacheObject extends ConfigurationCacheObject {
 
@@ -96,7 +96,7 @@ public class ApplicationCacheObject extends ConfigurationCacheObject {
 		// si el pojo recibido es nulo, se lanza una excepción ya que no se
 		// puede inicializar el objeto
 		if (app == null) {
-			throw new ApplicationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG000));
+			throw new ApplicationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG000));
 		} else {
 			setApplicationId(app.getIdApplication());
 			setIdentificator(app.getIdentificator());

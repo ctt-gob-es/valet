@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 03/04/2023.
+ * @version 2.0, 19/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -64,16 +64,17 @@ import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
 import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
+import es.gob.valet.utils.GeneralConstantsValetWeb;
 
 /**
  * <p>Class that manages the REST request related to the Keystore's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 03/04/2023.
+ * @version 2.0, 19/09/2023.
  */
 @RestController
 public class KeystoreRestController {
@@ -165,8 +166,8 @@ public class KeystoreRestController {
 			// se comprueba que se han indicado todos los campos obligatorios
 
 			if (UtilsStringChar.isNullOrEmpty(alias)) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
-				json.put(FIELD_ALIAS + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
+				json.put(FIELD_ALIAS + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
 				error = true;
 			}
 			
@@ -184,8 +185,8 @@ public class KeystoreRestController {
 						}
 					}
 					if (!res.isEmpty()) {
-						LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
-						json.put(FIELD_ALIAS + "_span", Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
+						LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
+						json.put(FIELD_ALIAS + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
 						error = true;
 					}
 
@@ -197,16 +198,16 @@ public class KeystoreRestController {
 				// sistema
 				SystemCertificate sc = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, Long.valueOf(idKeystore));
 				if (sc != null) {
-					String msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXIST_ALIAS, new Object[ ] { alias });
+					String msgError = Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_EXIST_ALIAS, new Object[ ] { alias });
 					LOGGER.error(msgError);
-					json.put(FIELD_ALIAS + "_span", msgError);
+					json.put(FIELD_ALIAS + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 					error = true;
 				}
 
 			}
 			if (certificateFile == null || certificateFile.getSize() == 0 || certificateFile.getBytes() == null || certificateFile.getBytes().length == 0) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
-				json.put(FIELD_CERTIFICATE_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
+				json.put(FIELD_CERTIFICATE_FILE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_CERTIFICATE_FILE));
 				error = true;
 			}
 
@@ -237,8 +238,8 @@ public class KeystoreRestController {
 				dtOutput.setError(json.toString());
 			}
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_CERTIFICATE, new Object[ ] { e.getMessage() }));
-			json.put(KEY_JS_ERROR_SAVE_CERTIFICATE, Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_CERTIFICATE_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SAVE_CERTIFICATE, new Object[ ] { e.getMessage() }));
+			json.put(KEY_JS_ERROR_SAVE_CERTIFICATE, Language.getResWebGeneral(WebGeneralMessages.ERROR_SAVE_CERTIFICATE_WEB));
 			listCertificates = StreamSupport.stream(ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 		}
@@ -275,9 +276,9 @@ public class KeystoreRestController {
 					FileCopyUtils.copy(in, response.getOutputStream());
 				}
 			} catch (CertificateEncodingException e) {
-				LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_DOWNLOAD_CERTIFICATE, new Object[ ] { e.getMessage() }));
+				LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_DOWNLOAD_CERTIFICATE, new Object[ ] { e.getMessage() }));
 			} catch (CryptographyException e) {
-				LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_GET_CERTIFICATE, new Object[ ] { e.getMessage() }));
+				LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_GET_CERTIFICATE, new Object[ ] { e.getMessage() }));
 			}
 		}
 	}
@@ -309,8 +310,8 @@ public class KeystoreRestController {
 			}
 			// se comprueba el campo alias
 			if (alias == null || alias.isEmpty()) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
-				json.put(FIELD_ALIAS + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
+				json.put(FIELD_ALIAS + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_ALIAS));
 				error = true;
 			}
 			if (!error) {
@@ -327,8 +328,8 @@ public class KeystoreRestController {
 						}
 					}
 					if (!res.isEmpty()) {
-						LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
-						json.put(FIELD_ALIAS + "_span", Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
+						LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
+						json.put(FIELD_ALIAS + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SPECIAL_CHAR_ALIAS, new Object[ ] { res, alias }));
 						error = true;
 					}
 
@@ -373,9 +374,9 @@ public class KeystoreRestController {
 
 						
 					}else{
-						String msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_EXIST_ALIAS, new Object[ ] { alias });
+						String msgError = Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_EXIST_ALIAS, new Object[ ] { alias });
 						LOGGER.error(msgError);
-						json.put(FIELD_ALIAS + "_span", msgError);
+						json.put(FIELD_ALIAS + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 						error = true;
 						
 						
@@ -399,8 +400,8 @@ public class KeystoreRestController {
 			
 
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_CERTIFICATE, new Object[ ] { e.getMessage() }));
-			json.put(KEY_JS_ERROR_UPDATE_CERTIFICATE, Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_CERTIFICATE_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_UPDATE_CERTIFICATE, new Object[ ] { e.getMessage() }));
+			json.put(KEY_JS_ERROR_UPDATE_CERTIFICATE, Language.getResWebGeneral(WebGeneralMessages.ERROR_UPDATE_CERTIFICATE_WEB));
 			Keystore keystore = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(idKeystore, false);
 			listSystemCertificate = StreamSupport.stream(ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());

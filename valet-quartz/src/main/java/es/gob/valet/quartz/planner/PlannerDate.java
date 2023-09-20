@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/01/2019.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.quartz.planner;
 
@@ -32,12 +32,12 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.CPlannerType;
 import es.gob.valet.persistence.configuration.model.entity.Planner;
-import es.gob.valet.persistence.configuration.model.utils.IPlannerTypeIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.PlannerTypeIdConstants;
 
 /**
  * <p>Class that defines the information of a planner from a date.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/01/2019.
+ * @version 1.1, 19/09/2023.
  */
 public class PlannerDate implements IPlanner, Serializable {
 
@@ -81,7 +81,7 @@ public class PlannerDate implements IPlanner, Serializable {
 			calendar.add(Calendar.DAY_OF_MONTH, NumberConstants.NUM_NEG_1);
 			planner.setInitDay(calendar.getTime());
 
-			CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(IPlannerTypeIdConstants.PLANNER_TYPE_2_BYDATE);
+			CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(PlannerTypeIdConstants.PLANNER_TYPE_2_BYDATE);
 			planner.setPlannerType(plannerType);
 
 		}
@@ -110,7 +110,7 @@ public class PlannerDate implements IPlanner, Serializable {
 
 		}
 
-		CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(IPlannerTypeIdConstants.PLANNER_TYPE_2_BYDATE);
+		CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(PlannerTypeIdConstants.PLANNER_TYPE_2_BYDATE);
 		planner.setPlannerType(plannerType);
 
 	}

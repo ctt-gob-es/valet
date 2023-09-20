@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.cache.utils;
 
@@ -31,13 +31,13 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICacheGeneralMessages;
+import es.gob.valet.i18n.messages.CacheGeneralMessages;
 
 /**
  * <p>Utility class that controls in a independent thread the operation of stopping a Cache
  * giving some time of living previosly.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 
@@ -95,11 +95,18 @@ public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 
 		// Detenemos la caché implementada por ConcurrentMap.
 		stopConcurrentMapCache();
-
-		// Procedemos a forzar que el recolector de basura limpie los
-		// objetos de la caché antigua.
-		System.gc();
-
+ 
+		/*
+		 * Llamar System.gc()a or Runtime.getRuntime().gc()es una mala idea por una sencilla razón: no hay forma de saber exactamente qué hará la JVM bajo el capó porque el 
+		 * comportamiento dependerá de su proveedor, versión y opciones:
+		 * 		¿Se congelará toda la solicitud durante la llamada?
+		 * 		¿ Está activada la -XX:DisableExplicitGCopción?
+		 * 		¿La JVM simplemente ignorará la llamada?
+		 * 		...
+		 * Una aplicación que se basa en estos métodos impredecibles también es impredecible y, por lo tanto, no funciona. La tarea de ejecutar 
+		 * el recolector de basura debe dejarse exclusivamente en manos de la JVM.
+		 */
+	
 	}
 
 	/**
@@ -113,7 +120,7 @@ public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 			// Realizamos la espera configurada.
 			checkTimeToWait();
 
-			LOGGER.debug(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_016, new Object[ ] { concurrentMapCacheName }));
+			LOGGER.debug(Language.getFormatResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_016, new Object[ ] { concurrentMapCacheName }));
 
 			if (!concurrentMapCache.isEmpty()) {
 
@@ -135,7 +142,7 @@ public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 
 			}
 
-			LOGGER.info(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_017, new Object[ ] { concurrentMapCacheName }));
+			LOGGER.info(Language.getFormatResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_017, new Object[ ] { concurrentMapCacheName }));
 			concurrentMapCacheName = null;
 
 		}
@@ -150,11 +157,11 @@ public class GiveSomeTimeBeforeStopCacheThread extends Thread {
 		// Si el tiempo de espera es mayor que 0...
 		if (timeBeforeStopCacheInMilliSeconds > 0) {
 
-			LOGGER.debug(Language.getFormatResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_014, new Object[ ] { timeBeforeStopCacheInMilliSeconds }));
+			LOGGER.debug(Language.getFormatResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_014, new Object[ ] { timeBeforeStopCacheInMilliSeconds }));
 			try {
 				Thread.sleep(timeBeforeStopCacheInMilliSeconds);
 			} catch (InterruptedException e) {
-				LOGGER.error(Language.getResCacheGeneral(ICacheGeneralMessages.CACHE_IMPL_015), e);
+				LOGGER.error(Language.getResCacheGeneral(CacheGeneralMessages.CACHE_IMPL_015), e);
 			}
 
 		}

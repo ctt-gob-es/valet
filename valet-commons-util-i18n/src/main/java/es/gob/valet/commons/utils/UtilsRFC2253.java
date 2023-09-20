@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -31,12 +31,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Class that provides functionality related with: <b>RFC 2253</b>: Lightweight Directory Access Protocol (v3).</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public final class UtilsRFC2253 {
 
@@ -248,7 +248,7 @@ public final class UtilsRFC2253 {
 			return b - 'a' + NumberConstants.NUM10;
 		}
 
-		throw new UnsupportedEncodingException(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_RFC_2253_000, new Object[ ] { b }));
+		throw new UnsupportedEncodingException(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_RFC_2253_000, new Object[ ] { b }));
 	}
 
 }

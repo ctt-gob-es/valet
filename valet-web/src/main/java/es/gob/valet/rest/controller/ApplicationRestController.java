@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.12, 03/04/2023.
+ * @version 2.0, 19/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -51,18 +51,19 @@ import com.fasterxml.jackson.annotation.JsonView;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.ApplicationForm;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 import es.gob.valet.persistence.configuration.services.ifaces.IApplicationValetService;
+import es.gob.valet.utils.GeneralConstantsValetWeb;
 
 /**
  * <p>Class that manages the REST request related to the Applications administration and JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.12, 03/04/2023.
+ * @version 2.0, 19/09/2023.
  */
 @RestController
 public class ApplicationRestController {
@@ -116,6 +117,8 @@ public class ApplicationRestController {
 	 */
 	private static final Logger LOGGER = LogManager.getLogger(ApplicationRestController.class);
 
+	
+	
 	/**
 	 * Method that maps the list applications to the controller and forwards the list of applications to the view.
 	 * @param input Holder object for datatable attributes.
@@ -158,37 +161,37 @@ public class ApplicationRestController {
 		List<ApplicationValet> listNewApp = new ArrayList<ApplicationValet>();
 		// validaciones de parámetros de entrada
 		if (UtilsStringChar.isNullOrEmpty(appForm.getIdentifier())) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFIER));
-			json.put(FIELD_IDENTIFIER + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFIER));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_IDENTIFIER));
+			json.put(FIELD_IDENTIFIER + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_IDENTIFIER));
 			error = true;
 		} else if(isDuplicateIdentifier(appForm.getIdentifier(), appValet.getIdentificator())){
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_DUPLICATE_IDENTIFIER));
-			json.put(FIELD_IDENTIFIER + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_DUPLICATE_IDENTIFIER));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_DUPLICATE_IDENTIFIER));
+			json.put(FIELD_IDENTIFIER + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_DUPLICATE_IDENTIFIER));
 			error = true;
 		}				
 		if (UtilsStringChar.isNullOrEmpty(appForm.getName())) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_NAME_APP));
-			json.put(FIELD_NAME + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_NAME_APP));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_NAME_APP));
+			json.put(FIELD_NAME + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_NAME_APP));
 			error = true;
 		}
 		if (UtilsStringChar.isNullOrEmpty(appForm.getResponsibleName())) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_NAME));
-			json.put(FIELD_RESP_NAME + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_NAME));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_RESP_NAME));
+			json.put(FIELD_RESP_NAME + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_RESP_NAME));
 			error = true;
 		}
 		if (UtilsStringChar.isNullOrEmpty(appForm.getResponsibleSurnames())) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_SURNAMES));
-			json.put(FIELD_RESP_SURNAMES + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_SURNAMES));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_RESP_SURNAMES));
+			json.put(FIELD_RESP_SURNAMES + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_RESP_SURNAMES));
 			error = true;
 		}
 		if (UtilsStringChar.isNullOrEmpty(appForm.getResponsibleMail())) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_MAIL));
-			json.put(FIELD_RESP_MAIL + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_MAIL));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_RESP_MAIL));
+			json.put(FIELD_RESP_MAIL + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_RESP_MAIL));
 			error = true;
 		}
 		if (UtilsStringChar.isNullOrEmpty(appForm.getResponsibleMail())) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_PHONE));
-			json.put(FIELD_RESP_PHONE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_RESP_PHONE));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_RESP_PHONE));
+			json.put(FIELD_RESP_PHONE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_RESP_PHONE));
 			error = true;
 		}
 

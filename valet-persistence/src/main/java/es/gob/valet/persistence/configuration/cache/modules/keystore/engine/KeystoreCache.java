@@ -20,13 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.keystore.engine;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCache;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
@@ -37,7 +37,7 @@ import es.gob.valet.persistence.configuration.model.entity.Keystore;
 /**
  * <p>Class to handle the Keystore configuration cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class KeystoreCache extends ConfigurationCache {
 
@@ -91,7 +91,7 @@ public class KeystoreCache extends ConfigurationCache {
 
 		// Si el parámetro de entrada es nulo, lanzamos excepción.
 		if (ks == null) {
-			throw new KeystoreCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG000));
+			throw new KeystoreCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG000));
 		}
 
 		KeystoreCacheObject kco = new KeystoreCacheObject(ks);
@@ -114,7 +114,7 @@ public class KeystoreCache extends ConfigurationCache {
 
 		// Si el parámetro de entrada es nulo, lanzamos excepción.
 		if (kco == null) {
-			throw new KeystoreCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG000));
+			throw new KeystoreCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG000));
 		}
 
 		// Se construye la ruta en la caché.
@@ -125,7 +125,7 @@ public class KeystoreCache extends ConfigurationCache {
 		try {
 			result = (KeystoreCacheObject) addConfigurationCacheObject(path, kco, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new KeystoreCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new KeystoreCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 
 		return result;
@@ -148,7 +148,7 @@ public class KeystoreCache extends ConfigurationCache {
 		try {
 			return (KeystoreCacheObject) getConfigurationCacheObject(path, false);
 		} catch (ConfigurationCacheException e) {
-			throw new KeystoreCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new KeystoreCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 
 	}
@@ -167,7 +167,7 @@ public class KeystoreCache extends ConfigurationCache {
 		try {
 			clearNodePathFromConfigurationCache(path, false);
 		} catch (ConfigurationCacheException e) {
-			throw new KeystoreCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new KeystoreCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 
 	}
@@ -178,7 +178,7 @@ public class KeystoreCache extends ConfigurationCache {
 	 */
 	@Override
 	protected String getTypeElement() {
-		return Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG003);
+		return Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG003);
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class KeystoreCache extends ConfigurationCache {
 	protected String getMsgNotConditionForUpdateAccomplished(ConfigurationCacheObject cachedCco, ConfigurationCacheObject cco) {
 		KeystoreCacheObject cachedKco = (KeystoreCacheObject) cachedCco;
 		KeystoreCacheObject kco = (KeystoreCacheObject) cco;
-		return Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG001, new Object[ ] { kco.getName(), kco.getIdKeystore(), kco.getVersion(), cachedKco.getVersion() });
+		return Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_KEYSTORE_CACHE_LOG001, new Object[ ] { kco.getName(), kco.getIdKeystore(), kco.getVersion(), cachedKco.getVersion() });
 	}
 
 }

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 15/09/2023.
+ * @version 2.1, 19/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -63,17 +63,17 @@ import es.gob.valet.commons.utils.UtilsMappings;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.dto.MappingDTO;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IWebGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
-import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.AssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
@@ -82,11 +82,12 @@ import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
+import es.gob.valet.utils.GeneralConstantsValetWeb;
 
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 15/09/2023.
+ * @version 2.1, 19/09/2023.
  */
 @RestController
 public class TslRestController {
@@ -242,8 +243,8 @@ public class TslRestController {
 		try {
 			// comprobamos que se han indicado todos los campos obligatorios
 			if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
-				json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
+				json.put(FIELD_IMPL_TSL_FILE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
 				error = true;
 
 			} else {
@@ -251,14 +252,14 @@ public class TslRestController {
 			}
 
 			if (specificationTsl == null || specificationTsl.equals(String.valueOf(-1))) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
-				json.put(FIELD_SPECIFICATION + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
+				json.put(FIELD_SPECIFICATION + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
 				error = true;
 			}
 
 			if (UtilsStringChar.isNullOrEmpty(versionTsl) || versionTsl.equals(String.valueOf(-1))) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VERSION));
-				json.put(FIELD_VERSION + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VERSION));
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_VERSION));
+				json.put(FIELD_VERSION + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_VERSION));
 				error = true;
 			}
 
@@ -278,12 +279,12 @@ public class TslRestController {
 
 		} catch (TSLManagingException e) {
 			String msgErrorWeb = null;
-			if (e.getErrorCode() != null && e.getErrorCode().equals(IValetException.COD_204)) {
-				msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_KEYSTORE_TSL_WEB);
+			if (e.getErrorCode() != null && e.getErrorCode().equals(ValetExceptionConstants.COD_204)) {
+				msgErrorWeb = Language.getResWebGeneral(WebGeneralMessages.ERROR_KEYSTORE_TSL_WEB);
 			} else {
-				msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL_WEB);
+				msgErrorWeb = Language.getResWebGeneral(WebGeneralMessages.ERROR_SAVE_TSL_WEB);
 			}
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
 			json.put(KEY_JS_ERROR_SAVE_TSL, msgErrorWeb);
 			listTSL = StreamSupport.stream(tslDataService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
@@ -317,8 +318,8 @@ public class TslRestController {
 
 		// comprobamos que no se haya dejado vacío el campo del fichero de TSL.
 		if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
-			json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
+			json.put(FIELD_IMPL_TSL_FILE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
 
 		} else {
 			tslXMLbytes = implTslFile.getBytes();
@@ -334,8 +335,8 @@ public class TslRestController {
 			dtOutput.setData(listTSL);
 
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
-			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_TSL_WEB));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebGeneral(WebGeneralMessages.ERROR_EDIT_TSL_WEB));
 			listTSL = StreamSupport.stream(tslDataService.getAllTSL().spliterator(), false).collect(Collectors.toList());
 			dtOutput.setError(json.toString());
 
@@ -366,7 +367,7 @@ public class TslRestController {
 			FileCopyUtils.copy(in, response.getOutputStream());
 
 		} catch (TSLManagingException e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_DOWNLOAD_TSL, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_DOWNLOAD_TSL, new Object[ ] { e.getMessage() }));
 		}
 	}
 
@@ -393,7 +394,7 @@ public class TslRestController {
 			response.setHeader("Content-Disposition", "attachment; filename=" + filenameTSL);
 			FileCopyUtils.copy(in, response.getOutputStream());
 		} catch (TSLManagingException e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_DOWNLOAD_DOC_LEGIBLE, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_DOWNLOAD_DOC_LEGIBLE, new Object[ ] { e.getMessage() }));
 		}
 
 	}
@@ -419,7 +420,7 @@ public class TslRestController {
 		if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
 			// se muestra mensaje indicando que se ha introducido el fichero.
 			error = true;
-			json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.INFO_EMPTY_FILE_IMPL_TSL));
+			json.put(FIELD_IMPL_TSL_FILE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.INFO_EMPTY_FILE_IMPL_TSL));
 		} else {
 
 			tslXMLbytes = implTslFile.getBytes();
@@ -439,8 +440,8 @@ public class TslRestController {
 					// otro país.
 					// se muestra mensaje indicando que no se ha actualizado
 					error = true;
-					LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_COUNTRY_INVALID));
-					json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_COUNTRY_INVALID));
+					LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_COUNTRY_INVALID));
+					json.put(FIELD_IMPL_TSL_FILE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_COUNTRY_INVALID));
 				} else {
 					// actualizamos el formulario
 					tslForm.setSpecification(tslObject.getSpecification());
@@ -481,21 +482,21 @@ public class TslRestController {
 				}
 			}catch (TSLMalformedException e){
 					String msgErrorWeb = null;
-					if (e.getErrorCode() != null && e.getErrorCode().equals(IValetException.COD_204)) {
-						msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_KEYSTORE_TSL_WEB);
+					if (e.getErrorCode() != null && e.getErrorCode().equals(ValetExceptionConstants.COD_204)) {
+						msgErrorWeb = Language.getResWebGeneral(WebGeneralMessages.ERROR_UPDATE_KEYSTORE_TSL_WEB);
 					} else {
-						msgErrorWeb =  Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL, new Object[ ] { e.getMessage() });
+						msgErrorWeb =  Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_UPDATE_IMPL_TSL, new Object[ ] { e.getMessage() });
 					}
-					LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
-					json.put(FIELD_IMPL_TSL_FILE + "_span", msgErrorWeb);
+					LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+					json.put(FIELD_IMPL_TSL_FILE + GeneralConstantsValetWeb.SPAN_ELEMENT, msgErrorWeb);
 					error = true;
 			
 			} catch (Exception e) {
-				String msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL, new Object[ ] { e.getMessage() });
+				String msgError = Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_UPDATE_IMPL_TSL, new Object[ ] { e.getMessage() });
 
 				LOGGER.error(msgError);
 
-				json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_UPDATE_IMPL_TSL_WEB));
+				json.put(FIELD_IMPL_TSL_FILE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_UPDATE_IMPL_TSL_WEB));
 				error = true;
 
 			} finally {
@@ -572,25 +573,25 @@ public class TslRestController {
 		List<MappingDTO> listTslCountryRegionMapping = new ArrayList<MappingDTO>();
 
 		if (mappingIdentificator == null || mappingIdentificator.isEmpty()) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
-			json.put(FIELD_MAPPING_ID + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
+			json.put(FIELD_MAPPING_ID + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_IDENTIFICATOR));
 			error = true;
 		}
 		// IAssociationTypeIdConstants
 		String mappingValue = null;
 		if (idMappingType != null) {
 
-			if (idMappingType.equals(IAssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION)) {
+			if (idMappingType.equals(AssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION)) {
 				mappingValue = mappingSimpleValue;
-			} else if (idMappingType.equals(IAssociationTypeIdConstants.ID_FREE_ASSOCIATION)) {
+			} else if (idMappingType.equals(AssociationTypeIdConstants.ID_FREE_ASSOCIATION)) {
 				mappingValue = mappingFreeValue;
 			}
 
 		}
 
 		if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
-			json.put(FIELD_MAPPING_VALUE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_VALUE));
+			json.put(FIELD_MAPPING_VALUE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_VALUE));
 			error = true;
 		}
 
@@ -598,8 +599,8 @@ public class TslRestController {
 		try {
 			if (TSLManager.getInstance().checkIfTSLCountryRegionMappingIdentificatorIsAlreadyDefined(codeCountryRegion, null, mappingIdentificator)) {
 
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_IDENTIFICATOR_DUPLICATE));
-				json.put(KEY_JS_INFO_EXIST_IDENTIFICATOR, Language.getResWebGeneral(IWebGeneralMessages.ERROR_IDENTIFICATOR_DUPLICATE));
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_IDENTIFICATOR_DUPLICATE));
+				json.put(KEY_JS_INFO_EXIST_IDENTIFICATOR, Language.getResWebGeneral(WebGeneralMessages.ERROR_IDENTIFICATOR_DUPLICATE));
 				error = true;
 			}
 
@@ -623,7 +624,7 @@ public class TslRestController {
 				dtOutput.setError(json.toString());
 			}
 		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_MAPPING, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SAVE_MAPPING, new Object[ ] { e.getMessage() }));
 		}
 		dtOutput.setData(listTslCountryRegionMapping);
 		return dtOutput;
@@ -719,22 +720,22 @@ public class TslRestController {
 		try {
 			String mappingValue = null;
 			if (mappingTslForm.getIdMappingType() != null) {
-				if (mappingTslForm.getIdMappingType().equals(IAssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION)) {
+				if (mappingTslForm.getIdMappingType().equals(AssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION)) {
 					mappingValue = mappingTslForm.getMappingSimpleValue();
-				} else if (mappingTslForm.getIdMappingType().equals(IAssociationTypeIdConstants.ID_FREE_ASSOCIATION)) {
+				} else if (mappingTslForm.getIdMappingType().equals(AssociationTypeIdConstants.ID_FREE_ASSOCIATION)) {
 					mappingValue = mappingTslForm.getMappingFreeValue();
 				}
 			}
 
 			if (mappingValue == null || mappingValue.isEmpty() || mappingValue.length() != mappingValue.trim().length()) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
-				json.put(FIELD_MAPPING_VALUE + "_spanEdit", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VALUE));
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_VALUE));
+				json.put(FIELD_MAPPING_VALUE + "_spanEdit", Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_VALUE));
 				error = true;
 			}
 
 			if (mappingTslForm.getIdTslCountryRegionMapping() == null) {
 				error = true;
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_MAPPING));
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_EDIT_MAPPING));
 			}
 
 			if (!error) {
@@ -751,8 +752,8 @@ public class TslRestController {
 
 			}
 		} catch (Exception e) {
-			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_MAPPING));
-			json.put(KEY_JS_ERROR_SAVE_MAPPING, Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_MAPPING));
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_EDIT_MAPPING));
+			json.put(KEY_JS_ERROR_SAVE_MAPPING, Language.getResWebGeneral(WebGeneralMessages.ERROR_EDIT_MAPPING));
 			listTslCountryRegionMapping = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
 			dtOutput.setError(json.toString());
 		}
@@ -793,7 +794,7 @@ public class TslRestController {
 		try {
 			TSLManager.getInstance().removeTSLData(null, idTslData);
 		} catch (TSLManagingException e) {
-			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
 			index = "-1";
 		}
 

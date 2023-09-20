@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 16/09/2021.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.rest.controller;
 
@@ -58,12 +58,13 @@ import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
 import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 import es.gob.valet.rest.exception.OrderedValidation;
+import es.gob.valet.utils.GeneralConstantsValetWeb;
 
 /**
  * <p>Class that manages the REST requests related to the Users administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 16/09/2021.
+ * @version 1.4, 19/09/2023.
  */
 @RestController
 public class UserRestController {
@@ -130,7 +131,7 @@ public class UserRestController {
 			listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false).collect(Collectors.toList());
 			JSONObject json = new JSONObject();
 			for (FieldError o: bindingResult.getFieldErrors()) {
-				json.put(o.getField() + "_span", o.getDefaultMessage());
+				json.put(o.getField() + GeneralConstantsValetWeb.SPAN_ELEMENT, o.getDefaultMessage());
 			}
 			dtOutput.setError(json.toString());
 		} else {
@@ -191,7 +192,7 @@ public class UserRestController {
 			listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false).collect(Collectors.toList());
 			JSONObject json = new JSONObject();
 			for (FieldError o: bindingResult.getFieldErrors()) {
-				json.put(o.getField() + "_span", o.getDefaultMessage());
+				json.put(o.getField() + GeneralConstantsValetWeb.SPAN_ELEMENT, o.getDefaultMessage());
 			}
 			dtOutput.setError(json.toString());
 		} else {
@@ -241,7 +242,7 @@ public class UserRestController {
 		if (bindingResult.hasErrors()) {
 			JSONObject json = new JSONObject();
 			for (FieldError o: bindingResult.getFieldErrors()) {
-				json.put(o.getField() + "_span", o.getDefaultMessage());
+				json.put(o.getField() + GeneralConstantsValetWeb.SPAN_ELEMENT, o.getDefaultMessage());
 			}
 			result = json.toString();
 		} else {

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 27/09/2022.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.persistence.utils;
 
@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 /**
  * <p>Class that representation tree in interfaces with boostrap treeview.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 27/09/2022.
+ * @version 1.2, 19/09/2023.
  */
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class BootstrapTreeNode implements Serializable {
@@ -81,12 +81,12 @@ public class BootstrapTreeNode implements Serializable {
 	/**
 	 * Attribute that represents the nodeId of the node. 
 	 */
-	private Object nodeId;
+	private transient Object nodeId;
 
 	/**
 	 * Attribute that represents the parentId of the node. 
 	 */
-	private Object parentId;
+	private transient Object parentId;
 	
 	/**
 	 * Attribute that represents the text of the node. 
@@ -247,8 +247,12 @@ public class BootstrapTreeNode implements Serializable {
 	 * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
 	 * @version 1.0, 19/09/2022.
 	 */
-	public static class State {
+	public static class State implements Serializable {
 
+		/**
+		 * Attribute that represents . 
+		 */
+		private static final long serialVersionUID = 1198900990468946302L;
 		/**
 		 * Attribute that represents the checked of the node. 
 		 */

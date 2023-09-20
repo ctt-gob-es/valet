@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.14, 24/07/2023.
+ * @version 2.0, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -39,14 +39,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.client.methods.HttpGet;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.springframework.beans.BeansException;
 
 import es.gob.valet.alarms.AlarmsManager;
-import es.gob.valet.audit.access.IEventsCollectorConstants;
+import es.gob.valet.audit.access.EventsCollectorConstants;
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
 import es.gob.valet.certificates.CertificateCacheManager;
@@ -58,22 +58,22 @@ import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsOCSP;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
-import es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants;
-import es.gob.valet.rest.services.ITslMappingConstants;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
+import es.gob.valet.persistence.configuration.model.utils.AlarmIdConstants;
+import es.gob.valet.rest.services.TslMappingConstants;
 import es.gob.valet.service.impl.KeystoreServiceImpl;
 import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.tsl.certValidation.CertificateExtension;
-import es.gob.valet.tsl.certValidation.IQCCertificateConstants;
-import es.gob.valet.tsl.certValidation.ITSLStatusConstants;
+import es.gob.valet.tsl.certValidation.QCCertificateConstants;
 import es.gob.valet.tsl.certValidation.QCResult;
 import es.gob.valet.tsl.certValidation.ResultQSCDDetermination;
 import es.gob.valet.tsl.certValidation.ResultQualifiedCertificate;
 import es.gob.valet.tsl.certValidation.ResultServiceInformation;
 import es.gob.valet.tsl.certValidation.SIResult;
+import es.gob.valet.tsl.certValidation.TSLStatusConstants;
 import es.gob.valet.tsl.certValidation.TspServiceQualifier;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
@@ -83,7 +83,6 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 import es.gob.valet.tsl.exceptions.TSLQualificationEvalProcessException;
 import es.gob.valet.tsl.exceptions.TSLValidationException;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
-import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
@@ -94,7 +93,10 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.AdditionalServiceInformat
 import es.gob.valet.tsl.parsing.impl.common.extensions.CriteriaList;
 import es.gob.valet.tsl.parsing.impl.common.extensions.QualificationElement;
 import es.gob.valet.tsl.parsing.impl.common.extensions.Qualifications;
+import es.gob.valet.utils.TSLBuilderConstants;
+import es.gob.valet.utils.TSLCommonURIs;
 import es.gob.valet.utils.UtilsHTTP;
+import es.gob.valet.utils.ValidatorResultConstants;
 
 /**
  * <p>
@@ -107,7 +109,7 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 1.14, 24/07/2023.
+ * @version 2.0, 19/09/2023.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -170,14 +172,14 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 		// Comprobamos que el certificado de entrada no sea nulo.
 		if (cert == null) {
-			throw new TSLArgumentException(IValetException.COD_187,
-					Language.getResCoreTsl(ICoreTslMessages.LOGMTSL107));
+			throw new TSLArgumentException(ValetExceptionConstants.COD_187,
+					Language.getResCoreTsl(CoreTslMessages.LOGMTSL107));
 		}
 
 		// Comprobamos que la fecha de entrada no sea nula.
 		if (validationDate == null) {
-			throw new TSLArgumentException(IValetException.COD_187,
-					Language.getResCoreTsl(ICoreTslMessages.LOGMTSL144));
+			throw new TSLArgumentException(ValetExceptionConstants.COD_187,
+					Language.getResCoreTsl(CoreTslMessages.LOGMTSL144));
 		}
 
 		// Inicializamos el resultado a devolver.
@@ -253,7 +255,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// Si se trata de una lista de listas, la ignoramos y concluímos que no
 		// se puede validar el certificado
 		// indicando como no detectado (valor por defecto en la respuesta).
-		LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL202));
+		LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL202));
 
 	}
 
@@ -293,20 +295,20 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 		if (!resultQC.isEndProcedure()) {
 
-			if (resultQC.getQcStatus().equals(ITSLStatusConstants.PROCESS_PASSED)) {
+			if (resultQC.getQcStatus().equals(TSLStatusConstants.PROCESS_PASSED)) {
 				// PRO-4.4.4-34 se vuelve a llamar al método pasándole la
 				// fecha de emisión del certificado como fecha de
 				// validación.
-				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL397,
+				LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL397,
 						new Object[] { cert.getNotBefore().toString() }));
 				ResultQualifiedCertificate resultQCDateIssue = new ResultQualifiedCertificate(cert);
 				procEUQualifiedCertificateDetermination(resultQCDateIssue, cert, isCACert, isTsaCertificate,
 						cert.getNotBefore(), tspList, true);
 
 				// PRO-4.4.4-35
-				if (resultQCDateIssue.getQcStatus().equals(ITSLStatusConstants.PROCESS_FAILED)) {
+				if (resultQCDateIssue.getQcStatus().equals(TSLStatusConstants.PROCESS_FAILED)) {
 					// PRO-4.4.4-35 a)
-					resultQC.setQcStatus(ITSLStatusConstants.PROCESS_FAILED);
+					resultQC.setQcStatus(TSLStatusConstants.PROCESS_FAILED);
 					// PRO-4.4.4-35 b)
 					resultQC.setQcSubStatus(resultQCDateIssue.getQcSubStatus());
 					resultQC.setInfoQcResult(resultQCDateIssue.getInfoQcResult());
@@ -317,9 +319,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 						// PRO-4.4.4-36 a)
 						if (!checkIdenticalQualifiers(resultQC.getQcResults(), resultQCDateIssue.getQcResults())) {
 							// PRO-4.4.4-36 a) 1)
-							resultQC.setQcStatus(ITSLStatusConstants.PROCESS_FAILED);
+							resultQC.setQcStatus(TSLStatusConstants.PROCESS_FAILED);
 							// PRO-4.4.4-36 a) 2)
-							resultQC.getQcSubStatus().add(Language.getResCoreTsl(ICoreTslMessages.ERROR_QC_SUBSTATUS2));
+							resultQC.getQcSubStatus().add(Language.getResCoreTsl(CoreTslMessages.ERROR_QC_SUBSTATUS2));
 							resultQC.setInfoQcResult(resultQCDateIssue.getInfoQcResult());
 							resultQC.getQcResults().clear();
 							resultQC.setEndProcedure(Boolean.TRUE);
@@ -327,7 +329,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 						// PRO-4.4.4-36 b)
 						if (checkQCSubStatusWarning(resultQCDateIssue.getQcSubStatus())) {
 							// PRO-4.4.4-36 b) 1)
-							resultQC.setQcStatus(ITSLStatusConstants.PROCESS_PASSED_WITH_WARNING);
+							resultQC.setQcStatus(TSLStatusConstants.PROCESS_PASSED_WITH_WARNING);
 							// PRO-4.4.4-36 b) 2)
 							resultQC.getQcSubStatus().add(resultQCDateIssue.getQcStatus());
 							resultQC.getQcSubStatus().addAll(resultQCDateIssue.getQcSubStatus());
@@ -388,8 +390,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 		if (checkIfStatusDeterminationApproachIsDelinquentOrEquivalent(
 				tsl.getSchemeInformation().getStatusDeterminationApproach().toString())) {
 
-			throw new TSLValidationException(IValetException.COD_187,
-					Language.getResCoreTsl(ICoreTslMessages.LOGMTSL108));
+			throw new TSLValidationException(ValetExceptionConstants.COD_187,
+					Language.getResCoreTsl(CoreTslMessages.LOGMTSL108));
 
 		} else {
 			// Recuperamos la lista de TSP y se va analizando de uno en uno.
@@ -404,7 +406,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				if (resultQC.getInfoQcResult().isCertificateDetected()
 						|| resultQC.getInfoQcResult().isTspServiceTSADetected()) {
 					// detectado pero desconocido
-					validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_UNKNOWN);
+					validationResult.setResult(ValidatorResultConstants.RESULT_DETECTED_STATE_UNKNOWN);
 
 					ServiceHistoryInstance shiSelected = resultQC.getInfoQcResult().getShiSelected();
 					if (shiSelected != null) {
@@ -443,7 +445,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// por lo que asignamos el mismo nombre de servicio al
 					// resultado de la validación (y el servicio).
 					if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL215));
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL215));
 						validationResult.setResultFromServiceStatus(Boolean.TRUE);
 						validationResult.setResultFromDPorAIA(Boolean.FALSE);
 						validationResult.setTSPServiceNameForValidate(validationResult.getTSPServiceNameForDetect());
@@ -473,7 +475,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// Tratamos de validar el estado de revocación mediante los
 					// puntos de distribución
 					// establecidos en el propio certificado.
-					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL216,
+					LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL216,
 							new Object[] { validationDate.toString() }));
 					validateCertificateUsingDistributionPoints(cert, isCACert, isTsaCertificate, validationDate,
 							validationResult, resultQC.getInfoQcResult().getTspDetected());
@@ -520,7 +522,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 						// // Almacenamos en una variable si el certificado es
 						// // cualificado o no.
 						boolean isCertQualified = validationResult
-								.getMappingType() == ITSLValidatorResult.MAPPING_TYPE_QUALIFIED;
+								.getMappingType() == ValidatorResultConstants.MAPPING_TYPE_QUALIFIED;
 
 						for (int indexTsp = 0; indexTsp < tspList.size()
 								&& !validationResult.hasBeenDetectedTheCertificate(); indexTsp++) {
@@ -622,7 +624,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// continúen evaluando
 				// otros servicios.
 				// Mostramos en el log el motivo y la excepción.
-				LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL250));
+				LOGGER.error(Language.getResCoreTsl(CoreTslMessages.LOGMTSL250));
 				LOGGER.error(e.getMessage(), e.getException());
 				// Limpiamos toda la información acumulada hasta el
 				// momento.
@@ -658,7 +660,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// PRO-4.4.4-36 b)
 		boolean hasWarnings = Boolean.FALSE;
 		for (String qcss : qcSubStatus) {
-			if (qcss.contains(ITSLStatusConstants.QC_SUBSTATUS_WARNING)) {
+			if (qcss.contains(TSLStatusConstants.QC_SUBSTATUS_WARNING)) {
 				hasWarnings = Boolean.TRUE;
 				break;
 			}
@@ -712,8 +714,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 		boolean endProc = Boolean.FALSE;
 		// PRO-4.5.4-02
-		if (resultQC.getQcStatus().equals(ITSLStatusConstants.PROCESS_FAILED)) {
-			resultQSCD.setQscdResult(ITSLStatusConstants.PROCESS_FAILED);
+		if (resultQC.getQcStatus().equals(TSLStatusConstants.PROCESS_FAILED)) {
+			resultQSCD.setQscdResult(TSLStatusConstants.PROCESS_FAILED);
 			resultQSCD.getQscdSubStatus().add(resultQC.getQcStatus());
 			resultQSCD.getQscdSubStatus().addAll(resultQC.getQcSubStatus());
 			endProc = Boolean.TRUE;
@@ -741,8 +743,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 						// PRO-4.5.4-04
 						procQscdQCForEsigOrQCForEseal(cert, resultQC, resultQSCD);
 					} else {
-						resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_INDETERMINATE);
-						resultQSCD.setQscdStatus(ITSLStatusConstants.PROCESS_PASSED);
+						resultQSCD.setQscdResult(TSLStatusConstants.QSCD_INDETERMINATE);
+						resultQSCD.setQscdStatus(TSLStatusConstants.PROCESS_PASSED);
 					}
 				}
 			}
@@ -796,9 +798,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 		// PRO-4.5.4-04 b)
 		if (!listQualifiersUri.isEmpty() && checkQSCDIndeterminateEsigEseal(listQualifiersUri)) {
-			resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_INDETERMINATE);
-			resultQSCD.setQscdStatus(ITSLStatusConstants.QSCD_STATUS_WARNING);
-			resultQSCD.getQscdSubStatus().add(ITSLStatusConstants.QSCD_SUBSTATUS_WARNING_2);
+			resultQSCD.setQscdResult(TSLStatusConstants.QSCD_INDETERMINATE);
+			resultQSCD.setQscdStatus(TSLStatusConstants.QSCD_STATUS_WARNING);
+			resultQSCD.getQscdSubStatus().add(TSLStatusConstants.QSCD_SUBSTATUS_WARNING_2);
 			endProc = Boolean.TRUE;
 		}
 
@@ -809,7 +811,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// }
 
 			// PRO-4.5.4-04 e)
-			resultQSCD.setQscdStatus(ITSLStatusConstants.PROCESS_PASSED);
+			resultQSCD.setQscdStatus(TSLStatusConstants.PROCESS_PASSED);
 			endProc = Boolean.TRUE;
 
 		}
@@ -833,18 +835,18 @@ public abstract class ATSLValidator implements ITSLValidator {
 			ResultQSCDDetermination resultQSCD) {
 		// PRO-4.5.4-03 a) 4)
 		if (checkQCQSCDManagedOnBehalfOrQCWithQSCD(listQualifiersUri)) {
-			resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_YES);
-		} else if (listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOSSCD)) {
-			resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_NO);
-		} else if (listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT)
+			resultQSCD.setQscdResult(TSLStatusConstants.QSCD_YES);
+		} else if (listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOSSCD)) {
+			resultQSCD.setQscdResult(TSLStatusConstants.QSCD_NO);
+		} else if (listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT)
 				|| listQualifiersUri.isEmpty()) {
 			// obtenemos la fila
 			String row = certExtension.getRowQSCDRegulationRegime();
 			if (row != null) {
-				if (row.equalsIgnoreCase(IQCCertificateConstants.QC_ROW1)) {
-					resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_YES);
+				if (row.equalsIgnoreCase(QCCertificateConstants.QC_ROW1)) {
+					resultQSCD.setQscdResult(TSLStatusConstants.QSCD_YES);
 				} else {
-					resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_NO);
+					resultQSCD.setQscdResult(TSLStatusConstants.QSCD_NO);
 				}
 			}
 		}
@@ -860,8 +862,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 */
 	private boolean checkQCQSCDManagedOnBehalfOrQCWithQSCD(List<String> listQualifiersUri) {
 		// PRO-4.5.4-03 a) 2) iii)
-		return listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF)
-				|| listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD);
+		return listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF)
+				|| listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD);
 	}
 
 	/**
@@ -874,16 +876,16 @@ public abstract class ATSLValidator implements ITSLValidator {
 	private boolean checkQSCDIndeterminateEsigEseal(List<String> listQualifiersUri) {
 		// PRO-4.5.4-04 b)
 		boolean indeterminate = Boolean.FALSE;
-		if (listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD)
-				&& listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD)) {
+		if (listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD)
+				&& listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD)) {
 			indeterminate = Boolean.TRUE;
-		} else if (listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF)
-				&& listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD)) {
+		} else if (listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF)
+				&& listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD)) {
 			indeterminate = Boolean.TRUE;
-		} else if (listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT)
-				&& !listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD)
-				&& !listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD)
-				&& !listQualifiersUri.contains(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF)) {
+		} else if (listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT)
+				&& !listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD)
+				&& !listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD)
+				&& !listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF)) {
 			indeterminate = Boolean.TRUE;
 		}
 		return indeterminate;
@@ -909,9 +911,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 		if (resultQC.getQcResults().contains(QCResult.QC_FOR_ESIG)) {
 			// PRO-4.5.4-03 a) 1)
 			if (checkQSCDIndeterminate(resultQC.getInfoQcResult().getQualifierCheck1())) {
-				resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_INDETERMINATE);
-				resultQSCD.setQscdStatus(ITSLStatusConstants.QSCD_STATUS_WARNING);
-				resultQSCD.getQscdSubStatus().add(ITSLStatusConstants.QSCD_SUBSTATUS_WARNING_1);
+				resultQSCD.setQscdResult(TSLStatusConstants.QSCD_INDETERMINATE);
+				resultQSCD.setQscdStatus(TSLStatusConstants.QSCD_STATUS_WARNING);
+				resultQSCD.getQscdSubStatus().add(TSLStatusConstants.QSCD_SUBSTATUS_WARNING_1);
 				endProc = Boolean.TRUE;
 			}
 
@@ -920,7 +922,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				proc_getQSCDStatusDirectiveRegime(resultQC.getInfoQcResult().getQualifierCheck1(),
 						resultQC.getInfoQcResult().getCertExtension(), resultQSCD);
 				// PRO-4.5.4-03 a) 5)
-				resultQSCD.setQscdStatus(ITSLStatusConstants.PROCESS_PASSED);
+				resultQSCD.setQscdStatus(TSLStatusConstants.PROCESS_PASSED);
 				// PRO-4.5.4-13 a) 6)
 				endProc = Boolean.TRUE;
 
@@ -928,8 +930,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 		}
 		if (!endProc) {
 			// PRO-4.5.4-03 b)c)d)
-			resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_INDETERMINATE);
-			resultQSCD.setQscdStatus(ITSLStatusConstants.PROCESS_PASSED);
+			resultQSCD.setQscdResult(TSLStatusConstants.QSCD_INDETERMINATE);
+			resultQSCD.setQscdStatus(TSLStatusConstants.PROCESS_PASSED);
 			endProc = Boolean.TRUE;
 		}
 
@@ -1009,16 +1011,16 @@ public abstract class ATSLValidator implements ITSLValidator {
 	private void proc_getQSCDStatusDirectiveRegime(TspServiceQualifier qualifierCheck1,
 			CertificateExtension certExtension, ResultQSCDDetermination resultQSCD) {
 		if (qualifierCheck1.isQcWithSSCD()) {
-			resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_YES);
+			resultQSCD.setQscdResult(TSLStatusConstants.QSCD_YES);
 		} else if (qualifierCheck1.isQcNoSSCD()) {
-			resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_NO);
+			resultQSCD.setQscdResult(TSLStatusConstants.QSCD_NO);
 		} else {
 			// depende de la fila
 			String row = certExtension.getRowQSCDDirectiveRegime();
-			if (row.equalsIgnoreCase(IQCCertificateConstants.QC_ROW1)) {
-				resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_YES);
+			if (row.equalsIgnoreCase(QCCertificateConstants.QC_ROW1)) {
+				resultQSCD.setQscdResult(TSLStatusConstants.QSCD_YES);
 			} else {
-				resultQSCD.setQscdResult(ITSLStatusConstants.QSCD_NO);
+				resultQSCD.setQscdResult(TSLStatusConstants.QSCD_NO);
 			}
 		}
 
@@ -1063,27 +1065,27 @@ public abstract class ATSLValidator implements ITSLValidator {
 					isDateIssue);
 
 			// PRO-4.4.4-04
-			if (resultSI.getSiStatus().equals(ITSLStatusConstants.PROCESS_FAILED)) {
-				resultQC.setQcStatus(ITSLStatusConstants.PROCESS_FAILED);
+			if (resultSI.getSiStatus().equals(TSLStatusConstants.PROCESS_FAILED)) {
+				resultQC.setQcStatus(TSLStatusConstants.PROCESS_FAILED);
 				resultQC.getQcSubStatus().add(resultSI.getSiStatus());
 				resultQC.getQcSubStatus().addAll(resultSI.getSiSubStatus());
 				endProc = Boolean.TRUE;
 				resultQC.setEndProcedure(endProc);
 
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL356));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL356));
 			}
 
 			// PRO-4.4.4-05
 			if (!endProc && resultSI.getSiResults().isEmpty()) {
 				// no se ha obtenido TSPService que identifican all certificado.
-				resultQC.setQcStatus(ITSLStatusConstants.PROCESS_PASSED);
-				resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_ERROR_1);
+				resultQC.setQcStatus(TSLStatusConstants.PROCESS_PASSED);
+				resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_ERROR_1);
 				resultQC.getQcResults().add(QCResult.NOT_QUALIFIED);
 
 				// se consulta si es una TSA
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL357));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL357));
 				if (isTsaCertificate) {
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL395));
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL395));
 					SIResult siResultTsa = resultSI.getInfoSIResult().getSiResultTSA();
 
 					if (siResultTsa != null) {
@@ -1094,10 +1096,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 						// seguimos con el proceso pero ya se ha indicado que el
 						// certificado es reconocido por un servicio de sello de
 						// tiempo.
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL391));
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL391));
 						resultQC.getInfoQcResult().setInfoCertificateIssuer(resultSI.getInfoCertificateIssuer());
 					} else {
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL400));
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL400));
 					}
 				}
 				endProc = Boolean.TRUE;
@@ -1107,12 +1109,12 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 			// PRO-4.4.4-06
 			if (!endProc && checkErrorTSPNameInconsistency(resultSI, cert)) {
-				resultQC.setQcStatus(ITSLStatusConstants.PROCESS_FAILED);
-				resultQC.getQcSubStatus().add((ITSLStatusConstants.QC_SUBSTATUS_ERROR_2));
+				resultQC.setQcStatus(TSLStatusConstants.PROCESS_FAILED);
+				resultQC.getQcSubStatus().add((TSLStatusConstants.QC_SUBSTATUS_ERROR_2));
 				resultQC.getQcResults().add(QCResult.INDETERMINATE);
 				endProc = Boolean.TRUE;
 				resultQC.setEndProcedure(endProc);
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL359));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL359));
 
 			}
 
@@ -1126,7 +1128,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					tslDateTime = UtilsDate.transformDate(tslDateTimeString, UtilsDate.FORMAT_DATE_TIME_TSL);
 
 				} catch (ParseException e) {
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL360));
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL360));
 					endProc = Boolean.TRUE;
 					resultQC.setEndProcedure(endProc);
 
@@ -1176,7 +1178,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 *            listed services matching a certificate of ETSI TS 119 615
 	 */
 	private void assignResultSItoResultQC(ResultServiceInformation resultSI, ResultQualifiedCertificate resultQC) {
-		if (resultSI.getSiStatus().equals(ITSLStatusConstants.PROCESS_PASSED)) {
+		if (resultSI.getSiStatus().equals(TSLStatusConstants.PROCESS_PASSED)) {
 			SIResult siResultSelected = null;
 			siResultSelected = resultSI.getSiResults().get(0);
 			if (siResultSelected != null) {
@@ -1219,8 +1221,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// hay dos o más valores de 'Service previous status' no identico, se
 		// para el proceso.
 		if (checkSiResultsIdenticalOrNot(resultQC, resultSI)) {
-			resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_ERROR_3);
-			resultQC.setQcStatus(ITSLStatusConstants.PROCESS_FAILED);
+			resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_ERROR_3);
+			resultQC.setQcStatus(TSLStatusConstants.PROCESS_FAILED);
 			endProc = true;
 		}
 
@@ -1237,7 +1239,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// resultQC.getListQualifiers().add(check3);
 
 			// PRO-4.4.4-33 f) 2)
-			resultQC.setQcStatus(ITSLStatusConstants.PROCESS_PASSED);
+			resultQC.setQcStatus(TSLStatusConstants.PROCESS_PASSED);
 			// PRO-4.4.4-33 f) 3)
 			endProc = true;
 		}
@@ -1252,9 +1254,9 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// PRO-4.4.4-33 h) 2) i)
 				resultQC.getInfoQcResult().setCheck1(QCResult.INDET_QC_FOR_ESIG.toString());
 				// PRO-4.4.4-33 h) 2) ii)
-				resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_ERROR_4);
+				resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_ERROR_4);
 				// PRO-4.4.4-33 h) 2) iii)
-				resultQC.setQcStatus(ITSLStatusConstants.PROCESS_FAILED);
+				resultQC.setQcStatus(TSLStatusConstants.PROCESS_FAILED);
 				endProc = Boolean.FALSE;
 
 			}
@@ -1268,7 +1270,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				getCheck1Dir1999_93_EC(resultQC);
 
 				// PRO-4.4.4-33 l)
-				resultQC.setQcStatus(ITSLStatusConstants.PROCESS_PASSED);
+				resultQC.setQcStatus(TSLStatusConstants.PROCESS_PASSED);
 				// PRO-4.4.4-33 m)
 				// Se comprueba si no existe, para no tener elementos
 				// repetidos...
@@ -1306,23 +1308,23 @@ public abstract class ATSLValidator implements ITSLValidator {
 			column = resultQC.getInfoQcResult().getQualifierCheck1().getColumnCheck1Dir1999_93_EC();
 
 		} else {
-			column = IQCCertificateConstants.QC_CHECK_COLUMN1;
+			column = QCCertificateConstants.QC_CHECK_COLUMN1;
 		}
 
 		String row = resultQC.getInfoQcResult().getCertExtension().getRowCheck1Dir1999_93_EC();
 
 		switch (column) {
-		case IQCCertificateConstants.QC_CHECK_COLUMN1:
-			if (row.equals(IQCCertificateConstants.QC_ROW5)) {
+		case QCCertificateConstants.QC_CHECK_COLUMN1:
+			if (row.equals(QCCertificateConstants.QC_ROW5)) {
 				resultQC.getInfoQcResult().setCheck1(QCResult.NOT_QUALIFIED_FOR_ESIG.toString());
 			} else {
 				resultQC.getInfoQcResult().setCheck1(QCResult.QC_FOR_ESIG.toString());
 			}
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN2:
+		case QCCertificateConstants.QC_CHECK_COLUMN2:
 			resultQC.getInfoQcResult().setCheck1(QCResult.NOT_QUALIFIED_FOR_ESIG.toString());
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN3:
+		case QCCertificateConstants.QC_CHECK_COLUMN3:
 			resultQC.getInfoQcResult().setCheck1(QCResult.QC_FOR_ESIG.toString());
 			break;
 		default:
@@ -1397,22 +1399,22 @@ public abstract class ATSLValidator implements ITSLValidator {
 		boolean result = false;
 		for (ServiceHistoryInstance si : resultSI.getInfoSIResult().getListSiAtDateTime()) {
 			if (si.getServiceStatus().toString()
-					.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONCEASED)) {
+					.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONCEASED)) {
 				result = true;
 				break;
 			}
 			if (si.getServiceStatus().toString()
-					.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONREVOKED)) {
+					.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONREVOKED)) {
 				result = true;
 				break;
 			}
 			if (si.getServiceStatus().toString()
-					.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONCEASED)) {
+					.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONCEASED)) {
 				result = true;
 				break;
 			}
 			if (si.getServiceStatus().toString()
-					.equalsIgnoreCase(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONREVOKED)) {
+					.equalsIgnoreCase(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONREVOKED)) {
 				result = true;
 				break;
 			}
@@ -1447,7 +1449,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				if (status != null) {
 					// PRO-4.4.4-33 c)
 					if (!encIdentical && status.equalsIgnoreCase(si.getServiceStatus().toString())) {
-						resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_WARNING_8);
+						resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_WARNING_8);
 						encIdentical = true;
 					} else {
 						if (!status.equalsIgnoreCase(si.getServiceStatus().toString())) {
@@ -1486,7 +1488,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		String check1 = null;
 		boolean endProc = Boolean.FALSE;
 		// PRO-4.4.4-09
-		if (resultSI.getSiSubStatus().contains(ITSLStatusConstants.SI_ERROR_T1_DUPLICATION)) {
+		if (resultSI.getSiSubStatus().contains(TSLStatusConstants.SI_ERROR_T1_DUPLICATION)) {
 			check1 = QCResult.INDET_QC_FOR_ESIG.toString();
 			resultQC.getInfoQcResult().setCheck1(check1);
 			// PRO-4.4.4-16
@@ -1512,7 +1514,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					&& checkIndeterminateEsig(resultQC.getInfoQcResult().getQualifierCheck1())) {
 				check1 = QCResult.INDET_QC_FOR_ESIG.toString();
 				resultQC.getInfoQcResult().setCheck1(check1);
-				resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_WARNING_1);
+				resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_WARNING_1);
 				// PRO-4.4.4-16
 				proc_check2(resultQC, resultSI, cert);
 				endProc = Boolean.TRUE;
@@ -1524,7 +1526,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		if (!endProc) {
 			// PRO-4.4.4-14
 			if (checkResultQcType(resultQC.getInfoQcResult().getCertExtension())) {
-				resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_WARNING_2);
+				resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_WARNING_2);
 			}
 
 			// PRO-4.4.4-15 b)c)d) //Se obtiene el valor check1
@@ -1550,7 +1552,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			column = resultQC.getInfoQcResult().getQualifierCheck1().getColumnCheck1();
 
 		} else {
-			column = IQCCertificateConstants.QC_CHECK_COLUMN1;
+			column = QCCertificateConstants.QC_CHECK_COLUMN1;
 		}
 		String row = resultQC.getInfoQcResult().getCertExtension().getRowCheck();
 		// se guarda para obtener en los procesos siguiente el valor de CHECK2 y
@@ -1558,45 +1560,45 @@ public abstract class ATSLValidator implements ITSLValidator {
 		resultQC.getInfoQcResult().setSelectRow(row);
 
 		// PRO-4.4.4-15 d)
-		if (row.equals(IQCCertificateConstants.QC_ROW8) && column.equals(IQCCertificateConstants.QC_CHECK_COLUMN3)) {
-			resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_WARNING_3);
+		if (row.equals(QCCertificateConstants.QC_ROW8) && column.equals(QCCertificateConstants.QC_CHECK_COLUMN3)) {
+			resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_WARNING_3);
 		}
 
 		// PRO-4.4.4-15 c)
 		switch (column) {
-		case IQCCertificateConstants.QC_CHECK_COLUMN1:
-			if (row.equals(IQCCertificateConstants.QC_ROW1)) {
+		case QCCertificateConstants.QC_CHECK_COLUMN1:
+			if (row.equals(QCCertificateConstants.QC_ROW1)) {
 				resultQC.getInfoQcResult().setCheck1(QCResult.QC_FOR_ESIG.toString());
 
-			} else if (row.equals(IQCCertificateConstants.QC_ROW4) || row.equals(IQCCertificateConstants.QC_ROW5)
-					|| row.equals(IQCCertificateConstants.QC_ROW7)) {
+			} else if (row.equals(QCCertificateConstants.QC_ROW4) || row.equals(QCCertificateConstants.QC_ROW5)
+					|| row.equals(QCCertificateConstants.QC_ROW7)) {
 				resultQC.getInfoQcResult().setCheck1(QCResult.INDET_QC_FOR_ESIG.toString());
 			} else {
 				resultQC.getInfoQcResult().setCheck1(QCResult.NOT_QUALIFIED_FOR_ESIG.toString());
 			}
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN2:
+		case QCCertificateConstants.QC_CHECK_COLUMN2:
 			resultQC.getInfoQcResult().setCheck1(QCResult.NOT_QUALIFIED_FOR_ESIG.toString());
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN3:
-			if (row.equals(IQCCertificateConstants.QC_ROW1) || row.equals(IQCCertificateConstants.QC_ROW9)) {
+		case QCCertificateConstants.QC_CHECK_COLUMN3:
+			if (row.equals(QCCertificateConstants.QC_ROW1) || row.equals(QCCertificateConstants.QC_ROW9)) {
 				resultQC.getInfoQcResult().setCheck1(QCResult.QC_FOR_ESIG.toString());
-			} else if (row.equals(IQCCertificateConstants.QC_ROW2) || row.equals(IQCCertificateConstants.QC_ROW3)
-					|| row.equals(IQCCertificateConstants.QC_ROW6) || row.equals(IQCCertificateConstants.QC_ROW10)
-					|| row.equals(IQCCertificateConstants.QC_ROW11) || row.equals(IQCCertificateConstants.QC_ROW14)) {
+			} else if (row.equals(QCCertificateConstants.QC_ROW2) || row.equals(QCCertificateConstants.QC_ROW3)
+					|| row.equals(QCCertificateConstants.QC_ROW6) || row.equals(QCCertificateConstants.QC_ROW10)
+					|| row.equals(QCCertificateConstants.QC_ROW11) || row.equals(QCCertificateConstants.QC_ROW14)) {
 				resultQC.getInfoQcResult().setCheck1(QCResult.NOT_QUALIFIED_FOR_ESIG.toString());
 			} else {
 				resultQC.getInfoQcResult().setCheck1(QCResult.INDET_QC_FOR_ESIG.toString());
 			}
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN4:
+		case QCCertificateConstants.QC_CHECK_COLUMN4:
 			if (resultQC.getInfoQcResult().getCertExtension().isQcCompliance()) {
 				resultQC.getInfoQcResult().setCheck1(QCResult.QC_FOR_ESIG.toString());
 			} else {
 				resultQC.getInfoQcResult().setCheck1(QCResult.NOT_QUALIFIED_FOR_ESIG.toString());
 			}
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN5:
+		case QCCertificateConstants.QC_CHECK_COLUMN5:
 			resultQC.getInfoQcResult().setCheck1(QCResult.QC_FOR_ESIG.toString());
 			break;
 		default:
@@ -1837,7 +1839,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Recorremos la lista buscando el elemento Qualifications.
 			for (IAnyTypeExtension extension : extensionsList) {
 				// Si es del tipo Qualifications...
-				if (extension.getImplementationExtension() == IAnyTypeExtension.IMPL_QUALIFICATIONS) {
+				if (extension.getImplementationExtension() == TSLBuilderConstants.IMPL_QUALIFICATIONS) {
 					// Obtenemos el objeto Qualifications Extension.
 					Qualifications qualificationsExtension = (Qualifications) extension;
 					try {
@@ -1855,7 +1857,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							// Al no ser crítica, simplemente lo
 							// notificamos con
 							// un warn y continuamos.
-							LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL251));
+							LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL251));
 						}
 					}
 				}
@@ -1895,7 +1897,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Recorremos la lista buscando el elemento Qualifications.
 			for (IAnyTypeExtension extension : extensionsList) {
 				// Si es del tipo Qualifications...
-				if (extension.getImplementationExtension() == IAnyTypeExtension.IMPL_QUALIFICATIONS) {
+				if (extension.getImplementationExtension() == TSLBuilderConstants.IMPL_QUALIFICATIONS) {
 					// Obtenemos el objeto Qualifications Extension.
 					Qualifications qualificationsExtension = (Qualifications) extension;
 					try {
@@ -1913,7 +1915,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							// Al no ser crítica, simplemente lo
 							// notificamos con
 							// un warn y continuamos.
-							LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL251));
+							LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL251));
 						}
 					}
 				}
@@ -2004,7 +2006,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			SIResult si = resultSI.getSiResults().get(index);
 			if (si.isAsiForESIG()) {
 				foundForeSignature = Boolean.TRUE;
-				if (si.getServiceStatus().equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN)) {
+				if (si.getServiceStatus().equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN)) {
 					isNotQualified = Boolean.TRUE;
 					break;
 				}
@@ -2040,7 +2042,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			SIResult si = resultSI.getSiResults().get(index);
 			if (si.isAsiForESeal()) {
 				foundForeSeal = Boolean.TRUE;
-				if (si.getServiceStatus().equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN)) {
+				if (si.getServiceStatus().equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN)) {
 					isNotQualified = Boolean.TRUE;
 					break;
 				}
@@ -2076,7 +2078,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			SIResult si = resultSI.getSiResults().get(index);
 			if (si.isAsiForWSA()) {
 				foundForeWSA = Boolean.TRUE;
-				if (si.getServiceStatus().equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN)) {
+				if (si.getServiceStatus().equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN)) {
 					isNotQualified = Boolean.TRUE;
 					break;
 				}
@@ -2110,7 +2112,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		String check2 = null;
 		boolean endProc = Boolean.FALSE;
 		// PRO-4.4.4-17
-		if (resultSI.getSiSubStatus().contains(ITSLStatusConstants.SI_ERROR_T2_DUPLICATION)) {
+		if (resultSI.getSiSubStatus().contains(TSLStatusConstants.SI_ERROR_T2_DUPLICATION)) {
 			check2 = QCResult.INDET_QC_FOR_ESEAL.toString();
 			resultQC.getInfoQcResult().setCheck2(check2);
 			// PRO-4.4.4-24
@@ -2136,7 +2138,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					&& checkIndeterminateESeal(resultQC.getInfoQcResult().getQualifierCheck2())) {
 				check2 = QCResult.INDET_QC_FOR_ESEAL.toString();
 				resultQC.getInfoQcResult().setCheck2(check2);
-				resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_WARNING_4);
+				resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_WARNING_4);
 				// PRO-4.4.4-24
 				proc_check3(resultQC, resultSI, cert);
 				endProc = Boolean.TRUE;
@@ -2149,7 +2151,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// PRO-4.4.4-22
 		if (!endProc) {
 			if (checkResultQcType(resultQC.getInfoQcResult().getCertExtension())) {
-				resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_WARNING_2);
+				resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_WARNING_2);
 			}
 
 			// PRO-4.4.4-23 b)c)d) //Se obtiene el valor check2
@@ -2171,7 +2173,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		if (resultQC.getInfoQcResult().getQualifierCheck2() != null) {
 			column = resultQC.getInfoQcResult().getQualifierCheck2().getColumnCheck2();
 		} else {
-			column = IQCCertificateConstants.QC_CHECK_COLUMN1;
+			column = QCCertificateConstants.QC_CHECK_COLUMN1;
 		}
 
 		String row = resultQC.getInfoQcResult().getSelectRow();
@@ -2182,43 +2184,43 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// se guarda para obtener en los procesos siguiente el valor de CHECK2 y
 		// CHECK3.
 
-		if (row.equals(IQCCertificateConstants.QC_ROW8) && column.equals(IQCCertificateConstants.QC_CHECK_COLUMN3)) {
-			resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_WARNING_5);
+		if (row.equals(QCCertificateConstants.QC_ROW8) && column.equals(QCCertificateConstants.QC_CHECK_COLUMN3)) {
+			resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_WARNING_5);
 		}
 
 		switch (column) {
-		case IQCCertificateConstants.QC_CHECK_COLUMN1:
-			if (row.equals(IQCCertificateConstants.QC_ROW2)) {
+		case QCCertificateConstants.QC_CHECK_COLUMN1:
+			if (row.equals(QCCertificateConstants.QC_ROW2)) {
 				resultQC.getInfoQcResult().setCheck2(QCResult.QC_FOR_ESEAL.toString());
-			} else if (row.equals(IQCCertificateConstants.QC_ROW4) || row.equals(IQCCertificateConstants.QC_ROW6)
-					|| row.equals(IQCCertificateConstants.QC_ROW7)) {
+			} else if (row.equals(QCCertificateConstants.QC_ROW4) || row.equals(QCCertificateConstants.QC_ROW6)
+					|| row.equals(QCCertificateConstants.QC_ROW7)) {
 				resultQC.getInfoQcResult().setCheck2(QCResult.INDET_QC_FOR_ESEAL.toString());
 			} else {
 				resultQC.getInfoQcResult().setCheck2(QCResult.NOT_QUALIFIED_FOR_ESEAL.toString());
 			}
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN2:
+		case QCCertificateConstants.QC_CHECK_COLUMN2:
 			resultQC.getInfoQcResult().setCheck2(QCResult.NOT_QUALIFIED_FOR_ESEAL.toString());
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN3:
-			if (row.equals(IQCCertificateConstants.QC_ROW2) || row.equals(IQCCertificateConstants.QC_ROW10)) {
+		case QCCertificateConstants.QC_CHECK_COLUMN3:
+			if (row.equals(QCCertificateConstants.QC_ROW2) || row.equals(QCCertificateConstants.QC_ROW10)) {
 				resultQC.getInfoQcResult().setCheck2(QCResult.QC_FOR_ESEAL.toString());
-			} else if (row.equals(IQCCertificateConstants.QC_ROW1) || row.equals(IQCCertificateConstants.QC_ROW3)
-					|| row.equals(IQCCertificateConstants.QC_ROW5) || row.equals(IQCCertificateConstants.QC_ROW9)
-					|| row.equals(IQCCertificateConstants.QC_ROW11) || row.equals(IQCCertificateConstants.QC_ROW13)) {
+			} else if (row.equals(QCCertificateConstants.QC_ROW1) || row.equals(QCCertificateConstants.QC_ROW3)
+					|| row.equals(QCCertificateConstants.QC_ROW5) || row.equals(QCCertificateConstants.QC_ROW9)
+					|| row.equals(QCCertificateConstants.QC_ROW11) || row.equals(QCCertificateConstants.QC_ROW13)) {
 				resultQC.getInfoQcResult().setCheck2(QCResult.NOT_QUALIFIED_FOR_ESEAL.toString());
 			} else {
 				resultQC.getInfoQcResult().setCheck2(QCResult.INDET_QC_FOR_ESEAL.toString());
 			}
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN4:
+		case QCCertificateConstants.QC_CHECK_COLUMN4:
 			if (resultQC.getInfoQcResult().getCertExtension().isQcCompliance()) {
 				resultQC.getInfoQcResult().setCheck2(QCResult.QC_FOR_ESEAL.toString());
 			} else {
 				resultQC.getInfoQcResult().setCheck2(QCResult.INDET_QC_FOR_ESEAL.toString());
 			}
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN5:
+		case QCCertificateConstants.QC_CHECK_COLUMN5:
 			resultQC.getInfoQcResult().setCheck2(QCResult.QC_FOR_ESEAL.toString());
 			break;
 		default:
@@ -2248,7 +2250,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		String check3 = null;
 		boolean endProc = Boolean.FALSE;
 		// PRO-4.4.4-25
-		if (resultSI.getSiSubStatus().contains(ITSLStatusConstants.SI_ERROR_T3_DUPLICATION)) {
+		if (resultSI.getSiSubStatus().contains(TSLStatusConstants.SI_ERROR_T3_DUPLICATION)) {
 			check3 = QCResult.INDET_QWAC.toString();
 			resultQC.getInfoQcResult().setCheck3(check3);
 			// PRO-4.4.4-32
@@ -2275,7 +2277,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					&& checkIndeterminateWSA(resultQC.getInfoQcResult().getQualifierCheck3())) {
 				check3 = QCResult.INDET_QWAC.toString();
 				resultQC.getInfoQcResult().setCheck3(check3);
-				resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_WARNING_6);
+				resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_WARNING_6);
 				// PRO-4.4.4-32
 				proc_compareChecks(resultQC);
 				endProc = Boolean.TRUE;
@@ -2288,7 +2290,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// PRO-4.4.4-30
 		if (!endProc) {
 			if (checkResultQcType(resultQC.getInfoQcResult().getCertExtension())) {
-				resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_WARNING_2);
+				resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_WARNING_2);
 			}
 
 			// PRO-4.4.4-31 b)c)d) //Se obtiene el valor check3
@@ -2315,7 +2317,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		if (!checkError(check1, check2, check3)) {
 
 			// PRO-4.4.4-32 b)
-			resultQC.setQcStatus(ITSLStatusConstants.PROCESS_PASSED);
+			resultQC.setQcStatus(TSLStatusConstants.PROCESS_PASSED);
 			// PRO-4.4.4-32 c)
 			// Se comprueba si no existe, para no tener elementos repetidos...
 			if (!resultQC.getQcResults().contains(check1)) {
@@ -2332,16 +2334,16 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// "warning" indications. Es warning cuando check1, check2 o check 3
 			// es Indeterminado
 			if (checkIndeterminate(check1, check2, check3)) {
-				resultQC.setQcStatus(ITSLStatusConstants.PROCESS_PASSED_WITH_WARNING);
-				resultQC.getQcSubStatus().add(Language.getFormatResCoreTsl(ICoreTslMessages.WARNING_QC_SUBSTATUS,
+				resultQC.setQcStatus(TSLStatusConstants.PROCESS_PASSED_WITH_WARNING);
+				resultQC.getQcSubStatus().add(Language.getFormatResCoreTsl(CoreTslMessages.WARNING_QC_SUBSTATUS,
 						new Object[] { check1, check2, check3 }));
 			}
 
 		} else {
 			// termina el proceso.
 			// PRO-4.4.4-32 a)
-			resultQC.setQcStatus(ITSLStatusConstants.PROCESS_FAILED);
-			resultQC.getQcSubStatus().add(Language.getFormatResCoreTsl(ICoreTslMessages.WARNING_QC_SUBSTATUS,
+			resultQC.setQcStatus(TSLStatusConstants.PROCESS_FAILED);
+			resultQC.getQcSubStatus().add(Language.getFormatResCoreTsl(CoreTslMessages.WARNING_QC_SUBSTATUS,
 					new Object[] { check1, check2, check3 }));
 		}
 
@@ -2383,19 +2385,19 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 */
 	private boolean checkError(String check1, String check2, String check3) {
 		boolean error = false;
-		if ((check1 != null && check1.equals(ITSLStatusConstants.CHECK1_ESIG_QL))) {
-			if ((check2 != null && check2.equals(ITSLStatusConstants.CHECK2_ESEAL_QL))
-					|| (check3 != null && check3.equals(ITSLStatusConstants.CHECK3_QWAC))) {
+		if ((check1 != null && check1.equals(TSLStatusConstants.CHECK1_ESIG_QL))) {
+			if ((check2 != null && check2.equals(TSLStatusConstants.CHECK2_ESEAL_QL))
+					|| (check3 != null && check3.equals(TSLStatusConstants.CHECK3_QWAC))) {
 				error = true;
 			}
-		} else if (check2 != null && check2.equals(ITSLStatusConstants.CHECK2_ESEAL_QL)) {
-			if ((check1 != null && check1.equals(ITSLStatusConstants.CHECK1_ESIG_QL))
-					|| (check3 != null && check3.equals(ITSLStatusConstants.CHECK3_QWAC))) {
+		} else if (check2 != null && check2.equals(TSLStatusConstants.CHECK2_ESEAL_QL)) {
+			if ((check1 != null && check1.equals(TSLStatusConstants.CHECK1_ESIG_QL))
+					|| (check3 != null && check3.equals(TSLStatusConstants.CHECK3_QWAC))) {
 				error = true;
 			}
-		} else if (check3 != null && check3.equals(ITSLStatusConstants.CHECK3_QWAC)) {
-			if ((check1 != null && check1.equals(ITSLStatusConstants.CHECK1_ESIG_QL))
-					|| (check2 != null && check2.equals(ITSLStatusConstants.CHECK2_ESEAL_QL))) {
+		} else if (check3 != null && check3.equals(TSLStatusConstants.CHECK3_QWAC)) {
+			if ((check1 != null && check1.equals(TSLStatusConstants.CHECK1_ESIG_QL))
+					|| (check2 != null && check2.equals(TSLStatusConstants.CHECK2_ESEAL_QL))) {
 				error = true;
 			}
 		}
@@ -2414,7 +2416,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		if (resultQC.getInfoQcResult().getQualifierCheck3() != null) {
 			column = resultQC.getInfoQcResult().getQualifierCheck3().getColumnCheck3();
 		} else {
-			column = IQCCertificateConstants.QC_CHECK_COLUMN1;
+			column = QCCertificateConstants.QC_CHECK_COLUMN1;
 		}
 
 		String row = resultQC.getInfoQcResult().getSelectRow();
@@ -2424,43 +2426,43 @@ public abstract class ATSLValidator implements ITSLValidator {
 		}
 
 		// PRO-4.4.4-31 d)
-		if (row.equals(IQCCertificateConstants.QC_ROW8) && column.equals(IQCCertificateConstants.QC_CHECK_COLUMN3)) {
-			resultQC.getQcSubStatus().add(ITSLStatusConstants.QC_SUBSTATUS_WARNING_7);
+		if (row.equals(QCCertificateConstants.QC_ROW8) && column.equals(QCCertificateConstants.QC_CHECK_COLUMN3)) {
+			resultQC.getQcSubStatus().add(TSLStatusConstants.QC_SUBSTATUS_WARNING_7);
 		}
 		// PRO-4.4.4-31 c)
 		switch (column) {
-		case IQCCertificateConstants.QC_CHECK_COLUMN1:
-			if (row.equals(IQCCertificateConstants.QC_ROW3)) {
+		case QCCertificateConstants.QC_CHECK_COLUMN1:
+			if (row.equals(QCCertificateConstants.QC_ROW3)) {
 				resultQC.getInfoQcResult().setCheck3(QCResult.QWAC.toString());
-			} else if (row.equals(IQCCertificateConstants.QC_ROW5) || row.equals(IQCCertificateConstants.QC_ROW6)
-					|| row.equals(IQCCertificateConstants.QC_ROW7)) {
+			} else if (row.equals(QCCertificateConstants.QC_ROW5) || row.equals(QCCertificateConstants.QC_ROW6)
+					|| row.equals(QCCertificateConstants.QC_ROW7)) {
 				resultQC.getInfoQcResult().setCheck3(QCResult.INDET_QWAC.toString());
 			} else {
 				resultQC.getInfoQcResult().setCheck3(QCResult.NOT_QWAC.toString());
 			}
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN2:
+		case QCCertificateConstants.QC_CHECK_COLUMN2:
 			resultQC.getInfoQcResult().setCheck3(QCResult.NOT_QWAC.toString());
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN3:
-			if (row.equals(IQCCertificateConstants.QC_ROW3) || row.equals(IQCCertificateConstants.QC_ROW11)) {
+		case QCCertificateConstants.QC_CHECK_COLUMN3:
+			if (row.equals(QCCertificateConstants.QC_ROW3) || row.equals(QCCertificateConstants.QC_ROW11)) {
 				resultQC.getInfoQcResult().setCheck3(QCResult.QWAC.toString());
-			} else if (row.equals(IQCCertificateConstants.QC_ROW1) || row.equals(IQCCertificateConstants.QC_ROW2)
-					|| row.equals(IQCCertificateConstants.QC_ROW4) || row.equals(IQCCertificateConstants.QC_ROW9)
-					|| row.equals(IQCCertificateConstants.QC_ROW10) || row.equals(IQCCertificateConstants.QC_ROW12)) {
+			} else if (row.equals(QCCertificateConstants.QC_ROW1) || row.equals(QCCertificateConstants.QC_ROW2)
+					|| row.equals(QCCertificateConstants.QC_ROW4) || row.equals(QCCertificateConstants.QC_ROW9)
+					|| row.equals(QCCertificateConstants.QC_ROW10) || row.equals(QCCertificateConstants.QC_ROW12)) {
 				resultQC.getInfoQcResult().setCheck3(QCResult.NOT_QWAC.toString());
 			} else {
 				resultQC.getInfoQcResult().setCheck3(QCResult.INDET_QWAC.toString());
 			}
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN4:
+		case QCCertificateConstants.QC_CHECK_COLUMN4:
 			if (resultQC.getInfoQcResult().getCertExtension().isQcCompliance()) {
-				resultQC.getInfoQcResult().setCheck3(ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_Q_ESEAL);
+				resultQC.getInfoQcResult().setCheck3(TslMappingConstants.MAPPING_VALUE_ETSI_RESULT_Q_ESEAL);
 			} else {
 				resultQC.getInfoQcResult().setCheck3(QCResult.NOT_QWAC.toString());
 			}
 			break;
-		case IQCCertificateConstants.QC_CHECK_COLUMN5:
+		case QCCertificateConstants.QC_CHECK_COLUMN5:
 			resultQC.getInfoQcResult().setCheck3(QCResult.QWAC.toString());
 			break;
 		default:
@@ -2519,7 +2521,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Recorremos la lista buscando el elemento Qualifications.
 			for (IAnyTypeExtension extension : extensionsList) {
 				// Si es del tipo Qualifications...
-				if (extension.getImplementationExtension() == IAnyTypeExtension.IMPL_QUALIFICATIONS) {
+				if (extension.getImplementationExtension() == TSLBuilderConstants.IMPL_QUALIFICATIONS) {
 					// Obtenemos el objeto Qualifications Extension.
 					Qualifications qualificationsExtension = (Qualifications) extension;
 					try {
@@ -2537,7 +2539,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							// Al no ser crítica, simplemente lo
 							// notificamos con
 							// un warn y continuamos.
-							LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL251));
+							LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL251));
 						}
 					}
 				}
@@ -2584,7 +2586,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 */
 	private boolean checkErrorTSPNameInconsistency(ResultServiceInformation resultSI, X509Certificate cert) {
 		boolean error = Boolean.FALSE;
-		LOGGER.debug(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL390));
+		LOGGER.debug(Language.getResCoreTsl(CoreTslMessages.LOGMTSL390));
 		WrapperX509Cert wrapperX509cert;
 		try {
 			wrapperX509cert = new WrapperX509Cert(cert);
@@ -2613,7 +2615,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				}
 			}
 		} catch (TSLCertificateValidationException e) {
-			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL358, new Object[] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL358, new Object[] { e.getMessage() }));
 		}
 		return error;
 	}
@@ -2679,16 +2681,16 @@ public abstract class ATSLValidator implements ITSLValidator {
 	private void procListedServiceMachingCertificate(ResultServiceInformation resultSI, X509Certificate cert,
 			boolean isCACert, boolean isTsaCertificate, Date validationDate, List<TrustServiceProvider> tspList,
 			boolean isDateIssue) {
-		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL385));
+		LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL385));
 		obtainListServicesMatchingCertificate(resultSI, cert, isCACert, isTsaCertificate, validationDate, tspList);
 
 		// indicamos en el log resultado del proceso.
 		if (resultSI.getSiResults().size() != 0) {
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL386,
+			LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL386,
 					new Object[] { resultSI.getSiStatus(), resultSI.getSiResults().size() }));
 		}
 
-		if (!isDateIssue && resultSI.getSiStatus().equals(ITSLStatusConstants.PROCESS_PASSED)
+		if (!isDateIssue && resultSI.getSiStatus().equals(TSLStatusConstants.PROCESS_PASSED)
 				&& resultSI.getSiResults().isEmpty()) {
 			// si el proceso no ha fallado pero no se ha encontrado tspServices
 			// y estamos en la primera vuelta del proceso, donde se valida con
@@ -2696,7 +2698,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// intentamos obtener el emisor del certificado y volvemos a
 			// realizar la
 			// búsqueda.
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL387));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL387));
 
 			// comprobamos con su emisor
 			X509Certificate issuerCert = getX509CertificateIssuer(cert);
@@ -2705,25 +2707,25 @@ public abstract class ATSLValidator implements ITSLValidator {
 			if (issuerCert != null && !UtilsCertificate.isSelfSigned(issuerCert)) {
 				// Si no es raíz volvemos a lanzar la búsqueda pasando el
 				// emisor.
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL392));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL392));
 				ResultServiceInformation resultSIIssuer = new ResultServiceInformation();
 
 				procListedServiceMachingCertificate(resultSIIssuer, issuerCert, isCACert, isTsaCertificate,
 						validationDate, tspList, isDateIssue);
 
-				if (resultSIIssuer.getSiStatus().equals(ITSLStatusConstants.PROCESS_PASSED)
+				if (resultSIIssuer.getSiStatus().equals(TSLStatusConstants.PROCESS_PASSED)
 						&& !resultSIIssuer.getSiResults().isEmpty()) {
 					resultSI.removeAllData();
 					resultSI.setSiResults(resultSIIssuer.getSiResults());
 					resultSI.setSiStatus(resultSIIssuer.getSiStatus());
 					resultSI.setSiSubStatus(resultSIIssuer.getSiSubStatus());
 					resultSI.setInfoSIResult(resultSIIssuer.getInfoSIResult());
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL375));
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL375));
 
 				}
 
 			} else if (issuerCert != null && UtilsCertificate.isSelfSigned(issuerCert)) {
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL389));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL389));
 			}
 
 		}
@@ -2779,7 +2781,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					numESIG++;
 				} else {
 					if (statusESIG.equalsIgnoreCase(sr.getServiceStatus())) {
-						resultSI.getSiSubStatus().add(ITSLStatusConstants.SI_WARNING_T1_DUPLICATION);
+						resultSI.getSiSubStatus().add(TSLStatusConstants.SI_WARNING_T1_DUPLICATION);
 						break;
 					}
 				}
@@ -2808,7 +2810,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					numESIG++;
 				} else {
 					if (!statusESIG.equalsIgnoreCase(sr.getServiceStatus())) {
-						resultSI.getSiSubStatus().add(ITSLStatusConstants.SI_ERROR_T1_DUPLICATION);
+						resultSI.getSiSubStatus().add(TSLStatusConstants.SI_ERROR_T1_DUPLICATION);
 						break;
 					}
 				}
@@ -2837,7 +2839,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					numESeal++;
 				} else {
 					if (statusESeal.equalsIgnoreCase(sr.getServiceStatus())) {
-						resultSI.getSiSubStatus().add(ITSLStatusConstants.SI_WARNING_T2_DUPLICATION);
+						resultSI.getSiSubStatus().add(TSLStatusConstants.SI_WARNING_T2_DUPLICATION);
 						break;
 					}
 				}
@@ -2866,7 +2868,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					numESeal++;
 				} else {
 					if (!statusESeal.equalsIgnoreCase(sr.getServiceStatus())) {
-						resultSI.getSiSubStatus().add(ITSLStatusConstants.SI_ERROR_T2_DUPLICATION);
+						resultSI.getSiSubStatus().add(TSLStatusConstants.SI_ERROR_T2_DUPLICATION);
 						break;
 					}
 				}
@@ -2895,7 +2897,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					numWSA++;
 				} else {
 					if (statusWSA.equalsIgnoreCase(sr.getServiceStatus())) {
-						resultSI.getSiSubStatus().add(ITSLStatusConstants.SI_WARNING_T3_DUPLICATION);
+						resultSI.getSiSubStatus().add(TSLStatusConstants.SI_WARNING_T3_DUPLICATION);
 						break;
 					}
 				}
@@ -2924,7 +2926,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					numWSA++;
 				} else {
 					if (!statusWSA.equalsIgnoreCase(sr.getServiceStatus())) {
-						resultSI.getSiSubStatus().add(ITSLStatusConstants.SI_ERROR_T3_DUPLICATION);
+						resultSI.getSiSubStatus().add(TSLStatusConstants.SI_ERROR_T3_DUPLICATION);
 						break;
 					}
 				}
@@ -2945,8 +2947,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// PRO-4.3.4-11
 		if (resultSI.getInfoSIResult().getListTSPNames() != null
 				&& resultSI.getInfoSIResult().getListTSPNames().size() > 1) {
-			resultSI.getSiSubStatus().add(ITSLStatusConstants.SI_ERROR_TSP_CONFLICT);
-			resultSI.setSiStatus(ITSLStatusConstants.PROCESS_FAILED);
+			resultSI.getSiSubStatus().add(TSLStatusConstants.SI_ERROR_TSP_CONFLICT);
+			resultSI.setSiStatus(TSLStatusConstants.PROCESS_FAILED);
 		}
 
 	}
@@ -2984,7 +2986,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// si la lista no es nula ni vacía...
 		// La vamos recorriendo mientras no se termine y no se haya
 		// detectado el certificado.
-		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL361));
+		LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL361));
 		// obtenemos el pais del certificado necesario en el procc 4.4.4-06
 		String countryCert = UtilsCertificate.getCountryOfTheCertificateString(cert);
 
@@ -3002,8 +3004,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 			} catch (Exception e) {
 				LOGGER.error(
-						Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL362, new Object[] { e.getMessage() }));
-				resultSI.setSiStatus(ITSLStatusConstants.PROCESS_FAILED);
+						Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL362, new Object[] { e.getMessage() }));
+				resultSI.setSiStatus(TSLStatusConstants.PROCESS_FAILED);
 				break;
 			}
 		}
@@ -3038,7 +3040,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			String countryCert) {
 		// Obtenemos la lista de servicios.
 		List<TSPService> tspServiceList = tsp.getAllTSPServices();
-		resultSI.setSiStatus(ITSLStatusConstants.PROCESS_PASSED);
+		resultSI.setSiStatus(TSLStatusConstants.PROCESS_PASSED);
 
 		// Si la lista no es nula ni vacía...
 		if (tspServiceList != null && !tspServiceList.isEmpty()) {
@@ -3065,11 +3067,11 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 						if (siResult.isError()) {
 							// PROC-4.3.4-03 b) 3) i) ii)
-							resultSI.setSiStatus(ITSLStatusConstants.PROCESS_FAILED);
+							resultSI.setSiStatus(TSLStatusConstants.PROCESS_FAILED);
 							break;
 
 						} else if (siResult.getSiAtDateTime() == null) {
-							LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL403,
+							LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL403,
 									new Object[] { validationDate }));
 						} else {
 
@@ -3080,7 +3082,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							siResult.setServiceStatus(si.getServiceStatus().toString());
 							String tspName = getTSPName(tsp);
 							String tspNameCountry = getTSPNameCountry(tsp, countryCert);
-							LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL371,
+							LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL371,
 									new Object[] { tspName }));
 							siResult.setTspName(tspName);
 							siResult.setTspNameCountry(tspNameCountry);
@@ -3094,7 +3096,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 							// de siSubStatus.
 							getTSPServiceAdditionalServiceInformationExtensionsDetectCert(siResult);
 							updateResultSI(resultSI, siResult);
-							resultSI.setSiStatus(ITSLStatusConstants.PROCESS_PASSED);
+							resultSI.setSiStatus(TSLStatusConstants.PROCESS_PASSED);
 						}
 
 					}
@@ -3308,7 +3310,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 						String tspName = tspService.getServiceInformation()
 								.getServiceNameInLanguage(Locale.UK.getLanguage());
 						LOGGER.error(
-								Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL369, new Object[] { tspName }));
+								Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL369, new Object[] { tspName }));
 						siResult.setError(Boolean.TRUE);
 					}
 
@@ -3319,7 +3321,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		if (!error) {
 			siResult.setSiAtDateTime(shi);
 			siResult.setHistoricServiceInf(isHistoricServiceInf);
-			siResult.setServiceStatus(ITSLStatusConstants.PROCESS_PASSED);
+			siResult.setServiceStatus(TSLStatusConstants.PROCESS_PASSED);
 		}
 
 	}
@@ -3368,7 +3370,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			String detectedWithShiMsg = UtilsStringChar.EMPTY_STRING;
 			if (validationResult.getTSPServiceForDetect().getServiceInformation() == validationResult
 					.getTSPServiceHistoryInformationInstanceForDetect()) {
-				detectedWithShiMsg = Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL260,
+				detectedWithShiMsg = Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL260,
 						new Object[] { validationResult.getTSPServiceHistoryInformationInstanceNameForDetect(),
 								validationResult.getTSPServiceHistoryInformationInstanceForDetect()
 										.getServiceStatusStartingTime() });
@@ -3383,12 +3385,12 @@ public abstract class ATSLValidator implements ITSLValidator {
 				if (checkStatusRevocation) {
 
 					// El certificado ha sido detectado pero no validado.
-					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL204,
+					LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL204,
 							new Object[] { validationResult.getTSPName(), validationResult.getTSPServiceNameForDetect(),
 									detectedWithShiMsg }));
 					// Lanzamos la alarma correspondiente...
-					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM001_UNKNOWN_REV_STATUS,
-							Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM001_EVENT_000,
+					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM001_UNKNOWN_REV_STATUS,
+							Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM001_EVENT_000,
 									new Object[] { validationResult.getTslCountryRegionCode(),
 											validationResult.getTSPName(),
 											validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg }));
@@ -3397,7 +3399,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// Si no había que validarlo, sino solo detectarlo.
 				else {
 
-					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL228, new Object[] {
+					LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL228, new Object[] {
 							validationResult.getTSPName(), validationResult.getTSPServiceNameForDetect() }));
 
 				}
@@ -3411,39 +3413,39 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// En función del resultado exacto...
 					switch (validationResult.getResult()) {
 
-					case ITSLValidatorResult.RESULT_DETECTED_STATE_VALID:
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL206,
+					case ValidatorResultConstants.RESULT_DETECTED_STATE_VALID:
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL206,
 								new Object[] { validationResult.getTSPName(),
 										validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg,
-										Language.getResCoreTsl(ICoreTslMessages.LOGMTSL207) }));
+										Language.getResCoreTsl(CoreTslMessages.LOGMTSL207) }));
 						break;
 
-					case ITSLValidatorResult.RESULT_DETECTED_STATE_REVOKED:
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL206,
+					case ValidatorResultConstants.RESULT_DETECTED_STATE_REVOKED:
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL206,
 								new Object[] { validationResult.getTSPName(),
 										validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg,
-										Language.getResCoreTsl(ICoreTslMessages.LOGMTSL208) }));
+										Language.getResCoreTsl(CoreTslMessages.LOGMTSL208) }));
 						break;
 
-					case ITSLValidatorResult.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID:
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL206,
+					case ValidatorResultConstants.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID:
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL206,
 								new Object[] { validationResult.getTSPName(),
 										validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg,
-										Language.getResCoreTsl(ICoreTslMessages.LOGMTSL209) }));
+										Language.getResCoreTsl(CoreTslMessages.LOGMTSL209) }));
 						break;
 
-					case ITSLValidatorResult.RESULT_DETECTED_STATE_REVOKED_SERVICESTATUS:
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL206,
+					case ValidatorResultConstants.RESULT_DETECTED_STATE_REVOKED_SERVICESTATUS:
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL206,
 								new Object[] { validationResult.getTSPName(),
 										validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg,
-										Language.getResCoreTsl(ICoreTslMessages.LOGMTSL210) }));
+										Language.getResCoreTsl(CoreTslMessages.LOGMTSL210) }));
 						break;
 
-					case ITSLValidatorResult.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID_SERVICESTATUS:
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL206,
+					case ValidatorResultConstants.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID_SERVICESTATUS:
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL206,
 								new Object[] { validationResult.getTSPName(),
 										validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg,
-										Language.getResCoreTsl(ICoreTslMessages.LOGMTSL211) }));
+										Language.getResCoreTsl(CoreTslMessages.LOGMTSL211) }));
 						break;
 
 					default:
@@ -3456,7 +3458,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					String validatedWithShiMsg = UtilsStringChar.EMPTY_STRING;
 					if (validationResult.getTSPServiceForValidate().getServiceInformation() == validationResult
 							.getTSPServiceHistoryInformationInstanceForValidate()) {
-						validatedWithShiMsg = Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL260,
+						validatedWithShiMsg = Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL260,
 								new Object[] {
 										validationResult.getTSPServiceHistoryInformationInstanceNameForValidate(),
 										validationResult.getTSPServiceHistoryInformationInstanceForValidate()
@@ -3466,44 +3468,44 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// En función del resultado exacto...
 					switch (validationResult.getResult()) {
 
-					case ITSLValidatorResult.RESULT_DETECTED_STATE_VALID:
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL205,
+					case ValidatorResultConstants.RESULT_DETECTED_STATE_VALID:
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL205,
 								new Object[] { validationResult.getTSPName(),
 										validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg,
 										validationResult.getTSPServiceNameForValidate(), validatedWithShiMsg,
-										Language.getResCoreTsl(ICoreTslMessages.LOGMTSL207) }));
+										Language.getResCoreTsl(CoreTslMessages.LOGMTSL207) }));
 						break;
 
-					case ITSLValidatorResult.RESULT_DETECTED_STATE_REVOKED:
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL205,
+					case ValidatorResultConstants.RESULT_DETECTED_STATE_REVOKED:
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL205,
 								new Object[] { validationResult.getTSPName(),
 										validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg,
 										validationResult.getTSPServiceNameForValidate(), validatedWithShiMsg,
-										Language.getResCoreTsl(ICoreTslMessages.LOGMTSL208) }));
+										Language.getResCoreTsl(CoreTslMessages.LOGMTSL208) }));
 						break;
 
-					case ITSLValidatorResult.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID:
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL205,
+					case ValidatorResultConstants.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID:
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL205,
 								new Object[] { validationResult.getTSPName(),
 										validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg,
 										validationResult.getTSPServiceNameForValidate(), validatedWithShiMsg,
-										Language.getResCoreTsl(ICoreTslMessages.LOGMTSL209) }));
+										Language.getResCoreTsl(CoreTslMessages.LOGMTSL209) }));
 						break;
 
-					case ITSLValidatorResult.RESULT_DETECTED_STATE_REVOKED_SERVICESTATUS:
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL205,
+					case ValidatorResultConstants.RESULT_DETECTED_STATE_REVOKED_SERVICESTATUS:
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL205,
 								new Object[] { validationResult.getTSPName(),
 										validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg,
 										validationResult.getTSPServiceNameForValidate(), validatedWithShiMsg,
-										Language.getResCoreTsl(ICoreTslMessages.LOGMTSL210) }));
+										Language.getResCoreTsl(CoreTslMessages.LOGMTSL210) }));
 						break;
 
-					case ITSLValidatorResult.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID_SERVICESTATUS:
-						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL205,
+					case ValidatorResultConstants.RESULT_DETECTED_STATE_CERTCHAIN_NOTVALID_SERVICESTATUS:
+						LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL205,
 								new Object[] { validationResult.getTSPName(),
 										validationResult.getTSPServiceNameForDetect(), detectedWithShiMsg,
 										validationResult.getTSPServiceNameForValidate(), validatedWithShiMsg,
-										Language.getResCoreTsl(ICoreTslMessages.LOGMTSL211) }));
+										Language.getResCoreTsl(CoreTslMessages.LOGMTSL211) }));
 						break;
 
 					default:
@@ -3518,7 +3520,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		} else {
 
 			// El certificado no ha sido detectado por la TSL.
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL203));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL203));
 
 		}
 
@@ -4076,7 +4078,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 				IAnyTypeExtension anyTypeExtension = serviceExtensionsList.get(index);
 				if (anyTypeExtension
-						.getImplementationExtension() == IAnyTypeExtension.IMPL_ADDITIONAL_SERVICE_INFORMATION) {
+						.getImplementationExtension() == TSLBuilderConstants.IMPL_ADDITIONAL_SERVICE_INFORMATION) {
 
 					AdditionalServiceInformation asi = (AdditionalServiceInformation) anyTypeExtension;
 					result = uriToSearch.equals(asi.getUri().toString());
@@ -4106,20 +4108,20 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 		// Comprobamos que el certificado de entrada no sea nulo.
 		if (cert == null) {
-			throw new TSLArgumentException(IValetException.COD_187,
-					Language.getResCoreTsl(ICoreTslMessages.LOGMTSL107));
+			throw new TSLArgumentException(ValetExceptionConstants.COD_187,
+					Language.getResCoreTsl(CoreTslMessages.LOGMTSL107));
 		}
 
 		// Comprobamos que la fecha de entrada no sea nula.
 		if (validationDate == null) {
-			throw new TSLArgumentException(IValetException.COD_187,
-					Language.getResCoreTsl(ICoreTslMessages.LOGMTSL144));
+			throw new TSLArgumentException(ValetExceptionConstants.COD_187,
+					Language.getResCoreTsl(CoreTslMessages.LOGMTSL144));
 		}
 
 		// Comprobamos que haya al menos un valor de revocación.
 		if ((crls == null || crls.length == 0) && (ocsps == null || ocsps.length == 0)) {
-			throw new TSLArgumentException(IValetException.COD_187,
-					Language.getResCoreTsl(ICoreTslMessages.LOGMTSL177));
+			throw new TSLArgumentException(ValetExceptionConstants.COD_187,
+					Language.getResCoreTsl(CoreTslMessages.LOGMTSL177));
 		}
 
 		BasicOCSPResp basicOcspResponse = null;
@@ -4129,10 +4131,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Obtenemos la respuesta OCSP acorde al certificado a validar.
 			try {
 				basicOcspResponse = UtilsOCSP.getOCSPResponse(cert, ocsps, validationDate);
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL270));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL270));
 			} catch (Exception e) {
-				throw new TSLValidationException(IValetException.COD_187,
-						Language.getResCoreTsl(ICoreTslMessages.LOGMTSL178), e);
+				throw new TSLValidationException(ValetExceptionConstants.COD_187,
+						Language.getResCoreTsl(CoreTslMessages.LOGMTSL178), e);
 			}
 
 		}
@@ -4146,7 +4148,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// de validación o posterior.
 			crlSelected = UtilsCRL.getCRLforCertificate(cert, crls, validationDate);
 			if (crlSelected != null) {
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL271));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL271));
 			}
 
 		}
@@ -4162,7 +4164,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// Si no se ha detectado ninguna respuesta OCSP o CRL compatible con
 		// el certificado y fechas a usar en la validación, se indica en el log.
 		if (basicOcspResponse == null && crlSelected == null) {
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL179));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL179));
 		}
 
 		// Comprobamos si el tipo de la TSL determina si se trata de una
@@ -4217,7 +4219,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// TODO De momento no se consideran las listas de listas.
 		// Si se trata de una lista de listas, la ignoramos y concluímos que no
 		// se ha obtenido ningún valor de revocación válido.
-		LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL219));
+		LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL219));
 
 	}
 
@@ -4263,13 +4265,13 @@ public abstract class ATSLValidator implements ITSLValidator {
 		if (checkIfStatusDeterminationApproachIsDelinquentOrEquivalent(
 				tsl.getSchemeInformation().getStatusDeterminationApproach().toString())) {
 
-			throw new TSLValidationException(IValetException.COD_187,
-					Language.getResCoreTsl(ICoreTslMessages.LOGMTSL108));
+			throw new TSLValidationException(ValetExceptionConstants.COD_187,
+					Language.getResCoreTsl(CoreTslMessages.LOGMTSL108));
 
 		} else {
 
 			// Recuperamos la lista de TSP y se va analizando de uno en uno.
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL271));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL271));
 			List<TrustServiceProvider> tspList = tsl.getTrustServiceProviderList();
 			ResultQualifiedCertificate resultQC = new ResultQualifiedCertificate(cert);
 			ResultQSCDDetermination resultQSCD = new ResultQSCDDetermination();
@@ -4281,7 +4283,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 						|| resultQC.getInfoQcResult().isTspServiceTSADetected()) {
 
 					// detectado pero desconocido
-					validationResult.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_UNKNOWN);
+					validationResult.setResult(ValidatorResultConstants.RESULT_DETECTED_STATE_UNKNOWN);
 
 					ServiceHistoryInstance shiSelected = resultQC.getInfoQcResult().getShiSelected();
 					if (shiSelected != null) {
@@ -4322,7 +4324,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// por lo que asignamos el mismo nombre de servicio al
 					// resultado de la validación (y el servicio).
 					if (!validationResult.hasBeenDetectedTheCertificateWithUnknownState()) {
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL215));
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL215));
 						validationResult.setTSPServiceNameForValidate(validationResult.getTSPServiceNameForDetect());
 						validationResult.setTSPServiceForValidate(tspServiceSelected);
 						validationResult.setTspServiceHistoryInformationInstanceNameForValidate(
@@ -4351,7 +4353,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// continúen evaluando
 				// otros servicios.
 				// Mostramos en el log el motivo y la excepción.
-				LOGGER.error(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL250));
+				LOGGER.error(Language.getResCoreTsl(CoreTslMessages.LOGMTSL250));
 				LOGGER.error(e.getMessage(), e.getException());
 				// Limpiamos toda la información acumulada hasta el
 				// momento.
@@ -4368,7 +4370,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					// procedemos a analizar
 					// los valores de revocación en la TSL.
 					if (basicOcspResponse != null || crl != null) {
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL280));
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL280));
 						// Comprobamos entre los distintos servicios CRL
 						// y
 						// OCSP del TSP, si alguno detecta
@@ -4468,7 +4470,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			ITSLValidatorThroughSomeMethod tslValidatorMethod = null;
 			// Primero lo intentamos mediante respuestas OCSP (si las hay).
 			if (basicOcspResponse != null) {
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL281));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL281));
 				// Creamos el validador.
 				tslValidatorMethod = new TSLValidatorThroughOCSP();
 				// Ejecutamos la comprobación.
@@ -4480,7 +4482,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			// Si no hemos obtenido resultado, lo intentamos con las CRL,
 			// si es que las hay.
 			if (validationResult.getRevocationValueBasicOCSPResponse() == null && crl != null) {
-				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL282));
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL282));
 				// Creamos el validador.
 				tslValidatorMethod = new TSLValidatorThroughCRL();
 				// Ejecutamos la comprobación.
@@ -4503,7 +4505,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					validationResult.getTSPServiceHistoryInformationInstanceNameForDetect());
 			validationResult.setTspServiceHistoryInformationInstanceForValidate(
 					validationResult.getTSPServiceHistoryInformationInstanceForDetect());
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL220));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL220));
 
 		}
 		// Si no, hay que tratar de buscar un servicio dentro del mismo TSP que
@@ -4513,7 +4515,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 			// Almacenamos en una variable si el certificado es cualificado o
 			// no.
-			boolean isCertQualified = validationResult.getMappingType() == ITSLValidatorResult.MAPPING_TYPE_QUALIFIED;
+			boolean isCertQualified = validationResult.getMappingType() == ValidatorResultConstants.MAPPING_TYPE_QUALIFIED;
 
 			// Obtenemos la lista de servicios.
 			List<TSPService> tspServiceList = tsp.getAllTSPServices();
@@ -4549,7 +4551,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 						assignTSPServiceHistoryInformationNameForValidateToResult(validationResult,
 								validationResult.getTSPServiceHistoryInformationInstanceForValidate());
 					}
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL220));
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL220));
 				}
 
 			}
@@ -4559,11 +4561,11 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// Incluimos en auditoría las evidencias usadas.
 		if (validationResult.getRevocationValueBasicOCSPResponse() != null) {
 			CommonsCertificatesAuditTraces.addCertValidatedWithBasicOcspResponseTrace(auditTransNumber,
-					IEventsCollectorConstants.FIELD_VALUE_FROM_REQUEST,
+					EventsCollectorConstants.FIELD_VALUE_FROM_REQUEST,
 					validationResult.getRevocationValueBasicOCSPResponse());
 		} else if (validationResult.getRevocationValueCRL() != null) {
 			CommonsCertificatesAuditTraces.addCertValidatedWithCRLTrace(auditTransNumber,
-					IEventsCollectorConstants.FIELD_VALUE_FROM_REQUEST, validationResult.getRevocationValueCRL());
+					EventsCollectorConstants.FIELD_VALUE_FROM_REQUEST, validationResult.getRevocationValueCRL());
 		}
 
 	}
@@ -4766,7 +4768,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		String issuerAltName = getIssuerAltName(cert);
 
 		if (issuerAltName != null) {
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL394, new Object[] { issuerAltName }));
+			LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL394, new Object[] { issuerAltName }));
 
 			issuerCert = getIssuerFromIssuerAltName(issuerAltName);
 
@@ -4775,16 +4777,16 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// si no se ha encontrado a través de la información del certificado
 		if (issuerCert == null) {
 			// se busca el emisor en el almacén de confianza del sistema
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL393));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL393));
 			issuerCert = getX509CertificateIssuerKeystore(cert);
 
 		}
 
 		if (issuerCert == null && issuerAltName != null && !UtilsCertificate.isSelfSigned(issuerCert)) {
-			LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL374));
+			LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL374));
 			// Lanzamos la alarma correspondiente...
-			AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM007_ERROR_GETTING_ISSUER_KEYSTORE,
-					Language.getResCoreGeneral(ICoreGeneralMessages.ALM007_EVENT_001));
+			AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM007_ERROR_GETTING_ISSUER_KEYSTORE,
+					Language.getResCoreGeneral(CoreGeneralMessages.ALM007_EVENT_001));
 		}
 
 		return issuerCert;
@@ -4804,7 +4806,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			result = wrapperX509Cert.getIssuerAlternativeName();
 
 		} catch (TSLCertificateValidationException e) {
-			LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL377, new Object[] { e.getMessage() }));
+			LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL377, new Object[] { e.getMessage() }));
 		}
 		return result;
 	}
@@ -4825,7 +4827,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 			} catch (CommonUtilsException e) {
 				LOGGER.error(
-						Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL376, new Object[] { e.getMessage() }));
+						Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL376, new Object[] { e.getMessage() }));
 			}
 		}
 
@@ -4856,10 +4858,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 		}
 		if (error) {
 
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL373, new Object[] { issuerAltName }));
+			LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL373, new Object[] { issuerAltName }));
 			// Lanzamos la alarma correspondiente...
-			AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM006_ERROR_GETTING_CERT_SUBJECT_ALT_NAME,
-					Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM006_EVENT_001,
+			AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM006_ERROR_GETTING_CERT_SUBJECT_ALT_NAME,
+					Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM006_EVENT_001,
 							new Object[] { issuerAltName }));
 
 		} else {
@@ -4874,17 +4876,17 @@ public abstract class ATSLValidator implements ITSLValidator {
 							.saveCertificateKeystoreCA(issuerCert.getEncoded(), alias);
 
 					// se registra el certificado y se lanza alarma.
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL378));
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL378));
 					// Lanzamos la alarma correspondiente...
-					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM008_REGISTER_KEYSTORE_CA,
-							Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM008_EVENT_001,
+					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM008_REGISTER_KEYSTORE_CA,
+							Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM008_EVENT_001,
 									new Object[] { alias }));
 				} catch (BeansException | CertificateEncodingException e) {
-					LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL384,
+					LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL384,
 							new Object[] { alias, e.getMessage() }));
 
 				} catch (KeyStoreException e) {
-					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL383));
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL383));
 				}
 			}
 
@@ -4924,7 +4926,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 		} catch (CommonUtilsException e) {
 
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL370, new Object[] { httpUri }));
+			LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL370, new Object[] { httpUri }));
 
 		}
 		return result;
@@ -4957,15 +4959,18 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// result.setMappingQSCD()
 		if (resultQSCD != null && resultQSCD.getQscdResult() != null) {
 			switch (resultQSCD.getQscdResult()) {
-			case ITSLStatusConstants.QSCD_YES:
-				result.setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_YES);
-				break;
-			case ITSLStatusConstants.QSCD_NO:
-				result.setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_NO);
-				break;
-			case ITSLStatusConstants.QSCD_INDETERMINATE:
-				result.setMappingQSCD(ITSLValidatorResult.MAPPING_QSCD_UNKNOWN);
-				break;
+				case TSLStatusConstants.QSCD_YES:
+					result.setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_YES);
+					break;
+				case TSLStatusConstants.QSCD_NO:
+					result.setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_NO);
+					break;
+				case TSLStatusConstants.QSCD_INDETERMINATE:
+					result.setMappingQSCD(ValidatorResultConstants.MAPPING_QSCD_UNKNOWN);
+					break;
+				default:
+					// Se supone que todos los casos estan contemplados y no hay ninguno por defecto.
+					break;
 			}
 		}
 	}
@@ -4978,25 +4983,25 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 */
 	private void getMappingCertClassification(TSLValidatorResult result, ResultQualifiedCertificate resultQC) {
 		// si es cualificado
-		if (result.getMappingType() == ITSLValidatorResult.MAPPING_TYPE_QUALIFIED) {
+		if (result.getMappingType() == ValidatorResultConstants.MAPPING_TYPE_QUALIFIED) {
 			for (QCResult qc : resultQC.getQcResults()) {
 				if (qc.equals(QCResult.QC_FOR_ESIG)) {
-					result.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_ESIG);
+					result.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_ESIG);
 					break;
 				}
 				if (qc.equals(QCResult.QC_FOR_ESEAL)) {
-					result.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_ESEAL);
+					result.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_ESEAL);
 					break;
 				}
 				if (qc.equals(QCResult.QWAC)) {
-					result.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_WSA);
+					result.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_WSA);
 					break;
 				}
 			}
 		} else {
 
 			// si no es cualificado cerClassification es UNKOWN
-			result.setMappingClassification(ITSLValidatorResult.MAPPING_CLASSIFICATION_OTHER_UNKNOWN);
+			result.setMappingClassification(ValidatorResultConstants.MAPPING_CLASSIFICATION_OTHER_UNKNOWN);
 
 		}
 	}
@@ -5014,19 +5019,19 @@ public abstract class ATSLValidator implements ITSLValidator {
 		boolean endProc = Boolean.FALSE;
 		for (QCResult qc : resultQC.getQcResults()) {
 			if (qc.equals(QCResult.NOT_QUALIFIED)) {
-				result.setMappingType(ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED);
+				result.setMappingType(ValidatorResultConstants.MAPPING_TYPE_NONQUALIFIED);
 				result.setMappingETSIResult(qc.toString());
 				endProc = Boolean.TRUE;
 				break;
 			}
 			if (qc.equals(QCResult.QC_FOR_ESIG) || qc.equals(QCResult.QC_FOR_ESEAL) || qc.equals(QCResult.QWAC)) {
-				result.setMappingType(ITSLValidatorResult.MAPPING_TYPE_QUALIFIED);
+				result.setMappingType(ValidatorResultConstants.MAPPING_TYPE_QUALIFIED);
 				result.setMappingETSIResult(qc.toString());
 				endProc = Boolean.TRUE;
 				break;
 			}
 			if (qc.equals(QCResult.INDETERMINATE)) {
-				result.setMappingType(ITSLValidatorResult.MAPPING_TYPE_UNKNOWN);
+				result.setMappingType(ValidatorResultConstants.MAPPING_TYPE_UNKNOWN);
 				result.setMappingETSIResult(qc.toString());
 				endProc = Boolean.TRUE;
 				break;
@@ -5039,13 +5044,13 @@ public abstract class ATSLValidator implements ITSLValidator {
 			if (resultQC.getQcResults().contains(QCResult.NOT_QUALIFIED_FOR_ESIG)
 					&& resultQC.getQcResults().contains(QCResult.NOT_QUALIFIED_FOR_ESEAL)
 					&& resultQC.getQcResults().contains(QCResult.NOT_QWAC)) {
-				result.setMappingType(ITSLValidatorResult.MAPPING_TYPE_NONQUALIFIED);
-				result.setMappingETSIResult(ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_ALL_NQ);
+				result.setMappingType(ValidatorResultConstants.MAPPING_TYPE_NONQUALIFIED);
+				result.setMappingETSIResult(TslMappingConstants.MAPPING_VALUE_ETSI_RESULT_ALL_NQ);
 			} else if (resultQC.getQcResults().contains(QCResult.INDET_QC_FOR_ESIG)
 					&& resultQC.getQcResults().contains(QCResult.INDET_QC_FOR_ESEAL)
 					&& resultQC.getQcResults().contains(QCResult.INDET_QWAC)) {
-				result.setMappingType(ITSLValidatorResult.MAPPING_TYPE_UNKNOWN);
-				result.setMappingETSIResult(ITslMappingConstants.MAPPING_VALUE_ETSI_RESULT_ALL_INDET);
+				result.setMappingType(ValidatorResultConstants.MAPPING_TYPE_UNKNOWN);
+				result.setMappingETSIResult(TslMappingConstants.MAPPING_VALUE_ETSI_RESULT_ALL_INDET);
 			}
 		}
 
@@ -5086,7 +5091,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				try {
 					validationResult.setIssuerSubjectName(UtilsCertificate.getCertificateId(issuerCert));
 				} catch (CommonUtilsException e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL182));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL182));
 				}
 
 				try {
@@ -5096,7 +5101,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 						validationResult.setIssuerSKIbytes(ski.getKeyIdentifier());
 					}
 				} catch (Exception e) {
-					LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL183));
+					LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL183));
 				}
 			}
 		}

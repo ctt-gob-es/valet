@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 03/04/2023.
+ * @version 1.6, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -40,7 +40,8 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
@@ -75,18 +76,14 @@ import es.gob.valet.commons.utils.UtilsCrypto;
 import es.gob.valet.commons.utils.UtilsRFC2253;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
-import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
-import es.gob.valet.tsl.parsing.ifaces.ITSLOtherConstants;
-import es.gob.valet.tsl.parsing.ifaces.ITSLSignatureConstants;
 import es.gob.valet.tsl.parsing.impl.common.ATSLChecker;
 import es.gob.valet.tsl.parsing.impl.common.Address;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;
@@ -96,12 +93,17 @@ import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.ServiceInformation;
 import es.gob.valet.tsl.parsing.impl.common.TSLPointer;
 import es.gob.valet.tsl.parsing.impl.common.TSPInformation;
+import es.gob.valet.utils.TSLBuilderConstants;
+import es.gob.valet.utils.TSLCommonURIs;
+import es.gob.valet.utils.TSLElementsAndAttributes;
+import es.gob.valet.utils.TSLOtherConstants;
+import es.gob.valet.utils.TSLSignatureConstants;
 
 /**
  * <p>Class that represents a TSL Data Checker of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 03/04/2023.
+ * @version 1.6, 19/09/2023.
  */
 public class TSLChecker extends ATSLChecker {
 
@@ -150,9 +152,9 @@ public class TSLChecker extends ATSLChecker {
 		// ser restrictivos
 		// y solo vamos a permitir la correspondiente a la especificación
 		// 119612.
-		if (!ITSLCommonURIs.TSL_TAG_19612.equalsIgnoreCase(tslTagUri.toString())) {
+		if (!TSLCommonURIs.TSL_TAG_19612.equalsIgnoreCase(tslTagUri.toString())) {
 
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL018, new Object[ ] { ITSLElementsAndAttributes.ATTRIBUTE_TSL_TAG }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL018, new Object[ ] { TSLElementsAndAttributes.ATTRIBUTE_TSL_TAG }));
 
 		}
 
@@ -166,7 +168,7 @@ public class TSLChecker extends ATSLChecker {
 	protected void checkSchemeInformationTSLVersionIdentifierValue() throws TSLMalformedException {
 
 		if (getTSLObject().getSchemeInformation().getTslVersionIdentifier() != NumberConstants.NUM5) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSL_VERSION_IDENTIFIER }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSL_VERSION_IDENTIFIER }));
 		}
 
 	}
@@ -180,13 +182,13 @@ public class TSLChecker extends ATSLChecker {
 
 		URI tslTypeUri = getTSLObject().getSchemeInformation().getTslType();
 		if (tslTypeUri == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSL_TYPE }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL019, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSL_TYPE }));
 		}
 		String tslTypeUriString = tslTypeUri.toString();
 		boolean valueOK = isTSLTypeEUGeneric(tslTypeUriString) || isTSLTypeEUlistOfTheList(tslTypeUriString);
 		valueOK = valueOK || isTSLTypeNonEUCountry(tslTypeUriString) || isTSLTypeNonEUCountryListOfTheList(tslTypeUriString);
 		if (!valueOK) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSL_TYPE }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSL_TYPE }));
 		}
 
 	}
@@ -197,7 +199,7 @@ public class TSLChecker extends ATSLChecker {
 	 * @return <code>true</code> if the TSL type URI is valid and it is for an EU member, otherwise <code>false</code>.
 	 */
 	private boolean isTSLTypeEUGeneric(String tslType) {
-		return tslType.equalsIgnoreCase(ITSLCommonURIs.TSL_TYPE_EUGENERIC);
+		return tslType.equalsIgnoreCase(TSLCommonURIs.TSL_TYPE_EUGENERIC);
 	}
 
 	/**
@@ -206,7 +208,7 @@ public class TSLChecker extends ATSLChecker {
 	 * @return <code>true</code> if the TSL type URI is valid and it is EU list of the lists, otherwise <code>false</code>.
 	 */
 	private boolean isTSLTypeEUlistOfTheList(String tslType) {
-		return tslType.equalsIgnoreCase(ITSLCommonURIs.TSL_TYPE_EULISTOFTHELIST);
+		return tslType.equalsIgnoreCase(TSLCommonURIs.TSL_TYPE_EULISTOFTHELIST);
 	}
 
 	/**
@@ -216,8 +218,8 @@ public class TSLChecker extends ATSLChecker {
 	 */
 	private boolean isTSLTypeNonEUCountry(String tslType) {
 
-		if (tslType.startsWith(ITSLCommonURIs.TSL_TYPE_NONEUGENERIC_PREFFIX) && tslType.endsWith(ITSLCommonURIs.TSL_TYPE_NONEUGENERIC_SUFFIX)) {
-			return UtilsCountryLanguage.checkCountryCode(tslType.substring(ITSLCommonURIs.TSL_TYPE_NONEUGENERIC_PREFFIX.length(), tslType.length() - ITSLCommonURIs.TSL_TYPE_NONEUGENERIC_SUFFIX.length()));
+		if (tslType.startsWith(TSLCommonURIs.TSL_TYPE_NONEUGENERIC_PREFFIX) && tslType.endsWith(TSLCommonURIs.TSL_TYPE_NONEUGENERIC_SUFFIX)) {
+			return UtilsCountryLanguage.checkCountryCode(tslType.substring(TSLCommonURIs.TSL_TYPE_NONEUGENERIC_PREFFIX.length(), tslType.length() - TSLCommonURIs.TSL_TYPE_NONEUGENERIC_SUFFIX.length()));
 		}
 		return false;
 
@@ -230,8 +232,8 @@ public class TSLChecker extends ATSLChecker {
 	 */
 	private boolean isTSLTypeNonEUCountryListOfTheList(String tslType) {
 
-		if (tslType.startsWith(ITSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX) && tslType.endsWith(ITSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX)) {
-			return UtilsCountryLanguage.checkCountryCode(tslType.substring(ITSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX.length(), tslType.length() - ITSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX.length()));
+		if (tslType.startsWith(TSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX) && tslType.endsWith(TSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX)) {
+			return UtilsCountryLanguage.checkCountryCode(tslType.substring(TSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX.length(), tslType.length() - TSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX.length()));
 		}
 		return false;
 
@@ -247,7 +249,7 @@ public class TSLChecker extends ATSLChecker {
 		// Debe estar definido al menos en inglés.
 		List<String> sionvList = getTSLObject().getSchemeInformation().getSchemeOperatorNameInLanguage(Locale.UK.getLanguage());
 		if (sionvList == null || sionvList.isEmpty()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_SCHEME_OPERATOR_NAME }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_SCHEME_OPERATOR_NAME }));
 		}
 
 	}
@@ -262,7 +264,7 @@ public class TSLChecker extends ATSLChecker {
 		// Debe estar definido al menos en inglés.
 		List<PostalAddress> paList = address.getPostalAddresses().get(Locale.UK.getLanguage());
 		if (paList == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_SCHEME_OPERATOR_ADDRESS }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_SCHEME_OPERATOR_ADDRESS }));
 		}
 
 	}
@@ -277,7 +279,7 @@ public class TSLChecker extends ATSLChecker {
 		// Debe estar definido al menos en inglés.
 		String nameEnglish = getTSLObject().getSchemeInformation().getSchemeName(Locale.UK.getLanguage());
 		if (nameEnglish == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_SCHEME_NAME }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_SCHEME_NAME }));
 		}
 
 		// Cada uno de los nombres debe seguir el formato "CC:texto" donde CC
@@ -289,7 +291,7 @@ public class TSLChecker extends ATSLChecker {
 			for (String name: namesCollection) {
 
 				if (UtilsStringChar.isNullOrEmptyTrim(name) || name.length() < 2 || !name.startsWith(getTSLObject().getSchemeInformation().getSchemeTerritory())) {
-					throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL086, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_SCHEME_NAME }));
+					throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL086, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_SCHEME_NAME }));
 				}
 
 			}
@@ -308,7 +310,7 @@ public class TSLChecker extends ATSLChecker {
 		// Debe estar definido al menos en inglés.
 		List<URI> uriList = getTSLObject().getSchemeInformation().getSchemeInformationURIinLanguage(Locale.UK.getLanguage());
 		if (uriList == null || uriList.isEmpty()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_SCHEME_INFORMATION_URI }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_SCHEME_INFORMATION_URI }));
 		}
 
 	}
@@ -326,13 +328,13 @@ public class TSLChecker extends ATSLChecker {
 		boolean valueOK = false;
 		if (isTSLTypeEUGeneric(tslType) || isTSLTypeEUlistOfTheList(tslType)) {
 
-			valueOK = sda.equalsIgnoreCase(ITSLCommonURIs.TSL_STATUSDETAPPROACH_EUAPPROPIATE);
+			valueOK = sda.equalsIgnoreCase(TSLCommonURIs.TSL_STATUSDETAPPROACH_EUAPPROPIATE);
 
 		} else if (isTSLTypeNonEUCountry(tslType) || isTSLTypeNonEUCountryListOfTheList(tslType)) {
 
-			if (sda.startsWith(ITSLCommonURIs.TSL_STATUSDETAPPROACH_NONEU_PREFFIX) && sda.endsWith(ITSLCommonURIs.TSL_STATUSDETAPPROACH_NONEU_SUFFIX)) {
+			if (sda.startsWith(TSLCommonURIs.TSL_STATUSDETAPPROACH_NONEU_PREFFIX) && sda.endsWith(TSLCommonURIs.TSL_STATUSDETAPPROACH_NONEU_SUFFIX)) {
 
-				String country = sda.substring(ITSLCommonURIs.TSL_STATUSDETAPPROACH_NONEU_PREFFIX.length(), sda.length() - ITSLCommonURIs.TSL_STATUSDETAPPROACH_NONEU_SUFFIX.length());
+				String country = sda.substring(TSLCommonURIs.TSL_STATUSDETAPPROACH_NONEU_PREFFIX.length(), sda.length() - TSLCommonURIs.TSL_STATUSDETAPPROACH_NONEU_SUFFIX.length());
 				valueOK = UtilsCountryLanguage.checkCountryCode(country);
 
 			}
@@ -341,7 +343,7 @@ public class TSLChecker extends ATSLChecker {
 
 		if (!valueOK) {
 
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_STATUS_DETERMINATION_APPROACH }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_STATUS_DETERMINATION_APPROACH }));
 
 		}
 
@@ -358,7 +360,7 @@ public class TSLChecker extends ATSLChecker {
 		// caso de no estar
 		// definido lanzamos excepción.
 		if (!getTSLObject().getSchemeInformation().isThereSomeSchemeTypeCommunityRule()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SCHEME_TYPE_COMMUNITY_RULES }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL019, new Object[ ] { TSLElementsAndAttributes.ELEMENT_SCHEME_TYPE_COMMUNITY_RULES }));
 		}
 
 	}
@@ -377,25 +379,25 @@ public class TSLChecker extends ATSLChecker {
 
 		if (isTSLTypeEUlistOfTheList(tslType)) {
 
-			valueOK = uriString.equalsIgnoreCase(ITSLCommonURIs.TSL_SCHEMECOMUNITYRULES_EULISTOFTHELISTS);
+			valueOK = uriString.equalsIgnoreCase(TSLCommonURIs.TSL_SCHEMECOMUNITYRULES_EULISTOFTHELISTS);
 
 		} else if (isTSLTypeEUGeneric(tslType)) {
 
-			valueOK = uriString.equalsIgnoreCase(ITSLCommonURIs.TSL_SCHEMECOMUNITYRULES_EUCOMMON);
+			valueOK = uriString.equalsIgnoreCase(TSLCommonURIs.TSL_SCHEMECOMUNITYRULES_EUCOMMON);
 			if (!valueOK) {
-				if (uriString.startsWith(ITSLCommonURIs.TSL_SCHEMECOMUNITYRULES_CC_PREFFIX) && uriString.length() > ITSLCommonURIs.TSL_SCHEMECOMUNITYRULES_CC_PREFFIX.length()) {
-					valueOK = uriString.substring(ITSLCommonURIs.TSL_SCHEMECOMUNITYRULES_CC_PREFFIX.length()).equals(getTSLObject().getSchemeInformation().getSchemeTerritory());
+				if (uriString.startsWith(TSLCommonURIs.TSL_SCHEMECOMUNITYRULES_CC_PREFFIX) && uriString.length() > TSLCommonURIs.TSL_SCHEMECOMUNITYRULES_CC_PREFFIX.length()) {
+					valueOK = uriString.substring(TSLCommonURIs.TSL_SCHEMECOMUNITYRULES_CC_PREFFIX.length()).equals(getTSLObject().getSchemeInformation().getSchemeTerritory());
 				}
 			}
 
 		} else if (isTSLTypeNonEUCountry(tslType) || isTSLTypeNonEUCountryListOfTheList(tslType)) {
 
-			valueOK = uriString.startsWith(ITSLCommonURIs.HTTP_PROTOCOL_PREFFIX);
+			valueOK = uriString.startsWith(TSLCommonURIs.HTTP_PROTOCOL_PREFFIX);
 
 		}
 
 		if (!valueOK) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SCHEME_TYPE_COMMUNITY_RULES }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_SCHEME_TYPE_COMMUNITY_RULES }));
 		}
 
 	}
@@ -408,7 +410,7 @@ public class TSLChecker extends ATSLChecker {
 	protected void checkSchemeInformationTerritoryValue() throws TSLMalformedException {
 
 		if (!UtilsCountryLanguage.checkCountryCode(getTSLObject().getSchemeInformation().getSchemeTerritory())) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SCHEME_TERRITORY }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_SCHEME_TERRITORY }));
 		}
 
 	}
@@ -422,7 +424,7 @@ public class TSLChecker extends ATSLChecker {
 
 		// Al menos debe definirse en inglés.
 		if (getTSLObject().getSchemeInformation().getPolicyInLanguage(Locale.UK.getLanguage()) == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_POLICY_OR_LEGAL_NOTICE }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_POLICY_OR_LEGAL_NOTICE }));
 		}
 
 	}
@@ -436,7 +438,7 @@ public class TSLChecker extends ATSLChecker {
 
 		// Al menos debe definirse en inglés.
 		if (getTSLObject().getSchemeInformation().getLegalNoticeInLanguage(Locale.UK.getLanguage()) == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_POLICY_OR_LEGAL_NOTICE }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_POLICY_OR_LEGAL_NOTICE }));
 		}
 
 	}
@@ -449,7 +451,7 @@ public class TSLChecker extends ATSLChecker {
 	protected void checkSchemeInformationHistoricalInformationPeriodValue() throws TSLMalformedException {
 
 		if (getTSLObject().getSchemeInformation().getHistoricalPeriod() != NumberConstants.NUM65535) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_HISTORICAL_INFORMATION_PERIOD }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_HISTORICAL_INFORMATION_PERIOD }));
 		}
 
 	}
@@ -468,7 +470,7 @@ public class TSLChecker extends ATSLChecker {
 		// estar definido
 		// el campo con los TSLPointers.
 		if ((isTSLTypeEUGeneric(tslType) || isTSLTypeEUlistOfTheList(tslType)) && !getTSLObject().getSchemeInformation().isThereSomePointerToOtherTSL()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_POINTER_TO_OTHER_TSL_TSLLOCATION }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL019, new Object[ ] { TSLElementsAndAttributes.ELEMENT_POINTER_TO_OTHER_TSL_TSLLOCATION }));
 		}
 
 		// Si finalmente es de un estado miembro europeo, entonces debe contener
@@ -489,7 +491,7 @@ public class TSLChecker extends ATSLChecker {
 			}
 
 			// Si llegamos aquí, es que no hemos encontrado la URI.
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL087, new Object[ ] { TSLManager.getInstance().getSetOfURLStringThatRepresentsEuLOTLinString() }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL087, new Object[ ] { TSLManager.getInstance().getSetOfURLStringThatRepresentsEuLOTLinString() }));
 
 		}
 
@@ -504,7 +506,7 @@ public class TSLChecker extends ATSLChecker {
 
 		// La URI no puede ser nula.
 		if (tslPointer.getTSLLocation() == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_POINTER_TO_OTHER_TSL_TSLLOCATION }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL019, new Object[ ] { TSLElementsAndAttributes.ELEMENT_POINTER_TO_OTHER_TSL_TSLLOCATION }));
 		}
 
 		// Comprobamos las identidades de servicio digital.
@@ -515,7 +517,7 @@ public class TSLChecker extends ATSLChecker {
 					try {
 						checkDigitalIdsList(sdi.getAllDigitalIdentities());
 					} catch (TSLMalformedException e) {
-						throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_POINTER_TO_OTHER_TSL }), e);
+						throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_POINTER_TO_OTHER_TSL }), e);
 					}
 				}
 			}
@@ -549,7 +551,7 @@ public class TSLChecker extends ATSLChecker {
 
 		// Si es nulo lanzamos excepción.
 		if (digitalId == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_DIGITAL_IDENTITY }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL019, new Object[ ] { TSLElementsAndAttributes.ELEMENT_DIGITAL_IDENTITY }));
 		} else {
 
 			// Según el tipo lo analizamos.
@@ -577,7 +579,7 @@ public class TSLChecker extends ATSLChecker {
 
 				default:
 					// Si no es ninguno de los tipos reconocidos, excepción.
-					throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL044));
+					throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL044));
 			}
 		}
 
@@ -590,7 +592,7 @@ public class TSLChecker extends ATSLChecker {
 	 */
 	private void checkDigitalIdTypeX509Certificate(X509Certificate cert) throws TSLMalformedException {
 		if (cert == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL039));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL039));
 		}
 	}
 
@@ -601,7 +603,7 @@ public class TSLChecker extends ATSLChecker {
 	 */
 	private void checkDigitalIdTypeSubjectName(String x509SubjectName) throws TSLMalformedException {
 		if (UtilsStringChar.isNullOrEmptyTrim(x509SubjectName)) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL040));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL040));
 		}
 	}
 
@@ -612,7 +614,7 @@ public class TSLChecker extends ATSLChecker {
 	 */
 	private void checkDigitalIdTypeKeyValue(KeyValueType keyValue) throws TSLMalformedException {
 		if (keyValue == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL041));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL041));
 		}
 	}
 
@@ -623,7 +625,7 @@ public class TSLChecker extends ATSLChecker {
 	 */
 	private void checkDigitalIdTypeX509SKI(SubjectKeyIdentifier ski) throws TSLMalformedException {
 		if (ski == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL042));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL042));
 		}
 	}
 
@@ -634,7 +636,7 @@ public class TSLChecker extends ATSLChecker {
 	 */
 	private void checkDigitalIdTypeOther(String other) throws TSLMalformedException {
 		if (UtilsStringChar.isNullOrEmptyTrim(other)) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL043));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL043));
 		}
 	}
 
@@ -688,7 +690,7 @@ public class TSLChecker extends ATSLChecker {
 			// Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020,
 			// new Object[ ] { ITSLElementsAndAttributes.ELEMENT_NEXT_UPDATE
 			// }));
-			LOGGER.warn(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL222));
+			LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL222));
 		}
 
 	}
@@ -714,7 +716,7 @@ public class TSLChecker extends ATSLChecker {
 
 		// Si la TSL es europea, entonces no deben definirse extensiones.
 		if ((isTSLTypeEUGeneric(tslType) || isTSLTypeEUlistOfTheList(tslType)) && getTSLObject().getSchemeInformation().isThereSomeSchemeInformationExtension()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL088));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL088));
 		}
 
 	}
@@ -739,7 +741,7 @@ public class TSLChecker extends ATSLChecker {
 		// Debe estar definido al menos en inglés.
 		List<String> namesList = tspInformation.getTSPNamesForLanguage(Locale.UK.getLanguage());
 		if (namesList == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_TSPINFORMATION_NAME }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_TSPINFORMATION_NAME }));
 		}
 
 	}
@@ -759,13 +761,13 @@ public class TSLChecker extends ATSLChecker {
 			// ITSLElementsAndAttributes.ELEMENT_TSPINFORMATION_TRADENAME }));
 			// Por decisión de Dirección de Proyecto se decide suavizar esta
 			// comprobación.
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPINFORMATION_TRADENAME }));
+			LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL019, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPINFORMATION_TRADENAME }));
 		} else {
 
 			// Debe estar definido al menos en inglés.
 			List<String> namesList = tspInformation.getTSPTradeNamesForLanguage(Locale.UK.getLanguage());
 			if (namesList == null || namesList.isEmpty()) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_TSPINFORMATION_TRADENAME }));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_TSPINFORMATION_TRADENAME }));
 			}
 
 			// Ahora hay que comprobar que AL MENOS UNO de los TSPTradeNames
@@ -804,7 +806,7 @@ public class TSLChecker extends ATSLChecker {
 						}
 
 					} else {
-						throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL086, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_TSPINFORMATION_TRADENAME }));
+						throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL086, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_TSPINFORMATION_TRADENAME }));
 					}
 
 				}
@@ -826,7 +828,7 @@ public class TSLChecker extends ATSLChecker {
 				// tspInformation.getTSPNamesForLanguage(Locale.UK.getLanguage())
 				// }));
 				// En su lugar se muestra un warning.
-				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL230, new Object[ ] { tspInformation.getTSPNamesForLanguage(Locale.UK.getLanguage()), ITSLElementsAndAttributes.ELEMENT_TSPINFORMATION_TRADENAME }));
+				LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL230, new Object[ ] { tspInformation.getTSPNamesForLanguage(Locale.UK.getLanguage()), TSLElementsAndAttributes.ELEMENT_TSPINFORMATION_TRADENAME }));
 			}
 
 		}
@@ -847,9 +849,9 @@ public class TSLChecker extends ATSLChecker {
 		if (tradeName.length() > NumberConstants.NUM6) {
 
 			// Comprobamos COD.
-			result = tradeName.startsWith(ITSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_VAT) || tradeName.startsWith(ITSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_NTR);
-			result = result || tradeName.startsWith(ITSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_PAS) || tradeName.startsWith(ITSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_IDC);
-			result = result || tradeName.startsWith(ITSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_PNO) || tradeName.startsWith(ITSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_TIN);
+			result = tradeName.startsWith(TSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_VAT) || tradeName.startsWith(TSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_NTR);
+			result = result || tradeName.startsWith(TSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_PAS) || tradeName.startsWith(TSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_IDC);
+			result = result || tradeName.startsWith(TSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_PNO) || tradeName.startsWith(TSLOtherConstants.TOKEN_TSP_INF_TRADE_NAME_TIN);
 
 			if (result) {
 				// Comprobamos CC.
@@ -878,7 +880,7 @@ public class TSLChecker extends ATSLChecker {
 		// Debe estar definido al menos en inglés.
 		List<URI> uriList = tspInformation.getURIForLanguage(Locale.UK.getLanguage());
 		if (uriList == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_TSPINFORMATION_URI }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_TSPINFORMATION_URI }));
 		}
 
 	}
@@ -899,7 +901,7 @@ public class TSLChecker extends ATSLChecker {
 			if (tspInformationExtensions != null && !tspInformationExtensions.isEmpty()) {
 				for (IAnyTypeExtension extension: tspInformationExtensions) {
 					if (extension.isCritical()) {
-						throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL090, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion() }));
+						throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL090, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion() }));
 					}
 				}
 			}
@@ -918,7 +920,7 @@ public class TSLChecker extends ATSLChecker {
 		URI serviceTypeIdentifier = tspServiceInformation.getServiceTypeIdentifier();
 
 		if (serviceTypeIdentifier == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_TYPE }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL019, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_TYPE }));
 		}
 
 		String tslTypeUriString = getTSLObject().getSchemeInformation().getTslType().toString();
@@ -933,7 +935,7 @@ public class TSLChecker extends ATSLChecker {
 			// Si se ha detectado que es de tipo CA/QC, hay que comprobar
 			// que al menos existe la extensión AdditionalServiceInformation
 			// en el servicio.
-			if (valueOK && sti.equals(ITSLCommonURIs.TSL_SERVICETYPE_CA_QC) && !checkIfIsDefinedSomeExtensionTypeInTSPService(tspServiceInformation, IAnyTypeExtension.IMPL_ADDITIONAL_SERVICE_INFORMATION)) {
+			if (valueOK && sti.equals(TSLCommonURIs.TSL_SERVICETYPE_CA_QC) && !checkIfIsDefinedSomeExtensionTypeInTSPService(tspServiceInformation, TSLBuilderConstants.IMPL_ADDITIONAL_SERVICE_INFORMATION)) {
 				// TODO Se cambia la propagación de la excepción por el error
 				// por un warning en el log,
 				// ya que si no se relaja esta comprobación, muchas TSL serían
@@ -943,7 +945,7 @@ public class TSLChecker extends ATSLChecker {
 				// new Object[ ] {
 				// tspServiceInformation.getServiceNameInLanguage(Locale.UK.getLanguage())
 				// }));
-				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL237, new Object[ ] { tspServiceInformation.getServiceNameInLanguage(Locale.UK.getLanguage()) }));
+				LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL237, new Object[ ] { tspServiceInformation.getServiceNameInLanguage(Locale.UK.getLanguage()) }));
 			}
 
 			// Para certificados no cualificados.
@@ -954,12 +956,12 @@ public class TSLChecker extends ATSLChecker {
 
 		} else if (isTSLTypeNonEUCountry(tslTypeUriString)) {
 
-			valueOK = sti.startsWith(ITSLCommonURIs.HTTP_PROTOCOL_PREFFIX);
+			valueOK = sti.startsWith(TSLCommonURIs.HTTP_PROTOCOL_PREFFIX);
 
 		}
 
 		if (!valueOK) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_TYPE }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_TYPE }));
 		}
 
 	}
@@ -975,10 +977,10 @@ public class TSLChecker extends ATSLChecker {
 
 		if (!UtilsStringChar.isNullOrEmptyTrim(uriStringServiceType)) {
 
-			result = uriStringServiceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_CA_QC) || uriStringServiceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP_QC) || uriStringServiceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL_QC);
-			result = result || uriStringServiceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_TSA_QTST) || uriStringServiceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_EDS_Q);
-			result = result || uriStringServiceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_EDS_REM_Q) || uriStringServiceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_PSES_Q);
-			result = result || uriStringServiceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_QESVALIDATION_Q);
+			result = uriStringServiceType.equals(TSLCommonURIs.TSL_SERVICETYPE_CA_QC) || uriStringServiceType.equals(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP_QC) || uriStringServiceType.equals(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL_QC);
+			result = result || uriStringServiceType.equals(TSLCommonURIs.TSL_SERVICETYPE_TSA_QTST) || uriStringServiceType.equals(TSLCommonURIs.TSL_SERVICETYPE_EDS_Q);
+			result = result || uriStringServiceType.equals(TSLCommonURIs.TSL_SERVICETYPE_EDS_REM_Q) || uriStringServiceType.equals(TSLCommonURIs.TSL_SERVICETYPE_PSES_Q);
+			result = result || uriStringServiceType.equals(TSLCommonURIs.TSL_SERVICETYPE_QESVALIDATION_Q);
 
 		}
 
@@ -993,17 +995,17 @@ public class TSLChecker extends ATSLChecker {
 
 	static {
 		serviceTypesForNonQualifiedCertsSet = new TreeSet<String>();
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_CA_PKC);
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP);
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL);
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_TSA);
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_TSA_TSSQC);
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_TSA_TSS_ADESQC_AND_QES);
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_EDS);
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_REM);
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_PSES);
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_ADESVALIDATION);
-		serviceTypesForNonQualifiedCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_ADESGENERATION);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_CA_PKC);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_OCSP);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_CERTSTATUS_CRL);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_TSA);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_TSA_TSSQC);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_TSA_TSS_ADESQC_AND_QES);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_EDS);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_REM);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_PSES);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_ADESVALIDATION);
+		serviceTypesForNonQualifiedCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_ADESGENERATION);
 	}
 
 	/**
@@ -1024,17 +1026,17 @@ public class TSLChecker extends ATSLChecker {
 
 	static {
 		serviceTypesForNationalCertsSet = new TreeSet<String>();
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_RA);
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_RA_NOTHAVINGPKIID);
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_ACA);
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_SIGNATURE_POLICY_AUTHORITY);
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_ARCHIV);
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_ARCHIV_NOTHAVINGPKIID);
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_IDV);
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_IDV_NOTHAVINGPKIID);
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_KESCROW);
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_KESCROW_NOTHAVINGPKIID);
-		serviceTypesForNationalCertsSet.add(ITSLCommonURIs.TSL_SERVICETYPE_PPWD);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_RA);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_RA_NOTHAVINGPKIID);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_ACA);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_SIGNATURE_POLICY_AUTHORITY);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_ARCHIV);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_ARCHIV_NOTHAVINGPKIID);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_IDV);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_IDV_NOTHAVINGPKIID);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_KESCROW);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_KESCROW_NOTHAVINGPKIID);
+		serviceTypesForNationalCertsSet.add(TSLCommonURIs.TSL_SERVICETYPE_PPWD);
 	}
 
 	/**
@@ -1058,7 +1060,7 @@ public class TSLChecker extends ATSLChecker {
 		// Debe estar definido al menos en inglés.
 		String name = tspServiceInformation.getServiceNameInLanguage(Locale.UK.getLanguage());
 		if (name == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_NAMES }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL085, new Object[ ] { getTSLObject().getSpecification(), getTSLObject().getSpecificationVersion(), TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_NAMES }));
 		}
 
 	}
@@ -1077,7 +1079,7 @@ public class TSLChecker extends ATSLChecker {
 		// if (!tspServiceInformation.isThereSomeIdentity() ||
 		// tspServiceInformation.getAllDigitalIdentities().size() != 1) {
 		if (!tspServiceInformation.isThereSomeIdentity()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICEDIGITALIDENTITY }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICEDIGITALIDENTITY }));
 		}
 
 	}
@@ -1108,7 +1110,7 @@ public class TSLChecker extends ATSLChecker {
 			try {
 				checkDigitalIdsList(diList);
 			} catch (TSLMalformedException e) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICEDIGITALIDENTITY }), e);
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICEDIGITALIDENTITY }), e);
 			}
 
 		}
@@ -1124,8 +1126,8 @@ public class TSLChecker extends ATSLChecker {
 
 		boolean result = false;
 
-		result = serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_RA_NOTHAVINGPKIID) || serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_ARCHIV_NOTHAVINGPKIID) || serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_IDV_NOTHAVINGPKIID);
-		result = result || serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_KESCROW_NOTHAVINGPKIID) || serviceType.equals(ITSLCommonURIs.TSL_SERVICETYPE_PPWD_NOTHAVINGPKIID);
+		result = serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_RA_NOTHAVINGPKIID) || serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_ARCHIV_NOTHAVINGPKIID) || serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_IDV_NOTHAVINGPKIID);
+		result = result || serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_KESCROW_NOTHAVINGPKIID) || serviceType.equals(TSLCommonURIs.TSL_SERVICETYPE_PPWD_NOTHAVINGPKIID);
 
 		return result;
 
@@ -1165,14 +1167,14 @@ public class TSLChecker extends ATSLChecker {
 			else if (isTSLTypeNonEUCountry(tslType)) {
 
 				// Comprobamos que la URI empieza por http://
-				isValid = serviceStatus.startsWith(ITSLCommonURIs.HTTP_PROTOCOL_PREFFIX);
+				isValid = serviceStatus.startsWith(TSLCommonURIs.HTTP_PROTOCOL_PREFFIX);
 
 			}
 
 		}
 
 		if (!isValid) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_STATUS }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_STATUS }));
 		}
 
 	}
@@ -1198,12 +1200,12 @@ public class TSLChecker extends ATSLChecker {
 		// Si es para no cualificados o nacionales...
 		else if (isServiceTypeForNonQualifiedCerts(serviceType) || isServiceTypeForNationalCerts(serviceType)) {
 
-			result = serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_RECOGNISEDATNATIONALLEVEL) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDATNATIONALLEVEL);
+			result = serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_RECOGNISEDATNATIONALLEVEL) || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDATNATIONALLEVEL);
 			// Si la fecha es anterior a la de entrada en vigor de la
 			// especificación,
 			// comprobamos también los valores antiguos.
 			if (Calendar.getInstance().getTime().before(getInitialDate())) {
-				result = result || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SETBYNATIONALLAW) || serviceStatus.equals(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDBYNATIONALLAW);
+				result = result || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SETBYNATIONALLAW) || serviceStatus.equals(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDBYNATIONALLAW);
 			}
 
 		}
@@ -1226,16 +1228,16 @@ public class TSLChecker extends ATSLChecker {
 
 	static {
 		serviceStatusTSLEUGenericServiceTypeQualifiedCertSet = new TreeSet<String>();
-		serviceStatusTSLEUGenericServiceTypeQualifiedCertSet.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_GRANTED);
-		serviceStatusTSLEUGenericServiceTypeQualifiedCertSet.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN);
+		serviceStatusTSLEUGenericServiceTypeQualifiedCertSet.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_GRANTED);
+		serviceStatusTSLEUGenericServiceTypeQualifiedCertSet.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN);
 		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet = new TreeSet<String>();
-		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_UNDERSUPERVISION);
-		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONINCESSATION);
-		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONCEASED);
-		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONREVOKED);
-		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITED);
-		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONCEASED);
-		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONREVOKED);
+		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_UNDERSUPERVISION);
+		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONINCESSATION);
+		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONCEASED);
+		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONREVOKED);
+		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITED);
+		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONCEASED);
+		serviceStatusTSLEUGenericServiceTypeQualifiedCertBeforeInitialDateSet.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONREVOKED);
 	}
 
 	/**
@@ -1271,7 +1273,7 @@ public class TSLChecker extends ATSLChecker {
 		URI serviceTypeIdentifier = serviceHistoryInstance.getServiceTypeIdentifier();
 
 		if (serviceTypeIdentifier == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_TYPE }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL019, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_TYPE }));
 		}
 
 		String tslTypeUriString = getTSLObject().getSchemeInformation().getTslType().toString();
@@ -1286,7 +1288,7 @@ public class TSLChecker extends ATSLChecker {
 			// Si se ha detectado que es de tipo CA/QC, hay que comprobar
 			// que al menos existe la extensión AdditionalServiceInformation
 			// en el servicio.
-			if (valueOK && sti.equals(ITSLCommonURIs.TSL_SERVICETYPE_CA_QC) && !checkIfIsDefinedSomeExtensionTypeInTSPService(serviceHistoryInstance, IAnyTypeExtension.IMPL_ADDITIONAL_SERVICE_INFORMATION)) {
+			if (valueOK && sti.equals(TSLCommonURIs.TSL_SERVICETYPE_CA_QC) && !checkIfIsDefinedSomeExtensionTypeInTSPService(serviceHistoryInstance, TSLBuilderConstants.IMPL_ADDITIONAL_SERVICE_INFORMATION)) {
 
 				// TODO Se cambia la propagación de la excepción por el error
 				// por un warning en el log, ya que si no se relaja esta
@@ -1296,7 +1298,7 @@ public class TSLChecker extends ATSLChecker {
 				// Object[ ] {
 				// serviceHistoryInstance.getServiceNameInLanguage(Locale.UK.getLanguage())
 				// }));
-				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL237, new Object[ ] { serviceHistoryInstance.getServiceNameInLanguage(Locale.UK.getLanguage()) }));
+				LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL237, new Object[ ] { serviceHistoryInstance.getServiceNameInLanguage(Locale.UK.getLanguage()) }));
 
 			}
 
@@ -1308,12 +1310,12 @@ public class TSLChecker extends ATSLChecker {
 
 		} else if (isTSLTypeNonEUCountry(tslTypeUriString)) {
 
-			valueOK = sti.startsWith(ITSLCommonURIs.HTTP_PROTOCOL_PREFFIX);
+			valueOK = sti.startsWith(TSLCommonURIs.HTTP_PROTOCOL_PREFFIX);
 
 		}
 
 		if (!valueOK) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_TYPE }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_TYPE }));
 		}
 
 	}
@@ -1328,7 +1330,7 @@ public class TSLChecker extends ATSLChecker {
 		try {
 			checkTSPServiceInformationNamesValues(serviceHistoryInstance);
 		} catch (TSLMalformedException e) {
-			e.setErrorDescription(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_NAMES }));
+			e.setErrorDescription(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_NAMES }));
 			throw e;
 		}
 
@@ -1377,14 +1379,14 @@ public class TSLChecker extends ATSLChecker {
 					// }), e);
 
 					LOGGER.warn(e.getErrorDescription());
-					LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICEDIGITALIDENTITY }));
+					LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_SERVICEDIGITALIDENTITY }));
 
 				}
 
 			}
 
 		} catch (TSLMalformedException e) {
-			e.setErrorDescription(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_SERVICEDIGITALIDENTITY }));
+			e.setErrorDescription(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_SERVICEDIGITALIDENTITY }));
 			throw e;
 		}
 
@@ -1412,7 +1414,7 @@ public class TSLChecker extends ATSLChecker {
 
 				// Si es de tipo X509Cert hay que lanzar excepción.
 				if (digitalId.getType() == DigitalID.TYPE_X509CERTIFICATE) {
-					throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL235));
+					throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL235));
 				}
 
 				// Si es de tipo X509SKI marcamos que hemos encontrado uno.
@@ -1425,7 +1427,7 @@ public class TSLChecker extends ATSLChecker {
 		// Si no hemos encontrado ninguna identidad digital de tipo X509SKI,
 		// lanzamos excepción.
 		if (!thereIsX509SKIDigIdent) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL236));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL236));
 		}
 
 	}
@@ -1443,20 +1445,20 @@ public class TSLChecker extends ATSLChecker {
 
 	static {
 		serviceStatusForQualifiedCertificates = new TreeSet<String>();
-		serviceStatusForQualifiedCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_GRANTED);
-		serviceStatusForQualifiedCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN);
-		serviceStatusForQualifiedCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_UNDERSUPERVISION);
-		serviceStatusForQualifiedCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONINCESSATION);
-		serviceStatusForQualifiedCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONCEASED);
-		serviceStatusForQualifiedCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONREVOKED);
-		serviceStatusForQualifiedCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITED);
-		serviceStatusForQualifiedCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONCEASED);
-		serviceStatusForQualifiedCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONREVOKED);
+		serviceStatusForQualifiedCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_GRANTED);
+		serviceStatusForQualifiedCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_WITHDRAWN);
+		serviceStatusForQualifiedCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_UNDERSUPERVISION);
+		serviceStatusForQualifiedCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONINCESSATION);
+		serviceStatusForQualifiedCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONCEASED);
+		serviceStatusForQualifiedCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SUPERVISIONREVOKED);
+		serviceStatusForQualifiedCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITED);
+		serviceStatusForQualifiedCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONCEASED);
+		serviceStatusForQualifiedCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_ACCREDITATIONREVOKED);
 		serviceStatusForNonQualifiedCertificatesOrNationalCertificates = new TreeSet<String>();
-		serviceStatusForNonQualifiedCertificatesOrNationalCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_RECOGNISEDATNATIONALLEVEL);
-		serviceStatusForNonQualifiedCertificatesOrNationalCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDATNATIONALLEVEL);
-		serviceStatusForNonQualifiedCertificatesOrNationalCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_SETBYNATIONALLAW);
-		serviceStatusForNonQualifiedCertificatesOrNationalCertificates.add(ITSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDBYNATIONALLAW);
+		serviceStatusForNonQualifiedCertificatesOrNationalCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_RECOGNISEDATNATIONALLEVEL);
+		serviceStatusForNonQualifiedCertificatesOrNationalCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDATNATIONALLEVEL);
+		serviceStatusForNonQualifiedCertificatesOrNationalCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_SETBYNATIONALLAW);
+		serviceStatusForNonQualifiedCertificatesOrNationalCertificates.add(TSLCommonURIs.TSL_SERVICECURRENTSTATUS_DEPRECATEDBYNATIONALLAW);
 	}
 
 	/**
@@ -1503,14 +1505,14 @@ public class TSLChecker extends ATSLChecker {
 			else if (isTSLTypeNonEUCountry(tslType)) {
 
 				// Comprobamos que la URI empieza por http://
-				isValid = serviceStatus.startsWith(ITSLCommonURIs.HTTP_PROTOCOL_PREFFIX);
+				isValid = serviceStatus.startsWith(TSLCommonURIs.HTTP_PROTOCOL_PREFFIX);
 
 			}
 
 		}
 
 		if (!isValid) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_STATUS }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL020, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_STATUS }));
 			// TODO De momento no se relaja esta comprobación, ya que el
 			// estado del servicio es imprescindible para un tratamiento
 			// correcto.
@@ -1531,7 +1533,7 @@ public class TSLChecker extends ATSLChecker {
 	@Override
 	protected void tslSignatureIsNotDefined() throws TSLMalformedException {
 
-		throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL019, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SIGNATURE }));
+		throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL019, new Object[ ] { TSLElementsAndAttributes.ELEMENT_SIGNATURE }));
 
 	}
 
@@ -1548,19 +1550,19 @@ public class TSLChecker extends ATSLChecker {
 		// Comprobamos que SignatureValue se encuentra definido.
 		SignatureValueType signatureValue = signature.getSignatureValue();
 		if (signatureValue == null || signatureValue.getByteArrayValue() == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL055, new Object[ ] { ITSLSignatureConstants.ELEMENT_SIGNATUREMETHOD }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL055, new Object[ ] { TSLSignatureConstants.ELEMENT_SIGNATUREMETHOD }));
 		}
 
 		// Recuperamos el SignedInfo.
 		SignedInfoType signedInfo = signature.getSignedInfo();
 		if (signedInfo == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL055, new Object[ ] { ITSLSignatureConstants.ELEMENT_SIGNEDINFO }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL055, new Object[ ] { TSLSignatureConstants.ELEMENT_SIGNEDINFO }));
 		} else {
 
 			// Comprobamos que el algoritmo de firma se encuentra definido.
 			SignatureMethodType signatureMethod = signedInfo.getSignatureMethod();
 			if (signatureMethod == null || UtilsStringChar.isNullOrEmptyTrim(signatureMethod.getAlgorithm())) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL055, new Object[ ] { ITSLSignatureConstants.ELEMENT_SIGNATUREMETHOD }));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL055, new Object[ ] { TSLSignatureConstants.ELEMENT_SIGNATUREMETHOD }));
 			}
 
 			// Buscamos un Reference dentro de este que apunte al ID del
@@ -1589,24 +1591,24 @@ public class TSLChecker extends ATSLChecker {
 
 							// El primero de los elementos debe ser
 							// "http://www.w3.org/2000/09/xmldsig#enveloped-signature".
-							if (!ITSLSignatureConstants.URI_XMLDSIG_ENVELOPED_SIGNATURE.equals(tst.getTransformArray(0).getAlgorithm())) {
-								throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL059, new Object[ ] { tslId, 0, ITSLSignatureConstants.URI_XMLDSIG_ENVELOPED_SIGNATURE }));
+							if (!TSLSignatureConstants.URI_XMLDSIG_ENVELOPED_SIGNATURE.equals(tst.getTransformArray(0).getAlgorithm())) {
+								throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL059, new Object[ ] { tslId, 0, TSLSignatureConstants.URI_XMLDSIG_ENVELOPED_SIGNATURE }));
 							}
 
 							// El segundo de los elementos debe ser
 							// "http://www.w3.org/2001/10/xmlexc-c14n#".
-							if (!ITSLSignatureConstants.URI_CANONICALIZATION_ALGORITHM_XMLEXC_C14N.equals(tst.getTransformArray(1).getAlgorithm())) {
-								throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL059, new Object[ ] { tslId, 1, ITSLSignatureConstants.URI_CANONICALIZATION_ALGORITHM_XMLEXC_C14N }));
+							if (!TSLSignatureConstants.URI_CANONICALIZATION_ALGORITHM_XMLEXC_C14N.equals(tst.getTransformArray(1).getAlgorithm())) {
+								throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL059, new Object[ ] { tslId, 1, TSLSignatureConstants.URI_CANONICALIZATION_ALGORITHM_XMLEXC_C14N }));
 							}
 
 						} else {
 							// Debe haber dos elementos Transform.
-							throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL058, new Object[ ] { tslId }));
+							throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL058, new Object[ ] { tslId }));
 						}
 
 					} else {
 						// El elemento Transforms debe estar definido.
-						throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL057, new Object[ ] { tslId }));
+						throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL057, new Object[ ] { tslId }));
 					}
 
 				}
@@ -1614,18 +1616,18 @@ public class TSLChecker extends ATSLChecker {
 
 			// Si no se ha encontrado la referencia, excepción.
 			if (!referenceFinded) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL056, new Object[ ] { tslId }));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL056, new Object[ ] { tslId }));
 			}
 
 			// El método de canonicalización debe ser
 			// "http://www.w3.org/2001/10/xmlexc-c14n#".
 			CanonicalizationMethodType cmt = signedInfo.getCanonicalizationMethod();
 			if (cmt == null) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL060));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL060));
 			} else {
 
-				if (!ITSLSignatureConstants.URI_CANONICALIZATION_ALGORITHM_XMLEXC_C14N.equals(cmt.getAlgorithm())) {
-					throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL061, new Object[ ] { ITSLSignatureConstants.URI_CANONICALIZATION_ALGORITHM_XMLEXC_C14N }));
+				if (!TSLSignatureConstants.URI_CANONICALIZATION_ALGORITHM_XMLEXC_C14N.equals(cmt.getAlgorithm())) {
+					throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL061, new Object[ ] { TSLSignatureConstants.URI_CANONICALIZATION_ALGORITHM_XMLEXC_C14N }));
 				}
 
 			}
@@ -1635,7 +1637,7 @@ public class TSLChecker extends ATSLChecker {
 		// Recuperamos el KeyInfo.
 		KeyInfoType kit = signature.getKeyInfo();
 		if (kit == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL067));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL067));
 		} else {
 
 			// Al menos uno de los siguientes debe estar definido: X509Data,
@@ -1647,25 +1649,25 @@ public class TSLChecker extends ATSLChecker {
 			if (x509DataTypeArraySize == 1) {
 				atLeastOne = true;
 			} else if (x509DataTypeArraySize > 1) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL062));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL062));
 			}
 
 			int kvtArraySize = kit.sizeOfKeyValueArray();
 			if (kvtArraySize == 1) {
 				atLeastOne = true;
 			} else if (kvtArraySize > 1) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL063));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL063));
 			}
 
 			int spkiDataTypeArraySize = kit.sizeOfSPKIDataArray();
 			if (spkiDataTypeArraySize == 1) {
 				atLeastOne = true;
 			} else if (spkiDataTypeArraySize > 1) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL064));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL064));
 			}
 
 			if (!atLeastOne) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL065));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL065));
 			}
 
 		}
@@ -1722,7 +1724,7 @@ public class TSLChecker extends ATSLChecker {
 		}
 
 		if (qProps == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL068));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL068));
 		}
 
 		// Tomamos la Firma ds:Signature sobre la cual se calculó
@@ -1748,7 +1750,7 @@ public class TSLChecker extends ATSLChecker {
 						// Recuperamos el certificado firmante.
 						X509Certificate signingCert = getSigningCertificate(fullTSLxml);
 						if (signingCert == null) {
-							throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL070));
+							throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL070));
 						}
 
 						// Comprobamos la correspondencia entre el
@@ -1774,7 +1776,7 @@ public class TSLChecker extends ATSLChecker {
 
 			// Si el atributo target del elemento Qualifying Properties no
 			// coincide en valor con del ID de la firma...
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL069));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL069));
 
 		}
 
@@ -1792,7 +1794,7 @@ public class TSLChecker extends ATSLChecker {
 		try {
 
 			if (qPropsSignCertCertIdArray.length == 0) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL071));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL071));
 			}
 
 			String x509IssuerName = UtilsCertificate.canonicalizarIdCertificado(signingCert.getIssuerDN().getName());
@@ -1809,13 +1811,13 @@ public class TSLChecker extends ATSLChecker {
 			}
 
 		} catch (Exception e) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL072), e);
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL072), e);
 		}
 
 		// Si hemos llegado a este punto es que no hemos encontrado
 		// correspondencia entre
 		// el signing certificate del Qualifying Properties y el KeyInfo.
-		throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL072));
+		throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL072));
 
 	}
 
@@ -1864,7 +1866,7 @@ public class TSLChecker extends ATSLChecker {
 
 		String schemeTerritory = getTSLObject().getSchemeInformation().getSchemeTerritory();
 		if (!schemeTerritory.equals(countryCode)) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL092, new Object[ ] { countryCode, schemeTerritory }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL092, new Object[ ] { countryCode, schemeTerritory }));
 		}
 
 		boolean operatorNameFinded = false;
@@ -1882,7 +1884,7 @@ public class TSLChecker extends ATSLChecker {
 			}
 		}
 		if (!operatorNameFinded) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL093, new Object[ ] { organization }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL093, new Object[ ] { organization }));
 		}
 
 	}
@@ -1913,7 +1915,7 @@ public class TSLChecker extends ATSLChecker {
 			isValidKeyUsage = isValidKeyUsage && !x509keyUsage[NumberConstants.NUM7] && !x509keyUsage[NumberConstants.NUM8];
 		}
 		if (!isValidKeyUsage) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL095B));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL095B));
 		}
 
 	}
@@ -1936,11 +1938,11 @@ public class TSLChecker extends ATSLChecker {
 				skiBytes = ski.getKeyIdentifier();
 			}
 		} catch (Exception e) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL098), e);
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL098), e);
 		}
 		if (skiBytes == null) {
 
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL096));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL096));
 
 		} else {
 
@@ -1949,7 +1951,7 @@ public class TSLChecker extends ATSLChecker {
 			try {
 				jcaX509cert = new JcaX509CertificateHolder(x509Certificate);
 			} catch (CertificateEncodingException e) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL094), e);
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL094), e);
 			}
 			DERBitString subjectPublicKeyBitString = jcaX509cert.getSubjectPublicKeyInfo().getPublicKeyData();
 			// Le calculamos el SHA-1.
@@ -1957,7 +1959,7 @@ public class TSLChecker extends ATSLChecker {
 			try {
 				subjectPublicKeyBitStringHashSHA1 = UtilsCrypto.calculateDigestReturnB64ByteArray(CryptographicConstants.HASH_ALGORITHM_SHA1, subjectPublicKeyBitString.getBytes(), null);
 			} catch (CommonUtilsException e) {
-				throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL099), e);
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL099), e);
 			}
 
 			// Comprobamos si el Subject Key Identifier se corresponde con el
@@ -1965,7 +1967,7 @@ public class TSLChecker extends ATSLChecker {
 			// por alguno de los dos métodos permitidos por la especificación.
 			if (!checkX509v3SubjectKeyIdentifierMethod1(skiBytes, subjectPublicKeyBitStringHashSHA1) && !checkX509v3SubjectKeyIdentifierMethod2(skiBytes, subjectPublicKeyBitStringHashSHA1)) {
 
-				throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL097));
+				throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL097));
 
 			}
 
@@ -2029,10 +2031,10 @@ public class TSLChecker extends ATSLChecker {
 		try {
 			localBasicConstraints = BasicConstraints.fromExtensions(UtilsCertificate.getBouncyCastleCertificate(x509Certificate).getTBSCertificate().getExtensions());
 		} catch (Exception e) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL100), e);
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL100), e);
 		}
 		if (localBasicConstraints == null || localBasicConstraints.isCA()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL101));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL101));
 		}
 
 	}

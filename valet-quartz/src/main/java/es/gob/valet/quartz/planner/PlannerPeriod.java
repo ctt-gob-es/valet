@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/01/2019.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.quartz.planner;
 
@@ -33,12 +33,12 @@ import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.CPlannerType;
 import es.gob.valet.persistence.configuration.model.entity.Planner;
-import es.gob.valet.persistence.configuration.model.utils.IPlannerTypeIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.PlannerTypeIdConstants;
 
 /**
  * <p>Class that defines the information of a diary/periodic planner.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/01/2019.
+ * @version 1.1, 19/09/2023.
  */
 public class PlannerPeriod implements IPlanner, Serializable {
 
@@ -94,7 +94,7 @@ public class PlannerPeriod implements IPlanner, Serializable {
 			calendar.set(Calendar.SECOND, 0);
 			planner.setInitDay(calendar.getTime());
 
-			CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(IPlannerTypeIdConstants.PLANNER_TYPE_0_DAILY);
+			CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(PlannerTypeIdConstants.PLANNER_TYPE_0_DAILY);
 			planner.setPlannerType(plannerType);
 
 		}
@@ -129,7 +129,7 @@ public class PlannerPeriod implements IPlanner, Serializable {
 			planner.setHourPeriod(Integer.valueOf(NumberConstants.NUM24).longValue());
 			planner.setMinutePeriod(0L);
 			planner.setSecondPeriod(0L);
-			CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(IPlannerTypeIdConstants.PLANNER_TYPE_0_DAILY);
+			CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(PlannerTypeIdConstants.PLANNER_TYPE_0_DAILY);
 			planner.setPlannerType(plannerType);
 
 		}
@@ -144,7 +144,7 @@ public class PlannerPeriod implements IPlanner, Serializable {
 			planner.setHourPeriod(hours);
 			planner.setMinutePeriod(mins);
 			planner.setSecondPeriod(seconds);
-			CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(IPlannerTypeIdConstants.PLANNER_TYPE_1_PERIOD);
+			CPlannerType plannerType = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCPlannerTypeService().getCPlannerTypeById(PlannerTypeIdConstants.PLANNER_TYPE_1_PERIOD);
 			planner.setPlannerType(plannerType);
 
 		}

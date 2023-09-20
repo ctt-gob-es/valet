@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/02/2023.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/05/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * TSL.
  * </p>
  * 
- * @version 1.1, 25/05/2023.
+ * @version 1.2, 19/09/2023.
  */
 public class CertificateExtension implements Serializable {
 
@@ -82,12 +82,6 @@ public class CertificateExtension implements Serializable {
 	private boolean qcSSCD;
 
 	/**
-	 * Constructor method for the class CertificateExtension.java.
-	 */
-	public CertificateExtension() {
-	}
-
-	/**
 	 * Method that obtains the row to be selected in the Table 1: QC-For-eSig
 	 * determination, Table 2: QC-For-eSeal determination y Table 3:
 	 * QC-For-WebSiteAuthentication determination.
@@ -97,49 +91,49 @@ public class CertificateExtension implements Serializable {
 	public String getRowCheck() {
 		String row = null;
 		if ((qcCompliance && !qcType1 && !qcType2 && !qcType3)|| (qcCompliance && qcType1 && !qcType2 && !qcType3)) {
-			return row = IQCCertificateConstants.QC_ROW1;
+			return row = QCCertificateConstants.QC_ROW1;
 		}
 		if (qcCompliance && !qcType1 && qcType2 && !qcType3) {
-			return row = IQCCertificateConstants.QC_ROW2;
+			return row = QCCertificateConstants.QC_ROW2;
 		}
 		if (qcCompliance && !qcType1 && !qcType2 && qcType3) {
-			return row = IQCCertificateConstants.QC_ROW3;
+			return row = QCCertificateConstants.QC_ROW3;
 		}
 		if (qcCompliance && qcType1 && qcType2 && !qcType3) {
-			return row = IQCCertificateConstants.QC_ROW4;
+			return row = QCCertificateConstants.QC_ROW4;
 		}
 		if (qcCompliance && qcType1 && !qcType2 && qcType3) {
-			return row = IQCCertificateConstants.QC_ROW5;
+			return row = QCCertificateConstants.QC_ROW5;
 		}
 		if (qcCompliance && !qcType1 && qcType2 && qcType3) {
-			return row = IQCCertificateConstants.QC_ROW6;
+			return row = QCCertificateConstants.QC_ROW6;
 		}
 		if (qcCompliance && qcType1 && qcType2 && qcType3) {
-			return row = IQCCertificateConstants.QC_ROW7;
+			return row = QCCertificateConstants.QC_ROW7;
 		}
 		if (!qcCompliance && !qcType1 && !qcType2 && !qcType3) {
-			return row = IQCCertificateConstants.QC_ROW8;
+			return row = QCCertificateConstants.QC_ROW8;
 		}
 		if (!qcCompliance && qcType1 && !qcType2 && !qcType3) {
-			return row = IQCCertificateConstants.QC_ROW9;
+			return row = QCCertificateConstants.QC_ROW9;
 		}
 		if (!qcCompliance && !qcType1 && qcType2 && !qcType3) {
-			return row = IQCCertificateConstants.QC_ROW10;
+			return row = QCCertificateConstants.QC_ROW10;
 		}
 		if (!qcCompliance && !qcType1 && !qcType2 && qcType3) {
-			return row = IQCCertificateConstants.QC_ROW11;
+			return row = QCCertificateConstants.QC_ROW11;
 		}
 		if (!qcCompliance && qcType1 && qcType2 && !qcType3) {
-			return row = IQCCertificateConstants.QC_ROW12;
+			return row = QCCertificateConstants.QC_ROW12;
 		}
 		if (!qcCompliance && qcType1 && !qcType2 && qcType3) {
-			return row = IQCCertificateConstants.QC_ROW13;
+			return row = QCCertificateConstants.QC_ROW13;
 		}
 		if (!qcCompliance && !qcType1 && qcType2 && qcType3) {
-			return row = IQCCertificateConstants.QC_ROW14;
+			return row = QCCertificateConstants.QC_ROW14;
 		}
 		if (!qcCompliance && qcType1 && qcType2 && qcType3) {
-			return row = IQCCertificateConstants.QC_ROW15;
+			return row = QCCertificateConstants.QC_ROW15;
 		}
 		return row;
 	}
@@ -153,19 +147,19 @@ public class CertificateExtension implements Serializable {
 	public String getRowCheck1Dir1999_93_EC() {
 		String row = null;
 		if (qcCompliance && !policyIdQCP && !policyIdQCP_SSCD) {
-			return row = IQCCertificateConstants.QC_ROW1;
+			return row = QCCertificateConstants.QC_ROW1;
 		}
 		if (!qcCompliance && policyIdQCP && !policyIdQCP_SSCD) {
-			return row = IQCCertificateConstants.QC_ROW2;
+			return row = QCCertificateConstants.QC_ROW2;
 		}
 		if (!qcCompliance && !policyIdQCP && policyIdQCP_SSCD) {
-			return row = IQCCertificateConstants.QC_ROW3;
+			return row = QCCertificateConstants.QC_ROW3;
 		}
 		if (qcCompliance || policyIdQCP || policyIdQCP_SSCD) {
-			return row = IQCCertificateConstants.QC_ROW4;
+			return row = QCCertificateConstants.QC_ROW4;
 		}
 		if (!qcCompliance && !policyIdQCP && !policyIdQCP_SSCD) {
-			return row = IQCCertificateConstants.QC_ROW5;
+			return row = QCCertificateConstants.QC_ROW5;
 		}
 
 		return row;
@@ -312,10 +306,10 @@ public class CertificateExtension implements Serializable {
 	public String getRowQSCDDirectiveRegime() {
 		String row = null;
 		if (qcSSCD) {
-			row = IQCCertificateConstants.QC_ROW1;
+			row = QCCertificateConstants.QC_ROW1;
 		}
 		if (!qcSSCD && !policyIdQCP_SSCD) {
-			row = IQCCertificateConstants.QC_ROW2;
+			row = QCCertificateConstants.QC_ROW2;
 		}
 		return row;
 	}
@@ -328,9 +322,9 @@ public class CertificateExtension implements Serializable {
 	public String getRowQSCDRegulationRegime() {
 		String row = null;
 		if (qcSSCD) {
-			row = IQCCertificateConstants.QC_ROW1;
+			row = QCCertificateConstants.QC_ROW1;
 		} else {
-			row = IQCCertificateConstants.QC_ROW2;
+			row = QCCertificateConstants.QC_ROW2;
 		}
 		return row;
 	}

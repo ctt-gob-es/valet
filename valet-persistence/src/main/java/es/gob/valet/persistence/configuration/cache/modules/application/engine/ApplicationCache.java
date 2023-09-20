@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 04/02/2018.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.application.engine;
 
 import es.gob.valet.commons.utils.NumberConstants;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCache;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
@@ -38,7 +38,7 @@ import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 /**
  * <p>Class to handle the Application configuration cache .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 04/02/2018.
+ * @version 1.2, 19/09/2023.
  */
 public final class ApplicationCache extends ConfigurationCache {
 
@@ -101,7 +101,7 @@ public final class ApplicationCache extends ConfigurationCache {
 	public ApplicationCacheObject addApplication(ApplicationValet av, boolean inLoadingCache) throws ApplicationCacheException {
 		// si el parámetro de entrada es nulo, lanzamos excepción
 		if (av == null) {
-			throw new ApplicationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG004));
+			throw new ApplicationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG004));
 		} else {
 			ApplicationCacheObject aco = new ApplicationCacheObject(av);
 			aco = addApplication(aco, inLoadingCache);
@@ -121,7 +121,7 @@ public final class ApplicationCache extends ConfigurationCache {
 		ApplicationCacheObject result = null;
 		// si el parámetro de entrada es nulo, lanzamos excepción
 		if (aco == null) {
-			throw new ApplicationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG004));
+			throw new ApplicationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG004));
 		}
 		// se construye la ruta en la caché mediante el identificador de la
 		// aplicación
@@ -141,7 +141,7 @@ public final class ApplicationCache extends ConfigurationCache {
 			addString(pathRelationIdPath, aco.getIdentificator(), inLoadingCache);
 			result = (ApplicationCacheObject) addConfigurationCacheObject(path, aco, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new ApplicationCacheException(IValetException.COD_191, e.getErrorDescription(), e.getException());
+			throw new ApplicationCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e.getException());
 		}
 		return result;
 
@@ -153,7 +153,7 @@ public final class ApplicationCache extends ConfigurationCache {
 	 */
 	@Override
 	protected String getTypeElement() {
-		return Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG002);
+		return Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG002);
 	}
 
 	/**
@@ -185,7 +185,7 @@ public final class ApplicationCache extends ConfigurationCache {
 	@Override
 	protected String getMsgNotConditionForUpdateAccomplished(ConfigurationCacheObject cachedCco, ConfigurationCacheObject cco) {
 		ApplicationCacheObject aco = (ApplicationCacheObject) cco;
-		return Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG003, new Object[ ] { aco.getApplicationId() });
+		return Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG003, new Object[ ] { aco.getApplicationId() });
 
 	}
 
@@ -210,7 +210,7 @@ public final class ApplicationCache extends ConfigurationCache {
 		try {
 			applicationPath = getStringFromPath(pathRelationIdPath, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new ApplicationCacheException(IValetException.COD_191, e.getErrorDescription(), e);
+			throw new ApplicationCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e);
 		}
 
 		// se recupera la aplicación a partir del path si este no es nulo
@@ -238,7 +238,7 @@ public final class ApplicationCache extends ConfigurationCache {
 		try {
 			return (ApplicationCacheObject) getConfigurationCacheObject(path, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new ApplicationCacheException(IValetException.COD_191, e.getErrorDescription(), e);
+			throw new ApplicationCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e);
 		}
 
 	}
@@ -262,7 +262,7 @@ public final class ApplicationCache extends ConfigurationCache {
 		try {
 			appPath = getStringFromPath(pathRelationIdPath, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new ApplicationCacheException(IValetException.COD_191, e.getErrorDescription(), e);
+			throw new ApplicationCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e);
 		}
 
 		// si no existe, tampoco existe la aplicación
@@ -278,7 +278,7 @@ public final class ApplicationCache extends ConfigurationCache {
 				clearObjectPathFromConfigurationCache(pathRelationIdPath, inLoadingCache);
 				clearObjectPathFromConfigurationCache(path, inLoadingCache);
 			} catch (ConfigurationCacheException e) {
-				throw new ApplicationCacheException(IValetException.COD_191, e.getErrorDescription(), e);
+				throw new ApplicationCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e);
 			}
 
 		}
@@ -299,7 +299,7 @@ public final class ApplicationCache extends ConfigurationCache {
 		try {
 			clearNodePathFromConfigurationCache(path, inLoadingCache);
 		} catch (ConfigurationCacheException e) {
-			throw new ApplicationCacheException(IValetException.COD_191, e.getErrorDescription(), e);
+			throw new ApplicationCacheException(ValetExceptionConstants.COD_191, e.getErrorDescription(), e);
 		}
 
 	}

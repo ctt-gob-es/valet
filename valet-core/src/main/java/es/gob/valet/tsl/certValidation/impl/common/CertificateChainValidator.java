@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>30/03/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -30,24 +30,26 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Vector;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
-import es.gob.valet.i18n.messages.IRestGeneralMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
+import es.gob.valet.i18n.messages.RestGeneralMessages;
 import es.gob.valet.rest.elements.TslRevocationStatus;
 import es.gob.valet.rest.elements.json.ByteArrayB64;
 import es.gob.valet.rest.elements.json.DateString;
-import es.gob.valet.rest.services.ITslRestServiceRevocationEvidenceType;
-import es.gob.valet.rest.services.ITslRestServiceRevocationStatus;
+import es.gob.valet.rest.services.TslRestServiceRevocationEvidenceType;
+import es.gob.valet.rest.services.TslRestServiceRevocationStatus;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
+import es.gob.valet.utils.ValidatorResultConstants;
 
 /** 
  * <p>Class .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 public class CertificateChainValidator {
 
@@ -86,13 +88,13 @@ public class CertificateChainValidator {
 		// Tratamos de validar el estado de revocación mediante los
 		// puntos de distribución
 		// establecidos en el propio certificado.
-		LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL216, new Object[ ] { validationDate.toString() }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL216, new Object[ ] { validationDate.toString() }));
 
 		TSLValidatorResult result = new TSLValidatorResult();
 		TslRevocationStatus tslRevocationStatus = new TslRevocationStatus();
 
 		// por defecto indicamos que el estado de revocación es desconocido.
-		result.setResult(ITSLValidatorResult.RESULT_DETECTED_STATE_UNKNOWN);
+		result.setResult(ValidatorResultConstants.RESULT_DETECTED_STATE_UNKNOWN);
 		result.setIssuerCert(issuerCert);
 
 		try {
@@ -109,21 +111,21 @@ public class CertificateChainValidator {
 			// En función del resultado (sabemos que ha sido
 			// detectado)...
 			switch (tslRevocationStatus.getRevocationStatus()) {
-				case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_UNKNOWN:
-					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG021);
+				case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_UNKNOWN:
+					msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG021);
 					LOGGER.info(msg);
 					tslRevocationStatus.setRevocationDesc(msg);
 					break;
 
-				case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_VALID:
-					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG022);
+				case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_VALID:
+					msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG022);
 					LOGGER.info(msg);
 					tslRevocationStatus.setRevocationDesc(msg);
 					addRevocationInfoInResult(tslRevocationStatus, result);
 					break;
 
-				case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED:
-					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG023);
+				case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED:
+					msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG023);
 					LOGGER.info(msg);
 					tslRevocationStatus.setRevocationDesc(msg);
 					if (!tslRevocationStatus.getIsFromServStat()) {
@@ -133,20 +135,20 @@ public class CertificateChainValidator {
 					}
 					break;
 
-				case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_CERTCHAIN_NOTVALID:
-					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG024);
+				case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_CERTCHAIN_NOTVALID:
+					msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG024);
 					LOGGER.info(msg);
 					tslRevocationStatus.setRevocationDesc(msg);
 					break;
 
-				case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED_SERVICESTATUS:
-					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG025);
+				case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED_SERVICESTATUS:
+					msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG025);
 					LOGGER.info(msg);
 					tslRevocationStatus.setRevocationDesc(msg);
 					break;
 
-				case ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_CERTCHAIN_NOTVALID_SERVICESTATUS:
-					msg = Language.getResRestGeneral(IRestGeneralMessages.REST_LOG026);
+				case TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_CERTCHAIN_NOTVALID_SERVICESTATUS:
+					msg = Language.getResRestGeneral(RestGeneralMessages.REST_LOG026);
 					LOGGER.info(msg);
 					tslRevocationStatus.setRevocationDesc(msg);
 					break;
@@ -214,11 +216,11 @@ public class CertificateChainValidator {
 		// Si es OCSP...
 		if (tslValidatorResult.getRevocationValueBasicOCSPResponse() != null) {
 
-			tslRevocationStatus.setEvidenceType(ITslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_OCSP);
+			tslRevocationStatus.setEvidenceType(TslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_OCSP);
 			tslRevocationStatus.setEvidence(new ByteArrayB64(tslValidatorResult.getRevocationValueBasicOCSPResponse().getEncoded()));
 
 			// Si el estado es revocado, devolvemos la razón y fecha.
-			if (tslRevocationStatus.getRevocationStatus().intValue() == ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
+			if (tslRevocationStatus.getRevocationStatus().intValue() == TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
 				tslRevocationStatus.setRevocationReason(tslValidatorResult.getRevocationReason());
 				tslRevocationStatus.setRevocationDate(new DateString(tslValidatorResult.getRevocationDate()));
 			}
@@ -226,11 +228,11 @@ public class CertificateChainValidator {
 		// Si es CRL...
 		else if (tslValidatorResult.getRevocationValueCRL() != null) {
 
-			tslRevocationStatus.setEvidenceType(ITslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_CRL);
+			tslRevocationStatus.setEvidenceType(TslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_CRL);
 			tslRevocationStatus.setEvidence(new ByteArrayB64(tslValidatorResult.getRevocationValueCRL().getEncoded()));
 
 			// Si el estado es revocado, devolvemos la razón y fecha.
-			if (tslRevocationStatus.getRevocationStatus().intValue() == ITslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
+			if (tslRevocationStatus.getRevocationStatus().intValue() == TslRestServiceRevocationStatus.RESULT_DETECTED_REVSTATUS_REVOKED) {
 				tslRevocationStatus.setRevocationReason(tslValidatorResult.getRevocationReason());
 				tslRevocationStatus.setRevocationDate(new DateString(tslValidatorResult.getRevocationDate()));
 			}

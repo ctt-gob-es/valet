@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/04/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.certificates;
 
@@ -35,11 +35,11 @@ import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
 import es.gob.valet.crypto.keystore.StandardKeystoreFacade;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
-import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
 
 /**
  * <p>
@@ -52,7 +52,7 @@ import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
  * TSL.
  * </p>
  * 
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 public final class CertificateCacheManager {
 
@@ -105,7 +105,7 @@ public final class CertificateCacheManager {
 		KeystoreCacheObject kco = null;
 
 		try {
-			kco = ConfigurationCacheFacade.keystoreGetKeystoreCacheObject(IKeystoreIdConstants.ID_CA_TRUSTSTORE);
+			kco = ConfigurationCacheFacade.keystoreGetKeystoreCacheObject(KeystoreIdConstants.ID_CA_TRUSTSTORE);
 
 			IKeystoreFacade keystoreFacade = new StandardKeystoreFacade(kco);
 			listCertificateCA.clear();
@@ -118,9 +118,9 @@ public final class CertificateCacheManager {
 			}
 
 		} catch (CryptographyException e) {
-			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CC_000, new Object[] {e.getCause()}));	
+			LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.CC_000, new Object[] {e.getCause()}));	
 		} catch (KeystoreCacheException e) {
-			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CC_000, new Object[] {e.getCause()}));	
+			LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.CC_000, new Object[] {e.getCause()}));	
 		}
 	}
 

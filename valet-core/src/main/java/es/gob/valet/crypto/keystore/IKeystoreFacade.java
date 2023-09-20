@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 27/04/2022.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.crypto.keystore;
 
@@ -35,12 +35,12 @@ import java.util.List;
 import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
-import es.gob.valet.persistence.configuration.model.utils.IStatusCertificateIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.StatusCertificateIdConstants;
 
 /**
  * <p>Interface that defines the methods to manage operations with keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 27/04/2022.
+ * @version 1.3, 19/09/2023.
  */
 public interface IKeystoreFacade {
 
@@ -82,14 +82,14 @@ public interface IKeystoreFacade {
 	 * @param statusCert Value that represents the status of the certificate to store. 
 	 * It could be one of the following:
 	 * <ul>
-	 *   <li>{@link IStatusCertificateIdConstants#ID_SC_CORRECT}</li>
-	 *   <li>{@link IStatusCertificateIdConstants#ID_SC_EXPIRED}</li>
-	 *   <li>{@link IStatusCertificateIdConstants#ID_SC_REVOKED}</li>
-	 *   <li>{@link IStatusCertificateIdConstants#ID_SC_OTHER}</li>
-	 *   <li>{@link IStatusCertificateIdConstants#ID_SC_NOTEXIST}</li>
-	 *   <li>{@link IStatusCertificateIdConstants#ID_SC_NOTVALIDYET}</li>
+	 *   <li>{@link StatusCertificateIdConstants#ID_SC_CORRECT}</li>
+	 *   <li>{@link StatusCertificateIdConstants#ID_SC_EXPIRED}</li>
+	 *   <li>{@link StatusCertificateIdConstants#ID_SC_REVOKED}</li>
+	 *   <li>{@link StatusCertificateIdConstants#ID_SC_OTHER}</li>
+	 *   <li>{@link StatusCertificateIdConstants#ID_SC_NOTEXIST}</li>
+	 *   <li>{@link StatusCertificateIdConstants#ID_SC_NOTVALIDYET}</li>
 	 * </ul>
-	 * If this is not specified, by default is taken {@link IStatusCertificateIdConstants#ID_SC_CORRECT}.
+	 * If this is not specified, by default is taken {@link StatusCertificateIdConstants#ID_SC_CORRECT}.
 	 * @return the updated keystore cache object representation.
 	 * @throws CryptographyException If the method fails.
 	 */

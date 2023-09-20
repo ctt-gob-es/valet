@@ -21,15 +21,15 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 22/10/2018.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.cache;
 
 import es.gob.valet.cache.exceptions.CacheValetException;
 import es.gob.valet.cache.ifaces.ICacheValet;
-import es.gob.valet.cache.ifaces.ICacheValetConstants;
 import es.gob.valet.cache.impl.ACacheValet;
 import es.gob.valet.cache.impl.javaConcurrentMap.ConcurrentMapCacheValet;
+import es.gob.valet.cache.utils.CacheValetConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsStringChar;
 
@@ -37,7 +37,7 @@ import es.gob.valet.commons.utils.UtilsStringChar;
  * <p>Factory class that gets the unique instance of the valET Cache depending of
  * the implementation configured.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 22/10/2018.
+ * @version 1.2, 19/09/2023.
  */
 public final class FactoryCacheValet {
 
@@ -74,12 +74,12 @@ public final class FactoryCacheValet {
 			// Si la cadena es nula o vacía le asignamos Java Concurrent Map por
 			// defecto.
 			if (UtilsStringChar.isNullOrEmpty(valetCacheImpl)) {
-				valetCacheImpl = ICacheValetConstants.VALET_CACHE_IMPL_JAVA_CONCURRENT_MAP;
+				valetCacheImpl = CacheValetConstants.VALET_CACHE_IMPL_JAVA_CONCURRENT_MAP;
 			}
 
 			// En función de la propiedad resolvemos...
 			switch (valetCacheImpl) {
-				case ICacheValetConstants.VALET_CACHE_IMPL_JAVA_CONCURRENT_MAP:
+				case CacheValetConstants.VALET_CACHE_IMPL_JAVA_CONCURRENT_MAP:
 					cacheValetInstance = getCacheValetJavaConcurrentMapImpl();
 					break;
 

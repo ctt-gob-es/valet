@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/02/2023.</p>
  * @author Gobierno de España.
- * @version 1.0, 08/02/2023.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -29,7 +29,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.tsl.certValidation.impl.common.TSLCertificateExtensionAnalyzer;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 import es.gob.valet.tsl.exceptions.TSLValidationException;
@@ -46,7 +46,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.QualificationElement;
  * TSL.
  * </p>
  * 
- * @version 1.0, 08/02/2023.
+ * @version 1.1, 19/09/2023.
  */
 public class ResultQualifiedCertificate implements Serializable {
 
@@ -132,7 +132,7 @@ public class ResultQualifiedCertificate implements Serializable {
 			infoQcResult = new InfoQCResult();
 			endProcedure = Boolean.FALSE;
 		} catch (TSLCertificateValidationException e) {
-			throw new TSLValidationException(IValetException.COD_187, e.getErrorDescription(), e);
+			throw new TSLValidationException(ValetExceptionConstants.COD_187, e.getErrorDescription(), e);
 		}
 	}
 

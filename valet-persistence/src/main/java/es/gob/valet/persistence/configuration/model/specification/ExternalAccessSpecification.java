@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 20/09/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.model.specification;
 
@@ -40,7 +40,7 @@ import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 /**
  * <p>Class that manages the SQL request over the externalAccess entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 08/08/2023.
+ * @version 1.1, 19/09/2023.
  */
 public class ExternalAccessSpecification implements Specification<ExternalAccess> {
 
@@ -54,6 +54,21 @@ public class ExternalAccessSpecification implements Specification<ExternalAccess
 	 */
 	private ExternalAccess externalAccessEntity;
 
+	/**
+	 * Attribute that represents the url.
+	 */
+	private static final String URL_PREDICATE =  "url";
+	
+	/**
+	 * Attribute that represents the state connection.
+	 */
+	private static final String STATECONN_PREDICATE =  "stateConn";
+
+	/**
+	 * Attribute that represents the last connection.
+	 */
+	private static final String LASTCONN_PREDICATE =  "lastConn";
+	
 	/**
 	 * Constructor method for the class KeystoreSpecification.java.
 	 * @param keystoreEntityParam Keystore entity to manage.
@@ -72,13 +87,13 @@ public class ExternalAccessSpecification implements Specification<ExternalAccess
 		List<Predicate> predicates = new ArrayList<Predicate>();
 		//ponemos el filtro de URL
         if (externalAccessEntity.getUrl() != null && !externalAccessEntity.getUrl().isEmpty()) {
-            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("url")),
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(URL_PREDICATE)),
                     "%" + externalAccessEntity.getUrl().toLowerCase() + "%"));
         }
         
         //ponemos el filtro de estado
         if (externalAccessEntity.getStateConn() != null) {
-            predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("stateConn")),
+            predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get(STATECONN_PREDICATE)),
             		externalAccessEntity.getStateConn()));
         }
         
@@ -87,7 +102,7 @@ public class ExternalAccessSpecification implements Specification<ExternalAccess
       //  predicates.add(date);
 
 
-        query.orderBy(criteriaBuilder.desc(root.get("url")));
+        query.orderBy(criteriaBuilder.desc(root.get(URL_PREDICATE)));
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
@@ -100,29 +115,29 @@ public class ExternalAccessSpecification implements Specification<ExternalAccess
 
 	            //ponemos el filtro de URL
 	            if (request.getUrl() != null && !request.getUrl().isEmpty()) {
-	                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("url")),
+	                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(URL_PREDICATE)),
 	                        "%" + request.getUrl().toLowerCase() + "%"));
 	            }
 	            
 	            //ponemos el filtro de estado
 	            if (request.getStateConn() != null) {
-	                predicates.add(criteriaBuilder.equal(root.get("stateConn"),
+	                predicates.add(criteriaBuilder.equal(root.get(STATECONN_PREDICATE ),
 	                         request.getStateConn()));
 	            }
 	            
 	            //ponemos la fecha
 	           if(fromDate != null && toDate != null ) {
-	        	   Predicate date =  criteriaBuilder.between(root.get("lastConn"), fromDate, toDate);
+	        	   Predicate date =  criteriaBuilder.between(root.get(LASTCONN_PREDICATE), fromDate, toDate);
 	               predicates.add(date);
 	           }else if(fromDate != null && toDate == null ) {
-	        	   Predicate date =  criteriaBuilder.greaterThan(root.get("lastConn"), fromDate);
+	        	   Predicate date =  criteriaBuilder.greaterThan(root.get(LASTCONN_PREDICATE), fromDate);
 	               predicates.add(date); 
 	           }else if(fromDate == null && toDate != null ) {
-	        	   Predicate date =  criteriaBuilder.lessThan(root.get("lastConn"), toDate);
+	        	   Predicate date =  criteriaBuilder.lessThan(root.get(LASTCONN_PREDICATE), toDate);
 	               predicates.add(date);
 	           }
 	           
-	            query.orderBy(criteriaBuilder.desc(root.get("url")));
+	            query.orderBy(criteriaBuilder.desc(root.get(URL_PREDICATE)));
 
 	            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 

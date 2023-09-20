@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.audit.utils;
 
@@ -45,7 +45,7 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.audit.access.EventsCollector;
-import es.gob.valet.audit.access.IEventsCollectorConstants;
+import es.gob.valet.audit.access.EventsCollectorConstants;
 import es.gob.valet.commons.utils.CryptographicConstants;
 import es.gob.valet.commons.utils.UtilsASN1;
 import es.gob.valet.commons.utils.UtilsCRL;
@@ -55,13 +55,13 @@ import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.rest.elements.json.DateString;
 
 /**
  * <p>Class that provides methods for registering the most commons audit traces associated to the certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 public final class CommonsCertificatesAuditTraces {
 
@@ -77,11 +77,11 @@ public final class CommonsCertificatesAuditTraces {
 	private static Map<Integer, String[ ]> operationFieldsNamesMap = new ConcurrentHashMap<Integer, String[ ]>();
 
 	static {
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_ISCA, IEventsCollectorConstants.FIELD_NAME_CERT_COUNTRY, IEventsCollectorConstants.FIELD_NAME_CERT_ISSUER, IEventsCollectorConstants.FIELD_NAME_CERT_SUBJECT, IEventsCollectorConstants.FIELD_NAME_CERT_SERIAL_NUMBER, IEventsCollectorConstants.FIELD_NAME_CERT_VALID_FROM, IEventsCollectorConstants.FIELD_NAME_CERT_VALID_TO });
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_ISTSA, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_ISTSA });
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_URL, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HA, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HASH, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_NONCE, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_PRODUCEDAT, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_RESPID });
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_CRL_INFO, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_URL, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HA, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HASH, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_ISSUER, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_CRLNUMBER, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_ISSUEDDATE, IEventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_NEXTUPDATEDATE });
-		operationFieldsNamesMap.put(IEventsCollectorConstants.OPERATION_CERT_MAPPING_FIELDS, new String[ ] { IEventsCollectorConstants.FIELD_NAME_CERT_FIELDS });
+		operationFieldsNamesMap.put(EventsCollectorConstants.OPERATION_CERT_INFO, new String[ ] { EventsCollectorConstants.FIELD_NAME_CERT_ISCA, EventsCollectorConstants.FIELD_NAME_CERT_COUNTRY, EventsCollectorConstants.FIELD_NAME_CERT_ISSUER, EventsCollectorConstants.FIELD_NAME_CERT_SUBJECT, EventsCollectorConstants.FIELD_NAME_CERT_SERIAL_NUMBER, EventsCollectorConstants.FIELD_NAME_CERT_VALID_FROM, EventsCollectorConstants.FIELD_NAME_CERT_VALID_TO });
+		operationFieldsNamesMap.put(EventsCollectorConstants.OPERATION_CERT_ISTSA, new String[ ] { EventsCollectorConstants.FIELD_NAME_CERT_ISTSA });
+		operationFieldsNamesMap.put(EventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO, new String[ ] { EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_URL, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HA, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HASH, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_NONCE, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_PRODUCEDAT, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_OCSP_RESPID });
+		operationFieldsNamesMap.put(EventsCollectorConstants.OPERATION_CERT_CRL_INFO, new String[ ] { EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_URL, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HA, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_HASH, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_ISSUER, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_CRLNUMBER, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_ISSUEDDATE, EventsCollectorConstants.FIELD_NAME_CERT_REVEVID_CRL_NEXTUPDATEDATE });
+		operationFieldsNamesMap.put(EventsCollectorConstants.OPERATION_CERT_MAPPING_FIELDS, new String[ ] { EventsCollectorConstants.FIELD_NAME_CERT_FIELDS });
 	}
 
 	/**
@@ -113,18 +113,18 @@ public final class CommonsCertificatesAuditTraces {
 		try {
 			certIssuer = UtilsCertificate.getCertificateIssuerId(cert);
 		} catch (CommonUtilsException e) {
-			certIssuer = IEventsCollectorConstants.FIELD_VALUE_ERROR;
+			certIssuer = EventsCollectorConstants.FIELD_VALUE_ERROR;
 		}
 		String certSubject = null;
 		try {
 			certSubject = UtilsCertificate.getCertificateId(cert);
 		} catch (CommonUtilsException e) {
-			certIssuer = IEventsCollectorConstants.FIELD_VALUE_ERROR;
+			certIssuer = EventsCollectorConstants.FIELD_VALUE_ERROR;
 		}
 		String certSerialNumber = cert.getSerialNumber().toString();
 		String certValidFrom = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_JSON, cert.getNotBefore());
 		String certValidTo = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_JSON, cert.getNotAfter());
-		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_INFO, certIsCA, certCountry, certIssuer, certSubject, certSerialNumber, certValidFrom, certValidTo);
+		EventsCollector.addTrace(transactionId, EventsCollectorConstants.OPERATION_CERT_INFO, certIsCA, certCountry, certIssuer, certSubject, certSerialNumber, certValidFrom, certValidTo);
 
 	}
 
@@ -135,7 +135,7 @@ public final class CommonsCertificatesAuditTraces {
 	 * or not (<code>false</code>).
 	 */
 	public static void addCertIsTsaCert(String transactionId, boolean isTsaCert) {
-		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_ISTSA, Boolean.toString(isTsaCert));
+		EventsCollector.addTrace(transactionId, EventsCollectorConstants.OPERATION_CERT_ISTSA, Boolean.toString(isTsaCert));
 	}
 
 	/**
@@ -169,10 +169,10 @@ public final class CommonsCertificatesAuditTraces {
 				responderId = getResponderIdCanonicalizedFromBasicOcspResponse(revocationValueBasicOCSPResponse);
 
 			} catch (CommonUtilsException | IOException e) {
-				LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CCAT_000), e);
+				LOGGER.error(Language.getResCoreGeneral(CoreGeneralMessages.CCAT_000), e);
 			}
 		}
-		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO, revocationValueURL, hashAlgorithm, hashRevEvidInBase64, nonceStringB64, producedAtString, responderId);
+		EventsCollector.addTrace(transactionId, EventsCollectorConstants.OPERATION_CERT_BASICOCSPRESP_INFO, revocationValueURL, hashAlgorithm, hashRevEvidInBase64, nonceStringB64, producedAtString, responderId);
 
 	}
 
@@ -297,10 +297,10 @@ public final class CommonsCertificatesAuditTraces {
 				}
 
 			} catch (CommonUtilsException | CRLException | IOException e) {
-				LOGGER.error(Language.getResCoreGeneral(ICoreGeneralMessages.CCAT_000), e);
+				LOGGER.error(Language.getResCoreGeneral(CoreGeneralMessages.CCAT_000), e);
 			}
 		}
-		EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_CRL_INFO, revocationValueURL, hashAlgorithm, hashRevEvidInBase64, crlIssuer, crlNumber, crlIssuedDate, crlIssuedNextUpdate);
+		EventsCollector.addTrace(transactionId, EventsCollectorConstants.OPERATION_CERT_CRL_INFO, revocationValueURL, hashAlgorithm, hashRevEvidInBase64, crlIssuer, crlNumber, crlIssuedDate, crlIssuedNextUpdate);
 
 	}
 
@@ -329,7 +329,7 @@ public final class CommonsCertificatesAuditTraces {
 			sb.delete(sb.length() - 1, sb.length());
 
 			// Se pinta la traza en auditoría.
-			EventsCollector.addTrace(transactionId, IEventsCollectorConstants.OPERATION_CERT_MAPPING_FIELDS, sb.toString());
+			EventsCollector.addTrace(transactionId, EventsCollectorConstants.OPERATION_CERT_MAPPING_FIELDS, sb.toString());
 
 			// Limpiamos el StringBuilder.
 			sb.setLength(0);

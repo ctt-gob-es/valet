@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 03/04/2023.
+ * @version 1.5, 19/09/2023.
  */
 package es.gob.valet.commons.utils;
 
@@ -37,12 +37,12 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 
 /**
  * <p>Utilities class for manage the cryptographic providers.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 03/04/2023.
+ * @version 1.5, 19/09/2023.
  */
 public final class UtilsProviders {
 
@@ -148,19 +148,19 @@ public final class UtilsProviders {
 				try {
 					result = SecureRandom.getInstance(algNameSecRandom);
 					secureRandomCachedMap.put(composedName, result);
-					LOGGER.info(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_PROVIDERS_003, new Object[ ] { algNameSecRandom, result.getProvider().getName() }));
+					LOGGER.info(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_PROVIDERS_003, new Object[ ] { algNameSecRandom, result.getProvider().getName() }));
 				} catch (NoSuchAlgorithmException e) {
-					LOGGER.error(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_PROVIDERS_000, new Object[ ] { algNameSecRandom }));
+					LOGGER.error(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_PROVIDERS_000, new Object[ ] { algNameSecRandom }));
 				}
 			} else {
 				try {
 					result = SecureRandom.getInstance(algNameSecRandom, provName);
 					secureRandomCachedMap.put(composedName, result);
-					LOGGER.info(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_PROVIDERS_003, new Object[ ] { algNameSecRandom, result.getProvider().getName() }));
+					LOGGER.info(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_PROVIDERS_003, new Object[ ] { algNameSecRandom, result.getProvider().getName() }));
 				} catch (NoSuchAlgorithmException e) {
-					LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_PROVIDERS_001, new Object[ ] { algNameSecRandom, provName }));
+					LOGGER.warn(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_PROVIDERS_001, new Object[ ] { algNameSecRandom, provName }));
 				} catch (NoSuchProviderException e) {
-					LOGGER.warn(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_PROVIDERS_002, new Object[ ] { provName, algNameSecRandom }));
+					LOGGER.warn(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_PROVIDERS_002, new Object[ ] { provName, algNameSecRandom }));
 				} finally {
 					result = getSecureRandomForSeedAlgorithmProviderName(algNameSecRandom, null);
 				}
@@ -169,7 +169,7 @@ public final class UtilsProviders {
 		}
 
 		if (result != null) {
-			LOGGER.debug(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_PROVIDERS_004, new Object[ ] { algNameSecRandom, result.getProvider().getName() }));
+			LOGGER.debug(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_PROVIDERS_004, new Object[ ] { algNameSecRandom, result.getProvider().getName() }));
 		}
 
 		return result;

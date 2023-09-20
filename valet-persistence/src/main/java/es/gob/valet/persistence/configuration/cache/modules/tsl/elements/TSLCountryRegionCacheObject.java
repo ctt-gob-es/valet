@@ -20,17 +20,18 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 15/09/2023.
+ * @version 1.5, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
@@ -39,9 +40,9 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 /**
  * <p>Class that represents a TSL Country/Region Info in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 15/09/2023.
+ * @version 1.5, 19/09/2023.
  */
-public class TSLCountryRegionCacheObject extends ConfigurationCacheObject {
+public class TSLCountryRegionCacheObject extends ConfigurationCacheObject implements Serializable {
 
 	/**
 	 * Constant attribute that represents the serial version UID.
@@ -71,7 +72,7 @@ public class TSLCountryRegionCacheObject extends ConfigurationCacheObject {
 	/**
 	 * Attribute that represents the mapping associated to this country/region.
 	 */
-	private Set<TSLCountryRegionMappingCacheObject> mappingSet = null;
+	private transient Set<TSLCountryRegionMappingCacheObject> mappingSet = null;
 
 	/**
 	 * Constructor method for the class TSLCountryRegionCacheObject.java.
@@ -93,7 +94,7 @@ public class TSLCountryRegionCacheObject extends ConfigurationCacheObject {
 		// Si el pojo recibido es nulo, se lanza una excepción ya que no se
 		// puede inicializar el objeto.
 		if (tcr == null) {
-			throw new TSLCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_TSL_CACHE_LOG092));
+			throw new TSLCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_TSL_CACHE_LOG092));
 		} else {
 
 			setCountryRegionId(tcr.getIdTslCountryRegion().longValue());

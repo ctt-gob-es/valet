@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -39,7 +39,7 @@ import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
  * <p>Class that defines a TSP Service History Information with all its information
  * not dependent of the specification or TSL version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 31/01/2019.
+ * @version 1.2, 19/09/2023.
  */
 public class ServiceHistoryInstance implements Serializable {
 
@@ -58,7 +58,7 @@ public class ServiceHistoryInstance implements Serializable {
 	 * Attribute that represents the name under which the TSP provides the service in all
 	 * presented languages.
 	 */
-	private Map<String, String> serviceNames = null;
+	private transient Map<String, String> serviceNames = null;
 
 	/**
 	 * Attribute that represents the kind/type/identity of the service digital.
@@ -79,7 +79,7 @@ public class ServiceHistoryInstance implements Serializable {
 	/**
 	 * Attribute that represents a list with all the extensions associated to this Service Information.
 	 */
-	private List<IAnyTypeExtension> serviceInformationExtensions = null;
+	private transient List<IAnyTypeExtension> serviceInformationExtensions = null;
 
 	/**
 	 * Attribute that represents a flag to indicate if this service instance is valid and usable.

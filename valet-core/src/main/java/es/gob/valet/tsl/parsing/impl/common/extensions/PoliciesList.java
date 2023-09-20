@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -36,19 +36,19 @@ import org.bouncycastle.asn1.x509.PolicyInformation;
 
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLQualificationEvalProcessException;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 
 /**
  * <p>Class that represents Policy Lists.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/12/2018.
+ * @version 1.2, 19/09/2023.
  */
 public class PoliciesList implements Serializable {
 
@@ -80,7 +80,7 @@ public class PoliciesList implements Serializable {
 	/**
 	 * Attribute that represents the policy identifiers list.
 	 */
-	private List<String> policyIdentifiersList = null;
+	private transient List<String> policyIdentifiersList = null;
 
 	/**
 	 * Constructor method for the class PoliciesList.java.
@@ -197,7 +197,7 @@ public class PoliciesList implements Serializable {
 
 		// Debe tener al menos un elemento.
 		if (policyIdentifiersList.isEmpty()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL026, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_POLICYSET }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL026, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST_POLICYSET }));
 		}
 
 	}
@@ -244,7 +244,7 @@ public class PoliciesList implements Serializable {
 
 				}
 			} catch (Exception e) {
-				throw new TSLQualificationEvalProcessException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL109), e);
+				throw new TSLQualificationEvalProcessException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL109), e);
 			}
 
 		}

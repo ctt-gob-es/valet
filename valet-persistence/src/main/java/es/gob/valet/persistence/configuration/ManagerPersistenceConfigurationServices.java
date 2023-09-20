@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 17/12/2018.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration;
 
@@ -56,7 +56,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
  * <p>Manager singleton instance for the use of the persistence services
  * of the configuration scheme.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 17/12/2018.
+ * @version 1.4, 19/09/2023.
  */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -74,13 +74,21 @@ public class ManagerPersistenceConfigurationServices {
 	public static ManagerPersistenceConfigurationServices getInstance() {
 		return instance;
 	}
+	
+	/**
+	 * Sets the value of the attribute {@link #instance}.
+	 * @param instance The value for the attribute {@link #instance}.
+	 */
+	public static void setInstance(ManagerPersistenceConfigurationServices instance) {
+		ManagerPersistenceConfigurationServices.instance = instance;
+	}
 
 	/**
 	 * Method that initializes the singleton unique instance.
 	 */
 	@PostConstruct
 	public void init() {
-		instance = this;
+		setInstance(this);
 	}
 
 	/**
@@ -88,7 +96,7 @@ public class ManagerPersistenceConfigurationServices {
 	 */
 	@PreDestroy
 	public final void destroy() {
-		instance = null;
+		setInstance(null);
 	}
 
 	/**
@@ -341,6 +349,5 @@ public class ManagerPersistenceConfigurationServices {
 	 */
 	public final IUserValetService getUserValetService() {
 		return userValetService;
-	}
-
+	}	
 }

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.tsl.access;
 
@@ -37,12 +37,12 @@ import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 
 /**
  * <p>Class that provides access to the differents properties associated to the TSL operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 03/04/2023.
+ * @version 1.4, 19/09/2023.
  */
 public final class TSLProperties {
 
@@ -100,7 +100,7 @@ public final class TSLProperties {
 			String ocspTimeoutRead = StaticValetConfig.getProperty(StaticValetConfig.TSL_VALIDATION_OCSP_TIMEOUT_READ);
 			result = Integer.valueOf(ocspTimeoutRead);
 		} catch (NumberFormatException e) {
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_OCSP_TIMEOUT_READ, result }), e);
+			LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_OCSP_TIMEOUT_READ, result }), e);
 		}
 
 		return result;
@@ -119,7 +119,7 @@ public final class TSLProperties {
 			String ocspTimeoutConnection = StaticValetConfig.getProperty(StaticValetConfig.TSL_VALIDATION_OCSP_TIMEOUT_CONNECTION);
 			result = Integer.valueOf(ocspTimeoutConnection);
 		} catch (NumberFormatException e) {
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_OCSP_TIMEOUT_CONNECTION, result }), e);
+			LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_OCSP_TIMEOUT_CONNECTION, result }), e);
 		}
 
 		return result;
@@ -138,7 +138,7 @@ public final class TSLProperties {
 			String ocspTimeoutConnection = StaticValetConfig.getProperty(StaticValetConfig.TSL_VALIDATION_OCSP_INTERVAL_ALLOWED);
 			result = Integer.valueOf(ocspTimeoutConnection);
 		} catch (NumberFormatException e) {
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_OCSP_INTERVAL_ALLOWED, result }), e);
+			LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_OCSP_INTERVAL_ALLOWED, result }), e);
 		}
 
 		return result;
@@ -157,7 +157,7 @@ public final class TSLProperties {
 			String crlTimeoutRead = StaticValetConfig.getProperty(StaticValetConfig.TSL_VALIDATION_CRL_TIMEOUT_READ);
 			result = Integer.valueOf(crlTimeoutRead);
 		} catch (NumberFormatException e) {
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_CRL_TIMEOUT_READ, result }), e);
+			LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_CRL_TIMEOUT_READ, result }), e);
 		}
 
 		return result;
@@ -176,7 +176,7 @@ public final class TSLProperties {
 			String crlTimeoutConnection = StaticValetConfig.getProperty(StaticValetConfig.TSL_VALIDATION_CRL_TIMEOUT_CONNECTION);
 			result = Integer.valueOf(crlTimeoutConnection);
 		} catch (NumberFormatException e) {
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_CRL_TIMEOUT_CONNECTION, result }), e);
+			LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_CRL_TIMEOUT_CONNECTION, result }), e);
 		}
 
 		return result;
@@ -202,7 +202,7 @@ public final class TSLProperties {
 			cal.set(Calendar.MILLISECOND, 0);
 			result = cal.getTime();
 		} catch (ParseException e) {
-			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_INITIAL_DATE, result }), e);
+			LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_VALIDATION_INITIAL_DATE, result }), e);
 		}
 
 		return result;
@@ -304,7 +304,7 @@ public final class TSLProperties {
 					try {
 						result.add(Integer.valueOf(value.trim()));
 					} catch (NumberFormatException e) {
-						LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL226, new Object[ ] { value.trim(), propertyKey }));
+						LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL226, new Object[ ] { value.trim(), propertyKey }));
 					}
 
 				}
@@ -332,7 +332,7 @@ public final class TSLProperties {
 			try {
 				result = Integer.parseInt(timeGap);
 			} catch (NumberFormatException e) {
-				LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_SERVICE_DETECTCERTINTSLINFOANDVALIDATION_VALIDATIONDATE_TIMEGAPALLOWED, NumberConstants.NUM30000 }), e);
+				LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL224, new Object[ ] { StaticValetConfig.TSL_SERVICE_DETECTCERTINTSLINFOANDVALIDATION_VALIDATIONDATE_TIMEGAPALLOWED, NumberConstants.NUM30000 }), e);
 			}
 
 		}

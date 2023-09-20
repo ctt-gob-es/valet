@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -49,24 +49,24 @@ import org.w3c.dom.Node;
 
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
 import es.gob.valet.tsl.exceptions.TSLEncodingException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeOtherCriteria;
 import es.gob.valet.tsl.parsing.ifaces.ITSLBuilder;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.extensions.UnknownExtension;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 
 /**
  * <p>Abstract class that represents a TSL builder with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 public abstract class ATSLBuilder implements ITSLBuilder {
 
@@ -110,14 +110,14 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 
 		// Si la entrada es nula, lanzamos excepción.
 		if (is == null) {
-			throw new TSLArgumentException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL016));
+			throw new TSLArgumentException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL016));
 		}
 
 		byte[ ] result = null;
 		try {
 			result = IOUtils.toByteArray(is);
 		} catch (IOException e) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL045), e);
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL045), e);
 		} finally {
 			UtilsResources.safeCloseInputStream(is);
 		}
@@ -161,14 +161,14 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 		// Obtenemos primero el atributo tslTag.
 		String tslTagString = getTSLTagString();
 		if (tslTagString == null) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL004, new Object[ ] { ITSLElementsAndAttributes.ATTRIBUTE_TSL_TAG }));
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL004, new Object[ ] { TSLElementsAndAttributes.ATTRIBUTE_TSL_TAG }));
 		} else {
 			try {
 				tsl.setTSLTag(new URI(tslTagString));
 			} catch (URISyntaxException e) {
-				throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL002, new Object[ ] { ITSLElementsAndAttributes.ATTRIBUTE_TSL_TAG }), e);
+				throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL002, new Object[ ] { TSLElementsAndAttributes.ATTRIBUTE_TSL_TAG }), e);
 			} catch (TSLArgumentException e) {
-				throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL002, new Object[ ] { ITSLElementsAndAttributes.ATTRIBUTE_TSL_TAG }), e);
+				throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL002, new Object[ ] { TSLElementsAndAttributes.ATTRIBUTE_TSL_TAG }), e);
 			}
 		}
 
@@ -277,7 +277,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 			try {
 				tsl.getSchemeInformation().setTslType(new URI(tslType));
 			} catch (URISyntaxException e) {
-				throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL003, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSL_TYPE }), e);
+				throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL003, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSL_TYPE }), e);
 			}
 		}
 	}
@@ -338,7 +338,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 					try {
 						uriList.add(new URI(uriString));
 					} catch (URISyntaxException e) {
-						throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL005, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SCHEME_OPERATOR_ADDRESS }), e);
+						throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL005, new Object[ ] { TSLElementsAndAttributes.ELEMENT_SCHEME_OPERATOR_ADDRESS }), e);
 					}
 				}
 				electronicAddressesURI.put(key, uriList);
@@ -398,7 +398,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 				try {
 					tsl.getSchemeInformation().addNewSchemeInformationURI(key, new URI(siu.get(key)));
 				} catch (URISyntaxException e) {
-					throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL003, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SCHEME_INFORMATION_URI }), e);
+					throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL003, new Object[ ] { TSLElementsAndAttributes.ELEMENT_SCHEME_INFORMATION_URI }), e);
 				}
 			}
 
@@ -424,7 +424,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 			try {
 				tsl.getSchemeInformation().setStatusDeterminationApproach(new URI(sda));
 			} catch (URISyntaxException e) {
-				throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL003, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_STATUS_DETERMINATION_APPROACH }), e);
+				throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL003, new Object[ ] { TSLElementsAndAttributes.ELEMENT_STATUS_DETERMINATION_APPROACH }), e);
 			}
 		}
 
@@ -454,7 +454,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 						tsl.getSchemeInformation().addNewSchemeTypeCommunityRule(language, new URI(uriString));
 					}
 				} catch (URISyntaxException e) {
-					throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL003, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_SCHEME_TYPE_COMMUNITY_RULES }), e);
+					throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL003, new Object[ ] { TSLElementsAndAttributes.ELEMENT_SCHEME_TYPE_COMMUNITY_RULES }), e);
 				}
 			}
 		}
@@ -477,7 +477,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 		String schemeTerritory = getSchemeTerritory();
 		tsl.getSchemeInformation().setSchemeTerritory(schemeTerritory);
 		if(!UtilsStringChar.isNullOrEmpty(schemeTerritory)){
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL344, new Object[ ] {schemeTerritory}));
+			LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL344, new Object[ ] {schemeTerritory}));
 		}
 	}
 
@@ -507,7 +507,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 				try {
 					policyUri = new URI(policies.get(language));
 				} catch (URISyntaxException e) {
-					throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL008, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_POLICY_OR_LEGAL_NOTICE }), e);
+					throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL008, new Object[ ] { TSLElementsAndAttributes.ELEMENT_POLICY_OR_LEGAL_NOTICE }), e);
 				}
 				tsl.getSchemeInformation().addNewPolicy(language, policyUri);
 			}
@@ -612,7 +612,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 				try {
 					tsl.getSchemeInformation().addNewDistributionPoint(new URI(tdp[index]));
 				} catch (URISyntaxException e) {
-					throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL007, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_DISTRIBUTION_POINTS }));
+					throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL007, new Object[ ] { TSLElementsAndAttributes.ELEMENT_DISTRIBUTION_POINTS }));
 				}
 			}
 		}
@@ -656,9 +656,9 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 	 * @param extensionType represents the extension type, refers to its location inside the XML.
 	 * It could be one of the following:
 	 * <ul>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SCHEME}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_TSP_INFORMATION}</li>
-	 * 	<li>Scheme Extension: {@link IAnyTypeExtension#TYPE_SERVICE_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SCHEME}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_TSP_INFORMATION}</li>
+	 * 	<li>Scheme Extension: {@link TSLBuilderConstants#TYPE_SERVICE_INFORMATION}</li>
 	 * </ul>
 	 * @return Extension object representation.
 	 * @throws TSLParsingException In case of some error building a extension.
@@ -688,7 +688,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 			try {
 				tsl.addNewTrustServiceProvider(buildTSP(index));
 			} catch (TSLArgumentException e) {
-				throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL002, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TRUST_SERVICE_PROVIDER }), e);
+				throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL002, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TRUST_SERVICE_PROVIDER }), e);
 			}
 		}
 
@@ -793,9 +793,9 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 						// espacios en blanco que pudiera contener.
 						try {
 							uriList.add(new URI(uriString.replaceAll("\\s+", UtilsStringChar.EMPTY_STRING)));
-							LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL221, new Object[ ] { uriString }));
+							LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL221, new Object[ ] { uriString }));
 						} catch (URISyntaxException e2) {
-							throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL003, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPINFORMATION_ADDRESS }), e1);
+							throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL003, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPINFORMATION_ADDRESS }), e1);
 						}
 					}
 				}
@@ -837,7 +837,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 		try {
 			buildTSPInformationURI(pos, tspInformation);
 		} catch (URISyntaxException e) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL003, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPINFORMATION_URI }), e);
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL003, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPINFORMATION_URI }), e);
 		}
 
 	}
@@ -937,7 +937,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 		try {
 			servInf.setServiceTypeIdentifier(new URI(getTSPServiceInformationType(posTSP, posService)));
 		} catch (URISyntaxException e) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL003, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_TYPE }), e);
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL003, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_TYPE }), e);
 		}
 		// Establecemos el nombre del servicio.
 		buildTSPServiceInformationName(posTSP, posService, servInf);
@@ -947,7 +947,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 		try {
 			servInf.setServiceStatus(new URI(getTSPServiceInformationStatus(posTSP, posService)));
 		} catch (URISyntaxException e) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL003, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_STATUS }), e);
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL003, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_STATUS }), e);
 		}
 		// Establecemos la fecha de inicio del servicio.
 		servInf.setServiceStatusStartingTime(getTSPServiceInformationStatusStartingDateAndTime(posTSP, posService));
@@ -1081,7 +1081,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 		try {
 			shi.setServiceTypeIdentifier(new URI(getTSPServiceHistoryType(posTSP, posService, posHistory)));
 		} catch (URISyntaxException e) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL003, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_TYPE }), e);
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL003, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_HISTORY_TYPE }), e);
 		}
 		// Establecemos el nombre del servicio.
 		buildTSPServiceHistoryName(posTSP, posService, posHistory, shi);
@@ -1091,7 +1091,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 		try {
 			shi.setServiceStatus(new URI(getTSPServiceHistoryStatus(posTSP, posService, posHistory)));
 		} catch (URISyntaxException e) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL003, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_STATUS }), e);
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL003, new Object[ ] { TSLElementsAndAttributes.ELEMENT_TSPSERVICE_INFORMATION_STATUS }), e);
 		}
 		// Establecemos la fecha de inicio del servicio.
 		shi.setServiceStatusStartingTime(getTSPServiceHistoryStatusStartingDateAndTime(posTSP, posService, posHistory));
@@ -1228,7 +1228,7 @@ public abstract class ATSLBuilder implements ITSLBuilder {
 			}
 
 		} catch (Exception e) {
-			throw new TSLParsingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL006, new Object[ ] { tsl.getSpecification(), tsl.getSpecificationVersion() }), e);
+			throw new TSLParsingException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL006, new Object[ ] { tsl.getSpecification(), tsl.getSpecificationVersion() }), e);
 		} finally {
 			UtilsResources.safeCloseInputStream(is);
 		}

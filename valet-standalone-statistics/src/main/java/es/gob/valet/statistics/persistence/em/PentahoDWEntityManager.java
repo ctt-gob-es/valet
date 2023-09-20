@@ -20,10 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
 package es.gob.valet.statistics.persistence.em;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,14 @@ import es.gob.valet.statistics.i18n.StandaloneStatisticsLogConstants;
 /** 
  * <p>Class that implements the method that are used to interact with the persistence context of the pentaho database schema.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/04/2023.
+ * @version 1.3, 19/09/2023.
  */
-public final class PentahoDWEntityManager {
+public final class PentahoDWEntityManager implements Serializable {
+	/**
+	 * Attribute that represents . 
+	 */
+	private static final long serialVersionUID = -4457890718768633009L;
+
 	/**
 	 * Constant attribute that represents the persistence unit name to connect with this entity manager. 
 	 */
@@ -62,12 +68,12 @@ public final class PentahoDWEntityManager {
 	/**
 	 * Attribute that allows to interact with the persistence context associated to the transactional module.
 	 */
-	private EntityManager em = null;
+	private transient EntityManager em = null;
 
 	/**
 	 * Attribute that allows to obtain an application-managed entity manager.
 	 */
-	private EntityManagerFactory emf = null;
+	private transient EntityManagerFactory emf = null;
 
 	/**
 	 * Method that obtains an instance of the class.
@@ -146,7 +152,7 @@ public final class PentahoDWEntityManager {
 	 * @return unique result with the detached entity.
 	 */
 	public Object namedQuerySingleResult(String name, Map<String, Object> parameters) {
-		List<?> listResult = namedQuery(name, parameters);
+		List<Object> listResult = namedQuery(name, parameters);
 		if (listResult != null && listResult.size() > 0) {
 			return listResult.get(0);
 		}
@@ -160,7 +166,8 @@ public final class PentahoDWEntityManager {
 	 * @param parameters Map with all the parameters used for executing the named query.
 	 * @return a list with the detached entities.
 	 */
-	public List<?> namedQuery(String name, Map<String, Object> parameters) {
+	@SuppressWarnings("unchecked")
+	public List<Object> namedQuery(String name, Map<String, Object> parameters) {
 		Query query = em.createNamedQuery(name);
 		if (parameters != null) {
 			Iterator<String> it = parameters.keySet().iterator();

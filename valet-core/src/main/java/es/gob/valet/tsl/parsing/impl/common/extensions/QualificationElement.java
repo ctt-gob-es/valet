@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -31,13 +31,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
-import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
-import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
+import es.gob.valet.utils.TSLCommonURIs;
+import es.gob.valet.utils.TSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
 /**
@@ -45,7 +45,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * a certificate must have (e.g. certain key-usage-bits set) and a list of qualifiers that
  * specify some certificate properties (e.g. it is a qualified certificate).</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/09/2023.
  */
 public class QualificationElement implements Serializable {
 
@@ -57,7 +57,7 @@ public class QualificationElement implements Serializable {
 	/**
 	 * Attribute that represents a list of URI with the qualifiers.
 	 */
-	private List<URI> qualifiersList = null;
+	private transient List<URI> qualifiersList = null;
 
 	/**
 	 * Attribute that represents the Criteria List element.
@@ -127,26 +127,26 @@ public class QualificationElement implements Serializable {
 
 		// Comprobamos primero los Qualifiers.
 		if (qualifiersList.isEmpty()) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL026, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_QUALIFIER }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL026, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_QUALIFIER }));
 		} else {
 			for (URI qualifierUri: qualifiersList) {
 				String qualifierUriString = qualifierUri.toString();
-				boolean isValid = qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHSSCD) || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOSSCD);
-				isValid = isValid || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATUSASINCERT) || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD);
-				isValid = isValid || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD) || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT);
-				isValid = isValid || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF) || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORLEGALPERSON);
-				isValid = isValid || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESIG) || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESEAL);
-				isValid = isValid || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORWSA) || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_NOTQUALIFIED);
-				isValid = isValid || qualifierUriString.equals(ITSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATEMENT);
+				boolean isValid = qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHSSCD) || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOSSCD);
+				isValid = isValid || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATUSASINCERT) || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD);
+				isValid = isValid || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD) || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT);
+				isValid = isValid || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF) || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORLEGALPERSON);
+				isValid = isValid || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESIG) || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORESEAL);
+				isValid = isValid || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCFORWSA) || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_NOTQUALIFIED);
+				isValid = isValid || qualifierUriString.equals(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCSTATEMENT);
 				if (!isValid) {
-					throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL036, new Object[ ] { qualifierUriString }));
+					throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL036, new Object[ ] { qualifierUriString }));
 				}
 			}
 		}
 
 		// Comprobamos el CriteriaList.
 		if (criteriaList == null) {
-			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL024, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATIONS_QUALIFICATION, ITSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST }));
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL024, new Object[ ] { TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATIONS_QUALIFICATION, TSLElementsAndAttributes.ELEMENT_EXTENSION_QUALIFICATION_CRITERIALIST }));
 		} else {
 			criteriaList.checkExtensionValueSpec119612Vers020101(tsl, shi, isCritical);
 		}

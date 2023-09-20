@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.persistence.configuration.cache.common.impl;
 
@@ -34,15 +34,15 @@ import es.gob.valet.cache.exceptions.CacheValetException;
 import es.gob.valet.cache.exceptions.ManagingObjectCacheValetException;
 import es.gob.valet.cache.ifaces.ICacheValet;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 
 /**
  * <p>Class to handle the configuration objects in the ValET Cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 public abstract class ConfigurationCache {
 
@@ -83,7 +83,7 @@ public abstract class ConfigurationCache {
 		try {
 			return FactoryCacheValet.getCacheValetInstance();
 		} catch (CacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG000), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG000), e);
 		}
 
 	}
@@ -103,15 +103,15 @@ public abstract class ConfigurationCache {
 
 		// Si el parámetro de entrada es nulo, lanzamos excepción.
 		if (cco == null) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG001));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG001));
 		} else if (path == null) {
 			// Comprobamos que la ruta de entrada no sea nula.
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG002));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG002));
 		}
 
 		// Se indica en el log que se va a añadir un nuevo elemento a la caché
 		// de configuración.
-		LOGGER.debug(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG006, new Object[ ] { getTypeElement() + UtilsStringChar.SPECIAL_BLANK_SPACE_STRING + getObjectNameIdentifier(cco) }));
+		LOGGER.debug(Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG006, new Object[ ] { getTypeElement() + UtilsStringChar.SPECIAL_BLANK_SPACE_STRING + getObjectNameIdentifier(cco) }));
 
 		// Se construye la ruta en la caché.
 		String[ ] newPath = new String[path.length + 1];
@@ -119,7 +119,7 @@ public abstract class ConfigurationCache {
 		System.arraycopy(path, 0, newPath, 1, path.length);
 
 		if (addConfigurationCacheObjectInPath(newPath, cco, inLoadingCache)) {
-			LOGGER.debug(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG003, new Object[ ] { getTypeElement() + UtilsStringChar.SPECIAL_BLANK_SPACE_STRING + getObjectNameIdentifier(cco) }));
+			LOGGER.debug(Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG003, new Object[ ] { getTypeElement() + UtilsStringChar.SPECIAL_BLANK_SPACE_STRING + getObjectNameIdentifier(cco) }));
 			result = cco;
 		} else {
 			result = getConfigurationCacheObjectFromPath(newPath, inLoadingCache);
@@ -140,7 +140,7 @@ public abstract class ConfigurationCache {
 
 		// Comprobamos que la ruta de entrada no sea nula.
 		if (path == null) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG002));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG002));
 		}
 
 		// Se construye la ruta en la caché.
@@ -152,9 +152,9 @@ public abstract class ConfigurationCache {
 		try {
 			getCacheValet().addObject(newPath, Long.valueOf(identifier), inLoadingCache);
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.getMessage(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.getMessage(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.getMessage(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.getMessage(), e);
 		}
 
 	}
@@ -170,7 +170,7 @@ public abstract class ConfigurationCache {
 
 		// Comprobamos que la ruta de entrada no sea nula.
 		if (path == null) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG002));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG002));
 		}
 
 		// Se construye la ruta en la caché.
@@ -182,9 +182,9 @@ public abstract class ConfigurationCache {
 		try {
 			getCacheValet().addObject(newPath, string, inLoadingCache);
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.getMessage(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.getMessage(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.getMessage(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.getMessage(), e);
 		}
 
 	}
@@ -200,7 +200,7 @@ public abstract class ConfigurationCache {
 
 		// Comprobamos que la ruta de entrada no sea nula.
 		if (path == null) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG002));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG002));
 		}
 
 		// Se construye la ruta en la caché.
@@ -212,9 +212,9 @@ public abstract class ConfigurationCache {
 		try {
 			getCacheValet().addObject(newPath, map, inLoadingCache);
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.getMessage(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.getMessage(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.getMessage(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.getMessage(), e);
 		}
 
 	}
@@ -282,11 +282,11 @@ public abstract class ConfigurationCache {
 
 		} catch (BadPathCacheValetException e) {
 
-			throw new ConfigurationCacheException(IValetException.COD_191, e.getMessage(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.getMessage(), e);
 
 		} catch (ManagingObjectCacheValetException e) {
 
-			throw new ConfigurationCacheException(IValetException.COD_191, e.getMessage(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.getMessage(), e);
 
 		}
 
@@ -322,7 +322,7 @@ public abstract class ConfigurationCache {
 
 		// Comprobamos que la ruta de entrada no sea nula.
 		if (path == null) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG004));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG004));
 		}
 
 		// Se construye la ruta en la caché.
@@ -351,9 +351,9 @@ public abstract class ConfigurationCache {
 				kco = (ConfigurationCacheObject) cacheObject;
 			}
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		}
 
 		return kco;
@@ -373,7 +373,7 @@ public abstract class ConfigurationCache {
 
 		// Comprobamos que la ruta de entrada no sea nula.
 		if (path == null) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG004));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG004));
 		}
 
 		// Se construye la ruta en la caché.
@@ -388,9 +388,9 @@ public abstract class ConfigurationCache {
 				result = ((Long) cacheObject).longValue();
 			}
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		}
 
 		return result;
@@ -410,7 +410,7 @@ public abstract class ConfigurationCache {
 
 		// Comprobamos que la ruta de entrada no sea nula.
 		if (path == null) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG004));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG004));
 		}
 
 		// Se construye la ruta en la caché.
@@ -425,9 +425,9 @@ public abstract class ConfigurationCache {
 				result = (String) cacheObject;
 			}
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		}
 
 		return result;
@@ -441,13 +441,14 @@ public abstract class ConfigurationCache {
 	 * @return a map. <code>null</code> if it does not exist.
 	 * @throws ConfigurationCacheException In case of some error getting the map from the configuration cache.
 	 */
-	protected final Map<?, ?> getMapFromPath(String[ ] path, boolean inLoadingCache) throws ConfigurationCacheException {
+	@SuppressWarnings("unchecked")
+	protected final Map<Object, Object> getMapFromPath(String[ ] path, boolean inLoadingCache) throws ConfigurationCacheException {
 
-		Map<?, ?> result = null;
+		Map<Object, Object> result = null;
 
 		// Comprobamos que la ruta de entrada no sea nula.
 		if (path == null) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG004));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG004));
 		}
 
 		// Se construye la ruta en la caché.
@@ -459,12 +460,12 @@ public abstract class ConfigurationCache {
 		try {
 			Object cacheObject = getCacheValet().getObject(newPath, inLoadingCache);
 			if (cacheObject != null) {
-				result = (Map<?, ?>) cacheObject;
+				result = (Map<Object, Object>) cacheObject;
 			}
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		}
 
 		return result;
@@ -481,7 +482,7 @@ public abstract class ConfigurationCache {
 
 		// Comprobamos que la ruta de entrada no sea nula.
 		if (path == null) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG005));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG005));
 		}
 
 		// Se construye la ruta en la caché.
@@ -504,11 +505,11 @@ public abstract class ConfigurationCache {
 
 		try {
 			getCacheValet().removeObject(path, inLoadingCache);
-			LOGGER.debug(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG007, new Object[ ] { buildFullPathString(path) }));
+			LOGGER.debug(Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG007, new Object[ ] { buildFullPathString(path) }));
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		}
 
 	}
@@ -523,7 +524,7 @@ public abstract class ConfigurationCache {
 
 		// Comprobamos que la ruta de entrada no sea nula.
 		if (nodePath == null) {
-			throw new ConfigurationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG005));
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG005));
 		}
 
 		// Se construye la ruta en la caché.
@@ -546,11 +547,11 @@ public abstract class ConfigurationCache {
 
 		try {
 			getCacheValet().removeNode(path, inLoadingCache);
-			LOGGER.debug(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG034, new Object[ ] { buildFullPathString(path) }));
+			LOGGER.debug(Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG034, new Object[ ] { buildFullPathString(path) }));
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		}
 
 	}
@@ -614,9 +615,9 @@ public abstract class ConfigurationCache {
 			}
 
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		}
 
 		return result.booleanValue();
@@ -639,9 +640,9 @@ public abstract class ConfigurationCache {
 		try {
 			getCacheValet().addObject(path, Boolean.valueOf(isInitialized), inLoadingCache);
 		} catch (BadPathCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		} catch (ManagingObjectCacheValetException e) {
-			throw new ConfigurationCacheException(IValetException.COD_191, e.toString(), e);
+			throw new ConfigurationCacheException(ValetExceptionConstants.COD_191, e.toString(), e);
 		}
 
 	}

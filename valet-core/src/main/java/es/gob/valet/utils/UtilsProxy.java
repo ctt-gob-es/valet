@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 15/09/2023.
+ * @version 1.5, 19/09/2023.
  */
 package es.gob.valet.utils;
 
@@ -48,10 +48,10 @@ import es.gob.valet.commons.utils.CredentialsManager;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.Proxy;
-import es.gob.valet.persistence.configuration.model.utils.IOperationModeIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.OperationModeIdConstants;
 import es.gob.valet.persistence.exceptions.CipherException;
 import es.gob.valet.persistence.utils.UtilsAESCipher;
 
@@ -60,7 +60,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * to obtain the data necessary to establish a connection via PROXY. Besides this load will be done in the initialization
  * of the platform, and this class is responsible for setting the data in the virtual machine.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 15/09/2023.
+ * @version 1.5, 19/09/2023.
  */
 public final class UtilsProxy {
 
@@ -92,7 +92,7 @@ public final class UtilsProxy {
 	/**
 	 * Constant attribute that represents the system property key 'http.proxyPassword'.
 	 */
-	@SuppressWarnings("squid:S2068")
+	@SuppressWarnings("squid:S2068") // It is considered false positive if the property name is refactored, it is no longer vulnerable.
 	private static final String SYSPROP_HTTP_PROXYPASSWORD = "http.proxyPassword";
 
 	/**
@@ -103,7 +103,7 @@ public final class UtilsProxy {
 	/**
 	 * Constant attribute that represents the system property key 'http.auth.ntlm.password'.
 	 */
-	@SuppressWarnings("squid:S2068")
+	@SuppressWarnings("squid:S2068") // It is considered false positive if the property name is refactored, it is no longer vulnerable.
 	private static final String SYSPROP_HTTP_AUTH_NTLM_PASSWORD = "http.auth.ntlm.password";
 
 	/**
@@ -144,7 +144,7 @@ public final class UtilsProxy {
 	/**
 	 * Constant attribute that represents the system property key 'https.proxyPassword'.
 	 */
-	@SuppressWarnings("squid:S2068")
+	@SuppressWarnings("squid:S2068") // It is considered false positive if the property name is refactored, it is no longer vulnerable.
 	private static final String SYSPROP_HTTPS_PROXYPASSWORD = "https.proxyPassword";
 
 	/**
@@ -155,7 +155,7 @@ public final class UtilsProxy {
 	/**
 	 * Constant attribute that represents the system property key 'https.auth.ntlm.password'.
 	 */
-	@SuppressWarnings("squid:S2068")
+	@SuppressWarnings("squid:S2068") // It is considered false positive if the property name is refactored, it is no longer vulnerable.
 	private static final String SYSPROP_HTTPS_AUTH_NTLM_PASSWORD = "https.auth.ntlm.password";
 
 	/**
@@ -184,7 +184,7 @@ public final class UtilsProxy {
 	private static boolean proxyConfigurationInitialized = false;
 
 	/**
-	 * Attribute that represents the operational mode for the proxy: {@link IOperationModeIdConstants}.
+	 * Attribute that represents the operational mode for the proxy: {@link OperationModeIdConstants}.
 	 */
 	private static int proxyOperational = -1;
 
@@ -224,7 +224,7 @@ public final class UtilsProxy {
 	private static String proxySecureHost = null;
 
 	/**
-	 * Attribute that represents the operational mode for the secure proxy: {@link IOperationModeIdConstants}.
+	 * Attribute that represents the operational mode for the secure proxy: {@link OperationModeIdConstants}.
 	 */
 	private static int proxySecureOperational = -1;
 
@@ -343,7 +343,7 @@ public final class UtilsProxy {
 		// Establecemos el proxy como inicializado.
 		proxyConfigurationInitialized = true;
 
-		LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_PROXY_006));
+		LOGGER.info(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_PROXY_006));
 
 		// Establecemos la configuración Java por defecto para el proxy.
 		setUpProxyConfigurationInJava();
@@ -356,12 +356,12 @@ public final class UtilsProxy {
 	private static void checkAndSetHostAndPortValuesForProxy() {
 
 		switch (proxyOperational) {
-			case IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
-			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
-			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
 				if (UtilsStringChar.isNullOrEmpty(proxyHost) || proxyPort <= 0) {
-					LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_PROXY_000, new Object[ ] { proxyHost, proxyPort }));
-					proxyOperational = IOperationModeIdConstants.ID_NONE_INTVALUE;
+					LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_PROXY_000, new Object[ ] { proxyHost, proxyPort }));
+					proxyOperational = OperationModeIdConstants.ID_NONE_INTVALUE;
 					checkAndSetHostAndPortValuesForProxy();
 				}
 				break;
@@ -384,7 +384,7 @@ public final class UtilsProxy {
 	private static void checkAndSetHostAndPortValuesForSecureProxy() {
 
 		switch (proxySecureOperational) {
-			case IOperationModeIdConstants.ID_NONE_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_INTVALUE:
 				proxySecureHost = null;
 				proxySecurePort = -1;
 				proxySecureUserName = null;
@@ -392,12 +392,12 @@ public final class UtilsProxy {
 				proxySecureDomain = null;
 				proxySecureWorkstation = null;
 				break;
-			case IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
-			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
-			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
 				if (UtilsStringChar.isNullOrEmpty(proxySecureHost) || proxySecurePort <= 0) {
-					LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_PROXY_001, new Object[ ] { proxySecureHost, proxySecurePort }));
-					proxySecureOperational = IOperationModeIdConstants.ID_NONE_INTVALUE;
+					LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_PROXY_001, new Object[ ] { proxySecureHost, proxySecurePort }));
+					proxySecureOperational = OperationModeIdConstants.ID_NONE_INTVALUE;
 					checkAndSetHostAndPortValuesForSecureProxy();
 				}
 				break;
@@ -413,19 +413,19 @@ public final class UtilsProxy {
 	private static void checkAndSetUserAndPasswordForProxy() {
 
 		switch (proxyOperational) {
-			case IOperationModeIdConstants.ID_NONE_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_INTVALUE:
 				break;
-			case IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
 				proxyUserName = null;
 				proxyUserPass = null;
 				proxyDomain = null;
 				proxyWorkstation = null;
 				break;
-			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
-			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
 				if (UtilsStringChar.isNullOrEmpty(proxyUserName) || UtilsStringChar.isNullOrEmpty(proxyUserPass)) {
-					LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_PROXY_002, new Object[ ] { proxyUserName, proxyUserPass }));
-					proxyOperational = IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE;
+					LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_PROXY_002, new Object[ ] { proxyUserName, proxyUserPass }));
+					proxyOperational = OperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE;
 					checkAndSetUserAndPasswordForProxy();
 				}
 				break;
@@ -441,19 +441,19 @@ public final class UtilsProxy {
 	private static void checkAndSetUserAndPasswordForSecureProxy() {
 
 		switch (proxySecureOperational) {
-			case IOperationModeIdConstants.ID_NONE_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_INTVALUE:
 				break;
-			case IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
 				proxySecureUserName = null;
 				proxySecureUserPass = null;
 				proxySecureDomain = null;
 				proxySecureWorkstation = null;
 				break;
-			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
-			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
 				if (UtilsStringChar.isNullOrEmpty(proxySecureUserName) || UtilsStringChar.isNullOrEmpty(proxySecureUserPass)) {
-					LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_PROXY_003, new Object[ ] { proxySecureUserName, proxySecureUserPass }));
-					proxySecureOperational = IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE;
+					LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_PROXY_003, new Object[ ] { proxySecureUserName, proxySecureUserPass }));
+					proxySecureOperational = OperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE;
 					checkAndSetUserAndPasswordForSecureProxy();
 				}
 				break;
@@ -469,17 +469,17 @@ public final class UtilsProxy {
 	private static void checkAndSetDomainAndWorkStationForProxy() {
 
 		switch (proxyOperational) {
-			case IOperationModeIdConstants.ID_NONE_INTVALUE:
-			case IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
 				break;
-			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
 				proxyDomain = null;
 				proxyWorkstation = null;
 				break;
-			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
 				if (UtilsStringChar.isNullOrEmpty(proxyDomain) || UtilsStringChar.isNullOrEmpty(proxyWorkstation)) {
-					LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_PROXY_004, new Object[ ] { proxyDomain, proxyWorkstation }));
-					proxyOperational = IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE;
+					LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_PROXY_004, new Object[ ] { proxyDomain, proxyWorkstation }));
+					proxyOperational = OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE;
 					checkAndSetDomainAndWorkStationForProxy();
 				}
 				break;
@@ -495,17 +495,17 @@ public final class UtilsProxy {
 	private static void checkAndSetDomainAndWorkStationForSecureProxy() {
 
 		switch (proxySecureOperational) {
-			case IOperationModeIdConstants.ID_NONE_INTVALUE:
-			case IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
 				break;
-			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
 				proxySecureDomain = null;
 				proxySecureWorkstation = null;
 				break;
-			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
 				if (UtilsStringChar.isNullOrEmpty(proxySecureDomain) || UtilsStringChar.isNullOrEmpty(proxySecureWorkstation)) {
-					LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_PROXY_005, new Object[ ] { proxySecureDomain, proxySecureWorkstation }));
-					proxySecureOperational = IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE;
+					LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_PROXY_005, new Object[ ] { proxySecureDomain, proxySecureWorkstation }));
+					proxySecureOperational = OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE;
 					checkAndSetDomainAndWorkStationForProxy();
 				}
 				break;
@@ -526,7 +526,7 @@ public final class UtilsProxy {
 		if (proxyConfigurationInitialized) {
 
 			// Si el proxy está configurado está configurado...
-			if (proxyOperational != IOperationModeIdConstants.ID_NONE_INTVALUE) {
+			if (proxyOperational != OperationModeIdConstants.ID_NONE_INTVALUE) {
 
 				System.setProperty(SYSPROP_PROXYSET, Boolean.TRUE.toString());
 				setUpProxyConfigurationInJavaNotSecuredProxy();
@@ -534,7 +534,7 @@ public final class UtilsProxy {
 			}
 
 			// Si el proxy seguro está configurado está configurado...
-			if (proxySecureOperational != IOperationModeIdConstants.ID_NONE_INTVALUE) {
+			if (proxySecureOperational != OperationModeIdConstants.ID_NONE_INTVALUE) {
 
 				System.setProperty(SYSPROP_PROXYSET, Boolean.TRUE.toString());
 				setUpProxyConfigurationInJavaSecuredProxy();
@@ -542,7 +542,7 @@ public final class UtilsProxy {
 			}
 
 			// Si ninguno está configurado, lo deshabilitamos.
-			disableProxy = proxyOperational == IOperationModeIdConstants.ID_NONE_INTVALUE && proxySecureOperational == IOperationModeIdConstants.ID_NONE_INTVALUE;
+			disableProxy = proxyOperational == OperationModeIdConstants.ID_NONE_INTVALUE && proxySecureOperational == OperationModeIdConstants.ID_NONE_INTVALUE;
 
 		}
 		// Si no, lo deshabilitamos.
@@ -591,7 +591,7 @@ public final class UtilsProxy {
 		System.setProperty(SYSPROP_HTTP_PROXYPORT, String.valueOf(proxyPort));
 
 		switch (proxyOperational) {
-			case IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
 				System.setProperty(SYSPROP_HTTP_PROXYUSER, UtilsStringChar.EMPTY_STRING);
 				System.setProperty(SYSPROP_HTTP_PROXYPASSWORD, UtilsStringChar.EMPTY_STRING);
 				Authenticator.setDefault(null);
@@ -602,7 +602,7 @@ public final class UtilsProxy {
 				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_HOST, UtilsStringChar.EMPTY_STRING);
 				break;
 
-			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
 				System.setProperty(SYSPROP_HTTP_PROXYUSER, proxyUserName);
 				System.setProperty(SYSPROP_HTTP_PROXYPASSWORD, proxyUserPass);
 				Authenticator.setDefault(new CredentialsManager(proxyUserName, proxyUserPass));
@@ -613,7 +613,7 @@ public final class UtilsProxy {
 				System.setProperty(SYSPROP_HTTP_AUTH_NTLM_HOST, UtilsStringChar.EMPTY_STRING);
 				break;
 
-			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
 				System.setProperty(SYSPROP_HTTP_PROXYUSER, UtilsStringChar.EMPTY_STRING);
 				System.setProperty(SYSPROP_HTTP_PROXYPASSWORD, UtilsStringChar.EMPTY_STRING);
 				Authenticator.setDefault(new CredentialsManager(proxyUserName, proxyUserPass));
@@ -652,7 +652,7 @@ public final class UtilsProxy {
 		System.setProperty(SYSPROP_HTTPS_PROXYPORT, String.valueOf(proxySecurePort));
 
 		switch (proxyOperational) {
-			case IOperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NONE_AUTHENTICATION_INTVALUE:
 				System.setProperty(SYSPROP_HTTPS_PROXYUSER, UtilsStringChar.EMPTY_STRING);
 				System.setProperty(SYSPROP_HTTPS_PROXYPASSWORD, UtilsStringChar.EMPTY_STRING);
 				Authenticator.setDefault(null);
@@ -663,7 +663,7 @@ public final class UtilsProxy {
 				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_HOST, UtilsStringChar.EMPTY_STRING);
 				break;
 
-			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
 				System.setProperty(SYSPROP_HTTPS_PROXYUSER, proxySecureUserName);
 				System.setProperty(SYSPROP_HTTPS_PROXYPASSWORD, proxySecureUserPass);
 				Authenticator.setDefault(new CredentialsManager(proxySecureUserName, proxySecureUserPass));
@@ -674,7 +674,7 @@ public final class UtilsProxy {
 				System.setProperty(SYSPROP_HTTPS_AUTH_NTLM_HOST, UtilsStringChar.EMPTY_STRING);
 				break;
 
-			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
 				System.setProperty(SYSPROP_HTTPS_PROXYUSER, UtilsStringChar.EMPTY_STRING);
 				System.setProperty(SYSPROP_HTTPS_PROXYPASSWORD, UtilsStringChar.EMPTY_STRING);
 				Authenticator.setDefault(new CredentialsManager(proxySecureUserName, proxySecureUserPass));
@@ -725,7 +725,7 @@ public final class UtilsProxy {
 			if (UtilsHTTP.HTTP_SCHEME.equalsIgnoreCase(protocol)) {
 
 				// Si hay configuración proxy establecida...
-				if (proxyOperational != IOperationModeIdConstants.ID_NONE_INTVALUE) {
+				if (proxyOperational != OperationModeIdConstants.ID_NONE_INTVALUE) {
 					result = setUpProxyConfigurationInHttpClientNonSecuredProxy(credentials, path);
 				}
 
@@ -734,7 +734,7 @@ public final class UtilsProxy {
 			else {
 
 				// Si hay configuración proxy establecida...
-				if (proxySecureOperational != IOperationModeIdConstants.ID_NONE_INTVALUE) {
+				if (proxySecureOperational != OperationModeIdConstants.ID_NONE_INTVALUE) {
 					result = setUpProxyConfigurationInHttpClientSecuredProxy(credentials, path);
 				}
 
@@ -757,11 +757,11 @@ public final class UtilsProxy {
 		HttpHost result = new HttpHost(proxyHost, proxyPort);
 
 		switch (proxyOperational) {
-			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
 				credentials.setCredentials(new AuthScope(proxyHost, proxyPort), new UsernamePasswordCredentials(proxyUserName, proxyUserPass));
 				break;
 
-			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
 				credentials.setCredentials(new AuthScope(proxyHost, proxyPort, null), new NTCredentials(proxyUserName, proxyUserPass, proxyWorkstation, proxyDomain));
 				break;
 
@@ -784,11 +784,11 @@ public final class UtilsProxy {
 		HttpHost result = new HttpHost(proxySecureHost, proxySecurePort);
 
 		switch (proxySecureOperational) {
-			case IOperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_BASIC_AUTHENTICATION_INTVALUE:
 				credentials.setCredentials(new AuthScope(proxySecureHost, proxySecurePort), new UsernamePasswordCredentials(proxySecureUserName, proxySecureUserPass));
 				break;
 
-			case IOperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
+			case OperationModeIdConstants.ID_NTLM_AUTHENTICATION_INTVALUE:
 				credentials.setCredentials(new AuthScope(proxySecureHost, proxySecurePort, null), new NTCredentials(proxySecureUserName, proxySecureUserPass, proxySecureWorkstation, proxySecureDomain));
 				break;
 
@@ -821,7 +821,7 @@ public final class UtilsProxy {
 				result = result || ia.isSiteLocalAddress();
 
 			} catch (URISyntaxException | UnknownHostException e) {
-				LOGGER.debug(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_PROXY_007, new Object[ ] { path }));
+				LOGGER.debug(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_PROXY_007, new Object[ ] { path }));
 			}
 
 		}
@@ -866,7 +866,7 @@ public final class UtilsProxy {
 
 		} catch (MalformedURLException e) {
 
-			LOGGER.warn(Language.getFormatResCoreGeneral(ICoreGeneralMessages.UTILS_PROXY_008, new Object[ ] { urlString }));
+			LOGGER.warn(Language.getFormatResCoreGeneral(CoreGeneralMessages.UTILS_PROXY_008, new Object[ ] { urlString }));
 
 		}
 

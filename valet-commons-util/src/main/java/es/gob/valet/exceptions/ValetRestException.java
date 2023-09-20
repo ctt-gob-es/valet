@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>27/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.exceptions;
 
@@ -32,9 +32,9 @@ import es.gob.valet.commons.utils.UtilsXML;
 /** 
  * <p>Class that manages exceptions produced by the rest service module.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 03/04/2023.
+ * @version 1.2, 19/09/2023.
  */
-public class ValetRestException extends Exception implements IValetException {
+public class ValetRestException extends Exception {
 
 	/**
 	 * Constant  ttribute that represents the serial version UID.
