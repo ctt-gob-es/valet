@@ -228,7 +228,7 @@ public class ConfServerMail implements Serializable {
 	 * Gets the value of the attribute {@link #connectionTimeout}.
 	 * @return the value of the attribute {@link #connectionTimeout}.
 	 */
-	@Column(name = "CONNETION_TIMEOUT", nullable = false)
+	@Column(name = "CONNECTION_TIMEOUT", nullable = false)
 	public Integer getConnectionTimeout() {
 		return connectionTimeout;
 	}

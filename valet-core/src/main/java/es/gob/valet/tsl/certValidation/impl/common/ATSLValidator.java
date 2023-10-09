@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.13, 24/07/2023.
+ * @version 1.14, 09/10/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -106,7 +106,7 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 1.13, 24/07/2023.
+ * @version 1.14, 09/10/2023.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -1324,13 +1324,17 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 				// PRO-4.4.4-33 j)k)
 				getCheck1Dir1999_93_EC(resultQC);
-
+				//se actualiza el valor de check1
+				if(resultQC.getInfoQcResult() != null){
+				    check1 = resultQC.getInfoQcResult().getCheck1();
+				}
 				// PRO-4.4.4-33 l)
 				resultQC.setQcStatus(ITSLStatusConstants.PROCESS_PASSED);
 				// PRO-4.4.4-33 m)
 				// Se comprueba si no existe, para no tener elementos
 				// repetidos...
 
+				
 				if (!resultQC.getQcResults().contains(check1)) {
 					resultQC.getQcResults().add(QCResult.getQCResult(check1));
 				}
