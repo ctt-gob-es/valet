@@ -83,44 +83,11 @@ public class ExternalAccessController {
 		model.addAttribute("externalAccessform", externalAccessForm);
 		return "fragments/externalAccessAdmin.html";
 	}
-
 	
-	/**
-	 * Method that maps the add application to the controller and sets the
-	 * backing form.
-	 * @param model Holder object for model attributes.
-	 * @return String that represents the name of the view to forward.
-	 * @throws IOException If the method fails.
-	 */
-	@RequestMapping(value = "/addexternalAccess" )
-	public String addexternalAccess(Model model) throws IOException {
-		ExternalAccessForm externalAccessForm = new ExternalAccessForm();
-		model.addAttribute("externalAccessform", externalAccessForm);
-		return "fragments/externalAccessAdmin.html";
-	}
-
-	
-	/*
-	 * @RequestMapping(value = "tryConnModel") public String
-	 * tryConnModel(@RequestParam("valores") String valores, Model model) { String
-	 * view="modal/externalAccess/externalAccessTryConnModel"; List<Long> ids =
-	 * Arrays.asList(valores.split(",")).stream().map(s ->
-	 * Long.parseLong(s.trim())).collect(Collectors.toList());
-	 * 
-	 * List<ExternalAccessDTO> listExternalAccess =
-	 * iExternalAccessService.getListDTObyId(ids);
-	 * model.addAttribute("externalAccessList", listExternalAccess); return view;
-	 * 
-	 * }
-	 */
 	@RequestMapping(value = "tryConnModel")
-	public  String tryConnModel(//@RequestParam(name="valores") String valores, 
-			Model model) {
+	public  String tryConnModel(Model model) {
 		String view="modal/externalAccess/externalAccessTryConnModel";
-	   //List<Long> ids = Arrays.asList(valores.split(",")).stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
-
-		//List<ExternalAccessDTO> listExternalAccess =  iExternalAccessService.getListDTObyId(ids);
-		//model.addAttribute("externalAccessList", listExternalAccess);
+	   
 		return view;
 		
 	}

@@ -22,7 +22,7 @@
  * @author Gobierno de España.
  * @version 2.1, 19/09/2023.
  */
-package es.gob.valet.service.impl;
+package es.gob.valet.service;
 
 
 import java.io.IOException;
@@ -116,7 +116,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 2.1, 19/09/2023.
  */
-@Service("ExternalAccessService")
+@Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ExternalAccessService implements IExternalAccessService {
 
@@ -401,7 +401,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @param uriTslLocation parameter that contain url.
 	 * @return result of test.
 	 */
-	private boolean testConnUrl(String uriTslLocation) {
+	boolean testConnUrl(String uriTslLocation) {
 		boolean urlConnected = false;
 		setMessageError("");
 		
@@ -656,7 +656,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @param listExternalAccessResult parameter that contain list with object of result operation.
 	 * @param messageHead parameter that contain head message for mail.
 	 */
-	private void launchAlarmIfTestConnFail(List<ExternalAccess> listExternalAccessResult, String messageHead) {
+	public void launchAlarmIfTestConnFail(List<ExternalAccess> listExternalAccessResult, String messageHead) {
 		// Filtramos aquellos accesos externos resultantes que hayan dado error en el test de conexión. Si es así enviaremos la alarma.
 		StringBuffer messageMail = new StringBuffer();
 		if(null != listExternalAccessResult.stream().filter(p -> p.getStateConn() == false).findAny()) {

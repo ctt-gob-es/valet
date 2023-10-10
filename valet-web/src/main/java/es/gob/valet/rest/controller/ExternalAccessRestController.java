@@ -88,22 +88,6 @@ public class ExternalAccessRestController {
 	@Autowired
 	private IExternalAccessService iExternalAccessService;
 
-	/**
-	 * Method that search in tree value enter for user in searching.
-	 * 
-	 * @param valueSearch parameter that contain value enter for user in searching.
-	 * @param response    parameter that represents posibility errors in process.
-	 * @return
-	 * @return tree with nodes found.
-	 */
-
-	@RequestMapping(value = "/searchExternalAccess", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public DataTablesOutput<ExternalAccess> searchExternalAccess(@RequestBody ExternalAccessForm externalAccessForm,
-			HttpServletResponse response) {
-		// IExternalAccessService appService =
-		// ManagerPersistenceConfigurationServices.getInstance().getExternalAccessValetService();
-		return null;
-	}
 
 	/**
 	 * Method to load the datatable with all the mappings corresponding to the selected TSL .
@@ -186,17 +170,17 @@ public class ExternalAccessRestController {
 			}else {
 				externalDTO.setStateConn(Boolean.FALSE);
 			}
-			if(!externalAccess.getStateConn()) {
+			if(externalAccess.getStateConn() == Boolean.FALSE || externalAccess.getStateConn() == null) {
 				String msgError = UtilsStringChar.isNullOrEmpty(iExternalAccessService.getMessageErrorValue()) ? "Error Desconocido" : iExternalAccessService.getMessageErrorValue();
 				externalDTO.setMessageError(msgError);
 			}else {
 				externalDTO.setMessageError("");
 			}
+			listExternalAccess.add(externalDTO);
 		}catch (Exception e) {
 			//TODO: rellenar con error en caso de que algo vaya mal
 			LOGGER.error(e.getCause());
 		}
-		listExternalAccess.add(externalDTO);
 		}
 		return listExternalAccess;
 	}

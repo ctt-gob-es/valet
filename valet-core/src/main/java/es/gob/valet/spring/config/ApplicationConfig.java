@@ -49,7 +49,7 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
-import es.gob.valet.service.impl.ExternalAccessService;
+import es.gob.valet.service.ExternalAccessService;
 import es.gob.valet.tasks.HiddenTasksManager;
 import es.gob.valet.tasks.TasksManager;
 import es.gob.valet.tsl.access.TSLManager;

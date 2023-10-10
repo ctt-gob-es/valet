@@ -77,7 +77,7 @@ import es.gob.valet.persistence.configuration.model.utils.AssociationTypeIdConst
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.rest.elements.json.DateString;
-import es.gob.valet.service.impl.ExternalAccessService;
+import es.gob.valet.service.ExternalAccessService;
 import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.tasks.FindNewTslRevisionsTaskConstants;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidator;

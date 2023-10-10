@@ -29,13 +29,14 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.task.Task;
+import es.gob.valet.service.ExternalAccessService;
 import es.gob.valet.service.ifaces.IExternalAccessService;
-import es.gob.valet.service.impl.ExternalAccessService;
 import es.gob.valet.spring.config.ApplicationContextProvider;
 
 /**
