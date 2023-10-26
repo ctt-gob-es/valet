@@ -14,12 +14,18 @@ import org.springframework.context.ApplicationContext;
 
 import static org.mockito.Mockito.*;
 
+import es.gob.valet.i18n.Language;
 import es.gob.valet.quartz.job.TaskValetException;
-import es.gob.valet.service.ExternalAccessService;
 import es.gob.valet.service.ifaces.IExternalAccessService;
 import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.tasks.ExternalAccessConnectionTestTask;
 
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ApplicationContextProvider.class, ApplicationContext.class})
 public class ExternalAccessConnectionTestTaskTest {
 
 	  @InjectMocks
@@ -38,7 +44,6 @@ public class ExternalAccessConnectionTestTaskTest {
 	        Map<String, Object> dataMap = mock(Map.class);
 	        task.prepareParametersForTheTask(dataMap);
 	        
-	        // Verificar que no se lanza ninguna excepción
 	    }
 
 	    @Test
@@ -49,7 +54,7 @@ public class ExternalAccessConnectionTestTaskTest {
 	        assertNull(dataResult);
 	    }
 
-	    @Ignore
+	     @Ignore
 	    public void testDoActionOfTheTask() throws Exception {
 	    	
 	    	 // Crear un mock de ApplicationContextProvider
@@ -58,12 +63,12 @@ public class ExternalAccessConnectionTestTaskTest {
 	        // Crear un mock de IExternalAccessService
 	        IExternalAccessService externalAccessService = mock(IExternalAccessService.class);
 	        
-	    	
-	    	//Configurar el mock de ApplicationContextProvider para devolver el mock de IExternalAccessService
+	        // Configuramos el comportamiento del mock
+	        PowerMockito.mockStatic(ApplicationContextProvider.class);
+	        PowerMockito.mockStatic(ApplicationContext.class);
+	    	//Configuramos el mock de ApplicationContextProvider para devolver el mock de IExternalAccessService
 	        when(ApplicationContextProvider.getApplicationContext())
 	            .thenReturn(applicationContext);
-	        when(applicationContextProvider.getApplicationContext().getBean(IExternalAccessService.class))
-	            .thenReturn(externalAccessService);
 	        task.doActionOfTheTask();
 	    }
 }

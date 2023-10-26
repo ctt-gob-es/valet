@@ -30,6 +30,7 @@ import java.util.List;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
+import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 
@@ -39,6 +40,8 @@ import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 08/08/2023.
  */
+
+@Repository
 public interface ExternalAccessTablesRepository extends DataTablesRepository<ExternalAccess, Long> {
 
 }

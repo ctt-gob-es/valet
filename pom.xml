@@ -82,7 +82,7 @@
 				<plugin.javadoc.skip>true</plugin.javadoc.skip>
 				<plugin.source.skip>true</plugin.source.skip>
 				<maven.compiler.debug>true</maven.compiler.debug>
-				<maven.test.skip>true</maven.test.skip>
+				<maven.test.skip>false</maven.test.skip>
 				<!-- Database connection properties -->
 				<db.dialect.oracle>org.hibernate.dialect.Oracle10gDialect</db.dialect.oracle>
 				<db.show.sql>false</db.show.sql>
@@ -227,6 +227,39 @@
 					<locales>es,en</locales>
 				</configuration>
 			</plugin>
+			<!-- Plugin de ejecución de test junit -->
+			<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.0.0</version> 
+  <executions>
+                <execution>
+                    <id>default-test</id>
+                    <goals>
+                        <goal>test</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+         <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.7</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>report</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -265,7 +298,14 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
+		<reporting>
+    <plugins>
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+        </plugin>
+    </plugins>
+</reporting>
 	<!-- Definición de versiones concretas de dependencias que podrán ser usadas 
 		en los distintos módulos sin necesidad de especificar en estos la versión. -->
 	<dependencyManagement>
@@ -608,14 +648,38 @@
 				<artifactId>javax.mail-api</artifactId>
 				<version>1.6.2</version>
 			</dependency>
-
+<!-- JUNIT TEST -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<version>${spring.version}</version>
 			 <scope>test</scope> 
 		</dependency>
-
+				 <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>3.12.4</version> 
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+    <groupId>org.powermock</groupId>
+    <artifactId>powermock-core</artifactId>
+    <version>2.0.9</version> 
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.powermock</groupId>
+    <artifactId>powermock-module-junit4</artifactId>
+    <version>2.0.9</version> 
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.powermock</groupId>
+    <artifactId>powermock-api-mockito2</artifactId>
+    <version>2.0.9</version>
+    <scope>test</scope>
+</dependency>
+<!-- FIN JUNIT TEST -->
 		
 		</dependencies>
 	</dependencyManagement>

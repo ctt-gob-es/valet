@@ -680,7 +680,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @param listExternalAccessTestConnKo parameter that contain list with object of fail test connection.
 	 * @param messageMail parameter that contain body of message.
 	 */
-	private void createMessageMail(TslCountryRegion tslCountryRegion, List<ExternalAccess> listExternalAccessTestConnKo, StringBuffer messageMail) {
+	public void createMessageMail(TslCountryRegion tslCountryRegion, List<ExternalAccess> listExternalAccessTestConnKo, StringBuffer messageMail) {
 		messageMail.append(System.lineSeparator()).append(System.lineSeparator());
 		messageMail.append(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_004, new Object[ ] { tslCountryRegion.getCountryRegionName(), tslCountryRegion.getTslData().getSequenceNumber()}));
 		for (ExternalAccess externalAccess: listExternalAccessTestConnKo) {
@@ -825,7 +825,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @throws TSLMalformedException if occurs any error.
 	 * @throws TSLCertificateValidationException if occurs any error.
 	 */
-	private List<ExternalAccessDTO> obtainAllUrlToRegionTSL(List<TslCountryRegion> tcrList) throws TSLCacheException, TSLArgumentException, TSLParsingException, TSLMalformedException, TSLCertificateValidationException {
+	public List<ExternalAccessDTO> obtainAllUrlToRegionTSL(List<TslCountryRegion> tcrList) throws TSLCacheException, TSLArgumentException, TSLParsingException, TSLMalformedException, TSLCertificateValidationException {
 		List<ExternalAccessDTO> listExternalAccessDTO = new ArrayList<>();
 		// Por cada una de las regiones almacenaremos las urls de acceso.
 		for (TslCountryRegion tcr: tcrList) {
@@ -914,7 +914,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @param cert Certificate X509v3 to validate its revocation.
 	 * @return list with url for distribution point OCSP.
 	 */
-	private List<String> searchUrlDistributionPointOcsp(X509Certificate x509Certificate) {
+	public List<String> searchUrlDistributionPointOcsp(X509Certificate x509Certificate) {
 		List<String> listUrlDistributionPointOCSP = new ArrayList<>();
 		
 		// Recuperamos la información de acceso a los servicios disponibles en
@@ -1136,6 +1136,10 @@ public class ExternalAccessService implements IExternalAccessService {
 	public static void setMessageError(String messageError) {
 		ExternalAccessService.messageError = messageError;
 	}
+	
+	public void setExternalAccessRepository(ExternalAccessRepository externalAccessRepository) {
+        this.externalAccessRepository = externalAccessRepository;
+    }
 
-
+	
 }

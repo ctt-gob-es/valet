@@ -48,7 +48,7 @@ public final class AlarmsConfiguration {
 	/**
 	 * Constructor method for the class AlarmsConfiguration.java.
 	 */
-	private AlarmsConfiguration() {
+	public AlarmsConfiguration() {
 		super();
 	}
 
