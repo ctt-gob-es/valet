@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 19/09/2023.
+ * @version 2.1, 14/11/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -77,7 +77,7 @@ import es.gob.valet.utils.ValidatorResultConstants;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 19/09/2023.
+ * @version 2.1, 14/11/2023.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -292,6 +292,12 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			String conditions = uri.getQuery();
 
 			String searchFilter = null;
+			
+			if (!UtilsStringChar.isNullOrEmptyTrim(pathLDAP)) {
+				if(pathLDAP.startsWith(UtilsStringChar.SYMBOL_SLASH_STRING)){
+					pathLDAP =  pathLDAP.substring(1);
+				}
+			}
 			if (!UtilsStringChar.isNullOrEmptyTrim(conditions)) {
 				String[ ] allConds = conditions.split(UtilsStringChar.SYMBOL_ESCAPED_BACKSLASH_STRING + UtilsStringChar.SYMBOL_QUESTION_MARK_STRING);
 				if (allConds != null) {
@@ -309,12 +315,20 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 			// Obtenemos la CRL por LDAP.
 			result = UtilsLDAP.getCRLfromLDAP(urlServer, null, null, pathLDAP, searchFilter, null, connectionTimeout, readTimeout, true);
+			
+			if(result != null){
+				if(result!= null){
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL424));
+				}
+			}
 
 		} catch (CommonUtilsException e) {
 
 			LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL117, new Object[ ] { fullUri }), e);
 
 		}
+		
+		
 
 		return result;
 
@@ -387,6 +401,12 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			inStream = urlc.getInputStream();
 			// Creamos el objeto X509CRL a partir del stream.
 			result = UtilsCRL.buildX509CRLfromByteArray(inStream);
+			
+			if(result != null){
+				if(result!= null){
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL425));
+				}
+			}
 
 		} catch (Exception e) {
 
@@ -541,7 +561,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			// es porque no se confía en su emisor.
 			if (!result) {
 				try {
-					LOGGER.debug(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+					LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
 					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM003_EVENT_001, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
 				} catch (CommonUtilsException e) {
 					LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));
@@ -1188,7 +1208,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 			// es porque no se confía en su emisor.
 			if (!result) {
 				try {
-					LOGGER.debug(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+					LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
 					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM003_EVENT_001, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
 				} catch (CommonUtilsException e) {
 					LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));

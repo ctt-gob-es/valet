@@ -243,6 +243,8 @@ public final class UtilsLDAP {
 			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_005), e);
 		} catch (DecoderException e) {
 			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_005), e);
+		} catch (Exception e){
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_LDAP_005), e);
 		}
 
 		return crlByteArray;

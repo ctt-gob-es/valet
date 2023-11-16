@@ -2213,6 +2213,14 @@ public class CoreTslMessages {
 	 */
 	public static final String LOGMTSL423 = "logMTSL423";
 	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL424</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL424 = "logMTSL424";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL425</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL425 = "logMTSL425";
+	/**
 	 * Constant attribute that represents the name of the property <code>errorQcSubStatus1</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	public static final String ERROR_QC_SUBSTATUS1 = "errorQcSubStatus1";
