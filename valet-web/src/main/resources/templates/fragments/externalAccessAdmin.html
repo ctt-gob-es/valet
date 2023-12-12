@@ -99,7 +99,7 @@ var actionTryConnModel = /*[[@{/tryConnModel}]]*/;
 var messageSelectTableToTry = /*[[#{table.externalAccess.tryConnError}]]*/;
 var messageError = /*[[#{select.stateConn.value.error}]]*/;
 var messageCorrect = /*[[#{select.stateConn.value.ok}]]*/;
-
+var titleExcel = /*[[#{table.externalAccess.title}]]*/;
 
 $(document).ready(function() {
 	debugger;
@@ -138,7 +138,11 @@ function createDatatable(dataSet){
 		responsive: true, 
 		altEditor: true,
 	    autoWidth: false, // This parameter must be set to false
-		buttons: [{ extend: 'excelHtml5', text: btnGenerateReport }, 
+		buttons: [{ extend: 'excelHtml5', text: btnGenerateReport, exportOptions: {
+            columns: ':visible:not(:last-child)'
+         },
+         filename:  titleExcel, title:null
+         }, 
 			{text:btnTryConn, name:'tryConn', 
 				action: function ( e, dt, node, config ) {
 					debugger;

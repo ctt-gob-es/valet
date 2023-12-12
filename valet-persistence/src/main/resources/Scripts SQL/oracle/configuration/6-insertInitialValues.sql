@@ -119,10 +119,8 @@ Insert into ALARM (ID_ALARM, DESCRIPTION, TIME_BLOCK, ACTIVE)
   Values ('ALM009', 'ALARMDESC009', null, 'Y');
   
 -- TABLA TASK 
-Insert into TASK
-   (ID_TASK, TOKEN_NAME, IMPLEMENTATION_CLASS, IS_ENABLED)
- Values (SQ_TASK.NEXTVAL, 'TASK01', 'es.gob.valet.tasks.FindNewTSLRevisionsTask', 'N');
-INSERT INTO TASK (ID_TASK, TOKEN_NAME, IMPLEMENTATION_CLASS, IS_ENABLED) VALUES(SQ_TASK.NEXTVAL, 'TASK02', 'es.gob.valet.tasks.ExternalAccessConnectionTestTask', 'N');
+Insert into TASK (ID_TASK, TOKEN_NAME, IMPLEMENTATION_CLASS, IS_ENABLED) Values (1, 'TASK01', 'es.gob.valet.tasks.FindNewTSLRevisionsTask', 'N');
+INSERT INTO TASK (ID_TASK, TOKEN_NAME, IMPLEMENTATION_CLASS, IS_ENABLED) VALUES (2, 'TASK02', 'es.gob.valet.tasks.ExternalAccessConnectionTestTask', 'N');
 
 -- TABLA PLANNER
   Insert into PLANNER
