@@ -347,6 +347,7 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 		sc.setSubject(UtilsCertificate.getCertificateId(x509cert));
 		CStatusCertificate cStatusCert = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCStatusCertificateService().getCStatusCertificateById(statusCert);
 		sc.setStatusCert(cStatusCert);
+		sc.setValidationCert(Boolean.FALSE);
 		// Se obtiene el país del almacén de los certificados
 		String countryOfCertificate = UtilsCertificate.getCountryOfTheCertificateString(x509cert);
 		sc.setCountry(countryOfCertificate);

@@ -156,6 +156,7 @@ public class KeystoreController {
 		certificateForm.setIdKeystore(certificateToEdit.getKeystore().getIdKeystore());
 		certificateForm.setIdSystemCertificate(idSystemCertificate);
 		certificateForm.setCountry(certificateToEdit.getCountry());
+		certificateForm.setValidationCert(certificateToEdit.getValidationCert());
 
 		model.addAttribute("editcertificateform", certificateForm);
 		return "modal/keystore/systemCertificateEditForm.html";

@@ -33,6 +33,11 @@
 							<div style="clear: both;"></div>
 						</div>
 						<div class="form-group col-md-12">
+				            <label for="validationCert" th:text="#{form.alarm.active}">
+				            </label>
+				            <input type="checkbox" id="validationCert" th:field="*{validationCert}" checked>
+				          </div>
+						<div class="form-group col-md-12">
 							<label for="subjectId" th:text="#{form.editCertificate.subject}"></label>
 							<input type="text" id="subjectId" class="form-control"
 								th:field="*{subject}" readonly></input>

@@ -183,7 +183,9 @@ CREATE TABLE "SYSTEM_CERTIFICATE"(
 	"ISSUER" Varchar2(4000) NOT NULL,
 	"SUBJECT" Varchar2(4000) NOT NULL,
 	"STATUS_CERT" Number(19,0) NOT NULL,
-	"HASH" Varchar2(100)
+	"HASH" Varchar2(100),
+	"VALIDATION_CERT" Char(1) DEFAULT 'N' NOT NULL
+
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
 ALTER TABLE "SYSTEM_CERTIFICATE" ADD CONSTRAINT "ID_SYSTEM_CERTIFICATE" PRIMARY KEY ("ID_SYSTEM_CERTIFICATE");
 ALTER TABLE "SYSTEM_CERTIFICATE" ADD CONSTRAINT "SC_UNIQUE_ALIAS_KEYSTORE" UNIQUE ("ALIAS", "ID_KEYSTORE");
@@ -198,6 +200,8 @@ COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."SUBJECT" IS 'Valor que representa el asu
 COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."STATUS_CERT" IS 'Estado del certificado representado en esta tupla.';
 COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."HASH" IS 'Valor que representa el hash en SHA-1 del valor del certificado, codificado en Base 64, y concatenado con el hash en SHA-1 del valor de la clave privada, codificado en Base 64. Este valor se utiliza como alias del par de claves en un HSM.';
 COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."COUNTRY" IS 'País del certificado.';
+COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."VALIDATION_CERT" IS 'Valor que indica si el certificado es válido (Y) o no (N).';
+
 -- Table MAIL
 CREATE TABLE "MAIL"(
 	"ID_MAIL" Number(19,0) NOT NULL,

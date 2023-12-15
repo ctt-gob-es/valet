@@ -106,6 +106,16 @@ public class SystemCertificateForm {
 	 * Attribute that represents the country of certificate
 	 */
 	private String country;
+
+	/**
+	 * Attribute that represents the validation of certificate
+	 */
+	private Boolean validationCert;
+	
+	/**
+	 * Attribute that represents the string validation of certificate
+	 */
+	private String validationCertString;
 	
 	/**
 	 * Gets the value of the attribute {@link #idSystemCertificate}.
@@ -380,4 +390,26 @@ public class SystemCertificateForm {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+	
+	/**
+	 * Gets the value of the attribute {@link #validationCert}.
+	 * @return the value of the attribute {@link #validationCert}.
+	 */
+	public Boolean getValidationCert() {
+		return validationCert;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #validationCert}.
+	 * @param validationCertParam The value for the attribute {@link #validationCert}.
+	 */
+	public void setValidationCert(Boolean validationCertParam) {
+		this.validationCert = validationCertParam;
+	}
+	
+
+	
+	
+	
+
 }

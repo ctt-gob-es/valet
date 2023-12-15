@@ -128,6 +128,7 @@ public class KeystoreServiceImpl implements IKeystoreService{
 				CStatusCertificate cStatusCertificate = new CStatusCertificate();
 				cStatusCertificate.setIdStatusCertificate(0L);
 				systemCertificate.setStatusCert(cStatusCertificate);
+				systemCertificate.setValidationCert(Boolean.FALSE);
 				systemCertificateRepository.save(systemCertificate);
 				// Actualizamos la lista de certificados CA que existen en memoria.
 				CertificateCacheManager.getInstance().loadListCertificateCA();
