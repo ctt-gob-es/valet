@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 19/09/2023.
+ * @version 2.2, 19/12/2023.
  */
 package es.gob.valet.service;
 
@@ -92,9 +92,11 @@ import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
+import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.repository.ExternalAccessRepository;
+import es.gob.valet.persistence.configuration.model.repository.SystemCertificateRepository;
 import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.ExternalAccessTablesRepository;
 import es.gob.valet.persistence.configuration.model.specification.ExternalAccessSpecification;
@@ -114,7 +116,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.1, 19/09/2023.
+ * @version 2.2, 19/12/2023.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -156,6 +158,12 @@ public class ExternalAccessService implements IExternalAccessService {
 	private TslCountryRegionRepository tslCountryRegionRepository;
 	
 	private ExternalAccessSpecification externalAccessSpecification;
+	
+	/**
+	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
+	 */
+	@Autowired
+	private SystemCertificateRepository systemCertificateRepository;
 	
 	/**
 	 * Attribute that represent protocol http.
@@ -1141,5 +1149,18 @@ public class ExternalAccessService implements IExternalAccessService {
         this.externalAccessRepository = externalAccessRepository;
     }
 
-	
+	/**
+	 * Searches for and updates the validation status of the certificate in the database.
+	 *
+	 * @param idSystemCertificate The identifier of the certificate in the system.
+	 * @param checkBox           The boolean value indicating whether the certificate is valid or not.
+	 *                           True means valid, false means not valid.
+	 */
+	public void searchCertAndUpdateIsValid(Long idSystemCertificate, boolean checkBox) {
+		LOGGER.info("Buscamos y actualizamos el valor del certificado con id " + idSystemCertificate + " para conocer si es valido o no");
+		LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL426, new Object[ ] { idSystemCertificate }));
+		SystemCertificate systemCertificate = systemCertificateRepository.findByIdSystemCertificate(idSystemCertificate);
+		systemCertificate.setValidationCert(checkBox);
+		systemCertificateRepository.save(systemCertificate);
+	}
 }

@@ -25,10 +25,20 @@
 		</div>
 		<div style="clear: both;"></div>
 	</div>
+	
+	<div class="form-group col-md-8" id="divCertOcspIsValidAdd">
+		<label for="validationCert" th:text="#{form.alarm.active}"></label>
+		<input type="checkbox" id="validationCert" name="validationCert" data-unchecked-value="false" value="true" th:checked="*{validationCert}">
+	</div>
 </form>
 <script th:inline="javascript">
 	$(document).ready(
 			function() {
+				// Solo será visible para el keystore de OCSP.
+				if($("#idKeystore").val() != '19') {
+					$("#divCertOcspIsValidAdd").hide();	
+				}
+				
 				$("#fileCertificateId").change(
 						function() {
 							var fieldVal = $(this).val();
@@ -43,7 +53,8 @@
 							}
 
 						});
-
+				
+				
 			});
 	
 

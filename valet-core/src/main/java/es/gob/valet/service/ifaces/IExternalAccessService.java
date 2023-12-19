@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/07/2023.</p>
  * @author Gobierno de España.
- * @version 1.9, 10/08/2023.
+ * @version 2.0, 19/12/2023.
  */
 package es.gob.valet.service.ifaces;
 
@@ -41,7 +41,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the ExternalAccess entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 10/08/2023.
+ * @version 2.0, 19/12/2023.
  */
 public interface IExternalAccessService {
 	
@@ -145,4 +145,13 @@ public interface IExternalAccessService {
 	 */
 	ExternalAccess getExternalAccessTestConnAndSave(String uriTslLocation, String originUrl,
 			ExternalAccessDTO externalAccessDTO);
+
+	/**
+	 * Searches for a certificate by its system identifier and updates its validation status.
+	 *
+	 * @param idSystemCertificate The identifier of the certificate in the system.
+	 * @param checkBox           The boolean value indicating whether the certificate is valid or not.
+	 *                           True means valid, false means not valid.
+	 */
+	void searchCertAndUpdateIsValid(Long idSystemCertificate, boolean checkBox);
 }

@@ -32,11 +32,11 @@
 							<!-- <div id="invalid-alias" class="invalid-feedback"></div> -->
 							<div style="clear: both;"></div>
 						</div>
-						<div class="form-group col-md-12">
+						<div class="form-group col-md-12" id="divCertOcspIsValidEdit">
 				            <label for="validationCert" th:text="#{form.alarm.active}">
 				            </label>
-				            <input type="checkbox" id="validationCert" th:field="*{validationCert}" checked>
-				          </div>
+				            <input type="checkbox" id="validationCert" name="validationCert" data-unchecked-value="false" value="true" th:checked="*{validationCert}">
+				        </div>
 						<div class="form-group col-md-12">
 							<label for="subjectId" th:text="#{form.editCertificate.subject}"></label>
 							<input type="text" id="subjectId" class="form-control"
@@ -87,15 +87,23 @@
 </div>
 <script th:inline="javascript">
 
+$(document).ready(function() {
+	// Solo será visible para el keystore de OCSP.	
+	if($("#idKeystore").val() != '19') {
+		$("#divCertOcspIsValidEdit").hide();	
+	}
+});
+
 function updateSystemCertificate() {
 	var actionSaveSystemCertificate = /*[[@{/updatesystemcertificate}]]*/;
-	var formData = new FormData(document.forms["systemCertificateEditForm"]);
+	var formData = $("#systemCertificateEditForm").serializeJSON();
 	var tbl = $('#certificatesTable').DataTable();
- 	
+	
 	$.ajax(actionSaveSystemCertificate, {
-		data :formData, 
+		data :JSON.stringify(formData),
 		contentType: false,
 		processData : false,
+		contentType:"application/json",
 		type : 'POST',
 		success: function(data){
 			var errores = JSON.parse(data.error);

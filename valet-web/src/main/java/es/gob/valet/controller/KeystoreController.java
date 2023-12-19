@@ -42,11 +42,10 @@ import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.form.SystemCertificateForm;
 import es.gob.valet.persistence.ManagerPersistenceServices;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
-import es.gob.valet.utils.UtilsCache;
+import es.gob.valet.persistence.configuration.services.impl.KeystoreService;
 
 /**
  * <p>
@@ -184,5 +183,4 @@ public class KeystoreController {
 		model.addAttribute("deletecertificateform", certificateForm);
 		return "modal/keystore/systemCertificateDelete.html";
 	}
-
 }
