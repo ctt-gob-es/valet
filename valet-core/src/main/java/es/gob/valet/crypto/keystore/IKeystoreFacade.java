@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 27/04/2022.
+ * @version 1.3, 19/12/2023.
  */
 package es.gob.valet.crypto.keystore;
 
@@ -40,7 +40,7 @@ import es.gob.valet.persistence.configuration.model.utils.IStatusCertificateIdCo
 /**
  * <p>Interface that defines the methods to manage operations with keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 27/04/2022.
+ * @version 1.3, 19/12/2023.
  */
 public interface IKeystoreFacade {
 
@@ -90,10 +90,11 @@ public interface IKeystoreFacade {
 	 *   <li>{@link IStatusCertificateIdConstants#ID_SC_NOTVALIDYET}</li>
 	 * </ul>
 	 * If this is not specified, by default is taken {@link IStatusCertificateIdConstants#ID_SC_CORRECT}.
+	 * @param validationCert parameter that contain if certificate is valid.
 	 * @return the updated keystore cache object representation.
 	 * @throws CryptographyException If the method fails.
 	 */
-	KeystoreCacheObject storeCertificate(String alias, Certificate certificate, Key key, Long statusCert) throws CryptographyException;
+	KeystoreCacheObject storeCertificate(String alias, Certificate certificate, Key key, Long statusCert, boolean validationCert) throws CryptographyException;
 
 	/**
 	 * Method that updates an entry into a keystore.

@@ -94,6 +94,11 @@ public class SystemCertificate implements Serializable {
 	private CStatusCertificate statusCert;
 
 	/**
+	 * Attribute that represents the validation certificate for this certificate type.
+	 */
+	private Boolean validationCert;
+	
+	/**
 	 * Attribute that represents the SHA-1 hash of the certificate encoded on Base 64 concatenates with the SHA-1 hash of the private key for the certificate
 	 * encoded on Base 64. This attribute is used only when the key pairs is stored inside of a HSM.
 	 */
@@ -268,6 +273,25 @@ public class SystemCertificate implements Serializable {
 	 */
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #validationCert}.
+	 * @return the value of the attribute {@link #validationCert}.
+	 */
+	@Column(name = "VALIDATION_CERT", nullable = false, precision = NumberConstants.NUM1)
+	@Type(type = "yes_no")
+	@JsonView(DataTablesOutput.View.class)
+	public Boolean getValidationCert() {
+		return validationCert;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #isKey}.
+	 * @param isKeyParam The value for the attribute {@link #isKey}.
+	 */
+	public void setValidationCert(Boolean validationCertParam) {
+		this.validationCert = validationCertParam;
 	}
 	
 }

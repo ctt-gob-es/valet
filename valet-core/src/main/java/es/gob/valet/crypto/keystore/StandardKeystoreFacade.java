@@ -265,11 +265,12 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 	}
 
 	/**
+	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.crypto.keystore.IKeystoreFacade#storeCertificate(java.lang.String, java.security.cert.Certificate, java.security.Key, java.lang.Long)
+	 * @see es.gob.valet.crypto.keystore.IKeystoreFacade#storeCertificate(java.lang.String, java.security.cert.Certificate, java.security.Key, java.lang.Long, boolean)
 	 */
 	@Override
-	public KeystoreCacheObject storeCertificate(String alias, Certificate certificate, Key key, Long statusCert) throws CryptographyException {
+	public KeystoreCacheObject storeCertificate(String alias, Certificate certificate, Key key, Long statusCert, boolean validationCert) throws CryptographyException {
 
 		LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_001, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreCacheObject.getTokenName()) }));
 		try {
@@ -282,7 +283,7 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 			addEntryToKeystore(alias, certificate, key);
 			// Guardamos los datos en base de datos y caché.
 			Long status = statusCert == null ? IStatusCertificateIdConstants.ID_SC_CORRECT : statusCert;
-			saveSystemCertificateAndUpdateKeystore(alias, certificate, key, status);
+			saveSystemCertificateAndUpdateKeystore(alias, certificate, key, status, validationCert);
 		} catch (KeyStoreException | CertificateEncodingException
 				| CommonUtilsException | KeystoreCacheException e) {
 			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_009, new Object[ ] { alias, Language.getResPersistenceConstants(keystoreCacheObject.getTokenName()) });
@@ -323,11 +324,12 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 	 * @param cert Certificate added in the keystore.
 	 * @param key Private key added in the keystore (it could be <code>null</code>).
 	 * @param statusCert Status of the certificate added.
+	 * @param validationCert parameter that contain if certificate is valid.
 	 * @throws CommonUtilsException In case of some error extracting the issuer and subject from the input certificate.
 	 * @throws CertificateEncodingException In case of some error building the X509 Certificate.
 	 * @throws KeystoreCacheException In case of some error adding the keystore in the cache.
 	 */
-	private void saveSystemCertificateAndUpdateKeystore(String alias, Certificate cert, Key key, Long statusCert) throws CertificateEncodingException, CommonUtilsException, KeystoreCacheException {
+	private void saveSystemCertificateAndUpdateKeystore(String alias, Certificate cert, Key key, Long statusCert, boolean validationCert) throws CertificateEncodingException, CommonUtilsException, KeystoreCacheException {
 
 		// Recuperamos el keystore a actualizar de base de datos.
 		Keystore ks = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(keystoreCacheObject.getIdKeystore(), false);
@@ -346,6 +348,7 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 		sc.setSubject(UtilsCertificate.getCertificateId(x509cert));
 		CStatusCertificate cStatusCert = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCStatusCertificateService().getCStatusCertificateById(statusCert);
 		sc.setStatusCert(cStatusCert);
+		sc.setValidationCert(validationCert);
 		// Se obtiene el país del almacén de los certificados
 		String countryOfCertificate = UtilsCertificate.getCountryOfTheCertificateString(x509cert);
 		sc.setCountry(countryOfCertificate);

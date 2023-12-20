@@ -108,6 +108,21 @@ public class SystemCertificateForm {
 	private String country;
 	
 	/**
+	 * Attribute that represents the validation of certificate
+	 */
+	private Boolean validationCert;
+	
+	/**
+	 * Attribute that represents the validation of certificate
+	 */
+	private Boolean validationCertEdit;
+	
+	/**
+	 * Attribute that represents the string validation of certificate
+	 */
+	private String validationCertString;
+	
+	/**
 	 * Gets the value of the attribute {@link #idSystemCertificate}.
 	 * @return the value of the attribute {@link #idSystemCertificate}.
 	 */
@@ -379,5 +394,53 @@ public class SystemCertificateForm {
 	 */
 	public void setCountry(String country) {
 		this.country = country;
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #validationCert}.
+	 * @return the value of the attribute {@link #validationCert}.
+	 */
+	public Boolean getValidationCert() {
+		return validationCert;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #validationCert}.
+	 * @param validationCertParam The value for the attribute {@link #validationCert}.
+	 */
+	public void setValidationCert(Boolean validationCertParam) {
+		this.validationCert = validationCertParam;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #validationCertEdit}.
+	 * @return the value of the attribute {@link #validationCertEdit}.
+	 */
+	public Boolean getValidationCertEdit() {
+		return validationCertEdit;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #validationCertEdit}.
+	 * @param validationCertEdit The value for the attribute {@link #validationCertEdit}.
+	 */
+	public void setValidationCertEdit(Boolean validationCertEdit) {
+		this.validationCertEdit = validationCertEdit;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #validationCertString}.
+	 * @return the value of the attribute {@link #validationCertString}.
+	 */
+	public String getValidationCertString() {
+		return validationCertString;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #validationCertString}.
+	 * @param validationCertString The value for the attribute {@link #validationCertString}.
+	 */
+	public void setValidationCertString(String validationCertString) {
+		this.validationCertString = validationCertString;
 	}
 }
