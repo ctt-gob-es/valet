@@ -145,13 +145,4 @@ public interface IExternalAccessService {
 	 */
 	ExternalAccess getExternalAccessTestConnAndSave(String uriTslLocation, String originUrl,
 			ExternalAccessDTO externalAccessDTO);
-
-	/**
-	 * Searches for a certificate by its system identifier and updates its validation status.
-	 *
-	 * @param idSystemCertificate The identifier of the certificate in the system.
-	 * @param checkBox           The boolean value indicating whether the certificate is valid or not.
-	 *                           True means valid, false means not valid.
-	 */
-	void searchCertAndUpdateIsValid(Long idSystemCertificate, boolean checkBox);
 }

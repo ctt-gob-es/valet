@@ -160,12 +160,6 @@ public class ExternalAccessService implements IExternalAccessService {
 	private ExternalAccessSpecification externalAccessSpecification;
 	
 	/**
-	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
-	 */
-	@Autowired
-	private SystemCertificateRepository systemCertificateRepository;
-	
-	/**
 	 * Attribute that represent protocol http.
 	 */
 	public static final String HTTP = "http";
@@ -1148,19 +1142,4 @@ public class ExternalAccessService implements IExternalAccessService {
 	public void setExternalAccessRepository(ExternalAccessRepository externalAccessRepository) {
         this.externalAccessRepository = externalAccessRepository;
     }
-
-	/**
-	 * Searches for and updates the validation status of the certificate in the database.
-	 *
-	 * @param idSystemCertificate The identifier of the certificate in the system.
-	 * @param checkBox           The boolean value indicating whether the certificate is valid or not.
-	 *                           True means valid, false means not valid.
-	 */
-	public void searchCertAndUpdateIsValid(Long idSystemCertificate, boolean checkBox) {
-		LOGGER.info("Buscamos y actualizamos el valor del certificado con id " + idSystemCertificate + " para conocer si es valido o no");
-		LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL426, new Object[ ] { idSystemCertificate }));
-		SystemCertificate systemCertificate = systemCertificateRepository.findByIdSystemCertificate(idSystemCertificate);
-		systemCertificate.setValidationCert(checkBox);
-		systemCertificateRepository.save(systemCertificate);
-	}
 }

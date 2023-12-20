@@ -111,6 +111,11 @@ public class KeystoreRestController {
 	private static final String FIELD_CERTIFICATE_FILE = "certificateFile";
 
 	/**
+	 * Constant that represents the parameter 'validationCertAdd'.
+	 */
+	private static final String FIELD_VALIDATION_CERT_ADD = "validationCertAdd";
+
+	/**
 	 * Constant that represents the parameter 'certificateFile'.
 	 */
 	private static final String FIELD_ROW_INDEX_CERTIFICATE = "rowIndexCertificate";
@@ -147,12 +152,6 @@ public class KeystoreRestController {
 	private ISystemCertificateService iSystemCertificateService;
 	
 	/**
-	 * Attribute that represents the service object for accessing the repository of external access service.
-	 */
-	@Autowired
-	private IExternalAccessService iExternalAccessService;
-	
-	/**
 	 * Method to load the datatable with all the certificates stored in specified keystore.
 	 * @param input Holder object for datatable attributes.
 	 * @param idKeystore Parameter that represents a keystore identifier.
@@ -176,7 +175,7 @@ public class KeystoreRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/savecertificate", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public DataTablesOutput<SystemCertificate> saveCertificate(@RequestParam(FIELD_ID_KEYSTORE) String idKeystore, @RequestParam(FIELD_ALIAS) String alias, @RequestParam(FIELD_CERTIFICATE_FILE) MultipartFile certificateFile, @RequestParam("validationCert") Optional<Boolean> validationCert) {
+	public DataTablesOutput<SystemCertificate> saveCertificate(@RequestParam(FIELD_ID_KEYSTORE) String idKeystore, @RequestParam(FIELD_ALIAS) String alias, @RequestParam(FIELD_CERTIFICATE_FILE) MultipartFile certificateFile, @RequestParam(FIELD_VALIDATION_CERT_ADD) Optional<Boolean> validationCert) {
 		DataTablesOutput<SystemCertificate> dtOutput = new DataTablesOutput<>();
 		boolean error = false;
 		byte[ ] certificateFileBytes = null;
@@ -364,7 +363,7 @@ public class KeystoreRestController {
 
 				// Si el certificado pertenece al keystore OCSP actualizamos si es un certificado válido o no
 				if(oldCert.getKeystore().getTokenName().equals(TOKEN_KEYSTORE19)) {
-					oldCert.setValidationCert(systemCertificateForm.getValidationCert());
+					oldCert.setValidationCert(systemCertificateForm.getValidationCertEdit());
 					iSystemCertificateService.saveSystemCertificate(oldCert);
 				}
 				
@@ -462,8 +461,15 @@ public class KeystoreRestController {
 		return result;
 	}
 
+	/**
+	 * Handles a POST request to update the validity status of a certificate.
+	 *
+	 * @param idSystemCertificate The unique identifier of the system certificate.
+	 * @param checkBox            The boolean value indicating the updated validity status.
+	 *                            If true, the certificate is considered valid; otherwise, it is considered invalid.
+	 */
 	@RequestMapping(value = "/keystoreRest/updateCertIsValid", method = RequestMethod.POST)
 	public void updateCertIsValid(@RequestParam("idSystemCertificate") Long idSystemCertificate, @RequestParam("checkBox") boolean checkBox) {
-		iExternalAccessService.searchCertAndUpdateIsValid(idSystemCertificate, checkBox);
+		iSystemCertificateService.searchCertAndUpdateIsValid(idSystemCertificate, checkBox);
 	}
 }

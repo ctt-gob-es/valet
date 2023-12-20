@@ -26,6 +26,8 @@ package es.gob.valet.persistence.configuration.services.impl;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -34,6 +36,8 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.repository.SystemCertificateRepository;
@@ -51,6 +55,11 @@ import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificate
 public class SystemCertificateService implements ISystemCertificateService {
 
 	/**
+	 * Attribute that represents the object that manages the log of the class.
+	 */
+	private static final Logger LOGGER = LogManager.getLogger(SystemCertificateService.class);
+	
+	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
 	 */
 	@Autowired
@@ -62,6 +71,12 @@ public class SystemCertificateService implements ISystemCertificateService {
 	@Autowired
 	private SystemCertificateDataTablesRepository dtRepository;
 
+	/**
+	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
+	 */
+	@Autowired
+	private SystemCertificateRepository systemCertificateRepository;
+	
 	/**
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService#getAllByKeystore(org.springframework.data.jpa.datatables.mapping.DataTablesInput, java.lang.Long)
@@ -152,4 +167,17 @@ public class SystemCertificateService implements ISystemCertificateService {
 
 	}
 
+	/**
+	 * Searches for and updates the validation status of the certificate in the database.
+	 *
+	 * @param idSystemCertificate The identifier of the certificate in the system.
+	 * @param checkBox           The boolean value indicating whether the certificate is valid or not.
+	 *                           True means valid, false means not valid.
+	 */
+	public void searchCertAndUpdateIsValid(Long idSystemCertificate, boolean checkBox) {
+		LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL426, new Object[ ] { idSystemCertificate }));
+		SystemCertificate systemCertificate = systemCertificateRepository.findByIdSystemCertificate(idSystemCertificate);
+		systemCertificate.setValidationCert(checkBox);
+		systemCertificateRepository.save(systemCertificate);
+	}
 }

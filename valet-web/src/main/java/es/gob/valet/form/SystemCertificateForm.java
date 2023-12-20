@@ -111,6 +111,11 @@ public class SystemCertificateForm {
 	 * Attribute that represents the validation of certificate
 	 */
 	private Boolean validationCert;
+
+	/**
+	 * Attribute that represents the validation of certificate
+	 */
+	private Boolean validationCertEdit;
 	
 	/**
 	 * Attribute that represents the string validation of certificate
@@ -406,10 +411,37 @@ public class SystemCertificateForm {
 	public void setValidationCert(Boolean validationCertParam) {
 		this.validationCert = validationCertParam;
 	}
-	
 
-	
-	
-	
+	/**
+	 * Gets the value of the attribute {@link #validationCertEdit}.
+	 * @return the value of the attribute {@link #validationCertEdit}.
+	 */
+	public Boolean getValidationCertEdit() {
+		return validationCertEdit;
+	}
 
+	/**
+	 * Sets the value of the attribute {@link #validationCertEdit}.
+	 * @param validationCertEdit The value for the attribute {@link #validationCertEdit}.
+	 */
+	public void setValidationCertEdit(Boolean validationCertEdit) {
+		this.validationCertEdit = validationCertEdit;
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #validationCertString}.
+	 * @return the value of the attribute {@link #validationCertString}.
+	 */
+	public String getValidationCertString() {
+		return validationCertString;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #validationCertString}.
+	 * @param validationCertString The value for the attribute {@link #validationCertString}.
+	 */
+	public void setValidationCertString(String validationCertString) {
+		this.validationCertString = validationCertString;
+	}
+	
 }
