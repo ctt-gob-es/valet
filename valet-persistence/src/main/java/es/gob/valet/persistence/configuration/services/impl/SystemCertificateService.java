@@ -175,7 +175,7 @@ public class SystemCertificateService implements ISystemCertificateService {
 	 *                           True means valid, false means not valid.
 	 */
 	public void searchCertAndUpdateIsValid(Long idSystemCertificate, boolean checkBox) {
-		LOGGER.warn(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL426, new Object[ ] { idSystemCertificate }));
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL426, new Object[ ] { idSystemCertificate }));
 		SystemCertificate systemCertificate = systemCertificateRepository.findByIdSystemCertificate(idSystemCertificate);
 		systemCertificate.setValidationCert(checkBox);
 		systemCertificateRepository.save(systemCertificate);
