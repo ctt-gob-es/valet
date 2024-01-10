@@ -26,6 +26,7 @@ package es.gob.valet.tsl.certValidation.impl.common;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.net.URI;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -37,8 +38,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
+import org.apache.http.client.methods.HttpGet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -78,6 +81,7 @@ import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 
 import es.gob.valet.alarms.AlarmsManager;
+import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsProviders;
@@ -86,7 +90,13 @@ import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.i18n.messages.CoreTslMessages;
+import es.gob.valet.i18n.messages.RestGeneralMessages;
+import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
+import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.utils.AlarmIdConstants;
+import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
+import es.gob.valet.service.impl.KeystoreServiceImpl;
+import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;
@@ -541,11 +551,9 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 							// (incluye los certificados).
 							X509CertificateHolder[] basicOcspResponseSignerCerts = basicOcspResponse.getCerts();
 							if (basicOcspResponseSignerCerts != null && basicOcspResponseSignerCerts.length > 0) {
-
-								result = checkOCSPResponseIssuedBySomeDigitalIdentity(basicOcspResponse,
-										basicOcspResponseSignerCerts, validationDate, validationResult, tsp,
-										tslValidator);
-
+								
+								result = evaluateIfOCSPServiceIsReliable(validationDate, validationResult, tsp, tslValidator, basicOcspResponse, basicOcspResponseSignerCerts);
+							
 							}
 							// Si no incluye los certificados, tenemos que
 							// comprobar
@@ -588,6 +596,161 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 	}
 
+	private boolean evaluateIfOCSPServiceIsReliable(Date validationDate, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator, BasicOCSPResp basicOcspResponse, X509CertificateHolder[ ] basicOcspResponseSignerCerts) {
+		boolean result;
+		
+		LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL427));
+		
+		Certificate signerCert = findSigningCertificate(basicOcspResponse, basicOcspResponseSignerCerts);
+		
+		// 1. Se comprueba si el certificado con el que se ha firmado se encuentra en la TSL
+		result = checkOCSPResponseIssuedBySomeDigitalIdentity(validationDate,
+				validationResult, tsp, tslValidator, signerCert);
+		
+		// 2. Si no se encuentra en la TSL, se comprueba si certificado con el que se ha firmado la 
+		// respuesta ha sido emitido por algún certificado registrado en el almacén de confianza CA (TrustStoreCA).
+		if(!result) {
+			result = issuedBySomeCertRegisteredInTrustStoreCA(signerCert);
+			
+			// 3. Si el emisor no se encuentra en el almacén de confianza CA, se comprueba si está registrado y 
+			// marcado como confiable en un nuevo almacén de confianza OCSP
+			if(!result) {
+				result = checksRegisteredMarkedAsTrustedInTrustStoreOCSP(signerCert, tslValidator);
+				
+				// 4. Si no ha superado ninguna de las validaciones anteriores se genera y se envía una nueva la alarma 
+				// a los administradores y se registra en el nuevo almacén de confianza OCSP como pendiente de validación
+				if(!result) {
+					
+					// TODO DONDE LANZAR LA ALARMA 4 POR DEFINIR...
+					
+					// 5. Si el administrador no lo clasifica como confiable, la respuesta OCSP no será confiable y se generará la alarma ALM004.
+					String subject = null;
+					String issuer = null;
+					try {
+						X509Certificate x509cert = UtilsCertificate.getX509Certificate(signerCert.getEncoded());
+						subject = UtilsCertificate.getCertificateId(x509cert);
+						issuer = UtilsCertificate.getCertificateIssuerId(x509cert);
+					} catch (CommonUtilsException | IOException e) {
+						subject = null;
+						issuer = null;
+					} finally {
+						AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM004_EVENT_001, new Object[ ] { subject, issuer }));
+					}
+
+				}
+
+			}
+			
+		}
+		return result;
+	}
+	
+	@SuppressWarnings("static-access")
+	private boolean checksRegisteredMarkedAsTrustedInTrustStoreOCSP(Certificate signerCert, ATSLValidator tslValidator) {
+		boolean result = false;
+		
+		// Si hemos encontrado el firmante...
+		if (signerCert != null) {
+			boolean systemCertificateRegistered = false;
+			try {
+				byte[ ] certificate = signerCert.getEncoded();
+				X509Certificate signerCertX509 = UtilsCertificate.getX509Certificate(certificate);
+				
+				Map<String, X509Certificate> mapAliasX509Certificate = CertificateCacheManager.getInstance().getMapAliasX509CertOCSP();
+				// Recorremos el HashMap usando un bucle for-each
+		        for (Map.Entry<String, X509Certificate> entry : mapAliasX509Certificate.entrySet()) {
+		            String alias = entry.getKey();
+		            X509Certificate certKeystoreOCSPX509 = entry.getValue();
+		            // Se evalua si el certificado del firmante ha sido emitido por algun certificado del keystore OCSP
+					if(UtilsCertificate.isIssuer(certKeystoreOCSPX509, signerCertX509)) {
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL434));
+						SystemCertificate systemCertificateSigner = ManagerPersistenceConfigurationServices.getInstance().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, KeystoreIdConstants.ID_OCSP_TRUSTSTORE);
+						// Se comprueba si el certificado está registrado
+						if(null != systemCertificateSigner) {
+							LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL435));
+							systemCertificateRegistered = true;
+							//  Está marcado como confiable ?¿
+							if(systemCertificateSigner.getValidationCert()) {
+								LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL436));
+								result = true;
+							} else {
+								LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL437));
+								// Se considera la respuesta OCSP NO confiable.
+								result = false;
+								// Lanzamos la alarma 11.
+								String subject = UtilsCertificate.getCertificateId(signerCertX509);
+								String issuer = UtilsCertificate.getCertificateIssuerId(signerCertX509);
+								
+								AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM011_OCSP_RESPONSE_NOT_TRUSTED,
+								                                               Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM011_EVENT_000,
+								                                                                                new Object[] { subject, issuer }));
+							}
+							break; // Rompo el bucle más cercano ya que hemos encontrado un certificado registrado.
+						}
+					}
+		        }
+				
+		        // Si el certificado no está registrado
+				if(!systemCertificateRegistered) {
+					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL438));
+					// Se registra en el nuevo almacén de confianza OCSP como pendiente de validación.
+					BigInteger serialNumber = signerCertX509.getSerialNumber();
+					String alias = serialNumber.toString() + "_cer";
+					ApplicationContextProvider.getApplicationContext().getBean(KeystoreServiceImpl.class).saveCertificateKeystoreOCSP(signerCert.getEncoded(), alias);
+					
+					// Lanzamos la alarma 10.
+					String subject = UtilsCertificate.getCertificateId(signerCertX509);
+					String issuer = UtilsCertificate.getCertificateIssuerId(signerCertX509);
+					
+					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM010_TRUESTOREOCSP_PENDING_VALIDATION,
+					                                               Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM010_EVENT_000,
+					                                                                                new Object[] { subject, issuer }));
+					
+					// Se considera la respuesta OCSP NO confiable.
+					result = false;
+				}
+			} catch (CommonUtilsException e) {
+				LOGGER.error(Language.getResRestGeneral(RestGeneralMessages.REST_LOG012));
+			} catch (IOException e) {
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL432));
+			}
+			
+		}
+		
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL439, new Object[ ] { result }));
+		return result;
+	}
+	
+	@SuppressWarnings("static-access")
+	private boolean issuedBySomeCertRegisteredInTrustStoreCA(Certificate signerCert) {
+		boolean result = false;
+		// Si hemos encontrado el firmante...
+		if (signerCert != null) {			
+			try {
+				byte[ ] certificate = signerCert.getEncoded();
+				X509Certificate signerCertX509 = UtilsCertificate.getX509Certificate(certificate);
+				Map<String, X509Certificate> mapAliasX509Certificate = CertificateCacheManager.getInstance().getMapAliasX509CertCA();
+				// Recorremos el HashMap usando un bucle for-each
+		        for (Map.Entry<String, X509Certificate> entry : mapAliasX509Certificate.entrySet()) {
+		            X509Certificate certKeystoreOCSPX509 = entry.getValue();
+		            // Si el firmante ha sido emitido por algún certificado registrado en el almacén de confianza CA, lo consideramos como confiable.
+					if(UtilsCertificate.isIssuer(certKeystoreOCSPX509, signerCertX509)) {
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL431));
+						result = true;
+						break; // Rompo el bucle más cercano ya que hemos encontrado un certificado cuyo firmante ha sido emitido.
+					}
+		        }
+			} catch (CommonUtilsException e) {
+				LOGGER.error(Language.getResRestGeneral(RestGeneralMessages.REST_LOG012));
+			} catch (IOException e) {
+				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL432));
+			}
+		}
+		
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL433, new Object[ ] { result }));
+		return result;
+	}
+	
 	/**
 	 * Checks if the extension Nonce matches with the input Nonce. If the input
 	 * nonce is <code>null</code>, or the basic OCSP response has not the nonce
@@ -635,13 +798,6 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	/**
 	 * Checks if the OCSP response is signed by the issuer of the certificate to
 	 * validate.
-	 * 
-	 * @param basicOcspResponse
-	 *            Basic OCSP Response to check.
-	 * @param basicOcspResponseSignerCerts
-	 *            Array with the certificates in the Basic OCSP Response to
-	 *            check. If this parameter is <code>null</code>, then is
-	 *            extracted from the basic OCSP response.
 	 * @param validationDate
 	 *            Validation date to check the certificate status revocation.
 	 * @param validationResult
@@ -654,37 +810,19 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	 *            TSL validator to verify if some TSP service is accomplished
 	 *            with the qualified (or not) certificate to check the OCSP
 	 *            response.
+	 * @param signerCert TODO
+	 * 
 	 * @return <code>true</code> if the basic ocspe response is signed by the
 	 *         issuer of the certificate to validate, otherwise
 	 *         <code>false</code>.
 	 */
-	private boolean checkOCSPResponseIssuedBySomeDigitalIdentity(BasicOCSPResp basicOcspResponse,
-			X509CertificateHolder[] basicOcspResponseSignerCerts, Date validationDate,
-			TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
+	private boolean checkOCSPResponseIssuedBySomeDigitalIdentity(Date validationDate,
+			TSLValidatorResult validationResult, TrustServiceProvider tsp,
+			ATSLValidator tslValidator, Certificate signerCert) {
 
 		boolean result = false;
 
-		// Recorremos los X509CertificateHolder hasta encontrar el firmante...
-		X509CertificateHolder[] basicOcspResponseSignerCertsArray = basicOcspResponseSignerCerts;
-		if (basicOcspResponseSignerCertsArray == null) {
-			basicOcspResponseSignerCertsArray = basicOcspResponse.getCerts();
-		}
-		Certificate signerCert = null;
-		if (basicOcspResponseSignerCertsArray != null) {
-			for (X509CertificateHolder signerCertX509CertHolder : basicOcspResponseSignerCertsArray) {
-				try {
-					if (basicOcspResponse.isSignatureValid(
-							new JcaContentVerifierProviderBuilder().build(signerCertX509CertHolder))) {
-						signerCert = signerCertX509CertHolder.toASN1Structure();
-						break;
-					}
-				} catch (OperatorCreationException | CertificateException | OCSPException e) {
-					continue;
-				}
-			}
-		}
-
-		// Si lo hemos encontrado...
+		// Si hemos encontrado el firmante...
 		if (signerCert != null) {
 
 			try {
@@ -715,30 +853,41 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
 			}
 
-			// Llegamos a este punto cuando hemos obtenido el firmante pero no
-			// confiamos en este.
-			if (!result) {
-				String subject = null;
-				String issuer = null;
-				try {
-					X509Certificate x509cert = UtilsCertificate.getX509Certificate(signerCert.getEncoded());
-					subject = UtilsCertificate.getCertificateId(x509cert);
-					issuer = UtilsCertificate.getCertificateIssuerId(x509cert);
-				} catch (CommonUtilsException | IOException e) {
-					subject = null;
-					issuer = null;
-				} finally {
-					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP,
-							Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM004_EVENT_001,
-									new Object[] { subject, issuer }));
-				}
-
-			}
-
 		}
 
+		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL430, new Object[ ] { result }));
 		return result;
 
+	}
+
+	private Certificate findSigningCertificate(BasicOCSPResp basicOcspResponse, X509CertificateHolder[ ] basicOcspResponseSignerCerts) {
+		// Recorremos los X509CertificateHolder hasta encontrar el firmante...
+		X509CertificateHolder[] basicOcspResponseSignerCertsArray = basicOcspResponseSignerCerts;
+		if (basicOcspResponseSignerCertsArray == null) {
+			basicOcspResponseSignerCertsArray = basicOcspResponse.getCerts();
+		}
+		Certificate signerCert = null;
+		if (basicOcspResponseSignerCertsArray != null) {
+			for (X509CertificateHolder signerCertX509CertHolder : basicOcspResponseSignerCertsArray) {
+				try {
+					if (basicOcspResponse.isSignatureValid(
+							new JcaContentVerifierProviderBuilder().build(signerCertX509CertHolder))) {
+						signerCert = signerCertX509CertHolder.toASN1Structure();
+						break;
+					}
+				} catch (OperatorCreationException | CertificateException | OCSPException e) {
+					continue;
+				}
+			}
+		}
+		
+		if(null != signerCert) {
+			LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL428, new Object[ ] { signerCert.getSerialNumber() }));
+		} else {
+			LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL429));
+		}
+		
+		return signerCert;
 	}
 
 	/**
@@ -1401,13 +1550,15 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		// Obtenemos los datos que identificarán al firmante de la respuesta
 		// OCSP.
 		extractOCSPResponseSignerData(shi);
-
+		
+		Certificate signerCert = findSigningCertificate(basicOcspResponse, null);
+		
 		// Si hemos obtenido al menos una identidad digital, y
 		// el firmante de la respuesta OCSP coincide con alguna de estas,
 		// o es el mismo emisor del certificado a validar,
 		// significa que la respuesta es compatible con la TSL.
-		if (dip.isThereSomeDigitalIdentity() && (checkOCSPResponseIssuedBySomeDigitalIdentity(basicOcspResponse, null,
-				validationDate, validationResult, null, null)
+		if (dip.isThereSomeDigitalIdentity() && (checkOCSPResponseIssuedBySomeDigitalIdentity(validationDate, validationResult,
+				null, null, signerCert)
 				|| checkOCSPResponseIssuerSameThanCertificateToValidate(basicOcspResponse, validationResult))) {
 
 			// Asignamos la respuesta OCSP al resultado.

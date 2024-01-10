@@ -2225,6 +2225,58 @@ public class CoreTslMessages {
 	 */
 	public static final String LOGMTSL426 = "logMTSL426";
 	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL427</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL427 = "logMTSL427";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL428</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL428 = "logMTSL428";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL429</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL429 = "logMTSL429";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL430</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL430 = "logMTSL430";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL431</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL431 = "logMTSL431";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL432</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL432 = "logMTSL432";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL433</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL433 = "logMTSL433";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL434</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL434 = "logMTSL434";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL435</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL435 = "logMTSL435";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL436</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL436 = "logMTSL436";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL437</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL437 = "logMTSL437";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL438</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL438 = "logMTSL438";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL439</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL439 = "logMTSL439";
+	/**
 	 * Constant attribute that represents the name of the property <code>errorQcSubStatus1</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	public static final String ERROR_QC_SUBSTATUS1 = "errorQcSubStatus1";

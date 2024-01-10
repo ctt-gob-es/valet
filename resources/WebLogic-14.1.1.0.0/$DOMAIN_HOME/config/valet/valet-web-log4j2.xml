@@ -18,24 +18,6 @@
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />
             </Policies>
 		</RollingFile>
-		<!-- A time/date based rolling appender yyyy-MM-dd,yyyy-MM-dd-HH-mm-->
-        <RollingFile name="VALET-FILE-REST" fileName="${sys:weblogic.config.path.logs.dir}\valet-rest.log" filePattern="${sys:weblogic.config.path.logs.dir}\valet-rest.log-%d{yyyy-MM-dd}.log">
-            <PatternLayout>
-                <pattern>%d %x %-5level [%c] %msg%n</pattern>
-            </PatternLayout>
-            <Policies>
-                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
-            </Policies>
-        </RollingFile>
-		<!-- A time/date based rolling appender yyyy-MM-dd,yyyy-MM-dd-HH-mm-->
-        <RollingFile name="VALET-AUDIT-FILE-REST" fileName="${sys:weblogic.config.path.logs.dir}\valet-audit-rest.log" filePattern="${sys:weblogic.config.path.logs.dir}\valet-audit-rest.log-%d{yyyy-MM-dd}.log">
-            <PatternLayout>
-                <pattern>%msg%n</pattern>
-            </PatternLayout>
-            <Policies>
-                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
-            </Policies>
-        </RollingFile>
 		<Console name="STDOUT">
 			<PatternLayout pattern="%msg%n" />
 		</Console>
@@ -47,18 +29,11 @@
 		<Logger name="es.gob.valet" level="info" additivity="false">
             <appender-ref ref="VALET-FILE-WEB" level="info" />
         </Logger>
-		<Logger name="es.gob.valet.rest" level="info" additivity="false">
-            <appender-ref ref="VALET-FILE-REST" level="info" />
-        </Logger>
-		<logger name="Valet-Audit" level="info" additivity="false">
-			<appender-ref ref="VALET-AUDIT-FILE-REST" level="info"/>
-		</logger>
 		<!-- ======================= -->
 		<!-- Setup the Root category -->
 		<!-- ======================= -->
 		<Root level="error" additivity="false">
             <appender-ref ref="VALET-FILE-WEB" />
-			<appender-ref ref="VALET-FILE-REST" />
 		</Root>
 	</Loggers>
 </Configuration>

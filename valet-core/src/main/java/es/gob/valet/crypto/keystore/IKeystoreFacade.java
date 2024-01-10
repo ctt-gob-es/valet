@@ -31,6 +31,7 @@ import java.security.Provider;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
 
 import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
@@ -177,5 +178,7 @@ public interface IKeystoreFacade {
 	 * @throws CryptographyException If the method fails.
 	 */
 	List<X509Certificate> getAllX509Certificates() throws CryptographyException;
+	
+	Map<String, X509Certificate> getAllAliasWithX509Certificates();
 
 }

@@ -4804,7 +4804,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 *            Certificate X509 v3 to validate.
 	 * @return
 	 */
-	private String getIssuerAltName(X509Certificate cert) {
+	protected String getIssuerAltName(X509Certificate cert) {
 		String result = null;
 		try {
 			WrapperX509Cert wrapperX509Cert = new WrapperX509Cert(cert);

@@ -24,6 +24,7 @@
  */
 package es.gob.valet.crypto.keystore;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Key;
 import java.security.KeyStore;
@@ -38,7 +39,9 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -760,6 +763,32 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 			throw new CryptographyException(ValetExceptionConstants.COD_190, errorMsg, e);
 		}
 		return result;
+	}
+	
+	public Map<String, X509Certificate> getAllAliasWithX509Certificates() {
+		Map<String, X509Certificate> mapAliasX509Cert = new HashMap<>();
+		try {
+    		KeyStore ks = keystoreCacheObject.getKeystore();
+    		Enumeration<String> aliases = ks.aliases();
+    		// Recorre todas las entradas del KeyStore
+    		while (aliases.hasMoreElements()) {
+    			String alias = aliases.nextElement();
+    			// Verifica si la entrada es un certificado
+    			if (ks.isCertificateEntry(alias)) {
+    				// Obtiene el certificado correspondiente al alias
+    				java.security.cert.Certificate certKeystore = ks.getCertificate(alias);
+    				X509Certificate certKeystoreX509 = UtilsCertificate.getX509Certificate(certKeystore.getEncoded());
+    				mapAliasX509Cert.put(alias, certKeystoreX509);
+    			}
+    		}
+		} catch (KeyStoreException | CertificateEncodingException | CommonUtilsException e) {
+    		String errorMsg = Language.getFormatResCoreGeneral(CoreGeneralMessages.STANDARD_KEYSTORE_063, new Object[ ] { Language.getResPersistenceConstants(keystoreCacheObject.getTokenName()) });
+    		LOGGER.error(errorMsg, e);
+    	} finally {
+    		LOGGER.info(Language.getFormatResCoreGeneral(CoreGeneralMessages.STANDARD_KEYSTORE_061, new Object[ ] { Language.getResPersistenceConstants(keystoreCacheObject.getTokenName()) }));
+    	}
+		
+		return mapAliasX509Cert;
 	}
 
 }

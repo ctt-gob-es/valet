@@ -76,4 +76,7 @@ public class AlarmIdConstants {
 	 */
 	public static final String ALM009_CONNECTION_FAIL = "ALM009";
 
+	public static final String ALM010_TRUESTOREOCSP_PENDING_VALIDATION = "ALM010";
+	
+	public static final String ALM011_OCSP_RESPONSE_NOT_TRUSTED = "ALM011";
 }

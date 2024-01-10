@@ -44,5 +44,7 @@ public class KeystoreIdConstants {
 	 * Constant attribute that represents the ID to identify the CA - TrustStore.
 	 */
 	public static final Long ID_CA_TRUSTSTORE = 18L;
+	
+	public static final Long ID_OCSP_TRUSTSTORE = 19L;
 
 }
