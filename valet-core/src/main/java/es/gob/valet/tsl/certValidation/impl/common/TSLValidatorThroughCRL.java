@@ -620,7 +620,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 */
 	private List<DigitalIdentitiesProcessor> obtainDigitalIdToTsl(ATSLValidator tslValidator) {
 		List<DigitalIdentitiesProcessor> listDigitalIdentitiesProcessor = new ArrayList<>();
-		
+			
 		List<TrustServiceProvider> listTrustServiceProvider = tslValidator.getTSLObject().getTrustServiceProviderList();
 
 		for (TrustServiceProvider trustServiceProvider: listTrustServiceProvider) {
@@ -644,17 +644,20 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 					}
 					
 					// Obtengo los DigitalId de ServiceHistory
-					List<ServiceHistoryInstance> listServiceHistoryInstance = tspService.getAllServiceHistory();
-					for (ServiceHistoryInstance serviceHistoryInstance: listServiceHistoryInstance) {
-						List<DigitalID> listDigitalIDSH = serviceHistoryInstance.getAllDigitalIdentities();
-						if(null != listDigitalIDSH) {
-							DigitalIdentitiesProcessor digitalIdentitiesProcessorSH = new DigitalIdentitiesProcessor(listDigitalIDSH);
-							listDigitalIdentitiesProcessor.add(digitalIdentitiesProcessorSH);
+					if(null != tspService.getAllServiceHistory()) {
+						List<ServiceHistoryInstance> listServiceHistoryInstance = tspService.getAllServiceHistory();
+						for (ServiceHistoryInstance serviceHistoryInstance: listServiceHistoryInstance) {
+							List<DigitalID> listDigitalIDSH = serviceHistoryInstance.getAllDigitalIdentities();
+							if(null != listDigitalIDSH) {
+								DigitalIdentitiesProcessor digitalIdentitiesProcessorSH = new DigitalIdentitiesProcessor(listDigitalIDSH);
+								listDigitalIdentitiesProcessor.add(digitalIdentitiesProcessorSH);
+							}
 						}
 					}
 				}
 			}
 		}
+		
 		return listDigitalIdentitiesProcessor;
 	}
 
