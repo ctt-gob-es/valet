@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.http.client.methods.HttpGet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -616,29 +615,6 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// marcado como confiable en un nuevo almacén de confianza OCSP
 			if(!result) {
 				result = checksRegisteredMarkedAsTrustedInTrustStoreOCSP(signerCert, tslValidator);
-				
-				// 4. Si no ha superado ninguna de las validaciones anteriores se genera y se envía una nueva la alarma 
-				// a los administradores y se registra en el nuevo almacén de confianza OCSP como pendiente de validación
-				if(!result) {
-					
-					// TODO DONDE LANZAR LA ALARMA 4 POR DEFINIR...
-					
-					// 5. Si el administrador no lo clasifica como confiable, la respuesta OCSP no será confiable y se generará la alarma ALM004.
-					String subject = null;
-					String issuer = null;
-					try {
-						X509Certificate x509cert = UtilsCertificate.getX509Certificate(signerCert.getEncoded());
-						subject = UtilsCertificate.getCertificateId(x509cert);
-						issuer = UtilsCertificate.getCertificateIssuerId(x509cert);
-					} catch (CommonUtilsException | IOException e) {
-						subject = null;
-						issuer = null;
-					} finally {
-						AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM004_ERROR_GETTING_USING_OCSP, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM004_EVENT_001, new Object[ ] { subject, issuer }));
-					}
-
-				}
-
 			}
 			
 		}
