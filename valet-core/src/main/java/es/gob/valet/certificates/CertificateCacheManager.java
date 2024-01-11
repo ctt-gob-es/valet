@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/04/2022.</p>
  * @author Gobierno de España.
- * @version 1.2, 19/09/2023.
+ * @version 1.3, 11/01/2024.
  */
 package es.gob.valet.certificates;
 
@@ -54,7 +54,7 @@ import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
  * TSL.
  * </p>
  * 
- * @version 1.2, 19/09/2023.
+ * @version 1.3, 11/01/2024.
  */
 public final class CertificateCacheManager {
 
@@ -74,8 +74,16 @@ public final class CertificateCacheManager {
 	 */
 	private static List<X509Certificate> listCertificateCA;
 	
+	/**
+	 * Attribute that represents the map of with alias/certificates that have been
+	 * registered in the CA trust store.
+	 */
 	private static Map<String, X509Certificate> mapAliasX509CertCA;
 
+	/**
+	 * Attribute that represents the map of with alias/certificates that have been
+	 * registered in the OCSP trust store.
+	 */
 	private static Map<String, X509Certificate> mapAliasX509CertOCSP;
 	
 	
@@ -106,8 +114,8 @@ public final class CertificateCacheManager {
 	}
 
 	/**
-	 * Method that caches the different certificates stored in the CA trust
-	 * store.
+	 * Method that caches the different alias/certificates stored in the CA trust
+	 * store. 
 	 */
 	public void loadListCertificateCA() {
 		// obtenemos el almacén de claves de la caché
@@ -141,6 +149,10 @@ public final class CertificateCacheManager {
 		}
 	}
 
+	/**
+	 * Method that caches the different alias/certificates stored in the OCSP trust
+	 * store.
+	 */
 	public void loadListCertificateOCSP() {
 		// obtenemos el almacén de claves de la caché
 		KeystoreCacheObject kco = null;

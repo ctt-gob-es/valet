@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 19/12/2023.
+ * @version 1.4, 11/01/2024.
  */
 package es.gob.valet.crypto.keystore;
 
@@ -41,7 +41,7 @@ import es.gob.valet.persistence.configuration.model.utils.StatusCertificateIdCon
 /**
  * <p>Interface that defines the methods to manage operations with keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 19/12/2023.
+ * @version 1.4, 11/01/2024.
  */
 public interface IKeystoreFacade {
 
@@ -179,6 +179,10 @@ public interface IKeystoreFacade {
 	 */
 	List<X509Certificate> getAllX509Certificates() throws CryptographyException;
 	
+	/**
+	 * Method that obtains a list with all the alias/certificates stored inside of a keystore.
+	 * @return a map with all the alias/certificates stored inside of a keystore.
+	 */
 	Map<String, X509Certificate> getAllAliasWithX509Certificates();
 
 }

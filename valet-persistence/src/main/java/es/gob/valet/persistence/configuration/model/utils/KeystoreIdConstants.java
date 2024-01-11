@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 11/01/2024.
  */
 package es.gob.valet.persistence.configuration.model.utils;
 
 /**
  * <p>class that contains all the system keystores IDs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 11/01/2024.
  */
 public class KeystoreIdConstants {
 
@@ -44,7 +44,9 @@ public class KeystoreIdConstants {
 	 * Constant attribute that represents the ID to identify the CA - TrustStore.
 	 */
 	public static final Long ID_CA_TRUSTSTORE = 18L;
-	
+	/**
+	 * Constant attribute that represents the ID to identify the OCSP - TrustStore.
+	 */
 	public static final Long ID_OCSP_TRUSTSTORE = 19L;
 
 }

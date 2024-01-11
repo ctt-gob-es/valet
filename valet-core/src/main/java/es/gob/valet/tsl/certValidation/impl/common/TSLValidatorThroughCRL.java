@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 14/11/2023.
+ * @version 2.2, 11/01/2024.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -39,8 +39,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -82,7 +80,7 @@ import es.gob.valet.utils.ValidatorResultConstants;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.1, 14/11/2023.
+ * @version 2.2, 11/01/2024.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -612,6 +610,14 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 	}
 
+	/**
+	 * Obtains a list of DigitalIdentitiesProcessor instances based on the information
+	 * retrieved from the TSL (Trust Service List) using the provided ATSLValidator.
+	 *
+	 * @param tslValidator The TSLValidator instance used for obtaining TSL information.
+	 * @return A List of DigitalIdentitiesProcessor instances containing digital identities
+	 *         extracted from ServiceInformation and ServiceHistory in the TSL.
+	 */
 	private List<DigitalIdentitiesProcessor> obtainDigitalIdToTsl(ATSLValidator tslValidator) {
 		List<DigitalIdentitiesProcessor> listDigitalIdentitiesProcessor = new ArrayList<>();
 		

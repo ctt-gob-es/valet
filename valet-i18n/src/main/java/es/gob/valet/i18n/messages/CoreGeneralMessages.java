@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 19/09/2023.
+ * @version 2.2, 11/01/2024.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the core module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.1, 19/09/2023.
+ * @version 2.2, 11/01/2024.
  */
 public class CoreGeneralMessages {
 
@@ -1310,9 +1310,15 @@ public class CoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	public static final String ALM009_EVENT_004 = "ALM009_EVENT_004";
-	
+	/**
+	 * Constant attribute that represents the property key <code>ALM010_EVENT_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
 	public static final String ALM010_EVENT_000 = "ALM010_EVENT_000";
-	
+	/**
+	 * Constant attribute that represents the property key <code>ALM011_EVENT_000</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
 	public static final String ALM011_EVENT_000 = "ALM011_EVENT_000";
 	
 	/**

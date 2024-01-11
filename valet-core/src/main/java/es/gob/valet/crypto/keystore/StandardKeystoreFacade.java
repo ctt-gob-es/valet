@@ -20,11 +20,10 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 19/09/2023.
+ * @version 1.5, 11/01/2024.
  */
 package es.gob.valet.crypto.keystore;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Key;
 import java.security.KeyStore;
@@ -67,7 +66,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
 /**
  * <p>Class that manages all the operations related with JCE, JCEKS and PKCS#12 keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 19/09/2023.
+ * @version 1.5, 11/01/2024.
  */
 public class StandardKeystoreFacade implements IKeystoreFacade {
 
@@ -765,6 +764,11 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.crypto.keystore.IKeystoreFacade#getAllAliasWithX509Certificates()
+	 */
 	public Map<String, X509Certificate> getAllAliasWithX509Certificates() {
 		Map<String, X509Certificate> mapAliasX509Cert = new HashMap<>();
 		try {
