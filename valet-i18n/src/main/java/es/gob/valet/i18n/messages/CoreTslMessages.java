@@ -2277,6 +2277,14 @@ public class CoreTslMessages {
 	 */
 	public static final String LOGMTSL439 = "logMTSL439";
 	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL440</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL440 = "logMTSL440";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL441</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	public static final String LOGMTSL441 = "logMTSL441";
+	/**
 	 * Constant attribute that represents the name of the property <code>errorQcSubStatus1</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	public static final String ERROR_QC_SUBSTATUS1 = "errorQcSubStatus1";

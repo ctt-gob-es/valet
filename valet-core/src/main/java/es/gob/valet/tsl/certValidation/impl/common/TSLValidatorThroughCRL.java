@@ -37,7 +37,10 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,6 +56,7 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.alarms.AlarmsManager;
+import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.UtilsASN1;
 import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsCertificate;
@@ -69,6 +73,7 @@ import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
+import es.gob.valet.tsl.parsing.impl.common.ServiceInformation;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
 import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 import es.gob.valet.utils.UtilsHTTP;
@@ -434,6 +439,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 * @param tslValidator TSL Validator to check if some CRL TSP Service is in accord with the qualified (or not) certificate.
 	 * @return <code>true</code> if the CRL has been verified, otherwise <code>false</code>.
 	 */
+	@SuppressWarnings("static-access")
 	private boolean checkCRLisValid(X509CRL crl, Date validationDate, boolean checkIssuerOfCRL, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
 
 		boolean result = true;
@@ -555,6 +561,38 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 				}
 
+				// Se comprueba si el emisor de la CRL está entre las entidades de confianza 
+				// incluidas en la TSL (no se restringe al TSP que identificó el certificado).
+				if (!result) {
+    				List<DigitalIdentitiesProcessor> listDigitalIdentitiesProcessor = obtainDigitalIdToTsl(tslValidator);
+    				
+    				for (DigitalIdentitiesProcessor digitalIdentitiesProcessor: listDigitalIdentitiesProcessor) {
+    					result = checkCRLisValidWithDigitalIdentitiesProcessor(crl, digitalIdentitiesProcessor);
+    					if(result){
+    						break; // Rompo el bucle más cercano ya que he encontrado el emisor.
+    					}
+    				}
+				}
+				LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL440, new Object[ ] { result }));
+				
+				// Comprobamos que el emisor de la CRL se encuentre en el almacén TrustStoreCA
+				if(!result) {
+					Map<String, X509Certificate> mapAliasX509CertCA = CertificateCacheManager.getInstance().getMapAliasX509CertCA();
+					
+					// Recorremos el HashMap usando un bucle for-each
+			        for (Map.Entry<String, X509Certificate> entry : mapAliasX509CertCA.entrySet()) {
+			        	X509Certificate certKeystoreCAX509 = entry.getValue();
+			            // Si el firmante ha sido emitido por algún certificado registrado en el almacén de confianza CA, lo consideramos como confiable.
+			        	try {
+							crl.verify(certKeystoreCAX509.getPublicKey());
+							result = true;
+							break; // Rompo el bucle más cercano ya que he encontrado el emisor.
+						} catch (Exception e) {
+							continue;
+						}
+			        }
+				}
+				LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL441, new Object[ ] { result }));
 			}
 
 			// Si hemos llegado a este punto y no se confía en la CRL,
@@ -572,6 +610,46 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 		return result;
 
+	}
+
+	private List<DigitalIdentitiesProcessor> obtainDigitalIdToTsl(ATSLValidator tslValidator) {
+		List<DigitalIdentitiesProcessor> listDigitalIdentitiesProcessor = new ArrayList<>();
+		
+		List<TrustServiceProvider> listTrustServiceProvider = tslValidator.getTSLObject().getTrustServiceProviderList();
+
+		for (TrustServiceProvider trustServiceProvider: listTrustServiceProvider) {
+			List<TSPService> tspServiceList = trustServiceProvider.getAllTSPServices();
+			// Si la lista no es nula ni vacía...
+			if (tspServiceList != null && !tspServiceList.isEmpty()) {
+				// La vamos recorriendo mientras no se termine
+				for (int index = 0; index < tspServiceList.size(); index++) {
+
+					// Almacenamos en una variable el servicio a
+					// analizar en esta
+					// vuelta.
+					TSPService tspService = tspServiceList.get(index);
+					
+					// Obtengo los DigitalId de ServiceInformation
+					ServiceInformation si = tspService.getServiceInformation();
+					List<DigitalID> listDigitalIDSI = si.getAllDigitalIdentities();
+					if(null != listDigitalIDSI) {
+						DigitalIdentitiesProcessor digitalIdentitiesProcessorSI = new DigitalIdentitiesProcessor(listDigitalIDSI);
+						listDigitalIdentitiesProcessor.add(digitalIdentitiesProcessorSI);
+					}
+					
+					// Obtengo los DigitalId de ServiceHistory
+					List<ServiceHistoryInstance> listServiceHistoryInstance = tspService.getAllServiceHistory();
+					for (ServiceHistoryInstance serviceHistoryInstance: listServiceHistoryInstance) {
+						List<DigitalID> listDigitalIDSH = serviceHistoryInstance.getAllDigitalIdentities();
+						if(null != listDigitalIDSH) {
+							DigitalIdentitiesProcessor digitalIdentitiesProcessorSH = new DigitalIdentitiesProcessor(listDigitalIDSH);
+							listDigitalIdentitiesProcessor.add(digitalIdentitiesProcessorSH);
+						}
+					}
+				}
+			}
+		}
+		return listDigitalIdentitiesProcessor;
 	}
 
 	/**
