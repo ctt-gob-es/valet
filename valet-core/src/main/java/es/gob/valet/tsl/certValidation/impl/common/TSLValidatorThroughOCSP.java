@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 11/01/2024.
+ * @version 2.0, 12/01/2024.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -115,7 +115,7 @@ import es.gob.valet.utils.ValidatorResultConstants;
  * TSL.
  * </p>
  * 
- * @version 1.9, 11/01/2024.
+ * @version 2.0, 12/01/2024.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -715,8 +715,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 								String subject = UtilsCertificate.getCertificateId(signerCertX509);
 								String issuer = UtilsCertificate.getCertificateIssuerId(signerCertX509);
 								
-								AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM011_OCSP_RESPONSE_NOT_TRUSTED,
-								                                               Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM011_EVENT_000,
+								AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM010_OCSP_RESPONSE_NOT_TRUSTED,
+								                                               Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM010_EVENT_000,
 								                                                                                new Object[] { subject, issuer }));
 							}
 							break; // Rompo el bucle más cercano ya que hemos encontrado un certificado registrado.
@@ -736,8 +736,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					String subject = UtilsCertificate.getCertificateId(signerCertX509);
 					String issuer = UtilsCertificate.getCertificateIssuerId(signerCertX509);
 					
-					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM010_TRUESTOREOCSP_PENDING_VALIDATION,
-					                                               Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM010_EVENT_000,
+					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM009_TRUESTOREOCSP_PENDING_VALIDATION,
+					                                               Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_000,
 					                                                                                new Object[] { subject, issuer }));
 					
 					// Se considera la respuesta OCSP NO confiable.

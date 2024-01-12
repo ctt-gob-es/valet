@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.3, 11/01/2024.
+ * @version 1.4, 12/01/2024.
  */
 package es.gob.valet.persistence.configuration.model.utils;
 
 /**
  * <p>Class that contains all the IDs of the alarms.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 11/01/2024.
+ * @version 1.4, 12/01/2024.
  */
 public class AlarmIdConstants {
 
@@ -72,17 +72,17 @@ public class AlarmIdConstants {
 	public static final String ALM008_REGISTER_KEYSTORE_CA = "ALM008";
 	
 	/**
-	 * Constant attribute that represents the ID for the Alarm 009: Conexiones fallidas.
+	 * Constant attribute that represents the ID for the Alarm 009: No se confía en la respuesta OCPS. Se ha registrado certificado en Almacén de Confianza OCSP pendiente de validar.
 	 */
-	public static final String ALM009_CONNECTION_FAIL = "ALM009";
-
-	/**
-	 * Constant attribute that represents the ID for the Alarm 010: No se confía en la respuesta OCPS. Se ha registrado certificado en Almacén de Confianza OCSP pendiente de validar.
-	 */
-	public static final String ALM010_TRUESTOREOCSP_PENDING_VALIDATION = "ALM010";
+	public static final String ALM009_TRUESTOREOCSP_PENDING_VALIDATION = "ALM009";
 	
 	/**
-	 * Constant attribute that represents the ID for the Alarm 011: No se confía en la respuesta OCSP, su emisor está registrado y aún no ha sido validado.
+	 * Constant attribute that represents the ID for the Alarm 010: No se confía en la respuesta OCPS, su emisor está registrado y aún no ha sido validado.
 	 */
-	public static final String ALM011_OCSP_RESPONSE_NOT_TRUSTED = "ALM011";
+	public static final String ALM010_OCSP_RESPONSE_NOT_TRUSTED = "ALM010";
+	
+	/**
+	 * Constant attribute that represents the ID for the Alarm 011: Conexiones fallidas.
+	 */
+	public static final String ALM011_CONNECTION_FAIL = "ALM011";
 }

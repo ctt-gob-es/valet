@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.2, 11/01/2024.
+ * @version 2.3, 12/01/2024.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the core module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.2, 11/01/2024.
+ * @version 2.3, 12/01/2024.
  */
 public class CoreGeneralMessages {
 
@@ -1274,52 +1274,59 @@ public class CoreGeneralMessages {
 	 */
 	public static final String ALM005_EVENT_002 = "ALM005_EVENT_002";
 
-
 	/**
 	 * Constant attribute that represents the property key <code>ALM006_EVENT_001</code> belonging to the
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	public static final String ALM006_EVENT_001 = "ALM006_EVENT_001";
+	
 	/**
 	 * Constant attribute that represents the property key <code>ALM007_EVENT_001</code> belonging to the
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	public static final String ALM007_EVENT_001 = "ALM007_EVENT_001";
+	
 	/**
 	 * Constant attribute that represents the property key <code>ALM008_EVENT_001</code> belonging to the
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	public static final String ALM008_EVENT_001 = "ALM008_EVENT_001";
+	
 	/**
-	 * Constant attribute that represents the property key <code>ALM009_EVENT_001</code> belonging to the
+	 * Constant attribute that represents the property key <code>ALM009_EVENT_000</code> belonging to the
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
-	public static final String ALM009_EVENT_001 = "ALM009_EVENT_001";
-	/**
-	 * Constant attribute that represents the property key <code>ALM009_EVENT_002</code> belonging to the
-	 * file messages/valet-core/general_xx_YY.properties.
-	 */
-	public static final String ALM009_EVENT_002 = "ALM009_EVENT_002";
-	/**
-	 * Constant attribute that represents the property key <code>ALM009_EVENT_003</code> belonging to the
-	 * file messages/valet-core/general_xx_YY.properties.
-	 */
-	public static final String ALM009_EVENT_003 = "ALM009_EVENT_003";
-	/**
-	 * Constant attribute that represents the property key <code>ALM009_EVENT_004</code> belonging to the
-	 * file messages/valet-core/general_xx_YY.properties.
-	 */
-	public static final String ALM009_EVENT_004 = "ALM009_EVENT_004";
+	public static final String ALM009_EVENT_000 = "ALM009_EVENT_000";
+	
 	/**
 	 * Constant attribute that represents the property key <code>ALM010_EVENT_000</code> belonging to the
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	public static final String ALM010_EVENT_000 = "ALM010_EVENT_000";
+	
 	/**
 	 * Constant attribute that represents the property key <code>ALM011_EVENT_000</code> belonging to the
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	public static final String ALM011_EVENT_000 = "ALM011_EVENT_000";
+	
+	/**
+	 * Constant attribute that represents the property key <code>ALM011_EVENT_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	public static final String ALM011_EVENT_001 = "ALM011_EVENT_001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>ALM011_EVENT_002</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	public static final String ALM011_EVENT_002 = "ALM011_EVENT_002";
+	
+	/**
+	 * Constant attribute that represents the property key <code>ALM011_EVENT_003</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	public static final String ALM011_EVENT_003 = "ALM011_EVENT_003";
 	
 	/**
 	 * Constant attribute that represents the property key <code>CSAT_000</code> belonging to the

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.2, 19/12/2023.
+ * @version 2.3, 12/01/2024.
  */
 package es.gob.valet.service;
 
@@ -92,11 +92,9 @@ import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
-import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.repository.ExternalAccessRepository;
-import es.gob.valet.persistence.configuration.model.repository.SystemCertificateRepository;
 import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
 import es.gob.valet.persistence.configuration.model.repository.datatable.ExternalAccessTablesRepository;
 import es.gob.valet.persistence.configuration.model.specification.ExternalAccessSpecification;
@@ -116,7 +114,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.2, 19/12/2023.
+ * @version 2.3, 12/01/2024.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -586,7 +584,7 @@ public class ExternalAccessService implements IExternalAccessService {
 		this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDSAVEURL);
 		
 		// Enviamos la alarmma en caso de que en el resultado de los cambios realizados haya algun test que haya fallado.
-		String messageHead = Language.getResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_001);
+		String messageHead = Language.getResCoreGeneral(CoreGeneralMessages.ALM011_EVENT_000);
 		this.launchAlarmIfTestConnFail(externalAccessDTO.getListExternalAccessResult(), messageHead);
 		
 		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL407, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
@@ -611,7 +609,7 @@ public class ExternalAccessService implements IExternalAccessService {
 			externalAccessDTO.setListUrlIssuerResult(listExternalAccess.stream().filter(p -> p.getOriginUrl().equals(ISSUERALTERNATIVENAME)).map(ExternalAccess::getUrl).collect(Collectors.toList()));
 			
 			this.makeChangesToExternalAccess(externalAccessDTO, ITERATEANDSAVEURL);
-			String messageHead = Language.getResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_002);
+			String messageHead = Language.getResCoreGeneral(CoreGeneralMessages.ALM011_EVENT_001);
 			this.launchAlarmIfTestConnFail(externalAccessDTO.getListExternalAccessResult(), messageHead);
 		}
 		LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL415, new Object[ ] { String.valueOf((System.currentTimeMillis() - timeProcess)) }));
@@ -642,7 +640,7 @@ public class ExternalAccessService implements IExternalAccessService {
     			}
     			
     			// Enviamos la alarmma en caso de que en el resultado de los cambios realizados haya algun test que haya fallado.
-    			String messageHead = Language.getResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_003);
+    			String messageHead = Language.getResCoreGeneral(CoreGeneralMessages.ALM011_EVENT_002);
     			this.launchAlarmIfTestConnFail(listExternalAccessResult, messageHead);
     		}
 		} catch (Exception e) {
@@ -671,7 +669,7 @@ public class ExternalAccessService implements IExternalAccessService {
 				}
 			}
 			// Lanzamos la alarma correspondiente...
-			AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM009_CONNECTION_FAIL, messageMail.toString());
+			AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM011_CONNECTION_FAIL, messageMail.toString());
 		}
 	}
 
@@ -684,7 +682,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 */
 	public void createMessageMail(TslCountryRegion tslCountryRegion, List<ExternalAccess> listExternalAccessTestConnKo, StringBuffer messageMail) {
 		messageMail.append(System.lineSeparator()).append(System.lineSeparator());
-		messageMail.append(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_004, new Object[ ] { tslCountryRegion.getCountryRegionName(), tslCountryRegion.getTslData().getSequenceNumber()}));
+		messageMail.append(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM011_EVENT_003, new Object[ ] { tslCountryRegion.getCountryRegionName(), tslCountryRegion.getTslData().getSequenceNumber()}));
 		for (ExternalAccess externalAccess: listExternalAccessTestConnKo) {
 			messageMail.append(System.lineSeparator());
 			messageMail.append(externalAccess.getUrl());
