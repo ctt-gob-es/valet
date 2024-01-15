@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.2, 11/01/2024.
+ * @version 2.3, 15/01/2024.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -452,147 +452,46 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 		// Si la CRL sigue siendo válida y se ha indicado que se compruebe su
 		// emisor...
 		if (result && checkIssuerOfCRL) {
-
-			// Ahora trataremos de detectar el emisor de la CRL según las
-			// identidades digitales disponibles. Inicialmente consideramos
-			// que no lo detectamos.
-			result = false;
-
-			// Si ya detectamos el certificado a validar en la TSL, y tenemos
-			// el servicio que representa a su emisor, comprobamos si es el
-			// mismo emisor de la CRL. Primero miramos si es histórico.
-			ServiceHistoryInstance shi = validationResult.getTSPServiceHistoryInformationInstanceForDetect();
-			if (shi == null && validationResult.getTSPServiceForDetect() != null) {
-				shi = validationResult.getTSPServiceForDetect().getServiceInformation();
-			}
-			if (shi != null) {
-
-				// Construimos un procesador de identidad digital con
-				// este.
-				DigitalIdentitiesProcessor dipAux = new DigitalIdentitiesProcessor(shi.getAllDigitalIdentities());
-
-				// Lo usamos para tratar de verificar la CRL.
-				result = checkCRLisValidWithDigitalIdentitiesProcessor(crl, dipAux);
-
-			}
-
-			// Si no se ha conseguido comprobar aún...
+			// Se comprueba si el emisor de la CRL está entre las entidades de
+			// confianza
+			// incluidas en la TSL (no se restringe al TSP que identificó el
+			// certificado).
 			if (!result) {
+				List<DigitalIdentitiesProcessor> listDigitalIdentitiesProcessor = obtainDigitalIdToTsl(tslValidator);
 
-				// Si se ha recibido un TSP en el que buscar servicios de CRL...
-				if (tsp != null && tsp.isThereSomeTSPService() && tslValidator != null) {
-
-					// Almacenamos en una variable si el certificado es
-					// detectado o
-					// no.
-					boolean isCertQualified = validationResult.getMappingType() == ValidatorResultConstants.MAPPING_TYPE_QUALIFIED;
-
-					// Obtenemos la lista de servicios.
-					List<TSPService> tspServiceList = tsp.getAllTSPServices();
-
-					// Recorremos la lista buscando servicios de tipo CRL que
-					// concuerden
-					// con si el certificado es "qualified" o no, hasta
-					// encontrar
-					// uno que verifique
-					// la CRL, o que en su defecto, se acaben.
-					for (int index = 0; !result && index < tspServiceList.size(); index++) {
-
-						// Almacenamos en una variable el servicio a analizar en
-						// esta vuelta.
-						TSPService tspService = tspServiceList.get(index);
-
-						// Primero, en función de la fecha indicada, comprobamos
-						// si tenemos que hacer uso de este servicio o de alguno
-						// de sus históricos.
-						shi = null;
-						if (tspService.getServiceInformation().getServiceStatusStartingTime().before(validationDate)) {
-
-							if (tspService.getServiceInformation().isServiceValidAndUsable()) {
-								shi = tspService.getServiceInformation();
-							}
-
-						} else {
-
-							if (tspService.isThereSomeServiceHistory()) {
-
-								List<ServiceHistoryInstance> shiList = tspService.getAllServiceHistory();
-								for (ServiceHistoryInstance shiFromList: shiList) {
-									if (shiFromList.getServiceStatusStartingTime().before(validationDate)) {
-										if (shiFromList.isServiceValidAndUsable()) {
-											shi = shiFromList;
-										}
-										break;
-									}
-								}
-
-							}
-
-						}
-
-						// Si hemos encontrado al menos uno, intentamos detectar
-						// el emisor de la CRL con este.
-						// Si el servicio es de tipo CRL y es acorde con el tipo
-						// del
-						// certificado... (qualified o no)...
-						if (shi != null && tslValidator.checkIfTSPServiceTypeIsCRLCompatible(shi, isCertQualified) && tslValidator.checkIfTSPServiceStatusIsOK(shi.getServiceStatus().toString())) {
-
-							// Construimos un procesador de identidad digital
-							// con este.
-							DigitalIdentitiesProcessor dipAux = new DigitalIdentitiesProcessor(shi.getAllDigitalIdentities());
-
-							// Lo usamos para tratar de verificar la CRL.
-							result = checkCRLisValidWithDigitalIdentitiesProcessor(crl, dipAux);
-
-						}
-
+				for (DigitalIdentitiesProcessor digitalIdentitiesProcessor: listDigitalIdentitiesProcessor) {
+					result = checkCRLisValidWithDigitalIdentitiesProcessor(crl, digitalIdentitiesProcessor);
+					if (result) {
+						break; // Rompo el bucle más cercano ya que he
+							   // encontrado el emisor.
 					}
-
 				}
-				// Si se ha definido un Digital Identities Processor al crear el
-				// validador para un servicio concreto del TSP...
-				if (!result && dip != null) {
-
-					// Usamos el establecido en la clase para tratar de validar
-					// la CRL.
-					result = checkCRLisValidWithDigitalIdentitiesProcessor(crl, dip);
-
-				}
-
-				// Se comprueba si el emisor de la CRL está entre las entidades de confianza 
-				// incluidas en la TSL (no se restringe al TSP que identificó el certificado).
-				if (!result) {
-    				List<DigitalIdentitiesProcessor> listDigitalIdentitiesProcessor = obtainDigitalIdToTsl(tslValidator);
-    				
-    				for (DigitalIdentitiesProcessor digitalIdentitiesProcessor: listDigitalIdentitiesProcessor) {
-    					result = checkCRLisValidWithDigitalIdentitiesProcessor(crl, digitalIdentitiesProcessor);
-    					if(result){
-    						break; // Rompo el bucle más cercano ya que he encontrado el emisor.
-    					}
-    				}
-				}
-				LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL440, new Object[ ] { result }));
-				
-				// Comprobamos que el emisor de la CRL se encuentre en el almacén TrustStoreCA
-				if(!result) {
-					Map<String, X509Certificate> mapAliasX509CertCA = CertificateCacheManager.getInstance().getMapAliasX509CertCA();
-					
-					// Recorremos el HashMap usando un bucle for-each
-			        for (Map.Entry<String, X509Certificate> entry : mapAliasX509CertCA.entrySet()) {
-			        	X509Certificate certKeystoreCAX509 = entry.getValue();
-			            // Si el firmante ha sido emitido por algún certificado registrado en el almacén de confianza CA, lo consideramos como confiable.
-			        	try {
-							crl.verify(certKeystoreCAX509.getPublicKey());
-							result = true;
-							break; // Rompo el bucle más cercano ya que he encontrado el emisor.
-						} catch (Exception e) {
-							continue;
-						}
-			        }
-				}
-				LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL441, new Object[ ] { result }));
 			}
+			LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL440, new Object[ ] { result }));
 
+			// Comprobamos que el emisor de la CRL se encuentre en el almacén
+			// TrustStoreCA
+			if (!result) {
+				Map<String, X509Certificate> mapAliasX509CertCA = CertificateCacheManager.getInstance().getMapAliasX509CertCA();
+
+				// Recorremos el HashMap usando un bucle for-each
+				for (Map.Entry<String, X509Certificate> entry: mapAliasX509CertCA.entrySet()) {
+					X509Certificate certKeystoreCAX509 = entry.getValue();
+					// Si el firmante ha sido emitido por algún certificado
+					// registrado en el almacén de confianza CA, lo consideramos
+					// como confiable.
+					try {
+						crl.verify(certKeystoreCAX509.getPublicKey());
+						result = true;
+						break; // Rompo el bucle más cercano ya que he
+							   // encontrado el emisor.
+					} catch (Exception e) {
+						continue;
+					}
+				}
+			}
+			LOGGER.info(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL441, new Object[ ] { result }));
+			
 			// Si hemos llegado a este punto y no se confía en la CRL,
 			// es porque no se confía en su emisor.
 			if (!result) {
@@ -603,11 +502,9 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 					LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));
 				}
 			}
-
 		}
 
 		return result;
-
 	}
 
 	/**
