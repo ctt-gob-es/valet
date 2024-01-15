@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.1, 22/02/2023.
+ * @version 1.4, 12/01/2024.
  */
 package es.gob.valet.persistence.configuration.model.utils;
 
 /**
  * <p>Interface that contains all the IDs of the alarms.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 22/02/2023.
+ * @version 1.4, 12/01/2024.
  */
 public interface IAlarmIdConstants {
 
@@ -70,5 +70,15 @@ public interface IAlarmIdConstants {
 	 * Constant attribute that represents the ID for the Alarm 008: Se ha registrado un certificado emisor en el Almacén de Confianza CA.
 	 */
 	String ALM008_REGISTER_KEYSTORE_CA = "ALM008";
-
+	
+	/**
+	 * Constant attribute that represents the ID for the Alarm 009: No se confía en la respuesta OCPS. Se ha registrado certificado en Almacén de Confianza OCSP pendiente de validar.
+	 */
+	String ALM009_TRUESTOREOCSP_PENDING_VALIDATION = "ALM009";
+	
+	/**
+	 * Constant attribute that represents the ID for the Alarm 010: No se confía en la respuesta OCPS, su emisor está registrado y aún no ha sido validado.
+	 */
+	String ALM010_OCSP_RESPONSE_NOT_TRUSTED = "ALM010";
+	
 }

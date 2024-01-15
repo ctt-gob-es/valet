@@ -31,6 +31,7 @@ import java.security.Provider;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
 
 import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
@@ -40,7 +41,7 @@ import es.gob.valet.persistence.configuration.model.utils.IStatusCertificateIdCo
 /**
  * <p>Interface that defines the methods to manage operations with keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 19/12/2023.
+ * @version 1.4, 11/01/2024.
  */
 public interface IKeystoreFacade {
 
@@ -177,5 +178,11 @@ public interface IKeystoreFacade {
 	 * @throws CryptographyException If the method fails.
 	 */
 	List<X509Certificate> getAllX509Certificates() throws CryptographyException;
+	
+	/**
+	 * Method that obtains a list with all the alias/certificates stored inside of a keystore.
+	 * @return a map with all the alias/certificates stored inside of a keystore.
+	 */
+	Map<String, X509Certificate> getAllAliasWithX509Certificates();
 
 }

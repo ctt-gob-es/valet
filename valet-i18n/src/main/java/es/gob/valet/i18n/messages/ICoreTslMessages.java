@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.14, 14/11/2023.
+ * @version 2.4, 11/01/2024.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the core module of valET: TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.14, 14/11/2023.
+ * @version 2.4, 11/01/2024.
  */
 public interface ICoreTslMessages {
 
@@ -2141,6 +2141,66 @@ public interface ICoreTslMessages {
 	 * Constant attribute that represents the name of the property <code>logMTSL426</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */
 	String LOGMTSL426 = "logMTSL426";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL427</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL427 = "logMTSL427";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL428</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL428 = "logMTSL428";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL429</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL429 = "logMTSL429";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL430</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL430 = "logMTSL430";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL431</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL431 = "logMTSL431";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL432</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL432 = "logMTSL432";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL433</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL433 = "logMTSL433";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL434</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL434 = "logMTSL434";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL435</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL435 = "logMTSL435";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL436</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL436 = "logMTSL436";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL437</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL437 = "logMTSL437";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL438</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL438 = "logMTSL438";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL439</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL439 = "logMTSL439";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL440</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL440 = "logMTSL440";
+	/**
+	 * Constant attribute that represents the name of the property <code>logMTSL441</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
+	 */
+	String LOGMTSL441 = "logMTSL441";
 	/**
 	 * Constant attribute that represents the name of the property <code>errorQcSubStatus1</code> belonging to the file messages/valet-core/tsl_xx_YY.properties.
 	 */

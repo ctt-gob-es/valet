@@ -38,7 +38,9 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -63,7 +65,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
 /**
  * <p>Class that manages all the operations related with JCE, JCEKS and PKCS#12 keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 27/04/2022.
+ * @version 1.5, 11/01/2024.
  */
 public class StandardKeystoreFacade implements IKeystoreFacade {
 
@@ -759,6 +761,37 @@ public class StandardKeystoreFacade implements IKeystoreFacade {
 			throw new CryptographyException(IValetException.COD_190, errorMsg, e);
 		}
 		return result;
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.crypto.keystore.IKeystoreFacade#getAllAliasWithX509Certificates()
+	 */
+	public Map<String, X509Certificate> getAllAliasWithX509Certificates() {
+		Map<String, X509Certificate> mapAliasX509Cert = new HashMap<>();
+		try {
+    		KeyStore ks = keystoreCacheObject.getKeystore();
+    		Enumeration<String> aliases = ks.aliases();
+    		// Recorre todas las entradas del KeyStore
+    		while (aliases.hasMoreElements()) {
+    			String alias = aliases.nextElement();
+    			// Verifica si la entrada es un certificado
+    			if (ks.isCertificateEntry(alias)) {
+    				// Obtiene el certificado correspondiente al alias
+    				java.security.cert.Certificate certKeystore = ks.getCertificate(alias);
+    				X509Certificate certKeystoreX509 = UtilsCertificate.getX509Certificate(certKeystore.getEncoded());
+    				mapAliasX509Cert.put(alias, certKeystoreX509);
+    			}
+    		}
+		} catch (KeyStoreException | CertificateEncodingException | CommonUtilsException e) {
+    		String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_063, new Object[ ] { Language.getResPersistenceConstants(keystoreCacheObject.getTokenName()) });
+    		LOGGER.error(errorMsg, e);
+    	} finally {
+    		LOGGER.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_061, new Object[ ] { Language.getResPersistenceConstants(keystoreCacheObject.getTokenName()) }));
+    	}
+		
+		return mapAliasX509Cert;
 	}
 
 }

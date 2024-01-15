@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/12/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 23/12/2022.
+ * @version 1.2, 19/09/2023.
  */
 package es.gob.valet.service.impl;
 
@@ -54,6 +54,7 @@ import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.repository.KeystoreRepository;
 import es.gob.valet.persistence.configuration.model.repository.SystemCertificateRepository;
+import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
 import es.gob.valet.persistence.exceptions.CipherException;
 import es.gob.valet.persistence.utils.UtilsAESCipher;
 import es.gob.valet.service.IKeystoreService;
@@ -63,7 +64,7 @@ import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 /** 
  * <p>Class .</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 23/12/2022.
+ * @version 1.2, 19/09/2023.
  */
 @Service("keystoreServiceImpl")
 public class KeystoreServiceImpl implements IKeystoreService{
@@ -133,6 +134,56 @@ public class KeystoreServiceImpl implements IKeystoreService{
 				CertificateCacheManager.getInstance().loadListCertificateCA();
 			}
     	} catch (CryptographyException | CommonUtilsException | TSLCertificateValidationException | NoSuchAlgorithmException | CertificateException | CipherException | IOException e) {
+			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008, new Object[]{e.getMessage()});
+			LOGGER.error(errorMsg);
+		} 
+	}
+	
+	public void saveCertificateKeystoreOCSP(byte[] certificateInBytes, String alias) {
+		try {
+			// Obtenemos el almacen de Entidad perteneciente a OCSP
+			Keystore keystoreEntity = keystoreRepository.findByIdKeystore(IKeystoreIdConstants.ID_OCSP_TRUSTSTORE);
+			// Obtenemos la password encriptada del blob, la cual está almacenada en BD
+			String passwordKeystoreBlob = this.getKeystoreDecodedPassword(keystoreEntity);
+			// Obtenemos el keystore java de CA
+			InputStream stream = new ByteArrayInputStream(keystoreEntity.getKeystore());
+			KeyStore keystoreJava;
+			keystoreJava = KeyStore.getInstance(UtilsKeystore.JCEKS);
+			keystoreJava.load(stream, passwordKeystoreBlob.toCharArray());
+			
+			// Comprobamos que no exista el certificado dentro del keystore.
+			Certificate certificate = keystoreJava.getCertificate(alias);
+			if(null != certificate) {
+				throw new KeyStoreException(Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_074, new Object[ ] { alias }));
+			} else {
+				// Se obtiene X509Certificate y el WrapperX509Cert
+				X509Certificate certToAdd = UtilsCertificate.getX509Certificate(certificateInBytes);
+				WrapperX509Cert wrapperX509CertAdd = new WrapperX509Cert(certToAdd);
+				// Registramos el certificado en el keystore java de CA y actualizamos el keystore del entity
+				keystoreJava.setCertificateEntry(alias, certToAdd);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				keystoreJava.store(baos, new String(UtilsAESCipher.getInstance().decryptMessage(keystoreEntity.getPassword())).toCharArray());
+				keystoreEntity.setKeystore(baos.toByteArray());
+				keystoreRepository.save(keystoreEntity);
+				// Registramos el certificado en la tabla SYSTEM_CERTIFICATE.
+				SystemCertificate systemCertificate = new SystemCertificate();
+				systemCertificate.setAlias(alias);
+				Keystore ks = new Keystore();
+				ks.setIdKeystore(IKeystoreIdConstants.ID_OCSP_TRUSTSTORE);
+				systemCertificate.setKeystore(ks);
+				systemCertificate.setIssuer(wrapperX509CertAdd.getIssuer());
+				systemCertificate.setSubject(wrapperX509CertAdd.getSubject());
+				systemCertificate.setCountry(wrapperX509CertAdd.getCountry());
+				systemCertificate.setIsKey(false);
+				CStatusCertificate cStatusCertificate = new CStatusCertificate();
+				cStatusCertificate.setIdStatusCertificate(0L);
+				systemCertificate.setStatusCert(cStatusCertificate);
+				systemCertificate.setValidationCert(Boolean.FALSE);
+				systemCertificateRepository.save(systemCertificate);
+				// Actualizamos la lista de certificados que existen en memoria.
+				CertificateCacheManager.getInstance().loadListCertificateOCSP();
+			}
+		} catch (CryptographyException | CommonUtilsException | TSLCertificateValidationException | NoSuchAlgorithmException | CertificateException | CipherException | IOException | KeyStoreException e) {
 			String errorMsg = Language.getFormatResCoreGeneral(ICoreGeneralMessages.STANDARD_KEYSTORE_008, new Object[]{e.getMessage()});
 			LOGGER.error(errorMsg);
 		} 

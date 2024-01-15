@@ -20,13 +20,15 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/04/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 11/04/2022.
+ * @version 1.3, 11/01/2024.
  */
 package es.gob.valet.certificates;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -51,7 +53,7 @@ import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
  * TSL.
  * </p>
  * 
- * @version 1.1, 22/02/2023.
+ * @version 1.3, 11/01/2024.
  */
 public final class CertificateCacheManager {
 
@@ -70,7 +72,20 @@ public final class CertificateCacheManager {
 	 * registered in the CA trust store.
 	 */
 	private static List<X509Certificate> listCertificateCA;
+	
+	/**
+	 * Attribute that represents the map of with alias/certificates that have been
+	 * registered in the CA trust store.
+	 */
+	private static Map<String, X509Certificate> mapAliasX509CertCA;
 
+	/**
+	 * Attribute that represents the map of with alias/certificates that have been
+	 * registered in the OCSP trust store.
+	 */
+	private static Map<String, X509Certificate> mapAliasX509CertOCSP;
+	
+	
 	/**
 	 * Constructor method for the class CertificateCacheManager.java.
 	 */
@@ -89,8 +104,10 @@ public final class CertificateCacheManager {
 		if (instance == null) {
 			instance = new CertificateCacheManager();
 			listCertificateCA = new ArrayList<X509Certificate>();
+			mapAliasX509CertCA = new HashMap<String, X509Certificate>();
+			mapAliasX509CertOCSP = new HashMap<String, X509Certificate>();
 			instance.loadListCertificateCA();
-
+			instance.loadListCertificateOCSP();
 		}
 		return instance;
 	}
@@ -115,7 +132,15 @@ public final class CertificateCacheManager {
 			if (listX509CerCA != null && !listX509CerCA.isEmpty()) {
 				listCertificateCA.addAll(listX509CerCA);
 			}
-
+			
+			// creamos un mapa de alias con certificados X509
+			mapAliasX509CertCA.clear();
+			
+			Map<String, X509Certificate> mapAliasX509CertificateCA = keystoreFacade.getAllAliasWithX509Certificates();
+			
+			if (null != mapAliasX509CertificateCA && !mapAliasX509CertificateCA.isEmpty()) {
+				mapAliasX509CertCA.putAll(mapAliasX509CertificateCA);
+			}
 		} catch (CryptographyException e) {
 			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CC_000, new Object[] {e.getCause()}));	
 		} catch (KeystoreCacheException e) {
@@ -123,6 +148,32 @@ public final class CertificateCacheManager {
 		}
 	}
 
+	/**
+	 * Method that caches the different alias/certificates stored in the OCSP trust
+	 * store.
+	 */
+	public void loadListCertificateOCSP() {
+		// obtenemos el almacén de claves de la caché
+		KeystoreCacheObject kco = null;
+		
+		try {
+			kco = ConfigurationCacheFacade.keystoreGetKeystoreCacheObject(IKeystoreIdConstants.ID_OCSP_TRUSTSTORE);
+			
+			IKeystoreFacade keystoreFacade = new StandardKeystoreFacade(kco);
+			
+			// creamos un mapa de alias con certificados X509
+			mapAliasX509CertOCSP.clear();
+			
+			Map<String, X509Certificate> mapAliasX509CertificateOCSP = keystoreFacade.getAllAliasWithX509Certificates();
+			
+			if (null != mapAliasX509CertificateOCSP && !mapAliasX509CertificateOCSP.isEmpty()) {
+				mapAliasX509CertOCSP.putAll(mapAliasX509CertificateOCSP);
+			}
+		} catch (KeystoreCacheException e) {
+			LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CC_000, new Object[] {e.getCause()}));	
+		}
+	}
+	
 	/**
 	 * Gets the value of the attribute {@link #listCertificateCA}.
 	 * 
@@ -141,4 +192,42 @@ public final class CertificateCacheManager {
 	public static void setListCertificateCA(List<X509Certificate> listCertificateCA) {
 		CertificateCacheManager.listCertificateCA = listCertificateCA;
 	}
+
+	
+	/**
+	 * Gets the value of the attribute {@link #mapAliasX509CertCA}.
+	 * @return the value of the attribute {@link #mapAliasX509CertCA}.
+	 */
+	public static Map<String, X509Certificate> getMapAliasX509CertCA() {
+		return mapAliasX509CertCA;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #mapAliasX509CertCA}.
+	 * @param mapAliasX509CertCA The value for the attribute {@link #mapAliasX509CertCA}.
+	 */
+	public static void setMapAliasX509CertCA(Map<String, X509Certificate> mapAliasX509CertCA) {
+		CertificateCacheManager.mapAliasX509CertCA = mapAliasX509CertCA;
+	}
+
+	
+	/**
+	 * Gets the value of the attribute {@link #mapAliasX509CertOCSP}.
+	 * @return the value of the attribute {@link #mapAliasX509CertOCSP}.
+	 */
+	public static Map<String, X509Certificate> getMapAliasX509CertOCSP() {
+		return mapAliasX509CertOCSP;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #mapAliasX509CertOCSP}.
+	 * @param mapAliasX509CertOCSP The value for the attribute {@link #mapAliasX509CertOCSP}.
+	 */
+	public static void setMapAliasX509CertOCSP(Map<String, X509Certificate> mapAliasX509CertOCSP) {
+		CertificateCacheManager.mapAliasX509CertOCSP = mapAliasX509CertOCSP;
+	}
+	
+	
 }
