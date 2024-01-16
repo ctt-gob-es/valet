@@ -85,7 +85,6 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsProviders;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
 import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.CommonUtilsException;
@@ -97,6 +96,7 @@ import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationSer
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.utils.AlarmIdConstants;
 import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;

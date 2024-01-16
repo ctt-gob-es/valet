@@ -46,8 +46,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.UtilsCertificate;
-import es.gob.valet.crypto.exception.CryptographyException;
-import es.gob.valet.crypto.utils.CryptographyValidationUtils;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
@@ -61,6 +59,8 @@ import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.utils.StatusCertificateIdConstants;
 import es.gob.valet.persistence.exceptions.CipherException;
+import es.gob.valet.persistence.exceptions.CryptographyException;
+import es.gob.valet.persistence.utils.CryptographyValidationUtils;
 import es.gob.valet.persistence.utils.UtilsAESCipher;
 
 /**

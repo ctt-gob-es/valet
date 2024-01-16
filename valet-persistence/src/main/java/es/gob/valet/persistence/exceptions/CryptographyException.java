@@ -22,7 +22,7 @@
  * @author Gobierno de España.
  * @version 1.1, 06/11/2018.
  */
-package es.gob.valet.crypto.exception;
+package es.gob.valet.persistence.exceptions;
 
 import es.gob.valet.exceptions.ValetException;
 

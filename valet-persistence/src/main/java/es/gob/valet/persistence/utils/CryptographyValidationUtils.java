@@ -22,12 +22,12 @@
  * @author Gobierno de España.
  * @version 1.2, 19/09/2023.
  */
-package es.gob.valet.crypto.utils;
+package es.gob.valet.persistence.utils;
 
 import java.util.List;
 
-import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.exceptions.ValetExceptionConstants;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 
 /**
  * <p>Class with utilities for the validation of objects for cryptography module.</p>

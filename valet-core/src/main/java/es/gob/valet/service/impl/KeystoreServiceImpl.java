@@ -35,7 +35,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,13 +45,10 @@ import es.gob.valet.commons.utils.AESCipher;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsKeystore;
 import es.gob.valet.constant.KeystoreConstants;
-import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.CoreLogMessages;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CoreGeneralMessages;
-import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
-import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
 import es.gob.valet.persistence.configuration.model.entity.CStatusCertificate;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
@@ -58,8 +56,9 @@ import es.gob.valet.persistence.configuration.model.repository.KeystoreRepositor
 import es.gob.valet.persistence.configuration.model.repository.SystemCertificateRepository;
 import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
 import es.gob.valet.persistence.exceptions.CipherException;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 import es.gob.valet.persistence.utils.UtilsAESCipher;
-import es.gob.valet.service.IKeystoreService;
+import es.gob.valet.service.ifaces.IKeystoreService;
 import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 
@@ -90,7 +89,7 @@ public class KeystoreServiceImpl implements IKeystoreService{
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.IKeystoreService#saveCertificateKeystoreCA(byte[], java.lang.String)
+	 * @see es.gob.valet.service.ifaces.IKeystoreService#saveCertificateKeystoreCA(byte[], java.lang.String)
 	 */
 	public void saveCertificateKeystoreCA(byte[] certificateInBytes, String alias) throws KeyStoreException {
 		try {
@@ -195,7 +194,7 @@ public class KeystoreServiceImpl implements IKeystoreService{
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.IKeystoreService#getKeystoreDecodedPassword(es.gob.valet.persistence.configuration.model.entity.Keystore)
+	 * @see es.gob.valet.service.ifaces.IKeystoreService#getKeystoreDecodedPassword(es.gob.valet.persistence.configuration.model.entity.Keystore)
 	 */
 	public String getKeystoreDecodedPassword(Keystore keystore) throws CryptographyException {
 		try {
@@ -206,6 +205,5 @@ public class KeystoreServiceImpl implements IKeystoreService{
 			throw new CryptographyException(errorMsg, e);
 		}
 	}
-	
 	
 }

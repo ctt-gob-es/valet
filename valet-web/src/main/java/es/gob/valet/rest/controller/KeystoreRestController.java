@@ -63,7 +63,6 @@ import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
 import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.form.SystemCertificateForm;
@@ -73,8 +72,8 @@ import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
-import es.gob.valet.persistence.configuration.services.impl.SystemCertificateService;
-import es.gob.valet.service.ifaces.IExternalAccessService;
+import es.gob.valet.persistence.exceptions.CryptographyException;
+import es.gob.valet.service.ifaces.IKeystoreService;
 import es.gob.valet.utils.GeneralConstantsValetWeb;
 
 /**
@@ -163,6 +162,9 @@ public class KeystoreRestController {
 		return (DataTablesOutput<SystemCertificate>) ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getAllByKeystore(input, idKeystore);
 	}
 
+	@Autowired
+	IKeystoreService iKeystoreService;
+	
 	/**
 	 * Method that store a system certificate in selected keystore.
 	 *
@@ -236,23 +238,24 @@ public class KeystoreRestController {
 
 			if (!error) {
 
-				IKeystoreFacade keyStoreFacade = KeystoreFactory.getKeystoreInstance(Long.valueOf(idKeystore));
+				// Extraemos el keystore de la BD.
+				Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(idKeystore);
+
 				certificateFileBytes = certificateFile.getBytes();
 				// se obtiene X509Certificate
 				X509Certificate certToAdd = UtilsCertificate.getX509Certificate(certificateFileBytes);
 
 				// Lo añade al keystore.
-				keyStoreFacade.storeCertificate(alias, certToAdd, null, null, validationCert.orElse(false));
+				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().storeCertificate(alias, certToAdd, null, null, validationCert.orElse(false), ksEntity);
 
 				SystemCertificate newSystemCert = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, Long.valueOf(idKeystore));
 
+				// Añado el nuevo certificado de sistema a la lista de
+				// certificados mostrados en el datatable
 				listCertificates.add(newSystemCert);
 				dtOutput.setData(listCertificates);
-				
-				//recargamos caché
-				CertificateCacheManager.getInstance().loadListCertificateCA();
 
-			} 
+			}
 			
 			if(error){
 				listCertificates = StreamSupport.stream(ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getAllByKeystore(keystore).spliterator(), false).collect(Collectors.toList());
@@ -357,7 +360,7 @@ public class KeystoreRestController {
 
 			if (!error) {
 				// obtengo el keystore
-				IKeystoreFacade keyStoreFacade = KeystoreFactory.getKeystoreInstance(systemCertificateForm.getIdKeystore());
+				Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(systemCertificateForm.getIdKeystore()));
 				ISystemCertificateService sysCerService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService();
 				SystemCertificate oldCert = sysCerService.getSystemCertificateById(systemCertificateForm.getIdSystemCertificate());
 
@@ -385,19 +388,15 @@ public class KeystoreRestController {
 						}
 					}
 					if (!duplicate) {
+						
 						// Actualiza el alias del certificado
-						keyStoreFacade.updateCertificateAlias(oldCert.getAlias(), systemCertificateForm.getAlias());
+						ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().updateCertificateAlias(oldCert.getAlias(), systemCertificateForm.getAlias(), ksEntity);
 
 						// se añade a la lista de certificados,
 						SystemCertificate newCert = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(systemCertificateForm.getAlias(), systemCertificateForm.getIdKeystore());
 						listSystemCertificate.add(newCert);
 						dtOutput.setData(listSystemCertificate);
-						
-						
-						//se actualiza la caché
-						CertificateCacheManager.getInstance().loadListCertificateCA();
-
-						
+												
 					}else{
 						String msgError = Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_EXIST_ALIAS, new Object[ ] { systemCertificateForm.getAlias() });
 						LOGGER.error(msgError);
@@ -450,11 +449,13 @@ public class KeystoreRestController {
 		try {
 			SystemCertificate systemCertificate = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getSystemCertificateById(idSystemCertificate);
 			Long idKeystore = systemCertificate.getKeystore().getIdKeystore();
-			IKeystoreFacade keystoreFacade = KeystoreFactory.getKeystoreInstance(idKeystore);
-			keystoreFacade.removeEntry(systemCertificate.getAlias());
 			
-			//se actualiza la caché
-			CertificateCacheManager.getInstance().loadListCertificateCA();
+			// obtengo el keystore
+			Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(idKeystore));
+			
+			// elimino del keystore Java y de lo certificados de sistema
+			ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().removeEntry(systemCertificate.getAlias(), ksEntity);
+		
 		} catch (Exception e) {
 			result = "-1";
 		}

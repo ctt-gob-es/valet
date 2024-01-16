@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 22/02/2023.
+ * @version 1.7, 16/01/2024.
  */
 package es.gob.valet.controller;
 
@@ -36,16 +36,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.gob.valet.commons.utils.UtilsCertificate;
-import es.gob.valet.crypto.exception.CryptographyException;
-import es.gob.valet.crypto.keystore.IKeystoreFacade;
-import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.form.SystemCertificateForm;
 import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
-import es.gob.valet.persistence.configuration.services.impl.KeystoreService;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 
 /**
  * <p>
@@ -57,7 +55,7 @@ import es.gob.valet.persistence.configuration.services.impl.KeystoreService;
  * TSL.
  * </p>
  * 
- * @version 1.5, 22/02/2023.
+ * @version 1.7, 16/01/2024.
  */
 @Controller
 public class KeystoreController {
@@ -132,8 +130,9 @@ public class KeystoreController {
 		try {
 			Long idKeystoreSelected = certificateToEdit.getKeystore().getIdKeystore();
 
-			IKeystoreFacade keystore = KeystoreFactory.getKeystoreInstance(idKeystoreSelected);
-			Certificate certificate = keystore.getCertificate(certificateToEdit.getAlias());
+			// obtengo el keystore
+			Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(idKeystoreSelected));
+			Certificate certificate =ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getCertificate(certificateToEdit.getAlias(), ksEntity);
 			if (certificate != null) {
 				X509Certificate cert = UtilsCertificate.getX509Certificate(certificate.getEncoded());
 				// se obtiene las fechas hasta y desde
@@ -144,7 +143,7 @@ public class KeystoreController {
 			
 				
 			
-		} catch (CryptographyException | CertificateEncodingException | CommonUtilsException e) {
+		} catch (CertificateEncodingException | CommonUtilsException | CryptographyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

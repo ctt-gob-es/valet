@@ -22,12 +22,15 @@
  * @author Gobierno de España.
  * @version 1.0, 23/12/2022.
  */
-package es.gob.valet.service;
+package es.gob.valet.service.ifaces;
 
+import java.security.Key;
 import java.security.KeyStoreException;
+import java.security.cert.Certificate;
 
-import es.gob.valet.crypto.exception.CryptographyException;
+import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer.</p>
@@ -50,4 +53,5 @@ public interface IKeystoreService {
 	 * @throws CryptographyException If the method fails.
 	 */
 	String getKeystoreDecodedPassword(Keystore keystore) throws CryptographyException;
+
 }
