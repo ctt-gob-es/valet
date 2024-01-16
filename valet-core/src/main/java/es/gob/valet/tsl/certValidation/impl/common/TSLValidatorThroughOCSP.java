@@ -85,6 +85,9 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsProviders;
 import es.gob.valet.commons.utils.UtilsStringChar;
+import es.gob.valet.crypto.exception.CryptographyException;
+import es.gob.valet.crypto.keystore.IKeystoreFacade;
+import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CoreGeneralMessages;
@@ -94,8 +97,6 @@ import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationSer
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.utils.AlarmIdConstants;
 import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
-import es.gob.valet.service.impl.KeystoreServiceImpl;
-import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;
@@ -115,7 +116,7 @@ import es.gob.valet.utils.ValidatorResultConstants;
  * TSL.
  * </p>
  * 
- * @version 2.0, 12/01/2024.
+ * @version 2.1, 16/01/2024.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -730,7 +731,11 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					// Se registra en el nuevo almacén de confianza OCSP como pendiente de validación.
 					BigInteger serialNumber = signerCertX509.getSerialNumber();
 					String alias = serialNumber.toString() + "_cer";
-					ApplicationContextProvider.getApplicationContext().getBean(KeystoreServiceImpl.class).saveCertificateKeystoreOCSP(signerCert.getEncoded(), alias);
+					
+					// Obtenemos el keystore de la caché
+					IKeystoreFacade keyStoreFacade = KeystoreFactory.getKeystoreInstance(Long.valueOf(KeystoreIdConstants.ID_OCSP_TRUSTSTORE));
+					// Lo añade al keystore.
+					keyStoreFacade.storeCertificate(alias, signerCertX509, null, null, false);
 					
 					// Lanzamos la alarma 10.
 					String subject = UtilsCertificate.getCertificateId(signerCertX509);
@@ -747,6 +752,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				LOGGER.error(Language.getResRestGeneral(RestGeneralMessages.REST_LOG012));
 			} catch (IOException e) {
 				LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL432));
+			} catch (CryptographyException e) {
+				LOGGER.error(Language.getFormatResCoreGeneral(CoreGeneralMessages.CC_000, new Object[] {e.getCause()}));
 			}
 			
 		}
