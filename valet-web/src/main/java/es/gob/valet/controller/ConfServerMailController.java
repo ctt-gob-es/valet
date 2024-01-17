@@ -75,6 +75,7 @@ public class ConfServerMailController {
 		confServerMailForm.setPortMail(confServerMail.getPortMail());
 		confServerMailForm.setConnectionTimeout(confServerMail.getConnectionTimeout());
 		confServerMailForm.setReadingTimeout(confServerMail.getReadingTimeout());
+		confServerMailForm.setTslEnabled(confServerMail.getTslEnabled());
 
 		boolean authentication = Boolean.FALSE;
 		if (confServerMail.getUseAuthenticationMail() != null) {

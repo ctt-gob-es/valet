@@ -24,6 +24,15 @@
  */
 package es.gob.valet.form;
 
+import javax.persistence.Column;
+
+import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+import es.gob.valet.commons.utils.NumberConstants;
+
 /**
  * <p>Class that represents the backing form for adding/editing a server mail.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
@@ -89,6 +98,10 @@ public class ConfServerMailForm {
 	 * Attribute that represents the maximun time allowed, in milliseconds,  for sending the mail messages.
 	 */
 	private Integer readingTimeout;
+	/**
+	 * Attribute that represents a flag that indicates whether TLS encryption should be enabled or disabled.
+	 */
+	private Boolean tslEnabled;
 
 	/**
 	 * Gets the value of the attribute {@link #idConfServerMail}.
@@ -289,4 +302,19 @@ public class ConfServerMailForm {
 		this.readingTimeout = readingTimeout;
 	}
 
+	/**
+	 * Gets the value of the attribute {@link #tslEnabled}.
+	 * @return the value of the attribute {@link #tslEnabled}.
+	 */
+	public Boolean getTslEnabled() {
+		return tslEnabled;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #tslEnabled}.
+	 * @param tslEnabledParam The value for the attribute {@link #tslEnabled}.
+	 */
+	public void setTslEnabled(Boolean tslEnabledParam) {
+		this.tslEnabled = tslEnabledParam;
+	}
 }

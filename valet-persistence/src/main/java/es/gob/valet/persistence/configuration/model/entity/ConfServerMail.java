@@ -98,6 +98,10 @@ public class ConfServerMail implements Serializable {
 	 * Attribute that represents the maximun time allowed, in milliseconds,  for sending the mail messages.
 	 */
 	private Integer readingTimeout;
+	/**
+	 * Attribute that represents a flag that indicates whether TLS encryption should be enabled or disabled.
+	 */
+	private Boolean tslEnabled;
 
 	/**
 	 * Gets the value of the attribute {@link #idConfServerMail}.
@@ -256,5 +260,22 @@ public class ConfServerMail implements Serializable {
 		this.readingTimeout = readingTimeoutParam;
 	}
 
-
+	/**
+	 * Gets the value of the attribute {@link #tslEnabled}.
+	 * @return the value of the attribute {@link #tslEnabled}.
+	 */
+	@Column(name = "TSL_ENABLED", nullable = true, precision = NumberConstants.NUM1)
+	@Type(type = "yes_no")
+	@JsonView(DataTablesOutput.View.class)
+	public Boolean getTslEnabled() {
+		return tslEnabled;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #tslEnabled}.
+	 * @param tslEnabledParam The value for the attribute {@link #tslEnabled}.
+	 */
+	public void setTslEnabled(Boolean tslEnabledParam) {
+		this.tslEnabled = tslEnabledParam;
+	}
 }
