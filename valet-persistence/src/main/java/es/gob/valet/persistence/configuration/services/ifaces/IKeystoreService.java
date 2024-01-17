@@ -21,13 +21,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 16/01/2024.
+ * @version 1.3, 17/01/2024.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
+import java.io.IOException;
 import java.security.Key;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +45,7 @@ import es.gob.valet.persistence.exceptions.CryptographyException;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the Keystore entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.3, 17/01/2024.
  */
 public interface IKeystoreService {
 
@@ -130,4 +136,41 @@ public interface IKeystoreService {
 	 * @throws CryptographyException If the method fails.
 	 */
 	Certificate getCertificate(String alias, Keystore ksEntity) throws CryptographyException;
+	
+	/**
+	 * Retrieves a list of X.509 certificates from the Certificate Authority (CA) truststore.
+	 *
+	 * @return List of X.509 certificates from the CA.
+	 * @throws CryptographyException If an error related to cryptography occurs while obtaining the certificates.
+	 */
+	List<X509Certificate> getListCertificateCA() throws CryptographyException;
+	
+	/**
+	 * Retrieves a mapping of alias names to X.509 certificates from the Certificate Authority (CA) truststore.
+	 *
+	 * @return A Map where the keys are alias names and the values are corresponding X.509 certificates from the CA.
+	 * @throws CryptographyException If an error related to cryptography occurs while obtaining the certificates.
+	 */
+	Map<String, X509Certificate> getMapAliasX509CertCA() throws CryptographyException;
+
+	/**
+	 * Retrieves a mapping of alias names to X.509 certificates from the Online Certificate Status Protocol (OCSP) truststore.
+	 *
+	 * @return A Map where the keys are alias names and the values are corresponding X.509 certificates from the OCSP truststore.
+	 * @throws CryptographyException If an error related to cryptography occurs while obtaining the certificates.
+	 */
+	Map<String, X509Certificate> getMapAliasX509CertOCSP() throws CryptographyException;
+	
+	/**
+	 * Retrieves a Java KeyStore object from the provided Keystore entity.
+	 *
+	 * @param ksEntity The Keystore entity containing information such as type, keystore data, and password.
+	 * @return A Java KeyStore object loaded with the data from the provided Keystore entity.
+	 * @throws CryptographyException If an error related to cryptography occurs during the keystore retrieval.
+	 * @throws KeyStoreException If there is an issue with the KeyStore instance or its type.
+	 * @throws NoSuchAlgorithmException If the specified keystore type algorithm is not available.
+	 * @throws CertificateException If an issue with the certificates in the keystore is encountered.
+	 * @throws IOException If an I/O error occurs while loading the keystore data.
+	 */
+	java.security.KeyStore getKeystore(Keystore ksEntity) throws CryptographyException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException;
 }
