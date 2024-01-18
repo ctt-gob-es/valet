@@ -25,8 +25,12 @@
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
+import java.io.IOException;
 import java.security.Key;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +107,42 @@ public interface IKeystoreService {
 	 * @throws CryptographyException If the method fails.
 	 */
 	void storeCertificate(String alias, Certificate certificate, Key key, Long statusCert, boolean validationCert, Keystore ksEntity) throws CryptographyException;
+
+	/**
+	 * Method that updates an entry into a keystore.
+	 * @param oldEntryAlias Parameter that represents the old alias of the entry.
+	 * @param newEntryAlias Parameter that represents the new alias of the entry.
+	 * @param ksEntity Parameter that represents entity to keystore obtain.
+	 * @return the updated keystore  object representation.
+	 * @throws CryptographyException If the method fails.
+	 */
+	void updateCertificateAlias(String oldEntryAlias, String newEntryAlias, Keystore ksEntity) throws CryptographyException;
+
+	/**
+	 * Method that deletes a certificate entry from a keystore.
+	 * @param alias Parameter that represents the alias of the entry.
+	 * @param ksEntity Parameter that represents entity to keystore obtain.
+	 * @return the updated keystore  object representation.
+	 * @throws CryptographyException If the method fails.
+	 */
+	void removeEntry(String alias, Keystore ksEntity) throws CryptographyException;
+
+	/**
+	 * Method that obtains a X509 certificate from the alias.
+	 * @param alias Parameter that represents the alias of the certificate to obtain.
+	 * @param ksEntity Parameter that represents entity to keystore obtain.
+	 * @return an object that represents the certificate.
+	 * @throws CryptographyException If the method fails.
+	 */
+	Certificate getCertificate(String alias, Keystore ksEntity) throws CryptographyException;
+	
+	/**
+	 * Retrieves a list of X.509 certificates from the Certificate Authority (CA) truststore.
+	 *
+	 * @return List of X.509 certificates from the CA.
+	 * @throws CryptographyException If an error related to cryptography occurs while obtaining the certificates.
+	 */
+	List<X509Certificate> getListCertificateCA() throws CryptographyException;
 	
 	/**
 	 * Retrieves a mapping of alias names to X.509 certificates from the Certificate Authority (CA) truststore.
@@ -119,4 +159,17 @@ public interface IKeystoreService {
 	 * @throws CryptographyException If an error related to cryptography occurs while obtaining the certificates.
 	 */
 	Map<String, X509Certificate> getMapAliasX509CertOCSP() throws CryptographyException;
+	
+	/**
+	 * Retrieves a Java KeyStore object from the provided Keystore entity.
+	 *
+	 * @param ksEntity The Keystore entity containing information such as type, keystore data, and password.
+	 * @return A Java KeyStore object loaded with the data from the provided Keystore entity.
+	 * @throws CryptographyException If an error related to cryptography occurs during the keystore retrieval.
+	 * @throws KeyStoreException If there is an issue with the KeyStore instance or its type.
+	 * @throws NoSuchAlgorithmException If the specified keystore type algorithm is not available.
+	 * @throws CertificateException If an issue with the certificates in the keystore is encountered.
+	 * @throws IOException If an I/O error occurs while loading the keystore data.
+	 */
+	java.security.KeyStore getKeystore(Keystore ksEntity) throws CryptographyException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException;
 }

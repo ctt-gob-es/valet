@@ -54,7 +54,6 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.alarms.AlarmsManager;
-import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.UtilsASN1;
 import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsCertificate;
@@ -460,7 +459,7 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 * @param tslValidator TSL Validator to check if some CRL TSP Service is in accord with the qualified (or not) certificate.
 	 * @return <code>true</code> if the CRL has been verified, otherwise <code>false</code>.
 	 */
-	@SuppressWarnings("static-access")
+	
 	private boolean checkCRLisValid(X509CRL crl, Date validationDate, boolean checkIssuerOfCRL, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
 
 		boolean result = false;
