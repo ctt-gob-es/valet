@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 04/02/2019.
+ * @version 1.5, 19/09/2023.
  */
 package es.gob.valet.utils;
 
@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
-import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
@@ -40,7 +39,7 @@ import es.gob.valet.tsl.access.TSLManager;
 /**
  * <p>Utilities class for local cache operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 04/02/2019.
+ * @version 1.5, 19/09/2023.
  */
 public final class UtilsCache {
 
@@ -83,10 +82,6 @@ public final class UtilsCache {
 			if (completeProcess) {
 				ConfigurationCacheFacade.reloadConfigurationCache();
 			}
-
-			// Tras la recarga en la caché de los keystores, debemos limpiar
-			// el KeystoreFactory.
-			KeystoreFactory.forceReloadKeystoreFactory();
 
 			// Recargamos los datos del proxy.
 			LOGGER.info(Language.getResCoreGeneral(ICoreGeneralMessages.UTILS_CACHE_008));

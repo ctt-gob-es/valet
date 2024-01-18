@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.3, 15/01/2024.
+ * @version 2.4, 17/01/2024.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -54,7 +54,6 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.alarms.AlarmsManager;
-import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.UtilsASN1;
 import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsCertificate;
@@ -66,7 +65,9 @@ import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
@@ -80,7 +81,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.3, 15/01/2024.
+ * @version 2.4, 17/01/2024.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
@@ -458,65 +459,69 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 	 * @param tslValidator TSL Validator to check if some CRL TSP Service is in accord with the qualified (or not) certificate.
 	 * @return <code>true</code> if the CRL has been verified, otherwise <code>false</code>.
 	 */
-	@SuppressWarnings("static-access")
+	
 	private boolean checkCRLisValid(X509CRL crl, Date validationDate, boolean checkIssuerOfCRL, TSLValidatorResult validationResult, TrustServiceProvider tsp, ATSLValidator tslValidator) {
 
-		boolean result = true;
+		boolean result = false;
 
 		// Comprobamos que la fecha de próxima actualización es posterior a la
 		// de validación.
 		if (crl.getNextUpdate() != null && crl.getNextUpdate().before(validationDate)) {
 			LOGGER.warn(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL124, new Object[ ] { validationDate.toString(), crl.getNextUpdate().toString() }));
-			result = false;
+			result = true;
 		}
 
 		// Si la CRL sigue siendo válida y se ha indicado que se compruebe su
 		// emisor...
-		if (result && checkIssuerOfCRL) {
-
-			// Se comprueba si el emisor de la CRL está entre las entidades de confianza 
-			// incluidas en la TSL (no se restringe al TSP que identificó el certificado).
-			if (!result) {
-				List<DigitalIdentitiesProcessor> listDigitalIdentitiesProcessor = obtainDigitalIdToTsl(tslValidator);
-				
-				for (DigitalIdentitiesProcessor digitalIdentitiesProcessor: listDigitalIdentitiesProcessor) {
-					result = checkCRLisValidWithDigitalIdentitiesProcessor(crl, digitalIdentitiesProcessor);
-					if(result){
-						break; // Rompo el bucle más cercano ya que he encontrado el emisor.
+		if (!result && checkIssuerOfCRL) {
+			try {
+				// Se comprueba si el emisor de la CRL está entre las entidades de confianza 
+				// incluidas en la TSL (no se restringe al TSP que identificó el certificado).
+				if (!result) {
+					List<DigitalIdentitiesProcessor> listDigitalIdentitiesProcessor = obtainDigitalIdToTsl(tslValidator);
+					
+					for (DigitalIdentitiesProcessor digitalIdentitiesProcessor: listDigitalIdentitiesProcessor) {
+						result = checkCRLisValidWithDigitalIdentitiesProcessor(crl, digitalIdentitiesProcessor);
+						if(result){
+							break; // Rompo el bucle más cercano ya que he encontrado el emisor.
+						}
 					}
 				}
-			}
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL440, new Object[ ] { result }));
-			
-			// Comprobamos que el emisor de la CRL se encuentre en el almacén TrustStoreCA
-			if(!result) {
-				Map<String, X509Certificate> mapAliasX509CertCA = CertificateCacheManager.getInstance().getMapAliasX509CertCA();
+				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL440, new Object[ ] { result }));
 				
-				// Recorremos el HashMap usando un bucle for-each
-		        for (Map.Entry<String, X509Certificate> entry : mapAliasX509CertCA.entrySet()) {
-		        	X509Certificate certKeystoreCAX509 = entry.getValue();
-		            // Si el firmante ha sido emitido por algún certificado registrado en el almacén de confianza CA, lo consideramos como confiable.
-		        	try {
-						crl.verify(certKeystoreCAX509.getPublicKey());
-						result = true;
-						break; // Rompo el bucle más cercano ya que he encontrado el emisor.
-					} catch (Exception e) {
-						continue;
-					}
-		        }
-			}
-			LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL441, new Object[ ] { result }));
-			
-			// Si hemos llegado a este punto y no se confía en la CRL,
-			// es porque no se confía en su emisor.
-			if (!result) {
-				try {
-					LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
-					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_001, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
-				} catch (CommonUtilsException e) {
-					LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));
+				// Comprobamos que el emisor de la CRL se encuentre en el almacén TrustStoreCA
+				if(!result) {
+					Map<String, X509Certificate> mapAliasX509CertCA = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getMapAliasX509CertCA();
+					
+					// Recorremos el HashMap usando un bucle for-each
+			        for (Map.Entry<String, X509Certificate> entry : mapAliasX509CertCA.entrySet()) {
+			        	X509Certificate certKeystoreCAX509 = entry.getValue();
+			            // Si el firmante ha sido emitido por algún certificado registrado en el almacén de confianza CA, lo consideramos como confiable.
+			        	try {
+							crl.verify(certKeystoreCAX509.getPublicKey());
+							result = true;
+							break; // Rompo el bucle más cercano ya que he encontrado el emisor.
+						} catch (Exception e) {
+							continue;
+						}
+			        }
 				}
+				LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL441, new Object[ ] { result }));
+				
+				// Si hemos llegado a este punto y no se confía en la CRL,
+				// es porque no se confía en su emisor.
+				if (!result) {
+					try {
+						LOGGER.info(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL293, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+						AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM003_ERROR_GETTING_USING_CRL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM003_EVENT_001, new Object[ ] { UtilsASN1.toString(crl.getIssuerX500Principal()) }));
+					} catch (CommonUtilsException e) {
+						LOGGER.error(Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL294, new Object[ ] { e.getMessage() }));
+					}
+				}
+			} catch (CryptographyException e) {
+				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CC_000, new Object[] {e.getCause()}));
 			}
+			
 		}
 
 		return result;

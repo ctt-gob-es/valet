@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.11, 27/04/2022.
+ * @version 2.2, 17/01/2024.
  */
 package es.gob.valet.spring.config;
 
@@ -41,7 +41,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import es.gob.valet.cache.FactoryCacheValet;
 import es.gob.valet.cache.exceptions.CacheValetException;
-import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsDeploymentType;
 import es.gob.valet.commons.utils.UtilsGrayLog;
@@ -177,11 +176,6 @@ public class ApplicationConfig {
 			TasksManager.loadTasks();
 
 		}
-
-		// Se inicia la caché de certificados emisores
-		startOperationTime = Calendar.getInstance().getTimeInMillis();
-		CertificateCacheManager.getInstance();
-		logger.info(Language.getFormatResCoreGeneral(ICoreGeneralMessages.INITIALIZATION_008, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 
 		// Escribimos en GrayLog el mensaje que indica que la plataforma a
 		// inicializado.

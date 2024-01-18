@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 24/03/2021.
+ * @version 1.5, 17/01/2024.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -53,11 +53,11 @@ import es.gob.afirma.signers.xades.AOXAdESSigner;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.crypto.keystore.IKeystoreFacade;
-import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
+import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
@@ -73,7 +73,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * <p>Abstract class that represents a TSL data checker with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 24/03/2021.
+ * @version 1.5, 17/01/2024.
  */
 public abstract class ATSLChecker implements ITSLChecker {
 
@@ -1387,8 +1387,8 @@ public abstract class ATSLChecker implements ITSLChecker {
 		try {
 
 			// Obtenemos el almacén de confianza.
-			IKeystoreFacade tslTrustedKeystoreFacade = KeystoreFactory.getKeystoreInstance(IKeystoreIdConstants.ID_TSL_TRUSTSTORE);
-			KeyStore tslTrustedKeystore = tslTrustedKeystoreFacade.getKeystore();
+			Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(IKeystoreIdConstants.ID_TSL_TRUSTSTORE));
+			KeyStore tslTrustedKeystore = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystore(ksEntity);
 			// Comprobamos si está el certificado firmante en el almacén de
 			// confianza.
 			String alias = tslTrustedKeystore.getCertificateAlias(x509cert);
