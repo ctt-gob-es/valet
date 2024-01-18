@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 17/01/2024.
+ * @version 1.4, 18/01/2024.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -159,14 +159,19 @@ public class KeystoreService implements IKeystoreService {
 			CryptographyValidationUtils.checkIsNotNull(certificate, Language.getResCoreGeneral(CoreGeneralMessages.STANDARD_KEYSTORE_003));
 			// Comprobamos que el alias no sea nulo...
 			CryptographyValidationUtils.checkIsNotNull(alias, Language.getResCoreGeneral(CoreGeneralMessages.STANDARD_KEYSTORE_004));
-			// Actualizamos el almacén de claves físicamente. Si la clave es
-			// nula, sólo se insertará el certificado.
-			addEntryToKsJavaAndUpdateKsEntity(alias, certificate, key, ksEntity);
-			// Guardamos los datos en base de datos y caché.
-			Long status = statusCert == null ? StatusCertificateIdConstants.ID_SC_CORRECT : statusCert;
-			saveSystemCertificate(alias, certificate, key, status, validationCert, ksEntity);
-		} catch (KeyStoreException | CertificateEncodingException
-				| CommonUtilsException e) {
+			// Comprobamos que el alias no esté en el almacén
+			java.security.KeyStore ksJava = this.getKeystore(ksEntity);
+			if (null == ksJava.getCertificate(alias)) {
+				// Actualizamos el almacÃ©n de claves fÃ­sicamente. Si la clave es
+    			// nula, sÃ³lo se insertarÃ¡ el certificado.
+    			addEntryToKsJavaAndUpdateKsEntity(alias, certificate, key, ksEntity);
+    			// Guardamos los datos en base de datos y cachÃ©.
+    			Long status = statusCert == null ? StatusCertificateIdConstants.ID_SC_CORRECT : statusCert;
+    			saveSystemCertificate(alias, certificate, key, status, validationCert, ksEntity);
+			} else {
+				LOGGER.info(Language.getFormatResCoreGeneral(CoreGeneralMessages.STANDARD_KEYSTORE_074, new Object[ ] { alias }));
+			}
+		} catch (KeyStoreException | CommonUtilsException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			String errorMsg = Language.getFormatResCoreGeneral(CoreGeneralMessages.STANDARD_KEYSTORE_009, new Object[ ] { alias, Language.getResPersistenceConstants(ksEntity.getTokenName()) });
 			LOGGER.error(errorMsg, e);
 			throw new CryptographyException(ValetExceptionConstants.COD_190, errorMsg, e);
