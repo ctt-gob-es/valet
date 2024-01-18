@@ -26,8 +26,8 @@ package es.gob.valet.service;
 
 import java.security.KeyStoreException;
 
-import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 
 /** 
  * <p>Interface that provides communication with the operations of the persistence layer.</p>

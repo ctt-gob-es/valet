@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 16/01/2024.
+ * @version 2.2, 17/01/2024.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -84,7 +84,6 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsProviders;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
 import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.CommonUtilsException;
@@ -92,10 +91,13 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.i18n.messages.IRestGeneralMessages;
+import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
+import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.utils.IAlarmIdConstants;
 import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorResult;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
@@ -115,7 +117,7 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 2.1, 16/01/2024.
+ * @version 2.2, 17/01/2024.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -681,7 +683,6 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	*            response.
 	* @return <code>true</code> or <code>false</code> switch case.
 	*/
-	@SuppressWarnings("static-access")
 	private boolean checksRegisteredMarkedAsTrustedInTrustStoreOCSP(Certificate signerCert, ATSLValidator tslValidator) {
 		boolean result = false;
 		
@@ -692,7 +693,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				byte[ ] certificate = signerCert.getEncoded();
 				X509Certificate signerCertX509 = UtilsCertificate.getX509Certificate(certificate);
 				
-				Map<String, X509Certificate> mapAliasX509Certificate = CertificateCacheManager.getInstance().getMapAliasX509CertOCSP();
+				Map<String, X509Certificate> mapAliasX509Certificate = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getMapAliasX509CertOCSP();
 				// Recorremos el HashMap usando un bucle for-each
 		        for (Map.Entry<String, X509Certificate> entry : mapAliasX509Certificate.entrySet()) {
 		            String alias = entry.getKey();
@@ -733,9 +734,10 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					BigInteger serialNumber = signerCertX509.getSerialNumber();
 					String alias = serialNumber.toString() + "_cer";
 					
-					IKeystoreFacade keyStoreFacade = KeystoreFactory.getKeystoreInstance(Long.valueOf(IKeystoreIdConstants.ID_OCSP_TRUSTSTORE));
+					// Obtenemos el keystore de la caché
+					Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(IKeystoreIdConstants.ID_OCSP_TRUSTSTORE));
 					// Lo aÃ±ade al keystore.
-					keyStoreFacade.storeCertificate(alias, signerCertX509, null, null, false);
+					ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().storeCertificate(alias, signerCertX509, null, null, false, ksEntity);
 					
 					// Lanzamos la alarma 09.
 					String subject = UtilsCertificate.getCertificateId(signerCertX509);
@@ -753,7 +755,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			} catch (IOException e) {
 				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL432));
 			} catch (CryptographyException e) {
-				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CC_000, new Object[] {e.getCause()}));
+				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CC_001, new Object[] {e.getCause()}));
 			}
 			
 		}
@@ -768,7 +770,6 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	 * @param signerCert certificate for which we will look for the issuer in the TrustStoreCA.
 	 * @return <code>true</code> if certificate is found in TrustStoreCA, in other case <code>false</code>.
 	 */
-	@SuppressWarnings("static-access")
 	private boolean issuedBySomeCertRegisteredInTrustStoreCA(Certificate signerCert) {
 		boolean result = false;
 		// Si hemos encontrado el firmante...
@@ -776,7 +777,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			try {
 				byte[ ] certificate = signerCert.getEncoded();
 				X509Certificate signerCertX509 = UtilsCertificate.getX509Certificate(certificate);
-				Map<String, X509Certificate> mapAliasX509Certificate = CertificateCacheManager.getInstance().getMapAliasX509CertCA();
+				Map<String, X509Certificate> mapAliasX509Certificate = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getMapAliasX509CertCA();
 				// Recorremos el HashMap usando un bucle for-each
 		        for (Map.Entry<String, X509Certificate> entry : mapAliasX509Certificate.entrySet()) {
 		            X509Certificate certKeystoreOCSPX509 = entry.getValue();
@@ -791,6 +792,8 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 				LOGGER.error(Language.getResRestGeneral(IRestGeneralMessages.REST_LOG012));
 			} catch (IOException e) {
 				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL432));
+			} catch (CryptographyException e) {
+				LOGGER.error(Language.getFormatResCoreGeneral(ICoreGeneralMessages.CC_000, new Object[] {e.getCause()}));
 			}
 		}
 		

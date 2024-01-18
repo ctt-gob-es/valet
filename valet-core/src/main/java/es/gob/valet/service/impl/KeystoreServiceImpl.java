@@ -44,7 +44,6 @@ import es.gob.valet.commons.utils.AESCipher;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsKeystore;
 import es.gob.valet.constant.IKeystoreConstants;
-import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.ICoreLogMessages;
 import es.gob.valet.i18n.Language;
@@ -56,6 +55,7 @@ import es.gob.valet.persistence.configuration.model.repository.KeystoreRepositor
 import es.gob.valet.persistence.configuration.model.repository.SystemCertificateRepository;
 import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
 import es.gob.valet.persistence.exceptions.CipherException;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 import es.gob.valet.persistence.utils.UtilsAESCipher;
 import es.gob.valet.service.IKeystoreService;
 import es.gob.valet.tsl.certValidation.impl.common.WrapperX509Cert;

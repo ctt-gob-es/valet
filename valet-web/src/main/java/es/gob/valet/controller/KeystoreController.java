@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.gob.valet.commons.utils.UtilsCertificate;
-import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
 import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.CommonUtilsException;
@@ -45,6 +44,7 @@ import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 
 /**
  * <p>

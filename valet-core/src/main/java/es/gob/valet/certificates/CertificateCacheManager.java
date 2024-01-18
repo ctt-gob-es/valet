@@ -32,7 +32,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.crypto.keystore.IKeystoreFacade;
 import es.gob.valet.crypto.keystore.StandardKeystoreFacade;
 import es.gob.valet.i18n.Language;
@@ -41,6 +40,7 @@ import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFac
 import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
 import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 
 /**
  * <p>

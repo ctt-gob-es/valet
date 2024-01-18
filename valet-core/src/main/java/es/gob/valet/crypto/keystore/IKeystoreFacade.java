@@ -33,10 +33,10 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 
-import es.gob.valet.crypto.exception.CryptographyException;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
 import es.gob.valet.persistence.configuration.model.utils.IStatusCertificateIdConstants;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 
 /**
  * <p>Interface that defines the methods to manage operations with keystores.</p>
