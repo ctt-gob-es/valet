@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 19/09/2023.
+ * @version 1.5, 17/01/2024.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -37,7 +37,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SchemaTypeLoader;
 import org.apache.xmlbeans.XmlBeans;
@@ -53,27 +54,27 @@ import es.gob.afirma.signers.xades.AOXAdESSigner;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.crypto.keystore.IKeystoreFacade;
-import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CoreTslMessages;
+import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
 import es.gob.valet.tsl.parsing.ifaces.ITSLChecker;
+import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.utils.TSLCommonURIs;
 import es.gob.valet.utils.TSLElementsAndAttributes;
 import es.gob.valet.utils.TSLOIDs;
-import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
 /**
  * <p>Abstract class that represents a TSL data checker with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 19/09/2023.
+ * @version 1.5, 17/01/2024.
  */
 public abstract class ATSLChecker implements ITSLChecker {
 
@@ -1385,17 +1386,15 @@ public abstract class ATSLChecker implements ITSLChecker {
 	protected final void checkX509v3SigningCertificateIsInTrustStore(X509Certificate x509cert) throws TSLMalformedException {
 
 		try {
-
 			// Obtenemos el almacén de confianza.
-			IKeystoreFacade tslTrustedKeystoreFacade = KeystoreFactory.getKeystoreInstance(KeystoreIdConstants.ID_TSL_TRUSTSTORE);
-			KeyStore tslTrustedKeystore = tslTrustedKeystoreFacade.getKeystore();
+			Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(KeystoreIdConstants.ID_TSL_TRUSTSTORE));
+			KeyStore tslTrustedKeystore = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystore(ksEntity);
 			// Comprobamos si está el certificado firmante en el almacén de
 			// confianza.
 			String alias = tslTrustedKeystore.getCertificateAlias(x509cert);
 			if (UtilsStringChar.isNullOrEmptyTrim(alias)) {
 				throw new TSLMalformedException(ValetExceptionConstants.COD_204, Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL147, new Object[ ] { UtilsCertificate.getCertificateIssuerId(x509cert), x509cert.getSerialNumber().toString() }));
 			}
-
 		} catch (Exception e) {
 			throw new TSLMalformedException(ValetExceptionConstants.COD_204, Language.getResCoreTsl(CoreTslMessages.LOGMTSL146), e);
 		}

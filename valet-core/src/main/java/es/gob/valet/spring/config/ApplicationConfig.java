@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>12/06/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 19/09/2023.
+ * @version 2.2, 17/01/2024.
  */
 package es.gob.valet.spring.config;
 
@@ -41,7 +41,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import es.gob.valet.cache.FactoryCacheValet;
 import es.gob.valet.cache.exceptions.CacheValetException;
-import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.UtilsDeploymentType;
 import es.gob.valet.commons.utils.UtilsGrayLog;
 import es.gob.valet.commons.utils.UtilsProviders;
@@ -59,7 +58,7 @@ import es.gob.valet.utils.UtilsProxy;
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.1, 19/09/2023.
+ * @version 2.2, 17/01/2024.
  */
 @Configuration
 @EnableAutoConfiguration
@@ -173,11 +172,6 @@ public class ApplicationConfig {
 			Thread externalAccessServiceThread = externalAccessService.new ExternalAccessServiceThread(ExternalAccessService.OPERATION1, null);
 			externalAccessServiceThread.start();
 		}
-
-		// Se inicia la caché de certificados emisores
-		startOperationTime = Calendar.getInstance().getTimeInMillis();
-		CertificateCacheManager.getInstance();
-		logger.info(Language.getFormatResCoreGeneral(CoreGeneralMessages.INITIALIZATION_008, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
 
 		// Escribimos en GrayLog el mensaje que indica que la plataforma a
 		// inicializado.

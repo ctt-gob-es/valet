@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CoreGeneralMessages;
@@ -84,10 +83,6 @@ public final class UtilsCache {
 			if (completeProcess) {
 				ConfigurationCacheFacade.reloadConfigurationCache();
 			}
-
-			// Tras la recarga en la caché de los keystores, debemos limpiar
-			// el KeystoreFactory.
-			KeystoreFactory.forceReloadKeystoreFactory();
 
 			// Recargamos los datos del proxy.
 			LOGGER.info(Language.getResCoreGeneral(CoreGeneralMessages.UTILS_CACHE_008));

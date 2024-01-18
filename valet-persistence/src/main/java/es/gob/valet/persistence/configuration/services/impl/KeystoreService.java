@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 16/01/2024.
+ * @version 1.3, 17/01/2024.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -38,7 +38,10 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,6 +63,7 @@ import es.gob.valet.persistence.configuration.model.entity.CStatusCertificate;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.repository.KeystoreRepository;
+import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
 import es.gob.valet.persistence.configuration.model.utils.StatusCertificateIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 import es.gob.valet.persistence.exceptions.CryptographyException;
@@ -68,7 +72,7 @@ import es.gob.valet.persistence.utils.CryptographyValidationUtils;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Keystore.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.3, 17/01/2024.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -545,5 +549,145 @@ public class KeystoreService implements IKeystoreService {
 		// Eliminamos de base de datos el system certificate con ese alias y de
 		// este keystore.
 		ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().deleteSystemCertificate(alias, ksEntity.getIdKeystore());
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService#getListCertificateCA()
+	 */
+	public List<X509Certificate> getListCertificateCA() throws CryptographyException {
+		
+		Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(KeystoreIdConstants.ID_CA_TRUSTSTORE));
+		
+		return this.getListCertificateFromKs(ksEntity);
+	}
+
+	/**
+	 * Retrieves a list of X.509 certificates from the provided Keystore entity.
+	 *
+	 * @param ksEntity The Keystore entity containing information such as type, keystore data, and password.
+	 * @return A List of X.509 certificates obtained from the keystore.
+	 * @throws CryptographyException If an error related to cryptography occurs during the certificate retrieval.
+	 * @see Keystore
+	 */
+	public List<X509Certificate> getListCertificateFromKs(Keystore ksEntity) throws CryptographyException {
+		 // Lista para almacenar los certificados
+        List<X509Certificate> certList = new ArrayList<>();
+        try {
+            // Obtenemos la password
+            String passKs = this.getKeystoreDecodedPassword(ksEntity);
+
+            // Crea un objeto KeyStore Java
+            KeyStore ksJava = KeyStore.getInstance(ksEntity.getKeystoreType());
+
+            // Carga el keystore de entrada desde el array de bytes
+            ByteArrayInputStream bais = new ByteArrayInputStream(ksEntity.getKeystore());
+            ksJava.load(bais, passKs.toCharArray());
+
+            // Obtiene la lista de alias en el keystore
+            Enumeration<String> aliasEnum = ksJava.aliases();
+            
+            // Recorre los alias y obtiene los certificados asociados
+            while (aliasEnum.hasMoreElements()) {
+                String alias = aliasEnum.nextElement();
+                Certificate cert = ksJava.getCertificate(alias);
+                certList.add((X509Certificate) cert);
+            }
+        
+        } catch (CryptographyException | KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
+        	String errorMsg = Language.getFormatResCoreGeneral(CoreGeneralMessages.STANDARD_KEYSTORE_063, new Object[ ] { Language.getResPersistenceConstants(ksEntity.getTokenName()) });
+			LOGGER.error(errorMsg, e);
+			throw new CryptographyException(ValetExceptionConstants.COD_190, errorMsg, e);
+        }
+        
+        return certList;
+    }
+	
+	/**
+	 * Retrieves a mapping of alias names to X.509 certificates from the provided Keystore entity.
+	 *
+	 * @param ksEntity The Keystore entity containing information such as type, keystore data, and password.
+	 * @return A Map where the keys are alias names and the values are corresponding X.509 certificates from the keystore.
+	 * @throws CryptographyException If an error related to cryptography occurs during the certificate retrieval.
+	 * @see Keystore
+	 */
+	public Map<String, X509Certificate> getMapCertificateFromKs(Keystore ksEntity) throws CryptographyException {
+		// Lista para almacenar los certificados
+		Map<String, X509Certificate> mapAliasCert = new HashMap<String, X509Certificate>();
+		try {
+			// Obtenemos la password
+			String passKs = this.getKeystoreDecodedPassword(ksEntity);
+
+			// Crea un objeto KeyStore Java
+			KeyStore ksJava = KeyStore.getInstance(ksEntity.getKeystoreType());
+
+			// Carga el keystore de entrada desde el array de bytes
+			ByteArrayInputStream bais = new ByteArrayInputStream(ksEntity.getKeystore());
+			ksJava.load(bais, passKs.toCharArray());
+
+			// Obtiene la lista de alias en el keystore
+			Enumeration<String> aliasEnum = ksJava.aliases();
+
+			// Recorre los alias y obtiene los certificados asociados
+			while (aliasEnum.hasMoreElements()) {
+				String alias = aliasEnum.nextElement();
+				Certificate cert = ksJava.getCertificate(alias);
+				mapAliasCert.put(alias, (X509Certificate) cert);
+			}
+
+		} catch (CryptographyException | KeyStoreException
+				| CertificateException | NoSuchAlgorithmException
+				| IOException e) {
+			String errorMsg = Language.getFormatResCoreGeneral(CoreGeneralMessages.STANDARD_KEYSTORE_063, new Object[ ] { Language.getResPersistenceConstants(ksEntity.getTokenName()) });
+			LOGGER.error(errorMsg, e);
+			throw new CryptographyException(ValetExceptionConstants.COD_190, errorMsg, e);
+		}
+
+		return mapAliasCert;
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService#getMapAliasX509CertCA()
+	 */
+	public Map<String, X509Certificate> getMapAliasX509CertCA() throws CryptographyException {
+
+		Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(KeystoreIdConstants.ID_CA_TRUSTSTORE));
+
+		return this.getMapCertificateFromKs(ksEntity);
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService#getMapAliasX509CertOCSP()
+	 */
+	public Map<String, X509Certificate> getMapAliasX509CertOCSP() throws CryptographyException {
+
+		Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(KeystoreIdConstants.ID_OCSP_TRUSTSTORE));
+
+		return this.getMapCertificateFromKs(ksEntity);
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService#getKeystore(es.gob.valet.persistence.configuration.model.entity.Keystore)
+	 */
+	public java.security.KeyStore getKeystore(Keystore ksEntity) throws CryptographyException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+		
+		// Obtenemos la password
+        String passKs = this.getKeystoreDecodedPassword(ksEntity);
+
+        // Crea un objeto KeyStore Java
+        KeyStore ksJava = KeyStore.getInstance(ksEntity.getKeystoreType());
+
+        // Carga el keystore de entrada desde el array de bytes
+        ByteArrayInputStream bais = new ByteArrayInputStream(ksEntity.getKeystore());
+        ksJava.load(bais, passKs.toCharArray());
+		
+		return ksJava;
 	}
 }

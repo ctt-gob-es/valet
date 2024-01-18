@@ -27,8 +27,11 @@ package es.gob.valet.rest.controller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,12 +62,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsStringChar;
-import es.gob.valet.crypto.keystore.IKeystoreFacade;
-import es.gob.valet.crypto.keystore.KeystoreFactory;
 import es.gob.valet.form.SystemCertificateForm;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.WebGeneralMessages;
@@ -73,7 +73,6 @@ import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificateService;
 import es.gob.valet.persistence.exceptions.CryptographyException;
-import es.gob.valet.service.ifaces.IKeystoreService;
 import es.gob.valet.utils.GeneralConstantsValetWeb;
 
 /**
@@ -161,9 +160,6 @@ public class KeystoreRestController {
 	public DataTablesOutput<SystemCertificate> listCertificates(DataTablesInput input, @RequestParam("idKeystore") Long idKeystore) {
 		return (DataTablesOutput<SystemCertificate>) ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getSystemCertificateService().getAllByKeystore(input, idKeystore);
 	}
-
-	@Autowired
-	IKeystoreService iKeystoreService;
 	
 	/**
 	 * Method that store a system certificate in selected keystore.
@@ -287,8 +283,9 @@ public class KeystoreRestController {
 		if (systemCertificate != null) {
 			try {
 				Long idKeystoreSelected = systemCertificate.getKeystore().getIdKeystore();
-				IKeystoreFacade keystore = KeystoreFactory.getKeystoreInstance(idKeystoreSelected);
-				Certificate cert = keystore.getCertificate(systemCertificate.getAlias());
+				Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(idKeystoreSelected));
+				java.security.KeyStore ksJava = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystore(ksEntity);
+				Certificate cert = ksJava.getCertificate(systemCertificate.getAlias());
 
 				if (cert != null) {
 					certificateFile = cert.getEncoded();
@@ -301,7 +298,7 @@ public class KeystoreRestController {
 				}
 			} catch (CertificateEncodingException e) {
 				LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_DOWNLOAD_CERTIFICATE, new Object[ ] { e.getMessage() }));
-			} catch (CryptographyException e) {
+			} catch (CryptographyException | KeyStoreException | NoSuchAlgorithmException | CertificateException e) {
 				LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_GET_CERTIFICATE, new Object[ ] { e.getMessage() }));
 			}
 		}

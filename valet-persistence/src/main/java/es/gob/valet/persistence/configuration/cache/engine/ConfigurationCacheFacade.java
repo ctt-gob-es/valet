@@ -28,7 +28,8 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Set;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
@@ -39,9 +40,6 @@ import es.gob.valet.persistence.configuration.cache.common.exceptions.Configurat
 import es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.application.engine.ApplicationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
-import es.gob.valet.persistence.configuration.cache.modules.keystore.elements.KeystoreCacheObject;
-import es.gob.valet.persistence.configuration.cache.modules.keystore.engine.KeystoreCacheFacade;
-import es.gob.valet.persistence.configuration.cache.modules.keystore.exceptions.KeystoreCacheException;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionMappingCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
@@ -239,34 +237,6 @@ public final class ConfigurationCacheFacade {
 	}
 
 	/**
-	 * Gets the unique instance for the keystore cache configuration facade.
-	 * @return the unique instance for the keystore cache configuration facade.
-	 */
-	private static KeystoreCacheFacade getKeystoreCacheFacade() {
-		return KeystoreCacheFacade.getInstance();
-	}
-
-	/**
-	 * Adds or update the keystore in the configuration cache.
-	 * @param kco Object reprensentation of the keystore in the configuration cache.
-	 * @return Keystore cache object added/updated in the configuration cache.
-	 * @throws KeystoreCacheException In case of some error adding/updating the keystore in the cache.
-	 */
-	public static KeystoreCacheObject keystoreAddUpdateKeystore(KeystoreCacheObject kco) throws KeystoreCacheException {
-		return getKeystoreCacheFacade().addUpdateKeystore(kco);
-	}
-
-	/**
-	 * Gets the Keystore representation from the configuration cache.
-	 * @param idKeystore Keystore identifier.
-	 * @return the Keystore cache object representation from the configuration cache.
-	 * @throws KeystoreCacheException In case of some error getting the keystore from the configuration cache.
-	 */
-	public static KeystoreCacheObject keystoreGetKeystoreCacheObject(long idKeystore) throws KeystoreCacheException {
-		return getKeystoreCacheFacade().getKeystoreCacheObject(idKeystore);
-	}
-
-	/**
 	 * Gets the actual name of the clustered configuration cache.
 	 * @return the actual name of the clustered configuration cache.
 	 * @throws ConfigurationCacheException In case of some error initializing the clustered cache.
@@ -331,18 +301,6 @@ public final class ConfigurationCacheFacade {
 		// cada "módulo".
 		long initTime = 0;
 		long endTime = 0;
-
-		// Se inicializan todas los almacenes de certificados en la caché de
-		// configuración...
-		LOGGER.info(Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG050));
-		initTime = Calendar.getInstance().getTimeInMillis();
-		try {
-			getKeystoreCacheFacade().initializeAllKeystores(inLoadingCache);
-		} catch (Exception e) {
-			LOGGER.error(Language.getResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG051), e);
-		}
-		endTime = Calendar.getInstance().getTimeInMillis();
-		LOGGER.info(Language.getFormatResPersistenceCache(PersistenceCacheMessages.CONFIG_CACHE_LOG052, new Object[ ] { Long.toString(endTime - initTime) }));
 
 		// Se inicializan todas las aplicaciones en la caché
 		// compartida...

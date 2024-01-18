@@ -61,7 +61,6 @@ import es.gob.valet.audit.access.EventsCollectorConstants;
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsServicesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
-import es.gob.valet.certificates.CertificateCacheManager;
 import es.gob.valet.commons.utils.UtilsCRL;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsDate;
@@ -70,12 +69,15 @@ import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.i18n.messages.RestGeneralMessages;
+import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
+import es.gob.valet.persistence.exceptions.CryptographyException;
 import es.gob.valet.rest.elements.CertDetectedInTSL;
 import es.gob.valet.rest.elements.Certificate;
 import es.gob.valet.rest.elements.CertificateChain;
@@ -1242,10 +1244,11 @@ public class TslRestService implements ITslRestService {
 
 			List<X509Certificate> listX509 = new ArrayList<X509Certificate>();
 
-			List<X509Certificate> listX509CA = CertificateCacheManager.getListCertificateCA();
+			List<X509Certificate> listX509CA = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getListCertificateCA();
 			if (listX509CA != null) {
 				listX509.addAll(listX509CA);
 			}
+			
 			List<X509Certificate> listX509TSL = TSLManager.getInstance().getListCertificateTSL(countryCode);
 			if (listX509TSL != null) {
 				listX509.addAll(listX509TSL);
@@ -1276,7 +1279,7 @@ public class TslRestService implements ITslRestService {
 
 				}
 			}
-
+		
 		} catch (CommonUtilsException | CertificateEncodingException e) {
 			throw new ValetRestException(ValetExceptionConstants.COD_190, Language.getFormatResCoreGeneral(RestGeneralMessages.REST_LOG045, new Object[ ] { KeystoreIdConstants.ID_CA_TRUSTSTORE }), e);
 		} catch (Exception e) {
