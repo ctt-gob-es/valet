@@ -68,18 +68,27 @@
 					</div>
 					<div class="form-row">
 						<div class="form-group col-md-6">
-							<label for="connectionTimeoutForm" th:text="#{form.confServerMail.connectionTimeout}"></label>
-							<span id="connectionTimeout_span"
+							<label for="connectionTimeoutForm"
+								th:text="#{form.confServerMail.connectionTimeout}"></label> <span
+								id="connectionTimeout_span"
 								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-							<input type="number" class="form-control" id="connectionTimeoutForm"
-								th:field="*{connectionTimeout}">
+							<input type="number" class="form-control"
+								id="connectionTimeoutForm" th:field="*{connectionTimeout}">
 						</div>
 						<div class="form-group col-md-6">
-							<label for="readingTimeoutForm" th:text="#{form.confServerMail.readingTimeout}"></label>
-							<span id="readingTimeout_span"
+							<label for="readingTimeoutForm"
+								th:text="#{form.confServerMail.readingTimeout}"></label> <span
+								id="readingTimeout_span"
 								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
 							<input type="number" class="form-control" id="readingTimeoutForm"
 								th:field="*{readingTimeout}">
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="tslEnabledForm"
+								th:text="#{form.confServerMail.tslEnabled}"></label> <input
+								type="checkbox" id="tslEnabledForm" th:field="*{tslEnabled}">
 						</div>
 					</div>
 

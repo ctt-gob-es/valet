@@ -125,6 +125,7 @@ public class ConfServerMailRestController {
 				confMail.setUseAuthenticationMail(confServerMailForm.getUseAuthenticationMail());
 				confMail.setConnectionTimeout(confServerMailForm.getConnectionTimeout());
 				confMail.setReadingTimeout(confServerMailForm.getReadingTimeout());
+                confMail.setTslEnabled(confServerMailForm.getTslEnabled());
 				
 				if (confServerMailForm.getUseAuthenticationMail()) {
 					confMail.setUserMail(confServerMailForm.getUserMail());

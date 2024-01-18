@@ -89,6 +89,10 @@ public class ConfServerMailForm {
 	 * Attribute that represents the maximun time allowed, in milliseconds,  for sending the mail messages.
 	 */
 	private Integer readingTimeout;
+    /**
+     * Attribute that represents a flag that indicates whether TLS encryption should be enabled or disabled.
+     */
+    private Boolean tslEnabled;
 
 	/**
 	 * Gets the value of the attribute {@link #idConfServerMail}.
@@ -289,4 +293,19 @@ public class ConfServerMailForm {
 		this.readingTimeout = readingTimeout;
 	}
 
+    /**
+     * Gets the value of the attribute {@link #tslEnabled}.
+     * @return the value of the attribute {@link #tslEnabled}.
+     */
+    public Boolean getTslEnabled() {
+        return tslEnabled;
+    }
+    
+    /**
+     * Sets the value of the attribute {@link #tslEnabled}.
+     * @param tslEnabledParam The value for the attribute {@link #tslEnabled}.
+     */
+    public void setTslEnabled(Boolean tslEnabledParam) {
+        this.tslEnabled = tslEnabledParam;
+    }
 }

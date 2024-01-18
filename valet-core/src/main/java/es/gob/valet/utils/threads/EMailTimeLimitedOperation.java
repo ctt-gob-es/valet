@@ -148,6 +148,10 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	 * sending the mail messages.
 	 */
 	private Integer readingTimeout;
+	/**
+    * Attribute that indicates whether TLS encryption should be enabled or disabled.
+    */
+	private boolean tslEnabled = false;
 
 	/**
 	 * Constructor method for the class EMailTimeLimitedOperation.java.
@@ -265,6 +269,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		
 		connectionTimeout = csm.getConnectionTimeout();
 		readingTimeout = csm.getReadingTimeout();
+        tslEnabled = csm.getTslEnabled();
 		initializeServerMailConfigurationAuth(csm);
 
 	}
@@ -349,7 +354,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		// defecto.
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailServerHost);
-		props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.starttls.enable", tslEnabled);
 		props.put("mail.smtp.port", Integer.toString(mailServerPort));
 		props.put("mail.smtp.auth", Boolean.toString(mailServerAuthUseAuthentication));
 		props.put("mail.smtp.connectiontimeout", connectionTimeout);// tiempo d conexión
