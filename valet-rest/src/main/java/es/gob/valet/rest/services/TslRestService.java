@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 19/09/2023.
+ * @version 2.1, 19/01/2024.
  */
 package es.gob.valet.rest.services;
 
@@ -69,15 +69,12 @@ import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.exceptions.ValetRestException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.i18n.messages.RestGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
-import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
-import es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject;
-import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
+import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
+import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
-import es.gob.valet.persistence.exceptions.CryptographyException;
 import es.gob.valet.rest.elements.CertDetectedInTSL;
 import es.gob.valet.rest.elements.Certificate;
 import es.gob.valet.rest.elements.CertificateChain;
@@ -102,7 +99,7 @@ import es.gob.valet.utils.ValidatorResultConstants;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 19/09/2023.
+ * @version 2.1, 19/01/2024.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -190,14 +187,9 @@ public class TslRestService implements ITslRestService {
 		// dadas de alta en la plataforma.
 		if (allIsOk) {
 
-			ApplicationCacheObject aco = null;
-			try {
-				aco = ConfigurationCacheFacade.applicationGetApplication(application, false);
-			} catch (ApplicationCacheException e) {
-				LOGGER.error(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG036, new Object[ ] { application }), e);
-			}
+			ApplicationValet app = ManagerPersistenceConfigurationServices.getInstance().getApplicationValetService().getApplicationByIdentificator(application);
 
-			if (aco == null) {
+			if (app == null) {
 
 				allIsOk = false;
 				String errorMsg = Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG037, new Object[ ] { application });
@@ -1003,14 +995,9 @@ public class TslRestService implements ITslRestService {
 		// dadas de alta en la plataforma.
 		if (allIsOk) {
 
-			ApplicationCacheObject aco = null;
-			try {
-				aco = ConfigurationCacheFacade.applicationGetApplication(application, false);
-			} catch (ApplicationCacheException e) {
-				LOGGER.error(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG036, new Object[ ] { application }), e);
-			}
+			ApplicationValet app = ManagerPersistenceConfigurationServices.getInstance().getApplicationValetService().getApplicationByIdentificator(application);
 
-			if (aco == null) {
+			if (app == null) {
 
 				allIsOk = false;
 				String errorMsg = Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG037, new Object[ ] { application });

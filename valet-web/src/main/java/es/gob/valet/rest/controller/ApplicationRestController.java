@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/12/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 19/09/2023.
+ * @version 2.1, 19/01/2024.
  */
 package es.gob.valet.rest.controller;
 
@@ -54,8 +54,6 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
-import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
-import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 import es.gob.valet.persistence.configuration.services.ifaces.IApplicationValetService;
 import es.gob.valet.utils.GeneralConstantsValetWeb;
@@ -63,7 +61,7 @@ import es.gob.valet.utils.GeneralConstantsValetWeb;
 /**
  * <p>Class that manages the REST request related to the Applications administration and JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 19/09/2023.
+ * @version 2.1, 19/01/2024.
  */
 @RestController
 public class ApplicationRestController {
@@ -203,21 +201,9 @@ public class ApplicationRestController {
 			appValet.setResponsibleMail(appForm.getResponsibleMail());
 			appValet.setResponsiblePhone(appForm.getResponsiblePhone());
 
-			ApplicationValet newAppValet = null;
-			try {
-				newAppValet = appService.saveApplicationValet(appValet);
-				// se actualiza la caché
-				ConfigurationCacheFacade.applicationAddUpdateApplication(appValet);
-				listNewApp.add(newAppValet);
-				dtOutput.setData(listNewApp);
-			}
-
-			catch (ApplicationCacheException e) {
-				LOGGER.error(Language.getResWebGeneral(e.getErrorDescription()));
-				json.put(KEY_JS_ERROR_SAVE_APP, e.getErrorDescription());
-				listNewApp = StreamSupport.stream(appService.getAllApplication().spliterator(), false).collect(Collectors.toList());
-				dtOutput.setError(json.toString());
-			}
+			ApplicationValet newAppValet = appService.saveApplicationValet(appValet);
+			listNewApp.add(newAppValet);
+			dtOutput.setData(listNewApp);
 		} else {
 
 			listNewApp = StreamSupport.stream(appService.getAllApplication().spliterator(), false).collect(Collectors.toList());
@@ -242,8 +228,6 @@ public class ApplicationRestController {
 		String result = index;
 		try {
 			ManagerPersistenceConfigurationServices.getInstance().getApplicationValetService().deleteApplicationValet(idApplication);
-			// se elimina también de la caché
-			ConfigurationCacheFacade.applicationRemoveApplication(idApplication);
 		} catch (Exception e) {
 			result = "-1";
 		}
