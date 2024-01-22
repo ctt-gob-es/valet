@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.11, 27/12/2018.
+ * @version 2.1, 19/01/2024.
  */
 package es.gob.valet.rest.controller;
 
@@ -199,21 +199,9 @@ public class ApplicationRestController {
 			appValet.setResponsibleMail(appForm.getResponsibleMail());
 			appValet.setResponsiblePhone(appForm.getResponsiblePhone());
 
-			ApplicationValet newAppValet = null;
-			try {
-				newAppValet = appService.saveApplicationValet(appValet);
-				// se actualiza la caché
-				ConfigurationCacheFacade.applicationAddUpdateApplication(appValet);
-				listNewApp.add(newAppValet);
-				dtOutput.setData(listNewApp);
-			}
-
-			catch (ApplicationCacheException e) {
-				LOGGER.error(Language.getResWebGeneral(e.getErrorDescription()));
-				json.put(KEY_JS_ERROR_SAVE_APP, e.getErrorDescription());
-				listNewApp = StreamSupport.stream(appService.getAllApplication().spliterator(), false).collect(Collectors.toList());
-				dtOutput.setError(json.toString());
-			}
+			ApplicationValet newAppValet = appService.saveApplicationValet(appValet);
+			listNewApp.add(newAppValet);
+			dtOutput.setData(listNewApp);
 		} else {
 
 			listNewApp = StreamSupport.stream(appService.getAllApplication().spliterator(), false).collect(Collectors.toList());
@@ -238,8 +226,6 @@ public class ApplicationRestController {
 		String result = index;
 		try {
 			ManagerPersistenceConfigurationServices.getInstance().getApplicationValetService().deleteApplicationValet(idApplication);
-			// se elimina también de la caché
-			ConfigurationCacheFacade.applicationRemoveApplication(idApplication);
 		} catch (Exception e) {
 			result = "-1";
 		}

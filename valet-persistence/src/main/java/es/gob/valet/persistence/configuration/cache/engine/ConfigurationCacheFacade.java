@@ -25,27 +25,21 @@
 package es.gob.valet.persistence.configuration.cache.engine;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
-import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
-import es.gob.valet.persistence.configuration.cache.modules.application.elements.ApplicationCacheObject;
-import es.gob.valet.persistence.configuration.cache.modules.application.engine.ApplicationCacheFacade;
-import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionMappingCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.engine.TSLCache;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.engine.TSLCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
-import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 
@@ -274,9 +268,6 @@ public final class ConfigurationCacheFacade {
 
 			} else {
 
-				// Inicializamos los datos de configuración en la caché.
-				initializeAllConfigurationCacheData(inLoadingCache);
-
 				// Una vez se han cargado todos los datos, marcamos que la caché
 				// ha sido inicializada.
 				TSLCache.getInstance().setInitializedFlag(true, inLoadingCache);
@@ -287,31 +278,6 @@ public final class ConfigurationCacheFacade {
 		} catch (ConfigurationCacheException e) {
 			LOGGER.error(Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG031), e);
 		}
-
-	}
-
-	/**
-	 * Private method that loads all the configuration data in the cache.
-	 * @param inLoadingCache Flag that indicates if the operation must be executed on the loading auxiliar cache.
-	 */
-	private static void initializeAllConfigurationCacheData(boolean inLoadingCache) {
-
-		// Declaramos las variables a usar para indicar los tiempos de carga de
-		// cada "módulo".
-		long initTime = 0;
-		long endTime = 0;
-
-		// Se inicializan todas las aplicaciones en la caché
-		// compartida...
-		LOGGER.info(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG013));
-		initTime = Calendar.getInstance().getTimeInMillis();
-		try {
-			getApplicationCacheFacade().initializeAllApplications(inLoadingCache);
-		} catch (Exception e) {
-			LOGGER.error(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG014), e);
-		}
-		endTime = Calendar.getInstance().getTimeInMillis();
-		LOGGER.info(Language.getFormatResPersistenceCache(IPersistenceCacheMessages.CONFIG_CACHE_LOG040, new Object[ ] { Long.toString(endTime - initTime) }));
 
 	}
 
@@ -359,66 +325,4 @@ public final class ConfigurationCacheFacade {
 
 	}
 
-	/**
-	 * Gets the unique instance for the Application cache configuration facade.
-	 * @return the unique instance for the Application cache configuration facade.
-	 */
-	private static ApplicationCacheFacade getApplicationCacheFacade() {
-		return ApplicationCacheFacade.getInstance();
-	}
-
-	/**
-	 * Method that reloads an application in the cache.
-	 *
-	 * @param av Application pojo representation.
-	 * @throws ApplicationCacheException In case of some error reloading in the cache.
-	 */
-	public static void applicationAddUpdateApplication(ApplicationValet av) throws ApplicationCacheException {
-		// se comprueba que el parámetro de entrada no sea nulo y que se
-		// encuentre definido el identificador
-		if (av == null || av.getIdApplication() == null) {
-			throw new ApplicationCacheException(IValetException.COD_191, Language.getResPersistenceCache(IPersistenceCacheMessages.CONFIG_APPLICATION_CACHE_LOG005));
-		} else {
-			// Se realiza la recarga.
-			getApplicationCacheFacade().addUpdateApplication(av);
-		}
-	}
-
-	/**
-	 * Removes the application specified by the input identifier from the cache.
-	 *
-	 * @param applicationId Application identifier.
-	 * @throws ApplicationCacheException In case of some error working with the cache.
-	 */
-	public static void applicationRemoveApplication(Long applicationId) throws ApplicationCacheException {
-		// se obtiene la aplicación de la caché antes de eliminarla.
-		ApplicationCacheObject aco = applicationGetApplication(applicationId);
-		if (aco != null) {
-			getApplicationCacheFacade().removeApplication(applicationId);
-		}
-
-	}
-
-	/**
-	 * Gets the application representation from the cache. If it does not exist, try to get from the data base.
-	 * @param applicationId Application identifier
-	 * @return A object representation of the application in the cache.
-	 * @throws ApplicationCacheException In case of some error getting the application from the cache.
-	 */
-	public static ApplicationCacheObject applicationGetApplication(long applicationId) throws ApplicationCacheException {
-		return ApplicationCacheFacade.getInstance().getApplicationCacheObject(applicationId);
-	}
-	
-	/**
-	 * Gets the application representation from the cache. If it does not exist, try to get from the data base.
-	 * @param app Application identificator.
-	 * @param checkDataBase Flag that indicates if, in case of the application to find is not defined in the cache, this method
-	 * must check if it is defined in the data base (<code>true</code>), or not (<code>false</code>).
-	 * @return A object representation of the application in the cache.
-	 * @throws ApplicationCacheException In case of some error getting the application from the cache.
-	 */
-	public static ApplicationCacheObject applicationGetApplication(String app, boolean checkDataBase) throws ApplicationCacheException {
-		return ApplicationCacheFacade.getInstance().getApplicationCacheObject(app, checkDataBase);
-	}
-	
 }
