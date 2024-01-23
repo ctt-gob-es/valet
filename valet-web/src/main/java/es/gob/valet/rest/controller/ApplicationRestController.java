@@ -53,8 +53,6 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
-import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
-import es.gob.valet.persistence.configuration.cache.modules.application.exceptions.ApplicationCacheException;
 import es.gob.valet.persistence.configuration.model.entity.ApplicationValet;
 import es.gob.valet.persistence.configuration.services.ifaces.IApplicationValetService;
 
