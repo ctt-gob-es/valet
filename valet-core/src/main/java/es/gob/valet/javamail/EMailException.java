@@ -22,7 +22,7 @@
  * @author Gobierno de España.
  * @version 1.0, 26/12/2018.
  */
-package es.gob.valet.utils.threads;
+package es.gob.valet.javamail;
 
 import es.gob.valet.exceptions.ValetException;
 

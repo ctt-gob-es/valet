@@ -43,11 +43,11 @@ import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreGeneralMessages;
+import es.gob.valet.javamail.EMailException;
+import es.gob.valet.javamail.EMailTimeLimitedOperation;
 import es.gob.valet.quartz.task.Task;
 import es.gob.valet.tasks.HiddenTasksManager;
 import es.gob.valet.tasks.TempBlockedAlarmTask;
-import es.gob.valet.utils.threads.EMailException;
-import es.gob.valet.utils.threads.EMailTimeLimitedOperation;
 
 /**
  * <p>Class that manages the events of all the alarms. This class represents
