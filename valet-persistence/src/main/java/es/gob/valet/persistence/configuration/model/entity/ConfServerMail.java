@@ -266,7 +266,7 @@ public class ConfServerMail implements Serializable {
      * Gets the value of the attribute {@link #tlsEnabled}.
      * @return the value of the attribute {@link #tlsEnabled}.
      */
-    @Column(name = "TLS_ENABLE", nullable = true, precision = NumberConstants.NUM1)
+    @Column(name = "TLS_ENABLED", nullable = true, precision = NumberConstants.NUM1)
     @Type(type = "yes_no")
     @JsonView(DataTablesOutput.View.class)
     public Boolean getTlsEnabled() {
