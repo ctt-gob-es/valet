@@ -229,7 +229,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		
 		connectionTimeout = csm.getConnectionTimeout();
 		readingTimeout = csm.getReadingTimeout();
-		tslEnabled = csm.getTslEnabled();
+		tslEnabled = csm.getTlsEnabled();
 		initializeServerMailConfigurationAuth(csm);
 
 	}
