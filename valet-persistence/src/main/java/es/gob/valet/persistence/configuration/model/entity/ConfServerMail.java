@@ -102,7 +102,7 @@ public class ConfServerMail implements Serializable {
 	/**
     * Attribute that represents a flag that indicates whether TLS encryption should be enabled or disabled.
     */
-	private Boolean tslEnabled;
+	private Boolean tlsEnabled;
 
 	/**
 	 * Gets the value of the attribute {@link #idConfServerMail}.
@@ -263,22 +263,22 @@ public class ConfServerMail implements Serializable {
 	}
 	
     /**
-     * Gets the value of the attribute {@link #tslEnabled}.
-     * @return the value of the attribute {@link #tslEnabled}.
+     * Gets the value of the attribute {@link #tlsEnabled}.
+     * @return the value of the attribute {@link #tlsEnabled}.
      */
-    @Column(name = "TSL_ENABLED", nullable = true, precision = NumberConstants.NUM1)
+    @Column(name = "TLS_ENABLED", nullable = true, precision = NumberConstants.NUM1)
     @Type(type = "yes_no")
     @JsonView(DataTablesOutput.View.class)
-    public Boolean getTslEnabled() {
-        return tslEnabled;
+    public Boolean getTlsEnabled() {
+        return tlsEnabled;
     }
     
     /**
-     * Sets the value of the attribute {@link #tslEnabled}.
-     * @param tslEnabledParam The value for the attribute {@link #tslEnabled}.
+     * Sets the value of the attribute {@link #tlsEnabled}.
+     * @param tlsEnabledParam The value for the attribute {@link #tlsEnabled}.
      */
-    public void setTslEnabled(Boolean tslEnabledParam) {
-        this.tslEnabled = tslEnabledParam;
+    public void setTlsEnabled(Boolean tlsEnabledParam) {
+        this.tlsEnabled = tlsEnabledParam;
     }
 
 }
