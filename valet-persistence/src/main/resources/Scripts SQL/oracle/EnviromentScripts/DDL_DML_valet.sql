@@ -78,6 +78,12 @@ ALTER TABLE "EXTERNAL_ACCESS" ADD CONSTRAINT "EA_ID_COUNTRY_REGION" FOREIGN KEY 
 ALTER TABLE "SYSTEM_CERTIFICATE" ADD "VALIDATION_CERT" Char(1) DEFAULT 'N' NOT NULL;
 COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."VALIDATION_CERT" IS 'Valor que indica si el certificado es válido (Y) o no (N).';
 
+-- Table CONF_SERVER_MAIL
+ALTER TABLE "CONF_SERVER_MAIL" ADD "CERTIFICATE_FILE" BLOB NULL;
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."CERTIFICATE_FILE" IS 'Columna que almacenará el certificado que se usará para enviar correos con cifrado TLS.';
+ALTER TABLE "CONF_SERVER_MAIL" ADD "ORIGINAL_NAME_FILE" VARCHAR2(100) NULL;
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."CERTIFICATE_FILE" IS 'Columna que almacenará el nombre original del fichero que contiene el certificado.';
+
 -- ######################################################## 2. CREACIÓN DE SEQUENCIAS ########################################################
 ALTER SESSION SET CURRENT_SCHEMA="VALET_CONFIGOWNER";
 

@@ -14,7 +14,7 @@
 							<label for="issuerMailForm" th:text="#{form.confServerMail.issuer}"></label> 
 							<span id="issuerMail_span"
 								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-							<input type="email" class="form-control" id="issuerMailForm" th:field="*{issuerMail}">
+							<input type="email" class="form-control" id="issuerMailForm" name="issuerMailForm" th:field="*{issuerMail}">
 						</div>
 					</div>
 					
@@ -24,21 +24,21 @@
 							<span
 								id="hostMail_span"
 								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
-							<input type="text" class="form-control" id="hostMailForm" th:field="*{hostMail}">
+							<input type="text" class="form-control" id="hostMailForm"  name="hostMailForm" th:field="*{hostMail}">
 						</div>
 						<div class="form-group col-md-4">
 							<label for="portMailForm" th:text="#{form.confServerMail.port}"></label> 
 							<span
 								id="portMail_span"
 								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-							<input type="number" class="form-control" id="portMailForm" th:field="*{portMail}">
+							<input type="number" class="form-control" id="portMailForm" name="portMailForm" th:field="*{portMail}">
 						</div>
 					</div>
 					
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<label for="useAuthenticationMailForm" th:text="#{form.confServerMail.useAuthentication}"></label> 
-							<input type="checkbox" id="userAuthenticationMailForm" th:field="*{useAuthenticationMail}"  onclick="changeUseAuthentication();">
+							<input type="checkbox" id="userAuthenticationMailForm" name="userAuthenticationMailForm" th:field="*{useAuthenticationMail}"  onclick="changeUseAuthentication();">
 						</div>
 					</div>
 					
@@ -47,7 +47,7 @@
 							<label for="userMailForm" th:text="#{form.confServerMail.user}"></label>
 							<span id="userMail_span"
 								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-							<input type="text" class="form-control" id="userMailForm"
+							<input type="text" class="form-control" id="userMailForm" name="userMailForm"
 								th:field="*{userMail}" th:readonly="${noAuthentication}">
 						</div>
 						<div class="form-group col-md-6">
@@ -63,22 +63,34 @@
 							<label for="connectionTimeoutForm" th:text="#{form.confServerMail.connectionTimeout}"></label>
 							<span id="connectionTimeout_span"
 								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-							<input type="number" class="form-control" id="connectionTimeoutForm"
+							<input type="number" class="form-control" id="connectionTimeoutForm" name="connectionTimeoutForm"
 								th:field="*{connectionTimeout}">
 						</div>
 						<div class="form-group col-md-6">
 							<label for="readingTimeoutForm" th:text="#{form.confServerMail.readingTimeout}"></label>
 							<span id="readingTimeout_span"
 								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-							<input type="number" class="form-control" id="readingTimeoutForm"
+							<input type="number" class="form-control" id="readingTimeoutForm" name="readingTimeoutForm"
 								th:field="*{readingTimeout}">
 						</div>
 					</div>
 					<div class="form-row">
-						<div class="form-group col-md-12">
-							<label for="tlsEnabledForm" th:text="#{form.confServerMail.tlsEnabled}"></label> 
-							<input type="checkbox" id="tlsEnabledForm" th:field="*{tlsEnabled}">
-						</div>
+						<div class="form-group col-md-6 d-flex flex-column">
+							<div>
+							    <span id="certificateFile_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+							</div>
+							<div class="d-flex align-items-center">
+							    <label for="tlsEnabledForm" th:text="#{form.confServerMail.tlsEnabled}" style="white-space: nowrap;"></label> 
+							    <input type="checkbox" id="tlsEnabledForm" name="tlsEnabledForm" th:field="*{tlsEnabled}" class="ml-1 mr-2 mb-2" onclick="cleanFile()">
+							    <div class="custom-file">
+							        <input type="file" class="custom-file-input" id="certificateFile" name="certificateFile" th:field="*{certificateFile}" onchange="updateFileName(this)">
+							        <label class="custom-file-label" for="certificateFile">Seleccionar archivo</label>
+							    </div>
+							    <!-- Enlaces para actualizar y descargar -->
+							    <a id="linkdownloadcertificate" class="c-blue-700 ti-import ml-2" alt="#{form.confServerMail.downloadCertificate}" title="#{form.confServerMail.downloadCertificate}" style="cursor: pointer; font-size: 24px;" onclick="downloadCertificate()"></a>
+							    <a id="linkdeletecertificate" class="c-red-700 ti-trash" alt="#{form.confServerMail.deleteCertificate}" title="#{form.confServerMail.deleteCertificate}" style="cursor: pointer; font-size: 24px;" onclick="deleteCertificate()"></a>
+							</div>
+						    </div>
 					</div>
 					<button id="saveBtn" type="submit" class="btn btn-primary" 
 						th:utext="#{button.save}">
@@ -91,18 +103,107 @@
 </div>
 
 <script th:inline="javascript">
+var confServerMailForm;
 
-$(document).ready(
-		function() {
-		var existPw = $("#idNewPassword").val();
-		var cryptoPassword = /*[[#{form.confServerMail.edit.password}]]*/;
-		if(existPw ==='true'){
+$(document).ready(function() {
+	var existPw = $("#idNewPassword").val();
+	var cryptoPassword = /*[[#{form.confServerMail.edit.password}]]*/;
+	if(existPw ==='true'){
 		document.getElementById('passwordMailForm').value=cryptoPassword;
 	}
-		
-		});
-		
 	
+	confServerMailForm = [[${confServerMailForm}]];
+	
+	if (confServerMailForm.originalNameFile !== '') {
+	    // Obtener la referencia al elemento .custom-file-label directamente
+	    var label = document.querySelector('.custom-file-label');
+	        
+	    // Actualizar el contenido del label con el nombre del fichero obtenido
+		label.textContent = confServerMailForm.originalNameFile;
+	}
+});
+
+/**
+ * Function to delete a certificate. Unchecks the tlsEnabledForm checkbox, clears the certificateFile input field,
+ * and updates the custom-file-label element to display no file selected.
+ */
+function deleteCertificate() {
+	$('#tlsEnabledForm').prop('checked', false);
+	
+	// Limpiar el valor del campo de entrada de archivo
+    $("#certificateFile").val('');
+
+    // Obtener el elemento de la etiqueta personalizada
+    var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
+
+    // Actualizar el contenido del elemento de la etiqueta personalizada
+    label.text('');
+}
+
+/**
+ * Function to clean the file. Clears the certificateFile input field and updates the custom-file-label element to display no file selected,
+ * only if the tlsEnabledForm checkbox is unchecked.
+ */
+function cleanFile() {
+	if(!$("#tlsEnabledForm").is(":checked")) {
+		// Limpiar el valor del campo de entrada de archivo
+	    $("#certificateFile").val('');
+
+	    // Obtener el elemento de la etiqueta personalizada
+	    var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
+
+	    // Actualizar el contenido del elemento de la etiqueta personalizada
+	    label.text('');
+	}
+}
+
+/**
+ * Function to download a certificate. Creates a Blob from the certificateFile bytes,
+ * generates a download link, and triggers a click event on the link to initiate the download.
+ */
+function downloadCertificate() {
+		
+	if(confServerMailForm.certificateFile != null && confServerMailForm.certificateFile != '') {
+		// Crear un Blob a partir de los bytes
+		var blob = new Blob([confServerMailForm.certificateFile], { type: 'application/octet-stream' });
+		
+		// Crear una URL para el Blob
+	    var url = URL.createObjectURL(blob);
+
+	    // Crear un enlace de descarga
+	    var enlaceDescarga = document.createElement('a');
+	    enlaceDescarga.href = url;
+	    enlaceDescarga.download = confServerMailForm.originalNameFile;
+
+	    // A\F1adir el enlace al documento
+	    document.body.appendChild(enlaceDescarga);
+
+	    // Simular un clic en el enlace para iniciar la descarga
+	    enlaceDescarga.click();
+
+	    // Eliminar el enlace despu\E9s de la descarga
+	    document.body.removeChild(enlaceDescarga);	
+	}
+}
+
+/**
+ * Function to update the file name display. Gets the selected file name from the input,
+ * and updates the custom-file-label element with the file name. If tlsEnabledForm is unchecked, it calls cleanFile().
+ */
+function updateFileName(input) {
+	if($("#tlsEnabledForm").is(":checked")) {
+		var fileName = input.value.split('\\').pop(); // Obtener el nombre del fichero seleccionado
+	    var label = input.parentElement.querySelector('.custom-file-label');
+	    label.textContent = fileName; // Actualizar el contenido del label con el nombre del fichero	
+	} else {
+		cleanFile();
+	    
+		var textEnableTls = /*[[#{form.confServerMail.enableTls}]]*/ '';
+		
+	    $("#certificateFile_span").text(textEnableTls);
+		$("#certificateFile_span").addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+	}
+}
 		 
 		 
 //función para activar o desactivar los campos usuario/password 
@@ -133,7 +234,19 @@ function changeUseAuthentication(){
 $( "#saveBtn" ).click(function(event) {
 	  event.preventDefault();
 	 cleanSpan();
-	  var formData = JSON.stringify($("#newConfServerMailForm").serializeJSON());
+	
+	var formData = new FormData();
+	var file =  $('#certificateFile').prop('files')[0];
+	var blob = new Blob([JSON.stringify($("#newConfServerMailForm").serializeJSON())], {type: "application/json"});
+	
+	if (file == undefined) {
+		file = new File([""], "nofile", {type: "text/plain", lastModified: new Date()});
+ 	}
+	
+	formData.append("confServerMailForm", blob);
+	formData.append("certificateFile", file);
+	
+	 
 	  var saveConfServerMail = /*[[@{/saveconfservermail}]]*/ ;
 	  var messageError = /*[[#{message.view.confServerMail.error}]]*/;
 	  loading();
@@ -145,7 +258,10 @@ $( "#saveBtn" ).click(function(event) {
   			  type: "POST",
 			  data: formData,
 			  dataType: "json",
-			  contentType : "application/json",
+			  enctype: 'multipart/form-data;',
+			  processData: false,
+		      contentType: false,
+		      cache: false,
 			  success: function(data, error){
 				  hide();
 				  if(data.error != null){
@@ -163,13 +279,28 @@ $( "#saveBtn" ).click(function(event) {
 							$('#messageUpdateCSMId').html(data.error);
 							$('#messageUpdateCSMId').addClass('alert alert-danger');
 						}
-					} else{
-					  if(data.msgOk!= "" && data.msgOk!= null){
+					} else {
+					  	if(data.msgOk!= "" && data.msgOk!= null) {
+							// Asignar la informaci\F3n al formulario
+					        var form = $('#newConfServerMailForm');
+					        form.find('[name="idConfServerMail"]').val(data.idConfServerMail);
+					        form.find('[name="issuerMailForm"]').val(data.issuerMail);
+					        form.find('[name="hostMailForm"]').val(data.hostMail);
+					        form.find('[name="portMailForm"]').val(data.portMail);
+					        form.find('[name="userMailForm"]').val(data.userMail);
+					        form.find('[name="passwordMailForm"]').val(data.passwordMail);
+					        form.find('[name="connectionTimeoutForm"]').val(data.connectionTimeout);
+					        form.find('[name="readingTimeoutForm"]').val(data.readingTimeout);
+					        form.find('[name="tlsEnabledForm"]').val(data.tlsEnabled);
+					        
+					        confServerMailForm.certificateFile = data.certificateFile;
+					        confServerMailForm.originalNameFile = data.originalNameFile;
+					     	
 							$('#messageUpdateCSMId').html(data.msgOk);
 							$('#messageUpdateCSMId').addClass('alert alert-success');
 						}
-						
-			  }},
+					}		
+			  },
 			  error:function(){
 				  hide();
 				  if ($('#errorModalConfMail').length > 0){

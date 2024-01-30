@@ -24,7 +24,7 @@
  * @author Gobierno de España.
  * @version 1.6, 19/09/2023.
  */
-package es.gob.valet.utils.threads;
+package es.gob.valet.javamail;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -305,8 +305,12 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		props.put("mail.smtp.starttls.enable", tslEnabled);
 		props.put("mail.smtp.port", Integer.toString(mailServerPort));
 		props.put("mail.smtp.auth", Boolean.toString(mailServerAuthUseAuthentication));
-		props.put("mail.smtp.connectiontimeout", connectionTimeout);// tiempo d conexión
-		props.put("mail.smtp.timeout", readingTimeout);// tiempo de mandar el mensaje
+		// tiempo d conexión
+		props.put("mail.smtp.connectiontimeout", connectionTimeout);
+		// tiempo de mandar el mensaje
+		props.put("mail.smtp.timeout", readingTimeout);
+		// Especificamos la clase de la fábrica de sockets seguros personalizada, puesto que no queremos validar contra el almacén de cacerts en el jdk o en jre
+		props.put("mail.smtp.ssl.socketFactory.class", "es.gob.valet.javamail.SSLSocketFactoryValet");
 		Session session = Session.getInstance(props);
 
 		try {

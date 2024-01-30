@@ -21,19 +21,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 19/09/2023.
+ * @version 1.8, 30/01/2024.
  */
 package es.gob.valet.rest.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.ConfServerMailForm;
@@ -49,7 +49,7 @@ import es.gob.valet.utils.GeneralConstantsValetWeb;
  * <p>Class that manages the REST requests related to the ConfServerMails administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 19/09/2023.
+ * @version 1.8, 30/01/2024.
  */
 @RestController
 public class ConfServerMailRestController {
@@ -89,19 +89,29 @@ public class ConfServerMailRestController {
 	 * Constant that represents the parameter 'readingTimeout'.
 	 */
 	private static final String FIELD_READING_TIMEOUT= "readingTimeout";
-
+	/**
+	 * Constant that represents the parameter 'certificateFile'.
+	 */
+	private static final String FIELD_CERTIFICATE_FILE= "certificateFile";
+	/**
+	 * The request parameter name for the backing form object representing the configuration of the mail server.
+	 */
+	private static final String RQ_PARAM_CONFSERVERMAILFORM = "confServerMailForm";
+	/**
+	 * The request parameter name for the MultipartFile containing the certificate file to be associated with the configuration.
+	 */
+	private static final String RQ_PARAM_CERTIFICATEFILE = "certificateFile";
+	
 
 	/**
 	 * Method that maps the save configuration of server mail web request to the controller and saves
 	 * it in the persistence.
-	 * @param confServerMailForm
-	 * Object that represents the backing configuration server mail form.
-	 * @param bindingResult
-	 * Object that represents the form validation result.
-	 * @return {@link ConfServerMail}
+	 * @param confServerMailForm The backing form object representing the configuration of the mail server.
+	 * @param certificateFile    The MultipartFile containing the certificate file to be associated with the configuration.
+	 * @return A {@link ConfServerMailForm} representing the updated configuration or an error message in case of validation failure.
 	 */
-	@RequestMapping(value = "/saveconfservermail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody ConfServerMailForm save(@RequestBody ConfServerMailForm confServerMailForm) {
+	@RequestMapping(value = "/saveconfservermail", method = RequestMethod.POST)
+	public @ResponseBody ConfServerMailForm save(@RequestPart(RQ_PARAM_CONFSERVERMAILFORM) ConfServerMailForm confServerMailForm, @RequestPart(RQ_PARAM_CERTIFICATEFILE) MultipartFile certificateFile) {
 		
 		ConfServerMailForm csmFormUpdated = confServerMailForm;
 		JSONObject json = new JSONObject();
@@ -109,7 +119,7 @@ public class ConfServerMailRestController {
 		
 
 			try {
-				validateConfServerMailParam(confServerMailForm, json);
+				validateConfServerMailParam(confServerMailForm, json, certificateFile);
 				
 				if (json.length() > 0) {
 					error = Boolean.TRUE;
@@ -129,6 +139,13 @@ public class ConfServerMailRestController {
 				confMail.setConnectionTimeout(confServerMailForm.getConnectionTimeout());
 				confMail.setReadingTimeout(confServerMailForm.getReadingTimeout());
 				confMail.setTlsEnabled(confServerMailForm.getTlsEnabled());
+				
+				if (certificateFile != null) {
+					confMail.setCertificateFile(certificateFile.getBytes());
+					confMail.setOriginalNameFile(certificateFile.getOriginalFilename());
+					csmFormUpdated.setCertificateFile(certificateFile.getBytes());
+					csmFormUpdated.setOriginalNameFile(certificateFile.getOriginalFilename());
+				}
 				
 				if (confServerMailForm.getUseAuthenticationMail()) {
 					confMail.setUserMail(confServerMailForm.getUserMail());
@@ -170,10 +187,11 @@ public class ConfServerMailRestController {
 	 * Method to validate the mandatory fields to add a specific header for HTTP/S.
 	 * 
 	 * @param valmetForm Object that represents the backing Configuration Server Mail form.
-	 *  @param json Contains the error messages that have been generated.
+	 * @param json Contains the error messages that have been generated.
+	 * @param certificateFile    The MultipartFile containing the certificate file to be associated with the configuration.
 	 * @return JSONObject Object JSON Object with the error messages that have been generated.
 	 */
-	private JSONObject validateConfServerMailParam(ConfServerMailForm csmform, JSONObject json) {
+	private JSONObject validateConfServerMailParam(ConfServerMailForm csmform, JSONObject json, MultipartFile certificateFile) {
 
 		if (UtilsStringChar.isNullOrEmpty(csmform.getIssuerMail())) {
 			String msgError = Language.getResWebGeneral(WebGeneralMessages.CMS_001);
@@ -221,6 +239,13 @@ public class ConfServerMailRestController {
 				json.put(FIELD_READING_TIMEOUT + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 			}
 		}
+		
+		if(null != csmform.getTlsEnabled() && csmform.getTlsEnabled()  && certificateFile.getOriginalFilename().equals("nofile")) {
+			String msgError = Language.getResWebGeneral(WebGeneralMessages.CMS_011);
+			LOGGER.error(msgError);
+			json.put(FIELD_CERTIFICATE_FILE + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
+		}
+		
 		return json;
 
 	}

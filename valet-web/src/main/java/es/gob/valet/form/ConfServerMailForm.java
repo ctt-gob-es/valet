@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 22/06/2023.
+ * @version 1.5, 30/01/2024.
  */
 package es.gob.valet.form;
 
@@ -36,7 +36,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that represents the backing form for adding/editing a server mail.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 22/06/2023.
+ * @version 1.5, 30/01/2024.
  */
 public class ConfServerMailForm {
 
@@ -101,7 +101,17 @@ public class ConfServerMailForm {
 	/**
 	 * Attribute that represents a flag that indicates whether TLS encryption should be enabled or disabled.
 	 */
-	private Boolean tlsEnabled;
+	private Boolean tlsEnabled = false;
+
+	/**
+	 * Attribute that represents file of certificate.
+	 */
+	private byte[ ] certificateFile;
+
+	/**
+	 * Attribute that represents the original name file of certificate.
+	 */
+	private String originalNameFile;
 
 	/**
 	 * Gets the value of the attribute {@link #idConfServerMail}.
@@ -317,4 +327,37 @@ public class ConfServerMailForm {
 	public void setTlsEnabled(Boolean tlsEnabledParam) {
 		this.tlsEnabled = tlsEnabledParam;
 	}
+
+	/**
+	 * Gets the value of the attribute {@link #certificateFile}.
+	 * @return the value of the attribute {@link #certificateFile}.
+	 */
+	public byte[ ] getCertificateFile() {
+		return certificateFile;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #certificateFile}.
+	 * @param certificateFile The value for the attribute {@link #certificateFile}.
+	 */
+	public void setCertificateFile(byte[ ] certificateFile) {
+		this.certificateFile = certificateFile;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #originalNameFile}.
+	 * @return the value of the attribute {@link #originalNameFile}.
+	 */
+	public String getOriginalNameFile() {
+		return originalNameFile;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #originalNameFile}.
+	 * @param originalNameFile The value for the attribute {@link #originalNameFile}.
+	 */
+	public void setOriginalNameFile(String originalNameFile) {
+		this.originalNameFile = originalNameFile;
+	}
+
 }

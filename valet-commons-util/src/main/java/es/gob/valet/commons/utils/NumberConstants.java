@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 19/09/2023.
+ * @version 1.5, 30/01/2024.
  */
 package es.gob.valet.commons.utils;
 
 /**
  * <p>Class that defines numeric constants for generalized usage.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 19/09/2023.
+ * @version 1.5, 30/01/2024.
  */
 public class NumberConstants {
 
@@ -60,6 +60,11 @@ public class NumberConstants {
 	 * Constant attribute that represents the number 1.
 	 */
 	public static final int NUM1 = 1;
+	
+	/**
+	 * Constant attribute that represents the number 1 (type long).
+	 */
+	public static final long NUM1_LONG = 1l;
 	
 	/**
 	 * Constant attribute that represents the number 2.
