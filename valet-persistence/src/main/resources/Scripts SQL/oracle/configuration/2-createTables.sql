@@ -247,7 +247,7 @@ CREATE TABLE "CONF_SERVER_MAIL"(
 	"PASSWORD_MAIL" Varchar2(200),
 	"CONNECTION_TIMEOUT"  Number(10,0) DEFAULT 10000 NOT NULL,
 	"READING_TIMEOUT" Number(10,0) DEFAULT 10000 NOT NULL,
-	"TSL_ENABLE" Char(1)
+	"TLS_ENABLE" Char(1) DEFAULT 'N' NOT NULL
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
 ALTER TABLE "CONF_SERVER_MAIL" ADD CONSTRAINT "ID_CONF_SERVER_MAIL" PRIMARY KEY ("ID_CONF_SERVER_MAIL");
 COMMENT ON TABLE "CONF_SERVER_MAIL" IS 'Tabla que almacena la configuración del servidor de correo.';
@@ -260,6 +260,7 @@ COMMENT ON COLUMN "CONF_SERVER_MAIL"."USER_MAIL" IS 'Valor que representa el usu
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."PASSWORD_MAIL" IS 'Valor que representa la contraseña del servidor de correo.';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."CONNECTION_TIMEOUT" IS 'Valor que representa tiempo maximo de conexión';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."READING_TIMEOUT" IS 'Valor que representa tiempo máximo de lectura.';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."TLS_ENABLE" IS 'Valor que representa si se desea activar el cifrado TLS.';
 
 -- Table TASK
 CREATE TABLE "TASK"(
