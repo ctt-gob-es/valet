@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 22/06/2023.
+ * @version 1.4, 30/01/2024.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -30,6 +30,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -44,7 +45,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>CONF_SERVER_MAIL</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 22/06/2023.
+ * @version 1.4, 30/01/2024.
  */
 @Entity
 @Table(name = "CONF_SERVER_MAIL")
@@ -100,9 +101,19 @@ public class ConfServerMail implements Serializable {
 	 */
 	private Integer readingTimeout;
 	/**
-    * Attribute that represents a flag that indicates whether TLS encryption should be enabled or disabled.
-    */
+	 * Attribute that represents a flag that indicates whether TLS encryption should be enabled or disabled.
+	 */
 	private Boolean tlsEnabled;
+
+	/**
+	 * Attribute that represents file of certificate.
+	 */
+	private byte[ ] certificateFile;
+
+	/**
+	 * Attribute that represents the original name file of certificate.
+	 */
+	private String originalNameFile;
 
 	/**
 	 * Gets the value of the attribute {@link #idConfServerMail}.
@@ -261,24 +272,59 @@ public class ConfServerMail implements Serializable {
 	public void setReadingTimeout(Integer readingTimeoutParam) {
 		this.readingTimeout = readingTimeoutParam;
 	}
-	
-    /**
-     * Gets the value of the attribute {@link #tlsEnabled}.
-     * @return the value of the attribute {@link #tlsEnabled}.
-     */
-    @Column(name = "TLS_ENABLED", nullable = true, precision = NumberConstants.NUM1)
-    @Type(type = "yes_no")
-    @JsonView(DataTablesOutput.View.class)
-    public Boolean getTlsEnabled() {
-        return tlsEnabled;
-    }
-    
-    /**
-     * Sets the value of the attribute {@link #tlsEnabled}.
-     * @param tlsEnabledParam The value for the attribute {@link #tlsEnabled}.
-     */
-    public void setTlsEnabled(Boolean tlsEnabledParam) {
-        this.tlsEnabled = tlsEnabledParam;
-    }
+
+	/**
+	 * Gets the value of the attribute {@link #tlsEnabled}.
+	 * @return the value of the attribute {@link #tlsEnabled}.
+	 */
+	@Column(name = "TLS_ENABLED", nullable = true, precision = NumberConstants.NUM1)
+	@Type(type = "yes_no")
+	@JsonView(DataTablesOutput.View.class)
+	public Boolean getTlsEnabled() {
+		return tlsEnabled;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #tlsEnabled}.
+	 * @param tlsEnabledParam The value for the attribute {@link #tlsEnabled}.
+	 */
+	public void setTlsEnabled(Boolean tlsEnabledParam) {
+		this.tlsEnabled = tlsEnabledParam;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #certificateFile}.
+	 * @return the value of the attribute {@link #certificateFile}.
+	 */
+	@Lob
+	@Column(name = "CERTIFICATE_FILE", nullable = true)
+	public byte[ ] getCertificateFile() {
+		return certificateFile;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #certificateFile}.
+	 * @param certificateFile The value for the attribute {@link #certificateFile}.
+	 */
+	public void setCertificateFile(byte[ ] certificateFile) {
+		this.certificateFile = certificateFile;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #originalNameFile}.
+	 * @return the value of the attribute {@link #originalNameFile}.
+	 */
+	@Column(name = "ORIGINAL_NAME_FILE", nullable = true, precision = NumberConstants.NUM1)
+	public String getOriginalNameFile() {
+		return originalNameFile;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #originalNameFile}.
+	 * @param originalNameFile The value for the attribute {@link #originalNameFile}.
+	 */
+	public void setOriginalNameFile(String originalNameFile) {
+		this.originalNameFile = originalNameFile;
+	}
 
 }

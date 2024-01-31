@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 22/06/2023.
+ * @version 1.4, 19/09/2023.
  */
 package es.gob.valet.alarms;
 
@@ -54,7 +54,7 @@ import es.gob.valet.tasks.TempBlockedAlarmTask;
  * the general manager of alarms module and provides the necessary logic interface
  * for the other modules can interact with this one.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 22/06/2023.
+ * @version 1.4, 19/09/2023.
  */
 public final class AlarmsManager {
 
