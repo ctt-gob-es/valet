@@ -264,6 +264,7 @@ COMMENT ON COLUMN "CONF_SERVER_MAIL"."CONNECTION_TIMEOUT" IS 'Valor que represen
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."READING_TIMEOUT" IS 'Valor que representa tiempo máximo de lectura.';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."TLS_ENABLED" IS 'Valor que representa si se desea activar el cifrado TLS.';
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."CERTIFICATE_FILE" IS 'Columna que almacenará el certificado que se usará para enviar correos con cifrado TLS.';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."ORIGINAL_NAME_FILE" IS 'Columna que almacenará el nombre original del fichero que contiene el certificado.';
 
 -- Table TASK
 CREATE TABLE "TASK"(

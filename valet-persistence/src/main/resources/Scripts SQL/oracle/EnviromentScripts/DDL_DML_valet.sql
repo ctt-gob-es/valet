@@ -82,7 +82,7 @@ COMMENT ON COLUMN "SYSTEM_CERTIFICATE"."VALIDATION_CERT" IS 'Valor que indica si
 ALTER TABLE "CONF_SERVER_MAIL" ADD "CERTIFICATE_FILE" BLOB NULL;
 COMMENT ON COLUMN "CONF_SERVER_MAIL"."CERTIFICATE_FILE" IS 'Columna que almacenará el certificado que se usará para enviar correos con cifrado TLS.';
 ALTER TABLE "CONF_SERVER_MAIL" ADD "ORIGINAL_NAME_FILE" VARCHAR2(100) NULL;
-COMMENT ON COLUMN "CONF_SERVER_MAIL"."CERTIFICATE_FILE" IS 'Columna que almacenará el nombre original del fichero que contiene el certificado.';
+COMMENT ON COLUMN "CONF_SERVER_MAIL"."ORIGINAL_NAME_FILE" IS 'Columna que almacenará el nombre original del fichero que contiene el certificado.';
 
 -- ######################################################## 2. CREACIÓN DE SEQUENCIAS ########################################################
 ALTER SESSION SET CURRENT_SCHEMA="VALET_CONFIGOWNER";
