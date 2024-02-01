@@ -75,7 +75,7 @@
 						</div>
 					</div>
 					<div class="form-row">
-						<div class="form-group col-md-6 d-flex flex-column">
+						<div class="form-group col-md-8 d-flex flex-column">
 							<div>
 							    <span id="certificateFile_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
 							</div>
@@ -90,7 +90,7 @@
 							    <a id="linkdownloadcertificate" class="c-blue-700 ti-import ml-2" alt="#{form.confServerMail.downloadCertificate}" title="#{form.confServerMail.downloadCertificate}" style="cursor: pointer; font-size: 24px;" onclick="downloadCertificate()"></a>
 							    <a id="linkdeletecertificate" class="c-red-700 ti-trash" alt="#{form.confServerMail.deleteCertificate}" title="#{form.confServerMail.deleteCertificate}" style="cursor: pointer; font-size: 24px;" onclick="deleteCertificate()"></a>
 							</div>
-						    </div>
+						</div>
 					</div>
 					<button id="saveBtn" type="submit" class="btn btn-primary" 
 						th:utext="#{button.save}">
@@ -106,6 +106,8 @@
 var confServerMailForm;
 
 $(document).ready(function() {
+	debugger;
+
 	var existPw = $("#idNewPassword").val();
 	var cryptoPassword = /*[[#{form.confServerMail.edit.password}]]*/;
 	if(existPw ==='true'){
@@ -114,7 +116,7 @@ $(document).ready(function() {
 	
 	confServerMailForm = [[${confServerMailForm}]];
 	
-	if (confServerMailForm.originalNameFile !== '') {
+	if (confServerMailForm.originalNameFile !== '' && confServerMailForm.originalNameFile !== 'nofile') {
 	    // Obtener la referencia al elemento .custom-file-label directamente
 	    var label = document.querySelector('.custom-file-label');
 	        
@@ -136,8 +138,10 @@ function deleteCertificate() {
     // Obtener el elemento de la etiqueta personalizada
     var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
 
+    var labelText = /*[[#{form.confServerMail.selectFile}]]*/ '';
+    
     // Actualizar el contenido del elemento de la etiqueta personalizada
-    label.text('');
+    label.text(labelText);
 }
 
 /**
@@ -152,8 +156,10 @@ function cleanFile() {
 	    // Obtener el elemento de la etiqueta personalizada
 	    var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
 
+	    var labelText = /*[[#{form.confServerMail.selectFile}]]*/ '';
+	    
 	    // Actualizar el contenido del elemento de la etiqueta personalizada
-	    label.text('');
+	    label.text(labelText);
 	}
 }
 

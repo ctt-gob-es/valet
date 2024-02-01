@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 13/05/2019.
+ * @version 1.3, 01/02/2024.
  */
 package es.gob.valet.tsl.certValidation.ifaces;
 
@@ -40,7 +40,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Interface that represents a certificate validation using TSL through some specific method.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 13/05/2019.
+ * @version 1.3, 01/02/2024.
  */
 public interface ITSLValidatorThroughSomeMethod {
 
@@ -65,8 +65,10 @@ public interface ITSLValidatorThroughSomeMethod {
 	 * @param validationDate Validation date to check the certificate status revocation.
 	 * @param shi TSL - TSP Service History Information from which extract the information to validate the certificate.
 	 * @param validationResult Object where must be stored the validation result data.
+	 * @param tslValidator TSL validator to verify if some TSP service is accomplished with the qualified (or not) certificate to check the CRL/OCSP Response.
+	 * @param tsp Trust Service Provider to use for checks the issuer of the CRL/OCSP Response.
 	 */
-	void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult);
+	void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl, Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult, ATSLValidator tslValidator, TrustServiceProvider tsp);
 
 	/**
 	 * Method that validates the input x509 v3 certificate using the distribution point information on it.

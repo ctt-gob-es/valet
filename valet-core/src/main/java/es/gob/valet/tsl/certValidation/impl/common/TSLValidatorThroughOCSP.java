@@ -97,7 +97,9 @@ import es.gob.valet.persistence.configuration.model.utils.AlarmIdConstants;
 import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
 import es.gob.valet.persistence.exceptions.CryptographyException;
 import es.gob.valet.tsl.access.TSLProperties;
+import es.gob.valet.tsl.certValidation.ResultQualifiedCertificate;
 import es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod;
+import es.gob.valet.tsl.exceptions.TSLValidationException;
 import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
@@ -636,7 +638,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// 3. Si el emisor no se encuentra en el almacén de confianza CA, se comprueba si está registrado y 
 			// marcado como confiable en un nuevo almacén de confianza OCSP
 			if(!result) {
-				result = checksRegisteredMarkedAsTrustedInTrustStoreOCSP(signerCert, tslValidator);
+				result = checksRegisteredMarkedAsTrustedInTrustStoreOCSP(signerCert);
 			}
 			
 		}
@@ -673,13 +675,9 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	* </ul>
 	
 	* @param signerCert certificate for which we will look for the issuer in the TrustStoreOCSP.
-	* @param tslValidator
-	*            TSL validator to verify if some TSP service is accomplished
-	*            with the qualified (or not) certificate to check the OCSP
-	*            response.
 	* @return <code>true</code> or <code>false</code> switch case.
 	*/
-	private boolean checksRegisteredMarkedAsTrustedInTrustStoreOCSP(Certificate signerCert, ATSLValidator tslValidator) {
+	private boolean checksRegisteredMarkedAsTrustedInTrustStoreOCSP(Certificate signerCert) {
 		boolean result = false;
 		
 		// Si hemos encontrado el firmante...
@@ -1588,42 +1586,32 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	}
 
 	/**
-	 * {@inheritDoc}
 	 * 
-	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#searchRevocationValueCompatible(java.security.cert.X509Certificate,
-	 *      org.bouncycastle.cert.ocsp.BasicOCSPResp,
-	 *      java.security.cert.X509CRL, java.util.Date,
-	 *      es.gob.valet.tsl.parsing.impl.common.TSPService,
-	 *      es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult)
+	 * {@inheritDoc}
+	 * @see es.gob.valet.tsl.certValidation.ifaces.ITSLValidatorThroughSomeMethod#searchRevocationValueCompatible(java.security.cert.X509Certificate, org.bouncycastle.cert.ocsp.BasicOCSPResp, java.security.cert.X509CRL, java.util.Date, es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance, es.gob.valet.tsl.certValidation.impl.common.TSLValidatorResult, es.gob.valet.tsl.certValidation.impl.common.ATSLValidator, es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider)
 	 */
 	@Override
 	public void searchRevocationValueCompatible(X509Certificate cert, BasicOCSPResp basicOcspResponse, X509CRL crl,
-			Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult) {
-
-		// Obtenemos los datos que identificarán al firmante de la respuesta
-		// OCSP.
-		extractOCSPResponseSignerData(shi);
+			Date validationDate, ServiceHistoryInstance shi, TSLValidatorResult validationResult, ATSLValidator tslValidator, TrustServiceProvider tsp) {
 		
-		Certificate signerCert = findSigningCertificate(basicOcspResponse, null);
-		
-		// Si hemos obtenido al menos una identidad digital, y
-		// el firmante de la respuesta OCSP coincide con alguna de estas,
-		// o es el mismo emisor del certificado a validar,
-		// significa que la respuesta es compatible con la TSL.
-		if (dip.isThereSomeDigitalIdentity() && (checkOCSPResponseIssuedBySomeDigitalIdentity(validationDate, validationResult,
-				null, null, signerCert)
-				|| checkOCSPResponseIssuerSameThanCertificateToValidate(basicOcspResponse, validationResult))) {
-
-			// Asignamos la respuesta OCSP al resultado.
-			validationResult.setRevocationValueBasicOCSPResponse(basicOcspResponse);
-
-			// Hacemos uso de esta para comprobar el estado de revocación del
-			// certificado.
-			checkCertificateInBasicOCSPResponseRevocationValue(cert, validationDate, basicOcspResponse, null,
-					validationResult);
-
+		// Obtenemos los certificados de la cadena de certificación que respalda el certificado del solicitante y el certificado de la entidad emisora.
+		X509CertificateHolder[] basicOcspResponseSignerCerts = basicOcspResponse.getCerts();
+		if (basicOcspResponseSignerCerts != null && basicOcspResponseSignerCerts.length > 0) {
+			// Evaluaremos que el certificado de la entidad emisora es confiable si está en algún certificado de la TSL o en los almacenes de CA u OCSP.
+			if (evaluateIfOCSPServiceIsReliable(validationDate, validationResult, tsp, tslValidator, basicOcspResponse, basicOcspResponseSignerCerts)) {
+				// Hacemos uso de esta para comprobar el estado de revocación del certificado.
+				checkCertificateInBasicOCSPResponseRevocationValue(cert, validationDate, basicOcspResponse, null, validationResult);
+			// Si no es confiable lo informamos
+			} else {
+				LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL223));
+			}
+		// Si no incluye los certificados, tenemos que comprobar si está emitida por el mismo emisor del certificado a validar.
+		} else {
+			if(!checkOCSPResponseIssuerSameThanCertificateToValidate(basicOcspResponse, validationResult)) {
+				LOGGER.warn(Language.getResCoreTsl(CoreTslMessages.LOGMTSL223));
+			}
 		}
-
+		
 	}
 
 	/**
