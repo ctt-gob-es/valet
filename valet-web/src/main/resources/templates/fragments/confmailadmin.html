@@ -83,7 +83,7 @@
 							    <label for="tlsEnabledForm" th:text="#{form.confServerMail.tlsEnabled}" style="white-space: nowrap;"></label> 
 							    <input type="checkbox" id="tlsEnabledForm" name="tlsEnabledForm" th:field="*{tlsEnabled}" class="ml-1 mr-2 mb-2" onclick="cleanFile()">
 							    <div class="custom-file">
-							        <input type="file" class="custom-file-input" id="certificateFile" name="certificateFile" th:field="*{certificateFile}" onchange="updateFileName(this)">
+							        <input type="file" class="custom-file-input" id="certificateFile" name="certificateFile" th:attr="alt=#{form.confServerMail.selectFile}, title=#{form.confServerMail.selectFile}" th:field="*{certificateFile}" onchange="updateFileName(this)">
 							        <label class="custom-file-label" for="certificateFile">Seleccionar archivo</label>
 							    </div>
 							    <!-- Enlaces para actualizar y descargar -->
