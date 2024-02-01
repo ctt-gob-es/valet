@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 30/01/2024.
+ * @version 1.8, 01/02/2024.
  */
 package es.gob.valet.controller;
 
@@ -37,7 +37,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IConfServerMailSer
 /**
  * <p>Class that manages the requests related to the ConfServerMail administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 30/01/2024.
+ * @version 1.8, 01/02/2024.
  */
 @Controller
 public class ConfServerMailController {
@@ -75,10 +75,8 @@ public class ConfServerMailController {
 		confServerMailForm.setConnectionTimeout(confServerMail.getConnectionTimeout());
 		confServerMailForm.setReadingTimeout(confServerMail.getReadingTimeout());
 		confServerMailForm.setTlsEnabled(confServerMail.getTlsEnabled());
-		if(null != confServerMail.getCertificateFile()) {
-			confServerMailForm.setCertificateFile(confServerMail.getCertificateFile());
-			confServerMailForm.setOriginalNameFile(confServerMail.getOriginalNameFile());
-		}
+		confServerMailForm.setCertificateFile(confServerMail.getCertificateFile());
+		confServerMailForm.setOriginalNameFile(confServerMail.getOriginalNameFile());
 		
 		boolean authentication = Boolean.FALSE;
 		if (confServerMail.getUseAuthenticationMail() != null) {

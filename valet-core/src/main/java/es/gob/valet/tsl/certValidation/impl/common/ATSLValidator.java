@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.2, 17/01/2024.
+ * @version 2.3, 01/02/2024.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -105,7 +105,7 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 2.2, 17/01/2024.
+ * @version 2.3, 01/02/2024.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -4536,7 +4536,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				tslValidatorMethod = new TSLValidatorThroughOCSP();
 				// Ejecutamos la comprobación.
 				tslValidatorMethod.searchRevocationValueCompatible(cert, basicOcspResponse, crl, validationDate,
-						shiForDetect, validationResult);
+						shiForDetect, validationResult, this, tsp);
 
 			}
 
@@ -4548,7 +4548,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				tslValidatorMethod = new TSLValidatorThroughCRL();
 				// Ejecutamos la comprobación.
 				tslValidatorMethod.searchRevocationValueCompatible(cert, basicOcspResponse, crl, validationDate,
-						shiForDetect, validationResult);
+						shiForDetect, validationResult, this, tsp);
 
 			}
 
@@ -4598,7 +4598,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				// Validamos el certificado con la información que haya en
 				// el servicio TSP.
 				searchCompatibleRevocationValuesInTSPService(cert, validationDate, isCertQualified, validationResult,
-						tspService, basicOcspResponse, crl);
+						tspService, basicOcspResponse, crl, tsp);
 
 				// Si hemos encontrado un servicio que detecta alguno de los
 				// valores de revocación,
@@ -4655,10 +4655,13 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 *            CRL to check if is compatible with the TSL to check the
 	 *            revocation status of the certificate. It can be
 	 *            <code>null</code>.
+	 * @param tsp
+	 *            Trust Service Provider to use for checks the issuer of the
+	 *            CRL/OCSP Response.
 	 */
 	private void searchCompatibleRevocationValuesInTSPService(X509Certificate cert, Date validationDate,
 			boolean isCertQualified, TSLValidatorResult validationResult, TSPService tspService,
-			BasicOCSPResp basicOcspResponse, X509CRL crl) {
+			BasicOCSPResp basicOcspResponse, X509CRL crl, TrustServiceProvider tsp) {
 
 		// Primero, en función de la fecha indicada, comprobamos
 		// si tenemos que hacer uso de este servicio o de alguno
@@ -4693,7 +4696,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 		// Si hemos encontrado al menos uno, lo analizamos...
 		if (shi != null) {
 			searchCompatibleRevocationValuesInTSPService(cert, validationDate, isCertQualified, validationResult, shi,
-					basicOcspResponse, crl);
+					basicOcspResponse, crl, tsp);
 			// Si hemos detectado el servicio histórico que valida
 			// los elementos de revocación, lo almacenamos.
 			if (isHistoricServiceInf && validationResult.getRevocationValueBasicOCSPResponse() != null
@@ -4729,10 +4732,13 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 *            CRL to check if is compatible with the TSL to check the
 	 *            revocation status of the certificate. It can be
 	 *            <code>null</code>.
+	 * @param tsp
+	 *            Trust Service Provider to use for checks the issuer of the
+	 *            CRL/OCSP Response.
 	 */
 	private void searchCompatibleRevocationValuesInTSPService(X509Certificate cert, Date validationDate,
 			boolean isCertQualified, TSLValidatorResult validationResult, ServiceHistoryInstance shi,
-			BasicOCSPResp basicOcspResponse, X509CRL crl) {
+			BasicOCSPResp basicOcspResponse, X509CRL crl, TrustServiceProvider tsp) {
 
 		// Comprobamos que el estado del servicio es OK,
 		// y que su fecha de comienzo del estado es anterior
@@ -4759,7 +4765,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			if (tslValidatorMethod != null) {
 
 				tslValidatorMethod.searchRevocationValueCompatible(cert, basicOcspResponse, crl, validationDate, shi,
-						validationResult);
+						validationResult, this, tsp);
 
 			}
 

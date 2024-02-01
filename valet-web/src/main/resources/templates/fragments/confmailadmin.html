@@ -75,7 +75,7 @@
 						</div>
 					</div>
 					<div class="form-row">
-						<div class="form-group col-md-6 d-flex flex-column">
+						<div class="form-group col-md-8 d-flex flex-column">
 							<div>
 							    <span id="certificateFile_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
 							</div>
@@ -83,14 +83,14 @@
 							    <label for="tlsEnabledForm" th:text="#{form.confServerMail.tlsEnabled}" style="white-space: nowrap;"></label> 
 							    <input type="checkbox" id="tlsEnabledForm" name="tlsEnabledForm" th:field="*{tlsEnabled}" class="ml-1 mr-2 mb-2" onclick="cleanFile()">
 							    <div class="custom-file">
-							        <input type="file" class="custom-file-input" id="certificateFile" name="certificateFile" th:field="*{certificateFile}" onchange="updateFileName(this)">
+							        <input type="file" class="custom-file-input" id="certificateFile" th:attr="alt=#{form.confServerMail.selectFile}, title=#{form.confServerMail.selectFile}" name="certificateFile" th:field="*{certificateFile}" onchange="updateFileName(this)">
 							        <label class="custom-file-label" for="certificateFile">Seleccionar archivo</label>
 							    </div>
 							    <!-- Enlaces para actualizar y descargar -->
 							    <a id="linkdownloadcertificate" class="c-blue-700 ti-import ml-2" alt="#{form.confServerMail.downloadCertificate}" title="#{form.confServerMail.downloadCertificate}" style="cursor: pointer; font-size: 24px;" onclick="downloadCertificate()"></a>
 							    <a id="linkdeletecertificate" class="c-red-700 ti-trash" alt="#{form.confServerMail.deleteCertificate}" title="#{form.confServerMail.deleteCertificate}" style="cursor: pointer; font-size: 24px;" onclick="deleteCertificate()"></a>
 							</div>
-						    </div>
+						</div>
 					</div>
 					<button id="saveBtn" type="submit" class="btn btn-primary" 
 						th:utext="#{button.save}">
@@ -114,7 +114,7 @@ $(document).ready(function() {
 	
 	confServerMailForm = [[${confServerMailForm}]];
 	
-	if (confServerMailForm.originalNameFile !== '') {
+	if (confServerMailForm.originalNameFile !== '' && confServerMailForm.originalNameFile !== 'nofile') {
 	    // Obtener la referencia al elemento .custom-file-label directamente
 	    var label = document.querySelector('.custom-file-label');
 	        
@@ -136,8 +136,10 @@ function deleteCertificate() {
     // Obtener el elemento de la etiqueta personalizada
     var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
 
+    var labelText = /*[[#{form.confServerMail.selectFile}]]*/ '';
+    
     // Actualizar el contenido del elemento de la etiqueta personalizada
-    label.text('');
+    label.text(labelText);
 }
 
 /**
@@ -152,8 +154,10 @@ function cleanFile() {
 	    // Obtener el elemento de la etiqueta personalizada
 	    var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
 
+	    var labelText = /*[[#{form.confServerMail.selectFile}]]*/ '';
+	    
 	    // Actualizar el contenido del elemento de la etiqueta personalizada
-	    label.text('');
+	    label.text(labelText);
 	}
 }
 
