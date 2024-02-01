@@ -286,8 +286,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			ResultQualifiedCertificate resultQC, ResultQSCDDetermination resultQSCD)
 			throws TSLQualificationEvalProcessException, TSLValidationException {
 
-		procEUQualifiedCertificateDetermination(resultQC, cert, isCACert, isTsaCertificate, validationDate, tspList,
-				false);
+		procEUQualifiedCertificateDetermination(resultQC, cert, isCACert, isTsaCertificate, validationDate, tspList);
 
 		if (!resultQC.isEndProcedure()) {
 
@@ -299,7 +298,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 						new Object[] { cert.getNotBefore().toString() }));
 				ResultQualifiedCertificate resultQCDateIssue = new ResultQualifiedCertificate(cert);
 				procEUQualifiedCertificateDetermination(resultQCDateIssue, cert, isCACert, isTsaCertificate,
-						cert.getNotBefore(), tspList, true);
+						cert.getNotBefore(), tspList);
 
 				// PRO-4.4.4-35
 				if (resultQCDateIssue.getQcStatus().equals(ITSLStatusConstants.PROCESS_FAILED)) {
@@ -1108,16 +1107,14 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 * @throws TSLQualificationEvalProcessException
 	 */
 	private void procEUQualifiedCertificateDetermination(ResultQualifiedCertificate resultQC, X509Certificate cert,
-			boolean isCACert, boolean isTsaCertificate, Date validationDate, List<TrustServiceProvider> tspList,
-			boolean isDateIssue) throws TSLQualificationEvalProcessException {
+			boolean isCACert, boolean isTsaCertificate, Date validationDate, List<TrustServiceProvider> tspList) throws TSLQualificationEvalProcessException {
 
 		boolean endProc = Boolean.FALSE;
 		if (tspList != null && !tspList.isEmpty()) {
 			// se llama al PROC3. Obtaining listed services matching a
 			// certificate
 			ResultServiceInformation resultSI = new ResultServiceInformation();
-			procListedServiceMachingCertificate(resultSI, cert, isCACert, isTsaCertificate, validationDate, tspList,
-					isDateIssue);
+			procListedServiceMachingCertificate(resultSI, cert, isCACert, isTsaCertificate, validationDate, tspList);
 
 			// PRO-4.4.4-04
 			if (resultSI.getSiStatus().equals(ITSLStatusConstants.PROCESS_FAILED)) {
@@ -2734,13 +2731,10 @@ public abstract class ATSLValidator implements ITSLValidator {
 	 *            Validation date to check the certificate status revocation.
 	 * @param tspList
 	 *            List of TrustServiceProvider.
-	 * @param isDateIssue
-	 *            Flag taht indicates if the validation is being done using the
-	 *            date of issue of the certificate.
+
 	 */
 	private void procListedServiceMachingCertificate(ResultServiceInformation resultSI, X509Certificate cert,
-			boolean isCACert, boolean isTsaCertificate, Date validationDate, List<TrustServiceProvider> tspList,
-			boolean isDateIssue) {
+			boolean isCACert, boolean isTsaCertificate, Date validationDate, List<TrustServiceProvider> tspList) {
 		LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL385));
 		obtainListServicesMatchingCertificate(resultSI, cert, isCACert, isTsaCertificate, validationDate, tspList);
 
@@ -2750,7 +2744,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					new Object[] { resultSI.getSiStatus(), resultSI.getSiResults().size() }));
 		}
 
-		if (!isDateIssue && resultSI.getSiStatus().equals(ITSLStatusConstants.PROCESS_PASSED)
+		if (resultSI.getSiStatus().equals(ITSLStatusConstants.PROCESS_PASSED)
 				&& resultSI.getSiResults().isEmpty()) {
 			// si el proceso no ha fallado pero no se ha encontrado tspServices
 			// y estamos en la primera vuelta del proceso, donde se valida con
@@ -2771,7 +2765,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 				ResultServiceInformation resultSIIssuer = new ResultServiceInformation();
 
 				procListedServiceMachingCertificate(resultSIIssuer, issuerCert, isCACert, isTsaCertificate,
-						validationDate, tspList, isDateIssue);
+						validationDate, tspList);
 
 				if (resultSIIssuer.getSiStatus().equals(ITSLStatusConstants.PROCESS_PASSED)
 						&& !resultSIIssuer.getSiResults().isEmpty()) {
