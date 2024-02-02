@@ -196,7 +196,7 @@ function downloadCertificate() {
  */
 function updateFileName(input) {
 	// incluiremos certificados solo para mdm como proveedor, para gmail no lo necesitamos
-	if($("#tlsEnabledForm").is(":checked") && $('#hostMailForm').val().indexOf("gmail")) {
+	if($("#tlsEnabledForm").is(":checked") && $('#hostMailForm').val().indexOf("gmail") != -1) {
 		var fileName = input.value.split('\\').pop(); // Obtener el nombre del fichero seleccionado
 	    var label = input.parentElement.querySelector('.custom-file-label');
 	    label.textContent = fileName; // Actualizar el contenido del label con el nombre del fichero	
