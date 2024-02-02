@@ -87,8 +87,8 @@
 							        <label class="custom-file-label" for="certificateFile">Seleccionar archivo</label>
 							    </div>
 							    <!-- Enlaces para actualizar y descargar -->
-							    <a id="linkdownloadcertificate" class="c-blue-700 ti-import ml-2" alt="#{form.confServerMail.downloadCertificate}" title="#{form.confServerMail.downloadCertificate}" style="cursor: pointer; font-size: 24px;" onclick="downloadCertificate()"></a>
-							    <a id="linkdeletecertificate" class="c-red-700 ti-trash" alt="#{form.confServerMail.deleteCertificate}" title="#{form.confServerMail.deleteCertificate}" style="cursor: pointer; font-size: 24px;" onclick="deleteCertificate()"></a>
+							    <a id="linkdownloadcertificate" class="c-blue-700 ti-import ml-2" th:attr="alt=#{form.confServerMail.downloadCertificate}, title=#{form.confServerMail.downloadCertificate}" title="#{form.confServerMail.downloadCertificate}" style="cursor: pointer; font-size: 24px;" onclick="downloadCertificate()"></a>
+							    <a id="linkdeletecertificate" class="c-red-700 ti-trash" th:attr="alt=#{form.confServerMail.deleteCertificate}, title=#{form.confServerMail.deleteCertificate}" style="cursor: pointer; font-size: 24px;" onclick="deleteCertificate()"></a>
 							</div>
 						</div>
 					</div>
@@ -106,8 +106,6 @@
 var confServerMailForm;
 
 $(document).ready(function() {
-	debugger;
-
 	var existPw = $("#idNewPassword").val();
 	var cryptoPassword = /*[[#{form.confServerMail.edit.password}]]*/;
 	if(existPw ==='true'){
