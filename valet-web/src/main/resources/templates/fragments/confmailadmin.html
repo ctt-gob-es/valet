@@ -195,7 +195,8 @@ function downloadCertificate() {
  * and updates the custom-file-label element with the file name. If tlsEnabledForm is unchecked, it calls cleanFile().
  */
 function updateFileName(input) {
-	if($("#tlsEnabledForm").is(":checked")) {
+	// incluiremos certificados solo para mdm como proveedor, para gmail no lo necesitamos
+	if($("#tlsEnabledForm").is(":checked") && $('#hostMailForm').val().indexOf("gmail")) {
 		var fileName = input.value.split('\\').pop(); // Obtener el nombre del fichero seleccionado
 	    var label = input.parentElement.querySelector('.custom-file-label');
 	    label.textContent = fileName; // Actualizar el contenido del label con el nombre del fichero	
