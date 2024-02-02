@@ -225,6 +225,11 @@ function updateFileName(input) {
 		    // Obtener el elemento de la etiqueta personalizada
 		    var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
 		    
+		    var labelText = /*[[#{form.confServerMail.selectFile}]]*/ '';
+		    
+		    // Actualizar el contenido del elemento de la etiqueta personalizada
+		    label.text(labelText);
+		    
 			var textEnableTls = /*[[#{form.confServerMail.enableTls}]]*/ '';
 			
 		    $("#certificateFile_span").text(textEnableTls);
