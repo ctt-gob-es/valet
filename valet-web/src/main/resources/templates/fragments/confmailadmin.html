@@ -24,7 +24,7 @@
 							<span
 								id="hostMail_span"
 								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
-							<input type="text" class="form-control" id="hostMailForm"  name="hostMailForm" th:field="*{hostMail}" onchange="cleanFile()">
+							<input type="text" class="form-control" id="hostMailForm"  name="hostMailForm" th:field="*{hostMail}" oninput="cleanTslAndFile()">
 						</div>
 						<div class="form-group col-md-4">
 							<label for="portMailForm" th:text="#{form.confServerMail.port}"></label> 
@@ -106,6 +106,7 @@
 var confServerMailForm;
 
 $(document).ready(function() {
+	
 	var existPw = $("#idNewPassword").val();
 	var cryptoPassword = /*[[#{form.confServerMail.edit.password}]]*/;
 	if(existPw ==='true'){
@@ -122,6 +123,21 @@ $(document).ready(function() {
 		label.textContent = confServerMailForm.originalNameFile;
 	}
 });
+
+function cleanTslAndFile() {
+	// Limpiar el valor del campo de entrada de archivo
+    $("#certificateFile").val('');
+
+    // Obtener el elemento de la etiqueta personalizada
+    var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
+
+    var labelText = /*[[#{form.confServerMail.selectFile}]]*/ '';
+    
+    // Actualizar el contenido del elemento de la etiqueta personalizada
+    label.text(labelText);
+    
+    $('#tlsEnabledForm').prop('checked', false);
+}
 
 /**
  * Function to delete a certificate. Unchecks the tlsEnabledForm checkbox, clears the certificateFile input field,
@@ -195,18 +211,36 @@ function downloadCertificate() {
  * and updates the custom-file-label element with the file name. If tlsEnabledForm is unchecked, it calls cleanFile().
  */
 function updateFileName(input) {
-	// incluiremos certificados solo para mdm como proveedor, para gmail no lo necesitamos
-	if($("#tlsEnabledForm").is(":checked") && $('#hostMailForm').val().indexOf("gmail") != -1) {
-		var fileName = input.value.split('\\').pop(); // Obtener el nombre del fichero seleccionado
-	    var label = input.parentElement.querySelector('.custom-file-label');
-	    label.textContent = fileName; // Actualizar el contenido del label con el nombre del fichero	
-	} else {
-		cleanFile();
+	if($('#hostMailForm').val().indexOf("gmail") == -1) {
+		// Cuando es distinto a gmail el proveedor actualizaremos file siempre y cuando se haya checkeado la TLS
+		if($("#tlsEnabledForm").is(":checked")) {
+			var fileName = input.value.split('\\').pop(); // Obtener el nombre del fichero seleccionado
+		    var label = input.parentElement.querySelector('.custom-file-label');
+		    label.textContent = fileName; // Actualizar el contenido del label con el nombre del fichero
+		// Si no ha checkeado el input y quiere meter un certificdo se informará para que active el check
+		} else {
+			// Limpiar el valor del campo de entrada de archivo
+		    $("#certificateFile").val('');
+
+		    // Obtener el elemento de la etiqueta personalizada
+		    var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
+		    
+			var textEnableTls = /*[[#{form.confServerMail.enableTls}]]*/ '';
+			
+		    $("#certificateFile_span").text(textEnableTls);
+			$("#certificateFile_span").addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');		
+		}
+	} else if($('#hostMailForm').val().indexOf("gmail") != -1) {
+		// Limpiar el valor del campo de entrada de archivo
+	    $("#certificateFile").val('');
+
+	    // Obtener el elemento de la etiqueta personalizada
+	    var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
 	    
-		var textEnableTls = /*[[#{form.confServerMail.enableTls}]]*/ '';
-		
-	    $("#certificateFile_span").text(textEnableTls);
-		$("#certificateFile_span").addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+		var labelText = /*[[#{form.confServerMail.selectFile}]]*/ '';
+	    
+	    // Actualizar el contenido del elemento de la etiqueta personalizada
+	    label.text(labelText);
 	}
 }
 		 
