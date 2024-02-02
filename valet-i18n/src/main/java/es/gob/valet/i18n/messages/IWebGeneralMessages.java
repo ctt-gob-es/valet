@@ -668,7 +668,11 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String CMS_011 = "CMS_011";
-	
+	/**
+	 * Constant attribute that represents the name of the property <code>CMS_011</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	String CMS_012 = "CMS_012";
 	/**
 	 * Constant attribute that represents the name of the property <code>wrongFileSize</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.

@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 19/09/2023.
+ * @version 1.7, 02/02/2024.
  */
 package es.gob.valet.javamail;
 
@@ -65,7 +65,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * is specified to define the e-mail and the necessary functionality is contributed to realize the sending
  * as an independent thread via SMTP server. This thread will be time limited.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 19/09/2023.
+ * @version 1.7, 02/02/2024.
  */
 public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
@@ -341,47 +341,49 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 	 * @throws EMailException 
 	 */
 	private void useInternalMailServer() throws EMailException {
-
-		// Se inicializan las propiedades junto con una sesión por
-		// defecto.
-		Properties props = new Properties();
-		props.put("mail.smtp.host", mailServerHost);
-		props.put("mail.smtp.starttls.enable", tslEnabled);
-		props.put("mail.smtp.port", Integer.toString(mailServerPort));
-		props.put("mail.smtp.auth", Boolean.toString(mailServerAuthUseAuthentication));
-		// tiempo d conexión
-		props.put("mail.smtp.connectiontimeout", connectionTimeout);
-		// tiempo de mandar el mensaje
-		props.put("mail.smtp.timeout", readingTimeout);
-		// Especificamos la clase de la fábrica de sockets seguros personalizada, puesto que no queremos validar contra el almacén de cacerts en el jdk o en jre
-		props.put("mail.smtp.ssl.socketFactory.class", "es.gob.valet.javamail.SSLSocketFactoryValet");
-		Session session = Session.getInstance(props);
-
-		try {
-
-			// Se crea el mensaje.
-			Message msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress(mailServerIssuer));
-
-			if (!mailAddresses.isEmpty()) {
-				msg.setRecipients(Message.RecipientType.TO, mailAddresses.toArray(new InternetAddress[mailAddresses.size()]));
-				msg.setSubject(subject);
-
-				msg.setSentDate(Calendar.getInstance().getTime());
-				msg.setText(messageBuilder.toString());
-
-				// Se intenta la conexión con el servidor de correo.
-				Transport transport = session.getTransport(TRANSPORT_PROTOCOL_SMTP);
-				transport.connect(mailServerHost, mailServerAuthUserName, mailServerAuthPassword);
-
-				// Se efectúa el envío el mensaje.
-				transport.sendMessage(msg, msg.getAllRecipients());
-				transport.close();
-			}
-
-		} catch (MessagingException e) {
-			sendException(e);
-		}
+		
+    		// Se inicializan las propiedades junto con una sesión por
+    		// defecto.
+    		Properties props = new Properties();
+    		props.put("mail.smtp.host", mailServerHost);
+    		props.put("mail.smtp.port", Integer.toString(mailServerPort));
+    		props.put("mail.smtp.auth", Boolean.toString(mailServerAuthUseAuthentication));
+    		// Para proveedores como mdm(outlook) el cifrado TLS puede o no ser seleccionado. En gmail el cifrado TLS es obligatorio por política de seguridad.
+    		props.put("mail.smtp.starttls.enable", tslEnabled);
+    		// tiempo d conexión
+    		props.put("mail.smtp.connectiontimeout", connectionTimeout);
+    		// tiempo de mandar el mensaje
+    		props.put("mail.smtp.timeout", readingTimeout);
+    		// Si el host pertence a un proveedor mdm establecemos una factoría SSL personalizada
+    		if(mailServerHost.indexOf("mdm") != -1) {
+    			// Especificamos la clase de la fábrica de sockets seguros personalizada, puesto que no queremos validar contra el almacén de cacerts en el jdk o en jre
+    			props.put("mail.smtp.ssl.socketFactory.class", "es.gob.valet.javamail.SSLSocketFactoryValet");
+    		}
+     		Session session = Session.getInstance(props);
+    		try {
+    			// Se crea el mensaje.
+    			Message msg = new MimeMessage(session);
+    			msg.setFrom(new InternetAddress(mailServerIssuer));
+    
+    			if (!mailAddresses.isEmpty()) {
+    				msg.setRecipients(Message.RecipientType.TO, mailAddresses.toArray(new InternetAddress[mailAddresses.size()]));
+    				msg.setSubject(subject);
+    
+    				msg.setSentDate(Calendar.getInstance().getTime());
+    				msg.setText(messageBuilder.toString());
+    
+    				// Se intenta la conexión con el servidor de correo.
+    				Transport transport = session.getTransport(TRANSPORT_PROTOCOL_SMTP);
+    				transport.connect(mailServerHost, mailServerAuthUserName, mailServerAuthPassword);
+    
+    				// Se efectúa el envío el mensaje.
+    				transport.sendMessage(msg, msg.getAllRecipients());
+    				transport.close();
+    			}
+    
+    		} catch (MessagingException e) {
+    			sendException(e); 
+    		}
 
 	}
 

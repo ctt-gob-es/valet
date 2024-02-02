@@ -24,7 +24,7 @@
 							<span
 								id="hostMail_span"
 								class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
-							<input type="text" class="form-control" id="hostMailForm"  name="hostMailForm" th:field="*{hostMail}">
+							<input type="text" class="form-control" id="hostMailForm"  name="hostMailForm" th:field="*{hostMail}" onchange="cleanFile()">
 						</div>
 						<div class="form-group col-md-4">
 							<label for="portMailForm" th:text="#{form.confServerMail.port}"></label> 
@@ -87,8 +87,8 @@
 							        <label class="custom-file-label" for="certificateFile">Seleccionar archivo</label>
 							    </div>
 							    <!-- Enlaces para actualizar y descargar -->
-							    <a id="linkdownloadcertificate" class="c-blue-700 ti-import ml-2" alt="#{form.confServerMail.downloadCertificate}" title="#{form.confServerMail.downloadCertificate}" style="cursor: pointer; font-size: 24px;" onclick="downloadCertificate()"></a>
-							    <a id="linkdeletecertificate" class="c-red-700 ti-trash" alt="#{form.confServerMail.deleteCertificate}" title="#{form.confServerMail.deleteCertificate}" style="cursor: pointer; font-size: 24px;" onclick="deleteCertificate()"></a>
+							    <a id="linkdownloadcertificate" class="c-blue-700 ti-import ml-2" th:attr="alt=#{form.confServerMail.downloadCertificate}, title=#{form.confServerMail.downloadCertificate}" style="cursor: pointer; font-size: 24px;" onclick="downloadCertificate()"></a>
+							    <a id="linkdeletecertificate" class="c-red-700 ti-trash" th:attr="alt=#{form.confServerMail.deleteCertificate}, title=#{form.confServerMail.deleteCertificate}" style="cursor: pointer; font-size: 24px;" onclick="deleteCertificate()"></a>
 							</div>
 						</div>
 					</div>
