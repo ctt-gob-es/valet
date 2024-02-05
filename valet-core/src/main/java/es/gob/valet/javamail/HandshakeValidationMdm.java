@@ -43,12 +43,12 @@ import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 30/01/2024.
  */
-public class HandshakeValidationValet implements X509TrustManager {
+public class HandshakeValidationMdm implements X509TrustManager {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = LogManager.getLogger(HandshakeValidationValet.class);
+	private static final Logger LOGGER = LogManager.getLogger(HandshakeValidationMdm.class);
 	
 	/**
      * {@inheritDoc}
@@ -76,10 +76,11 @@ public class HandshakeValidationValet implements X509TrustManager {
 	public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 		LOGGER.debug("Comenzamos a validar los certificados proporcionados por el servidor, con los que nos proporciona el cliente");
 		boolean accept = false;
-		X509Certificate x509Certificate;
-		ConfServerMail confServerMail = ManagerPersistenceConfigurationServices.getInstance().getConfServerMailService().getConfServerMailById(NumberConstants.NUM1_LONG);
+		
 		try {
-			x509Certificate = UtilsCertificate.getX509Certificate(confServerMail.getCertificateFile());
+			ConfServerMail confServerMail = ManagerPersistenceConfigurationServices.getInstance().getConfServerMailService().getConfServerMailById(NumberConstants.NUM1_LONG);
+			
+			X509Certificate x509Certificate = UtilsCertificate.getX509Certificate(confServerMail.getCertificateFile());
 			for(int i=0;i<chain.length;i++) {
     			LOGGER.debug(chain[i].getSubjectDN().getName());
     			// Validamos que el certificado del cliente ha sido emtido por el mismo emisor que nuestro certificado de servidor
@@ -88,12 +89,14 @@ public class HandshakeValidationValet implements X509TrustManager {
         	        break; // Rompemos el bucle más cercano ya que hemos encontrado un certificado que lo contiene un emisor 
     			}
     		}
-    		if(!accept) {
-    			throw new CertificateException("Certificado no soportado");
-    		}
-		} catch (CommonUtilsException e) {
+    	} catch (Exception e) {
 			throw new CertificateException("Se ha producido un fallo al verificar la clave pública del certificado");
 		}
+		
+		if(!accept) {
+			throw new CertificateException("Certificado no soportado");
+		}
+		
 		LOGGER.debug("checkServerTrusted");
 	}
 

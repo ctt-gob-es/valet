@@ -315,7 +315,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
     		// Si el host pertence a un proveedor mdm establecemos una factoría SSL personalizada
     		if(mailServerHost.indexOf("mdm") != -1) {
     			// Especificamos la clase de la fábrica de sockets seguros personalizada, puesto que no queremos validar contra el almacén de cacerts en el jdk o en jre
-    			props.put("mail.smtp.ssl.socketFactory.class", "es.gob.valet.javamail.SSLSocketFactoryValet");
+    			props.put("mail.smtp.ssl.socketFactory.class", "es.gob.valet.javamail.SSLSocketFactoryMdm");
     		}
      		Session session = Session.getInstance(props);
     		try {

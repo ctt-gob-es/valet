@@ -16,7 +16,7 @@
 
 /**
  * <b>File:</b><p> es.gob.valet.javamail.HandshakeValidationValet.java.</p>
- * <b>Description:</b><p>Custom implementation of SSLSocketFactory that enhances SSL/TLS socket creation by providing a specific TrustManager, {@link HandshakeValidationValet}, for handshake validation. This implementation aims to improve security by carefully validating certificates presented by the server.</p>
+ * <b>Description:</b><p>Custom implementation of SSLSocketFactory that enhances SSL/TLS socket creation by providing a specific TrustManager, {@link HandshakeValidationMdm}, for handshake validation. This implementation aims to improve security by carefully validating certificates presented by the server.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>30/01/2024.</p>
  * @author Gobierno de España.
@@ -37,16 +37,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * <p>Custom implementation of SSLSocketFactory that enhances SSL/TLS socket creation by providing a specific TrustManager, {@link HandshakeValidationValet}, for handshake validation. This implementation aims to improve security by carefully validating certificates presented by the server.</p>
+ * <p>Custom implementation of SSLSocketFactory that enhances SSL/TLS socket creation by providing a specific TrustManager, {@link HandshakeValidationMdm}, for handshake validation. This implementation aims to improve security by carefully validating certificates presented by the server.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * @version 1.0, 30/01/2024.
  */
-public class SSLSocketFactoryValet extends SSLSocketFactory {
+public class SSLSocketFactoryMdm extends SSLSocketFactory {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = LogManager.getLogger(SSLSocketFactoryValet.class);
+	private static final Logger LOGGER = LogManager.getLogger(SSLSocketFactoryMdm.class);
 	
 	 /**
      * The underlying SSLSocketFactory used for creating SSL sockets.
@@ -55,14 +55,14 @@ public class SSLSocketFactoryValet extends SSLSocketFactory {
 
 	 /**
      * Constructs a new instance of SSLSocketFactoryValet.
-     * Initializes the underlying SSLSocketFactory with a custom TrustManager, {@link HandshakeValidationValet},
+     * Initializes the underlying SSLSocketFactory with a custom TrustManager, {@link HandshakeValidationMdm},
      * to perform enhanced SSL/TLS handshake validation.
      */
-	public SSLSocketFactoryValet() {
+	public SSLSocketFactoryMdm() {
 		try {
 			LOGGER.debug("Se instancia factory");
 			SSLContext sslcontext = SSLContext.getInstance("TLS");
-			sslcontext.init(null, new TrustManager[ ] { new HandshakeValidationValet() }, null);
+			sslcontext.init(null, new TrustManager[ ] { new HandshakeValidationMdm() }, null);
 			factory = (SSLSocketFactory) sslcontext.getSocketFactory();
 		} catch (Exception ex) {
 			LOGGER.error(ex.getMessage(), ex);
@@ -75,7 +75,7 @@ public class SSLSocketFactoryValet extends SSLSocketFactory {
      * @return A new instance of SSLSocketFactoryValet.
      */
 	public static SocketFactory getDefault() {
-		return new SSLSocketFactoryValet();
+		return new SSLSocketFactoryMdm();
 	}
 
 	/**
