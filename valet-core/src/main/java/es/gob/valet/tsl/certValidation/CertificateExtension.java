@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/02/2023.</p>
  * @author Gobierno de España.
- * @version 1.2, 19/09/2023.
+ * @version 1.3, 06/02/2024.
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * TSL.
  * </p>
  * 
- * @version 1.2, 19/09/2023.
+ * @version 1.3, 06/02/2024.
  */
 public class CertificateExtension implements Serializable {
 
@@ -305,7 +305,7 @@ public class CertificateExtension implements Serializable {
 	 */
 	public String getRowQSCDDirectiveRegime() {
 		String row = null;
-		if (qcSSCD) {
+		if (qcSSCD|| policyIdQCP_SSCD) {
 			row = QCCertificateConstants.QC_ROW1;
 		}
 		if (!qcSSCD && !policyIdQCP_SSCD) {
