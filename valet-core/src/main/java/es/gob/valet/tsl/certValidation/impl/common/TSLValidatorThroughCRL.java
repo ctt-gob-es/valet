@@ -24,6 +24,7 @@
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -809,20 +810,24 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 		// Recuperamos el listado de Distribution Points de tipo CRL.
 		CRLDistPoint crlDps = null;
-		Extensions extensions = null;
-		
+		ASN1InputStream dIn = null;
 		try {
-			extensions = UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions();
-		} catch (CommonUtilsException e2) {
-			crlDps = null;
-		}
-		Extension ext = extensions.getExtension(Extension.cRLDistributionPoints);
-		byte[ ] octs = ext.getExtnValue().getOctets();
-		try (ASN1InputStream dIn = new ASN1InputStream(octs)){
+			Extensions extensions = UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions();
+			Extension ext = extensions.getExtension(Extension.cRLDistributionPoints);
+			byte[ ] octs = ext.getExtnValue().getOctets();
+			dIn = new ASN1InputStream(octs);
 			crlDps = CRLDistPoint.getInstance(dIn.readObject());
 		} catch (Exception e1) {
 			crlDps = null;
-		} 
+		} finally {
+			if (dIn != null) {
+				try {
+					dIn.close();
+				} catch (IOException e) {
+					dIn = null;
+				}
+			}
+		}
 		
 		// Si lo hemos obtenido...
 		if (crlDps != null) {
@@ -984,19 +989,23 @@ public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 		// Recuperamos el listado de Distribution Points de tipo CRL.
 		CRLDistPoint crlDps = null;
-		Extensions extensions = null;
-		
+		ASN1InputStream dIn = null;
 		try {
-			extensions = UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions();
-		} catch (CommonUtilsException e2) {
-			crlDps = null;
-		}
-		Extension ext = extensions.getExtension(Extension.cRLDistributionPoints);
-		byte[ ] octs = ext.getExtnValue().getOctets();
-		try (ASN1InputStream dIn = new ASN1InputStream(octs)){
+			Extensions extensions = UtilsCertificate.getBouncyCastleCertificate(cert).getTBSCertificate().getExtensions();
+			Extension ext = extensions.getExtension(Extension.cRLDistributionPoints);
+			byte[ ] octs = ext.getExtnValue().getOctets();
+			dIn = new ASN1InputStream(octs);
 			crlDps = CRLDistPoint.getInstance(dIn.readObject());
 		} catch (Exception e1) {
 			crlDps = null;
+		} finally {
+			if (dIn != null) {
+				try {
+					dIn.close();
+				} catch (IOException e) {
+					dIn = null;
+				}
+			}
 		}
 		// Si lo hemos obtenido...
 		if (crlDps != null) {
