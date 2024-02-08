@@ -311,7 +311,7 @@ public class CertificateExtension implements Serializable {
 	 */
 	public String getRowQSCDDirectiveRegime() {
 		String row = null;
-		if (qcSSCD) {
+		if (qcSSCD || policyIdQCP_SSCD) {
 			row = IQCCertificateConstants.QC_ROW1;
 		}
 		if (!qcSSCD && !policyIdQCP_SSCD) {

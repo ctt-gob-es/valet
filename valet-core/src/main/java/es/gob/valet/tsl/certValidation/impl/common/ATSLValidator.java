@@ -2751,7 +2751,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 					new Object[] { resultSI.getSiStatus(), resultSI.getSiResults().size() }));
 		}
 
-		if (!isDateIssue && resultSI.getSiStatus().equals(ITSLStatusConstants.PROCESS_PASSED)
+		if (resultSI.getSiStatus().equals(ITSLStatusConstants.PROCESS_PASSED)
 				&& resultSI.getSiResults().isEmpty()) {
 			// si el proceso no ha fallado pero no se ha encontrado tspServices
 			// y estamos en la primera vuelta del proceso, donde se valida con
