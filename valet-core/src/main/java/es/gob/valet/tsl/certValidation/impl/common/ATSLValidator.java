@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.3, 01/02/2024.
+ * @version 2.4, 19/02/2024.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -60,7 +60,9 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
+import es.gob.valet.persistence.configuration.model.entity.SystemCertificate;
 import es.gob.valet.persistence.configuration.model.utils.AlarmIdConstants;
 import es.gob.valet.persistence.configuration.model.utils.KeystoreIdConstants;
 import es.gob.valet.persistence.exceptions.CryptographyException;
@@ -108,7 +110,7 @@ import es.gob.valet.utils.ValidatorResultConstants;
  * TSL.
  * </p>
  * 
- * @version 2.3, 01/02/2024.
+ * @version 2.4, 19/02/2024.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -4874,18 +4876,22 @@ public abstract class ATSLValidator implements ITSLValidator {
 
 				String alias = httpGet.getURI().getHost() + "_" + issuerCert.getSerialNumber().toString() + "_cer";
 				try {
-					// Extraemos el keystore de la BD.
-					Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(KeystoreIdConstants.ID_CA_TRUSTSTORE));
-					
-					// Almacenamos el certificado en el keystore Java, en el Keystore Entity y en los certificados del sistema
-					ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().storeCertificate(alias, issuerCert, null, null, false, ksEntity);
-					
-					// se registra el certificado y se lanza alarma.
-					LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL378));
-					// Lanzamos la alarma correspondiente...
-					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM008_REGISTER_KEYSTORE_CA,
-							Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM008_EVENT_001,
-									new Object[] { alias }));
+					SystemCertificate systemCertRegistered = ManagerPersistenceConfigurationServices.getInstance().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, KeystoreIdConstants.ID_CA_TRUSTSTORE);
+					// Si el certificado no está registrado, lo registraremos y lanzaremos la alarma 8.
+					if(null == systemCertRegistered) {
+						// Extraemos el keystore de la BD.
+						Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(KeystoreIdConstants.ID_CA_TRUSTSTORE));
+						
+						// Almacenamos el certificado en el keystore Java, en el Keystore Entity y en los certificados del sistema
+						ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().storeCertificate(alias, issuerCert, null, null, false, ksEntity);
+						
+						// se registra el certificado y se lanza alarma.
+						LOGGER.info(Language.getResCoreTsl(CoreTslMessages.LOGMTSL378));
+						// Lanzamos la alarma correspondiente...
+						AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM008_REGISTER_KEYSTORE_CA,
+								Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM008_EVENT_001,
+										new Object[] { alias }));
+					}
 				} catch (BeansException | CryptographyException e) {
 					LOGGER.error(Language.getFormatResCoreTsl(CoreTslMessages.LOGMTSL384,
 							new Object[] { alias, e.getMessage() }));
