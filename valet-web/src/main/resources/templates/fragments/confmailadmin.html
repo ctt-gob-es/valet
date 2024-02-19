@@ -120,6 +120,26 @@ $(document).ready(function() {
 	        
 	    // Actualizar el contenido del label con el nombre del fichero obtenido
 		label.textContent = confServerMailForm.originalNameFile;
+	    
+		// Decodificamos la cadena base64 en un array de bytes
+        var bytes = atob(confServerMailForm.certificateFile);
+
+        // Creamos un Blob a partir de los bytes
+        var blob = new Blob([bytes], { type: "application/octet-stream" });
+
+        // Creamos un nuevo objeto File a partir del Blob
+        var file = new File([blob], confServerMailForm.originalNameFile);
+
+     	// El constructor FileList no se puede utilizar directamente para crear una nueva instancia. En su lugar, 
+     	// debemos obtener un objeto FileList a través de un método proporcionado por el navegador al seleccionar archivos en un campo input de tipo file.
+		// Para simular esto crearemos un objeto FileList utilizando el m�todo DataTransfer.items.
+     	var dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        
+        // Asignamos el objeto DataTransfer al input file
+        var inputFile = document.getElementById("certificateFile");
+        inputFile.files = dataTransfer.files;
+        
 	}
 });
 
