@@ -701,12 +701,9 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 						// Se considera la respuesta OCSP NO confiable.
 						result = false;
 						// Lanzamos la alarma 10.
-						String subject = UtilsCertificate.getCertificateId(signerCertX509);
-						String issuer = UtilsCertificate.getCertificateIssuerId(signerCertX509);
-						
 						AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM010_OCSP_RESPONSE_NOT_TRUSTED,
 						                                               Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM010_EVENT_000,
-						                                                                                new Object[] { subject, issuer }));
+						                                                                                new Object[] { alias }));
 					}
 				// Si el certificado no está registrado
 				} else {
@@ -716,12 +713,9 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					// Lo añade al keystore.
 					ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().storeCertificate(alias, signerCertX509, null, null, false, ksEntity);
 					// Lanzamos la alarma 09.
-					String subject = UtilsCertificate.getCertificateId(signerCertX509);
-					String issuer = UtilsCertificate.getCertificateIssuerId(signerCertX509);
-					
 					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM009_TRUESTOREOCSP_PENDING_VALIDATION,
 					                                               Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM009_EVENT_000,
-					                                                                                new Object[] { subject, issuer }));
+					                                                                                new Object[] { alias }));
 					
 					// Se considera la respuesta OCSP NO confiable.
 					result = false;
