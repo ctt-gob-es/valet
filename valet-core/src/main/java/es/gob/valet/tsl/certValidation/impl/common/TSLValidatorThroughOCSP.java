@@ -636,7 +636,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// marcado como confiable en un nuevo almacÃ©n de confianza OCSP
 			if(!result) {
 				
-				result = checksRegisteredMarkedAsTrustedInTrustStoreOCSP(signerCert, tslValidator);
+				result = checksRegisteredMarkedAsTrustedInTrustStoreOCSP(signerCert);
 			
 			}
 			
@@ -674,13 +674,9 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	* </ul>
 	
 	* @param signerCert certificate for which we will look for the issuer in the TrustStoreOCSP.
-	* @param tslValidator
-	*            TSL validator to verify if some TSP service is accomplished
-	*            with the qualified (or not) certificate to check the OCSP
-	*            response.
 	* @return <code>true</code> or <code>false</code> switch case.
 	*/
-	private boolean checksRegisteredMarkedAsTrustedInTrustStoreOCSP(Certificate signerCert, ATSLValidator tslValidator) {
+	private boolean checksRegisteredMarkedAsTrustedInTrustStoreOCSP(Certificate signerCert) {
 		boolean result = false;
 		
 		// Si hemos encontrado el firmante...
