@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.2, 17/01/2024.
+ * @version 2.3, 20/02/2024.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -114,7 +114,7 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 2.2, 17/01/2024.
+ * @version 2.3, 20/02/2024.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -685,57 +685,40 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		
 		// Si hemos encontrado el firmante...
 		if (signerCert != null) {
-			boolean systemCertificateRegistered = false;
 			try {
 				byte[ ] certificate = signerCert.getEncoded();
 				X509Certificate signerCertX509 = UtilsCertificate.getX509Certificate(certificate);
+				// Obtenemos el alias del certificado
+				BigInteger serialNumber = signerCertX509.getSerialNumber();
+				String alias = serialNumber.toString() + "_cer";
 				
-				Map<String, X509Certificate> mapAliasX509Certificate = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getMapAliasX509CertOCSP();
-				// Recorremos el HashMap usando un bucle for-each
-		        for (Map.Entry<String, X509Certificate> entry : mapAliasX509Certificate.entrySet()) {
-		            String alias = entry.getKey();
-		            X509Certificate certKeystoreOCSPX509 = entry.getValue();
-		            // Se evalua si el certificado del firmante ha sido emitido por algun certificado del keystore OCSP
-					if(UtilsCertificate.isIssuer(certKeystoreOCSPX509, signerCertX509)) {
-						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL434));
-						SystemCertificate systemCertificateSigner = ManagerPersistenceConfigurationServices.getInstance().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, IKeystoreIdConstants.ID_OCSP_TRUSTSTORE);
-						// Se comprueba si el certificado estÃ¡ registrado
-						if(null != systemCertificateSigner) {
-							LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL435));
-							systemCertificateRegistered = true;
-							//  EstÃ¡ marcado como confiable ?Â¿
-							if(systemCertificateSigner.getValidationCert()) {
-								LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL436));
-								result = true;
-							} else {
-								LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL437));
-								// Se considera la respuesta OCSP NO confiable.
-								result = false;
-								// Lanzamos la alarma 10.
-								String subject = UtilsCertificate.getCertificateId(signerCertX509);
-								String issuer = UtilsCertificate.getCertificateIssuerId(signerCertX509);
-								
-								AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM010_OCSP_RESPONSE_NOT_TRUSTED,
-								                                               Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM010_EVENT_000,
-								                                                                                new Object[] { subject, issuer }));
-							}
-							break; // Rompo el bucle mÃ¡s cercano ya que hemos encontrado un certificado registrado.
-						}
+				SystemCertificate systemCertificateSigner = ManagerPersistenceConfigurationServices.getInstance().getSystemCertificateService().getSystemCertificateByAliasAndKeystoreId(alias, IKeystoreIdConstants.ID_OCSP_TRUSTSTORE);
+				// Se comprueba si el certificado está registrado
+				if(null != systemCertificateSigner) {
+					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL435));
+					//  Está marcado como confiable ?Â¿
+					if(systemCertificateSigner.getValidationCert()) {
+						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL436));
+						result = true;
+					} else {
+						LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL437));
+						// Se considera la respuesta OCSP NO confiable.
+						result = false;
+						// Lanzamos la alarma 10.
+						String subject = UtilsCertificate.getCertificateId(signerCertX509);
+						String issuer = UtilsCertificate.getCertificateIssuerId(signerCertX509);
+						
+						AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM010_OCSP_RESPONSE_NOT_TRUSTED,
+						                                               Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM010_EVENT_000,
+						                                                                                new Object[] { subject, issuer }));
 					}
-		        }
-				
-		        // Si el certificado no estÃ¡ registrado
-				if(!systemCertificateRegistered) {
+				// Si el certificado no está registrado
+				} else {
 					LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL438));
-					// Se registra en el nuevo almacÃ©n de confianza OCSP como pendiente de validaciÃ³n.
-					BigInteger serialNumber = signerCertX509.getSerialNumber();
-					String alias = serialNumber.toString() + "_cer";
-					
 					// Obtenemos el keystore de la caché
 					Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(IKeystoreIdConstants.ID_OCSP_TRUSTSTORE));
-					// Lo aÃ±ade al keystore.
+					// Lo añade al keystore.
 					ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().storeCertificate(alias, signerCertX509, null, null, false, ksEntity);
-					
 					// Lanzamos la alarma 09.
 					String subject = UtilsCertificate.getCertificateId(signerCertX509);
 					String issuer = UtilsCertificate.getCertificateIssuerId(signerCertX509);
