@@ -720,7 +720,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 					String issuer = UtilsCertificate.getCertificateIssuerId(signerCertX509);
 					
 					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM009_TRUESTOREOCSP_PENDING_VALIDATION,
-					                                               Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM010_EVENT_000,
+					                                               Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM009_EVENT_000,
 					                                                                                new Object[] { subject, issuer }));
 					
 					// Se considera la respuesta OCSP NO confiable.
