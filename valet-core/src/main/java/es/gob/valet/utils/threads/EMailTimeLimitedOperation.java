@@ -46,6 +46,7 @@ import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.commons.utils.threads.ATimeLimitedOperation;
@@ -283,6 +284,7 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 		// defecto.
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailServerHost);
+		props.put("mail.smtp.starttls.enable", StaticValetConfig.getProperty(StaticValetConfig.MAIL_TLS_ENABLE));
 		props.put("mail.smtp.port", Integer.toString(mailServerPort));
 		props.put("mail.smtp.auth", Boolean.toString(mailServerAuthUseAuthentication));
 

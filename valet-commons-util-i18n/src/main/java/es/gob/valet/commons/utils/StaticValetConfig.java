@@ -239,6 +239,11 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents name for property <i>"connection.MaxSize"</i>.
 	 */
 	public static final String DAYS_REMINDER_ALARM = "days.reminder.alarm";
+	
+	/**
+	 * Constant attribute that represents name for property <i>"mail.tls.enable"</i>.
+	 */
+	public static final String MAIL_TLS_ENABLE = "mail.tls.enable";
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.
