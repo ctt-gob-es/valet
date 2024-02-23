@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 19/09/2023.
+ * @version 1.10, 22/02/2024.
  */
 package es.gob.valet.tasks;
 
@@ -40,7 +40,6 @@ import es.gob.valet.alarms.AlarmsManager;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsDate;
-import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
@@ -59,13 +58,12 @@ import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
-import es.gob.valet.utils.TSLOtherConstants;
 import es.gob.valet.utils.UtilsHTTP;
 
 /**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 19/09/2023.
+ * @version 1.10, 22/02/2024.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
@@ -181,7 +179,6 @@ public class FindNewTSLRevisionsTask extends Task {
 	static {
 
 		httpHeadersMap = new HashMap<String, String>();
-		httpHeadersMap.put(HttpHeaders.CONTENT_TYPE, TSLOtherConstants.TSL_APPLICATION_TYPE);
 		httpHeadersMap.put(HttpHeaders.USER_AGENT, UtilsHTTP.HTTP_HEADER_USER_AGENT_HTTPCLIENT);
 
 	}

@@ -58,7 +58,7 @@ public class ValetConfigOwner {
 	private static final Logger LOGGER = LogManager.getLogger(ValetConfigOwner.class);
 	
 	/**
-	 * Attribute that represents the HSQL JNDI name.
+	 * Attribute that represents the ORACLE JNDI name.
 	 */
 	@Value("${valetConfigOwner-jndi-name}")
 	private String oracleJndiDataSource;
