@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/02/2023.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/05/2023.
+ * @version 1.2, 08/02/2024.
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * TSL.
  * </p>
  * 
- * @version 1.1, 25/05/2023.
+ * @version 1.2, 08/02/2024.
  */
 public class CertificateExtension implements Serializable {
 

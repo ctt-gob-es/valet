@@ -255,8 +255,6 @@ public final class TSLValidatorMappingCalculator {
 	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_UNKNOWN}</li>
 	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_YES}</li>
 	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_NO}</li>
-	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_ASINCERT}</li>
-	 *         <li>{@link ITslMappingConstants#MAPPING_VALUE_QSCD_YES_MANAGEDONBEHALF}</li>
 	 *         </ul>
 	 * @throws TSLValidationException
 	 *             In case of some error parsing the input certificate with IAIK
