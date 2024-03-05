@@ -174,7 +174,7 @@ public class TspServiceQualifier implements Serializable {
 		if (!notQualified && !qcStatement && !qcForESig) {
 			return column = IQCCertificateConstants.QC_CHECK_COLUMN1;
 		}
-		if (notQualified && !qcStatement) {
+		if (notQualified) {
 			return column = IQCCertificateConstants.QC_CHECK_COLUMN2;
 		}
 		if (!notQualified && qcStatement && !qcForESig) {
@@ -197,19 +197,19 @@ public class TspServiceQualifier implements Serializable {
 	 */
 	public String getColumnCheck2() {
 		String column = null;
-		if (!notQualified && !qcStatement && !qcForESig) {
+		if (!notQualified && !qcStatement && !qcForESeal) {
 			return column = IQCCertificateConstants.QC_CHECK_COLUMN1;
 		}
-		if (notQualified && !qcStatement) {
+		if (notQualified) {
 			return column = IQCCertificateConstants.QC_CHECK_COLUMN2;
 		}
-		if (!notQualified && qcStatement && !qcForESig) {
+		if (!notQualified && qcStatement && !qcForESeal) {
 			return column = IQCCertificateConstants.QC_CHECK_COLUMN3;
 		}
-		if (!notQualified && !qcStatement && qcForESig) {
+		if (!notQualified && !qcStatement && qcForESeal) {
 			return column = IQCCertificateConstants.QC_CHECK_COLUMN4;
 		}
-		if (!notQualified && qcStatement && qcForESig) {
+		if (!notQualified && qcStatement && qcForESeal) {
 			return column = IQCCertificateConstants.QC_CHECK_COLUMN5;
 		}
 
@@ -226,7 +226,7 @@ public class TspServiceQualifier implements Serializable {
 		if (!notQualified && !qcStatement && !qcForWSA) {
 			return column = IQCCertificateConstants.QC_CHECK_COLUMN1;
 		}
-		if (notQualified && !qcStatement) {
+		if (notQualified) {
 			return column = IQCCertificateConstants.QC_CHECK_COLUMN2;
 		}
 		if (!notQualified && qcStatement && !qcForWSA) {
