@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/02/2023.</p>
  * @author Gobierno de España.
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 05/03/2024.
  */
 package es.gob.valet.tsl.certValidation;
 
@@ -37,7 +37,7 @@ import java.io.Serializable;
  * TSL.
  * </p>
  * 
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 05/03/2024.
  */
 public class TspServiceQualifier implements Serializable {
 
@@ -168,7 +168,7 @@ public class TspServiceQualifier implements Serializable {
 		if (!notQualified && !qcStatement && !qcForESig) {
 			return column = QCCertificateConstants.QC_CHECK_COLUMN1;
 		}
-		if (notQualified && !qcStatement) {
+		if (notQualified) {
 			return column = QCCertificateConstants.QC_CHECK_COLUMN2;
 		}
 		if (!notQualified && qcStatement && !qcForESig) {
@@ -191,19 +191,19 @@ public class TspServiceQualifier implements Serializable {
 	 */
 	public String getColumnCheck2() {
 		String column = null;
-		if (!notQualified && !qcStatement && !qcForESig) {
+		if (!notQualified && !qcStatement && !qcForESeal) {
 			return column = QCCertificateConstants.QC_CHECK_COLUMN1;
 		}
-		if (notQualified && !qcStatement) {
+		if (notQualified) {
 			return column = QCCertificateConstants.QC_CHECK_COLUMN2;
 		}
-		if (!notQualified && qcStatement && !qcForESig) {
+		if (!notQualified && qcStatement && !qcForESeal) {
 			return column = QCCertificateConstants.QC_CHECK_COLUMN3;
 		}
-		if (!notQualified && !qcStatement && qcForESig) {
+		if (!notQualified && !qcStatement && qcForESeal) {
 			return column = QCCertificateConstants.QC_CHECK_COLUMN4;
 		}
-		if (!notQualified && qcStatement && qcForESig) {
+		if (!notQualified && qcStatement && qcForESeal) {
 			return column = QCCertificateConstants.QC_CHECK_COLUMN5;
 		}
 
@@ -220,7 +220,7 @@ public class TspServiceQualifier implements Serializable {
 		if (!notQualified && !qcStatement && !qcForWSA) {
 			return column = QCCertificateConstants.QC_CHECK_COLUMN1;
 		}
-		if (notQualified && !qcStatement) {
+		if (notQualified) {
 			return column = QCCertificateConstants.QC_CHECK_COLUMN2;
 		}
 		if (!notQualified && qcStatement && !qcForWSA) {

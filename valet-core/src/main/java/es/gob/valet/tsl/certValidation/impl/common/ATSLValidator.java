@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.4, 19/02/2024.
+ * @version 2.5, 05/03/2024.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -110,7 +110,7 @@ import es.gob.valet.utils.ValidatorResultConstants;
  * TSL.
  * </p>
  * 
- * @version 2.4, 19/02/2024.
+ * @version 2.5, 05/03/2024.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
@@ -838,8 +838,7 @@ public abstract class ATSLValidator implements ITSLValidator {
 			resultQSCD.setQscdResult(TSLStatusConstants.QSCD_YES);
 		} else if (listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOSSCD)) {
 			resultQSCD.setQscdResult(TSLStatusConstants.QSCD_NO);
-		} else if (listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT)
-				|| listQualifiersUri.isEmpty()) {
+		} else if (listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT) || checkNoneQualifiersQSCDStatusRegulationRegime(listQualifiersUri)) {
 			// obtenemos la fila
 			String row = certExtension.getRowQSCDRegulationRegime();
 			if (row != null) {
@@ -1014,7 +1013,8 @@ public abstract class ATSLValidator implements ITSLValidator {
 			resultQSCD.setQscdResult(TSLStatusConstants.QSCD_YES);
 		} else if (qualifierCheck1.isQcNoSSCD()) {
 			resultQSCD.setQscdResult(TSLStatusConstants.QSCD_NO);
-		} else {
+		} else  if(qualifierCheck1.isQcSSCDStatusAsInCert() || (!qualifierCheck1.isQcWithSSCD() && !qualifierCheck1.isQcNoSSCD() && !qualifierCheck1.isQcSSCDStatusAsInCert())) 
+		{
 			// depende de la fila
 			String row = certExtension.getRowQSCDDirectiveRegime();
 			if (row.equalsIgnoreCase(QCCertificateConstants.QC_ROW1)) {
@@ -5114,5 +5114,27 @@ public abstract class ATSLValidator implements ITSLValidator {
 				}
 			}
 		}
+	}
+	
+	/**
+	 *  Method that checks that the qualifiers don't include the URIs
+	 * 'http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD',
+	 * 'http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD,
+	 * 'http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert' and
+	 * 'http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf'
+	 * 
+	 * @param listQualifiersUri List of qualifiers.
+	 * @return true if one of the necessary qualifiers exists to obtain the QSCD value.
+	 */
+	private boolean checkNoneQualifiersQSCDStatusRegulationRegime(List<String> listQualifiersUri) {
+		// PRO-4.5.4-04 a) 1)
+		boolean result = Boolean.FALSE;
+		if(!listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCWITHQSCD) 
+				&& !listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCNOQSCD) 
+				&& !listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDSTATUSASINCERT)
+				&& !listQualifiersUri.contains(TSLCommonURIs.TSL_SERVINFEXT_QUALEXT_QUALIFIER_QCQSCDMANAGEDONBEHALF)){
+			return Boolean.TRUE;
+		}
+		return result;
 	}
 }

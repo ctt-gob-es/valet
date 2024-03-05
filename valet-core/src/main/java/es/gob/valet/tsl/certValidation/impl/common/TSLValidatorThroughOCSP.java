@@ -658,7 +658,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	*   <li>If it is not marked as trusted:
 	*     <ul>
 	*       <li>The OCSP response is considered unreliable.</li>
-	*       <li>An ALARM11 is triggered: 'OCSP response not trusted, issuer registered but not validated.'</li>
+	*       <li>An ALARM10 is triggered: 'OCSP response not trusted, issuer registered but not validated.'</li>
 	*     </ul>
 	*   </li>
 	* </ul>
@@ -668,7 +668,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	* </p>
 	* <ul>
 	*   <li>It is registered in the new OCSP trust store as pending validation.</li>
-	*   <li>An ALARM10 is triggered: 'OCSP response not trusted. Certificate registered in OCSP Trust Store pending validation.'</li>
+	*   <li>An ALARM09 is triggered: 'OCSP response not trusted. Certificate registered in OCSP Trust Store pending validation.'</li>
 	*   <li>The OCSP response is considered unreliable.</li>
 	* </ul>
 	
