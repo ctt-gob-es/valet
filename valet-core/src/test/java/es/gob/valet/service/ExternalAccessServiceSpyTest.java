@@ -152,7 +152,7 @@ public class ExternalAccessServiceSpyTest {
         // Configura el comportamiento del mock
         PowerMockito.mockStatic(Language.class);
         PowerMockito.when(Language.getResCoreTsl(CoreTslMessages.LOGMTSL406)).thenReturn("Mensaje de prueba");
-        PowerMockito.when(Language.getResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_001)).thenReturn("Mensaje de prueba");
+        PowerMockito.when(Language.getResCoreGeneral(CoreGeneralMessages.ALM011_EVENT_000)).thenReturn("Mensaje de prueba");
         
         // Llamar al método que deseas probar
         externalAccessService.prepareUrlExternalAccessForTask();
@@ -184,7 +184,7 @@ public class ExternalAccessServiceSpyTest {
         
         PowerMockito.when(Language.getResCoreTsl(CoreTslMessages.LOGMTSL414)).thenReturn("Mensaje de prueba");
         when(externalAccessRepository.findByIdUrlInQuery(listIdUrl)).thenReturn(externalAccessList);
-        PowerMockito.when(Language.getResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_002)).thenReturn("Mensaje de prueba");
+        PowerMockito.when(Language.getResCoreGeneral(CoreGeneralMessages.ALM011_EVENT_001)).thenReturn("Mensaje de prueba");
 
         doNothing().when(externalAccessService).makeChangesToExternalAccess(any(ExternalAccessDTO.class), anyString());
         doNothing().when(externalAccessService).launchAlarmIfTestConnFail(anyList(), anyString());
@@ -305,7 +305,7 @@ public class ExternalAccessServiceSpyTest {
         // Simular llamadas a los métodos externos
         PowerMockito.mockStatic(Language.class);
         PowerMockito.when(Language.getResCoreTsl(CoreTslMessages.LOGMTSL414)).thenReturn("Mensaje de prueba");
-        PowerMockito.when(Language.getResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_003)).thenReturn("Mensaje de prueba");
+        PowerMockito.when(Language.getResCoreGeneral(CoreGeneralMessages.ALM011_EVENT_002)).thenReturn("Mensaje de prueba");
         
         when(iTslCountryRegionService.getAllTslCountryRegion(false)).thenReturn(tcrList);
         doReturn(externalAccessList).when(externalAccessService).obtainAllUrlToRegionTSL(tcrList);
@@ -350,7 +350,7 @@ public class ExternalAccessServiceSpyTest {
         when(tslCountryRegionRepository.findAll()).thenReturn(tcrList);
         // Simular llamadas a los métodos externos
         PowerMockito.mockStatic(Language.class);
-        PowerMockito.when(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM009_EVENT_004, new Object[ ] { tslCountry.getCountryRegionName(), tslCountry.getTslData().getSequenceNumber()})).thenReturn("Mensaje de prueba");
+        PowerMockito.when(Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM011_EVENT_003, new Object[ ] { tslCountry.getCountryRegionName(), tslCountry.getTslData().getSequenceNumber()})).thenReturn("Mensaje de prueba");
         PowerMockito.when(AlarmsManager.getInstance()).thenReturn(alarmsManager);
         
         // Ejecutar el método bajo prueba
