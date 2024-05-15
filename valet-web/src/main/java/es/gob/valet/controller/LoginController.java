@@ -25,7 +25,10 @@
 package es.gob.valet.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import es.gob.valet.commons.utils.StaticValetConfig;
 
 /** 
  * <p>Class that maps the request for the login form to the controller.</p>
@@ -41,7 +44,9 @@ public class LoginController {
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "/")
-	public String login() {
+	public String login(Model model) {
+		String accessOptions = StaticValetConfig.getProperty(StaticValetConfig.ACCESS_OPTIONS);
+		model.addAttribute("accessOptions", accessOptions);
 		return "login.html";
 	}
 }

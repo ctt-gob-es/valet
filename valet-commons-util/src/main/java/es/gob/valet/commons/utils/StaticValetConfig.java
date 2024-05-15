@@ -250,6 +250,11 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents date time of TSL
 	 */
 	public static final String TSL_DATE_TIME = "tsl.date.time";
+	
+	/**
+	 * Options for login.
+	 */
+	public static final String ACCESS_OPTIONS = "login.access";
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.

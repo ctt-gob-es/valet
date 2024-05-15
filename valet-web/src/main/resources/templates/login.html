@@ -49,7 +49,7 @@
 						</span> <input id="password" class="input100" type="password"
 							name="password">
 					</div>
-
+					
 					<div class="container-login-form-btn">
 						<div class="wrap-login-form-btn">
 							<div class="login-form-bgbtn"></div>
@@ -58,11 +58,48 @@
 						</div>
 					</div>
 
+					<div style="display:none;" class="container-login-form-btn" id="accessClaveDiv">
+						<div class="wrap-login-form-btn">
+							<div class="login-form-bgbtn"></div>
+							<button onclick="submit(this);" class="login-form-btn" id="accessClaveBtn"
+								th:text="#{valet.login.accessClave.button}"></button>
+						</div>
+					</div>
+					
+					<div style="display:none;" class="container-login-form-btn" id="accessCertificateDiv">
+						<div class="wrap-login-form-btn">
+							<div class="login-form-bgbtn"></div>
+							<button onclick="submit(this);" class="login-form-btn" id="accessCertificateBtn"
+								th:text="#{valet.login.accessCertificate.button}"></button>
+						</div>
+					</div>
+					
+					<input type="hidden" id="accessOptions" th:value="${accessOptions}">
+
 				</form>
 			</div>
 		</div>
 	</div>
 	<script th:src="@{js/jquery/jquery-3.2.1.min.js}"></script>
 	<script th:src="@{js/main.js}"></script>
+	<script>
+		var accessOptions = $('#accessOptions').val();
+		console.log(accessOptions);
+		var accessConfigurated = false;
+		if (accessOptions.includes("cl@ve")) {
+			accessConfigurated = true;
+			$('#accessClaveDiv').show();
+		}
+		
+		if (accessOptions.includes("certificate")) {
+			accessConfigurated = true;
+			$('#accessCertificateDiv').show();
+		}
+		
+		if (!accessConfigurated) {
+			$('#accessClaveDiv').show();
+			$('#accessCertificateDiv').show();
+		}
+	</script>
 </body>
 </html>
