@@ -17,6 +17,20 @@
 						th:field="*{idUserValetEdit}"></input>
 						
 					<div class="form-group">
+						<label for="nifEdit" th:text="#{form.user.nif}"></label>
+						<script th:inline="javascript" type="text/javascript">
+								/*<![CDATA[*/
+								    var messageNif = /*[[#{form.user.nif.pattern}]]*/ 'default';
+								/*]]>*/
+							</script>
+						<span id="nifEdit_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateNif();" type="text"
+							id="nifEdit" th:field="*{nifEdit}" class="form-control"
+							required pattern=".{3,15}" ></input>
+					</div>
+					
+					<div class="form-group">
 						<label for="nameEdit" th:text="#{form.user.name}"></label>
 						<script th:inline="javascript" type="text/javascript">
 								/*<![CDATA[*/
@@ -87,6 +101,43 @@
 </div>
 
 <script th:inline="javascript" type="text/javascript">
+	function validateNif() {
+	
+		var messageNifConfirm = /*[[#{form.user.nif.pattern}]]*/'default';
+		
+		var messageNif = $('#nifEdit').val();
+		
+		const letraDNI = 'TRWAGMYFPDXBNJZSQVHLCKET'; // Letras asociadas a cada número de DNI
+	    // Primero, verificamos que el formato básico sea correcto: 8 dígitos seguidos de una letra
+	    const regex = /^[0-9]{8}[A-Z]$/;
+	
+	    if (regex.test(messageNif)) {
+	        // Extraemos el número (los primeros 8 dígitos) y la letra del DNI
+	        const numero = messageNif.substr(0, 8);
+	        const letra = messageNif.charAt(8);
+	
+	        // Calculamos la letra correcta que debería seguir a los dígitos proporcionados
+	        const letraCorrecta = letraDNI.charAt(parseInt(numero) % 23);
+	
+	        // Comprobamos si la letra proporcionada coincide con la letra calculada
+	        if (letra === letraCorrecta) {
+	        	$("#nifEdit_span").text('');
+				$("#nifEdit_span").removeClass(
+						"badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+	          // DNI válido
+	        } else {
+	        	$("#nifEdit_span").text(messageNifConfirm);
+				$("#nifEdit_span").addClass(
+						"badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+	           // La letra no coincide
+	        }
+	    } else {
+	    	$("#nifEdit_span").text(messageNifConfirm);
+			$("#nifEdit_span").addClass(
+					"badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+	        // Formato no válido
+	    }
+	}
 	$( "#editBtnModal" ).click(function( event ) {
 		  event.preventDefault();
 			

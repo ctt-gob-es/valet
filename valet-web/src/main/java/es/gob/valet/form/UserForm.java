@@ -94,6 +94,14 @@ public class UserForm {
 
 	
 	/**
+	 * Attribute that represents the value of the input name of the user in the form. 
+	 */
+	@NotNull(groups=CheckItFirst.class, message="{form.valid.user.nif.notempty}")
+    @Size(min=1, max=NumberConstants.NUM15, groups=ThenCheckIt.class)
+    private String nif = UtilsStringChar.EMPTY_STRING;
+
+	
+	/**
 	 * Gets the value of the attribute {@link #idUserValet}.
 	 * @return the value of the attribute {@link #idUserValet}.
 	 */
@@ -218,6 +226,22 @@ public class UserForm {
 		this.email = emailParam;
 	}
 			
+	/**
+	 * Gets the value of the attribute {@link #nif}.
+	 * @return the value of the attribute {@link #nif}.
+	 */
+	public String getNif() {
+		return nif;
+	}
+
 	
+	/**
+	 * Sets the value of the attribute {@link #nif}.
+	 * @param nameParam The value for the attribute {@link #nif}.
+	 */
+	public void setNif(String nifParam) {
+		this.nif = nifParam;
+	}
+
 	
 }

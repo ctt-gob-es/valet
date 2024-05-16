@@ -111,6 +111,11 @@ public class UserValet implements Serializable {
 	 * Attribute that represents the IP address used by the user to access to the platform.
 	 */
 	private String lastIpAccess;
+	
+	/**
+	 * Attribute that represents the user NIF.
+	 */
+	private String nif;
 
 	/**
 	 * Gets the value of the attribute {@link #idUserValet}.
@@ -350,6 +355,30 @@ public class UserValet implements Serializable {
 	public void setLastIpAccess(String lastIpAccess) {
 		// CHECKSTYLE:ON
 		this.lastIpAccess = lastIpAccess;
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #nif}.
+	 * @return the value of the attribute {@link #nif}.
+	 */
+	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
+	// because Hibernate JPA needs not final access methods.
+	@Column(name = "NIF", nullable = false, length = NumberConstants.NUM100)
+	@JsonView(DataTablesOutput.View.class)
+	public String getNif() {
+		// CHECKSTYLE:ON
+		return nif;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #nif}.
+	 * @param nameParam The value for the attribute {@link #nif}.
+	 */
+	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
+	// because Hibernate JPA needs not final access methods.
+	public void setNif(String nifParam) {
+		// CHECKSTYLE:ON
+		this.nif = nifParam;
 	}
 
 }

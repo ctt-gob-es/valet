@@ -157,6 +157,7 @@ public class UserRestController {
 				userValet.setLastIpAccess(null);
 				userValet.setName(userForm.getName());
 				userValet.setSurnames(userForm.getSurnames());
+				userValet.setNif(userForm.getNif());
 
 				UserValet user = userService.saveUserValet(userValet);
 
@@ -210,6 +211,7 @@ public class UserRestController {
 				userValet.setLastIpAccess(null);
 				userValet.setName(userForm.getNameEdit());
 				userValet.setSurnames(userForm.getSurnamesEdit());
+				userValet.setNif(userForm.getNifEdit());
 
 				UserValet user = userService.saveUserValet(userValet);
 

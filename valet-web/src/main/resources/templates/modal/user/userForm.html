@@ -3,6 +3,17 @@
 	<input type='hidden' class='primarykey' id="idUserValet"
 		th:field="*{idUserValet}">
 	<div class="form-group">
+		<label for=nif th:text="#{form.user.nif}"></label>
+		<script th:inline="javascript" type="text/javascript">
+			/*<![CDATA[*/
+			var messageNif = /*[[#{form.user.nif.pattern}]]*/'default';
+			/*]]>*/
+		</script>
+		<span id="nif_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+		<input onblur="validateNif();" type="text" id="nif"
+			th:field="*{nif}" class="form-control" required pattern=".{3,15}"></input>
+	</div>
+	<div class="form-group">
 		<label for="name" th:text="#{form.user.name}"></label>
 		<script th:inline="javascript" type="text/javascript">
 			/*<![CDATA[*/
@@ -72,7 +83,7 @@
 		</script>
 		<span id="email_span"
 			class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-		<input onblur="validateField(this,messageEmail);" type="email"
+		<input onblur="validateField(messageEmail);" type="email"
 			id="email" th:field="*{email}" style="overflow: hidden"
 			class="form-control" required />
 	</div>
@@ -101,5 +112,42 @@
 					"badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
 		}
 
+	}
+	function validateNif() {
+		
+		var messageNifConfirm = /*[[#{form.user.nif.pattern}]]*/'default';
+		
+		var messageNif = $('#nif').val();
+		
+		const letraDNI = 'TRWAGMYFPDXBNJZSQVHLCKET'; // Letras asociadas a cada número de DNI
+	    // Primero, verificamos que el formato básico sea correcto: 8 dígitos seguidos de una letra
+	    const regex = /^[0-9]{8}[A-Z]$/;
+
+	    if (regex.test(messageNif)) {
+	        // Extraemos el número (los primeros 8 dígitos) y la letra del DNI
+	        const numero = messageNif.substr(0, 8);
+	        const letra = messageNif.charAt(8);
+
+	        // Calculamos la letra correcta que debería seguir a los dígitos proporcionados
+	        const letraCorrecta = letraDNI.charAt(parseInt(numero) % 23);
+
+	        // Comprobamos si la letra proporcionada coincide con la letra calculada
+	        if (letra === letraCorrecta) {
+	        	$("#nif_span").text('');
+				$("#nif_span").removeClass(
+						"badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+	          // DNI válido
+	        } else {
+	        	$("#nif_span").text(messageNifConfirm);
+				$("#nif_span").addClass(
+						"badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+	           // La letra no coincide
+	        }
+	    } else {
+	    	$("#nif_span").text(messageNifConfirm);
+			$("#nif_span").addClass(
+					"badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+	        // Formato no válido
+	    }
 	}
 </script>
