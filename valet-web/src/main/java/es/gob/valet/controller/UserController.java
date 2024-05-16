@@ -114,6 +114,7 @@ public class UserController {
 		userFormEdit.setSurnamesEdit(userValet.getSurnames());
 		userFormEdit.setEmailEdit(userValet.getEmail());
 		userFormEdit.setLoginEdit(userValet.getLogin());
+		userFormEdit.setNifEdit(userValet.getNif());
 
 		model.addAttribute("userformEdit", userFormEdit);
 		return "modal/user/userFormEdit.html";

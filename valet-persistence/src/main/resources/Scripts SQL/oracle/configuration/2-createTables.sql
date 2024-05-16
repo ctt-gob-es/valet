@@ -70,7 +70,8 @@ CREATE TABLE "USER_VALET"(
 	"IS_BLOCKED" Char(1) NOT NULL,
 	"ATTEMPTS_NUMBER" Integer NOT NULL,
 	"LAST_ACCESS" Timestamp(6),
-	"IP_LAST_ACCESS" Varchar2(15)
+	"IP_LAST_ACCESS" Varchar2(15),
+	"NIF" Varchar2(150) NOT NULL
 ) INITRANS 1 MAXTRANS 255 NOCACHE;
 ALTER TABLE "USER_VALET" ADD CONSTRAINT "ID_USER_VALET" PRIMARY KEY ("ID_USER_VALET");
 ALTER TABLE "USER_VALET" ADD CONSTRAINT "USER_UNIQUE_LOGIN" UNIQUE ("LOGIN");
@@ -85,6 +86,7 @@ COMMENT ON COLUMN "USER_VALET"."IS_BLOCKED" IS 'Valor que indica si el usuario e
 COMMENT ON COLUMN "USER_VALET"."ATTEMPTS_NUMBER" IS 'Valor que representa el número de intentos fallidos de acceso a la plataforma que lleva acumulados el usuario desde la última vez que accedió correctamente.';
 COMMENT ON COLUMN "USER_VALET"."LAST_ACCESS" IS 'Valor que representa la fecha del último acceso del usuario a la plataforma.';
 COMMENT ON COLUMN "USER_VALET"."IP_LAST_ACCESS" IS 'Valor que representa la dirección IP desde la que accedió el usuario por última vez.';
+COMMENT ON COLUMN "USER_VALET"."NIF" IS 'Valor que representa el DNI/NIF del usuario';
 
 -- Table TSL_DATA
 CREATE TABLE "TSL_DATA"(

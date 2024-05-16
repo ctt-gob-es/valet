@@ -78,6 +78,13 @@ public class UserFormEdit {
 	@Size(min = NumberConstants.NUM3, max = NumberConstants.NUM255, groups = ThenCheckIt.class)
 	private String emailEdit = UtilsStringChar.EMPTY_STRING;
 
+
+	/**
+	 * Attribute that represents the value of the input name of the user in the form. 
+	 */
+	@NotNull(groups=CheckItFirst.class, message="{form.valid.user.nif.notempty}")
+    @Size(min=1, max=NumberConstants.NUM15, groups=ThenCheckIt.class)
+    private String nifEdit = UtilsStringChar.EMPTY_STRING;
 	
 	/**
 	 * Gets the value of the attribute {@link #idUserValetEdit}.
@@ -167,7 +174,23 @@ public class UserFormEdit {
 	public void setEmailEdit(String emailEditParam) {
 		this.emailEdit = emailEditParam;
 	}
-
-
+	
+	
+    /**
+     * Gets the value of the attribute {@link #nifEdit}.
+     * @return the value of the attribute {@link #nifEdit}.
+     */
+    public String getNifEdit() {
+    	return nifEdit;
+    }
+    
+    
+    /**
+     * Sets the value of the attribute {@link #nifEdit}.
+     * @param nameParam The value for the attribute {@link #nifEdit}.
+     */
+    public void setNifEdit(String nifParam) {
+    	this.nifEdit = nifParam;
+    }
 
 }
