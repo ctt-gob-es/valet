@@ -14,6 +14,7 @@
 							<th th:text="#{table.user.name}"></th>
 							<th th:text="#{table.user.surname}"></th>
 							<th th:text="#{table.user.login}"></th>
+							<th th:text="#{table.user.nif}"></th>
 							<th th:text="#{table.user.password}"></th>
 							<th th:text="#{table.user.email}"></th>
 						</tr>
@@ -128,7 +129,9 @@ $(document).ready(function() {
 	          "visible": false},
 	        { "data": "name" },
 	        { "data": "surnames" },
-	        { "data": "login" },
+	        { "data": "login",
+		      "visible": false },
+	        { "data": "nif" },
 	        { "data": "password",
 	          "visible": false},
 	        { "data": "email" }
