@@ -45,6 +45,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/")
 	public String login(Model model) {
+		WebAdminController.setLastAccessMessageShowed(false);
 		String accessOptions = StaticValetConfig.getProperty(StaticValetConfig.ACCESS_OPTIONS);
 		model.addAttribute("accessOptions", accessOptions);
 		return "login.html";

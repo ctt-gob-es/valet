@@ -695,4 +695,10 @@ public class WebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String END = "END";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>lastUserAccessMessage</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LAST_USER_ACCESS_MESSAGE = "lastUserAccessMessage";
 }

@@ -3,12 +3,12 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <!-- head -->
   <head th:replace="fragments/head"></head>
-  <body class="app">
-  	<script th:replace="fragments/script"></script>
-  	<div th:replace="fragments/loading"></div>
-    <!-- @TOC -->
-    <!-- =================================================== -->
-    <!--
+<body class="app">
+	<script th:replace="fragments/script"></script>
+	<div th:replace="fragments/loading"></div>
+	<!-- @TOC -->
+	<!-- =================================================== -->
+	<!--
       + @Page Loader
       + @App Content
           - #Left Sidebar
@@ -20,9 +20,9 @@
               > $App Screen Content
     -->
 
-    <!-- @Page Loader -->
-    <!-- =================================================== -->
-    <!-- <div id='loader'>
+	<!-- @Page Loader -->
+	<!-- =================================================== -->
+	<!-- <div id='loader'>
       <div class="spinner"></div>
     </div>
 
@@ -34,27 +34,49 @@
         }, 300);
       });
     </script> -->
- 
-    <!-- @App Content -->
-    <!-- =================================================== -->
-    <div>
-      <!-- #Left Sidebar ==================== -->
-	<div th:replace="fragments/sidebar"></div>
 
-      <!-- #Main ============================ -->
-      <div class="page-container">
-        <!-- ### $Topbar ### -->
-		<div th:replace="fragments/navbar"></div>
+	<!-- @App Content -->
+	<!-- =================================================== -->
+	<div>
+		<!-- #Left Sidebar ==================== -->
+		<div th:replace="fragments/sidebar"></div>
 
-        <!-- ### $App Screen Content ### -->
-        <main class='main-content bgc-grey-100'>
-          <div id='mainContent'>
-            <div id="optionReplacement">
-            </div>
-            <div id="modal"></div>
-          </div>
-        </main>
-      </div>
-    </div>
-  </body>
+		<!-- #Main ============================ -->
+		<div class="page-container">
+			<!-- ### $Topbar ### -->
+			<div th:replace="fragments/navbar"></div>
+
+			<!-- ### $App Screen Content ### -->
+			<main class='main-content bgc-grey-100'>
+				<div id='mainContent'>
+					<div id="optionReplacement"></div>
+					<div id="modal"></div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div class="modal fade" id="lastAccessModal" tabindex="-1" role="dialog" aria-labelledby="lastAccessModalText" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	      <h4 class="modal-title" th:text="#{valet.login.acceso.button}"></h4>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div id="lastAccessModalText" class="modal-body">
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</body>
+<script th:inline="javascript">
+	var userLastAccess = /*[[${userLastAccess}]]*/;
+	var lastAccessMessageShowed = /*[[${lastAccessMessageShowed}]]*/;
+	if (userLastAccess != null && !lastAccessMessageShowed) {	
+		$('#lastAccessModalText').append('<p>' +userLastAccess+ '</p>');
+		$('#lastAccessModal').modal('show'); 
+	} 	
+</script>
 </html>

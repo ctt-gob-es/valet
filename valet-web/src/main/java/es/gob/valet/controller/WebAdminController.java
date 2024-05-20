@@ -24,18 +24,26 @@
  */
 package es.gob.valet.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.Task;
+import es.gob.valet.persistence.configuration.model.entity.UserValet;
 import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITaskService;
+import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 
 /** 
 * <p>Class that manages the requests related to the home page from vaLET.</p>
@@ -57,22 +65,48 @@ public class WebAdminController {
 	private ITaskService taskService;
 	
 	/**
+	 * Attribute that represents the service object for accessing the repository. 
+	 */
+	@Autowired
+	private IUserValetService userValetService;
+	
+	private static boolean lastAccessMessageShowed = false;
+	
+	/**
 	 *method that maps the list of keystores and sends it to the view "inicio.html".
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value="inicio")
 	public String index(Model model){
+		Authentication auth = SecurityContextHolder
+								.getContext()
+								.getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		UserValet userValet = userValetService.getUserValetByLogin(userDetail.getUsername());
+		Date lastAccess = userValet.getLastAccess();
+		String lastAccessFormated = null;
+		String lastUserAccessMessage = null;
+		if (lastAccess != null) {
+			lastAccessFormated = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, lastAccess);
+			lastUserAccessMessage = Language.getFormatResWebGeneral(WebGeneralMessages.LAST_USER_ACCESS_MESSAGE, userDetail.getUsername(), lastAccessFormated.substring(11) , lastAccessFormated.substring(0, 10));
+		}
+		// Actualizamos la fecha de ultimo acceso
+		userValet.setLastAccess(new Date());
+		userValetService.saveUserValet(userValet);
 		List<Keystore> listKeystores = keystoreService.getAllKeystore();
 		List<Task> listTask = taskService.getAllTask();
 		for(Task task: listTask){
 			task.setTokenName(Language.getResPersistenceConstants(task.getTokenName()));
 		}
+		model.addAttribute("lastAccessMessageShowed", lastAccessMessageShowed);
+		lastAccessMessageShowed = true;
+		model.addAttribute("userLastAccess", lastUserAccessMessage);
 		model.addAttribute("listtask", listTask);
 		model.addAttribute("listkeystore", listKeystores);
 		return "inicio.html";
 	}
-	
+
 	/**
 	 * Method that maps the invalid session request.
 	* @param model Holder object for model attributes.
@@ -81,6 +115,10 @@ public class WebAdminController {
 	@RequestMapping(value = "invalidSession")
 	public String invalid(Model model) {
 		return "invalidSession.html";
+	}
+	
+	public static void setLastAccessMessageShowed(boolean lastAccessMsgShowed) {
+		lastAccessMessageShowed = lastAccessMsgShowed;
 	}
 
 }
