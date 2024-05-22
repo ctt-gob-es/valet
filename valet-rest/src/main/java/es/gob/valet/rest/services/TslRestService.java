@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 19/01/2024.
+ * @version 2.2, 17/05/2024.
  */
 package es.gob.valet.rest.services;
 
@@ -99,7 +99,7 @@ import es.gob.valet.utils.ValidatorResultConstants;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.1, 19/01/2024.
+ * @version 2.1, 17/05/2024.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -912,7 +912,7 @@ public class TslRestService implements ITslRestService {
 
 		// En función del tipo de evidencia...
 		// Si es OCSP...
-		if (tslValidatorResult.getRevocationValueBasicOCSPResponse() != null) {
+		if (tslValidatorResult.getRevocationValueBasicOCSPResponse() != null && tslValidatorResult.getRevocationValueCRL()== null) {
 			if (returnRevocationEvidence) {
 				tslRevocationStatus.setEvidenceType(TslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_OCSP);
 				tslRevocationStatus.setEvidence(new ByteArrayB64(tslValidatorResult.getRevocationValueBasicOCSPResponse().getEncoded()));
