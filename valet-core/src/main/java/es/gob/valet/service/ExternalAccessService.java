@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.4, 31/01/2024.
+ * @version 2.5, 17/05/2024.
  */
 package es.gob.valet.service;
 
@@ -113,7 +113,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.4, 31/01/2024.
+ * @version 2.5, 17/05/2024.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -732,7 +732,7 @@ public class ExternalAccessService implements IExternalAccessService {
 	 * @see es.gob.valet.service.ifaces.IExternalAccessService#makeChangesToExternalAccess(es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO, java.lang.String)
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public synchronized void makeChangesToExternalAccess(ExternalAccessDTO externalAccessDTO, String action) {
+	public void makeChangesToExternalAccess(ExternalAccessDTO externalAccessDTO, String action) {
 		try {
 			if(action.equals(ITERATEANDSAVEURL)) {
 				// Recorreremos todas las urls obtenidas y realizamos test de conexión.
