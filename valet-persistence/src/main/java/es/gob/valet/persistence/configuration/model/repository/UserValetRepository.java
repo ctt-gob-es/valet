@@ -53,4 +53,11 @@ public interface UserValetRepository extends JpaRepository<UserValet, Long> {
 	 * @return Object that represents a user from the persistence. 
 	 */
 	UserValet findByIdUserValet(Long id);
+	
+	/**
+	  * Method that obtains from the persistence a user identified by its NIF. 
+	 * @param nif String that represents the nif of the user in the persistence.
+	 * @return Object that represents a user from the persistence. 
+	 */
+	UserValet findByNif(String nif);
 }

@@ -24,10 +24,15 @@
  */
 package es.gob.valet.controller;
 
+import java.util.Calendar;
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
 
 /** 
@@ -43,11 +48,50 @@ public class LoginController {
 	 * 
 	 * @return String that represents the name of the view to forward.
 	 */
-	@RequestMapping(value = "/")
+	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String login(Model model) {
 		WebAdminController.setLastAccessMessageShowed(false);
 		String accessOptions = StaticValetConfig.getProperty(StaticValetConfig.ACCESS_OPTIONS);
 		model.addAttribute("accessOptions", accessOptions);
+		model.addAttribute("randomString", getRandomStringToLogin());
 		return "login.html";
+	}
+	
+	/**
+	 * Method returning a random string
+	 * @return string
+	 */
+	private String getRandomStringToLogin(){
+		String banco = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+		
+		String cadena = "";
+	    for (int x = 0; x < NumberConstants.NUM12; x++) {
+	        int indiceAleatorio = numeroAleatorioEnRango(0, banco.length() - 1);
+	        char caracterAleatorio = banco.charAt(indiceAleatorio);
+	        cadena += caracterAleatorio;
+	    }
+	    cadena += "-" + getTimeToMillis();
+
+	    return cadena;
+		
+	}
+	
+	/**
+	 * Method that a random range
+	 * @param minimo
+	 * @param maximo
+	 * @return number
+	 */
+	public static int numeroAleatorioEnRango(int minimo, int maximo) {
+	    return ThreadLocalRandom.current().nextInt(minimo, maximo + 1);
+	}
+	
+	/**
+	 * Method returning the current date in milliseconds
+	 * @return date
+	 */
+	private Long getTimeToMillis(){
+	    Calendar calendar = Calendar.getInstance();
+	    return calendar.getTimeInMillis();
 	}
 }

@@ -25,6 +25,19 @@
 			<div class="wrap-login">
 				<form id="formLogin" class="login-form validate-form"
 					th:action="@{/}" method="post">
+					
+					<input type='hidden' id="signatureBase64" name="signatureBase64">
+					<input type='hidden' id="randomString" name="randomString" th:value="${randomString}">
+					
+					<div class="alert alert-danger" th:if="${param.loginInvalidUser}"
+						th:text="#{valet.login.loginInvalidUser}"></div>
+					<div class="alert alert-danger"
+						th:if="${param.loginInvalidUserPassword}"
+						th:text="#{valet.login.error}"></div>
+					<div class="alert alert-danger" th:if="${param.userWillBeBlocked}"
+						th:text="#{valet.login.userWillBeBlocked}"></div>
+					<div class="alert alert-danger" th:if="${param.userIsBlocked}"
+						th:text="#{valet.login.userIsBlocked}"></div>
 			
 					<span class="login-form-title p-b-60"> <img
 						class="valet-front-img" th:src="@{images/chart_ico.png}"
@@ -69,7 +82,7 @@
 					<div style="display:none;" class="container-login-form-btn" id="accessCertificateDiv">
 						<div class="wrap-login-form-btn">
 							<div class="login-form-bgbtn"></div>
-							<button onclick="submit(this);" class="login-form-btn" id="accessCertificateBtn"
+							<button onclick="authenticateCertificate(autenticar,'');return false;" class="login-form-btn" id="accessCertificateBtn"
 								th:text="#{valet.login.accessCertificate.button}"></button>
 						</div>
 					</div>
@@ -82,6 +95,8 @@
 	</div>
 	<script th:src="@{js/jquery/jquery-3.2.1.min.js}"></script>
 	<script th:src="@{js/main.js}"></script>
+	<script th:src="@{js/autoscript/functions.js}"></script>
+	<script th:src="@{js/autoscript/autoscript.js}"></script>
 	<script>
 		var accessOptions = $('#accessOptions').val();
 		var accessConfigurated = false;
@@ -98,6 +113,17 @@
 		if (!accessConfigurated) {
 			$('#accessClaveDiv').show();
 			$('#accessCertificateDiv').show();
+		}
+		
+		function authenticateCertificate (functionAutenticar, filter) {
+	        cargaAppAfirma("");
+	        var randomString = $('#randomString').val();
+			authenticate(functionAutenticar, filter, randomString);
+		}
+		
+		function autenticar(signatureBase64) {
+			$('#signatureBase64').val(signatureBase64);
+			$('#formLogin').submit();
 		}
 	</script>
 </body>

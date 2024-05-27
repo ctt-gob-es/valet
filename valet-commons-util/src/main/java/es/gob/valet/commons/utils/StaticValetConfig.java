@@ -255,6 +255,21 @@ public final class StaticValetConfig {
 	 * Options for login.
 	 */
 	public static final String ACCESS_OPTIONS = "login.access";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.access.certificate"</i>.
+	 */
+	public static final String LOGIN_ACCESS_CERTIFICATE = "login.access.certificate";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.access.certificate.issuer"</i>.
+	 */
+	public static final String LOGIN_ACCESS_CERTIFICATE_ISSUER = "login.access.certificate.issuer";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.access.certificate.dni"</i>.
+	 */
+	public static final String LOGIN_ACCESS_CERTIFICATE_DNI = "login.access.certificate.dni";
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.

@@ -701,4 +701,19 @@ public class WebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String LAST_USER_ACCESS_MESSAGE = "lastUserAccessMessage";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>PROPLOGIN001</code> belonging to the file messages/webAdmin/afirma_xx_YY.properties.
+	 */
+	public static final String PROPLOGIN001 = "PROPLOGIN001";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>PROPLOGIN002</code> belonging to the file messages/webAdmin/afirma_xx_YY.properties.
+	 */
+	public static final String PROPLOGIN002 = "PROPLOGIN002";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>PROPLOGIN003</code> belonging to the file messages/webAdmin/afirma_xx_YY.properties.
+	 */
+	public static final String PROPLOGIN003 = "PROPLOGIN003";
 }

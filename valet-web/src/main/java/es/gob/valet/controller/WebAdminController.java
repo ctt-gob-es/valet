@@ -27,13 +27,13 @@ package es.gob.valet.controller;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.i18n.Language;
@@ -77,19 +77,16 @@ public class WebAdminController {
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
-	@RequestMapping(value="inicio")
-	public String index(Model model){
-		Authentication auth = SecurityContextHolder
-								.getContext()
-								.getAuthentication();
-		UserDetails userDetail = (UserDetails) auth.getPrincipal();
-		UserValet userValet = userValetService.getUserValetByLogin(userDetail.getUsername());
+	@RequestMapping(value="inicio", method = { RequestMethod.GET, RequestMethod.POST })
+	public String index(Model model, final HttpServletRequest request){
+		String login = request.getRemoteUser();
+		UserValet userValet = userValetService.getUserValetByLogin(login);
 		Date lastAccess = userValet.getLastAccess();
 		String lastAccessFormated = null;
 		String lastUserAccessMessage = null;
 		if (lastAccess != null) {
 			lastAccessFormated = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, lastAccess);
-			lastUserAccessMessage = Language.getFormatResWebGeneral(WebGeneralMessages.LAST_USER_ACCESS_MESSAGE, userDetail.getUsername(), lastAccessFormated.substring(11) , lastAccessFormated.substring(0, 10));
+			lastUserAccessMessage = Language.getFormatResWebGeneral(WebGeneralMessages.LAST_USER_ACCESS_MESSAGE, userValet.getLogin(), lastAccessFormated.substring(11) , lastAccessFormated.substring(0, 10));
 		}
 		// Actualizamos la fecha de ultimo acceso
 		userValet.setLastAccess(new Date());
