@@ -71,13 +71,13 @@
 						</div>
 					</div>
 
-					<div style="display:none;" class="container-login-form-btn" id="accessClaveDiv">
-						<div class="wrap-login-form-btn">
-							<div class="login-form-bgbtn"></div>
-							<button onclick="submit(this);" class="login-form-btn" id="accessClaveBtn"
-								th:text="#{valet.login.accessClave.button}"></button>
-						</div>
-					</div>
+					<div class="container-login-form-btn" id="accessClaveDiv">
+                        <div class="wrap-login-form-btn">
+                            <div class="login-form-bgbtn"></div>
+                            <button type="button" class="login-form-btn" id="accessClaveBtn"
+                                th:text="#{valet.login.accessClave.button}" onclick="submitForm('/valet-web/accessClave')"></button>
+                        </div>
+                    </div>
 					
 					<div style="display:none;" class="container-login-form-btn" id="accessCertificateDiv">
 						<div class="wrap-login-form-btn">
@@ -125,6 +125,12 @@
 			$('#signatureBase64').val(signatureBase64);
 			$('#formLogin').submit();
 		}
+		
+		function submitForm(action) {
+        	var form = document.getElementById('formLogin');
+            form.action = action;
+            form.submit();
+        }
 	</script>
 </body>
 </html>
