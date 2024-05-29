@@ -1065,7 +1065,7 @@ public class TslRestService implements ITslRestService {
 
 		// En función del tipo de evidencia...
 		// Si es OCSP...
-		if (tslValidatorResult.getRevocationValueBasicOCSPResponse() != null) {
+		if (tslValidatorResult.getRevocationValueBasicOCSPResponse() != null && tslValidatorResult.getRevocationValueCRL()== null) {
 			if (returnRevocationEvidence) {
 				tslRevocationStatus
 						.setEvidenceType(ITslRestServiceRevocationEvidenceType.REVOCATION_EVIDENCE_TYPE_OCSP);
