@@ -10,8 +10,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import es.gob.valet.clave.sp.SpProtocolEngineFactory;
+import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.dto.PersonalInfoBean;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.Keystore;
 import es.gob.valet.persistence.configuration.model.entity.Task;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
@@ -43,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -68,6 +71,8 @@ public class SamlController {
 	 */
 	@Autowired
 	private ITaskService taskService;
+	
+	private static boolean lastAccessMessageShowed = false;
 	 
 	@RequestMapping(value="/accessClave", method = RequestMethod.POST)
 	public void samlLogin(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException, ServletException {
@@ -153,15 +158,29 @@ public class SamlController {
     	Iterable<UserValet> usuariosValet = userValetService.getAllUserValet();
     	for (UserValet usuario : usuariosValet) {
     	   if(usuario.getNif().equals(dni)) {
+    		  
+    		   Date lastAccess = usuario.getLastAccess();
+    		   String lastAccessFormated = null;
+    		   String lastUserAccessMessage = null;
+    		   if (lastAccess != null) {
+    			   lastAccessFormated = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, lastAccess);
+    			   lastUserAccessMessage = Language.getFormatResWebGeneral(WebGeneralMessages.LAST_USER_ACCESS_MESSAGE, usuario.getLogin(), lastAccessFormated.substring(11) , lastAccessFormated.substring(0, 10));
+    		   }
+    		   // Actualizamos la fecha de ultimo acceso
+    		   usuario.setLastAccess(new Date());
+    		   userValetService.saveUserValet(usuario);
     		   List<Keystore> listKeystores = keystoreService.getAllKeystore();
-    			List<Task> listTask = taskService.getAllTask();
-    			for(Task task: listTask){
-    				task.setTokenName(Language.getResPersistenceConstants(task.getTokenName()));
-    			}
-    			model.addAttribute("listtask", listTask);
-    			model.addAttribute("listkeystore", listKeystores);
-    			authenticationService.authenticateUser(nombre);
-    			return "inicio.html";
+    		   List<Task> listTask = taskService.getAllTask();
+    		   for(Task task: listTask){
+    			   task.setTokenName(Language.getResPersistenceConstants(task.getTokenName()));
+    		   }
+    		   model.addAttribute("lastAccessMessageShowed", lastAccessMessageShowed);
+    		   lastAccessMessageShowed = true;
+    		   model.addAttribute("userLastAccess", lastUserAccessMessage);
+    		   model.addAttribute("listtask", listTask);
+    		   model.addAttribute("listkeystore", listKeystores);
+    		   authenticationService.authenticateUser(nombre);
+    		   return "inicio.html";
     	   }
     	}
 
