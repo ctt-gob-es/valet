@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>es.gob.valet</groupId>
 			<artifactId>valet-core</artifactId>
-			<scope>compile</scope>
+			<version>1.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>es.gob.valet</groupId>
@@ -143,6 +143,93 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- FIN DEPENDENCIAS PARA JUNIT4 -->
+		<dependency>
+			<groupId>es.gob.sgad</groupId>
+			<artifactId>clave-j20068.commons</artifactId>
+			<version>2.7</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcprov-jdk15on</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcpkix-jdk15on</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.sgad</groupId>
+			<artifactId>clave-j20068.saml-engine</artifactId>
+			<version>2.7</version>
+			<exclusions>
+				<!--<exclusion>
+					<groupId>org.apache.santuario</groupId>
+					<artifactId>xmlsec</artifactId>
+				</exclusion>-->
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcprov-jdk15on</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcpkix-jdk15on</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-cache</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>jstl</artifactId>
+		    <version>1.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		    <version>4.0.1</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+     <!-- JSTL dependency -->
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+    </dependency>
 
+    <!-- JSP support dependency for Tomcat -->
+    <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-jasper</artifactId>
+        <version>9.0.71</version> <!-- Asegúrate de usar la versión correcta -->
+    </dependency>
+		<dependency>
+			<groupId>es.gob.valet</groupId>
+			<artifactId>valet-standalone-statistics</artifactId>
+			<version>1.2.0</version>
+		</dependency>
 	</dependencies>
 </project>
