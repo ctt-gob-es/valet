@@ -37,6 +37,7 @@ import eu.eidas.auth.commons.protocol.impl.EidasSamlBinding;
 import eu.eidas.auth.engine.ProtocolEngineNoMetadataI;
 import eu.eidas.auth.engine.xml.opensaml.SAMLEngineUtils;
 import eu.eidas.engine.exceptions.EIDASSAMLEngineException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.xml.namespace.QName;
 import javax.servlet.ServletException;
@@ -134,7 +135,7 @@ public class SamlController {
 
     // Método para manejar la respuesta SAML
     @RequestMapping(value="/responseAccessClave", method = RequestMethod.POST)
-    public String processSamlResponse(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+    public String processSamlResponse(HttpServletRequest request, HttpServletResponse response, Model model, RedirectAttributes redirectAttributes) throws Exception {
     	
     	// Obtenemos los datos del resultado
     	String samlResponse = request.getParameter("SAMLResponse");
@@ -157,30 +158,10 @@ public class SamlController {
     	
     	Iterable<UserValet> usuariosValet = userValetService.getAllUserValet();
     	for (UserValet usuario : usuariosValet) {
-    	   if(usuario.getNif().equals(dni)) {
-    		  
-    		   Date lastAccess = usuario.getLastAccess();
-    		   String lastAccessFormated = null;
-    		   String lastUserAccessMessage = null;
-    		   if (lastAccess != null) {
-    			   lastAccessFormated = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, lastAccess);
-    			   lastUserAccessMessage = Language.getFormatResWebGeneral(WebGeneralMessages.LAST_USER_ACCESS_MESSAGE, usuario.getLogin(), lastAccessFormated.substring(11) , lastAccessFormated.substring(0, 10));
-    		   }
-    		   // Actualizamos la fecha de ultimo acceso
-    		   usuario.setLastAccess(new Date());
-    		   userValetService.saveUserValet(usuario);
-    		   List<Keystore> listKeystores = keystoreService.getAllKeystore();
-    		   List<Task> listTask = taskService.getAllTask();
-    		   for(Task task: listTask){
-    			   task.setTokenName(Language.getResPersistenceConstants(task.getTokenName()));
-    		   }
-    		   model.addAttribute("lastAccessMessageShowed", lastAccessMessageShowed);
-    		   lastAccessMessageShowed = true;
-    		   model.addAttribute("userLastAccess", lastUserAccessMessage);
-    		   model.addAttribute("listtask", listTask);
-    		   model.addAttribute("listkeystore", listKeystores);
-    		   authenticationService.authenticateUser(nombre);
-    		   return "inicio.html";
+    	   if(usuario.getNif().equals(dni)) { 
+    		   redirectAttributes.addFlashAttribute("loginUser", usuario.getLogin());
+    		   authenticationService.authenticateUser(usuario.getLogin());
+    		   return "redirect:/inicio";
     	   }
     	}
 
