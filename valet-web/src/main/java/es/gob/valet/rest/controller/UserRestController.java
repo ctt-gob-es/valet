@@ -101,7 +101,7 @@ public class UserRestController {
 		
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		UserValet userValet = userService.getUserValetById(userId);
-		if(userValet !=null && !userValet.getLogin().equals(remoteUser)){
+		if(userValet !=null && !userValet.getNif().equals(remoteUser)){
 			userService.deleteUserValet(userId);
 		}else{
 			index = "-1";
@@ -141,15 +141,7 @@ public class UserRestController {
 				} else {
 					userValet = new UserValet();
 				}
-				if (!UtilsStringChar.isNullOrEmpty(userForm.getPassword())) {
-					String pwd = userForm.getPassword();
-					BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
-					String hashPwd = bc.encode(pwd);
 
-					userValet.setPassword(hashPwd);
-				}
-
-				userValet.setLogin(userForm.getLogin());
 				userValet.setAttemptsNumber(NumberConstants.NUM0);
 				userValet.setEmail(userForm.getEmail());
 				userValet.setIsBlocked(Boolean.FALSE);
@@ -203,7 +195,7 @@ public class UserRestController {
 				} else {
 					userValet = new UserValet();
 				}
-				userValet.setLogin(userForm.getLoginEdit());
+				
 				userValet.setAttemptsNumber(NumberConstants.NUM0);
 				userValet.setEmail(userForm.getEmailEdit());
 				userValet.setIsBlocked(Boolean.FALSE);
@@ -254,20 +246,6 @@ public class UserRestController {
 			BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
 			String hashPwd = bc.encode(pwd);
 
-			try {
-				if (bc.matches(oldPwd, userValet.getPassword())) {
-					userValet.setPassword(hashPwd);
-					userService.saveUserValet(userValet);
-					result = "0";
-				} else {
-					// no coincide la contraseña introducida, con la contraseña
-					// actual del usuario.
-					result = "-1";
-				}
-			} catch (Exception e) {
-				result = "-2";
-				throw e;
-			}
 		}
 
 		return result;

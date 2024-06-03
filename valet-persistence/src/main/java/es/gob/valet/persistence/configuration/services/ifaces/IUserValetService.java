@@ -41,14 +41,7 @@ public interface IUserValetService {
 	 * @return {@link UserValet}
 	 */
 	UserValet getUserValetById(Long userId);
-	
-	/**
-	 * Method that obtains an user by its login.
-	 * @param login The user login.
-	 * @return {@link UserValet}
-	 */
-	UserValet getUserValetByLogin(String login);
-	
+		
 	/**
 	 * Method that stores a user in the persistence.
 	 * @param user a {@link UserValet} with the information of the user.
@@ -74,4 +67,11 @@ public interface IUserValetService {
 	 * @return {@link DataTablesOutput}
 	 */
 	DataTablesOutput<UserValet> getAllUser(DataTablesInput input);
+
+	/**
+	 * Method that obtains an user by its nif.
+	 * @param nif The user NIF.
+	 * @return {@link UserValet}
+	 */
+	UserValet getUserValetByNif(String nif);
 }

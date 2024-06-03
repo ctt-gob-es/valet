@@ -79,20 +79,20 @@ public class WebAdminController {
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value="inicio", method = { RequestMethod.GET, RequestMethod.POST })
-	public String index(Model model, final HttpServletRequest request,  @ModelAttribute("loginUser") String loginUser){
-		String login = "";
-		if (loginUser != null && !loginUser.equals("")) {
-			login = loginUser;
+	public String index(Model model, final HttpServletRequest request,  @ModelAttribute("nifUser") String nifUser){
+		String nif = "";
+		if (nifUser != null && !nifUser.equals("")) {
+			nif = nifUser;
 	    } else {
-	    	login = request.getRemoteUser();
+	    	nif = request.getRemoteUser();
 	    }
-		UserValet userValet = userValetService.getUserValetByLogin(login);
+		UserValet userValet = userValetService.getUserValetByNif(nif);
 		Date lastAccess = userValet.getLastAccess();
 		String lastAccessFormated = null;
 		String lastUserAccessMessage = null;
 		if (lastAccess != null) {
 			lastAccessFormated = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, lastAccess);
-			lastUserAccessMessage = Language.getFormatResWebGeneral(WebGeneralMessages.LAST_USER_ACCESS_MESSAGE, userValet.getLogin(), lastAccessFormated.substring(11) , lastAccessFormated.substring(0, 10));
+			lastUserAccessMessage = Language.getFormatResWebGeneral(WebGeneralMessages.LAST_USER_ACCESS_MESSAGE, userValet.getNif(), lastAccessFormated.substring(11) , lastAccessFormated.substring(0, 10));
 		}
 		// Actualizamos la fecha de ultimo acceso
 		userValet.setLastAccess(new Date());

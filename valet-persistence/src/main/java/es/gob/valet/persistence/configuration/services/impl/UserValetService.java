@@ -94,14 +94,6 @@ public class UserValetService implements IUserValetService {
 		return repository.findAll();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getUserValetByLogin(java.lang.String)
-	 */
-	@Override
-	public UserValet getUserValetByLogin(String login) {
-		return repository.findByLogin(login);
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -111,6 +103,15 @@ public class UserValetService implements IUserValetService {
 	public DataTablesOutput<UserValet> getAllUser(DataTablesInput input) {
 
 		return dtRepository.findAll(input);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.IUserValetService#getUserValetByNif(java.lang.String)
+	 */
+	@Override
+	public UserValet getUserValetByNif(String nif) {
+		return repository.findByNif(nif);
 	}
 
 }

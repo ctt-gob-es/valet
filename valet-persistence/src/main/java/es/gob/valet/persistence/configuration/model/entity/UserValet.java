@@ -72,11 +72,7 @@ public class UserValet implements Serializable {
 	private Boolean isBlocked;
 
 	/**
-	 * Attribute that represents the name for access to the platform.
-	 */
-	private String login;
 
-	/**
 	 * Attribute that represents the email of the user.
 	 */
 	private String email;
@@ -85,11 +81,6 @@ public class UserValet implements Serializable {
 	 * Attribute that represents the user name.
 	 */
 	private String name;
-
-	/**
-	 * Attribute that represents the hash of the user password.
-	 */
-	private String password;
 
 	/**
 	 * Attribute that represents the surnames of the user.
@@ -169,30 +160,6 @@ public class UserValet implements Serializable {
 	}
 
 	/**
-	 * Gets the value of the attribute {@link #login}.
-	 * @return the value of the attribute {@link #login}.
-	 */
-	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
-	// because Hibernate JPA needs not final access methods.
-	@Column(name = "LOGIN", nullable = false, length = NumberConstants.NUM100, unique = true)
-	@JsonView(DataTablesOutput.View.class)
-	public String getLogin() {
-		// CHECKSTYLE:ON
-		return login;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #login}.
-	 * @param loginParam The value for the attribute {@link #login}.
-	 */
-	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
-	// because Hibernate JPA needs not final access methods.
-	public void setLogin(String loginParam) {
-		// CHECKSTYLE:ON
-		this.login = loginParam;
-	}
-
-	/**
 	 * Gets the value of the attribute {@link #email}.
 	 * @return the value of the attribute {@link #email}.
 	 */
@@ -238,30 +205,6 @@ public class UserValet implements Serializable {
 	public void setName(String nameParam) {
 		// CHECKSTYLE:ON
 		this.name = nameParam;
-	}
-
-	/**
-	 * Gets the value of the attribute {@link #password}.
-	 * @return the value of the attribute {@link #password}.
-	 */
-	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
-	// because Hibernate JPA needs not final access methods.
-	@Column(name = "PASSWORD", nullable = false, length = NumberConstants.NUM512)
-	@JsonView(DataTablesOutput.View.class)
-	public String getPassword() {
-		// CHECKSTYLE:ON
-		return password;
-	}
-
-	/**
-	 * Sets the value of the attribute {@link #password}.
-	 * @param passwordParam The value for the attribute {@link #password}.
-	 */
-	// CHECKSTYLE:OFF -- Checkstyle rule "Design for Extension" is not applied
-	// because Hibernate JPA needs not final access methods.
-	public void setPassword(String passwordParam) {
-		// CHECKSTYLE:ON
-		this.password = passwordParam;
 	}
 
 	/**

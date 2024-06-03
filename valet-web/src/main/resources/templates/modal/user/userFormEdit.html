@@ -59,20 +59,6 @@
 							required pattern=".{3,30}"></input>
 					</div>
 					
-					<div class="form-group">
-						<label for="loginEdit"
-							th:text="#{form.user.login}"></label>
-						<script th:inline="javascript" type="text/javascript">
-								/*<![CDATA[*/
-								    var messageLogin = /*[[#{form.user.login.pattern}]]*/ 'default';
-								/*]]>*/
-							</script>
-						<span id="loginEdit_span"
-							class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this,messageLogin);" type="text"
-							id="loginEdit" th:field="*{loginEdit}" class="form-control"
-							required pattern=".{5,30}"></input>
-					</div>
 
 					<div class="form-group">
 						<label for="emailEdit"

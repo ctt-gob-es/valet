@@ -63,28 +63,7 @@ public class UserForm {
     @Size(min=1, max=NumberConstants.NUM30, groups=ThenCheckIt.class)
     private String surnames = UtilsStringChar.EMPTY_STRING;
 	
-	/**
-	 * Attribute that represents the value of the input username of the user in the form. 
-	 */
-	@NotNull(groups=CheckItFirst.class, message="{form.valid.user.login.notempty}")
-    @Size(min=NumberConstants.NUM5, max=NumberConstants.NUM30, groups=ThenCheckIt.class)
-    private String login = UtilsStringChar.EMPTY_STRING;
 
-	/**
-	 * Attribute that represents the value of the input password of the user in the form. 
-	 */
-	@NotNull(groups=CheckItFirst.class, message="{form.valid.user.password.notempty}")
-    @Size(min=NumberConstants.NUM7, max=NumberConstants.NUM30, groups=ThenCheckIt.class)
-	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,}$", message="{form.valid.user.password.noPattern}", groups=ThenCheckIt.class)
-    private String password = UtilsStringChar.EMPTY_STRING;
-	
-	/**
-	 * Attribute that represents the value of the input password of the user in the form. 
-	 */
-	@NotNull(groups=CheckItFirst.class, message="{form.valid.user.confirmPassword.notempty}")
-    @Size(min=NumberConstants.NUM7, max=NumberConstants.NUM30, groups=ThenCheckIt.class)
-    private String confirmPassword = UtilsStringChar.EMPTY_STRING;
-		
 	/**
 	 * Attribute that represents the value of the input email of the user in the form. 
 	 */
@@ -152,60 +131,6 @@ public class UserForm {
 	 */
 	public void setSurnames(String surnamesParam) {
 		this.surnames = surnamesParam;
-	}
-
-	
-	/**
-	 * Gets the value of the attribute {@link #login}.
-	 * @return the value of the attribute {@link #login}.
-	 */
-	public String getLogin() {
-		return login;
-	}
-
-	
-	/**
-	 * Sets the value of the attribute {@link #login}.
-	 * @param loginParam The value for the attribute {@link #login}.
-	 */
-	public void setLogin(String loginParam) {
-		this.login = loginParam;
-	}
-
-	
-	/**
-	 * Gets the value of the attribute {@link #password}.
-	 * @return the value of the attribute {@link #password}.
-	 */
-	public String getPassword() {
-		return password;
-	}
-
-	
-	/**
-	 * Sets the value of the attribute {@link #password}.
-	 * @param passwordParam The value for the attribute {@link #password}.
-	 */
-	public void setPassword(String passwordParam) {
-		this.password = passwordParam;
-	}
-
-	
-	/**
-	 * Gets the value of the attribute {@link #confirmPassword}.
-	 * @return the value of the attribute {@link #confirmPassword}.
-	 */
-	public String getConfirmPassword() {
-		return confirmPassword;
-	}
-
-	
-	/**
-	 * Sets the value of the attribute {@link #confirmPassword}.
-	 * @param confirmPasswordParam The value for the attribute {@link #confirmPassword}.
-	 */
-	public void setConfirmPassword(String confirmPasswordParam) {
-		this.confirmPassword = confirmPasswordParam;
 	}
 
 	
