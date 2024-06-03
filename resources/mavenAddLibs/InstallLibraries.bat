@@ -1,4 +1,5 @@
 @echo off
+set JAVA_HOME=C:\Java\jdk1.8.0_131
 call mvn install:install-file -Dfile=./org/apache/xmlbeans/xmlbeans-afirma/2_3_0/xmlbeans-afirma-2.3.0.jar -DgroupId=org.apache.xmlbeans -DartifactId=xmlbeans-afirma -Dversion=2.3.0 -Dpackaging=jar -DpomFile=./org/apache/xmlbeans/xmlbeans-afirma/2_3_0/xmlbeans-afirma-2.3.0.pom
 call mvn install:install-file -Dfile=./es/gob/afirma/xmlbeans/2_3_0/xmlSchema/2001/xmlSchema-2001.jar -DgroupId=es.gob.afirma.xmlbeans.2_3_0 -DartifactId=xmlSchema -Dversion=2001 -Dpackaging=jar -DpomFile=./es/gob/afirma/xmlbeans/2_3_0/xmlSchema/2001/xmlSchema-2001.pom
 call mvn install:install-file -Dfile=./es/gob/afirma/xmlbeans/2_3_0/XMLDSig/2000v09/XMLDSig-2000v09.jar -DgroupId=es.gob.afirma.xmlbeans.2_3_0 -DartifactId=XMLDSig -Dversion=2000v09 -Dpackaging=jar -DpomFile=./es/gob/afirma/xmlbeans/2_3_0/XMLDSig/2000v09/XMLDSig-2000v09.pom
@@ -15,4 +16,4 @@ call mvn install:install-file -Dfile=es/gob/sgad/clave-j20068.eidas-light-common
 call mvn install:install-file -Dfile=es/gob/sgad/clave-j20068.eidas-saml-engine/2.7/clave-j20068.eidas-saml-engine-2.7.jar -DgroupId=es.gob.sgad -DartifactId=clave-j20068.eidas-saml-engine -Dversion=2.7 -Dpackaging=jar -DpomFile=./es/gob/sgad/clave-j20068.eidas-saml-engine/2.7/pom.xml
 call mvn install:install-file -Dfile=es/gob/sgad/clave-j20068.saml-engine/2.7/clave-j20068.saml-engine-2.7.jar -DgroupId=es.gob.sgad -DartifactId=clave-j20068.saml-engine -Dversion=2.7 -Dpackaging=jar -DpomFile=./es/gob/sgad/clave-j20068.saml-engine/2.7/clave-j20068.saml-engine-2.7.pom
 
-call mvn install:install-file -Dfile=org/opensaml/opensaml/2.6.5-eidas_1/opensaml-2.6.5-eidas_1.jar -DgroupId=org.opensaml -DartifactId=opensaml -Dversion=2.6.5-eidas_1 -Dpackaging=jar -DpomFile=./org/opensaml/opensaml/2.6.5-eidas_1/opensaml-2.6.5-eidas_1.pom
+call mvn install:install-file -Dfile=org/opensaml/2.6.5-eidas_1/opensaml-2.6.5-eidas_1.jar -DgroupId=org.opensaml -DartifactId=opensaml -Dversion=2.6.5-eidas_1 -Dpackaging=jar -DpomFile=./org/opensaml/2.6.5-eidas_1/opensaml-2.6.5-eidas_1.pom
