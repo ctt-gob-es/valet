@@ -63,14 +63,6 @@ public class UserFormEdit {
 	private String surnamesEdit = UtilsStringChar.EMPTY_STRING;
 
 	/**
-	 * Attribute that represents the value of the input username of the user in
-	 * the form.
-	 */
-	@NotNull(groups = CheckItFirst.class, message = "{form.valid.user.login.notempty}")
-	@Size(min = NumberConstants.NUM5, max = NumberConstants.NUM30, groups = ThenCheckIt.class)
-	private String loginEdit = UtilsStringChar.EMPTY_STRING;
-
-	/**
 	 * Attribute that represents the value of the input email of the user in the
 	 * form.
 	 */
@@ -139,23 +131,6 @@ public class UserFormEdit {
 		this.surnamesEdit = surnamesEditParam;
 	}
 
-	
-	/**
-	 * Gets the value of the attribute {@link #loginEdit}.
-	 * @return the value of the attribute {@link #loginEdit}.
-	 */
-	public String getLoginEdit() {
-		return loginEdit;
-	}
-
-	
-	/**
-	 * Sets the value of the attribute {@link #loginEdit}.
-	 * @param loginEditParam The value for the attribute {@link #loginEdit}.
-	 */
-	public void setLoginEdit(String loginEditParam) {
-		this.loginEdit = loginEditParam;
-	}
 
 	
 	/**

@@ -88,6 +88,21 @@ COMMENT ON COLUMN "USER_VALET"."LAST_ACCESS" IS 'Valor que representa la fecha d
 COMMENT ON COLUMN "USER_VALET"."IP_LAST_ACCESS" IS 'Valor que representa la dirección IP desde la que accedió el usuario por última vez.';
 COMMENT ON COLUMN "USER_VALET"."NIF" IS 'Valor que representa el DNI/NIF del usuario';
 
+-- Eliminar restricción columna LOGIN
+ALTER TABLE "USER_VALET" 
+DROP CONSTRAINT "USER_UNIQUE_LOGIN";
+
+-- Eliminar las columnas LOGIN y PASSWORD
+ALTER TABLE "USER_VALET" 
+DROP COLUMN "LOGIN";
+
+ALTER TABLE "USER_VALET" 
+DROP COLUMN "PASSWORD";
+
+-- Agregar la restricción única a la columna NIF
+ALTER TABLE "USER_VALET"
+ADD CONSTRAINT "USER_UNIQUE_NIF" UNIQUE ("NIF");
+
 -- Table TSL_DATA
 CREATE TABLE "TSL_DATA"(
 	"ID_TSL_DATA" Number(19,0) NOT NULL,

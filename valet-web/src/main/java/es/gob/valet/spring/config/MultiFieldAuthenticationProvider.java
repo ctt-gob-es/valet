@@ -260,7 +260,7 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 
 		} else {
 			if (name != null && password != null) {
-				curruser = userRepository.findByLogin(name);
+				curruser = null;
 			} else {
 				auth = null;
 			}
@@ -280,45 +280,7 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 
 				// If password is OK passwordEncoder().matches(password,
 				// curruser.getPassword()
-				if (!StringUtils.isEmpty(signatureBase64) || passwordEncoder().matches(password, curruser.getPassword())) {
 
-					if (userExpired) {
-						Integer intentosMaximos = 5;
-						curruser.setAttemptsNumber(curruser.getAttemptsNumber() + 1);
-						if (curruser.getAttemptsNumber() > intentosMaximos) {
-							curruser.setIsBlocked(true);
-							userRepository.save(curruser);
-							throw new BadCredentialsException(USER_WILL_BE_BLOCKED);
-						}
-
-					} else {
-						curruser.setAttemptsNumber(NumberConstants.NUM0);
-					}
-
-					List<GrantedAuthority> grantedAuths = new ArrayList<>();
-					grantedAuths.add(new SimpleGrantedAuthority("USER"));
-
-					if (name.isEmpty()) {
-						name = curruser.getNif();
-					}
-
-					auth = new UsernamePasswordAuthenticationToken(name, hashedPassword, grantedAuths);
-
-					InetAddress address = null;
-
-					try {
-						address = InetAddress.getLocalHost();
-					} catch (UnknownHostException e) {
-						e.printStackTrace();
-					}
-
-					String lastAccessIp = address.getHostName();
-					curruser.setLastIpAccess(lastAccessIp);
-
-					userRepository.save(curruser);
-				} else {
-					throw new BadCredentialsException(USER_NOT_AUTHORIZED);
-				}
 			}
 		} else {
 			throw new UsernameNotFoundException(USER_INCORRECT);

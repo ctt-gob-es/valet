@@ -86,7 +86,7 @@ public class UserController {
 	@RequestMapping(value = "menupass")
 	public String menuPass(@RequestParam("login") String login, Model model) {
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
-		UserValet userValet = userService.getUserValetByLogin(login);
+		UserValet userValet = userService.getUserValetByNif(login);
 		UserFormPassword userFormPassword = new UserFormPassword();
 		if (userValet != null) {
 			userFormPassword.setIdUserValetPass(userValet.getIdUserValet());
@@ -106,14 +106,13 @@ public class UserController {
 	@RequestMapping(value = "menuedit")
 	public String menuEdit(@RequestParam("username") String username, Model model) {
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
-		UserValet userValet = userService.getUserValetByLogin(username);
+		UserValet userValet = userService.getUserValetByNif(username);
 		UserFormEdit userFormEdit = new UserFormEdit();
 
 		userFormEdit.setIdUserValetEdit(userValet.getIdUserValet());
 		userFormEdit.setNameEdit(userValet.getName());
 		userFormEdit.setSurnamesEdit(userValet.getSurnames());
 		userFormEdit.setEmailEdit(userValet.getEmail());
-		userFormEdit.setLoginEdit(userValet.getLogin());
 		userFormEdit.setNifEdit(userValet.getNif());
 
 		model.addAttribute("userformEdit", userFormEdit);

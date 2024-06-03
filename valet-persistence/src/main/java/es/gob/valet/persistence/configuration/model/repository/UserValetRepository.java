@@ -40,12 +40,6 @@ import es.gob.valet.persistence.configuration.model.entity.UserValet;
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public interface UserValetRepository extends JpaRepository<UserValet, Long> {
-	/**
-	 * Method that obtains from the persistence a user identified by its login. 
-	 * @param login Long that represents the username used to log in.
-	 * @return Object that represents a user from the persistence. 
-	 */
-	UserValet findByLogin(String login);
 	
 	/**
 	  * Method that obtains from the persistence a user identified by its primary key. 

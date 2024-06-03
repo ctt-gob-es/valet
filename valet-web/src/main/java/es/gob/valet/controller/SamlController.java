@@ -159,8 +159,8 @@ public class SamlController {
     	Iterable<UserValet> usuariosValet = userValetService.getAllUserValet();
     	for (UserValet usuario : usuariosValet) {
     	   if(usuario.getNif().equals(dni)) { 
-    		   redirectAttributes.addFlashAttribute("loginUser", usuario.getLogin());
-    		   authenticationService.authenticateUser(usuario.getLogin());
+    		   redirectAttributes.addFlashAttribute("nifUser", usuario.getNif());
+    		   authenticationService.authenticateUser(usuario.getNif());
     		   return "redirect:/inicio";
     	   }
     	}
