@@ -350,6 +350,7 @@
 				<artifactId>valet-rest</artifactId>
 				<version>${valet.version.rest}</version>
 			</dependency>
+
 			<!-- Módulos de vaLET -->
 			<!-- <dependency> -->
 			<!-- <groupId>javax.servlet</groupId> -->
@@ -661,23 +662,41 @@
         <scope>test</scope>
     </dependency>
     <dependency>
-    <groupId>org.powermock</groupId>
-    <artifactId>powermock-core</artifactId>
-    <version>2.0.9</version> 
-    <scope>test</scope>
-</dependency>
-<dependency>
-    <groupId>org.powermock</groupId>
-    <artifactId>powermock-module-junit4</artifactId>
-    <version>2.0.9</version> 
-    <scope>test</scope>
-</dependency>
-<dependency>
-    <groupId>org.powermock</groupId>
-    <artifactId>powermock-api-mockito2</artifactId>
-    <version>2.0.9</version>
-    <scope>test</scope>
-</dependency>
+	    <groupId>org.powermock</groupId>
+	    <artifactId>powermock-core</artifactId>
+	    <version>2.0.9</version> 
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.powermock</groupId>
+	    <artifactId>powermock-module-junit4</artifactId>
+	    <version>2.0.9</version> 
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.powermock</groupId>
+	    <artifactId>powermock-api-mockito2</artifactId>
+	    <version>2.0.9</version>
+	    <scope>test</scope>
+	</dependency>
+	<!-- EIDAS dependencies -->
+    <dependency>
+        <groupId>eu.eidas</groupId>
+        <artifactId>eidas-auth-commons</artifactId>
+        <version>1.4.5</version>
+    </dependency>
+    <dependency>
+        <groupId>eu.eidas</groupId>
+        <artifactId>eidas-configuration</artifactId>
+        <version>1.4.5</version>
+    </dependency>
+    <dependency>
+        <groupId>eu.eidas</groupId>
+        <artifactId>eidas-engine</artifactId>
+        <version>1.4.5</version>
+    </dependency>
+
+
 <!-- FIN JUNIT TEST -->
 		
 		</dependencies>

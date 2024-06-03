@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -78,8 +79,13 @@ public class WebAdminController {
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value="inicio", method = { RequestMethod.GET, RequestMethod.POST })
-	public String index(Model model, final HttpServletRequest request){
-		String login = request.getRemoteUser();
+	public String index(Model model, final HttpServletRequest request,  @ModelAttribute("loginUser") String loginUser){
+		String login = "";
+		if (loginUser != null && !loginUser.equals("")) {
+			login = loginUser;
+	    } else {
+	    	login = request.getRemoteUser();
+	    }
 		UserValet userValet = userValetService.getUserValetByLogin(login);
 		Date lastAccess = userValet.getLastAccess();
 		String lastAccessFormated = null;

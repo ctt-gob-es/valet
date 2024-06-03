@@ -35,6 +35,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.client.RestTemplate;
 
 import es.gob.valet.commons.utils.GeneralConstants;
 import es.gob.valet.i18n.Language;
@@ -81,37 +82,47 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	 * @see org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter#configure(org.springframework.security.config.annotation.web.builders.HttpSecurity)
 	 */
 	@Override
-    protected void configure(HttpSecurity http) throws Exception {
-		try {
-			http.authorizeRequests()
-		    .antMatchers("/css/**", "/css/**", "/images/**", "/js/**", "/fonts/**", "/fonts/icons/themify/**", "/fonts/fontawesome/**", "/less/**", "/invalidSession")
-		    .permitAll() // Enable css, images and js when logged out
-			.and()
-			.authorizeRequests()
-			.antMatchers("/", "add", "delete/{id}", "edit/{id}", "save", "users")
-			.permitAll()
-			.anyRequest()
-			.authenticated()
-			.and()
-			.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-			.logout().invalidateHttpSession(false).deleteCookies(SESSION_TRACKING_COOKIE_NAME).clearAuthentication(true).logoutSuccessUrl("/")
-			.permitAll()
-			.and()
-			.httpBasic()
-			.and()
-			.csrf()
-			.disable() // Disable CSRF
-			.sessionManagement()
-			.sessionFixation().migrateSession()
-			.maximumSessions(1)
-			.expiredUrl("/")
-			.and()
-			.invalidSessionUrl("/invalidSession");
-			
-		} catch (Exception e) {
-			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_WEB_SECURITY_001));
-		}
-    }
+	protected void configure(HttpSecurity http) throws Exception {
+	    try {
+	        http
+	            .authorizeRequests()
+	            .antMatchers("/css/**", "/images/**", "/js/**", "/fonts/**", "/fonts/icons/themify/**", "/fonts/fontawesome/**", "/less/**", "/invalidSession")
+	            .permitAll() // Enable css, images and js when logged out
+	            .and()
+	            .authorizeRequests()
+	            .antMatchers("/", "add", "delete/{id}", "edit/{id}", "save", "users", "/accessClave", "/responseAccessClave")
+	            .permitAll()
+	            .anyRequest()
+	            .authenticated()
+	            .and()
+	            .formLogin()
+	            .loginPage("/")
+	            .defaultSuccessUrl("/inicio")
+	            .permitAll()
+	            .and()
+	            .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class) // Preserva el filtro de autenticación de la primera configuración
+	            .logout()
+	            .invalidateHttpSession(false)
+	            .deleteCookies(SESSION_TRACKING_COOKIE_NAME)
+	            .clearAuthentication(true)
+	            .logoutSuccessUrl("/")
+	            .permitAll()
+	            .and()
+	            .httpBasic()
+	            .and()
+	            .csrf()
+	            .disable() // Disable CSRF
+	            .sessionManagement()
+	            .sessionFixation().migrateSession()
+	            .maximumSessions(1)
+	            .maxSessionsPreventsLogin(false) // Añade la opción de prevenir login de la segunda configuración
+	            .expiredUrl("/")
+	            .and()
+	            .invalidSessionUrl("/invalidSession");
+	    } catch (Exception e) {
+	        LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_WEB_SECURITY_001));
+	    }
+	}
     
 	/**
 	 * Method that sets the authentication global configuration.
@@ -175,5 +186,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	 */
 	public void setSuccessHandler(final SuccessHandler successHandlerP) {
 		this.successHandler = successHandlerP;
+	}
+	
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 }

@@ -26,11 +26,14 @@ package es.gob.valet.spring;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 
 /** 
@@ -73,7 +76,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			http.csrf().disable()
 				.authorizeRequests()
 			    .antMatchers("/valet-rest/**")
-			    .permitAll();	
+			    .permitAll()
+			    .antMatchers("/valet-web/**")
+			    .permitAll()
+			    .anyRequest().authenticated();	
 			
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -89,6 +95,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/valet-rest/**");
 	}
+	
+	@Bean
+    public InternalResourceViewResolver jspViewResolver() {
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+        resolver.setPrefix("/WEB-INF/jsp/");
+        resolver.setSuffix(".jsp");
+        resolver.setOrder(1);
+        return resolver;
+    }
 	
 	
 	
