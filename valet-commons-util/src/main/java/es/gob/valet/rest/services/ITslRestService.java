@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 19/09/2023.
+ * @version 1.7, 03/06/2024.
  */
 package es.gob.valet.rest.services;
 
@@ -44,7 +44,7 @@ import es.gob.valet.rest.elements.json.DateString;
 /**
  * <p>Interface that represents the TSL restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 19/09/2023.
+ * @version 1.7, 03/06/2024.
  */
 public interface ITslRestService {
 	
@@ -70,7 +70,7 @@ public interface ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(TslMappingConstants.PARAM_APPLICATION) String application, @FormParam(TslMappingConstants.PARAM_DELEGATED_APP) String delegatedApp, @FormParam(TslMappingConstants.PARAM_TSL_LOCATION) String tslLocation, @FormParam(TslMappingConstants.PARAM_CERTIFICATE) ByteArrayB64 certByteArrayB64, @FormParam(TslMappingConstants.PARAM_DETECTION_DATE) DateString detectionDate, @FormParam(TslMappingConstants.PARAM_GET_INFO) Boolean getInfo, @FormParam(TslMappingConstants.PARAM_CHECK_REV_STATUS) Boolean checkRevStatus, @FormParam(TslMappingConstants.PARAM_RETURN_REV_EVID) Boolean returnRevocationEvidence, @FormParam(TslMappingConstants.PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(TslMappingConstants.PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List, @FormParam(TslMappingConstants.PARAM_RETURN_CERT_CHAIN) Boolean returnCertificateChain) throws ValetRestException;
+	DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(TslMappingConstants.PARAM_APPLICATION) String application, @FormParam(TslMappingConstants.PARAM_DELEGATED_APP) String delegatedApp, @FormParam(TslMappingConstants.PARAM_TSL_LOCATION) String tslLocation, @FormParam(TslMappingConstants.PARAM_CERTIFICATE) ByteArrayB64 certByteArrayB64, @FormParam(TslMappingConstants.PARAM_DETECTION_DATE) DateString detectionDate, @FormParam(TslMappingConstants.PARAM_GET_INFO) Boolean getInfo, @FormParam(TslMappingConstants.PARAM_CHECK_REV_STATUS) Boolean checkRevStatus, @FormParam(TslMappingConstants.PARAM_RETURN_REV_EVID) Boolean returnRevocationEvidence, @FormParam(TslMappingConstants.PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(TslMappingConstants.PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List, @FormParam(TslMappingConstants.PARAM_RETURN_CERT_CHAIN) Boolean returnCertificateChain, @FormParam(TslMappingConstants.PARAM_TRANSACTION_ID) String transactionId) throws ValetRestException;
 
 	/**
 	 * Method that returns the TSL information.
@@ -86,7 +86,7 @@ public interface ITslRestService {
 	@Path("/getTslInformation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	TslInformationResponse getTslInformation(@FormParam(TslMappingConstants.PARAM_APPLICATION) String application, @FormParam(TslMappingConstants.PARAM_DELEGATED_APP) String delegatedApp, @FormParam(TslMappingConstants.PARAM_COUNTRY_REGION_CODE) String countryRegionCode, @FormParam(TslMappingConstants.PARAM_TSL_LOCATION) String tslLocation, @FormParam(TslMappingConstants.PARAM_GET_TSL_XML_DATA) Boolean getTslXmlData) throws ValetRestException;
+	TslInformationResponse getTslInformation(@FormParam(TslMappingConstants.PARAM_APPLICATION) String application, @FormParam(TslMappingConstants.PARAM_DELEGATED_APP) String delegatedApp, @FormParam(TslMappingConstants.PARAM_COUNTRY_REGION_CODE) String countryRegionCode, @FormParam(TslMappingConstants.PARAM_TSL_LOCATION) String tslLocation, @FormParam(TslMappingConstants.PARAM_GET_TSL_XML_DATA) Boolean getTslXmlData, @FormParam(TslMappingConstants.PARAM_TRANSACTION_ID) String transactionId) throws ValetRestException;
 
 	/**
 	 * Method that returns the versions of the TSLs registered in valET.
@@ -96,6 +96,6 @@ public interface ITslRestService {
 	@POST
 	@Path("/getTslInfoVersions")
 	@Produces(MediaType.APPLICATION_JSON)
-	TslInformationVersionsResponse getTslInfoVersions() throws ValetRestException;
+	TslInformationVersionsResponse getTslInfoVersions(@FormParam(TslMappingConstants.PARAM_TRANSACTION_ID) String transactionId) throws ValetRestException;
 
 }

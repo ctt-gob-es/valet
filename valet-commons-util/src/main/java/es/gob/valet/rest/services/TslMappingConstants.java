@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>31/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.3, 19/09/2023.
+ * @version 1.4, 03/06/2024.
  */
 package es.gob.valet.rest.services;
 
 /**
  * <p>Class that defines all the commons constants related with the mappings.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 19/09/2023.
+ * @version 1.4, 03/06/2024.
  */
 public class TslMappingConstants {
 
@@ -251,5 +251,10 @@ public class TslMappingConstants {
 	 * Constant attribute that represents the token parameter 'getTslInfoVersions'.
 	 */
 	public static final String SERVICENAME_GET_TSL_INFORMATION_VERSIONS = "getTslInfoVersions";
+	
+	/**
+	 * Constant attribute that represents the token parameter 'getTslInfoVersions'.
+	 */
+	public static final String PARAM_TRANSACTION_ID = "transactionId";
 
 }

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.3, 19/09/2023.
+ * @version 1.4, 03/06/2024.
  */
 package es.gob.valet.audit.utils;
 
@@ -43,7 +43,7 @@ import es.gob.valet.i18n.messages.CoreGeneralMessages;
 /**
  * <p>Class that provides methods for registering the most commons audit traces associated to the services of the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 19/09/2023.
+ * @version 1.4, 03/06/2024.
  */
 public final class CommonsServicesAuditTraces {
 
@@ -84,12 +84,13 @@ public final class CommonsServicesAuditTraces {
 	 * Registers a trace to set the transaction opening in audit.
 	 * @param transactionId	Audit transaction identifier. If this parameter is not properly defined, then
 	 * this method do nothing.
+	 * @param signTransactionId Sign transaction identifier.
 	 * @param serviceId	Service identifier.
 	 * @param messageByteArray Message byte array. A SHA-512 algorithm is going to be applied to this message
 	 * to be stored in the audit file event.
 	 * @throws AuditTraceException If the transactionId is <code>null</code>/empty or in case of some error computing the hash of the message.
 	 */
-	public static void addOpenTransactionTrace(String transactionId, int serviceId, byte[ ] messageByteArray) throws AuditTraceException {
+	public static void addOpenTransactionTrace(String transactionId, String signTransactionId, int serviceId, byte[ ] messageByteArray) throws AuditTraceException {
 
 		if (UtilsStringChar.isNullOrEmptyTrim(transactionId)) {
 			throw new AuditTraceException(ValetExceptionConstants.COD_202, Language.getResCoreGeneral(CoreGeneralMessages.CSAT_000));
@@ -98,7 +99,7 @@ public final class CommonsServicesAuditTraces {
 			if (messageByteArray != null && messageByteArray.length > 0) {
 				try {
 					hashMessageInBase64 = UtilsCrypto.calculateDigestReturnB64String(CryptographicConstants.HASH_ALGORITHM_SHA512, messageByteArray, null);
-					EventsCollector.openTransaction(transactionId, serviceId, CryptographicConstants.HASH_ALGORITHM_SHA512, hashMessageInBase64);
+					EventsCollector.openTransaction(transactionId, signTransactionId, serviceId, CryptographicConstants.HASH_ALGORITHM_SHA512, hashMessageInBase64);
 				} catch (CommonUtilsException e) {
 					throw new AuditTraceException(ValetExceptionConstants.COD_202, e.getMessage(), e);
 				}

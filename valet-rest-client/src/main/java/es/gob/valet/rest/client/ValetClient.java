@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 19/09/2023.
+ * @version 1.9, 03/06/2024.
  */
 package es.gob.valet.rest.client;
 
@@ -58,7 +58,7 @@ import es.gob.valet.rest.services.ITslRestService;
 /**
  * <p>Class that implements a client for Valet rest services.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 19/09/2023.
+ * @version 1.9, 03/06/2024.
  */
 public class ValetClient {
 
@@ -108,7 +108,7 @@ public class ValetClient {
 	 * @return Structure with detected certificate in TSL and revocation status.
 	 * @throws ValetRestException If some error is produced in the execution of the service.
 	 */
-	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(final String application, final String delegatedApp, final String tslLocation, final byte[ ] certByteArray, final Date detectionDate, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevocationEvidence, final List<byte[ ]> crlsByteArrayList, final List<byte[ ]> basicOcspResponsesByteArrayList, Boolean returnCertificateChain) throws ValetRestException {
+	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(final String application, final String delegatedApp, final String tslLocation, final byte[ ] certByteArray, final Date detectionDate, final Boolean getInfo, final Boolean checkRevStatus, final Boolean returnRevocationEvidence, final List<byte[ ]> crlsByteArrayList, final List<byte[ ]> basicOcspResponsesByteArrayList, Boolean returnCertificateChain, String transactionId) throws ValetRestException {
 		LOGGER.info("Starting call to \'detectCertInTslInfoAndValidation\' method at Valet rest service.");
 
 		DetectCertInTslInfoAndValidationResponse response = null;
@@ -153,7 +153,7 @@ public class ValetClient {
 					
 			
 			try {
-				response = restService.detectCertInTslInfoAndValidation(application, delegatedApp, tslLocationB4, new ByteArrayB64(certByteArray), dateString, getInfo, checkRevStatus, returnRevocationEvidence, crlsByteArrayB64List, basicOcspResponsesByteArrayB64List, returnCertificateChain);
+				response = restService.detectCertInTslInfoAndValidation(application, delegatedApp, tslLocationB4, new ByteArrayB64(certByteArray), dateString, getInfo, checkRevStatus, returnRevocationEvidence, crlsByteArrayB64List, basicOcspResponsesByteArrayB64List, returnCertificateChain, transactionId);
 			} catch (ProcessingException e) {
 				if (e.getCause().getClass().equals(UnknownHostException.class)) {
 					throw new ValetRestUnknownHostException(ValetExceptionConstants.COD_193, "Error trying to connect to Valet rest services. Unknown host. The address of the host could not be determined.");
@@ -187,7 +187,7 @@ public class ValetClient {
 	 * @return Structure of TSL information.
 	 * @throws ValetRestException If some error is produced in the execution of the service.
 	 */
-	public TslInformationResponse getTslInformation(final String application, final String delegatedApp, final String countryRegionCode, final String tslLocation, final Boolean getTslXmlData) throws ValetRestException {
+	public TslInformationResponse getTslInformation(final String application, final String delegatedApp, final String countryRegionCode, final String tslLocation, final Boolean getTslXmlData, final String transactionId) throws ValetRestException {
 		LOGGER.info("Starting call to \'getTslInformation\' method at Valet rest service.");
 
 		TslInformationResponse response = null;
@@ -215,7 +215,7 @@ public class ValetClient {
 					
 						
 					
-					response = restService.getTslInformation(application, delegatedApp, countryRegionCode, tslLocationB4, getTslXmlData);
+					response = restService.getTslInformation(application, delegatedApp, countryRegionCode, tslLocationB4, getTslXmlData, transactionId);
 				}
 			} catch (ProcessingException e) {
 				if (e.getCause().getClass().equals(UnknownHostException.class)) {
@@ -245,7 +245,7 @@ public class ValetClient {
 	 * @return Structure with a map that relates the TSL with the registered version.
 	 * @throws throws TSLManagingException If some error is produced in the execution of the service.
 	 */
-	public TslInformationVersionsResponse getTslInfoVersions() throws ValetRestException {
+	public TslInformationVersionsResponse getTslInfoVersions(final String transactionId) throws ValetRestException {
 		LOGGER.info("Starting call to \'getTslInfoVersions\' method at Valet rest service.");
 
 		TslInformationVersionsResponse response = null;
@@ -254,7 +254,7 @@ public class ValetClient {
 			try {
 				if (restService != null) {
 
-					response = restService.getTslInfoVersions();
+					response = restService.getTslInfoVersions(transactionId);
 				}
 			} catch (ProcessingException e) {
 				if (e.getCause().getClass().equals(UnknownHostException.class)) {

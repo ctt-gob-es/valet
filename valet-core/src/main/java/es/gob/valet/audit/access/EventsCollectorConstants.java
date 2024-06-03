@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.5, 19/09/2023.
+ * @version 1.6, 03/06/2024.
  */
 package es.gob.valet.audit.access;
 
@@ -31,7 +31,7 @@ import es.gob.valet.commons.utils.NumberConstants;
  * <p>Class that defines all the public constants needed to work with
  * audit transactions.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 19/09/2023.
+ * @version 1.6, 03/06/2024.
  */
 public class EventsCollectorConstants {
 
@@ -420,5 +420,10 @@ public class EventsCollectorConstants {
 	 * Constant attribute that represents the constant value field 'NOT_SPECIFIED'.
 	 */
 	public static final String FIELD_VALUE_DELAPPID_NOTSPECIFIED = "NOT_SPECIFIED";
+	
+	/**
+	 * Constant attribute that represents the field name 'ID'.
+	 */
+	public static final String FIELD_NAME_TRASN_ID = "TRASN_ID";
 
 }

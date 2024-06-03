@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 2.2, 17/05/2024.
+ * @version 2.3, 03/06/2024.
  */
 package es.gob.valet.rest.services;
 
@@ -99,7 +99,7 @@ import es.gob.valet.utils.ValidatorResultConstants;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.1, 17/05/2024.
+ * @version 2.3, 03/06/2024.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -136,7 +136,7 @@ public class TslRestService implements ITslRestService {
 	@Path("/detectCertInTslInfoAndValidation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(TslMappingConstants.PARAM_APPLICATION) final String application, @FormParam(TslMappingConstants.PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(TslMappingConstants.PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(TslMappingConstants.PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(TslMappingConstants.PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(TslMappingConstants.PARAM_GET_INFO) final Boolean getInfo, @FormParam(TslMappingConstants.PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(TslMappingConstants.PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(TslMappingConstants.PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(TslMappingConstants.PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List, @FormParam(TslMappingConstants.PARAM_RETURN_CERT_CHAIN) Boolean returnCertificateChain) throws ValetRestException {
+	public DetectCertInTslInfoAndValidationResponse detectCertInTslInfoAndValidation(@FormParam(TslMappingConstants.PARAM_APPLICATION) final String application, @FormParam(TslMappingConstants.PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(TslMappingConstants.PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(TslMappingConstants.PARAM_CERTIFICATE) final ByteArrayB64 certByteArrayB64, @FormParam(TslMappingConstants.PARAM_DETECTION_DATE) final DateString detectionDate, @FormParam(TslMappingConstants.PARAM_GET_INFO) final Boolean getInfo, @FormParam(TslMappingConstants.PARAM_CHECK_REV_STATUS) final Boolean checkRevStatus, @FormParam(TslMappingConstants.PARAM_RETURN_REV_EVID) final Boolean returnRevocationEvidence, @FormParam(TslMappingConstants.PARAM_CRLS_BYTE_ARRAY) List<ByteArrayB64> crlsByteArrayB64List, @FormParam(TslMappingConstants.PARAM_BASIC_OCSP_RESPONSES_BYTE_ARRAY) List<ByteArrayB64> basicOcspResponsesByteArrayB64List, @FormParam(TslMappingConstants.PARAM_RETURN_CERT_CHAIN) Boolean returnCertificateChain, @FormParam(TslMappingConstants.PARAM_TRANSACTION_ID) String transactionId) throws ValetRestException {
 		// CHECKSTYLE:ON
 		long startOperationTime = Calendar.getInstance().getTimeInMillis();
 		// Añadimos la información ThreadContext al log y obtenemos un número único
@@ -167,6 +167,11 @@ public class TslRestService implements ITslRestService {
 		// entrada.
 		LOGGER.info(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG001, new Object[ ] { application, delegatedAppAux, tslLocation, certByteArrayB64, detectionDate, getInfo, checkRevStatus, returnRevocationEvidence, numCRLs, numOCSPs }));
 
+		// Indicamos adicionalmente a los datos de entrada si se ha informado un ID de transacción y su valor.
+		if(transactionId != null) {
+			LOGGER.info("Se ha recibido petición de servicio detectCertInTslInfoAndValidation con identificador "+transactionId+".");
+		}
+		
 		// Inicialmente consideramos que todo es OK para proceder.
 		boolean allIsOk = true;
 
@@ -352,7 +357,7 @@ public class TslRestService implements ITslRestService {
 				// Si se ha comprobado que todos los parámetros son correctos,
 				// abrimos la transacción
 				// en auditoría.
-				CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, EventsCollectorConstants.SERVICE_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION_ID, extractRequestByteArray());
+				CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, transactionId, EventsCollectorConstants.SERVICE_DETECT_CERT_IN_TSL_INFO_AND_VALIDATION_ID, extractRequestByteArray());
 				CommonsServicesAuditTraces.addStartRSTrace(auditTransNumber, application, delegatedAppAux);
 				result = executeServiceDetectCertInTslInfoAndValidation(auditTransNumber, application, delegatedAppAux, tslLocation, x509cert, detectionDateAux, getInfo.booleanValue(), checkRevStatus.booleanValue(), returnRevocationEvidence, crlArray, basicOcspRespArray, returnCertificateChain);
 				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, EventsCollectorConstants.RESULT_CODE_SERVICE_OK, result.getDescription());
@@ -949,7 +954,7 @@ public class TslRestService implements ITslRestService {
 	@Path("/getTslInformation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public TslInformationResponse getTslInformation(@FormParam(TslMappingConstants.PARAM_APPLICATION) final String application, @FormParam(TslMappingConstants.PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(TslMappingConstants.PARAM_COUNTRY_REGION_CODE) final String countryRegionCode, @FormParam(TslMappingConstants.PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(TslMappingConstants.PARAM_GET_TSL_XML_DATA) final Boolean getTslXmlData) throws ValetRestException {
+	public TslInformationResponse getTslInformation(@FormParam(TslMappingConstants.PARAM_APPLICATION) final String application, @FormParam(TslMappingConstants.PARAM_DELEGATED_APP) final String delegatedApp, @FormParam(TslMappingConstants.PARAM_COUNTRY_REGION_CODE) final String countryRegionCode, @FormParam(TslMappingConstants.PARAM_TSL_LOCATION) final String tslLocationB64, @FormParam(TslMappingConstants.PARAM_GET_TSL_XML_DATA) final Boolean getTslXmlData, @FormParam(TslMappingConstants.PARAM_TRANSACTION_ID) String transactionId) throws ValetRestException {
 		// CHECKSTYLE:ON
 		long startOperationTime = Calendar.getInstance().getTimeInMillis();
 		// Generamos el identificador de transacción.
@@ -975,6 +980,11 @@ public class TslRestService implements ITslRestService {
 		// entrada.
 		LOGGER.info(Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG002, new Object[ ] { application, delegatedAppAux, countryRegionCode, tslLocation, getTslXmlData }));
 
+		// Indicamos adicionalmente a los datos de entrada si se ha informado un ID de transacción y su valor.
+		if(transactionId != null) {
+			LOGGER.info("Se ha recibido petición de servicio getTslInformation con identificador "+transactionId+".");
+		}
+		
 		// Inicialmente consideramos que todo es OK para proceder.
 		boolean allIsOk = true;
 
@@ -1028,7 +1038,7 @@ public class TslRestService implements ITslRestService {
 				// Si se ha comprobado que todos los parámetros son correctos,
 				// abrimos la transacción
 				// en auditoría.
-				CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, EventsCollectorConstants.SERVICE_GET_TSL_INFORMATION_ID, extractRequestByteArray());
+				CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, transactionId, EventsCollectorConstants.SERVICE_GET_TSL_INFORMATION_ID, extractRequestByteArray());
 				CommonsServicesAuditTraces.addStartRSTrace(auditTransNumber, application, delegatedAppAux);
 				result = executeServiceGetTslInformation(auditTransNumber, application, delegatedAppAux, countryRegionCode, tslLocation, getTslXmlData);
 				CommonsServicesAuditTraces.addEndRSTrace(auditTransNumber, EventsCollectorConstants.RESULT_CODE_SERVICE_OK, result.getDescription());
@@ -1174,16 +1184,20 @@ public class TslRestService implements ITslRestService {
 	@POST
 	@Path("/getTslInfoVersions")
 	@Produces(MediaType.APPLICATION_JSON)
-	public TslInformationVersionsResponse getTslInfoVersions() throws ValetRestException {
+	public TslInformationVersionsResponse getTslInfoVersions(@FormParam(TslMappingConstants.PARAM_TRANSACTION_ID) String transactionId) throws ValetRestException {
 		long startOperationTime = Calendar.getInstance().getTimeInMillis();
 		// Se inicia el resultado a devolver
 		TslInformationVersionsResponse result = null;
 		// Generamos el identificador de transacción.
 		String auditTransNumber = LoggingInformationNDC.registerNdcInfAndGetTransactionNumber(httpServletRequest, TslMappingConstants.SERVICENAME_GET_TSL_INFORMATION_VERSIONS);
 		LOGGER.info(Language.getResRestGeneral(RestGeneralMessages.REST_LOG043));
+		// Indicamos adicionalmente a los datos de entrada si se ha informado un ID de transacción y su valor.
+		if(transactionId != null) {
+			LOGGER.info("Se ha recibido petición de servicio getTslInfoVersions con identificador "+transactionId+".");
+		}
 		try {
 			// Se abre la transacción de auditoría
-			CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, EventsCollectorConstants.SERVICE_GET_TSL_INFO_VERSIONS_ID, extractRequestByteArray());
+			CommonsServicesAuditTraces.addOpenTransactionTrace(auditTransNumber, transactionId, EventsCollectorConstants.SERVICE_GET_TSL_INFO_VERSIONS_ID, extractRequestByteArray());
 			CommonsServicesAuditTraces.addStartRSTrace(auditTransNumber, INTERNAL_TASK_APP, INTERNAL_TASK_DELEGATE_APP);
 			Map<String, Integer> tslCountryVersion = TSLManager.getInstance().getTslInfoVersions();
 			result = new TslInformationVersionsResponse();

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.3, 19/09/2023.
+ * @version 1.4, 03/06/2024.
  */
 package es.gob.valet.audit.access;
 
@@ -40,7 +40,7 @@ import es.gob.valet.rest.elements.json.DateString;
  * <p>Class that represents an audit events collector. This class must be
  * used to register all the audit traces occurred in the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 19/09/2023.
+ * @version 1.4, 03/06/2024.
  */
 public final class EventsCollector {
 
@@ -75,13 +75,14 @@ public final class EventsCollector {
 	 * Method that indicates the start of an audit transaction.
 	 * @param transactionId	Audit transaction identifier. If this parameter is not properly defined, then
 	 * this method do nothing.
+	 * @param signTransactionId Sign transaction identifier.
 	 * @param serviceId	Service identifier.
 	 * @param hashAlgorithm Hash algorithm applied to calculate the hash message.
 	 * @param hashMessageB64 Hash message Base 64 representation.
 	 */
-	public static void openTransaction(String transactionId, int serviceId, String hashAlgorithm, String hashMessageB64) {
+	public static void openTransaction(String transactionId, String signTransactionId, int serviceId, String hashAlgorithm, String hashMessageB64) {
 
-		AUDIT_LOGGER.info(createTrace(transactionId, serviceId, EventsCollectorConstants.OPERATION_SERVICE_OPEN_TRACE, null, new DateString(Calendar.getInstance().getTime()), hashMessageB64, hashAlgorithm));
+		AUDIT_LOGGER.info(createTrace(transactionId, signTransactionId, serviceId, EventsCollectorConstants.OPERATION_SERVICE_OPEN_TRACE, null, new DateString(Calendar.getInstance().getTime()), hashMessageB64, hashAlgorithm));
 
 	}
 
@@ -94,7 +95,7 @@ public final class EventsCollector {
 	 */
 	public static void closeTransaction(String transactionId, String hashAlgorithm, String hashMessageB64) {
 
-		AUDIT_LOGGER.info(createTrace(transactionId, 0, EventsCollectorConstants.OPERATION_SERVICE_CLOSE_TRACE, null, new DateString(Calendar.getInstance().getTime()), hashMessageB64, hashAlgorithm));
+		AUDIT_LOGGER.info(createTrace(transactionId, null, 0, EventsCollectorConstants.OPERATION_SERVICE_CLOSE_TRACE, null, new DateString(Calendar.getInstance().getTime()), hashMessageB64, hashAlgorithm));
 
 	}
 
@@ -110,7 +111,7 @@ public final class EventsCollector {
 		// y se dispone de un listado de campos.
 		if (!UtilsStringChar.isNullOrEmptyTrim(transactionId) && fieldsValues != null && fieldsValues.length > 0) {
 
-			AUDIT_LOGGER.info(createTrace(transactionId, 0, operationId, createAuditFields(operationId, fieldsValues), new DateString(Calendar.getInstance().getTime()), null, null));
+			AUDIT_LOGGER.info(createTrace(transactionId, null, 0, operationId, createAuditFields(operationId, fieldsValues), new DateString(Calendar.getInstance().getTime()), null, null));
 
 		}
 
@@ -253,13 +254,18 @@ public final class EventsCollector {
 	 * @param hashAlgorithmApplied Hash algorithm applied to the message.
 	 * @return a string representation of a trace audit.
 	 */
-	private static String createTrace(String transactionId, int serviceId, int operationId, AuditField[ ] fields, DateString dateString, String messageHashInBase64, String hashAlgorithmApplied) {
+	private static String createTrace(String transactionId, String signTransactionId, int serviceId, int operationId, AuditField[ ] fields, DateString dateString, String messageHashInBase64, String hashAlgorithmApplied) {
 
 		// Creamos el StringBuilder que construye la traza.
 		StringBuilder traceSb = new StringBuilder();
 
 		// Siempre se añade el identificador de transacción.
 		traceSb.append(EventsCollectorConstants.FIELD_NAME_ID).append(TOKEN_SEPARATOR).append(transactionId).append(SEPARATOR);
+		
+		//Se añade el identificador de @firma si no es null
+		if(signTransactionId != null) {
+			traceSb.append(EventsCollectorConstants.FIELD_NAME_TRASN_ID).append(TOKEN_SEPARATOR).append(signTransactionId).append(SEPARATOR);
+		}
 
 		// Según la operación...
 		switch (operationId) {
