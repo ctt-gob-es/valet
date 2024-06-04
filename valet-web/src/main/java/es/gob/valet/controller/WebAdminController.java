@@ -90,9 +90,10 @@ public class WebAdminController {
 		Date lastAccess = userValet.getLastAccess();
 		String lastAccessFormated = null;
 		String lastUserAccessMessage = null;
+		String usuario = userValet.getName() + " " + userValet.getSurnames();
 		if (lastAccess != null) {
 			lastAccessFormated = UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_STANDARD, lastAccess);
-			lastUserAccessMessage = Language.getFormatResWebGeneral(WebGeneralMessages.LAST_USER_ACCESS_MESSAGE, userValet.getNif(), lastAccessFormated.substring(11) , lastAccessFormated.substring(0, 10));
+			lastUserAccessMessage = Language.getFormatResWebGeneral(WebGeneralMessages.LAST_USER_ACCESS_MESSAGE, usuario, lastAccessFormated.substring(11) , lastAccessFormated.substring(0, 10));
 		}
 		// Actualizamos la fecha de ultimo acceso
 		userValet.setLastAccess(new Date());
