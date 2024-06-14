@@ -270,6 +270,26 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents the key for the property <i>"login.access.certificate.dni"</i>.
 	 */
 	public static final String LOGIN_ACCESS_CERTIFICATE_DNI = "login.access.certificate.dni";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.certificate.field.resultMajor"</i>.
+	 */
+	public static final String MAJOR_RESULT = "login.certificate.field.resultMajor";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.certificate.field.resultMinor"</i>.
+	 */
+	public static final String MINOR_RESULT = "login.certificate.field.resultMinor";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.certificate.field.appName"</i>.
+	 */
+	public static final String APP_NAME = "login.certificate.field.appName";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.certificate.field.nifResponsable"</i>.
+	 */
+	public static final String NIF_RESPONSABLE = "login.certificate.field.nifResponsable";
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.

@@ -34,6 +34,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import es.gob.valet.commons.utils.UtilsStringChar;
+
 /** 
  * <p>Class .</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
@@ -68,19 +70,15 @@ public class MultiFieldAuthenticationFilter extends UsernamePasswordAuthenticati
     	Authentication auth = null;
     	
 		String username = obtainUsername(request);
-		String password = obtainPassword(request);
-		String signatureBase64 = obtainSignatureBase64(request);
 		
 		if (username == null) {
-			username = "";
+			username = UtilsStringChar.EMPTY_STRING;
 		}
 
 		username = username.trim();
 		session.setAttribute("username", username);	
 		
-		if (password == null) {
-			password = "";
-		}
+		String signatureBase64 = obtainSignatureBase64(request);
 		
 		if (signatureBase64 == null) {
 			signatureBase64 = "";
@@ -98,7 +96,7 @@ public class MultiFieldAuthenticationFilter extends UsernamePasswordAuthenticati
 		
 		UsernamePasswordAuthenticationToken authRequest = null;
 		try {
-			MultiFieldLoginUserDetails customUser = new MultiFieldLoginUserDetails(username, password,  signatureBase64);
+			MultiFieldLoginUserDetails customUser = new MultiFieldLoginUserDetails(username, signatureBase64);
 			authRequest = new UsernamePasswordAuthenticationToken(customUser, request.getParameter(RAMDON_STRING), AuthorityUtils.createAuthorityList("USER"));
 			// Allow subclasses to set the "details" property
 			setDetails(request, authRequest);

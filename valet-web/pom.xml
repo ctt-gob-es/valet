@@ -182,6 +182,46 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>Integra-commons</artifactId>
+			<version>2.2.4_001</version>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>Integra-commons-xml</artifactId>
+			<version>2.2.4_001</version>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>Integra-utils</artifactId>
+			<version>2.2.4_001</version>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>Integra-ws</artifactId>
+			<version>2.2.4_001</version>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>Integra-commons-pdf-bc</artifactId>
+			<version>2.2.4_001</version>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>Integra-ocsp-rfc3161</artifactId>
+			<version>2.2.4_001</version>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>Integra-sign-operations</artifactId>
+			<version>2.2.4_001</version>
+		</dependency>
+		<dependency>
+			<groupId>es.gob.afirma.lib</groupId>
+			<artifactId>itext-afirma</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
 			<groupId>es.gob.valet</groupId>
 			<artifactId>valet-cache</artifactId>
 			<version>1.2.0</version>
