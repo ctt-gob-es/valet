@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
  * <b>Date:</b><p>03/04/2020.</p>
  * @author Gobierno de España.
- * @version 1.2, 29/06/2023.
+ * @version 1.3, 17/06/2024.
  */
 package es.gob.valet.spring.config;
 

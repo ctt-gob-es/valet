@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 19/09/2023.
+ * @version 2.2, 17/06/2024.
  */
 package es.gob.valet.commons.utils;
 
