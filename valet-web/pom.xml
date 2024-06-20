@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>es.gob.valet</groupId>
 		<artifactId>valet-parent</artifactId>
-		<version>1.2.0</version>
+		<version>1.2.1</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>valet-web</artifactId>
@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>es.gob.valet</groupId>
 			<artifactId>valet-core</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>es.gob.valet</groupId>
@@ -224,7 +224,7 @@
 		<dependency>
 			<groupId>es.gob.valet</groupId>
 			<artifactId>valet-cache</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 		    <groupId>javax.servlet</groupId>
@@ -269,7 +269,7 @@
 		<dependency>
 			<groupId>es.gob.valet</groupId>
 			<artifactId>valet-standalone-statistics</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.1</version>
 		</dependency>
 	</dependencies>
 </project>
