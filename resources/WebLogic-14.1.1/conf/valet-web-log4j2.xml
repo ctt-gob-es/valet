@@ -1,0 +1,39 @@
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Log4j2 Configuration                                                  -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<Configuration status="warn" monitorInterval="10">
+    <Appenders>
+		<!-- ================================= -->
+		<!-- Preserve messages in a local file -->
+		<!-- ================================= -->
+		<!-- A time/date based rolling appender yyyy-MM-dd,yyyy-MM-dd-HH-mm-->
+        <RollingFile name="VALET-FILE-WEB" fileName="${sys:weblogic.config.path.logs.dir}\valet-web.log" filePattern="${sys:weblogic.config.path.logs.dir}\valet-web.log-%d{yyyy-MM-dd-HH-mm}.log">
+		    <PatternLayout>
+                <pattern>%d %x %-5level [%c] %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+		</RollingFile>
+		<Console name="STDOUT">
+			<PatternLayout pattern="%msg%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<!-- ================================= -->
+		<!-- Preserve messages in a local file -->
+		<!-- ================================= -->
+		<Logger name="es.gob.valet" level="info" additivity="false">
+            <appender-ref ref="VALET-FILE-WEB" level="info" />
+        </Logger>
+		<!-- ======================= -->
+		<!-- Setup the Root category -->
+		<!-- ======================= -->
+		<Root level="error" additivity="false">
+            <appender-ref ref="VALET-FILE-WEB" />
+		</Root>
+	</Loggers>
+</Configuration>
