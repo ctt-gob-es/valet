@@ -1,0 +1,20 @@
+-Dweblogic.transaction.allowOverrideSetRollbackReason=true
+-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2
+-DUseSunHttpHandler=true
+-Dvalet.config.path=[PATH_BASE_DOMAIN]\servers\[SERVER_NAME]\conf\
+-Dlogging.config=[PATH_BASE_DOMAIN]\servers\[SERVER_NAME]\conf\valet-web-log4j2.xml
+-Dweblogic.config.path.logs.dir=[PATH_BASE_DOMAIN]\servers\[SERVER_NAME]\logs
+-Dspring.config.location=[PATH_BASE_DOMAIN]\servers\[SERVER_NAME]\conf\application.properties
+-Dfile.encoding=UTF-8
+-Dweblogic.Stdout=[PATH_BASE_DOMAIN]\servers\[SERVER_NAME]\logs\wl\[SERVER_NAME].out
+-Dweblogic.Stderr=[PATH_BASE_DOMAIN]\servers\[SERVER_NAME]\logs\wl\[SERVER_NAME].err 
+-Xms1024m -Xmx2054m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:MinMetaspaceFreeRatio=20 -XX:MaxMetaspaceFreeRatio=50 -XX:+UseG1GC -XX:MaxNewSize=3584m -XX:NewSize=3584m -XX:SurvivorRatio=6 
+-Dclave.path=C:\Oracle\valet\configuration\clave\ 
+-Dintegra.config=C:\Oracle\valet\configuration\integra\
+
+Nota1: los siguientes parámetros para analizar con JConsole
+-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8124 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false
+Nota2: si el S.O es linux modificar \ por /. En los apenders de log4j2 también habrá que realizar cambios
+Nota3: el valor de los parámetros 'Dclave.path' y 'Dintegra.config' será una ruta del servidor donde se almacenen los ficheros configurables.
+Nota4: añadir los siguientes parámetros para realizar debug
+-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8797,server=y,suspend=n
