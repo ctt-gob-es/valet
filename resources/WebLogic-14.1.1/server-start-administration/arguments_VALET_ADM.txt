@@ -8,8 +8,7 @@
 -Dfile.encoding=UTF-8
 -Dweblogic.Stdout=[PATH_BASE_DOMAIN]\servers\[SERVER_NAME]\logs\wl\[SERVER_NAME].out
 -Dweblogic.Stderr=[PATH_BASE_DOMAIN]\servers\[SERVER_NAME]\logs\wl\[SERVER_NAME].err 
--Xms1024m -Xmx2054m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:MinMetaspaceFreeRatio=20 -XX:MaxMetaspaceFreeRatio=50 -XX:+UseG1GC -XX:MaxNewSize=3584m -XX:NewSize=3584m -XX:SurvivorRatio=6 
--Dclave.path=C:\Oracle\valet\configuration\clave\ 
+-Xms1024m -Xmx2054m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:MinMetaspaceFreeRatio=20 -XX:MaxMetaspaceFreeRatio=50 -XX:+UseG1GC -XX:MaxNewSize=3584m -XX:NewSize=3584m -XX:SurvivorRatio=6
 -Dintegra.config=C:\Oracle\valet\configuration\integra\
 
 Nota1: los siguientes parámetros para analizar con JConsole

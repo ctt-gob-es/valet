@@ -19,79 +19,80 @@ import eu.eidas.util.Preconditions;
 public final class SpProtocolEngineFactory extends ProtocolEngineFactoryNoMetadata {
 
 	/**
-     * Initialization-on-demand holder idiom.
-     * <p/>
-     * See item 71 of Effective Java 2nd Edition.
-     * <p/>
-     * See http://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom.
-     */
-    private static final class LazyHolder {
+	 * Initialization-on-demand holder idiom.
+	 * <p/>
+	 * See item 71 of Effective Java 2nd Edition.
+	 * <p/>
+	 * See http://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom.
+	 */
+	private static final class LazyHolder {
 
-        private static SpProtocolEngineFactory DEFAULT_SAML_ENGINE_FACTORY;
+		private static SpProtocolEngineFactory DEFAULT_SAML_ENGINE_FACTORY;
 
-        private static Exception INITIALIZATION_EXCEPTION;
+		private static Exception INITIALIZATION_EXCEPTION;
 
-        static SpProtocolEngineFactory getDefaultSamlEngineFactory(String configPath) {
-        	
-        	if (INITIALIZATION_EXCEPTION != null) {
-        		throw new IllegalStateException(INITIALIZATION_EXCEPTION);
-        	}
-        	if (DEFAULT_SAML_ENGINE_FACTORY == null) {
-        		try {
-        			DEFAULT_SAML_ENGINE_FACTORY = initSamlEngineFactory(configPath);
-        		}
-        		catch (IllegalStateException e) {
-        			INITIALIZATION_EXCEPTION = (Exception) e.getCause();
+		static SpProtocolEngineFactory getDefaultSamlEngineFactory(String configPath) {
+
+			if (INITIALIZATION_EXCEPTION != null) {
+				throw new IllegalStateException(INITIALIZATION_EXCEPTION);
+			}
+			if (DEFAULT_SAML_ENGINE_FACTORY == null) {
+				try {
+					DEFAULT_SAML_ENGINE_FACTORY = initSamlEngineFactory(configPath);
+				} catch (IllegalStateException e) {
+					INITIALIZATION_EXCEPTION = (Exception) e.getCause();
 				}
-        	}
-        	return DEFAULT_SAML_ENGINE_FACTORY; 
-        }
-        
-        private static SpProtocolEngineFactory initSamlEngineFactory(String configPath) {
-            SpProtocolEngineFactory defaultProtocolEngineFactory = null;
-            try {
-                ProtocolEngineConfigurationFactoryNoMetadata protocolEngineConfigurationFactory = 
-                		new ProtocolEngineConfigurationFactoryNoMetadata("SPSamlEngine.xml", null,
-                				configPath);
-                defaultProtocolEngineFactory =
-                        new SpProtocolEngineFactory(protocolEngineConfigurationFactory);
-            } catch (Exception ex) {
-                LOG.error("Unable to instantiate default SAML engines: " + ex, ex);
-                throw new IllegalStateException(ex);
-            }
-            return defaultProtocolEngineFactory; 
-        }
-    }
+			}
+			return DEFAULT_SAML_ENGINE_FACTORY;
+		}
 
-    private static final Logger LOG = LoggerFactory.getLogger(SpProtocolEngineFactory.class);
+		private static SpProtocolEngineFactory initSamlEngineFactory(String configPath) {
+			SpProtocolEngineFactory defaultProtocolEngineFactory = null;
+			try {
+				ProtocolEngineConfigurationFactoryNoMetadata protocolEngineConfigurationFactory = new ProtocolEngineConfigurationFactoryNoMetadata("SPSamlEngine.xml", null, configPath);
+				defaultProtocolEngineFactory = new SpProtocolEngineFactory(protocolEngineConfigurationFactory);
+			} catch (Exception ex) {
+				LOG.error("Unable to instantiate default SAML engines: " + ex, ex);
+				throw new IllegalStateException(ex);
+			}
+			return defaultProtocolEngineFactory;
+		}
+	}
 
-    @Nonnull
-    public static SpProtocolEngineFactory getInstance(String configPath) {
-        return LazyHolder.getDefaultSamlEngineFactory(configPath);
-    }
+	private static final Logger LOG = LoggerFactory.getLogger(SpProtocolEngineFactory.class);
 
-    /**
-     * Returns a default ProtocolEngine instance matching the given name retrieved from the configuration file.
-     *
-     * @param instanceName the instance name
-     * @param configPath Configuraton path.
-     * @return the ProtocolEngine instance matching the given name retrieved from the configuration file
-     */
-    @Nullable
-    public static SpProtocolEngineI getSpProtocolEngine(@Nonnull String instanceName, String configPath) {
-        Preconditions.checkNotBlank(instanceName, "instanceName");
-        return (SpProtocolEngineI) getInstance(configPath).getProtocolEngine(instanceName);
-    }
+	@Nonnull
+	public static SpProtocolEngineFactory getInstance(String configPath) {
+		return LazyHolder.getDefaultSamlEngineFactory(configPath);
+	}
 
-    private SpProtocolEngineFactory(@Nonnull ProtocolEngineConfigurationFactoryNoMetadata configurationFactory)
-            throws SamlEngineConfigurationException {
-    		//throws SamlEngineConfigurationException {
-        super(configurationFactory);
-    }
+	/**
+	 * Returns a default ProtocolEngine instance matching the given name retrieved from the configuration file.
+	 *
+	 * @param instanceName the instance name
+	 * @param configPath Configuraton path.
+	 * @return the ProtocolEngine instance matching the given name retrieved from the configuration file
+	 */
+	@Nullable
+	public static SpProtocolEngineI getSpProtocolEngine(@Nonnull String instanceName, String configPath) {
+		Preconditions.checkNotBlank(instanceName, "instanceName");
+		SpProtocolEngineI result = null;
+		try {
+			result = (SpProtocolEngineI) getInstance(configPath).getProtocolEngine(instanceName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 
-    @Nonnull
-    @Override
-    protected ProtocolEngineNoMetadataI createProtocolEngine(@Nonnull ProtocolConfigurationAccessorNoMetadata configurationAccessor) {
-        return new SpProtocolEngine(configurationAccessor);
-    }
+	private SpProtocolEngineFactory(@Nonnull ProtocolEngineConfigurationFactoryNoMetadata configurationFactory) throws SamlEngineConfigurationException {
+		// throws SamlEngineConfigurationException {
+		super(configurationFactory);
+	}
+
+	@Nonnull
+	@Override
+	protected ProtocolEngineNoMetadataI createProtocolEngine(@Nonnull ProtocolConfigurationAccessorNoMetadata configurationAccessor) {
+		return new SpProtocolEngine(configurationAccessor);
+	}
 }

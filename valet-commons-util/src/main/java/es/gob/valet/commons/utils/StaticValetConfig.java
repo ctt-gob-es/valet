@@ -290,6 +290,36 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents the key for the property <i>"login.certificate.field.nifResponsable"</i>.
 	 */
 	public static final String NIF_RESPONSABLE = "login.certificate.field.nifResponsable";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.service.url"</i>.
+	 */
+	public static final String CLAVE_SERVICE_URL = "clave.service.url";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.provider.name"</i>.
+	 */
+	public static final String CLAVE_PROVIDER_NAME = "clave.provider.name";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.sp.application"</i>.
+	 */
+	public static final String CLAVE_SP_APPLICATION = "clave.sp.application";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.idps.omit"</i>.
+	 */
+	public static final String CLAVE_IDPS_OMIT = "clave.idps.omit";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.eidas.levelofassurance"</i>.
+	 */
+	public static final String CLAVE_EIDAS_LEVEL_OF_ASSURANCE = "clave.eidas.levelofassurance";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.config.path"</i>.
+	 */
+	public static final String CLAVE_CONFIG_PATH = "clave.config.path";
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.

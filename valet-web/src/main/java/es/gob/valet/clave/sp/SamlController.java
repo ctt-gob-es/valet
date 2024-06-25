@@ -1,24 +1,49 @@
-package es.gob.valet.controller;
+/* 
+/*******************************************************************************
+ * Copyright (C) 2018 MINHAFP, Gobierno de España
+ * This program is licensed and may be used, modified and redistributed under the  terms
+ * of the European Public License (EUPL), either version 1.1 or (at your option)
+ * any later version as soon as they are approved by the European Commission.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and
+ * more details.
+ * You should have received a copy of the EUPL1.1 license
+ * along with this program; if not, you may find it at
+ * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ ******************************************************************************/
+
+/** 
+ * <b>File:</b><p>es.gob.valet.clave.sp.SamlController.java.</p>
+ * <b>Description:</b><p> .</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>25/06/2024.</p>
+ * @author Gobierno de España.
+ * @version 1.0, 25/06/2024.
+ */
+package es.gob.valet.clave.sp;
+
+import java.io.IOException;
+import java.util.Iterator;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import es.gob.valet.clave.sp.SpProtocolEngineFactory;
-import es.gob.valet.commons.utils.UtilsDate;
+import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.dto.PersonalInfoBean;
-import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.WebGeneralMessages;
-import es.gob.valet.persistence.configuration.model.entity.Keystore;
-import es.gob.valet.persistence.configuration.model.entity.Task;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
-import es.gob.valet.persistence.configuration.services.ifaces.IKeystoreService;
-import es.gob.valet.persistence.configuration.services.ifaces.ITaskService;
 import es.gob.valet.persistence.configuration.services.impl.UserValetService;
 import es.gob.valet.utils.AuthenticationService;
 import es.gob.valet.utils.SecureRandomXmlIdGenerator;
@@ -37,52 +62,48 @@ import eu.eidas.auth.commons.protocol.impl.EidasSamlBinding;
 import eu.eidas.auth.engine.ProtocolEngineNoMetadataI;
 import eu.eidas.auth.engine.xml.opensaml.SAMLEngineUtils;
 import eu.eidas.engine.exceptions.EIDASSAMLEngineException;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.xml.namespace.QName;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
+/** 
+ * <p>Class .</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * @version 1.0, 25/06/2024.
+ */
 @Controller
 public class SamlController {
 
+	/**
+	 * Attribute that represents . 
+	 */
 	private static ProtocolEngineNoMetadataI protocolEngine = null;
-
+	/**
+	 * Attribute that represents . 
+	 */
 	@Autowired
 	private AuthenticationService authenticationService;
 	
+	/**
+	 * Attribute that represents . 
+	 */
 	@Autowired
 	UserValetService userValetService;
-	
+
 	/**
-	 * Attribute that represents the service object for accessing the repository. 
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws IOException
+	 * @throws ServletException
 	 */
-	@Autowired
-	private IKeystoreService keystoreService;
-	
-	/**
-	 * Attribute that represents the service object for accessing the repository. 
-	 */
-	@Autowired
-	private ITaskService taskService;
-	
-	private static boolean lastAccessMessageShowed = false;
-	 
 	@RequestMapping(value="/accessClave", method = RequestMethod.POST)
 	public void samlLogin(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException, ServletException {
 
 	    try {
-            String claveServiceUrl = "https://se-pasarela.clave.gob.es/Proxy2/ServiceProvider";
-            String providerName = "S2833002E_E04975701";
-            String eidasLevelOfAssurance = "http://eidas.europa.eu/LoA/substantial";
-            String spApplication = "Valet";
+	    	
+	    	String claveServiceUrl = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_SERVICE_URL);
+			String providerName = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_PROVIDER_NAME);
+			String eidasLevelOfAssurance = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_EIDAS_LEVEL_OF_ASSURANCE);
+			String spApplication = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_SP_APPLICATION);
+           
             String relayState = SecureRandomXmlIdGenerator.INSTANCE.generateIdentifier(8);
             String baseUrl = getBaseUrl(request);
             String returnUrl = baseUrl + "/responseAccessClave";
@@ -134,6 +155,15 @@ public class SamlController {
 
 
     // Método para manejar la respuesta SAML
+    /**
+     * 
+     * @param request
+     * @param response
+     * @param model
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value="/responseAccessClave", method = RequestMethod.POST)
     public String processSamlResponse(HttpServletRequest request, HttpServletResponse response, Model model, RedirectAttributes redirectAttributes) throws Exception {
     	
@@ -154,7 +184,6 @@ public class SamlController {
 
     	// Recuperamos los datos
     	String dni = personalInfo.getDni(); 
-    	String nombre = personalInfo.getNombre();
     	
     	Iterable<UserValet> usuariosValet = userValetService.getAllUserValet();
     	for (UserValet usuario : usuariosValet) {
@@ -168,6 +197,11 @@ public class SamlController {
 		return "login.html";
     }
     
+    /**
+     * 
+     * @param request
+     * @return
+     */
     public String getBaseUrl(HttpServletRequest request) {
         String scheme = request.getScheme();
         String serverName = request.getServerName();
@@ -177,16 +211,26 @@ public class SamlController {
     }
     
     // Obtenemos el motor de validacion
-    public ProtocolEngineNoMetadataI getProtocolEngine() {
-        if (this.protocolEngine == null) {
-            this.protocolEngine = SpProtocolEngineFactory.getSpProtocolEngine(
-                "SPNoMetadata", System.getProperty("clave.path")); // Ruta de los ficheros de configuracion
+    /**
+     * 
+     * @return
+     */
+    private static ProtocolEngineNoMetadataI getProtocolEngine() {
+        if (protocolEngine == null) {
+            protocolEngine = SpProtocolEngineFactory.getSpProtocolEngine(
+                "SPNoMetadata", StaticValetConfig.getProperty(StaticValetConfig.CLAVE_CONFIG_PATH)); // Ruta de los ficheros de configuracion
         }
-        return this.protocolEngine;
+        return protocolEngine;
     }
 
 
     // Método auxiliar para extraer atributos del mapa
+    /**
+     * 
+     * @param friendlyName
+     * @param attrMap
+     * @return
+     */
     private static String extractFromAttrMap(String friendlyName, ImmutableMap<AttributeDefinition<?>, ImmutableSet<? extends AttributeValue<?>>> attrMap) {
         Iterator<AttributeDefinition<?>> it = attrMap.keySet().iterator();
         while (it.hasNext()) {
@@ -199,6 +243,15 @@ public class SamlController {
         return null;
     }
     
+    /**
+     * 
+     * @param claveReturnUrl
+     * @param samlResponse
+     * @param relayState
+     * @param remoteHost
+     * @return
+     * @throws EIDASSAMLEngineException
+     */
     private PersonalInfoBean obtenerDatosUsuario(String claveReturnUrl, String samlResponse, String relayState, String remoteHost) throws EIDASSAMLEngineException {
     	byte[] decSamlToken = EidasStringUtil.decodeBytesFromBase64(samlResponse);
 
