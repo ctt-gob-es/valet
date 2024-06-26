@@ -716,4 +716,45 @@ public class WebGeneralMessages {
 	 * Constant attribute that represents the name of the property <code>PROPLOGIN003</code> belonging to the file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String PROPLOGIN003 = "PROPLOGIN003";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>infoSamlAttributes</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String INFO_SAML_ATTRIBUTES = "infoSamlAttributes";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>infoSamlRequestBuild</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String INFO_SAML_REQUEST_BUILD = "infoSamlRequestBuild";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>infoSamlRequestRedirect</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String INFO_SAML_REQUEST_REDIRECT = "infoSamlRequestRedirect";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>infoSamlResponse</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String INFO_SAML_RESPONSE = "infoSamlResponse";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>infoSamlResponseUserInfo</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String INFO_SAML_RESPONSE_USER_INFO = "infoSamlResponseUserInfo";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>infoSamlResponseLogin</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String INFO_SAML_RESPONSE_LOGIN = "infoSamlResponseLogin";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>infoSamlResponseRedirect</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String INFO_SAML_RESPONSE_REDIRECT = "infoSamlResponseRedirect";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>requestSignTraceId</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String REQUEST_SIGN_TRACEID = "requestSignTraceId";
+	
 }

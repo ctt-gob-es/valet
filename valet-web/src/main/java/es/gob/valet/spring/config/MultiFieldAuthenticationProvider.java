@@ -304,10 +304,10 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 			String traceId = id1 + " - " + id2;		
 
 			//Modificar el mensaje de petición xmlInput para incluir el elemento <afxp:TraceId>$traceId</afxp:TraceId>
-			xmlInput = includeTraceID(xmlInput, traceId);
+			xmlInput = includeTraceID(xmlInput, traceId);		
+			LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.REQUEST_SIGN_TRACEID, new Object[ ] { traceId }));
 			
 			String xmlOutput = Afirma5ServiceInvokerFacade.getInstance().invokeService(xmlInput, GeneralConstants.DSS_AFIRMA_VERIFY_CERTIFICATE_REQUEST, GeneralConstants.DSS_AFIRMA_VERIFY_METHOD, APPLICATION_NAME);
-			LOGGER.info("Se va a enviar a @firma una petición de validar certificado con identificador: "+traceId);
 			LOGGER.info("Output: " + xmlOutput);
 
 			Map<String, Object> propertiesResult = TransformersFacade.getInstance().parseResponse(xmlOutput, GeneralConstants.DSS_AFIRMA_VERIFY_CERTIFICATE_REQUEST, GeneralConstants.DSS_AFIRMA_VERIFY_METHOD, TransformersConstants.VERSION_10);
