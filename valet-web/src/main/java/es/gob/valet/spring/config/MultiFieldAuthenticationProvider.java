@@ -68,6 +68,7 @@ import es.gob.afirma.wsServiceInvoker.Afirma5ServiceInvokerFacade;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsCertificate;
+import es.gob.valet.commons.utils.UtilsIdentifiersGenerator;
 import es.gob.valet.crypto.cades.verifier.CAdESAnalyzer;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
@@ -296,7 +297,17 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 			inParams.put(DSSTagsRequest.X509_CERTIFICATE, UtilsFileSystemCommons.getFileBase64Encoded(encodedCert));
 
 			String xmlInput = TransformersFacade.getInstance().generateXml(inParams, GeneralConstants.DSS_AFIRMA_VERIFY_CERTIFICATE_REQUEST, GeneralConstants.DSS_AFIRMA_VERIFY_METHOD, TransformersConstants.VERSION_10);
+			
+			//Generamos el identificador de traza
+			String id1 = StaticValetConfig.getProperty(StaticValetConfig.INSTANCE_NAME_ID);
+			String id2 = UtilsIdentifiersGenerator.generateNumbersUniqueId();
+			String traceId = id1 + " - " + id2;		
+
+			//Modificar el mensaje de petición xmlInput para incluir el elemento <afxp:TraceId>$traceId</afxp:TraceId>
+			xmlInput = includeTraceID(xmlInput, traceId);
+			
 			String xmlOutput = Afirma5ServiceInvokerFacade.getInstance().invokeService(xmlInput, GeneralConstants.DSS_AFIRMA_VERIFY_CERTIFICATE_REQUEST, GeneralConstants.DSS_AFIRMA_VERIFY_METHOD, APPLICATION_NAME);
+			LOGGER.info("Se va a enviar a @firma una petición de validar certificado con identificador: "+traceId);
 			LOGGER.info("Output: " + xmlOutput);
 
 			Map<String, Object> propertiesResult = TransformersFacade.getInstance().parseResponse(xmlOutput, GeneralConstants.DSS_AFIRMA_VERIFY_CERTIFICATE_REQUEST, GeneralConstants.DSS_AFIRMA_VERIFY_METHOD, TransformersConstants.VERSION_10);
@@ -420,5 +431,17 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 	private static String getPasswordHashed(String password) throws NoSuchAlgorithmException {
 		byte[ ] passwordHash = MessageDigest.getInstance("SHA1").digest(password.getBytes());
 		return new String(Base64.getEncoder().encode(passwordHash));
+	}
+	
+	/**
+	 * Method to include the TraceId parameter in the request
+	 * @param xmlInput xmlInput
+	 * @param traceId traceId
+	 * @return xml with new parameter TraceId
+	 */
+	public String includeTraceID (String xmlInput, String traceId) {
+		String id = "<afxp:TraceId xmlns:afxp=\"urn:afirma:dss:1.0:profile:XSS:schema\">"+traceId+"</afxp:TraceId>";
+		String xmlReturn = xmlInput.replace("</dss:OptionalInputs>", id+"</dss:OptionalInputs>");
+		return xmlReturn;
 	}
 }
