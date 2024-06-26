@@ -31,6 +31,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,8 +45,11 @@ import com.google.common.collect.ImmutableSet;
 
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.dto.PersonalInfoBean;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
 import es.gob.valet.persistence.configuration.services.impl.UserValetService;
+import es.gob.valet.rest.controller.ProxyRestController;
 import es.gob.valet.utils.AuthenticationService;
 import es.gob.valet.utils.SecureRandomXmlIdGenerator;
 import es.gob.valet.utils.SessionHolder;
@@ -71,26 +76,31 @@ import eu.eidas.engine.exceptions.EIDASSAMLEngineException;
 public class SamlController {
 
 	/**
-	 * Attribute that represents . 
+	 * Attribute that represents the class ProtocolEngineNoMetadataI. 
 	 */
 	private static ProtocolEngineNoMetadataI protocolEngine = null;
 	/**
-	 * Attribute that represents . 
+	 * Attribute that represents the class AuthenticationService. 
 	 */
 	@Autowired
 	private AuthenticationService authenticationService;
 	
 	/**
-	 * Attribute that represents . 
+	 * Attribute that represents the class userValetService. 
 	 */
 	@Autowired
 	UserValetService userValetService;
 
 	/**
-	 * 
-	 * @param request
-	 * @param response
-	 * @param model
+	 * Attribute that represents the object that manages the log of the class.
+	 */
+	private static final Logger LOGGER = LogManager.getLogger(ProxyRestController.class);
+	
+	/**
+	 * Method where we build the SAML request that we will send to Cl@ve through a jsp file.
+	 * @param request request HttpServletRequest
+	 * @param response HttpServletResponse
+	 * @param model Model
 	 * @throws IOException
 	 * @throws ServletException
 	 */
@@ -99,15 +109,17 @@ public class SamlController {
 
 	    try {
 	    	
-	    	String claveServiceUrl = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_SERVICE_URL);
-			String providerName = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_PROVIDER_NAME);
-			String eidasLevelOfAssurance = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_EIDAS_LEVEL_OF_ASSURANCE);
-			String spApplication = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_SP_APPLICATION);
+	    	LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.INFO_SAML_ATTRIBUTES));
+	    	String claveServiceUrl = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_SERVICE_URL);//URL de Cl@ve
+			String providerName = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_PROVIDER_NAME);//Nombre del proveedor
+			String eidasLevelOfAssurance = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_EIDAS_LEVEL_OF_ASSURANCE);//Nivel de garantía sobre las credenciales
+			String spApplication = StaticValetConfig.getProperty(StaticValetConfig.CLAVE_SP_APPLICATION);//Nombre de la aplicación
            
             String relayState = SecureRandomXmlIdGenerator.INSTANCE.generateIdentifier(8);
             String baseUrl = getBaseUrl(request);
-            String returnUrl = baseUrl + "/responseAccessClave";
+            String returnUrl = baseUrl + "/responseAccessClave";//URL de la página o servicio retorno 
 
+            LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.INFO_SAML_REQUEST_BUILD));
             ImmutableAttributeMap.Builder reqAttrMapBuilder = new ImmutableAttributeMap.Builder();
     	    reqAttrMapBuilder.putPrimaryValues(new AttributeDefinition.Builder<String>()
     	      .nameUri("http://es.minhafp.clave/RelayState")
@@ -142,10 +154,12 @@ public class SamlController {
             // Almacenar relayState e InResponseToId en la sesión
             SessionHolder.sessionsSAML.put(requestId, relayState);
             
-            request.setAttribute("RelayState", relayState);
-            request.setAttribute("peticionSAML", samlRequest);
+            request.setAttribute("RelayState", relayState); //Identificador de la sesión
+            request.setAttribute("peticionSAML", samlRequest); //Petición SAML en Base 64
             request.setAttribute("urlRedireccion", claveServiceUrl);
             
+            LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.INFO_SAML_REQUEST_REDIRECT));
+            //Redirigimos al formulario de carga
             request.getRequestDispatcher("/WEB-INF/jsp/redirectForm.jsp").forward(request, response);
             
         } catch (EIDASSAMLEngineException e) {
@@ -154,24 +168,26 @@ public class SamlController {
     }
 
 
-    // Método para manejar la respuesta SAML
-    /**
-     * 
-     * @param request
-     * @param response
-     * @param model
-     * @param redirectAttributes
-     * @return
-     * @throws Exception
-     */
+    
+	/**
+	 * Method where we receive and handle the response of the SAML request.
+	 * @param request request HttpServletRequest
+	 * @param response HttpServletResponse
+	 * @param model Model
+	 * @param redirectAttributes RedirectAttributes
+	 * @throws IOException
+	 * @throws ServletException
+	 */
     @RequestMapping(value="/responseAccessClave", method = RequestMethod.POST)
     public String processSamlResponse(HttpServletRequest request, HttpServletResponse response, Model model, RedirectAttributes redirectAttributes) throws Exception {
     	
+    	LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.INFO_SAML_RESPONSE));
     	// Obtenemos los datos del resultado
     	String samlResponse = request.getParameter("SAMLResponse");
     	String relayState = request.getParameter("RelayState");
     	String remoteHost = request.getRemoteHost();
 
+    	LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.INFO_SAML_RESPONSE_USER_INFO));
     	// Extramos la información del usuario de la respuesta
     	PersonalInfoBean personalInfo;
     	try {
@@ -185,6 +201,8 @@ public class SamlController {
     	// Recuperamos los datos
     	String dni = personalInfo.getDni(); 
     	
+    	LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.INFO_SAML_RESPONSE_LOGIN));
+    	LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.INFO_SAML_RESPONSE_REDIRECT));
     	Iterable<UserValet> usuariosValet = userValetService.getAllUserValet();
     	for (UserValet usuario : usuariosValet) {
     	   if(usuario.getNif().equals(dni)) { 
@@ -198,9 +216,9 @@ public class SamlController {
     }
     
     /**
-     * 
-     * @param request
-     * @return
+     * Method to get base URL
+     * @param request HttpServletRequest
+     * @return String with the url obtained
      */
     public String getBaseUrl(HttpServletRequest request) {
         String scheme = request.getScheme();
@@ -212,8 +230,8 @@ public class SamlController {
     
     // Obtenemos el motor de validacion
     /**
-     * 
-     * @return
+     * Method to obtain the validation engine through the configuration files located in CLAVE_CONFIG_PATH
+     * @return protocolEngine variable of class ProtocolEngineNoMetadataI
      */
     private static ProtocolEngineNoMetadataI getProtocolEngine() {
         if (protocolEngine == null) {
@@ -226,10 +244,10 @@ public class SamlController {
 
     // Método auxiliar para extraer atributos del mapa
     /**
-     * 
-     * @param friendlyName
-     * @param attrMap
-     * @return
+     * Helper method to extract attributes from the map.
+     * @param friendlyName String
+     * @param attrMap ImmutableMap<AttributeDefinition<?>, ImmutableSet<? extends AttributeValue<?>>>
+     * @return null
      */
     private static String extractFromAttrMap(String friendlyName, ImmutableMap<AttributeDefinition<?>, ImmutableSet<? extends AttributeValue<?>>> attrMap) {
         Iterator<AttributeDefinition<?>> it = attrMap.keySet().iterator();
@@ -244,12 +262,12 @@ public class SamlController {
     }
     
     /**
-     * 
-     * @param claveReturnUrl
-     * @param samlResponse
-     * @param relayState
-     * @param remoteHost
-     * @return
+     * Method to obtain user data.
+     * @param claveReturnUrl String
+     * @param samlResponse String
+     * @param relayState String
+     * @param remoteHost String
+     * @return personalInfo of class PersonalInfoBean
      * @throws EIDASSAMLEngineException
      */
     private PersonalInfoBean obtenerDatosUsuario(String claveReturnUrl, String samlResponse, String relayState, String remoteHost) throws EIDASSAMLEngineException {
