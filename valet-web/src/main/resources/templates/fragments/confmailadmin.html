@@ -204,8 +204,10 @@ function cleanFile() {
 function downloadCertificate() {
 		
 	if(confServerMailForm.certificateFile != null && confServerMailForm.certificateFile != '') {
+		// Decodificamos el archivo en Base64 a formato binario
+		var arrayBuffer = base64ToArrayBuffer(confServerMailForm.certificateFile);
 		// Crear un Blob a partir de los bytes
-		var blob = new Blob([confServerMailForm.certificateFile], { type: 'application/octet-stream' });
+		var blob = new Blob([arrayBuffer], { type: 'application/x-x509-ca-cert' });
 		
 		// Crear una URL para el Blob
 	    var url = URL.createObjectURL(blob);
@@ -224,6 +226,17 @@ function downloadCertificate() {
 	    // Eliminar el enlace despu\E9s de la descarga
 	    document.body.removeChild(enlaceDescarga);	
 	}
+}
+
+//Función para decodificar Base64 a un ArrayBuffer
+function base64ToArrayBuffer(base64) {
+	var binaryString = window.atob(base64); // Decodificar Base64
+	var len = binaryString.length;
+	var bytes = new Uint8Array(len); // Crear un array de bytes
+	for (var i = 0; i < len; i++) {
+		bytes[i] = binaryString.charCodeAt(i);
+	}
+	return bytes.buffer;
 }
 
 /**
