@@ -2610,6 +2610,14 @@ public abstract class ATSLValidator implements ITSLValidator {
 					error = Boolean.TRUE;
 
 				}
+				if(error) {
+					//si no se ha encontrado organizationName entre los tSPNames o TSPTradeNAme, se comprueba si se encuentra el communName.
+					if (!verifyIssuerWithTSPNameorTSPTradeName(resultSI, commonName)) {
+						error = Boolean.TRUE;
+					}else {
+						error = Boolean.FALSE;
+					}
+				}
 
 			} else {
 				// PRO-4.4.4-06 b)

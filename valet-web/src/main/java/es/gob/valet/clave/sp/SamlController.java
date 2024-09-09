@@ -94,7 +94,7 @@ public class SamlController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = LogManager.getLogger(ProxyRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger(SamlController.class);
 	
 	/**
 	 * Method where we build the SAML request that we will send to Cl@ve through a jsp file.
