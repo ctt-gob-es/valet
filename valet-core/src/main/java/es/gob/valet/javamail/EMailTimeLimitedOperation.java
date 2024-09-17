@@ -348,7 +348,6 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
     		props.put("mail.smtp.host", mailServerHost);
     		props.put("mail.smtp.port", Integer.toString(mailServerPort));
     		props.put("mail.smtp.auth", Boolean.toString(mailServerAuthUseAuthentication));
-    		// Para proveedores como mdm(outlook) el cifrado TLS puede o no ser seleccionado. En gmail el cifrado TLS es obligatorio por política de seguridad.
     		props.put("mail.smtp.starttls.enable", tslEnabled);
     		// tiempo d conexión
     		props.put("mail.smtp.connectiontimeout", connectionTimeout);

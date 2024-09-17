@@ -239,19 +239,11 @@ public class ConfServerMailRestController {
 		}
 		
 		if(null != csmform.getTlsEnabled() && csmform.getTlsEnabled()  
-				&& certificateFile.getOriginalFilename().equals("nofile")
-				&& csmform.getHostMail().indexOf("gmail") == -1) {
+				&& certificateFile.getOriginalFilename().equals("nofile")) {
 			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_011);
 			LOGGER.error(msgError);
 			json.put(FIELD_CERTIFICATE_FILE + "_span", msgError);
 		}
-		
-		if(null != csmform.getTlsEnabled() && !csmform.getTlsEnabled() && csmform.getHostMail().indexOf("gmail") != -1) {
-			String msgError = Language.getResWebGeneral(IWebGeneralMessages.CMS_012);
-			LOGGER.error(msgError);
-			json.put(FIELD_CERTIFICATE_FILE + "_span", msgError);
-		}
-		
 		return json;
 
 	}
