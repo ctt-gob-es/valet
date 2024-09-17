@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>30/01/2024.</p>
  * @author Gobierno de España.
- * @version 1.0, 30/01/2024.
+ * @version 1.1, 17/09/2024.
  */
 package es.gob.valet.javamail;
 
@@ -33,14 +33,13 @@ import org.apache.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
-import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
 
 /**
  * <p> Implementation of X509TrustManager used for SSL/TLS handshake validation. This implementation fully trusts certificates presented by the client and performs specific verification in the case of certificates presented by the server.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 30/01/2024.
+ * @version 1.1, 17/09/2024.
  */
 public class HandshakeValidationMdm implements X509TrustManager {
 
@@ -83,9 +82,13 @@ public class HandshakeValidationMdm implements X509TrustManager {
 			for(int i=0;i<chain.length;i++) {
     			LOGGER.debug(chain[i].getSubjectDN().getName());
     			// Validamos que el certificado del cliente ha sido emtido por el mismo emisor que nuestro certificado de servidor
-    			if(chain[i].getIssuerX500Principal().equals(x509Certificate.getSubjectX500Principal())) {
-    				accept = true;
-        	        break; // Rompemos el bucle más cercano ya que hemos encontrado un certificado que lo contiene un emisor 
+    			if(chain[i]!= null && x509Certificate!=null) {
+    				//se comprueba que el certificado registrado sea uno de los que se encuentra en la cadena de certificados que nos proporciona el cliente
+    				if(UtilsCertificate.isIssuer(chain[i],x509Certificate ) || UtilsCertificate.equals(chain[i],x509Certificate)) {
+    					accept = true;
+        				LOGGER.info("En la cadena se encuentra el certificado o el emisor del mismo");
+            	        break; 
+    				}
     			}
     		}
     	} catch (Exception e) {
