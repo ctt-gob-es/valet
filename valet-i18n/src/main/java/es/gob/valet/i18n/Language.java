@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 31/10/2019.
+ * @version 1.10, 30/10/2024.
  */
 package es.gob.valet.i18n;
 
@@ -41,7 +41,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
 /**
  * <p>Class that manages the access to the properties files used for generation messages in the plataform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 31/10/2019.
+ * @version 1.10, 30/10/2024.
  */
 public final class Language {
 
@@ -119,11 +119,7 @@ public final class Language {
 	 * Attribute that represents the location of file that contains the general messages persistence module.
 	 */
 	private static final String CONTENT_PERSISTENCE_GENERAL_PATH = "valet-persistence.general";
-	
-	/**
-	 * Attribute that represents the location of file that contains the general messages persistence module.
-	 */
-	private static final String CONTENT_STATISTICS_GENERAL_PATH = "valet-standaloneStatistics.general";
+
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
@@ -311,8 +307,7 @@ public final class Language {
 		persistenceCache = ResourceBundle.getBundle(CONTENT_PERSISTENCE_CACHE_PATH, currentLocale, urlClassLoaderMsg);
 
 		persistenceGeneral = ResourceBundle.getBundle(CONTENT_PERSISTENCE_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
-		
-		standaloneStatisticsGeneral =  ResourceBundle.getBundle(CONTENT_STATISTICS_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
+	
 
 	}
 

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 08/10/2021.
+ * @version 1.5, 30/10/2024.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -52,7 +52,7 @@ import es.gob.valet.tsl.parsing.impl.common.DigitalID;
 /**
  * <p>Class that represents a Digital Identities Processor.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 08/10/2021.
+ * @version 1.5, 30/10/2024.
  */
 public class DigitalIdentitiesProcessor {
 
@@ -392,7 +392,7 @@ public class DigitalIdentitiesProcessor {
 
 					// No se considera prueba suficiente para determinar que
 					// este sea el emisor del certificado.
-					result = true;
+					//result = true;
 					validationResult.setIssuerSubjectName(caSubject);
 					break;
 				}
@@ -401,7 +401,7 @@ public class DigitalIdentitiesProcessor {
 
 			// Y por último comprobamos los Subject Key Identifier si el
 			// certificado no es autoemitido.
-			if (validationResult.getIssuerSKIbytes() == null && !UtilsCertificate.isSelfSigned(cert)) {
+			if (partialResult && validationResult.getIssuerSKIbytes() == null && !UtilsCertificate.isSelfSigned(cert)) {
 
 				// IMPORTANTE: Consideramos que comparar el emisor del
 				// certificado a validar
