@@ -104,6 +104,11 @@ public interface ICommonsUtilGeneralMessages {
 	 * file messages/valet-commons-util/general_xx_YY.properties.
 	 */
 	String UTILS_CERTIFICATE_005 = "UTILS_CERTIFICATE_005";
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CERTIFICATE_006</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CERTIFICATE_006 = "UTILS_CERTIFICATE_006";
 
 	/**
 	 * Constant attribute that represents the property key <code>UTILS_RESOURCES_000</code> belonging to the

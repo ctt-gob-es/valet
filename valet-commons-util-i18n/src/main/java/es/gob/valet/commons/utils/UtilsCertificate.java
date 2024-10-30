@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 06/07/2021.
+ * @version 1.9, 30/10/2024.
  */
 package es.gob.valet.commons.utils;
 
@@ -60,7 +60,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 06/07/2021.
+ * @version 1.9, 30/10/2024.
  */
 public final class UtilsCertificate {
 
@@ -299,6 +299,9 @@ public final class UtilsCertificate {
 			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_003), e);
 		} catch (NoSuchProviderException e) {
 			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_004), e);
+		} catch (IllegalArgumentException e) {
+			throw new CommonUtilsException(IValetException.COD_200, Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_006), e);
+		
 		} catch (SignatureException e) {
 			// La firma no coincide.
 			return false;
