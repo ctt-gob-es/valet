@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 11/03/2019.
+ * @version 1.4, 30/10/2024.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Interface that defines all the token constants for the messages
  * in the commons-util module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 11/03/2019.
+ * @version 1.4, 30/10/2024.
  */
 public interface ICommonsUtilGeneralMessages {
 
@@ -104,6 +104,12 @@ public interface ICommonsUtilGeneralMessages {
 	 * file messages/valet-commons-util/general_xx_YY.properties.
 	 */
 	String UTILS_CERTIFICATE_005 = "UTILS_CERTIFICATE_005";
+
+	/**
+	 * Constant attribute that represents the property key <code>UTILS_CERTIFICATE_006</code> belonging to the
+	 * file messages/valet-commons-util/general_xx_YY.properties.
+	 */
+	String UTILS_CERTIFICATE_006 = "UTILS_CERTIFICATE_006";
 
 	/**
 	 * Constant attribute that represents the property key <code>UTILS_RESOURCES_000</code> belonging to the
