@@ -22,7 +22,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 02/02/2024.
+ * @version 1.8, 11/11/2024.
  */
 package es.gob.valet.javamail;
 
@@ -63,7 +63,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * is specified to define the e-mail and the necessary functionality is contributed to realize the sending
  * as an independent thread via SMTP server. This thread will be time limited.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 02/02/2024.
+ * @version 1.8, 11/11/2024.
  */
 public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
 
@@ -306,14 +306,15 @@ public class EMailTimeLimitedOperation extends ATimeLimitedOperation {
     		props.put("mail.smtp.host", mailServerHost);
     		props.put("mail.smtp.port", Integer.toString(mailServerPort));
     		props.put("mail.smtp.auth", Boolean.toString(mailServerAuthUseAuthentication));
-    		// Para proveedores como mdm(outlook) el cifrado TLS puede o no ser seleccionado. En gmail el cifrado TLS es obligatorio por política de seguridad.
+    		// Para proveedores como mdm(outlook) el cifrado TLS puede o no ser seleccionado.
     		props.put("mail.smtp.starttls.enable", tslEnabled);
     		// tiempo d conexión
     		props.put("mail.smtp.connectiontimeout", connectionTimeout);
     		// tiempo de mandar el mensaje
     		props.put("mail.smtp.timeout", readingTimeout);
     		// Si el host pertence a un proveedor mdm establecemos una factoría SSL personalizada
-    		if(mailServerHost.indexOf("mdm") != -1) {
+    		//Si se habilita TLS establecemos una factoría SSL personalizada para validar el certificado registrado.
+    		if(tslEnabled) {
     			// Especificamos la clase de la fábrica de sockets seguros personalizada, puesto que no queremos validar contra el almacén de cacerts en el jdk o en jre
     			props.put("mail.smtp.ssl.socketFactory.class", "es.gob.valet.javamail.SSLSocketFactoryMdm");
     		}

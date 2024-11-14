@@ -35,6 +35,8 @@ import org.apache.logging.log4j.Logger;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.exceptions.CommonUtilsException;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
 
@@ -74,7 +76,7 @@ public class HandshakeValidationMdm implements X509TrustManager {
      */
 	@Override
 	public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-		LOGGER.debug("Comenzamos a validar los certificados proporcionados por el servidor, con los que nos proporciona el cliente");
+		LOGGER.debug(Language.getResCoreGeneral(CoreGeneralMessages.HVMDM_001));
 		boolean accept = false;
 		
 		try {
@@ -84,17 +86,21 @@ public class HandshakeValidationMdm implements X509TrustManager {
 			for(int i=0;i<chain.length;i++) {
     			LOGGER.debug(chain[i].getSubjectDN().getName());
     			// Validamos que el certificado del cliente ha sido emtido por el mismo emisor que nuestro certificado de servidor
-    			if(chain[i].getIssuerX500Principal().equals(x509Certificate.getSubjectX500Principal())) {
-    				accept = true;
-        	        break; // Rompemos el bucle más cercano ya que hemos encontrado un certificado que lo contiene un emisor 
+    			if(chain[i]!= null && x509Certificate!=null) {
+    				//se comprueba que el certificado registrado sea uno de los que se encuentra en la cadena de certificados que nos proporciona el cliente
+    				if(UtilsCertificate.isIssuer(chain[i],x509Certificate ) || UtilsCertificate.equals(chain[i],x509Certificate)) {
+    					accept = true;
+        				LOGGER.info(Language.getResCoreGeneral(CoreGeneralMessages.HVMDM_002));
+            	        break; 
+    				}
     			}
     		}
     	} catch (Exception e) {
-			throw new CertificateException("Se ha producido un fallo al verificar la clave pública del certificado");
+			throw new CertificateException(Language.getResCoreGeneral(CoreGeneralMessages.HVMDM_003));
 		}
 		
 		if(!accept) {
-			throw new CertificateException("Certificado no soportado");
+			throw new CertificateException(Language.getResCoreGeneral(CoreGeneralMessages.HVMDM_004));
 		}
 		
 		LOGGER.debug("checkServerTrusted");

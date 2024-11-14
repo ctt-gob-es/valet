@@ -1374,4 +1374,26 @@ public class CoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	public static final String ERROR_SERVICE_02 = "ERROR_SERVICE_02";
+	
+	/**
+	 * Constant attribute that represents the property key <code>HVMDM_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	public static final String HVMDM_001 = "HVMDM_001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>HVMDM_002</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	public static final String HVMDM_002 = "HVMDM_002";
+	/**
+	 * Constant attribute that represents the property key <code>HVMDM_003</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	public static final String HVMDM_003 = "HVMDM_003";
+	/**
+	 * Constant attribute that represents the property key <code>HVMDM_004</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	public static final String HVMDM_004 = "HVMDM_004";
 }

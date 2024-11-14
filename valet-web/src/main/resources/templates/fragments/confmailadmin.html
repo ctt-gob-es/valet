@@ -242,9 +242,7 @@ function base64ToArrayBuffer(base64) {
  * and updates the custom-file-label element with the file name. If tlsEnabledForm is unchecked, it calls cleanFile().
  */
 function updateFileName(input) {
-	if($('#hostMailForm').val().indexOf("gmail") == -1) {
-		// Cuando es distinto a gmail el proveedor actualizaremos file siempre y cuando se haya checkeado la TLS
-		if($("#tlsEnabledForm").is(":checked")) {
+	if($("#tlsEnabledForm").is(":checked")) {
 			var fileName = input.value.split('\\').pop(); // Obtener el nombre del fichero seleccionado
 		    var label = input.parentElement.querySelector('.custom-file-label');
 		    label.textContent = fileName; // Actualizar el contenido del label con el nombre del fichero
@@ -266,18 +264,7 @@ function updateFileName(input) {
 		    $("#certificateFile_span").text(textEnableTls);
 			$("#certificateFile_span").addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');		
 		}
-	} else if($('#hostMailForm').val().indexOf("gmail") != -1) {
-		// Limpiar el valor del campo de entrada de archivo
-	    $("#certificateFile").val('');
-
-	    // Obtener el elemento de la etiqueta personalizada
-	    var label = $('#certificateFile').closest('.custom-file').find('.custom-file-label');
-	    
-		var labelText = /*[[#{form.confServerMail.selectFile}]]*/ '';
-	    
-	    // Actualizar el contenido del elemento de la etiqueta personalizada
-	    label.text(labelText);
-	}
+	
 }
 		 
 		 
