@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 19/09/2023.
+ * @version 2.1, 13/11/2024.
  */
 package es.gob.valet.commons.utils;
 
@@ -62,7 +62,7 @@ import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 19/09/2023.
+ * @version 2.1, 13/11/2024.
  */
 public final class UtilsCertificate {
 
@@ -300,6 +300,8 @@ public final class UtilsCertificate {
 			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_003), e);
 		} catch (NoSuchProviderException e) {
 			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_004), e);
+		} catch (IllegalArgumentException e) {
+			throw new CommonUtilsException(ValetExceptionConstants.COD_200, Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_006), e);
 		} catch (SignatureException e) {
 			// La firma no coincide.
 			return false;
@@ -705,7 +707,7 @@ public final class UtilsCertificate {
 			return childIssuer.equals(parentSubject);
 		} catch (InvalidKeyException | CertificateException
 				| NoSuchAlgorithmException | NoSuchProviderException
-				| SignatureException e) {
+				| SignatureException | IllegalArgumentException  e) {
 			return false;
 		}
 	}

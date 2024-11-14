@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/08/2018.</p>
  * @author Gobierno de España.
- * @version 2.3, 03/06/2024.
+ * @version 2.4, 11/11/2024.
  */
 package es.gob.valet.rest.services;
 
@@ -99,7 +99,7 @@ import es.gob.valet.utils.ValidatorResultConstants;
 /**
  * <p>Class that represents the statistics restful service.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.3, 03/06/2024.
+ * @version 2.4, 11/11/2024.
  */
 @Path("/tsl")
 public class TslRestService implements ITslRestService {
@@ -1282,9 +1282,9 @@ public class TslRestService implements ITslRestService {
 			}
 		
 		} catch (CommonUtilsException | CertificateEncodingException e) {
-			throw new ValetRestException(ValetExceptionConstants.COD_190, Language.getFormatResCoreGeneral(RestGeneralMessages.REST_LOG045, new Object[ ] { KeystoreIdConstants.ID_CA_TRUSTSTORE }), e);
+			throw new ValetRestException(ValetExceptionConstants.COD_190, Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG045, new Object[ ] { KeystoreIdConstants.ID_CA_TRUSTSTORE }), e);
 		} catch (Exception e) {
-			throw new ValetRestException(ValetExceptionConstants.COD_205, Language.getFormatResCoreGeneral(RestGeneralMessages.REST_LOG046, new Object[ ] { e.getMessage() }), e);
+			throw new ValetRestException(ValetExceptionConstants.COD_205, Language.getFormatResRestGeneral(RestGeneralMessages.REST_LOG046, new Object[ ] { e.getMessage() }), e);
 		}
 
 		return listCertificates;
