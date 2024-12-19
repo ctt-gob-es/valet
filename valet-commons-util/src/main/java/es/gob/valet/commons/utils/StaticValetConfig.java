@@ -320,6 +320,12 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents the key for the property <i>"clave.config.path"</i>.
 	 */
 	public static final String CLAVE_CONFIG_PATH = "clave.config.path";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"add.traceid.afirma"</i>.
+	 */
+	public static final String ADD_TRACEID_AFIRMA = "add.traceid.afirma";
+	
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.

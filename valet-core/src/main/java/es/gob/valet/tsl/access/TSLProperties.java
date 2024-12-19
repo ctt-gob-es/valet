@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 19/09/2023.
+ * @version 1.5, 19/12/2024.
  */
 package es.gob.valet.tsl.access;
 
@@ -42,7 +42,7 @@ import es.gob.valet.i18n.messages.CoreTslMessages;
 /**
  * <p>Class that provides access to the differents properties associated to the TSL operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 19/09/2023.
+ * @version 1.5, 19/12/2024.
  */
 public final class TSLProperties {
 
@@ -78,7 +78,8 @@ public final class TSLProperties {
 	public static boolean isRequiredToCheckTslSignatureStructure() {
 		return Boolean.parseBoolean(StaticValetConfig.getProperty(StaticValetConfig.TSL_SIGNATURE_VERIFY_STRUCTURE));
 	}
-
+	
+	
 	/**
 	 * Checks if it is necessary to check the TSL signature by its specification.
 	 * @return <code>true</code> if it is necessary to check the TSL signature by its specification,
@@ -339,6 +340,15 @@ public final class TSLProperties {
 
 		return result;
 
+	}
+
+	/**
+	 * Checks whether or not the trace identifier is included in the @signature request.
+	 * @return <code>true</code>if the trace ID is included.
+	 * otherwise <code>false</code>.
+	 */
+	public static boolean isAddIdTraceToRequest() {
+		return Boolean.parseBoolean(StaticValetConfig.getProperty(StaticValetConfig.ADD_TRACEID_AFIRMA));
 	}
 
 }

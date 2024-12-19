@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI certificates and electronic signature.</p>
  * <b>Date:</b><p>03/4/2020.</p>
  * @author Gobierno de España.
- * @version 1.7, 17/06/2024.
+ * @version 1.8, 19/12/2024.
  */
 package es.gob.valet.spring.config;
 
@@ -75,6 +75,7 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
 import es.gob.valet.persistence.configuration.model.repository.UserValetRepository;
+import es.gob.valet.tsl.access.TSLProperties;
 
 /**
  * <p>
@@ -86,7 +87,7 @@ import es.gob.valet.persistence.configuration.model.repository.UserValetReposito
  * electronic signature.
  * </p>
  * 
- * @version 1.7, 13/05/2023.
+ * @version 1.8, 19/12/2024.
  */
 @Component
 public class MultiFieldAuthenticationProvider implements AuthenticationProvider {
@@ -204,9 +205,9 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 						String nif = validateCertFromAfirma(certificate);
 						curruser = userRepository.findByNif(nif);
 					}
-					}else {
-						auth = null;
-					}
+				} else {
+					auth = null;
+				}
 
 			} catch (CertificateException | IOException e) {
 				auth = null;
@@ -215,12 +216,12 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 			}
 
 		}
-		
+
 		if (curruser != null) {
 			if (curruser.getIsBlocked()) {
 				throw new BadCredentialsException(USER_BLOCKED);
 			} else {
-				
+
 				if (!StringUtils.isEmpty(signatureBase64)) {
 
 					if (userExpired) {
@@ -238,11 +239,11 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 
 					List<GrantedAuthority> grantedAuths = new ArrayList<>();
 					grantedAuths.add(new SimpleGrantedAuthority("USER"));
-					
+
 					if (name.isEmpty()) {
 						name = curruser.getNif();
 					}
-					
+
 					String hashedPassword = null;
 					try {
 						hashedPassword = getPasswordHashed(password);
@@ -274,7 +275,6 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 		}
 		return auth;
 	}
-	
 
 	/**
 	 * Validates the provided X.509 certificate using the Afirma platform for certificate validation.
@@ -297,16 +297,20 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 			inParams.put(DSSTagsRequest.X509_CERTIFICATE, UtilsFileSystemCommons.getFileBase64Encoded(encodedCert));
 
 			String xmlInput = TransformersFacade.getInstance().generateXml(inParams, GeneralConstants.DSS_AFIRMA_VERIFY_CERTIFICATE_REQUEST, GeneralConstants.DSS_AFIRMA_VERIFY_METHOD, TransformersConstants.VERSION_10);
-			
-			//Generamos el identificador de traza
+
+			// Generamos el identificador de traza
 			String id1 = StaticValetConfig.getProperty(StaticValetConfig.INSTANCE_NAME_ID);
 			String id2 = UtilsIdentifiersGenerator.generateNumbersUniqueId();
-			String traceId = id1 + " - " + id2;		
+			String traceId = id1 + " - " + id2;
 
-			//Modificar el mensaje de petición xmlInput para incluir el elemento <afxp:TraceId>$traceId</afxp:TraceId>
-			xmlInput = includeTraceID(xmlInput, traceId);		
-			LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.REQUEST_SIGN_TRACEID, new Object[ ] { traceId }));
-			
+			boolean addIdTrace = false;
+			addIdTrace = TSLProperties.isAddIdTraceToRequest();
+			if (addIdTrace) {
+				// Modificar el mensaje de petición xmlInput para incluir el
+				// elemento <afxp:TraceId>$traceId</afxp:TraceId>
+				xmlInput = includeTraceID(xmlInput, traceId);
+				LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.REQUEST_SIGN_TRACEID, new Object[ ] { traceId }));
+			}
 			String xmlOutput = Afirma5ServiceInvokerFacade.getInstance().invokeService(xmlInput, GeneralConstants.DSS_AFIRMA_VERIFY_CERTIFICATE_REQUEST, GeneralConstants.DSS_AFIRMA_VERIFY_METHOD, APPLICATION_NAME);
 			LOGGER.info("Output: " + xmlOutput);
 
@@ -432,16 +436,16 @@ public class MultiFieldAuthenticationProvider implements AuthenticationProvider 
 		byte[ ] passwordHash = MessageDigest.getInstance("SHA1").digest(password.getBytes());
 		return new String(Base64.getEncoder().encode(passwordHash));
 	}
-	
+
 	/**
 	 * Method to include the TraceId parameter in the request
 	 * @param xmlInput xmlInput
 	 * @param traceId traceId
 	 * @return xml with new parameter TraceId
 	 */
-	public String includeTraceID (String xmlInput, String traceId) {
-		String id = "<afxp:TraceId xmlns:afxp=\"urn:afirma:dss:1.0:profile:XSS:schema\">"+traceId+"</afxp:TraceId>";
-		String xmlReturn = xmlInput.replace("</dss:OptionalInputs>", id+"</dss:OptionalInputs>");
+	public String includeTraceID(String xmlInput, String traceId) {
+		String id = "<afxp:TraceId xmlns:afxp=\"urn:afirma:dss:1.0:profile:XSS:schema\">" + traceId + "</afxp:TraceId>";
+		String xmlReturn = xmlInput.replace("</dss:OptionalInputs>", id + "</dss:OptionalInputs>");
 		return xmlReturn;
 	}
 }
