@@ -1,0 +1,66 @@
+<!-- Modal para eliminar una aplicacion -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalDeleteSigningCert" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.confDeleteSigningCert.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.confDeleteSigningCert.btn.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id="messageDeleteSigningCert" role="alert"></div>
+				
+				<form name="altEditor-form" role="form" id="deleteSigningCertForm">
+					<p th:text="#{form.confDeleteSigningCert.message}"></p>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" th:text="#{form.confDeleteSigningCert.btn.close}" onclick="closeModalDeleteSigningCert('modalDeleteSigningCert')"></button>
+				<button type="button" id="idDeleteApplicationBtn" class="btn btn-danger" th:text="#{form.confDeleteSigningCert.btn.delete}" onclick="deleteSigningCert();"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+//borrar certificado firmante
+function deleteSigningCert(){
+	var actiondeleteSigningCert = /*[[@{/deleteSigningCert}]]*/;
+	loading();
+	$.ajax({
+		url: actiondeleteSigningCert,	
+		type:'POST',
+		contentType: false,
+		processData : false,
+		success: function(data){
+			//Se oculta la capa 'cargando...'
+			hide();
+			// Reseteamos el formulario
+			$('#confSigningCertForm').find('input, select, textarea, hidden').val('');
+			
+			closeModalDeleteSigningCert('modalDeleteSigningCert');
+			var messageOk = /*[[#{form.confDeleteSigningCert.message.ok}]]*/;
+			$('#messageUpdateSigningCert').html(messageOk);
+			$('#messageUpdateSigningCert').addClass('alert alert-success');
+			$("#messageUpdateSigningCert").fadeTo(5000, 500).slideUp(500, function() {
+				$("#messageUpdateSigningCert").slideUp(500);
+			});
+			window.changeStatusBtn();
+		},
+		error:function(){
+			hide();
+			var messageResponse = /*[[#{form.confDeleteSigningCert.message.error}]]*/;
+			$('#messageDeleteSigningCert').removeClass('alert-success')	
+			$('#messageDeleteSigningCert').addClass('alert alert-danger');
+			$("#messageDeleteSigningCert").html(messageResponse);
+		}
+		});
+}
+
+//Funcion para cerrar el modal
+function closeModalDeleteSigningCert(modalId){
+	$('#' + modalId).modal('hide');
+	$('.modal-backdrop').remove();
+}
+
+</script>

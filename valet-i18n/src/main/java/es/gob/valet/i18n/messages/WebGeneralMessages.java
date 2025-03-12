@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 2.2, 30/01/2024.
+ * @version 2.3, 12/03/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.2, 30/01/2024.
+ * @version 2.3, 12/03/2025.
  */
 public class WebGeneralMessages {
 
@@ -757,4 +757,58 @@ public class WebGeneralMessages {
 	 */
 	public static final String REQUEST_SIGN_TRACEID = "requestSignTraceId";
 	
+
+	/***********************/
+	/** Mensajes para errores en el módulo de configuracion **/ 
+	/***********************/
+	
+	/**
+	 * Constant attribute that represents the property key <code>CCF001</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CCF001 = "CCF001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CCF002</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CCF002 = "CCF002";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CCF003</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CCF003 = "CCF003";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CCF004</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CCF004 = "CCF004";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CCF005</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CCF005 = "CCF005";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CCF006</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CCF006 = "CCF006";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CCF007</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CCF007 = "CCF007";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CCF008</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CCF008 = "CCF008";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CCF009</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CCF009 = "CCF009";
+	
+	/**
+	 * Constant attribute that represents the property key <code>CCF010</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CCF010 = "CCF010";
 }
