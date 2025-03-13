@@ -153,6 +153,16 @@
 		                 			$('#aConfProxyAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionConfWorld, 'optionReplacement', 'GET', null, true); return false;});
 		               			</script>
 						</a></li>
+						<li>
+							<a id="aConfSigningCertAdmin" class='sidebar-link' href="#">
+								<span class="icon-holder"><i class="c-black-500 ti-file"></i></span>
+								<span class="title" th:text="#{menu.admin.confSigningCert}"></span>
+								<script th:inline="javascript">
+		                 			var actionLoadSigningCert = /*[[@{/loadSigningCert}]]*/;
+		                 			$('#aConfSigningCertAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionLoadSigningCert, 'optionReplacement', 'GET', null, true); return false;});
+		               			</script>
+							</a>
+						</li>
 					</ul></li>
 
 			</ul>

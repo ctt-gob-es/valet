@@ -20,12 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.11, 30/10/2024.
+ * @version 2.2, 12/03/2025.
  */
 package es.gob.valet.commons.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -62,7 +63,7 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that provides methods for managing certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.11, 30/10/2024.
+ * @version 2.2, 12/03/2025.
  */
 public final class UtilsCertificate {
 
@@ -496,6 +497,7 @@ public final class UtilsCertificate {
 
 	}
 
+
 	/**
 	 * Method that obtains the certificate chain of a certificate from a list with certificates related and not related to the certificate to process.
 	 * @param cert Parameter that represents the certificate to search the associated certificate chain.
@@ -571,7 +573,7 @@ public final class UtilsCertificate {
 		return result;
 
 	}
-
+	
 	/**
 	 * Method that obtains the certificate chain of a certificate from a list with certificates related and not related to the certificate to process.
 	 * @param cert Parameter that represents the certificate to search the associated certificate chain.
@@ -709,6 +711,19 @@ public final class UtilsCertificate {
 				| SignatureException | IllegalArgumentException e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Method that obtains the serial number of a certificate.
+	 * @param cert Parameter that represents the certificate.
+	 * @return the serial number of the certificate.
+	 * @throws CommonUtilsException If the method fails.
+	 */
+	public static BigInteger getCertificateSerialNumber(X509Certificate cert) {
+		if (cert == null) {
+			return null;
+		}
+		return cert.getSerialNumber();
 	}
 
 }

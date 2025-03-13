@@ -1,0 +1,139 @@
+<div class="container-fluid">
+	<h4 class="c-grey-900 mT-10 mB-30" th:text="#{form.confSigningCert.title}"></h4>
+	<div class="masonry-item col-md-12">
+		
+		<div class="bgc-white p-20 bd">
+			<div class="mT-30">
+				<form id="confSigningCertForm" th:object="${signingCertificateDTO}">
+					<div id="messageUpdateSigningCert" role="alert"></div>
+					
+					<input type='hidden' id="idSigningCertificate" th:field="*{idSigningCertificate}">
+					<input type='hidden' id="certificateB64" th:field="*{certificateB64}">
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="subjectSigningCertForm" th:text="#{form.confSigningCert.field.subject}"></label> 
+							<input type="text" class="form-control" id="subjectSigningCertForm" name="subjectSigningCertForm" th:field="*{subject}" disabled>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="issuerSigningCertForm" th:text="#{form.confSigningCert.field.issuer}"></label> 
+							<input type="text" class="form-control" id="issuerSigningCertForm" name="issuerSigningCertForm" th:field="*{issuer}" disabled>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="serialNumberSigningCertForm" th:text="#{form.confSigningCert.field.serialNumber}"></label> 
+							<input type="text" class="form-control" id="serialNumberSigningCertForm" name="serialNumberSigningCertForm" th:field="*{serialNumber}" disabled>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="dateExpiredSigningCertForm" th:text="#{form.confSigningCert.field.expired}"></label> 
+							<input type="text" class="form-control" id="dateExpiredSigningCertForm" name="dateExpiredSigningCertForm" th:field="*{dateExpired}" disabled>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="col-12 d-flex justify-content-end">
+							<button id="updateBtn" type="submit" class="btn btn-primary" th:utext="#{form.confSigningCert.btn.update}"></button>
+							<button id="downloadBtn" type="submit" class="btn btn-default" th:utext="#{form.confSigningCert.btn.download}"></button>
+							<button id="deleteBtn" type="submit" class="btn btn-default" th:utext="#{form.confSigningCert.btn.delete}"></button>
+						</div>
+					</div>
+					
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script th:inline="javascript">
+
+$(document).ready(function() {
+	changeStatusBtn();
+	
+	$("#updateBtn").click(function (event){
+		event.preventDefault();
+		
+		var viewAddSigningCert = /*[[@{/viewAddSigningCert}]]*/;
+		loading();
+		$.ajax({
+			url: viewAddSigningCert,
+			type: 'POST',
+			cache: false,
+			success: function(xhr) {
+				hide();
+				$('#modal').html(xhr);
+				$('#modalAddSigningCert').modal('show');
+			} ,
+			error:  function(xhr) {
+				$('#messageUpdateSigningCert').html(xhr.responseText);
+				$('#messageUpdateSigningCert').addClass('alert alert-danger');
+			}
+		});
+	});
+	
+	$("#downloadBtn").click(function (event){
+		event.preventDefault();
+		
+		var keystoreBlob = b64toBlob($("#certificateB64").val(), 'application/x-x509-ca-cert');
+		var fileName = "CertificadoFirmante.cer";
+		
+		var reader = new FileReader();
+		reader.onload = function(event) {
+			var save = document.createElement('a');
+			save.href = event.target.result;
+			save.target = '_blank';
+			save.download = fileName || 'certificado.cer';
+			var clicEvent = new MouseEvent('click', {
+				'view' : window,
+				'bubbles' : true,
+				'cancelable' : true
+			});
+			save.dispatchEvent(clicEvent);
+			(window.URL || window.webkitURL)
+					.revokeObjectURL(save.href);
+						
+		};
+		reader.readAsDataURL(keystoreBlob);
+	});
+	
+	$("#deleteBtn").click(function (event){
+		event.preventDefault();
+		
+		var viewDeleteSigningCert = /*[[@{/viewDeleteSigningCert}]]*/;
+		loading();
+		$.ajax({
+			url: viewDeleteSigningCert,
+			type: 'POST',
+			cache: false,
+			success: function(xhr) {
+				hide();
+				$('#modal').html(xhr);
+				$('#modalDeleteSigningCert').modal('show');
+			} ,
+			error:  function(xhr) {
+				$('#messageUpdateSigningCert').html(xhr.responseText);
+				$('#messageUpdateSigningCert').addClass('alert alert-danger');
+			}
+		});
+	});
+});
+
+function changeStatusBtn() {
+	var certificateB64 = $("#certificateB64").val();
+	if(certificateB64 == '' || certificateB64 == null) {
+		$('#downloadBtn').attr('disabled', true);
+		$('#deleteBtn').attr('disabled', true);
+	} else {
+		$('#downloadBtn').attr('disabled', false);
+		$('#deleteBtn').attr('disabled', false);
+	}
+}
+
+</script>

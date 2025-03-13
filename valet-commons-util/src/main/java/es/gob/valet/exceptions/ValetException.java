@@ -127,6 +127,17 @@ public class ValetException extends Exception implements IValetException {
 	}
 	
 	/**
+     * Constructs a new ValetException with the given exception as its cause.
+     *
+     * @param exceptionParam the original exception that caused this exception.
+     */
+	public ValetException(final Exception exceptionParam) {
+		super();
+		exception = exceptionParam;
+		LOGGER.debug(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.EXCEPTION_001), this);
+	}
+
+	/**
 	 * Gets the value of the attribute {@link #errorCode}.
 	 * @return the value of the attribute {@link #errorCode}.
 	 */
