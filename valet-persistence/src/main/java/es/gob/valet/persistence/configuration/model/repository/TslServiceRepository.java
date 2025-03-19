@@ -20,9 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>28/09/2022.</p>
  * @author Gobierno de España.
- * @version 1.3, 11/10/2022.
+ * @version 1.4, 19/03/2025.
  */
 package es.gob.valet.persistence.configuration.model.repository;
+
+import java.util.List;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -36,7 +38,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslService;
 /**
  * <p>Interface that provides CRUD functionality for the ApplicationValet entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 11/10/2022.
+ * @version 1.4, 19/03/2025.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -67,4 +69,13 @@ public interface TslServiceRepository extends PagingAndSortingRepository<TslServ
 	 */
 	@Query(value = "SELECT TS FROM TslService TS, TslMapping TM WHERE TS.idTslService = TM.tslService.idTslService AND TS.tspServiceName = ?1 AND TM.logicalFieldId = ?2")
 	TslService findByTspServiceNameAndLogicFieldId(String tspServiceName, String logicalFieldId);
+	
+	/**
+	 * Retrieves all distinct TslService entities that have non-null associated TslMapping.
+	 * 
+	 * @return a list of TslService entities with non-null mappings
+	 */
+	@Query("SELECT DISTINCT t FROM TslService t JOIN FETCH t.tslMapping tm WHERE tm IS NOT NULL")
+	List<TslService> findAllWithMappingsNotNull();
+
 }

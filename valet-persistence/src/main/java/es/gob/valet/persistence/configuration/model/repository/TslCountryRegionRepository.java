@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 30/08/2021.
+ * @version 1.4, 19/03/2025.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -37,7 +37,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 /**
  * <p>Interface that provides CRUD functionality for the TslCountryRegion entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 30/08/2021.
+ * @version 1.4, 19/03/2025.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -70,5 +70,13 @@ public interface TslCountryRegionRepository extends JpaRepository<TslCountryRegi
 	 */
 	@Query("SELECT c.countryRegionCode FROM TslCountryRegion c")
 	List<String> findAllByOrder();
+
+	/**
+	 * Retrieves all distinct TslCountryRegion entities that have associated TslCountryRegionMappings.
+	 * 
+	 * @return a list of TslCountryRegion entities with non-null mappings
+	 */
+	@Query("SELECT DISTINCT tcr FROM TslCountryRegion tcr LEFT JOIN FETCH tcr.listTslCountryRegionMappings mappings WHERE mappings IS NOT NULL")
+	List<TslCountryRegion> findAllWithMappings();
 
 }

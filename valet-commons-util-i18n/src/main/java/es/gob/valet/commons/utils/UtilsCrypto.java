@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 19/03/2025.
  */
 package es.gob.valet.commons.utils;
 
@@ -38,10 +38,10 @@ import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 /**
  * <p>Utilities class for cryptographics operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 19/03/2025.
  */
 public final class UtilsCrypto {
-
+	
 	/**
 	 * Constructor method for the class UtilsCrypto.java.
 	 */
@@ -145,6 +145,17 @@ public final class UtilsCrypto {
 
 		return Base64.encodeBase64String(calculateDigest(algorithm, data, provider));
 
+	}
+	
+	/**
+	 * Method that encrypts certain data using SHA-256 algorithm.
+	 * @param data Parameter that represents the data to encrypt.
+	 * @return the encrypted data.
+	 * @throws NoSuchAlgorithmException if no Provider supports a MessageDigestSpi implementation for the specified algorithm.
+	 */
+	public static byte[ ] calculateHash(byte[ ] data) throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance(CryptographicConstants.OFFICIAL_HASH_ALGORITHM_SHA256);
+		return md.digest(data);
 	}
 
 }

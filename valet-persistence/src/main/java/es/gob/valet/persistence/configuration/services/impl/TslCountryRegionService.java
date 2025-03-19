@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 30/08/2021.
+ * @version 1.5, 19/03/2025.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -39,7 +39,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionS
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for TslCountryRegion.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 30/08/2021.
+ * @version 1.5, 19/03/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -60,8 +60,8 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 	// interfaz?
 	public TslCountryRegion getTslCountryRegionById(Long idCountry, boolean loadMappings) {
 		TslCountryRegion result = repository.findByIdTslCountryRegion(idCountry);
-		if (result != null && loadMappings && result.getListTslCountryRegionMapping() != null) {
-			result.getListTslCountryRegionMapping().size();
+		if (result != null && loadMappings && result.getListTslCountryRegionMappings() != null) {
+			result.getListTslCountryRegionMappings().size();
 		}
 		return result;
 	}
@@ -75,8 +75,8 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 	// interfaz?
 	public TslCountryRegion getTslCountryRegionByCode(String countryRegionCode, boolean loadMappings) {
 		TslCountryRegion result = repository.findByCountryRegionCode(countryRegionCode);
-		if (result != null && loadMappings && result.getListTslCountryRegionMapping() != null) {
-			result.getListTslCountryRegionMapping().size();
+		if (result != null && loadMappings && result.getListTslCountryRegionMappings() != null) {
+			result.getListTslCountryRegionMappings().size();
 		}
 		return result;
 	}
@@ -102,7 +102,7 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 		List<TslCountryRegion> result = repository.findAllByOrderByCountryRegionCodeAsc();
 		if (result != null && !result.isEmpty() && loadMappings) {
 			for (TslCountryRegion tslCountryRegion: result) {
-				tslCountryRegion.getListTslCountryRegionMapping().size();
+				tslCountryRegion.getListTslCountryRegionMappings().size();
 			}
 		}
 		return result;
