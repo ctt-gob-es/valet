@@ -130,7 +130,42 @@
 		               			</script>
 						</a></li>
 					</ul></li>
-
+				<li class="nav-item dropdown">
+					<a id="aImportExportAdmin" class='sidebar-link' href="#">
+						<span class="icon-holder">
+		                  <i class="c-lime-500 ti-import"></i>
+		                </span>
+		                <span class="title" th:text="#{menu.admin.importExport}"></span>
+	                </a>
+	                <ul class="dropdown-menu">
+	                	<!-- Importar TSLs -->
+	                	<li class="nav-item">
+	                		<a id="aImporTslsAdmin" class="nav-link c-grey-800 cH-blue-500 active" href="#">
+		                		<span class="icon-holder">
+		                			<i class="c-green-500 ti-import"></i>
+		                		</span>
+		                		<span class="title" th:text="#{menu.admin.import.tsls}"></span>
+		                		<script th:inline="javascript">
+			                		var actionImporTslsAdmin = /*[[@{/importslsadmin}]]*/;
+			                		$('#aImporTslsAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionImporTslsAdmin, 'optionReplacement', 'GET', null, true); return false;});
+		                		</script>
+	                		</a>
+	                	</li>
+	                	<!-- Exportar TSLs -->
+	                	<li class="nav-item">
+	                		<a id="aExporTslsAdmin" class="nav-link c-grey-800 cH-blue-500 active" href="#">
+		                		<span class="icon-holder">
+		                			<i class="c-orange-500 ti-export"></i>
+		                		</span>
+		                		<span class="title" th:text="#{menu.admin.export.tsls}"></span>
+		                		<script th:inline="javascript">
+			                		var actionExporTslsAdmin = /*[[@{/exportslsadmin}]]*/;
+			                		$('#aExporTslsAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionExporTslsAdmin, 'optionReplacement', 'GET', null, true); return false;});
+		                		</script>
+	                		</a>
+	                	</li>
+	                </ul>
+				</li>
 				<li class="nav-item dropdown"><a class='sidebar-link' href="#">
 						<span class="icon-holder"><i
 							class="c-black-500 ti-settings"></i></span> <span class="title"

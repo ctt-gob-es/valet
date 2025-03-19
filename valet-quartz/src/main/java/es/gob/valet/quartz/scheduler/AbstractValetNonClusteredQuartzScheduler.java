@@ -20,18 +20,18 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 18/09/2018.
+ * @version 1.2, 19/03/2025.
  */
 package es.gob.valet.quartz.scheduler;
 
 import org.quartz.Scheduler;
 
-import es.gob.valet.i18n.utils.UtilsTomcat;
+import es.gob.valet.i18n.utils.UtilsServer;
 
 /** 
  * <p>Class that represents an abstract non clustered quartz scheduler for valET.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 18/09/2018.
+ * @version 1.2, 19/03/2025.
  */
 public abstract class AbstractValetNonClusteredQuartzScheduler extends AbstractValetQuartzScheduler {
 
@@ -61,7 +61,7 @@ public abstract class AbstractValetNonClusteredQuartzScheduler extends AbstractV
 	 */
 	@Override
 	protected final String getPathPropertiesFile() {
-		return UtilsTomcat.createAbsolutePath(UtilsTomcat.getValetConfigDir(), AbstractValetNonClusteredQuartzScheduler.NOCLUSTERQTZ_FILE);
+		return UtilsServer.createAbsolutePath(UtilsServer.getValetConfigDir(), AbstractValetNonClusteredQuartzScheduler.NOCLUSTERQTZ_FILE);
 	}
 
 	/**
@@ -78,8 +78,17 @@ public abstract class AbstractValetNonClusteredQuartzScheduler extends AbstractV
 	 * @see es.gob.valet.quartz.scheduler.AbstractQuartzScheduler#setScheduler(org.quartz.Scheduler)
 	 */
 	@Override
-	protected final void setScheduler(final Scheduler scheduler) {
-		AbstractValetNonClusteredQuartzScheduler.nonClusterSch = scheduler;
+	protected void setScheduler(final Scheduler scheduler) {
+		setNonClusterSch(scheduler);
 	}
 
+	/**
+	 * Sets the value of the attribute {@link #nonClusterSch}.
+	 * @param nonClusterSch The value for the attribute {@link #nonClusterSch}.
+	 */
+	public static void setNonClusterSch(Scheduler nonClusterSch) {
+		AbstractValetNonClusteredQuartzScheduler.nonClusterSch = nonClusterSch;
+	}
+
+	
 }

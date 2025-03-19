@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/12/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 12/03/2025.
+ * @version 1.2, 19/03/2025.
  */
 package es.gob.valet.commons.utils;
 
@@ -40,7 +40,7 @@ import java.util.List;
 /** 
  * <p>Class that manages operations related with the management of keystores.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 12/03/2025.
+ * @version 1.2, 19/03/2025.
  */
 public class UtilsKeystore {
 	
@@ -132,4 +132,15 @@ public class UtilsKeystore {
 	    keyStore.store(byteArrayOutputStream, password);
 	    return byteArrayOutputStream.toByteArray();
 	}
+	
+	/**
+	 * Retrieves the first alias from the specified KeyStore.
+	 * 
+	 * @param keystore the KeyStore to retrieve the alias from
+	 * @return the first alias in the KeyStore, or null if no aliases are present
+	 * @throws KeyStoreException if there is an error accessing the KeyStore
+	 */
+	public static String getFirstAlias(KeyStore keystore) throws KeyStoreException {
+        return keystore.aliases().hasMoreElements() ? keystore.aliases().nextElement() : null;
+    }
 }

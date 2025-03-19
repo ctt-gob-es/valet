@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 31/10/2019.
+ * @version 2.0, 19/03/2025.
  */
 package es.gob.valet.i18n;
 
@@ -41,7 +41,7 @@ import es.gob.valet.i18n.utils.UtilsTomcat;
 /**
  * <p>Class that manages the access to the properties files used for generation messages in the plataform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 31/10/2019.
+ * @version 2.0, 19/03/2025.
  */
 public final class Language {
 
@@ -236,7 +236,7 @@ public final class Language {
 		// Preparamos el URLClassLoader que hará referencia
 		// al directorio de los mensajes de logs dentro de la configuración.
 		try {
-			final File configDirFile = new File(UtilsTomcat.createAbsolutePath(UtilsTomcat.getValetConfigDir(), MSG_DIRECTORY));
+			final File configDirFile = new File(UtilsServer.createAbsolutePath(UtilsServer.getValetConfigDir(), MSG_DIRECTORY));
 			urlClassLoaderMsg = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
 
 				/**

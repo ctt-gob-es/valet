@@ -1,0 +1,176 @@
+<div class="container-fluid">
+	<h4 class="c-grey-900 mT-10 mB-30" th:text="#{form.exporTsls.title}"></h4>
+	<div class="masonry-item col-md-9">
+		<div class="bgc-white p-20 bd">
+			<div class="mT-30">
+				<form id="exporTslsForm" th:object="${exporTslsDTO}">
+					<div class="form-inline mb-2">
+						<label for="labelValetVersionId" class="mb-2 mr-sm-3" th:text="#{form.exporTsls.label.version}"></label>
+						<select id="selectValetVersionId" name="selectValetVersionId" class="form-control mb-2 mr-sm-3">
+							<option th:value="-1" th:text="#{form.exporTsls.select.version.text}"></option>
+							<option th:each="th: ${listValetVersionDTO}" th:value="${th.idVersion}" th:text="${th.version}" />
+						</select>
+						<span id="selectValetVersionId_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12 mb-0">
+							<div class="progress" style="height: 30px;width: auto;line-height: 30px;">
+								<div class="progress-bar" role="progressbarStep" id="progressbarIdStep" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+							<label for="exporTslStep" id="exporTslStep"></label>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<button id="startBtn" type="submit" class="btn btn-primary" th:utext="#{form.exporTsls.btn.start}"></button>
+							<button id="stopBtn" type="submit" class="btn btn-danger" th:utext="#{form.exporTsls.btn.stop}" disabled></button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	var statusTimeout;
+	
+	$(document).ready(function() {
+		
+	    $("#startBtn").click(function(event) {
+	        event.preventDefault();
+	        startProcess();
+	    });
+	
+	    $("#stopBtn").click(function(event) {
+	        event.preventDefault();
+	        stopProcess();
+	    });
+	});
+	
+	async function startProcess() {
+		// Reiniciamos la barra de progreso al 0% y limpiamos clases anteriores
+	    $("#progressbarIdStep").css("width", "0%").text("0%").removeClass("bg-danger bg-success bg-info");	
+	
+	    if ($("#selectValetVersionId").val() === "-1") {
+	        $("#selectValetVersionId_span").text(/*[[#{form.exporTsls.span.version.text}]]*/);
+	        return;
+	    } else {
+	        $("#selectValetVersionId_span").text("");
+	    }
+	    
+	    var formData = $("#exporTslsForm").serializeJSON();
+	 	
+	    // Convertimos valetVersionDTO a un objeto
+	    formData.valetVersionDTO = {
+	        idVersion: parseInt($("#selectValetVersionId").val()), // Convertimos a número
+	        version: $("#selectValetVersionId option:selected").text() // Obtenemos el texto seleccionado
+	    };
+		 
+	    var startProcess = /*[[@{/startProcess}]]*/;
+	    await fetch(startProcess, {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify(formData)
+	    });
+		
+	    $("#exporTslStep").text(/*[[#{form.exporTsls.label.export.text.start}]]*/);
+	
+	    updateButtons("Running"); // Deshabilitamos botones
+	    checkProcessStatus();
+	}
+	
+	async function stopProcess() {
+	    clearTimeout(statusTimeout); // Detenemos la verificación de estado
+
+	    // Llamamos a stopProcess primero
+	    var stopProcess = /*[[@{/stopProcess}]]*/;
+	    const res = await fetch(stopProcess, { method: 'POST' });
+
+	    // Luego consultamos el estado final
+	    const data = await res.json(); // Puedes usar la respuesta de la llamada a stopProcess
+
+	    // Nos aseguramos de que el progreso se detenga correctamente
+	    $("#progressbarIdStep").addClass("bg-info")
+	        .css("width", data.progress + "%") // Mantenemos el último avance
+	        .text(data.progress + "%");
+	    $("#exporTslStep").text(/*[[#{form.exporTsls.label.export.text.stop}]]*/);
+
+	    updateButtons("Stopped"); // Habilitar botones
+	}
+	
+	async function checkProcessStatus() {
+	    var status = /*[[@{/status}]]*/;
+	    const res = await fetch(status);
+	    const data = await res.json();
+
+	 	// Verificamos si el proceso está detenido
+	    if ($("#stopBtn").prop("disabled")) {
+	    	clearTimeout(statusTimeout); // Nos aseguramos que no siga llamándose la función
+	        return; 
+	    }
+	 
+	    // Se ha producido un fallo en el back
+	    if (data.isError) {
+	        clearTimeout(statusTimeout); // Nos aseguramos que no siga llamándose la función
+
+	        $("#progressbarIdStep").addClass("bg-danger")
+            	.css("width", data.progress + "%") // Mantenemos el progreso real
+            	.text(data.progress + "%");
+        	$("#exporTslStep").text(data.messageInfoStep);
+
+	        updateButtons("Stopped");
+	        return;
+	    }
+	    
+		// El proceso ha terminado con exito
+	    if(data.progress === 100) {
+	    	clearTimeout(statusTimeout); // Nos aseguramos que no siga llamándose la función
+	    	
+	    	$("#progressbarIdStep").addClass("bg-success")
+        	.css("width", data.progress + "%") // Mantenemos el progreso real
+        	.text(data.progress + "%");
+	    	$("#exporTslStep").text(/*[[#{form.exporTsls.label.export.text.finish}]]*/);
+	
+	    	// Descargamos el fichero
+	    	downLoadZip(data.zipValet, data.fileNameExport);
+	    	
+	        updateButtons("Stopped");
+	        return;
+	    } 
+
+	    $("#progressbarIdStep").css("width", data.progress + "%").text(data.progress + "%");
+	    $("#exporTslStep").text(data.messageInfoStep);
+
+	    statusTimeout = setTimeout(checkProcessStatus, 2000);
+	}
+	
+	// Función centralizada para habilitar/deshabilitar botones
+	function updateButtons(status) {
+	    $("#startBtn").prop("disabled", status === "Running");
+	    $("#stopBtn").prop("disabled", status !== "Running");
+	}
+
+	// Función para descargar el fichero
+	function downLoadZip(zipValet, fileNameExport) {
+		var keystoreBlob = b64toBlob(zipValet, 'application/zip');
+		var fileName = fileNameExport;
+		
+		var reader = new FileReader();
+		reader.onload = function(event) {
+			var save = document.createElement('a');
+			save.href = event.target.result;
+			save.target = '_blank';
+			save.download = fileName || 'certificado.cer';
+			var clicEvent = new MouseEvent('click', {
+				'view' : window,
+				'bubbles' : true,
+				'cancelable' : true
+			});
+			save.dispatchEvent(clicEvent);
+			(window.URL || window.webkitURL)
+					.revokeObjectURL(save.href);
+						
+		};
+		reader.readAsDataURL(keystoreBlob);
+	}
+</script>

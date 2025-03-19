@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.14, 21/08/2019.
+ * @version 2.3, 19/03/2025.
  */
 package es.gob.valet.commons.utils;
 
@@ -33,13 +33,13 @@ import org.apache.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IQuartzGeneralMessages;
-import es.gob.valet.i18n.utils.UtilsTomcat;
+import es.gob.valet.i18n.utils.UtilsServer;
 
 /**
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.15, 22/02/2023.
+ * @version 2.3, 19/03/2025.
  */
 public final class StaticValetConfig {
 
@@ -248,6 +248,82 @@ public final class StaticValetConfig {
 	 * Constant attribute that represents date time of TSL
 	 */
 	public static final String TSL_DATE_TIME = "tsl.date.time";
+	
+	/**
+	 * Options for login.
+	 */
+	public static final String ACCESS_OPTIONS = "login.access";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.access.certificate"</i>.
+	 */
+	public static final String LOGIN_ACCESS_CERTIFICATE = "login.access.certificate";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.access.certificate.issuer"</i>.
+	 */
+	public static final String LOGIN_ACCESS_CERTIFICATE_ISSUER = "login.access.certificate.issuer";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.access.certificate.dni"</i>.
+	 */
+	public static final String LOGIN_ACCESS_CERTIFICATE_DNI = "login.access.certificate.dni";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.certificate.field.resultMajor"</i>.
+	 */
+	public static final String MAJOR_RESULT = "login.certificate.field.resultMajor";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.certificate.field.resultMinor"</i>.
+	 */
+	public static final String MINOR_RESULT = "login.certificate.field.resultMinor";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.certificate.field.appName"</i>.
+	 */
+	public static final String APP_NAME = "login.certificate.field.appName";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"login.certificate.field.nifResponsable"</i>.
+	 */
+	public static final String NIF_RESPONSABLE = "login.certificate.field.nifResponsable";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.service.url"</i>.
+	 */
+	public static final String CLAVE_SERVICE_URL = "clave.service.url";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.provider.name"</i>.
+	 */
+	public static final String CLAVE_PROVIDER_NAME = "clave.provider.name";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.sp.application"</i>.
+	 */
+	public static final String CLAVE_SP_APPLICATION = "clave.sp.application";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.idps.omit"</i>.
+	 */
+	public static final String CLAVE_IDPS_OMIT = "clave.idps.omit";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.eidas.levelofassurance"</i>.
+	 */
+	public static final String CLAVE_EIDAS_LEVEL_OF_ASSURANCE = "clave.eidas.levelofassurance";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"clave.config.path"</i>.
+	 */
+	public static final String CLAVE_CONFIG_PATH = "clave.config.path";
+	
+	/**
+	 * Constant attribute that represents the key for the property <i>"add.traceid.afirma"</i>.
+	 */
+	public static final String ADD_TRACEID_AFIRMA = "add.traceid.afirma";
+	
 
 	/**
 	 * Constructor method for the class StaticValetConfig.java.
@@ -275,14 +351,14 @@ public final class StaticValetConfig {
 	public static boolean reloadStaticValetConfigProperties() {
 
 		boolean result = false;
-
+		
 		synchronized (StaticValetConfig.class) {
 			if (staticProperties == null) {
 				staticProperties = new Properties();
 				FileInputStream configStream = null;
 				try {
 					LOGGER.info(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOG2, new Object[ ] { STATIC_VALET_FILENAME }));
-					configStream = new FileInputStream(UtilsTomcat.createAbsolutePath(UtilsTomcat.getValetConfigDir(), STATIC_VALET_FILENAME));
+					configStream = new FileInputStream(UtilsServer.createAbsolutePath(UtilsTomcat.getValetConfigDir(), STATIC_VALET_FILENAME));
 					staticProperties.load(configStream);
 					LOGGER.info(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOG2, new Object[ ] { staticProperties }));
 					result = true;

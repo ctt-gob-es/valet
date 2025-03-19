@@ -20,19 +20,18 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 06/11/2018.
+ * @version 1.6, 19/03/2025.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectCloneException;
-import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectStreamException;
+import es.gob.valet.i18n.messages.PersistenceCacheMessages;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
@@ -41,9 +40,9 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 /**
  * <p>Class that represents a TSL Country/Region Info in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 06/11/2018.
+ * @version 1.6, 19/03/2025.
  */
-public class TSLCountryRegionCacheObject extends ConfigurationCacheObject {
+public class TSLCountryRegionCacheObject extends ConfigurationCacheObject implements Serializable {
 
 	/**
 	 * Constant attribute that represents the serial version UID.
@@ -103,7 +102,7 @@ public class TSLCountryRegionCacheObject extends ConfigurationCacheObject {
 			setName(tcr.getCountryRegionName());
 
 			// Obtenemos la lista de mapeos.
-			List<TslCountryRegionMapping> tcrmList = tcr.getListTslCountryRegionMapping();
+			List<TslCountryRegionMapping> tcrmList = tcr.getListTslCountryRegionMappings();
 			// Si no es nula ni vacía, la recorremos creando los objectos de
 			// caché
 			// para finalmente establecerla.
