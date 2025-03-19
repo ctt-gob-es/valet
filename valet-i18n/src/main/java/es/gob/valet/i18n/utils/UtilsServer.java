@@ -41,7 +41,7 @@ public final class UtilsServer {
 	/**
 	 * Constant attribute that represents the property key jboss.server.temp.dir. 
 	 */
-	private static final String PROP_WEBLOGIC_SERVER_TEMP_DIR = "weblogic.server.temp.dir";
+	private static final String PROP_TOMCAT_SERVER_TEMP_DIR = "tomcat.server.temp.dir";
 	
 	/**
 	 * Constructor method for the class UtilsTomcat.java.
@@ -71,7 +71,7 @@ public final class UtilsServer {
 	 * Method that returns the value of the system property jboss.server.temp.dir.
 	 * @return Value of the system property weblogic.server.temp.dir. Null if not exist.
 	 */
-	public static String getWeblogicServerTempDir() {
-		return System.getProperty(PROP_WEBLOGIC_SERVER_TEMP_DIR);
+	public static String getTomcatServerTempDir() {
+		return System.getProperty(PROP_TOMCAT_SERVER_TEMP_DIR);
 	}
 }

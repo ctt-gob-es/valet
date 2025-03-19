@@ -121,5 +121,12 @@
 			<artifactId>commons-beanutils</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		
+		<!-- Descomentar para desarrollar con tomcat embebido -->
+<!-- 	<dependency> -->
+<!--     	<groupId>com.oracle.database.jdbc</groupId> -->
+<!--     	<artifactId>ojdbc6</artifactId> -->
+<!--     	<version>11.2.0.4</version> -->
+<!-- 	</dependency> -->
 	</dependencies>
 </project>

@@ -36,7 +36,7 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
-import es.gob.valet.i18n.utils.UtilsTomcat;
+import es.gob.valet.i18n.utils.UtilsServer;
 
 /**
  * <p>Class that manages the access to the properties files used for generation messages in the plataform.</p>

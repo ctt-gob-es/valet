@@ -358,7 +358,7 @@ public final class StaticValetConfig {
 				FileInputStream configStream = null;
 				try {
 					LOGGER.info(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOG2, new Object[ ] { STATIC_VALET_FILENAME }));
-					configStream = new FileInputStream(UtilsServer.createAbsolutePath(UtilsTomcat.getValetConfigDir(), STATIC_VALET_FILENAME));
+					configStream = new FileInputStream(UtilsServer.createAbsolutePath(UtilsServer.getValetConfigDir(), STATIC_VALET_FILENAME));
 					staticProperties.load(configStream);
 					LOGGER.info(Language.getFormatResQuartzGeneral(IQuartzGeneralMessages.LOG2, new Object[ ] { staticProperties }));
 					result = true;

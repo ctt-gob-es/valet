@@ -54,12 +54,7 @@ public class ValetVersionDTO {
      * Version string for version 1.1.0.
      */
     private static final String VERSION_1_1_0 = "1.1.0";
-
-    /**
-     * Version string for version 1.2.0.
-     */
-    private static final String VERSION_1_2_0 = "1.2.0";
-
+   
     /**
      * Default constructor.
      */
@@ -73,12 +68,7 @@ public class ValetVersionDTO {
         /**
          * Version 1.1.0.
          */
-        V1(1, VERSION_1_1_0),
-
-        /**
-         * Version 1.2.0.
-         */
-        V2(2, VERSION_1_2_0);
+        V1(1, VERSION_1_1_0);
 
         private final int id;
         private final String version;

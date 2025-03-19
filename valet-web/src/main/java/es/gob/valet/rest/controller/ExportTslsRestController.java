@@ -44,10 +44,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import  es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.exceptions.CipherException;
+import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.ExportException;
 import es.gob.valet.exceptions.ValetException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.WebGeneralMessages;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.i18n.utils.UtilsServer;
 import es.gob.valet.persistence.configuration.model.dto.ExporTslsDTO;
 import es.gob.valet.service.ifaces.IExportService;
@@ -198,8 +200,8 @@ public class ExportTslsRestController {
                 executeStep(i);
             }
         } catch (Exception e) {
-        	LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP001), e);
-        	messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP002, currentStep);
+        	LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP001), e);
+        	messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP002, currentStep);
             isError = true;
         } finally {
         	isRunning = false;
@@ -225,47 +227,49 @@ public class ExportTslsRestController {
      * @throws CertificateException if an error occurs with the certificate.
      * @throws SignatureException if an error occurs during the signing process.
      * @throws ExportException if an error occurs during the export process.
+     * @throws CommonUtilsException if an error occurs with i18 language.
+     * @throws CipherException if an error occurs with the cipher string.
      */
 	@SuppressWarnings("static-access")
-	private void executeStep(int step) throws IOException, NoSuchAlgorithmException, InterruptedException, ValetException, UnrecoverableKeyException, KeyStoreException, CertificateException, SignatureException, ExportException {
+	private void executeStep(int step) throws IOException, NoSuchAlgorithmException, InterruptedException, ExportException, UnrecoverableKeyException, KeyStoreException, CertificateException, SignatureException, ExportException, CommonUtilsException, CipherException {
     	synchronized (this) {
     		currentStep = step;
             
     		if (currentThread.isInterrupted()) {
                 // Verificamos si el hilo fue interrumpido y salimos inmediatamente
-                messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP003, currentStep);
+                messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP003, currentStep);
                 return;
             }
     		
     		switch (step) {
     			case NumberConstants.NUM1:
-    				messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP004, currentStep);
+    				messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP004, currentStep);
     				this.createDirectoryStructure();
     				currentThread.sleep(2000);
 					break;
 				case NumberConstants.NUM2:
-					messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP005, currentStep);
+					messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP005, currentStep);
 					iExportService.exportTslData(this.filesHashProperties, this.tslDataFolder);
 					break;
 				case NumberConstants.NUM3:
-					messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP006, currentStep);
+					messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP006, currentStep);
 					iExportService.exportMappingToTsls(this.filesHashProperties, this.tslCountryRegionMappingFolder);
 					break;
 				case NumberConstants.NUM4:
-					messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP007, currentStep);
+					messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP007, currentStep);
 					iExportService.exportMappingToCert(this.filesHashProperties, this.tslMappingFolder);
 					break;
 				case NumberConstants.NUM5:
-					messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP008, currentStep);
+					messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP008, currentStep);
 					hashByteArray = iExportService.addMetaInf(this.filesHashProperties, this.metaInfFolder, this.exporTslsDTO.getValetVersionDTO().getVersion(), this.tslsValetFolder);
 					currentThread.sleep(2000);
 					break;
 				case NumberConstants.NUM6:
-					messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP009, currentStep);
+					messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP009, currentStep);
 					this.calculateSignature = iExportService.signHash(hashByteArray);
 					break;
 				case NumberConstants.NUM7:
-					messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP010, currentStep);
+					messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP010, currentStep);
 					this.zipValet = iExportService.getZIPFileWithTsls(this.metaInfFolder, this.calculateSignature, this.tslsValetFolder);
 					break;
 				default:
@@ -372,14 +376,14 @@ public class ExportTslsRestController {
 		 *
 		 */
 		
-    	LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP011));
+    	LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP011));
     	
-    	String pathTmp = UtilsServer.getWeblogicServerTempDir();
+    	String pathTmp = UtilsServer.getTomcatServerTempDir();
     	if (pathTmp == null) {
-    	    throw new ExportException(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP012));
+    	    throw new ExportException(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP012));
     	}
     	
-		File tempDirectory = new File(UtilsServer.getWeblogicServerTempDir());
+		File tempDirectory = new File(UtilsServer.getTomcatServerTempDir());
 		tslsValetFolder = new File(tempDirectory, "tsls_valet");
 		metaInfFolder = new File(tslsValetFolder, "META-INF");
 		tslDataFolder = new File(tslsValetFolder, "tslData");

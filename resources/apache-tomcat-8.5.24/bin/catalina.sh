@@ -113,6 +113,7 @@ JAVA_OPTS="$JAVA_OPTS -Dlog4j.configuration.valet.rest=[PROPERTIES SETTING FOLDE
 JAVA_OPTS="$JAVA_OPTS -Dlog4j.configuration.valet.web=[PROPERTIES SETTING FOLDER PATH]/valet-web-log4j.xml"
 JAVA_OPTS="$JAVA_OPTS -Dspring.config.location=[PROPERTIES SETTING FOLDER PATH]/application.properties"
 JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8"
+JAVA_OPTS="$JAVA_OPTS -Dtomcat.server.temp.dir=[PROPERTIES SETTING FOLDER PATH]/tmp/"
 
 -Djava.security.policy=="$CATALINA_BASE"/conf/catalina.policy \
 

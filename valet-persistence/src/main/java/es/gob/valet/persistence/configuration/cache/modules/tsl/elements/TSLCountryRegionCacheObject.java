@@ -29,9 +29,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import es.gob.valet.exceptions.ValetExceptionConstants;
+import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.PersistenceCacheMessages;
+import es.gob.valet.i18n.messages.IPersistenceCacheMessages;
+import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectCloneException;
+import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheObjectStreamException;
 import es.gob.valet.persistence.configuration.cache.common.impl.ConfigurationCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;

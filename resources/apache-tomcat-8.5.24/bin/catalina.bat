@@ -114,7 +114,7 @@ set "JAVA_OPTS=%JAVA_OPTS% -Dlog4j.configuration.valet.rest=[PROPERTIES SETTING 
 set "JAVA_OPTS=%JAVA_OPTS% -Dlog4j.configuration.valet.web=[PROPERTIES SETTING FOLDER PATH]/valet-web-log4j.xml 
 set "JAVA_OPTS=%JAVA_OPTS% -Dspring.config.location=[PROPERTIES SETTING FOLDER PATH]/application.properties"
 set "JAVA_OPTS=%JAVA_OPTS% -Dfile.encoding=UTF-8"
-
+set "JAVA_OPTS=%JAVA_OPTS% -Dtomcat.server.temp.dir=[PROPERTIES SETTING FOLDER PATH]/tmp/"
 
 rem Suppress Terminate batch job on CTRL+C
 if not ""%1"" == ""run"" goto mainEntry

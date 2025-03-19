@@ -66,7 +66,7 @@ public final class CAdESValidator {
             // El método getObject ya no existe para ASN1TaggedObject.
             // Probamos con getBaseObject, ya que la clase que devuelve: ASN1Object,
             // es antecesor de ASN1Sequence.
-            final ASN1Sequence datos = (ASN1Sequence) doj.getBaseObject();
+            final ASN1Sequence datos = ASN1Sequence.getInstance(doj.getObject());
             final SignedData sd = SignedData.getInstance(datos);
 
             final ASN1Set signerInfosSd = sd.getSignerInfos();

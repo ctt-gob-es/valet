@@ -59,11 +59,11 @@ import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCrypto;
 import es.gob.valet.commons.utils.UtilsKeystore;
 import es.gob.valet.commons.utils.UtilsResources;
+import es.gob.valet.exceptions.CipherException;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.ExportException;
-import es.gob.valet.exceptions.ValetException;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.WebGeneralMessages;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.i18n.utils.UtilsServer;
 import es.gob.valet.persistence.configuration.model.dto.TslCountryRegionDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
@@ -130,11 +130,11 @@ public class ExportService implements IExportService {
 	 */
 	@Override
 	public void exportTslData(Properties filesHashProperties, File tslDataFolder) throws IOException, NoSuchAlgorithmException {
-		LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP013));
+		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP013));
 		
 		List<TslData> lisTslData = tslDataRepository.findAll();
 		
-		String tempFolderPath = UtilsServer.getWeblogicServerTempDir().replace("\\", "/");
+		String tempFolderPath = UtilsServer.getTomcatServerTempDir().replace("\\", "/");
 		
 		for (TslData tslData: lisTslData) {
 			TslDataDTO tslDataDTO = new TslDataDTO(tslData);
@@ -166,9 +166,9 @@ public class ExportService implements IExportService {
 	 */
 	@Override
 	public void exportMappingToTsls(Properties filesHashProperties, File tslCountryRegionMappingFolder) throws IOException, NoSuchAlgorithmException {
-		LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP014));
+		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP014));
 		
-		String tempFolderPath = UtilsServer.getWeblogicServerTempDir().replace("\\", "/");
+		String tempFolderPath = UtilsServer.getTomcatServerTempDir().replace("\\", "/");
 		
 		List<TslCountryRegion> listTslCountryRegion = tslCountryRegionRepository.findAllWithMappings();
 		
@@ -203,9 +203,9 @@ public class ExportService implements IExportService {
 	 */
 	@Override
 	public void exportMappingToCert(Properties filesHashProperties, File tslMappingFolder) throws IOException, NoSuchAlgorithmException, CommonUtilsException {
-		LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP015));
+		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP015));
 		
-		String tempFolderPath = UtilsServer.getWeblogicServerTempDir().replace("\\", "/");
+		String tempFolderPath = UtilsServer.getTomcatServerTempDir().replace("\\", "/");
 		
 		List<TslService> listTslService = tslServiceRepository.findAllWithMappingsNotNull();
 		
@@ -239,10 +239,10 @@ public class ExportService implements IExportService {
 	 */
 	@Override
 	public byte[] addMetaInf(Properties filesHashProperties, File metaInfFolder, String version, File tslsValetFolder) throws ExportException {
-	    LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP016));
+	    LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP016));
 
 	    try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-	    	filesHashProperties.store(out, Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP018, version));
+	    	filesHashProperties.store(out, Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP018, version));
 	        
 	        byte[] hashData = out.toByteArray();
 	        FileUtils.writeByteArrayToFile(new File(metaInfFolder, "files_hash.properties"), hashData);
@@ -250,7 +250,7 @@ public class ExportService implements IExportService {
 	        return hashData; // Devuelve el array generado
 	    } catch (Exception e) {
 	        deleteTemporalFiles(tslsValetFolder);
-	        throw new ExportException(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP017), e);
+	        throw new ExportException(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP017), e);
 	    }
 	}
 	
@@ -266,7 +266,7 @@ public class ExportService implements IExportService {
 				// Borramos la estructura temporal de ficheros.
 				FileUtils.deleteDirectory(tslsValetFolder);
 			} catch (IOException e) {
-				throw new ExportException(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP019), e);
+				throw new ExportException(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP019), e);
 			}
 		}
 	}
@@ -277,11 +277,11 @@ public class ExportService implements IExportService {
 	 * @see es.gob.valet.service.ifaces.IExportService#signHash(byte[])
 	 */
 	@Override
-	public byte[] signHash(byte[ ] hashByteArray) throws ValetException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException, SignatureException {
+	public byte[] signHash(byte[ ] hashByteArray) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException, SignatureException, ExportException, CipherException {
 		SigningCertificate signingCertificate = signingCertificateRepository.findByIdSigningCertificate(NumberConstants.NUM1_LONG);
 		
 		if(null == signingCertificate) {
-			throw new ValetException(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP020));
+			throw new ExportException(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP020));
 		}
 		
 		byte[] byteKeystoreP12 = Base64.getDecoder().decode(signingCertificate.getKeystore());
@@ -311,7 +311,7 @@ public class ExportService implements IExportService {
 			FileUtils.writeByteArrayToFile(signatureFile, signedHashFile);
 		} catch (IOException e) {
 			deleteTemporalFiles(tslsValetFolder);
-			throw new ExportException(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP021), e);
+			throw new ExportException(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP021), e);
 		}
 		
 		// Metemos la estructura de carpetas y ficheros generados en un fichero
@@ -366,7 +366,7 @@ public class ExportService implements IExportService {
 			} catch (IOException e) {
 				// Borramos la estructura temporal de ficheros
 				deleteTemporalFiles(tslsValetFolder);
-				throw new ExportException(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP022), e);
+				throw new ExportException(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP022), e);
 			} finally {
 				// Cerramos recursos
 				UtilsResources.safeCloseInputStream(fis);

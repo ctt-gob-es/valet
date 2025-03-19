@@ -146,7 +146,7 @@ public class TslCountryRegion implements Serializable {
 	 * @return the value of the attribute {@link #listTslCountryRegionMappings}.
 	 */
 	@OneToMany(mappedBy = "tslCountryRegion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public List<TslCountryRegionMapping> getListTslCountryRegionMapping() {
+	public List<TslCountryRegionMapping> getListTslCountryRegionMappings() {
 		return listTslCountryRegionMappings;
 	}
 
@@ -154,27 +154,10 @@ public class TslCountryRegion implements Serializable {
 	 * Sets the value of the attribute {@link #listTslCountryRegionMappings}.
 	 * @param listTslCountryRegionMappingsParam The value for the attribute {@link #listTslCountryRegionMappings}.
 	 */
-	public void setListTslCountryRegionMapping(List<TslCountryRegionMapping> listTslCountryRegionMappingsParam) {
+	public void setListTslCountryRegionMappings(List<TslCountryRegionMapping> listTslCountryRegionMappingsParam) {
 		this.listTslCountryRegionMappings = listTslCountryRegionMappingsParam;
 	}
 	
-	/**
-	 * Gets the value of the attribute {@link #listExternalAccess}.
-	 * @return the value of the attribute {@link #listExternalAccess}.
-	 */
-	@OneToMany(mappedBy = "tslCountryRegion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public List<ExternalAccess> getListExternalAccess() {
-		return listExternalAccess;
-	}
-	
-	/**
-	 * Sets the value of the attribute {@link #listExternalAccess}.
-	 * @param listExternalAccess The value for the attribute {@link #listExternalAccess}.
-	 */
-	public void setListExternalAccess(List<ExternalAccess> listExternalAccess) {
-		this.listExternalAccess = listExternalAccess;
-	}
-
 	/**
 	 * Gets the value of the attribute {@link #tslData}.
 	 * @return the value of the attribute {@link #tslData}.
