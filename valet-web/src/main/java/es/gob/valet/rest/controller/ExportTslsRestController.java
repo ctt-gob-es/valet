@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import  es.gob.valet.commons.utils.NumberConstants;
+import es.gob.valet.exceptions.CipherException;
 import es.gob.valet.exceptions.ExportException;
 import es.gob.valet.exceptions.ValetException;
 import es.gob.valet.i18n.Language;
@@ -225,9 +226,10 @@ public class ExportTslsRestController {
      * @throws CertificateException if an error occurs with the certificate.
      * @throws SignatureException if an error occurs during the signing process.
      * @throws ExportException if an error occurs during the export process.
+     * @throws CipherException if an error occurs with the cipher string.
      */
 	@SuppressWarnings("static-access")
-	private void executeStep(int step) throws IOException, NoSuchAlgorithmException, InterruptedException, ValetException, UnrecoverableKeyException, KeyStoreException, CertificateException, SignatureException, ExportException {
+	private void executeStep(int step) throws IOException, NoSuchAlgorithmException, InterruptedException, ValetException, UnrecoverableKeyException, KeyStoreException, CertificateException, SignatureException, ExportException, CipherException {
     	synchronized (this) {
     		currentStep = step;
             

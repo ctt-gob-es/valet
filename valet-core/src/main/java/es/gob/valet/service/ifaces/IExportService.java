@@ -33,6 +33,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Properties;
 
+import es.gob.valet.exceptions.CipherException;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.ExportException;
 import es.gob.valet.exceptions.ValetException;
@@ -105,8 +106,9 @@ public interface IExportService {
 	 * @throws IOException if an I/O error occurs
 	 * @throws UnrecoverableKeyException if the private key cannot be retrieved
 	 * @throws SignatureException if an error occurs during the signing process
+	 * @throws CipherException if an error occurs with the cipher string
 	 */
-	byte[] signHash(byte[ ] hashByteArray) throws ExportException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException, SignatureException;
+	byte[] signHash(byte[ ] hashByteArray) throws ExportException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException, SignatureException, CipherException;
 
 	/**
 	 * Creates a ZIP file containing the exported TSL data along with the signature file.
