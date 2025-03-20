@@ -25,8 +25,8 @@ import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.form.ExternalAccessForm;
 import es.gob.valet.persistence.configuration.model.dto.ExternalAccessDTO;
 import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
-import es.gob.valet.service.ExternalAccessService;
 import es.gob.valet.service.ifaces.IExternalAccessService;
+import es.gob.valet.service.impl.ExternalAccessService;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
