@@ -22,7 +22,7 @@
  * @author Gobierno de España.
  * @version 1.0, 12/03/2025.
  */
-package es.gob.valet.service;
+package es.gob.valet.service.impl;
 
 import java.io.IOException;
 import java.security.KeyStore;
