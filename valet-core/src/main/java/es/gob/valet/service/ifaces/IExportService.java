@@ -98,7 +98,7 @@ public interface IExportService {
 	 * 
 	 * @param hashByteArray the byte array representing the hash to be signed
 	 * @return the signed hash byte array
-	 * @throws ValetException if the signing certificate is not found or any other exception occurs during signing
+	 * @throws ExportException if the signing certificate is not found or any other exception occurs during signing
 	 * @throws KeyStoreException if an error occurs while accessing the keystore
 	 * @throws NoSuchAlgorithmException if the cryptographic algorithm is not found
 	 * @throws CertificateException if there is an issue with the certificate
@@ -106,7 +106,7 @@ public interface IExportService {
 	 * @throws UnrecoverableKeyException if the private key cannot be retrieved
 	 * @throws SignatureException if an error occurs during the signing process
 	 */
-	byte[] signHash(byte[ ] hashByteArray) throws ValetException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException, SignatureException;
+	byte[] signHash(byte[ ] hashByteArray) throws ExportException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException, SignatureException;
 
 	/**
 	 * Creates a ZIP file containing the exported TSL data along with the signature file.

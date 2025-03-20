@@ -61,7 +61,6 @@ import es.gob.valet.commons.utils.UtilsKeystore;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.ExportException;
-import es.gob.valet.exceptions.ValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.i18n.utils.UtilsServer;
@@ -277,11 +276,11 @@ public class ExportService implements IExportService {
 	 * @see es.gob.valet.service.ifaces.IExportService#signHash(byte[])
 	 */
 	@Override
-	public byte[] signHash(byte[ ] hashByteArray) throws ValetException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException, SignatureException {
+	public byte[] signHash(byte[ ] hashByteArray) throws ExportException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException, SignatureException {
 		SigningCertificate signingCertificate = signingCertificateRepository.findByIdSigningCertificate(NumberConstants.NUM1_LONG);
 		
 		if(null == signingCertificate) {
-			throw new ValetException(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP020));
+			throw new ExportException(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP020));
 		}
 		
 		byte[] byteKeystoreP12 = Base64.getDecoder().decode(signingCertificate.getKeystore());
