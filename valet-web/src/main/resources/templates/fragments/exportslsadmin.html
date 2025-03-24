@@ -36,6 +36,9 @@
 	
 	$(document).ready(function() {
 		
+		// Reiniciamos la barra de progreso al 0% y limpiamos clases anteriores
+	    $("#progressbarIdStep").css("width", "0%").text("0%").removeClass("bg-danger bg-success bg-info");	
+		
 	    $("#startBtn").click(function(event) {
 	        event.preventDefault();
 	        startProcess();

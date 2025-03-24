@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 2.3, 12/03/2025.
+ * @version 2.4, 19/03/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -915,4 +915,25 @@ public interface IWebGeneralMessages {
 	 * Constant attribute that represents the property key <code>EXP022</code> belonging to the file messages/valet-web/general_xx_YY.properties.
 	 */
 	String LOG_EXP022 = "EXP022";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EXP023</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	String LOG_EXP023 = "EXP023";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EXP024</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	String LOG_EXP024 = "EXP024";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EXP025</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	String LOG_EXP025 = "EXP025";
+	
+	/**
+	 * Constant attribute that represents the property key <code>EXP026</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	String LOG_EXP026 = "EXP026";
+
 }

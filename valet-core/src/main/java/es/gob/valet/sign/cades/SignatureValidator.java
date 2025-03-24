@@ -35,6 +35,8 @@ import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.util.Store;
 
+import es.gob.valet.commons.utils.NumberConstants;
+
 /** Validador de firmas binarias.
  * @author Carlos Gamuci
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
@@ -84,76 +86,51 @@ public final class SignatureValidator {
      * @throws CMSException Cuando la firma no tenga una estructura v&aacute;lida.
      * @throws IOException Cuando no se puede crear un certificado desde la firma para validarlo.
      * @throws OperatorCreationException Cuando no se puede crear el validado de contenido de firma. */
-    private static X509Certificate[] verifySignatures(final byte[] sign,
-    		                             final byte[] data) throws CMSException,
-                                                                                 CertificateException,
-                                                                                 IOException,
-                                                                                 OperatorCreationException {
-        final CMSSignedData s;
-        if (data == null) {
-        	s = new CMSSignedData(sign);
-        }
-        else {
-        	s = new CMSSignedData(new CMSProcessableByteArray(data), sign);
-        }
-        final Store store = s.getCertificates();
+	private static X509Certificate[ ] verifySignatures(final byte[ ] sign, final byte[ ] data) throws CMSException, CertificateException, IOException, OperatorCreationException {
+		
+		final CertificateFactory certFactory = CertificateFactory.getInstance("X.509"); //$NON-NLS-1$
+		
+		// Obtenemos los datos de la firma
+		final CMSSignedData s = (data == null) ? new CMSSignedData(sign) : new CMSSignedData(new CMSProcessableByteArray(data), sign);
+		
+		// Validamos el numero de firmas
+		if(s.getSignerInfos().getSigners().size() == NumberConstants.NUM0) {
+			throw new CMSException("No se encontró el certificado del firmante");
+		} else if(s.getSignerInfos().getSigners().size() > NumberConstants.NUM1) {
+			throw new CMSException("files_hash.properties tiene más de una firma");
+		}
+		
+		// Obtenemos el único firmante
+		SignerInformation signer = s.getSignerInfos().getSigners().iterator().next();
 
-        final CertificateFactory certFactory = CertificateFactory.getInstance("X.509"); //$NON-NLS-1$
+		// Obtenemos su certificado
+		final Store<X509CertificateHolder> store = s.getCertificates();
+		Iterator<X509CertificateHolder> certIt = store.getMatches(new CertHolderBySignerIdSelector(signer.getSID())).iterator();
+		X509Certificate cert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(certIt.next().getEncoded()));
 
-        List<X509Certificate> certChain = null;
+		// Verificamos la firma
+		JcaContentVerifierProviderBuilder jcaContentVerifierProviderBuilder = new JcaContentVerifierProviderBuilder();
+		jcaContentVerifierProviderBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
+		ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(cert);
 
-        for (final Object si : s.getSignerInfos().getSigners()) {
+		JcaDigestCalculatorProviderBuilder digestCalculatorProviderBuilder = new JcaDigestCalculatorProviderBuilder();
+		digestCalculatorProviderBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
+		DigestCalculatorProvider digestCalculatorProvider = digestCalculatorProviderBuilder.build();
 
-        	final SignerInformation signer = (SignerInformation) si;
+		if (!signer.verify(new SignerInformationVerifier(new DefaultCMSSignatureAlgorithmNameGenerator(), new DefaultSignatureAlgorithmIdentifierFinder(), contentVerifierProvider, digestCalculatorProvider))) {
+			throw new CMSException("Firma no válida"); //$NON-NLS-1$
+		}
 
-			final Iterator<X509CertificateHolder> certIt = store.getMatches(new CertHolderBySignerIdSelector(signer.getSID())).iterator();
+		// Construcción de la cadena de certificación (si aplica)
+		List<X509Certificate> certChain = new ArrayList<>();
+		certChain.add(cert);
+		while (certIt.hasNext()) {
+			X509Certificate caCert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(certIt.next().getEncoded()));
+			certChain.add(caCert);
+		}
 
-            final X509Certificate cert = (X509Certificate) certFactory.generateCertificate(
-        		new ByteArrayInputStream(
-    				certIt.next().getEncoded()
-				)
-    		);
-            
-            // Con la nueva versión de Bouncycastle, la llamada al método verify cambia.
-            // Es necesario instanciar un objeto SignerInformationVerifier.
-            JcaContentVerifierProviderBuilder jcaContentVerifierProviderBuilder = new JcaContentVerifierProviderBuilder();
-            jcaContentVerifierProviderBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
-         			
-         	ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(cert);
+		return certChain.toArray(new X509Certificate[0]);
+	}
 
-         	JcaDigestCalculatorProviderBuilder digestCalculatorProviderBuilder = new JcaDigestCalculatorProviderBuilder();
-         	digestCalculatorProviderBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
-         	DigestCalculatorProvider digestCalculatorProvider = digestCalculatorProviderBuilder.build();
-
-            if (!signer.verify(
-            	// En la nueva versión de Bouncycastle, la signatura del constructor SignerInformationVerifier, es:
-				// public SignerInformationVerifier(CMSSignatureAlgorithmNameGenerator sigNameGenerator, SignatureAlgorithmIdentifierFinder sigAlgorithmFinder, ContentVerifierProvider verifierProvider, DigestCalculatorProvider digestProvider)	
-//            	new SignerInformationVerifier(
-//            			new JcaContentVerifierProviderBuilder().setProvider(new BouncyCastleProvider()).build(cert.getPublicKey()),
-//            			new BcDigestCalculatorProvider()
-//            		)
-            		new SignerInformationVerifier(
-			            	new	DefaultCMSSignatureAlgorithmNameGenerator(),
-			            	new DefaultSignatureAlgorithmIdentifierFinder(),
-			            	contentVerifierProvider,
-			            	digestCalculatorProvider)
-            	)) {
-            	throw new CMSException("Firma no valida"); //$NON-NLS-1$
-            }
-
-            // Si es el primer firmante que encontramos, recogemos su cadena de certificacion
-            if (certChain == null) {
-				certChain = new ArrayList<>();
-				certChain.add(cert);
-				while (certIt.hasNext()) {
-					final X509Certificate caCert = (X509Certificate) certFactory.generateCertificate(
-			        		new ByteArrayInputStream(certIt.next().getEncoded()));
-					certChain.add(caCert);
-				}
-			}
-        }
-
-        return certChain != null ? certChain.toArray(new X509Certificate[0]) : null;
-    }
 
 }

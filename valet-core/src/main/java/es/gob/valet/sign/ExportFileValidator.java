@@ -51,7 +51,7 @@ public class ExportFileValidator {
 	private static final String ZIP_ENTRY_HASHES_FILE = ZIP_ENTRY_METAINF_SUFIX + "files_hash.properties"; //$NON-NLS-1$
 	private static final String ZIP_ENTRY_SIGNATURE_FILE = ZIP_ENTRY_METAINF_SUFIX + "signature.p7s"; //$NON-NLS-1$
 
-	private static final String HASH_ENTRY_SUFFIX = "/certification_policies/"; //$NON-NLS-1$
+	private static final String HASH_ENTRY_SUFFIX = "tsls_valet/"; //$NON-NLS-1$
 
 	private static final String HASH_ALGORITHM = "SHA-256"; //$NON-NLS-1$
 
