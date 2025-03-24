@@ -35,6 +35,7 @@
 $(document).ready(function() {
     $("#idFileImport").on("click", function() {
     	cleanSpan();
+    	$(this).val("");
     	$(this).next(".custom-file-label").text(/*[[#{form.imporTsls.field.file.choose}]]*/);
     	loading(); // Mostramos loading cuando se abre el diálogo
     });
