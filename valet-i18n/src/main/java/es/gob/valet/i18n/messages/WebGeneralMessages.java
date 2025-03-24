@@ -925,5 +925,13 @@ public class WebGeneralMessages {
 	 * Constant attribute that represents the property key <code>EXP022</code> belonging to the file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String LOG_EXP022 = "EXP022";
+	
+	public static final String LOG_EXP023 = "EXP023";
+	
+	public static final String LOG_EXP024 = "EXP024";
+	
+	public static final String LOG_EXP025 = "EXP025";
+	
+	public static final String LOG_EXP026 = "EXP026";
 
 }

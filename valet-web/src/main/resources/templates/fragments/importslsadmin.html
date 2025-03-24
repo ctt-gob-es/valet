@@ -1,0 +1,104 @@
+<div class="container-fluid">
+	<h4 class="c-grey-900 mT-10 mB-30" th:text="#{form.imporTsls.title}"></h4>
+	<div class="masonry-item col-md-9">
+		<div class="bgc-white p-20 bd">
+			<div class="mT-30">
+				<form id="imporTslsForm">
+					<div id="importslsadminError"></div>
+					<div class="form-row">
+						<div class="form-group col-sm-6">
+							<label for="idLabelSelectFile" th:text="#{form.imporTsls.label.select.file}"></label>
+							 <div class="custom-file">
+					            <input type="file" class="custom-file-input" id="idFileImport" name="idFileImport" aria-describedby="fileHelp">
+					            <label class="custom-file-label" for="idFileImport" th:text="#{form.imporTsls.field.file.choose}"></label>
+					        </div>
+					        <span id="idFileImport_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill mt-1" ></span>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-sm-6">
+							<div class="form-check">
+								<input type="checkbox" id="idOverwrite" name="idOverwrite" class="form-check-input"></input> 
+								<label for="idOverwrite" th:text="#{form.imporTsls.text.checkbox}" class="form-check-label"></label>
+							</div>
+						</div>
+					</div>
+					<div class="d-flex justify-content-end w-100">
+						<button id="startImportBtn" type="submit" class="btn btn-primary" th:utext="#{form.imporTsls.btn.start}" disabled></button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+$(document).ready(function() {
+    $("#idFileImport").on("click", function() {
+    	cleanSpan();
+    	$(this).next(".custom-file-label").text(/*[[#{form.imporTsls.field.file.choose}]]*/);
+    	loading(); // Mostramos loading cuando se abre el diálogo
+    });
+
+    $("#idFileImport").on("change", function() {
+    	var file = $(this).prop("files")[0]; // Obtenemos el archivo seleccionado
+        if (file) {
+            $(this).next(".custom-file-label").text(file.name);
+
+            var formData = new FormData();
+            
+            formData.append("tslsFile", file);
+            
+            var uploadFileImporTsls = /*[[@{/uploadFileImporTsls}]]*/;
+            $.ajax({
+                url: uploadFileImporTsls,
+                data: formData,
+                type: 'POST',
+                enctype: 'multipart/form-data;',
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data) {
+                    hide();
+                    if (data.error != "" && data.error != null) {
+                        var errores = JSON.parse(data.error);
+                        jQuery.each(errores, function(i, val) {
+                            $('#imporTslsForm *').filter('span').each(function(){
+                                if (i == $(this).attr('id')) {
+                                    $("#" + i).text(val);
+                                }
+                            });
+                        });
+                        $('#startImportBtn').attr('disabled', true);
+                    } else {
+                        $('#startImportBtn').attr('disabled', false);
+                    }
+                },
+                error: function () {
+                    hide();
+                    $("#idFileImport").val("");
+                    $('#importslsadminError').html(/*[[#{form.imporTsls.field.file.error}]]*/);
+                    $('#importslsadminError').addClass('alert alert-danger');
+                    $("#importslsadminError").fadeTo(5000, 500).slideUp(500, function() {
+                        $("#importslsadminError").slideUp(500);
+                    });    
+                }
+            });
+
+        } else {
+            hide();
+        }
+    });
+    
+    $("#idFileImport").on("cancel", function() {
+    	hide();
+    });
+});
+
+function cleanSpan(){
+	$('#imporTslsForm *').filter('span.badge').each(function(){
+		$(this).text("");				
+	});
+}
+
+
+</script>
