@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 12/03/2025.
+ * @version 1.1, 25/03/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
 /** 
  * <p>Class that represents an object that relates the code of a to the Signing Certificate DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 12/03/2025.
+ * @version 1.1, 25/03/2025.
  */
 public class SigningCertificateDTO {
 
@@ -55,6 +55,25 @@ public class SigningCertificateDTO {
     /** Error message if any occurred. */
     private String error;
 
+    /**  
+     * The start date from which the certificate is valid.  
+     * This date indicates when the certificate becomes active.  
+     */  
+    private String validFrom;  
+
+    /**  
+     * The expiration date of the certificate.  
+     * After this date, the certificate is no longer considered valid.  
+     */  
+    private String validTo;  
+
+    /**  
+     * The country associated with the certificate's subject.  
+     * This value is typically extracted from the X.509 certificate's "C" (Country) field.  
+     */  
+    private String country;
+
+    
     /**
      * Default constructor.
      */
@@ -77,6 +96,31 @@ public class SigningCertificateDTO {
         this.serialNumber = serialNumber;
         this.dateExpired = dateExpired;
         this.certificateB64 = certificateB64;
+    }
+    
+    /**
+     * Constructor to initialize a SigningCertificateDTO with certificate details.
+     *
+     * @param idSigningCertificate The ID of the signing certificate.
+     * @param issuer The issuer of the signing certificate.
+     * @param subject The subject of the signing certificate.
+     * @param serialNumber The serial number of the signing certificate.
+     * @param dateExpired The expiration date of the signing certificate.
+     * @param certificateB64 The Base64 encoded certificate.
+     * @param validFrom The start date from which the certificate is valid.
+     * @param validTo The expiration date of the certificate.
+     * @param country The country associated with the certificate's subject.
+     */
+    public SigningCertificateDTO(Long idSigningCertificate, String issuer, String subject, String serialNumber, String dateExpired, String certificateB64, String validFrom, String validTo, String country) {
+        this.idSigningCertificate = idSigningCertificate;
+        this.issuer = issuer;
+        this.subject = subject;
+        this.serialNumber = serialNumber;
+        this.dateExpired = dateExpired;
+        this.certificateB64 = certificateB64;
+        this.validFrom = validFrom;
+        this.validTo = validTo;
+        this.country = country;
     }
 
 	/**
@@ -207,4 +251,59 @@ public class SigningCertificateDTO {
 		this.error = error;
 	}
 
+	
+	/**
+	 * Gets the value of the attribute {@link #validFrom}.
+	 * @return the value of the attribute {@link #validFrom}.
+	 */
+	public String getValidFrom() {
+		return validFrom;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #validFrom}.
+	 * @param validFrom The value for the attribute {@link #validFrom}.
+	 */
+	public void setValidFrom(String validFrom) {
+		this.validFrom = validFrom;
+	}
+
+	
+	/**
+	 * Gets the value of the attribute {@link #validTo}.
+	 * @return the value of the attribute {@link #validTo}.
+	 */
+	public String getValidTo() {
+		return validTo;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #validTo}.
+	 * @param validTo The value for the attribute {@link #validTo}.
+	 */
+	public void setValidTo(String validTo) {
+		this.validTo = validTo;
+	}
+
+	
+	/**
+	 * Gets the value of the attribute {@link #country}.
+	 * @return the value of the attribute {@link #country}.
+	 */
+	public String getCountry() {
+		return country;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #country}.
+	 * @param country The value for the attribute {@link #country}.
+	 */
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	
 }
