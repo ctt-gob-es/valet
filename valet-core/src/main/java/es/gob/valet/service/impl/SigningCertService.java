@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 12/03/2025.
+ * @version 1.1, 25/03/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -33,6 +33,7 @@ import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 
+import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -55,7 +56,7 @@ import es.gob.valet.service.ifaces.ISigningCertService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p> Class that implements the communication with the operations of the persistence layer for Signing Certificate.</p>
- * @version 1.0, 12/03/2025.
+ * @version 1.1, 25/03/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -89,8 +90,11 @@ public class SigningCertService implements ISigningCertService {
 			String subject = UtilsCertificate.getCertificateId(x509Certificate);
 			String serialNumber = UtilsCertificate.getCertificateSerialNumber(x509Certificate).toString();
 			String dateExpired = new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(signingCertificate.getDateExpired());
+			String validFrom = new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotBefore());
+			String validTo = new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotAfter());
+			String country = UtilsCertificate.getRDNFirstValueFromX500Principal(x509Certificate.getSubjectX500Principal(), X509ObjectIdentifiers.countryName);
 			String certificateB64 = Base64.getEncoder().encodeToString(x509Certificate.getEncoded());
-			signingCertificateDTO = new SigningCertificateDTO(signingCertificate.getIdSigningCertificate(), issuer, subject, serialNumber, dateExpired, certificateB64);
+			signingCertificateDTO = new SigningCertificateDTO(signingCertificate.getIdSigningCertificate(), issuer, subject, serialNumber, dateExpired, certificateB64, validFrom, validTo, country);
 		}
 		return signingCertificateDTO;
 	}

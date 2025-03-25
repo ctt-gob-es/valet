@@ -1,0 +1,100 @@
+<!-- Modal para ver información del certificado firmante -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalInfoSigningCert" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{modal.imporTsls.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{modal.imporTsls.btn.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form name="altEditor-form" role="form" id="infoSigningCertForm" th:object="${signingCertificateDTO}">
+					<div id="messageInfoSigningCert" role="alert"></div>
+					
+					<input type='hidden' id="idSigningCertificate" th:field="*{idSigningCertificate}">
+					<input type='hidden' id="certificateB64" th:field="*{certificateB64}">
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="subjectSigningCertForm" th:text="#{modal.imporTsls.field.subject}"></label> 
+							<input type="text" class="form-control" id="subjectSigningCertForm" name="subjectSigningCertForm" th:field="*{subject}" disabled>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="issuerSigningCertForm" th:text="#{modal.imporTsls.field.issuer}"></label> 
+							<input type="text" class="form-control" id="issuerSigningCertForm" name="issuerSigningCertForm" th:field="*{issuer}" disabled>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="validFromSigningCertForm" th:text="#{modal.imporTsls.field.valid.from}"></label> 
+							<input type="text" class="form-control" id="validFromSigningCertForm" name="validFromSigningCertForm" th:field="*{validFrom}" disabled>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="validToSigningCertForm" th:text="#{modal.imporTsls.field.valid.to}"></label> 
+							<input type="text" class="form-control" id="validToSigningCertForm" name="validToSigningCertForm" th:field="*{validTo}" disabled>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="countrySigningCertForm" th:text="#{modal.imporTsls.field.country}"></label> 
+							<input type="text" class="form-control" id="countrySigningCertForm" name="countrySigningCertForm" th:field="*{country}" disabled>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">	
+				<button id="downloadBtn" type="submit" class="btn btn-primary" th:utext="#{modal.imporTsls.btn.download}"></button>
+				<button id="continueImpBtn" type="submit" class="btn btn-primary" th:utext="#{modal.imporTsls.btn.continue}"></button>
+				<button id="cancelBtn" type="submit" class="btn btn-default" th:utext="#{modal.imporTsls.btn.cancel}" onclick="closeModalInfoSigningCert('modalInfoSigningCert')"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+
+$(document).ready(function() {
+	
+	 // Verificamos si certificateB64 está vacío para deshabilitar los botones si es necesario
+    if (!$("#certificateB64").val().trim()) {
+        $("#downloadBtn, #continueImpBtn, #cancelBtn").prop("disabled", true);
+    }
+	
+	$("#downloadBtn").click(function (event){
+		event.preventDefault();
+		
+		var keystoreBlob = b64toBlob($("#certificateB64").val(), 'application/x-x509-ca-cert');
+		var fileName = "CertificadoFirmante.cer";
+		
+		var reader = new FileReader();
+		reader.onload = function(event) {
+			var save = document.createElement('a');
+			save.href = event.target.result;
+			save.target = '_blank';
+			save.download = fileName || 'certificado.cer';
+			var clicEvent = new MouseEvent('click', {
+				'view' : window,
+				'bubbles' : true,
+				'cancelable' : true
+			});
+			save.dispatchEvent(clicEvent);
+			(window.URL || window.webkitURL)
+					.revokeObjectURL(save.href);
+						
+		};
+		reader.readAsDataURL(keystoreBlob);
+	});
+});
+
+//Funcion para cerrar el modal
+function closeModalInfoSigningCert(modalId){
+	$('#' + modalId).modal('hide');
+	$('.modal-backdrop').remove();
+}
+
+</script>

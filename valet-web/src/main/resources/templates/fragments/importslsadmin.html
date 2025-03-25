@@ -76,7 +76,6 @@ $(document).ready(function() {
                 },
                 error: function () {
                     hide();
-                    $("#idFileImport").val("");
                     $('#importslsadminError').html(/*[[#{form.imporTsls.field.file.error}]]*/);
                     $('#importslsadminError').addClass('alert alert-danger');
                     $("#importslsadminError").fadeTo(5000, 500).slideUp(500, function() {
@@ -92,6 +91,22 @@ $(document).ready(function() {
     
     $("#idFileImport").on("cancel", function() {
     	hide();
+    });
+    
+    $("#startImportBtn").on("click", function(event) {
+    	event.preventDefault();
+    	var viewInfoSigningCert = /*[[@{/viewInfoSigningCert}]]*/;
+		loading();
+		$.ajax({
+			url: viewInfoSigningCert,
+			type: 'POST',
+			cache: false,
+			success: function(xhr) {
+				hide();
+				$('#modal').html(xhr);
+				$('#modalInfoSigningCert').modal('show');
+			}
+		});
     });
 });
 
