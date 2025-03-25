@@ -60,11 +60,6 @@
 
 $(document).ready(function() {
 	
-	 // Verificamos si certificateB64 está vacío para deshabilitar los botones si es necesario
-    if (!$("#certificateB64").val().trim()) {
-        $("#downloadBtn, #continueImpBtn, #cancelBtn").prop("disabled", true);
-    }
-	
 	$("#downloadBtn").click(function (event){
 		event.preventDefault();
 		

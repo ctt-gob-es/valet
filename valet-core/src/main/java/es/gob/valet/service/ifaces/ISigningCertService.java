@@ -27,7 +27,9 @@ package es.gob.valet.service.ifaces;
 import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -74,4 +76,14 @@ public interface ISigningCertService {
 	 * This operation is performed within a transactional context.
 	 */
 	void deleteSigningCert();
+	
+	/**
+	 * Retrieves the details of a signing certificate and maps them into a SigningCertificateDTO.
+	 * 
+	 * @param signingCertificate The X509 certificate to extract details from.
+	 * @return A SigningCertificateDTO containing the certificate details.
+	 * @throws CertificateEncodingException If there is an error encoding the certificate.
+	 * @throws CommonUtilsException If any utility-related error occurs during processing.
+	 */
+	SigningCertificateDTO obtainSigningCertificate(X509Certificate signingCertificate) throws CertificateEncodingException, CommonUtilsException;
 }

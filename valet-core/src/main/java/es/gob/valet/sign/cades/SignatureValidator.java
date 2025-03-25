@@ -14,9 +14,7 @@ import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
@@ -52,10 +50,10 @@ public final class SignatureValidator {
      * @param data Datos firmados o {@code null} si se desea comprobar contra los datos incrustados
      *             en la firma.
      * @param checkCertificates Indica si debe comprobarse o no el periodo de validez de los certificados.
-     * @return Validez de la firma.
+     * @return El certificado que hizo la firma.
      * @throws SignatureException Cuando la firma no es correcta o no se ha podido validar.
      */
-    public static X509Certificate[] validate(final byte[] sign,
+    public static X509Certificate validate(final byte[] sign,
     		                            final byte[] data) throws SignatureException {
     	if (sign == null) {
     		throw new IllegalArgumentException("La firma a validar no puede ser nula"); //$NON-NLS-1$
@@ -65,7 +63,7 @@ public final class SignatureValidator {
     		throw new SignatureException("No es una firma CAdES"); //$NON-NLS-1$
     	}
 
-    	X509Certificate[] certChain;
+    	X509Certificate certChain;
     	try {
     		certChain = verifySignatures(sign, data);
 	    }
@@ -86,7 +84,7 @@ public final class SignatureValidator {
      * @throws CMSException Cuando la firma no tenga una estructura v&aacute;lida.
      * @throws IOException Cuando no se puede crear un certificado desde la firma para validarlo.
      * @throws OperatorCreationException Cuando no se puede crear el validado de contenido de firma. */
-	private static X509Certificate[ ] verifySignatures(final byte[ ] sign, final byte[ ] data) throws CMSException, CertificateException, IOException, OperatorCreationException {
+	private static X509Certificate verifySignatures(final byte[ ] sign, final byte[ ] data) throws CMSException, CertificateException, IOException, OperatorCreationException {
 		
 		final CertificateFactory certFactory = CertificateFactory.getInstance("X.509"); //$NON-NLS-1$
 		
@@ -121,15 +119,7 @@ public final class SignatureValidator {
 			throw new CMSException("Firma no válida"); //$NON-NLS-1$
 		}
 
-		// Construcción de la cadena de certificación (si aplica)
-		List<X509Certificate> certChain = new ArrayList<>();
-		certChain.add(cert);
-		while (certIt.hasNext()) {
-			X509Certificate caCert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(certIt.next().getEncoded()));
-			certChain.add(caCert);
-		}
-
-		return certChain.toArray(new X509Certificate[0]);
+		return cert;
 	}
 
 

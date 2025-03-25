@@ -26,6 +26,9 @@ package es.gob.valet.rest.controller;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.security.cert.X509Certificate;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -82,11 +85,11 @@ public class ImporTslsRestController {
 	 * @return An {@link ImporTslsDTO} containing validation results or errors.  
 	 */  
 	@RequestMapping(value = "/uploadFileImporTsls", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)  
-	public @ResponseBody ImporTslsDTO updateSigningCert(@RequestPart("tslsFile") final MultipartFile tslsFile) {  
+	public @ResponseBody ImporTslsDTO updateSigningCert(@RequestPart("tslsFile") final MultipartFile tslsFile, HttpSession httpSession) {  
 	    ImporTslsDTO imporTslsDTO = new ImporTslsDTO();  
 	    JSONObject json = new JSONObject();  
 
-	    this.validateInputsUpdate(tslsFile, json);  
+	    this.validateInputsUpdate(tslsFile, json, httpSession);  
 	    if (json.length() > 0) {  
 	        imporTslsDTO.setError(json.toString());  
 	    }  
@@ -100,8 +103,9 @@ public class ImporTslsRestController {
 	 *  
 	 * @param tslsFile The uploaded TSLS file.  
 	 * @param json The JSON object where validation errors will be recorded.  
+	 * @param httpSession 
 	 */  
-	private void validateInputsUpdate(MultipartFile tslsFile, JSONObject json) {
+	private void validateInputsUpdate(MultipartFile tslsFile, JSONObject json, HttpSession httpSession) {
 	    // Inicializamos el mensaje de error a null
 	    String msgError = null;
 
@@ -124,7 +128,10 @@ public class ImporTslsRestController {
 	    	 try {
 		            byte[] content = IOUtils.toByteArray(tslsFile.getInputStream());
 		            // Validación del archivo exportado
-		            ExportFileValidator.validateExportFile(content);
+		            X509Certificate signingCertificate = ExportFileValidator.validateExportFile(content);
+		            
+		            // Almacenamos el certificado de la firma en la session para recuperarlo en el endpoint /viewInfoSigningCert
+		            httpSession.setAttribute("signingCertificate", signingCertificate);
 		        } catch (Exception e) {
 		            LOGGER.error(e);
 		            msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP026);
