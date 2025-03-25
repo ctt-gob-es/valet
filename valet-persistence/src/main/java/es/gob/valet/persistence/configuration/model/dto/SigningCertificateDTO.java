@@ -97,31 +97,25 @@ public class SigningCertificateDTO {
         this.dateExpired = dateExpired;
         this.certificateB64 = certificateB64;
     }
-    
+   
     /**
      * Constructor to initialize a SigningCertificateDTO with certificate details.
      *
-     * @param idSigningCertificate The ID of the signing certificate.
      * @param issuer The issuer of the signing certificate.
      * @param subject The subject of the signing certificate.
-     * @param serialNumber The serial number of the signing certificate.
-     * @param dateExpired The expiration date of the signing certificate.
      * @param certificateB64 The Base64 encoded certificate.
      * @param validFrom The start date from which the certificate is valid.
      * @param validTo The expiration date of the certificate.
      * @param country The country associated with the certificate's subject.
      */
-    public SigningCertificateDTO(Long idSigningCertificate, String issuer, String subject, String serialNumber, String dateExpired, String certificateB64, String validFrom, String validTo, String country) {
-        this.idSigningCertificate = idSigningCertificate;
-        this.issuer = issuer;
+	public SigningCertificateDTO(String issuer, String subject, String certificateB64, String validFrom, String validTo, String country) {
+		this.issuer = issuer;
         this.subject = subject;
-        this.serialNumber = serialNumber;
-        this.dateExpired = dateExpired;
         this.certificateB64 = certificateB64;
         this.validFrom = validFrom;
         this.validTo = validTo;
         this.country = country;
-    }
+	}
 
 	/**
 	 * Gets the value of the attribute {@link #idSigningCertificate}.

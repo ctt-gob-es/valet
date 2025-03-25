@@ -28,10 +28,13 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +77,46 @@ public class SigningCertService implements ISigningCertService {
 	private SigningCertificateRepository signingCertificateRepository;
 	
 	/**
+	 * Constant representing the issuer of the certificate.
+	 */
+	public static final String ISSUER = "issuer";
+
+	/**
+	 * Constant representing the subject of the certificate.
+	 */
+	public static final String SUBJECT = "subject";
+
+	/**
+	 * Constant representing the serial number of the certificate.
+	 */
+	public static final String SERIAL_NUMBER = "serialNumber";
+
+	/**
+	 * Constant representing the expiration date of the certificate.
+	 */
+	public static final String DATE_EXPIRED = "dateExpired";
+
+	/**
+	 * Constant representing the start date (valid from) of the certificate.
+	 */
+	public static final String VALID_FROM = "validFrom";
+
+	/**
+	 * Constant representing the end date (valid to) of the certificate.
+	 */
+	public static final String VALID_TO = "validTo";
+
+	/**
+	 * Constant representing the country from the certificate's subject.
+	 */
+	public static final String COUNTRY = "country";
+
+	/**
+	 * Constant representing the Base64 encoded certificate.
+	 */
+	public static final String CERTIFICATE_B64 = "certificateB64";
+	    
+	/**
 	 * 
 	 * {@inheritDoc}
 	 * @see es.gob.valet.service.ifaces.ISigningCertService#obtainSigningCertificate()
@@ -86,18 +129,47 @@ public class SigningCertService implements ISigningCertService {
 			String passwordKeystore = AESCipher.getInstance().decryptMessageBC(signingCertificate.getKeystorePassword());
 			KeyStore keyStore = UtilsKeystore.loadKsPKCS12(byteKeystore, passwordKeystore);
 			X509Certificate x509Certificate = UtilsKeystore.listAllX509Certificate(keyStore).get(NumberConstants.NUM0);
-			String issuer = UtilsCertificate.getCertificateIssuerId(x509Certificate);
-			String subject = UtilsCertificate.getCertificateId(x509Certificate);
-			String serialNumber = UtilsCertificate.getCertificateSerialNumber(x509Certificate).toString();
-			String dateExpired = new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(signingCertificate.getDateExpired());
-			String validFrom = new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotBefore());
-			String validTo = new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotAfter());
-			String country = UtilsCertificate.getRDNFirstValueFromX500Principal(x509Certificate.getSubjectX500Principal(), X509ObjectIdentifiers.countryName);
-			String certificateB64 = Base64.getEncoder().encodeToString(x509Certificate.getEncoded());
-			signingCertificateDTO = new SigningCertificateDTO(signingCertificate.getIdSigningCertificate(), issuer, subject, serialNumber, dateExpired, certificateB64, validFrom, validTo, country);
+			Map<String, String> mapCertificate = this.getCertificateDetailsMap(x509Certificate);
+			signingCertificateDTO = new SigningCertificateDTO(signingCertificate.getIdSigningCertificate(), mapCertificate.get(ISSUER), mapCertificate.get(SUBJECT), mapCertificate.get(SERIAL_NUMBER), mapCertificate.get(DATE_EXPIRED), mapCertificate.get(CERTIFICATE_B64));
 		}
 		return signingCertificateDTO;
 	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ISigningCertService#obtainSigningCertificate(java.security.cert.X509Certificate)
+	 */
+	public SigningCertificateDTO obtainSigningCertificate(X509Certificate signingCertificate) throws CertificateEncodingException, CommonUtilsException {
+		Map<String, String> mapCertificate = this.getCertificateDetailsMap(signingCertificate);
+		SigningCertificateDTO signingCertificateDTO  = new SigningCertificateDTO(mapCertificate.get(ISSUER), mapCertificate.get(SUBJECT), mapCertificate.get(CERTIFICATE_B64), mapCertificate.get(VALID_FROM), mapCertificate.get(VALID_TO), mapCertificate.get(COUNTRY));
+		return signingCertificateDTO;
+	}
+	
+	/**
+	 * Stores the details of the given X509 certificate in a map.
+	 * The map includes the certificate issuer, subject, serial number, expiration dates,
+	 * country information, and the certificate in Base64 encoding.
+	 * 
+	 * @param x509Certificate The X509 certificate to extract details from.
+	 * @return A map containing the certificate details with keys as constants and values as corresponding certificate data.
+	 * @throws CommonUtilsException If any utility-related error occurs during processing.
+	 * @throws CertificateEncodingException If there is an error encoding the certificate.
+	 */
+    private Map<String, String> getCertificateDetailsMap(X509Certificate x509Certificate) throws CommonUtilsException, CertificateEncodingException {
+        Map<String, String> certificateDetails = new HashMap<>();
+        
+        certificateDetails.put(ISSUER, UtilsCertificate.getCertificateIssuerId(x509Certificate));
+        certificateDetails.put(SUBJECT, UtilsCertificate.getCertificateId(x509Certificate));
+        certificateDetails.put(SERIAL_NUMBER, UtilsCertificate.getCertificateSerialNumber(x509Certificate).toString());
+        certificateDetails.put(DATE_EXPIRED, new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotBefore()));
+        certificateDetails.put(VALID_FROM, new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotBefore()));
+        certificateDetails.put(VALID_TO, new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotAfter()));
+        certificateDetails.put(COUNTRY, UtilsCertificate.getRDNFirstValueFromX500Principal(x509Certificate.getSubjectX500Principal(), X509ObjectIdentifiers.countryName));
+        certificateDetails.put(CERTIFICATE_B64, Base64.getEncoder().encodeToString(x509Certificate.getEncoded()));
+
+        return certificateDetails;
+    }
 
 	/**
 	 * 

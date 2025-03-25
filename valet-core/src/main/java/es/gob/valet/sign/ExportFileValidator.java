@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>30/12/2022.</p>
  * @author Gobierno de España.
- * @version 1.0, 30/12/2022.
+ * @version 1.1, 25/03/2025.
  */
 package es.gob.valet.sign;
 
@@ -43,7 +43,7 @@ import es.gob.valet.sign.cades.SignatureValidator;
 /** 
  * <p>Class that validates the signature of a hash in CADES-BES format.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 30/12/2022.
+ * @version 1.1, 25/03/2025.
  */
 public class ExportFileValidator {
 
@@ -60,19 +60,19 @@ public class ExportFileValidator {
 	/**
 	 * Valida un fichero de exportaci&oacute;n firmado.
 	 * @param exportFileData Contenido del fichero de exportaci&oacute;n.
-	 * @return Cadena de certificaci&oacute;n utilizada para la firma del fichero.
+	 * @return El certificado utilizado para firmar.
 	 * @throws IOException Cuando ocurre un error durante la lectura de los datos.
 	 * @throws SecurityException Cuando se detecta que el fichero de exportacion ha sido
 	 * modificado o est&aacute; corrupto.
 	 */
-	public static X509Certificate[] validateExportFile(final byte[] exportFileData)
+	public static X509Certificate validateExportFile(final byte[] exportFileData)
 			throws IOException, SecurityException {
 
 		// Obtenemos el fichero de hashes y el de firma
 		final ExportationCryptoFiles cryptoInfo = extractSignatureFiles(exportFileData);
 
 		// Validamos la firma
-		X509Certificate[] certificate;
+		X509Certificate certificate;
 		try {
 			certificate = verifySignature(cryptoInfo);
 		} catch (final SignatureException e) {
@@ -148,11 +148,11 @@ public class ExportFileValidator {
 	/**
 	 * Verifica la firma del fichero de exportaci&oacute;n.
 	 * @param cryptoFiles Conjunto de ficheros para la validaci&oacute;n.
-	 * @return Cadena de certificaci&oacute;n utilizada para firmar.
+	 * @return El certificado que hizo la firma.
 	 * @throws SignatureException Cuando la firma no es v&aacute;lida.
 	 * @throws IOException Cuando ocurre un error de lectura de los datos.
 	 */
-	private static X509Certificate[] verifySignature(final ExportationCryptoFiles cryptoFiles) throws IOException, SignatureException {
+	private static X509Certificate verifySignature(final ExportationCryptoFiles cryptoFiles) throws IOException, SignatureException {
 		return SignatureValidator.validate(cryptoFiles.getSignature(), cryptoFiles.getFileHash());
 	}
 

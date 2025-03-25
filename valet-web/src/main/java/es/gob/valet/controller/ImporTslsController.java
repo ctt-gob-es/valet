@@ -24,6 +24,10 @@
  */
 package es.gob.valet.controller;
 
+import java.security.cert.X509Certificate;
+
+import javax.servlet.http.HttpSession;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,10 +76,14 @@ public class ImporTslsController {
 	 * @return The path to the view template displaying the signing certificate information.
 	 */
 	@RequestMapping(value = "viewInfoSigningCert", method = RequestMethod.POST)
-	public String viewInfoSigningCert(final Model model) {
+	public String viewInfoSigningCert(final Model model, HttpSession httpSession) {
+		
+		// Obtenemos el firmante del zip a partir de la sesion
+		X509Certificate signingCertificate = (X509Certificate) httpSession.getAttribute("signingCertificate");
+		
 	    SigningCertificateDTO signingCertificateDTO = null; 
 	    try {
-	        signingCertificateDTO = iSigningCertService.obtainSigningCertificate();
+	        signingCertificateDTO = iSigningCertService.obtainSigningCertificate(signingCertificate);
 	    } catch (Exception e) {
 	        LOGGER.error(e);
 	    }
