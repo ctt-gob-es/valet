@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.15, 20/10/2022.
+ * @version 2.0, 28/03/2025.
  */
 package es.gob.valet.tsl.access;
 
@@ -96,7 +96,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.16, 22/02/2023.
+ * @version 2.0, 28/03/2025.
  */
 public final class TSLManager {
 
@@ -1975,18 +1975,17 @@ public final class TSLManager {
 	}
 
 	/**
-	 * Adds a new TSL Data in the data base and in the cache.
-	 * @param urlTsl URL location for the TSL.
-	 * @param tslSpecification TSL Specification that covers the input TSL.
-	 * @param tslSpecificationVersion TSL Specification Version that covers the input TSL.
-	 * @param tslXMLbytes Array of bytes that defines the TSL in a XML format.
-	 * @return TSL Data data base object representation of the TSL data added. <code>null</code> if
-	 * some input parameter is not correctly defined.
-	 * @throws TSLManagingException In case of some error adding the TSL in the data base or the cache.
+	 * Parses a TSL (Trusted Service List) from the provided XML byte array and retrieves 
+	 * the associated certificate from its signature.
+	 *
+	 * @param urlTsl The URL of the TSL.
+	 * @param tslSpecification The specification of the TSL.
+	 * @param tslSpecificationVersion The version of the TSL specification.
+	 * @param tslXMLbytes The TSL XML content as a byte array.
+	 * @return The parsed ITSLObject if successful, otherwise null.
+	 * @throws TSLManagingException If an error occurs during parsing or validation.
 	 */
-	public TslData addNewTSLData(String urlTsl, String tslSpecification, String tslSpecificationVersion, byte[ ] tslXMLbytes) throws TSLManagingException {
-
-		TslData result = null;
+	public ITSLObject obtainTslAndCertFromSign(String urlTsl, String tslSpecification, String tslSpecificationVersion, byte[ ] tslXMLbytes) throws TSLManagingException {
 
 		// Comprobamos que los parámetros de entrada sean válidos.
 		if (!UtilsStringChar.isNullOrEmptyTrim(tslSpecification) && !UtilsStringChar.isNullOrEmptyTrim(tslSpecificationVersion) && tslXMLbytes != null) {
@@ -2013,54 +2012,90 @@ public final class TSLManager {
 				UtilsResources.safeCloseInputStream(bais);
 			}
 
-			// Una vez parseada la TSL, comprobamos a que país/region pertenece.
-			String schemeTerritory = tslObject.getSchemeInformation().getSchemeTerritory();
-
-			try {
-
-				// Recuperamos de la caché el país/región.
-				TSLCountryRegionCacheObject tcrco = ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(schemeTerritory);
-
-				// Si es nulo, lo añadimos en base de datos y lo volvemos a
-				// recuperar.
-				if (tcrco == null) {
-
-					addNewTSLCountryRegionInDataBase(schemeTerritory);
-					tcrco = ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(schemeTerritory);
-
-				}
-
-				// Si el país/región ya tiene un TSL Data asociado, lo
-				// eliminamos.
-				if (tcrco.getTslDataId() != null) {
-
-					removeTSLData(tcrco.getCode(), tcrco.getTslDataId());
-
-				}
-
-				// Añadimos un nuevo TSL Data asociado al país/región.
-				TslData td = addNewTSLDataInDataBase(tcrco.getCountryRegionId(), urlTsl, tslXMLbytes, tslObject);
-
-				// Y ahora lo añadimos en la caché compartida.
-				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
-
-				// Asignamos como resultado el objeto de base de datos.
-				result = td;
-
-				// se actualiza la información en los datos del arbol de mapeos
-				// de
-				// TSLs.
-				updateMapTslMappingTree(td.getTslCountryRegion().getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
-
-			} catch (Exception e) {
-				throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171), e);
-			}
+			return tslObject;
 
 		}
 
-		return result;
-
+		return null;
 	}
+	
+	/**
+	 *Adds a new TSL Data in the data base and in the cache.
+	 * @param urlTsl URL location for the TSL.
+	 * @param tslSpecification TSL Specification that covers the input TSL.
+	 * @param tslSpecificationVersion TSL Specification Version that covers the input TSL.
+	 * @param tslXMLbytes Array of bytes that defines the TSL in a XML format.
+	 * @return TSL Data data base object representation of the TSL data added. <code>null</code> if
+	 * some input parameter is not correctly defined.
+	 * @throws TSLManagingException In case of some error adding the TSL in the data base or the cache.
+	*/
+	public TslData addNewTSLData(ITSLObject tslObject, String urlTsl, byte[ ] tslXMLbytes) throws TSLManagingException {
+		TslData result;
+
+		// Una vez parseada la TSL, comprobamos a que país/region pertenece.
+		String schemeTerritory = tslObject.getSchemeInformation().getSchemeTerritory();
+
+		try {
+			// Recuperamos de la caché el país/región.
+			TSLCountryRegionCacheObject tcrco = ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(schemeTerritory);
+
+			// Si es nulo, lo añadimos en base de datos y lo volvemos a
+			// recuperar.
+			if (tcrco == null) {
+
+				addNewTSLCountryRegionInDataBase(schemeTerritory);
+				tcrco = ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(schemeTerritory);
+
+			}
+			
+			// Recuperamos el país/región.
+			TslCountryRegion tcrp = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getTslCountryRegionById(tcrco.getCountryRegionId(), false);
+
+			// Recuperamos la constante que representa la especificación y versión asociada a la TSL.
+			CTslImpl ctip = null;
+			List<CTslImpl> cTslImplList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService().getAllCTSLImpl();
+			for (CTslImpl ctslImplPojo: cTslImplList) {
+
+				if (tslObject.getSpecification().equals(ctslImplPojo.getSpecification()) && tslObject.getSpecificationVersion().equals(ctslImplPojo.getVersion())) {
+					ctip = ctslImplPojo;
+				}
+
+			}
+
+			// Evaluamos si la tsl existe
+			TslData tslData = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslByCountryAndSequenceNumber(tcrp, tslObject.getSchemeInformation().getTslSequenceNumber());
+			if (tslData != null) {
+				throw new TSLManagingException(IValetException.COD_204, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171));
+			}
+						
+			// Si el país/región ya tiene un TSL Data asociado, lo
+			// eliminamos.
+			if (tcrco.getTslDataId() != null) {
+
+				removeTSLData(tcrco.getCode(), tcrco.getTslDataId());
+
+			}
+			
+			// Añadimos un nuevo TSL Data asociado al país/región.
+			TslData td = addNewTSLDataInDataBase(tcrp, ctip, urlTsl, tslXMLbytes, tslObject);
+
+			// Y ahora lo añadimos en la caché compartida.
+			ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
+
+			// Asignamos como resultado el objeto de base de datos.
+			result = td;
+
+			// se actualiza la información en los datos del arbol de mapeos de TSLs.
+			updateMapTslMappingTree(td.getTslCountryRegion().getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
+		} catch (TSLManagingException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new TSLManagingException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171), e);
+		}
+
+		return result;
+	}
+ 
 
 	/**
 	 * Adds a new TSL Country Region in the data base.
@@ -2084,28 +2119,12 @@ public final class TSLManager {
 
 	/**
 	 * Add a new TSL Data in the data base.
-	 * @param countryRegionId Country/Region ID to which add the new TSL Data.
 	 * @param urlTsl URL location for the TSL.
 	 * @param tslXMLbytes Array of bytes that represents the XML of the TSL.
 	 * @param tslObject TSL Object representation (already parsed).
 	 * @return the TSL Data POJO added.
 	 */
-	private TslData addNewTSLDataInDataBase(long countryRegionId, String urlTsl, byte[ ] tslXMLbytes, ITSLObject tslObject) {
-
-		// Primero recuperamos el país/región.
-		TslCountryRegion tcrp = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getTslCountryRegionById(countryRegionId, false);
-
-		// Recuperamos la constante que representa la especificación y versión
-		// asociada a la TSL.
-		CTslImpl ctip = null;
-		List<CTslImpl> cTslImplList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService().getAllCTSLImpl();
-		for (CTslImpl ctslImplPojo: cTslImplList) {
-
-			if (tslObject.getSpecification().equals(ctslImplPojo.getSpecification()) && tslObject.getSpecificationVersion().equals(ctslImplPojo.getVersion())) {
-				ctip = ctslImplPojo;
-			}
-
-		}
+	private TslData addNewTSLDataInDataBase(TslCountryRegion tcrp, CTslImpl ctip, String urlTsl, byte[ ] tslXMLbytes, ITSLObject tslObject) {
 
 		// Counstruimos el TslDataPojo y vamos insertando los datos.
 		TslData td = new TslData();

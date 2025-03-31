@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 07/06/2021.
+ * @version 1.5, 28/03/2025.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -37,7 +37,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to TslData.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 07/06/2021.
+ * @version 1.5, 28/03/2025.
  */
 public interface ITslDataService {
 
@@ -111,5 +111,14 @@ public interface ITslDataService {
 	 * @return Object that represents a list of TslCountryVersionDTO.
 	 */
 	List<TslCountryVersionDTO> getTslCountryVersionAvailable();
+
+	/**
+	 * Retrieves a {@link TslData} entity based on the specified country/region and sequence number.
+	 *
+	 * @param tcrp The {@link TslCountryRegion} entity representing the country or region.
+	 * @param tslSequenceNumber The sequence number of the TSL data.
+	 * @return The {@link TslData} entity matching the given criteria, or {@code null} if no match is found.
+	 */
+	TslData getTslByCountryAndSequenceNumber(TslCountryRegion tcrp, int tslSequenceNumber);
 
 }

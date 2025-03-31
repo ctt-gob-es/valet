@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 12/03/2025.
+ * @version 1.1, 28/03/2025.
  */
 package es.gob.valet.service.ifaces;
 
@@ -30,6 +30,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,7 +41,7 @@ import es.gob.valet.persistence.configuration.model.dto.SigningCertificateDTO;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer in relation of the Signing Certificate entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 12/03/2025.
+ * @version 1.1, 28/03/2025.
  */
 public interface ISigningCertService {
 	/**
@@ -86,4 +87,16 @@ public interface ISigningCertService {
 	 * @throws CommonUtilsException If any utility-related error occurs during processing.
 	 */
 	SigningCertificateDTO obtainSigningCertificate(X509Certificate signingCertificate) throws CertificateEncodingException, CommonUtilsException;
+	
+	/**
+	 * Stores the details of the given X509 certificate in a map.
+	 * The map includes the certificate issuer, subject, serial number, expiration dates,
+	 * country information, and the certificate in Base64 encoding.
+	 * 
+	 * @param x509Certificate The X509 certificate to extract details from.
+	 * @return A map containing the certificate details with keys as constants and values as corresponding certificate data.
+	 * @throws CommonUtilsException If any utility-related error occurs during processing.
+	 * @throws CertificateEncodingException If there is an error encoding the certificate.
+	 */
+	Map<String, String> getCertificateDetailsMap(X509Certificate x509Certificate) throws CommonUtilsException, CertificateEncodingException;
 }

@@ -21,14 +21,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 17/01/2024.
+ * @version 1.6, 28/03/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.KeyStore;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
@@ -36,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.SchemaType;
@@ -50,15 +50,11 @@ import es.gob.afirma.core.signers.AOSimpleSignInfo;
 import es.gob.afirma.core.util.tree.AOTreeModel;
 import es.gob.afirma.core.util.tree.AOTreeNode;
 import es.gob.afirma.signers.xades.AOXAdESSigner;
-import es.gob.valet.commons.utils.UtilsCertificate;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
-import es.gob.valet.persistence.ManagerPersistenceServices;
-import es.gob.valet.persistence.configuration.model.entity.Keystore;
-import es.gob.valet.persistence.configuration.model.utils.IKeystoreIdConstants;
 import es.gob.valet.tsl.access.TSLProperties;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
@@ -73,7 +69,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * <p>Abstract class that represents a TSL data checker with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 17/01/2024.
+ * @version 1.6, 28/03/2025.
  */
 public abstract class ATSLChecker implements ITSLChecker {
 
@@ -115,14 +111,14 @@ public abstract class ATSLChecker implements ITSLChecker {
 	protected final ITSLObject getTSLObject() {
 		return tsl;
 	}
-
+	
 	/**
+	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLChecker#checkTSLValues(boolean, byte[])
+	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLChecker#checkTSLValues(boolean, byte[], java.util.concurrent.atomic.AtomicReference)
 	 */
 	@Override
-	public final void checkTSLValues(boolean checkSignature, byte[ ] fullTSLxml) throws TSLMalformedException {
-
+	public final void checkTSLValues(boolean checkSignature, byte[ ] fullTSLxml, AtomicReference<X509Certificate> signTsl) throws TSLMalformedException {
 		// Comprobamos el atributo TSLTag
 		checkTSLTag();
 		// Comprobamos los valores contenidos en el Scheme Information.
@@ -131,9 +127,8 @@ public abstract class ATSLChecker implements ITSLChecker {
 		checkTSPlist();
 		// Comprobamos la firma si es necesario.
 		if (checkSignature) {
-			checkTSLSignature(fullTSLxml);
+			checkAndObtainTSLSignature(fullTSLxml, signTsl);
 		}
-
 	}
 
 	/**
@@ -1288,13 +1283,15 @@ public abstract class ATSLChecker implements ITSLChecker {
 	}
 
 	/**
-	 * Checks if must be defined (according to its specification and version) or not the TSL signature.
-	 * Also checks the integrity of the signature.
-	 * @param fullTSLxml Byte array that represents the full TSL xml to check the signature.
-	 * @throws TSLMalformedException In case of some data has not a correct value.
+	 * Checks whether the TSL signature must be defined according to its specification and version.
+	 * Also verifies the integrity and compliance of the signature.
+	 *
+	 * @param fullTSLxml Byte array representing the full TSL XML used for signature validation.
+	 * @param signTsl Atomic reference to store the extracted TSL signing certificate.
+	 * @throws TSLMalformedException If any data is incorrect or does not comply with the expected format.
 	 */
-	public final void checkTSLSignature(byte[ ] fullTSLxml) throws TSLMalformedException {
-
+	public final void checkAndObtainTSLSignature(byte[ ] fullTSLxml, AtomicReference<X509Certificate> signTsl) throws TSLMalformedException {
+		
 		// Comprobamos por cada especificación, si obligatoriamente debe estar
 		// la firma.
 		if (tsl.getSignature() == null) {
@@ -1311,10 +1308,12 @@ public abstract class ATSLChecker implements ITSLChecker {
 			if (TSLProperties.isRequiredToCheckTslSignatureByItsSpecification()) {
 				checkSignatureAccordingToSpecification(fullTSLxml);
 			}
-			// Siempre se comprueba que se confía en los certificados firmantes.
-			checkSignerCertificateIsInTrustedTSLKeystore(fullTSLxml);
+			
+			// Obtenemos el certificado firmante de la TSL en bytes
+			signTsl.set(getSigningCertificate(fullTSLxml));
+			
 		}
-
+		
 	}
 
 	/**
@@ -1374,46 +1373,6 @@ public abstract class ATSLChecker implements ITSLChecker {
 		} catch (CertificateParsingException e) {
 			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL073), e);
 		}
-
-	}
-
-	/**
-	 * Checks if the input X509v3 Certificate (TSL signer) is in the Trusted TSL Keystore.
-	 * @param x509cert X509v3 certificate that represents the TSL signer.
-	 * @throws TSLMalformedException In case of the input certificate is not included in the Trusted TSL Keystore.
-	 */
-	protected final void checkX509v3SigningCertificateIsInTrustStore(X509Certificate x509cert) throws TSLMalformedException {
-
-		try {
-
-			// Obtenemos el almacén de confianza.
-			Keystore ksEntity = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystoreById(String.valueOf(IKeystoreIdConstants.ID_TSL_TRUSTSTORE));
-			KeyStore tslTrustedKeystore = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getKeystoreService().getKeystore(ksEntity);
-			// Comprobamos si está el certificado firmante en el almacén de
-			// confianza.
-			String alias = tslTrustedKeystore.getCertificateAlias(x509cert);
-			if (UtilsStringChar.isNullOrEmptyTrim(alias)) {
-				throw new TSLMalformedException(IValetException.COD_204, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL147, new Object[ ] { UtilsCertificate.getCertificateIssuerId(x509cert), x509cert.getSerialNumber().toString() }));
-			}
-
-		} catch (Exception e) {
-			throw new TSLMalformedException(IValetException.COD_204, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL146), e);
-		}
-
-	}
-
-	/**
-	 * Checks if the signer certificate of the TSL is in the truststore.
-	 * @param fullTSLxml Byte array that represents the full TSL xml to check the signature.
-	 * @throws TSLMalformedException In case of does not possible to check if the signer certificate of the TSL
-	 * is in the truststore.
-	 */
-	private void checkSignerCertificateIsInTrustedTSLKeystore(byte[ ] fullTSLxml) throws TSLMalformedException {
-
-		// Obtenemos el listado de certificados firmantes.
-		X509Certificate cert = getSigningCertificate(fullTSLxml);
-		// Si se ha encontrado, se comprueba que se confía en este.
-		checkX509v3SigningCertificateIsInTrustStore(cert);
 
 	}
 

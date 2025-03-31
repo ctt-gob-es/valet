@@ -1,0 +1,56 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="modalDeleteTsl" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.deleteTsl.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.deleteTsl.btn.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="modal-pre">
+					<p th:text="#{valet.message.confirmDelete}"></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" th:text="#{form.deleteTsl.btn.close}" onclick="closeModalDeleteTsl('modalDeleteTsl')"></button>
+				<button type="button" id="idDeleteTslBtn" name="idDeleteTslBtn" class="btn btn-danger" th:text="#{form.deleteTsl.btn.delete}" onclick="deleteTsl();"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	
+	function deleteTsl() {
+		loading();
+		
+		var table = $('#tslTable').DataTable();
+
+		// Obtenemos la fila seleccionada
+		var selectedRow = table.row({ selected: true });
+		
+		// Obtenemos los datos de la fila seleccionada
+		var rowData = selectedRow.data();
+		
+		var actionDelete = /*[[@{/deletetsl}]]*/;
+		$.ajax(actionDelete,{
+        	data:$.param({'id':rowData.idTslData, 'index':selectedRow.index()}),
+            type:'POST',
+            success: function(data){
+            	// Se oculta la capa 'cargando...'
+            	hide();
+                $('#tslTable').DataTable().row(data.index).remove().draw();
+                closeModalDeleteTsl('modalDeleteTsl');
+            },
+            error:function(){}
+        });	
+	}
+	
+	//Funcion para cerrar el modal
+	function closeModalDeleteTsl(modalId){
+		$('#' + modalId).modal('hide');
+		$('.modal-backdrop').remove();
+	}
+	
+</script>
+	

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 31/03/2025.
  */
 package es.gob.valet.form;
 
@@ -30,12 +30,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import es.gob.valet.persistence.configuration.model.dto.SigningCertificateDTO;
 import es.gob.valet.rest.exception.CheckItFirst;
 
 /**
  * <p>Class that represents the backing form for adding/editing a TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 24/10/2018.
+ * @version 1.2, 31/03/2025.
  */
 public class TslForm {
 
@@ -121,7 +122,17 @@ public class TslForm {
 	 * Attribute that represents uploaded file corresponding to the readable TSL document.
 	 */
 	private MultipartFile fileDocument;
+	
+	/**  
+	 * The signing certificate data transfer object (DTO).  
+	 */  
+	private SigningCertificateDTO signingCertificateDTO;
 
+	
+	public TslForm() {
+		signingCertificateDTO = new SigningCertificateDTO();
+	}
+	
 	/**
 	 * Gets the value of the attribute {@link #idTslData}.
 	 * @return the value of the attribute {@link #idTslData}.
@@ -386,6 +397,22 @@ public class TslForm {
 	 */
 	public void setError(String errorParam) {
 		this.error = errorParam;
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #signingCertificateDTO}.
+	 * @return the value of the attribute {@link #signingCertificateDTO}.
+	 */
+	public SigningCertificateDTO getSigningCertificateDTO() {
+		return signingCertificateDTO;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #signingCertificateDTO}.
+	 * @param signingCertificateDTO The value for the attribute {@link #signingCertificateDTO}.
+	 */
+	public void setSigningCertificateDTO(SigningCertificateDTO signingCertificateDTO) {
+		this.signingCertificateDTO = signingCertificateDTO;
 	}
 
 	/**

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/03/2025.
+ * @version 1.2, 28/03/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -59,7 +59,7 @@ import es.gob.valet.service.ifaces.ISigningCertService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p> Class that implements the communication with the operations of the persistence layer for Signing Certificate.</p>
- * @version 1.1, 25/03/2025.
+ * @version 1.2, 28/03/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -147,22 +147,17 @@ public class SigningCertService implements ISigningCertService {
 	}
 	
 	/**
-	 * Stores the details of the given X509 certificate in a map.
-	 * The map includes the certificate issuer, subject, serial number, expiration dates,
-	 * country information, and the certificate in Base64 encoding.
 	 * 
-	 * @param x509Certificate The X509 certificate to extract details from.
-	 * @return A map containing the certificate details with keys as constants and values as corresponding certificate data.
-	 * @throws CommonUtilsException If any utility-related error occurs during processing.
-	 * @throws CertificateEncodingException If there is an error encoding the certificate.
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ISigningCertService#getCertificateDetailsMap(java.security.cert.X509Certificate)
 	 */
-    private Map<String, String> getCertificateDetailsMap(X509Certificate x509Certificate) throws CommonUtilsException, CertificateEncodingException {
+    public Map<String, String> getCertificateDetailsMap(X509Certificate x509Certificate) throws CommonUtilsException, CertificateEncodingException {
         Map<String, String> certificateDetails = new HashMap<>();
         
         certificateDetails.put(ISSUER, UtilsCertificate.getCertificateIssuerId(x509Certificate));
         certificateDetails.put(SUBJECT, UtilsCertificate.getCertificateId(x509Certificate));
         certificateDetails.put(SERIAL_NUMBER, UtilsCertificate.getCertificateSerialNumber(x509Certificate).toString());
-        certificateDetails.put(DATE_EXPIRED, new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotBefore()));
+        certificateDetails.put(DATE_EXPIRED, new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotAfter()));
         certificateDetails.put(VALID_FROM, new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotBefore()));
         certificateDetails.put(VALID_TO, new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotAfter()));
         certificateDetails.put(COUNTRY, UtilsCertificate.getRDNFirstValueFromX500Principal(x509Certificate.getSubjectX500Principal(), X509ObjectIdentifiers.countryName));

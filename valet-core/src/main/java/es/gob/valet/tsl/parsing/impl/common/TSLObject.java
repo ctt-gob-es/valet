@@ -21,14 +21,16 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 14/12/2021.
+ * @version 1.5, 28/03/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Logger;
 import org.w3.x2000.x09.xmldsig.SignatureType;
@@ -38,7 +40,6 @@ import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
-import es.gob.valet.tsl.exceptions.TSLEncodingException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLBuilder;
@@ -52,7 +53,7 @@ import es.gob.valet.tsl.parsing.impl.TSLCheckerFactory;
  * <p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 14/12/2021
+ * @version 1.5, 28/03/2025
  */
 public class TSLObject implements ITSLObject {
 
@@ -104,7 +105,13 @@ public class TSLObject implements ITSLObject {
 	 * Attribute that represents the full TSL.
 	 */
 	private transient byte[ ] fullTSLxml = null;
-
+	
+	/**  
+	 * Holds the X.509 certificate used for signing the TSL (Trusted Service List).  
+	 * This is managed as an {@link AtomicReference} to allow safe concurrent updates.  
+	 */  
+	private AtomicReference<X509Certificate> signTsl = null;
+	
 	/**
 	 * Constructor method for the class TSLObject.java.
 	 */
@@ -272,7 +279,12 @@ public class TSLObject implements ITSLObject {
 	public final void setSignature(SignatureType dsSignature) {
 		signature = dsSignature;
 	}
-
+	
+	@Override
+	public AtomicReference<X509Certificate> getSignTsl() {
+		return signTsl;
+	}
+	
 	/**
 	 * Gets the TSL Builder associated to this specification and version of TSL.
 	 * @return TSL Builder associated to this specification and version of TSL.
@@ -287,15 +299,6 @@ public class TSLObject implements ITSLObject {
 	 */
 	private ITSLChecker getTSLChecker() {
 		return TSLCheckerFactory.createTSLChecker(this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#checkTSLValues()
-	 */
-	@Override
-	public final void checkTSLValues() throws TSLMalformedException{
-		getTSLChecker().checkTSLValues(false, fullTSLxml);
 	}
 
 	/**
@@ -339,13 +342,9 @@ public class TSLObject implements ITSLObject {
 			// Comprobamos que los valores establecidos son los correctos.
 			if(schemeInformation != null){
 				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL347));
-				getTSLChecker().checkTSLValues(checkSignature, fullTSLxml);
+				signTsl = new AtomicReference<X509Certificate>();
+				getTSLChecker().checkTSLValues(checkSignature, fullTSLxml, signTsl);
 			}
-			
-			
-			
-			
-
 		} catch (TSLParsingException | TSLMalformedException e) {
 			restoreBackup = true;
 			msgError = Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL266, new Object[] {e.getErrorDescription()});
@@ -374,23 +373,4 @@ public class TSLObject implements ITSLObject {
 		}
 
 	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#checkValuesBuildXMLfromTSL()
-	 */
-	@Override
-	public final byte[ ] checkValuesBuildXMLfromTSL() throws TSLMalformedException, TSLEncodingException{
-
-		byte[ ] result = null;
-
-		// Comprobamos que los valores establecidos son los correctos.
-		getTSLChecker().checkTSLValues(false, null);
-		// Una vez comprobados, construimos el XML.
-		result = getTSLBuilder().buildXMLfromTSL();
-
-		return result;
-
-	}
-
 }

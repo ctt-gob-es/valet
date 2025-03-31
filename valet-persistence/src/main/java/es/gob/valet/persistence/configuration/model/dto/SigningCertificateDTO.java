@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/03/2025.
+ * @version 1.2, 28/03/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
 /** 
  * <p>Class that represents an object that relates the code of a to the Signing Certificate DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/03/2025.
+ * @version 1.2, 28/03/2025.
  */
 public class SigningCertificateDTO {
 
@@ -72,7 +72,6 @@ public class SigningCertificateDTO {
      * This value is typically extracted from the X.509 certificate's "C" (Country) field.  
      */  
     private String country;
-
     
     /**
      * Default constructor.
@@ -298,6 +297,5 @@ public class SigningCertificateDTO {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-
 	
 }
