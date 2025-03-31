@@ -29,11 +29,6 @@
 <script th:inline="javascript">
 $(document).ready(function() {
 var getTsls =/*[[@{/tsldatatable}]]*/;
-var addTemplate = /*[[@{/addTsl}]]*/;
-var editTemplate = /*[[@{/edittsl}]]*/;
-var actionSave = /*[[@{/savetsl}]]*/;
-var actionUpdate = /*[[@{/updatetsl}]]*/;
-var actionDelete = /*[[@{/deletetsl}]]*/;
 
 var btnAddTsl =  /*[[#{tsl.admin.btn.add}]]*/;
 var btnEditTsl =  /*[[#{tsl.admin.btn.edit}]]*/;
@@ -50,24 +45,89 @@ var tbl = $('#tslTable').DataTable({
     ],
 	select: 'single',
 	responsive : true,
-	altEditor: true,
-	  buttons: [{text: btnAddTsl,name: 'add'}, 
-		  {extend: 'selected',text: btnEditTsl,name: 'edit'}, 
-		  {extend: 'selected',text: btnDelTsl,name: 'delete'}],
-	  		"iTotalRecords": "totalElements",
-      		"iTotalDisplayRecords": "numberOfElements",
-  			"processing": false,
-    		"serverSide": true,
-			"ajax": {
-      			  	"url": getTsls,
-     			   	"dataSrc" : "data",
-        			"data": function (data) {
-        			// Datos a pasar al modal
-           			 data.formId = "tslForm";
-            		 data.editTemplate = editTemplate;
-            		 data.addTemplate = addTemplate;
+	altEditor: false,
+	buttons: [
+		{
+	        text: btnAddTsl,
+	        name: 'add',
+	        action: function (e, dt, node, config) {
+	            var addTsl = /*[[@{/addTsl}]]*/;
+	            loading();
+
+	            $.ajax({
+	                url: addTsl,
+	                type: 'POST',
+	                cache: false,
+	                success: function(xhr) {
+	                    hide();
+	                    $('#modal').html(xhr);
+	                    $('#modalAddTsl').modal('show');
+	                }
+	            });
+	        }
+	    },  
+		{
+	        text: btnEditTsl,
+	        name: 'edit',
+	        action: function (e, dt, node, config) {
+	        	var editTsl = /*[[@{/edittsl}]]*/;
+	            
+	        	// Obtenemos la fila seleccionada
+	        	var selectedRow = dt.row({ selected: true }).data();
+	        	
+	        	// Obtenemos el id
+	        	var idTslData = selectedRow.idTslData;
+	        
+	        	loading();
+				
+	            $.ajax({
+	                url: editTsl,
+	                type: 'POST',
+	                data: { id: idTslData },
+	                cache: false,
+	                success: function(xhr) {
+	                    hide();
+	                    $('#modal').html(xhr);
+	                    $('#modalEditTsl').modal('show');
+	                }
+	            });
+	        }
+	    },  
+	    {
+	        text: btnDelTsl,
+	        name: 'edit',
+	        action: function (e, dt, node, config) {
+	        	var viewdeletetsl = /*[[@{/viewdeletetsl}]]*/;
+	            
+	        	loading();
+				
+	        	$.ajax({
+		        	url: viewdeletetsl,
+		            type: 'POST',
+		            cache: false,
+		            success: function(xhr) {
+		            	hide();
+		                $('#modal').html(xhr);
+		                $('#modalDeleteTsl').modal('show');
+					}
+				});
+	        }
+	    }, 
+	],
+	"iTotalRecords": "totalElements",
+    "iTotalDisplayRecords": "numberOfElements",
+  	"processing": false,
+    "serverSide": true,
+	"ajax": {
+    	"url": getTsls,
+     	"dataSrc" : "data",
+        "data": function (data) {
+        	// Datos a pasar al modal
+           	// data.formId = "tslForm";
+            // data.editTemplate = editTemplate;
+            // data.addTemplate = addTemplate;
         }
-      },
+	},
       "language": {
         "url": "js/datatables/i18n/spanish.json",
         select: {
@@ -99,133 +159,7 @@ var tbl = $('#tslTable').DataTable({
         	}
         } 
         ]
-}).on('crudaction', function(e, accion, idTslData, data, rowindex) {
-	// e          Evento Jquery
-    // accion     [add|edit|delete]
-    // pkid       Primer campo en la data [id]                ... en add,    retorna null
-    // data       Los campos adicionales  [campo_1, campo_n]  ... en delete, retorna null
-    // rowindex   El index de la fila para el dataTable       ... en add,    retorna null
-	 $('#altEditor-modal .modal-body .alert').remove();
-	    // Se muestra la capa 'cargando...'
-	    loading();
-	    
-	    switch(accion){
-	        case 'add':
-	        	var formData = new FormData(document.forms["tslForm"]);
-	        	$.ajax(actionSave, {
-	        		data :formData,
-	        		contentType: false,
-	        		processData : false,
-	        		type : 'POST',
-	        		success: function(data){
-
-	        			var errores = JSON.parse(data.error);
-						$("#tableMapping").hide();						 
-						if (data.error != null){
-						 	hide();
-					  		jQuery.each(errores, function(i, val) {
-						  	if(i == "existTsl"){
-								var messageError = val;
-								$('#errorAddTsl').html(messageError);
-								$('#errorAddTsl').addClass('alert alert-danger');
-
-						 	 } 
-							if(i == "errorSaveTsl"){
-								var messageError = val;
-								$('#errorAddTsl').html(messageError);
-								$('#errorAddTsl').addClass('alert alert-danger');
-						 	 } 
-						  
-						  	$('#tslForm *').filter('span').each(function(){
-								if (i == $(this).attr('id')){
-									$("#" + i).text(val);
-									$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
-								}
-							});
-					  })
-
-				  }else{
-
-						  hide();
-						  tbl.row.add($(data.data)).draw(false);
-						  $('#altEditor-modal .modal-body .alert').remove();
-			              $('#altEditor-modal').modal('hide');
-					}   
-	        	},
-	        	error : function(data){			
-	        		// se oculta al capa 'cargando...'
-	        		hide();
-	        		// se obtiene el JSON de los campos con errores de validación y se modifican los estilos y se añaden mensajes
-	        		var validation = $(data)["0"].responseJSON;
-	        		drawValidationResult(validation.fieldErrors);
-	        		}
-	        	});//end add ajax
-	        	//}$('#tslForm').addClass('was-validated');
-	            break;
-	        case 'edit':
-	        	var formDataEdit = new FormData(document.forms["tslFormEdit"]);	        	
-	        	$.ajax(actionUpdate, {
-	        		data :formDataEdit,
-	        		contentType: false,
-	        		processData : false,
-	                type:'POST',
-	                success: function(data){
-	            		// Se oculta la capa 'cargando...'
-	            		hide();
-	            		
-	            		var errores = JSON.parse(data.error);
-						if(data.error != null){
-							jQuery.each(errores, function(i, val) {
-							if(i == "errorSaveTsl"){
-								var messageError = val;
-								$('#errorUpdateTsl').html(messageError);
-								$('#errorUpdateTsl').addClass('alert alert-danger');
-							 }
-							}) 
-						}else{
-							tbl.row.add($(data.data)).draw(false);
-							$('#altEditor-modal .modal-body .alert').remove();
-							$('#altEditor-modal').modal('hide');
-							$("#tableMapping").hide();
-}
-					
-	                		                    
-	                },
-	                error:function(data){
-	                	// Se oculta la capa 'cargando...'
-	                	hide();
-	                	// Se eliminan los posibles errores anteriores...
-	                	cleanValidationResult('tslForm');
-	                	// Se obtiene el JSON de los campos con errores de validaciÃ³n
-	                	// y se modifican los estilos/aÃ±aden mensajes
-	                	var validation = $(data)["0"].responseJSON;
-	                	drawValidationResult(validation.fieldErrors);
-	                	
-	              
-	                }
-	            });//end ajax edit
-        	$('#tslForm').addClass('was-validated');
-         	break;
-	        case 'delete':
-	        	 $.ajax(actionDelete,{
-		            	data:$.param({'id':data.idTslData, 'index':rowindex}),
-		                type:'POST',
-		                success: function(data){
-		                	// Se oculta la capa 'cargando...'
-		                	hide();
-		                    tbl.row(data.index).remove().draw();
-							
-		                    $("#tableMapping").hide();
-		                    $('#altEditor-modal .modal-body .alert').remove();
-		                    $('#altEditor-modal').modal('hide');
-		                },
-		                error:function(){}
-		            });	
-	        	
-	       break;
-	    }
-
-});	//	
+});	
 
 
 //si se selecciona otra TSL se oculta la tabla de mapeo
@@ -253,4 +187,5 @@ function loadMappingDatatable(countryRegionCode) {
 	
 	});
 }
+
 </script>

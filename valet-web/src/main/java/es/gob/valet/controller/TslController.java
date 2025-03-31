@@ -20,10 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 19/09/2023.
+ * @version 2.0, 31/03/2025.
  */
 package es.gob.valet.controller;
 
+import java.security.cert.CertificateEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.gob.valet.commons.utils.CertificateConstants;
+import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.form.ConstantsForm;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
@@ -49,10 +52,13 @@ import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
+import es.gob.valet.persistence.configuration.model.dto.SigningCertificateDTO;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.utils.AssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
+import es.gob.valet.service.ifaces.ISigningCertService;
+import es.gob.valet.service.impl.SigningCertService;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
@@ -60,7 +66,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 2.0, 19/09/2023.
+ *  @version 2.0, 31/03/2025.
  */
 @Controller
 public class TslController {
@@ -112,7 +118,8 @@ public class TslController {
 	 */
 	private static final String LISTASSOCSIMPLEVALUES_ATTR = "listAssocSimpleValues";
 	
-	
+	@Autowired
+	private ISigningCertService iSigningCertService;
 	
 	/**
 	 * Method that maps the list TSLs to the controller and forwards the list of TSLs to the view.
@@ -168,6 +175,7 @@ public class TslController {
 			TSLCountryRegionCacheObject tslcrco = TSLManager.getInstance().getTSLCountryRegionByIdTslData(idTslData);
 
 			if (tsldco != null) {
+				// Obtenemos la TSL
 				ITSLObject tslObject = (ITSLObject) tsldco.getTslObject();
 
 				// se van obtiendo los datos a mostrar en el formulario
@@ -197,9 +205,14 @@ public class TslController {
 				// que se muestre en administración
 				String filenameTSL = tslcrco.getCode() + "-" + tsldco.getSequenceNumber() + EXTENSION_XML;
 				tslForm.setAlias(filenameTSL);
+				
+				// Obtenemos los datos del certificado incluido en la firma
+				Map<String, String> mapSigningCert = iSigningCertService.getCertificateDetailsMap(tslObject.getSignTsl().get());
+				SigningCertificateDTO signingCertificateDTO = new SigningCertificateDTO((Long) null, mapSigningCert.get(SigningCertService.ISSUER), mapSigningCert.get(SigningCertService.SUBJECT), mapSigningCert.get(SigningCertService.SERIAL_NUMBER), mapSigningCert.get(SigningCertService.DATE_EXPIRED), mapSigningCert.get(SigningCertService.CERTIFICATE_B64));
+				tslForm.setSigningCertificateDTO(signingCertificateDTO);
 			}
 
-		} catch (TSLManagingException e) {
+		} catch (TSLManagingException | CertificateEncodingException | CommonUtilsException e) {
 			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_LOAD_EDIT_TSL, new Object[ ] { e.getMessage() }));
 		}
 
@@ -382,5 +395,14 @@ public class TslController {
 	private String getConstantsValue(String key) {
 		return Language.getResPersistenceConstants(key);
 	}
-
+	
+	/**
+	 * Handles the POST request for viewing the TSL delete modal.
+	 *
+	 * @return The path to the TSL delete modal HTML file.
+	 */
+	@RequestMapping(value = "viewdeletetsl", method = RequestMethod.POST)
+	public String viewDeleteTsl() {
+		return "modal/tsl/tslDelete.html"; 
+	}
 }

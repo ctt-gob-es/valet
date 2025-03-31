@@ -20,29 +20,33 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 28/03/2025.
  */
 package es.gob.valet.tsl.parsing.ifaces;
 
+
+import java.security.cert.X509Certificate;
+import java.util.concurrent.atomic.AtomicReference;
 
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 
 /**
  * <p>Interface that represents a TSL data checker regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 28/03/2025.
  */
 public interface ITSLChecker {
 
+
 	/**
-	 * Checks all the actual values assigned to this TSL as the concrecte specification and version
-	 * requires.
-	 * @param checkSignature Flag that indicates if the TSL signature must be checked (<code>true</code>)
-	 * or not (<code>false</code>).
-	 * @param fullTSLxml Byte array that represents the full TSL xml to check the signature.
-	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
-	 * @throws TSLKeystoreException In case that an error is generated regarding the TSL certificate.
+	 * Validates the current values of this TSL according to the specific 
+	 * specification and version requirements.
+	 *
+	 * @param checkSignature {@code true} to verify the TSL signature, {@code false} otherwise.
+	 * @param fullTSLxml Byte array representing the complete TSL XML used for signature verification.
+	 * @param signTsl Atomic reference holding the X.509 certificate used for signing the TSL.
+	 * @throws TSLMalformedException If required data is missing or contains invalid values.
 	 */
-	void checkTSLValues(boolean checkSignature, byte[ ] fullTSLxml) throws TSLMalformedException;
+	void checkTSLValues(boolean checkSignature, byte[ ] fullTSLxml, AtomicReference<X509Certificate> signTsl) throws TSLMalformedException;
 
 }

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 2.4, 19/03/2025.
+ * @version 2.5, 28/03/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.4, 19/03/2025.
+ * @version 2.5, 28/03/2025.
  */
 public class WebGeneralMessages {
 
@@ -126,6 +126,19 @@ public class WebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String ERROR_SAVE_TSL_WEB = "errorSaveTslWeb";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorProcessingTslWeb</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String ERROR_PROCESSING_TSL_WEB = "errorProcessingTslWeb";
+	
+	/**
+	 * Constant attribute that represents the name of the property <code>errorTslExists</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String ERROR_TSL_EXISTS = "errorTslExists";
+	
 	/**
 	 * Constant attribute that represents the name of the property <code>errorKeystoreTslWeb</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
@@ -925,13 +938,25 @@ public class WebGeneralMessages {
 	 * Constant attribute that represents the property key <code>EXP022</code> belonging to the file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String LOG_EXP022 = "EXP022";
-	
+
+	/**
+	 * Constant attribute that represents the property key <code>EXP023</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */	
 	public static final String LOG_EXP023 = "EXP023";
 	
+	/**
+	 * Constant attribute that represents the property key <code>EXP024</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
 	public static final String LOG_EXP024 = "EXP024";
 	
+	/**
+	 * Constant attribute that represents the property key <code>EXP025</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
 	public static final String LOG_EXP025 = "EXP025";
 	
+	/**
+	 * Constant attribute that represents the property key <code>EXP026</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
 	public static final String LOG_EXP026 = "EXP026";
 
 }
