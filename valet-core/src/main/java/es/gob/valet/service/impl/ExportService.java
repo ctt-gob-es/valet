@@ -44,8 +44,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -92,7 +91,7 @@ public class ExportService implements IExportService {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = LogManager.getLogger(ExportService.class);
+	private static final Logger LOGGER = Logger.getLogger(ExportService.class);
 	
 	/**
 	 * Constant attribute that represents the extension used to define JSON files.

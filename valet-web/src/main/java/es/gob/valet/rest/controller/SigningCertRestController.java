@@ -35,8 +35,7 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -68,7 +67,7 @@ public class SigningCertRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = LogManager.getLogger(SigningCertRestController.class);
+	private static final Logger LOGGER = Logger.getLogger(SigningCertRestController.class);
 	
 	@Autowired
 	private ISigningCertService iSigningCertService;

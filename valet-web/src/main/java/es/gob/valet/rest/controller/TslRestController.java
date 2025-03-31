@@ -246,7 +246,7 @@ public class TslRestController {
 	 * @throws IOException If the method fails.
 	 */
 	@RequestMapping(value = "/obtaintsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody SigningCertificateDTO saveTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_SPECIFICATION) String specificationTsl, @RequestParam(FIELD_URL) String urlTsl, @RequestParam(FIELD_VERSION) String versionTsl, Model model, HttpSession httpSession) throws IOException {
+	public @ResponseBody SigningCertificateDTO obtainTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_SPECIFICATION) String specificationTsl, @RequestParam(FIELD_URL) String urlTsl, @RequestParam(FIELD_VERSION) String versionTsl, Model model, HttpSession httpSession) throws IOException {
 
 		boolean error = false;
 		byte[ ] fileBytes = null;
