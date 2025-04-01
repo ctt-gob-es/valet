@@ -50,7 +50,7 @@ public class ImporTslsController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = LogManager.getLogger(ImporTslsController.class);
+	private static final Logger LOGGER = LogManager.getLogger("Valet-Import-Tsl");
 	
 	@Autowired
 	private ISigningCertService iSigningCertService;

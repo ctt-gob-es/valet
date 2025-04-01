@@ -60,7 +60,7 @@ public class ImporTslsRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = LogManager.getLogger(ImporTslsRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger("Valet-Import-Tsl");
 
 	/**  
 	 * Constant representing the field ID for file import.  
