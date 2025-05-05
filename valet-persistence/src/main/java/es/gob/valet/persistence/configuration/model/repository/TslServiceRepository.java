@@ -60,6 +60,8 @@ public interface TslServiceRepository extends PagingAndSortingRepository<TslServ
 	 */
 	TslService findByTspServiceName(String tspServiceName);
 	
+	TslService findByTspServiceNameAndTspName(String tspServiceName, String tspName);
+	
 	/**
 	 * Query that obtain a tsl service if this have tsp service name and logic field id.
 	 * 

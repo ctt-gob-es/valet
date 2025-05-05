@@ -78,7 +78,7 @@ public interface IExportService {
 	 * @throws NoSuchAlgorithmException if the SHA-256 algorithm is not available
 	 * @throws CommonUtilsException if there is a general utility error
 	 */
-	void exportMappingToCert(Properties filesHashProperties, File tslMappingFolder) throws CommonUtilsException, IOException, NoSuchAlgorithmException;
+	void exportMappingToService(Properties filesHashProperties, File tslMappingFolder) throws CommonUtilsException, IOException, NoSuchAlgorithmException;
 
 	/**
 	 * Adds a `files_hash.properties` file with the hash of the created files to the META-INF folder.
@@ -118,5 +118,4 @@ public interface IExportService {
 	 * @throws ExportException if an error occurs during the creation of the ZIP file or writing the signature
 	 */
 	String getZIPFileWithTsls(File metaInfFolder, byte[ ] signedHashFile, File tslsValetFolder) throws ExportException;
-	
 }

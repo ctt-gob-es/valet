@@ -53,6 +53,7 @@ public class CTslImplDTO {
 	 */
 	private String namespace;
 
+	public CTslImplDTO(){}
 	
 	public CTslImplDTO(CTslImpl cTslImpl) {
 		this.idTSLImpl = cTslImpl.getIdTSLImpl();

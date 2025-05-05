@@ -47,6 +47,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 	 * @return Object that represents a Task from the persistence.
 	 */
 	Task findByIdTask(Long id);
-	
+
+	Task findByTokenName(String token);
 	
 }

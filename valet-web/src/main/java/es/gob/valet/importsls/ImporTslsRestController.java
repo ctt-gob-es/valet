@@ -22,21 +22,25 @@
  * @author Gobierno de España.
  * @version 1.0, 24/03/2025.
  */
-package es.gob.valet.rest.controller;
+package es.gob.valet.importsls;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,6 +49,8 @@ import org.springframework.web.multipart.MultipartFile;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.dto.ImporTslsDTO;
+import es.gob.valet.persistence.configuration.model.dto.ValetVersionDTO;
+import es.gob.valet.persistence.exceptions.ImportException;
 import es.gob.valet.sign.ExportFileValidator;
 
 /**
@@ -58,7 +64,7 @@ public class ImporTslsRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger("Valet-Import-Tsl");
+	private static final Logger LOGGER = Logger.getLogger(ImporTslsRestController.class);
 
 	/**  
 	 * Constant representing the field ID for file import.  
@@ -129,17 +135,24 @@ public class ImporTslsRestController {
 		            // Validación del archivo exportado
 		            X509Certificate signingCertificate = ExportFileValidator.validateExportFile(content);
 		            
+		         // Validaremos la version del fichero
+		         if(!ExportFileValidator.version.equals(ValetVersionDTO.VersionEnum.V1.getVersion())) {
+		        	 msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP027);
+		    	     LOGGER.error(msgError);
+		         } else {
+		        	// Todo ok
 		            // Almacenamos el certificado de la firma en la session para recuperarlo en el endpoint /viewInfoSigningCert
 		            httpSession.setAttribute("signingCertificate", signingCertificate);
-		        } catch (Exception e) {
+		         }
+	    	 } catch (Exception e) {
 		            LOGGER.error(e);
 		            msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP026);
-		        }
-	    }
+		     }
 
-	    // Si se ha detectado un error, registramos el mensaje en el JSON
-	    if (msgError != null) {
-	        json.put(FIELD_ID_FILE_IMPORT + "_span", msgError);
+	    	 // Si se ha detectado un error, registramos el mensaje en el JSON
+	 	    if (msgError != null) {
+	 	        json.put(FIELD_ID_FILE_IMPORT + "_span", msgError);
+	 	    }
 	    }
 	}
 
@@ -160,4 +173,42 @@ public class ImporTslsRestController {
 	    }
 	    return false;
 	}
+	
+	@Autowired
+	private IAsyncImportService iAsyncImportService;
+	
+	@Autowired
+	private IImporTslService iImporTslService;
+	
+	@RequestMapping(value = "/startprocessimport", method = RequestMethod.POST)
+    public void startProcess(@RequestParam("tslsFile") MultipartFile tslsFile, @RequestParam("overwrite") boolean overwrite, HttpSession httpSession) throws IOException, ImportException {
+		iImporTslService.startProcessImport(tslsFile, overwrite);
+		iAsyncImportService.executeProcessImport();
+	}
+	
+	@RequestMapping(value = "/statusimport", method = RequestMethod.GET)
+    public Map<String, Object> getStatus(HttpSession httpSession) {
+		Map<String, Object> statusMap = new HashMap<>();
+        for(int i = 1; i<=5; i++) {
+        	statusMap.put("step" + i, iImporTslService.getStepProgress(i));
+        }
+        statusMap.put("isRunning", iImporTslService.isRunning());
+        statusMap.put("isError", iImporTslService.isError());
+        statusMap.put("messageError", iImporTslService.getMessageError());
+        statusMap.put("numTslImpSpan", iImporTslService.getNumTslImp());
+        statusMap.put("numMappingByTslImpSpan", iImporTslService.getNumMappingByTslImp());
+        statusMap.put("numMappingByServImpSpan", iImporTslService.getNumMappingByServImp());
+        statusMap.put("reasonTslData1", iImporTslService.getListTslDataNotImpByVersionMinor());
+        statusMap.put("numTslDataNotImpSpan", iImporTslService.getNumTslDataNotImp());
+        statusMap.put("numMappingByTslNotImpSpan", iImporTslService.getNumMappingByTslNotImp());
+        statusMap.put("numMappingByServNotImpSpan", iImporTslService.getNumMappingByServNotImp());
+        
+        return statusMap;
+    }
+	
+	@RequestMapping(value = "/obtainfilesummary", method = RequestMethod.POST)
+	public String obtainFileSummary() {
+		return iImporTslService.getSbSummaryImport().toString();
+	}
+	
 }

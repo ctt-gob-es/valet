@@ -46,7 +46,7 @@ $(document).ready(function() {
             $(this).next(".custom-file-label").text(file.name);
 
             var formData = new FormData();
-            
+           
             formData.append("tslsFile", file);
             
             var uploadFileImporTsls = /*[[@{/uploadFileImporTsls}]]*/;
@@ -96,7 +96,7 @@ $(document).ready(function() {
     $("#startImportBtn").on("click", function(event) {
     	event.preventDefault();
     	var viewInfoSigningCert = /*[[@{/viewInfoSigningCert}]]*/;
-		loading();
+    	loading();
 		$.ajax({
 			url: viewInfoSigningCert,
 			type: 'POST',

@@ -57,6 +57,8 @@ public class TslCountryRegionDTO {
 	 */
 	private List<TslCountryRegionMappingDTO> listTslCountryRegionMappingDTO;
 
+	public TslCountryRegionDTO() {}
+	
 	/**
 	 * Constructs a TslCountryRegionDTO from a TslCountryRegion entity.
 	 * 

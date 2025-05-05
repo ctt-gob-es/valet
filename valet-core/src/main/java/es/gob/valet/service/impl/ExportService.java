@@ -50,7 +50,9 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import es.gob.valet.commons.utils.AESCipher;
 import es.gob.valet.commons.utils.CryptographicConstants;
@@ -201,7 +203,7 @@ public class ExportService implements IExportService {
 	 * @see es.gob.valet.service.ifaces.IExportService#exportMappingToCert(java.util.Properties, java.io.File)
 	 */
 	@Override
-	public void exportMappingToCert(Properties filesHashProperties, File tslMappingFolder) throws IOException, NoSuchAlgorithmException, CommonUtilsException {
+	public void exportMappingToService(Properties filesHashProperties, File tslMappingFolder) throws IOException, NoSuchAlgorithmException, CommonUtilsException {
 		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP015));
 		
 		String tempFolderPath = UtilsServer.getTomcatServerTempDir().replace("\\", "/");
@@ -211,7 +213,7 @@ public class ExportService implements IExportService {
 		for (TslService tslService: listTslService) {
 			TslServiceDTO tslServiceDTO = new TslServiceDTO(tslService);
 			
-			String jsonFileName = tslServiceDTO.getTspServiceName().replaceAll("\\s+", "_") + JSON_EXTENSION;
+			String jsonFileName = tslServiceDTO.getTspServiceName().replaceAll("[:\\s]+", "_") + JSON_EXTENSION;
 			
 			File tslServiceJSONFile = new File(tslMappingFolder, jsonFileName);
 			
@@ -244,7 +246,8 @@ public class ExportService implements IExportService {
 	    	filesHashProperties.store(out, Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP018, version));
 	        
 	        byte[] hashData = out.toByteArray();
-	        FileUtils.writeByteArrayToFile(new File(metaInfFolder, "files_hash.properties"), hashData);
+	        String nameFile = "files_hash_v_"+version+".properties";
+	        FileUtils.writeByteArrayToFile(new File(metaInfFolder, nameFile), hashData);
 	        
 	        return hashData; // Devuelve el array generado
 	    } catch (Exception e) {
@@ -371,5 +374,5 @@ public class ExportService implements IExportService {
 				UtilsResources.safeCloseInputStream(fis);
 			}
 		}
-	}
+	}	
 }

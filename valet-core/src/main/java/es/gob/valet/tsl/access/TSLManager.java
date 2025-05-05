@@ -93,6 +93,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSPService;
 import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 
+
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
@@ -108,7 +109,7 @@ public final class TSLManager {
 	/**
 	 * Constant attribute that represents the token 'UNKNOWN'.
 	 */
-	private static final String TOKEN_UNKNOWN = "UNKNOWN";
+	public static final String TOKEN_UNKNOWN = "UNKNOWN";
 
 	/**
 	 * Attribute that represents the unique instance of this class (singleton).
@@ -131,7 +132,12 @@ public final class TSLManager {
 	 * european list of trusted lists splitted by commas.
 	 */
 	private String setOfURLStringThatRepresentsEuLOTLinString = null;
-
+	
+	/**
+	 * Attribute that represents a date not specified.
+	 */
+	private static final String DATE_NOT_SPECIFIED = "Not specified";
+	
 	/**
 	 * Constructor method for the class TSLManager.java.
 	 */
@@ -228,7 +234,7 @@ public final class TSLManager {
 
 			// Obtenemos la TSL del país/región indicados.
 			TSLDataCacheObject tdco = null;
-			String dateString = date == null ? "Not specified" : date.toString();
+			String dateString = date == null ? DATE_NOT_SPECIFIED : date.toString();
 			try {
 				tdco = getTSLDataFromCountryRegion(countryCode);
 			} catch (TSLManagingException e) {
@@ -303,7 +309,7 @@ public final class TSLManager {
 
 			// Obtenemos la TSL con dicha localización.
 			TSLDataCacheObject tdco = null;
-			String dateString = date == null ? "Not specified" : date.toString();
+			String dateString = date == null ? DATE_NOT_SPECIFIED : date.toString();
 			try {
 				tdco = getTSLDataFromTSLLocation(tslLocation);
 			} catch (TSLManagingException e) {
@@ -2094,8 +2100,8 @@ public final class TSLManager {
 		}
 
 		return result;
+
 	}
- 
 
 	/**
 	 * Adds a new TSL Country Region in the data base.
@@ -2119,6 +2125,7 @@ public final class TSLManager {
 
 	/**
 	 * Add a new TSL Data in the data base.
+	 * @param countryRegionId Country/Region ID to which add the new TSL Data.
 	 * @param urlTsl URL location for the TSL.
 	 * @param tslXMLbytes Array of bytes that represents the XML of the TSL.
 	 * @param tslObject TSL Object representation (already parsed).

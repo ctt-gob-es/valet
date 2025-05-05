@@ -80,6 +80,12 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 		}
 		return result;
 	}
+	
+	public TslCountryRegion getTslCountryRegionWithTslData(String countryRegionCode) {
+		return repository.findByCountryRegionWithTslData(countryRegionCode);
+	}
+	
+	
 
 	/**
 	 * {@inheritDoc}

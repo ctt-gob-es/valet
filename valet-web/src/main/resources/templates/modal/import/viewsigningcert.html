@@ -50,7 +50,7 @@
 			</div>
 			<div class="modal-footer">	
 				<button id="downloadBtn" type="submit" class="btn btn-primary" th:utext="#{modal.imporTsls.btn.download}"></button>
-				<button id="continueImpBtn" type="submit" class="btn btn-primary" th:utext="#{modal.imporTsls.btn.continue}"></button>
+				<button id="continueImpBtn" type="submit" class="btn btn-primary" th:utext="#{modal.imporTsls.btn.continue}" onclick="openProcessImport();"></button>
 				<button id="cancelBtn" type="submit" class="btn btn-default" th:utext="#{modal.imporTsls.btn.cancel}" onclick="closeModalInfoSigningCert('modalInfoSigningCert')"></button>
 			</div>
 		</div>
@@ -85,6 +85,21 @@ $(document).ready(function() {
 		reader.readAsDataURL(keystoreBlob);
 	});
 });
+
+function openProcessImport() {
+	var viewimportmanager = /*[[@{/viewimportmanager}]]*/;
+	$.ajax({
+		url: viewimportmanager,
+		type: 'GET',
+		cache: false,
+		success: function(xhr) {
+			hide();
+			closeModalInfoSigningCert('modalInfoSigningCert');
+			$('#modal').html(xhr);
+			$('#modalImportManager').modal('show');
+		}
+	});
+}
 
 //Funcion para cerrar el modal
 function closeModalInfoSigningCert(modalId){

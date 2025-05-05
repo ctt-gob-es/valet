@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ByteArraySerializer;
 
 import es.gob.valet.commons.utils.CertificateConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
@@ -101,7 +102,7 @@ public class TslServiceDTO implements Serializable {
 	/**
 	 * Attribute that represents the description of the certificate.
 	 */
-	@JsonSerialize(using = es.gob.valet.persistence.utils.ByteArraySerializer.class)
+	@JsonSerialize(using = ByteArraySerializer.class)
 	private byte[ ] certificate;
 
 	/**

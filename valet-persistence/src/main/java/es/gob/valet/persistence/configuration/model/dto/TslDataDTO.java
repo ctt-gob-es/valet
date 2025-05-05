@@ -96,6 +96,8 @@ public class TslDataDTO {
 	 */
 	private String lastNewTSLAvailableFind;
 
+	public TslDataDTO() {}
+	
 	/**
 	 * Constructs a TslDataDTO from a TslData entity.
 	 * 

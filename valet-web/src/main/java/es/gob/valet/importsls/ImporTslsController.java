@@ -22,12 +22,11 @@
  * @author Gobierno de España.
  * @version 1.1, 25/03/2025.
  */
-package es.gob.valet.controller;
+package es.gob.valet.importsls;
 
 import java.security.cert.X509Certificate;
 
 import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,7 +48,7 @@ public class ImporTslsController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger("Valet-Import-Tsl");
+	private static final Logger LOGGER = Logger.getLogger(ImporTslsController.class);
 	
 	@Autowired
 	private ISigningCertService iSigningCertService;
@@ -90,4 +89,8 @@ public class ImporTslsController {
 	    return "modal/import/viewsigningcert.html";
 	}
 
+	@RequestMapping(value = "viewimportmanager", method = RequestMethod.GET)
+	public String viewimportmanager(final Model model) {
+		return "modal/import/importmanager.html";
+	}
 }

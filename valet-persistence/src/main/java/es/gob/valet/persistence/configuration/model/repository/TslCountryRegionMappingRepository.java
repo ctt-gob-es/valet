@@ -52,5 +52,7 @@ public interface TslCountryRegionMappingRepository extends JpaRepository<TslCoun
 	 * @param countryRegionCode {@link String} Attribute that represents the country/region code for a TSL (ISO 3166).
 	 */
 	void deleteByTslCountryRegionIdTslCountryRegion(Long idCountryRegion);
+
+	TslCountryRegionMapping findByMappingIdentificator(String mappingIdentificator);
 	
 }

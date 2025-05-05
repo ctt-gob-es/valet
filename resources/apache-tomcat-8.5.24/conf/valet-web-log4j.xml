@@ -69,6 +69,12 @@
 		<priority value="INFO"/>
 	</category>
 	
+	<!-- logger para la importacion de las TSL -->
+	<logger name="es.gob.valet.importsls">
+    	<level value="info"/>
+    	<appender-ref ref="IMPORT-TSL-FILE"/>
+	</logger>
+	
 	<!-- Limit the org.apache category to INFO as its DEBUG is verbose -->
 	<category name="org.apache">
 		<priority value="INFO"/>

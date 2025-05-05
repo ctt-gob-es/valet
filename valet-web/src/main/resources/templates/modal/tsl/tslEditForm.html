@@ -354,6 +354,8 @@ function confirmTsl() {
 				closeModalEdiTsl('modalEditTsl');
 				$("#tableMapping").hide();
 				$('#tslTable').DataTable().row.add($(data.data)).draw(false);
+				// Si hay alguna fila seleccionada, la deseleccionamos
+				$('#tslTable').DataTable().rows({ selected: true }).deselect();
 			}
 		}
     });//end ajax edit

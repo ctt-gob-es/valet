@@ -84,5 +84,7 @@ public class TaskService implements ITaskService {
 		return repository.save(task);
 	}
 		
-
+	public Task getTaskByToken(String token) {
+		return repository.findByTokenName(token);
+	}
 }

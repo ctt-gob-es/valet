@@ -37,138 +37,143 @@ var btnDelTsl =  /*[[#{tsl.admin.btn.delete}]]*/;
 var btnShowMapping =  /*[[#{table.tsl.mapeo.alt}]]*/;
 
 var tbl = $('#tslTable').DataTable({
-	dom: 'Bfrti',
-	pageLength: 50,
-	columnDefs: [
-        {className: "text-center", targets: [6], 
-		order:[ 2, "asc" ]}
-    ],
-	select: 'single',
-	responsive : true,
-	altEditor: false,
-	buttons: [
-		{
-	        text: btnAddTsl,
-	        name: 'add',
-	        action: function (e, dt, node, config) {
-	            var addTsl = /*[[@{/addTsl}]]*/;
-	            loading();
-
-	            $.ajax({
-	                url: addTsl,
-	                type: 'POST',
-	                cache: false,
-	                success: function(xhr) {
-	                    hide();
-	                    $('#modal').html(xhr);
-	                    $('#modalAddTsl').modal('show');
-	                }
-	            });
+		dom: 'Bfrti',
+		pageLength: 50,
+		columnDefs: [
+	        {className: "text-center", targets: [6], 
+			order:[ 2, "asc" ]}
+	    ],
+		select: 'single',
+		responsive : true,
+		altEditor: false,
+		buttons: [
+			{
+		        text: btnAddTsl,
+		        name: 'add',
+		        action: function (e, dt, node, config) {
+		            var addTsl = /*[[@{/addTsl}]]*/;
+		            loading();
+	
+		            $.ajax({
+		                url: addTsl,
+		                type: 'POST',
+		                cache: false,
+		                success: function(xhr) {
+		                    hide();
+		                    $('#modal').html(xhr);
+		                    $('#modalAddTsl').modal('show');
+		                }
+		            });
+		        }
+		    },  
+			{
+		        text: btnEditTsl,
+		        name: 'edit',
+		        action: function (e, dt, node, config) {
+		        	var editTsl = /*[[@{/edittsl}]]*/;
+		            
+		        	// Obtenemos la fila seleccionada
+		        	var selectedRow = dt.row({ selected: true }).data();
+		        	
+		        	// Obtenemos el id
+		        	var idTslData = selectedRow.idTslData;
+		        
+		        	loading();
+					
+		            $.ajax({
+		                url: editTsl,
+		                type: 'POST',
+		                data: { id: idTslData },
+		                cache: false,
+		                success: function(xhr) {
+		                    hide();
+		                    $('#modal').html(xhr);
+		                    $('#modalEditTsl').modal('show');
+		                }
+		            });
+		        },
+		        enabled: false  // Deshabilitado por defecto
+		    },  
+		    {
+		        text: btnDelTsl,
+		        name: 'delete',
+		        action: function (e, dt, node, config) {
+		        	var viewdeletetsl = /*[[@{/viewdeletetsl}]]*/;
+		            
+		        	loading();
+					
+		        	$.ajax({
+			        	url: viewdeletetsl,
+			            type: 'POST',
+			            cache: false,
+			            success: function(xhr) {
+			            	hide();
+			                $('#modal').html(xhr);
+			                $('#modalDeleteTsl').modal('show');
+						}
+					});
+		        },
+		        enabled: false  // Deshabilitado por defecto
+		    }, 
+		],
+		"iTotalRecords": "totalElements",
+	    "iTotalDisplayRecords": "numberOfElements",
+	  	"processing": false,
+	    "serverSide": true,
+		"ajax": {
+	    	"url": getTsls,
+	     	"dataSrc" : "data",
+	        "data": function (data) {
+	        	// Datos a pasar al modal
+	           	// data.formId = "tslForm";
+	            // data.editTemplate = editTemplate;
+	            // data.addTemplate = addTemplate;
 	        }
-	    },  
-		{
-	        text: btnEditTsl,
-	        name: 'edit',
-	        action: function (e, dt, node, config) {
-	        	var editTsl = /*[[@{/edittsl}]]*/;
-	            
-	        	// Obtenemos la fila seleccionada
-	        	var selectedRow = dt.row({ selected: true }).data();
-	        	
-	        	// Obtenemos el id
-	        	var idTslData = selectedRow.idTslData;
-	        
-	        	loading();
-				
-	            $.ajax({
-	                url: editTsl,
-	                type: 'POST',
-	                data: { id: idTslData },
-	                cache: false,
-	                success: function(xhr) {
-	                    hide();
-	                    $('#modal').html(xhr);
-	                    $('#modalEditTsl').modal('show');
-	                }
-	            });
-	        }
-	    },  
-	    {
-	        text: btnDelTsl,
-	        name: 'edit',
-	        action: function (e, dt, node, config) {
-	        	var viewdeletetsl = /*[[@{/viewdeletetsl}]]*/;
-	            
-	        	loading();
-				
-	        	$.ajax({
-		        	url: viewdeletetsl,
-		            type: 'POST',
-		            cache: false,
-		            success: function(xhr) {
-		            	hide();
-		                $('#modal').html(xhr);
-		                $('#modalDeleteTsl').modal('show');
+		},
+	      "language": {
+	        "url": "js/datatables/i18n/spanish.json",
+	        select: {
+	            rows: {
+	                _: "%d filas seleccionadas",
+	                1: "1 fila seleccionada"
+	            }
+	          }
+	        },
+	        "order" : [ 2, 'asc' ],
+		"columns": [
+	        { "data": "idTslData","visible": false},
+	        { "data": "tslCountryRegion.idTslCountryRegion", "visible":false},
+	        { "data": "tslCountryRegion.countryRegionName","width": "25%"},
+	        { "data": "sequenceNumber","width": "15%"},
+	        { "data": "issueDate","width": "25%", "render": function(data, type, row){
+			return moment(data).format("DD-MM-YYYY HH:mm");}},
+	        { "data": "expirationDate", "width": "25%", "render": function(data, type, row){
+	        	if(data != null){
+	        		return moment(data).format("DD-MM-YYYY HH:mm");} else {
+				return '<p></p>';
 					}
-				});
-	        }
-	    }, 
-	],
-	"iTotalRecords": "totalElements",
-    "iTotalDisplayRecords": "numberOfElements",
-  	"processing": false,
-    "serverSide": true,
-	"ajax": {
-    	"url": getTsls,
-     	"dataSrc" : "data",
-        "data": function (data) {
-        	// Datos a pasar al modal
-           	// data.formId = "tslForm";
-            // data.editTemplate = editTemplate;
-            // data.addTemplate = addTemplate;
-        }
-	},
-      "language": {
-        "url": "js/datatables/i18n/spanish.json",
-        select: {
-            rows: {
-                _: "%d filas seleccionadas",
-                1: "1 fila seleccionada"
-            }
-          }
-        },
-        "order" : [ 2, 'asc' ],
-	"columns": [
-        { "data": "idTslData","visible": false},
-        { "data": "tslCountryRegion.idTslCountryRegion", "visible":false},
-        { "data": "tslCountryRegion.countryRegionName","width": "25%"},
-        { "data": "sequenceNumber","width": "15%"},
-        { "data": "issueDate","width": "25%", "render": function(data, type, row){
-		return moment(data).format("DD-MM-YYYY HH:mm");}},
-        { "data": "expirationDate", "width": "25%", "render": function(data, type, row){
-        	if(data != null){
-        		return moment(data).format("DD-MM-YYYY HH:mm");} else {
-			return '<p></p>';
-				}
-				}
-        	},
-		
-        { "data": "tslCountryRegion.countryRegionCode", "width": "10%", 
-        	"render": function(data, type, row){		
-        		return '<a onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'>	<span class="c-green-900 ti-list"></span></a>';
-        	}
-        } 
-        ]
-});	
+					}
+	        	},
+			
+	        { "data": "tslCountryRegion.countryRegionCode", "width": "10%", 
+	        	"render": function(data, type, row){		
+	        		return '<a onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'>	<span class="c-green-900 ti-list"></span></a>';
+	        	}
+	        } 
+	        ]
+	});	
 
+	//Actualizar el estado de los botones al seleccionar o deseleccionar filas
+	$('#tslTable').on('select.dt deselect.dt', function () {
+	    var dt = $('#tslTable').DataTable();
+	    var selectedRows = dt.rows({ selected: true }).count();
+	    
+	    // Habilitar los botones "Editar" y "Eliminar" si hay una fila seleccionada, deshabilitarlos si no hay selecciÛn
+	    dt.button('edit:name').enable(selectedRows > 0);
+	    dt.button('delete:name').enable(selectedRows > 0);
+	});
 
-//si se selecciona otra TSL se oculta la tabla de mapeo
-tbl.on( 'select', function ( e, dt, type, indexes ) {
-            $("#tableMapping").hide();
-        } );
-
-});// documentReady
-
+});
 
 //funci√≥n para cargar la tabla con los valores del mapeo
 function loadMappingDatatable(countryRegionCode) {
@@ -187,5 +192,4 @@ function loadMappingDatatable(countryRegionCode) {
 	
 	});
 }
-
 </script>
