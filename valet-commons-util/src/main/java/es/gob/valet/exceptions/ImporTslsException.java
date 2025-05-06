@@ -15,7 +15,7 @@
  ******************************************************************************/
 
 /**
- * <b>File:</b><p>es.gob.valet.exceptions.ExportException.java.</p>
+ * <b>File:</b><p>es.gob.valet.exceptions.ImporTslsException.java.</p>
  * <b>Description:</b><p> Class for encapsulate exceptions thrown by the platform.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 19/03/2025.
+ * @version 1.1, 06/05/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -29,7 +29,7 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 /** 
  * <p>Class that represents an object that relates the code of a to the Catalog TSLs DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19/03/2025.
+ * @version 1.1, 06/05/2025.
  */
 public class CTslImplDTO {
 
@@ -53,15 +53,24 @@ public class CTslImplDTO {
 	 */
 	private String namespace;
 
+	/**
+	 * Default constructor for the CTslImplDTO class.
+	 * This constructor initializes a new instance of the CTslImplDTO with default values.
+	 */
 	public CTslImplDTO(){}
-	
-	public CTslImplDTO(CTslImpl cTslImpl) {
-		this.idTSLImpl = cTslImpl.getIdTSLImpl();
-		this.namespace = cTslImpl.getNamespace();
-		this.specification = cTslImpl.getSpecification();
-		this.version = cTslImpl.getVersion();
-	}
 
+	/**
+	 * Constructor that initializes a CTslImplDTO instance using the provided CTslImpl object.
+	 * This constructor maps the properties of the given CTslImpl object to the corresponding fields in the CTslImplDTO.
+	 *
+	 * @param cTslImpl the CTslImpl object to be used for initializing the DTO
+	 */
+	public CTslImplDTO(CTslImpl cTslImpl) {
+	    this.idTSLImpl = cTslImpl.getIdTSLImpl();
+	    this.namespace = cTslImpl.getNamespace();
+	    this.specification = cTslImpl.getSpecification();
+	    this.version = cTslImpl.getVersion();
+	}
 
 	/**
 	 * Gets the value of the attribute {@link #idTSLImpl}.

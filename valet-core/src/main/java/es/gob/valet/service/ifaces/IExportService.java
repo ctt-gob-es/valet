@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 2.0, 19/03/2025.
+ * @version 2.1, 06/05/2025.
  */
 package es.gob.valet.service.ifaces;
 
@@ -42,7 +42,7 @@ import es.gob.valet.sign.cades.SignatureException;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the ExportService.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 19/12/2023.
+ * @version 2.1, 06/05/2025.
  */
 public interface IExportService {
 

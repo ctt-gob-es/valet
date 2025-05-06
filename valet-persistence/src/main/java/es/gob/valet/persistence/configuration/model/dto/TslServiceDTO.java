@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 11/10/2022.
+ * @version 1.2, 06/05/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -54,7 +54,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslService;
  * TSL.
  * </p>
  * 
- * @version 1.1, 11/10/2022.
+ * @version 1.2, 06/05/2025.
  */
 public class TslServiceDTO implements Serializable {
 

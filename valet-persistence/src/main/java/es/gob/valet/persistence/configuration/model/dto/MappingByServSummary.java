@@ -1,28 +1,72 @@
+/* 
+/*******************************************************************************
+ * Copyright (C) 2018 MINHAFP, Gobierno de España
+ * This program is licensed and may be used, modified and redistributed under the  terms
+ * of the European Public License (EUPL), either version 1.1 or (at your option)
+ * any later version as soon as they are approved by the European Commission.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and
+ * more details.
+ * You should have received a copy of the EUPL1.1 license
+ * along with this program; if not, you may find it at
+ * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ ******************************************************************************/
+
+/** 
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.model.dto.MappingByServSummary.java.</p>
+ * <b>Description:</b><p>Class that represents an object that relates the code of a to the mapping by service for summary TSLs DTO.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>19/03/2025.</p>
+ * @author Gobierno de España.
+ * @version 1.1, 06/05/2025.
+ */
 package es.gob.valet.persistence.configuration.model.dto;
 
-
+/** 
+ * <p>Class that represents an object that relates the code of a to the mapping by service for summary TSLs DTO.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * @version 1.1, 06/05/2025.
+ */
 public class MappingByServSummary {
 
-	private String country;
-	
-	private String nameTsp;
-	
-	private String nameService;
-	
-	private String associationType;
-	
-	private String idLogicalField;
-	
-	private String valueLogicalField;
+	 /** The country related to the mapping */
+    private String country;
 
-	public MappingByServSummary(String country, String nameTsp, String nameService, String associationType, String idLogicalField, String valueLogicalField) {
-		this.country = country;
-		this.nameTsp = nameTsp;
-		this.nameService = nameService;
-		this.associationType = associationType;
-		this.idLogicalField = idLogicalField;
-		this.valueLogicalField = valueLogicalField;
-	}
+    /** The name of the Trust Service Provider (TSP) */
+    private String nameTsp;
+
+    /** The name of the service associated with the mapping */
+    private String nameService;
+
+    /** The type of association for the mapping */
+    private String associationType;
+
+    /** The ID of the logical field in the mapping */
+    private String idLogicalField;
+
+    /** The value of the logical field in the mapping */
+    private String valueLogicalField;
+
+    /**
+     * Constructs a new MappingByServSummary with the specified details.
+     * 
+     * @param country the country related to the mapping
+     * @param nameTsp the name of the TSP (Trust Service Provider)
+     * @param nameService the name of the service
+     * @param associationType the type of association for the mapping
+     * @param idLogicalField the ID of the logical field in the mapping
+     * @param valueLogicalField the value of the logical field in the mapping
+     */
+    public MappingByServSummary(String country, String nameTsp, String nameService, String associationType, String idLogicalField, String valueLogicalField) {
+        this.country = country;
+        this.nameTsp = nameTsp;
+        this.nameService = nameService;
+        this.associationType = associationType;
+        this.idLogicalField = idLogicalField;
+        this.valueLogicalField = valueLogicalField;
+    }
 	
 	/**
 	 * Gets the value of the attribute {@link #country}.

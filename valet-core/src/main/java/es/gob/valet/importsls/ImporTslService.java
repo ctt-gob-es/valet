@@ -1,3 +1,27 @@
+/*
+/*******************************************************************************
+ * Copyright (C) 2018 MINHAFP, Gobierno de España
+ * This program is licensed and may be used, modified and redistributed under the  terms
+ * of the European Public License (EUPL), either version 1.1 or (at your option)
+ * any later version as soon as they are approved by the European Commission.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and
+ * more details.
+ * You should have received a copy of the EUPL1.1 license
+ * along with this program; if not, you may find it at
+ * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ ******************************************************************************/
+
+/**
+ * <b>File:</b><p>es.gob.valet.importsls.ImporTslService.java.</p>
+ * <b>Description:</b><p>Class that contains all the methods necessary to carry out the import of TSLs.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>19/03/2025.</p>
+ * @author Gobierno de España.
+ * @version 1.0, 06/05/2025.
+ */
 package es.gob.valet.importsls;
 
 import java.io.ByteArrayOutputStream;
@@ -7,7 +31,6 @@ import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,6 +58,7 @@ import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.ImporTslsException;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
@@ -73,6 +97,11 @@ import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
+/**
+ * <p>interface that contains all the methods necessary to carry out the import of TSLs.</p>
+ * <b>Project:</b><p>Class that contains all the methods necessary to carry out the import of TSLs.</p>
+ * @version 1.0, 06/05/2025.
+ */
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ImporTslService implements IImporTslService {
@@ -82,61 +111,250 @@ public class ImporTslService implements IImporTslService {
 	 */
 	private static final Logger LOGGER = Logger.getLogger(ImporTslService.class);
 	
+	/**
+	 * Identifier for task TASK01.
+	 * This constant is used to reference task number 01 within the task management system.
+	 */
 	private static final String TASK_TASK01 = "TASK01";
+
+	/**
+	 * Identifier for task TASK02.
+	 * This constant is used to reference task number 02 within the task management system.
+	 */
 	private static final String TASK_TASK02 = "TASK02";
+
+	/**
+	 * Total number of steps in the import process.
+	 * This constant defines how many steps the import process should have and is used to set
+	 * the size of the progress array and to control the number of iterations in the process.
+	 */
 	public static final int TOTAL_STEPS = 5;
+
+	/**
+	 * Representation of a line break.
+	 * This constant is used to insert line breaks in text strings and log messages,
+	 * ensuring consistent formatting across different parts of the application.
+	 */
+	private static final String LINE_BREAK = "\n";
+
+	/**
+	 * Representation of a tab character.
+	 * This constant is used to insert tab spaces in text strings and log messages,
+	 * ensuring consistent indentation across different parts of the application.
+	 */
+	private static final String TAB = "\t";
 	
+	/**
+	 * Atomic integer representing the current step in the process.
+	 * This field is used to track the current step number in a multi-step process. It is thread-safe.
+	 */
 	private final AtomicInteger currentStep = new AtomicInteger(0);
-	private final int[ ] stepProgress = new int[TOTAL_STEPS];
+
+	/**
+	 * Array that holds the progress of each step in the process.
+	 * This array stores the progress (as percentages) for each step in the process. 
+	 * The length of this array is determined by the TOTAL_STEPS constant.
+	 */
+	private final int[] stepProgress = new int[TOTAL_STEPS];
+
+	/**
+	 * Flag indicating whether the process is currently running.
+	 * This volatile field is used to track whether the process is in progress. 
+	 * It can be accessed and modified by multiple threads.
+	 */
 	private volatile boolean isRunning = false;
+
+	/**
+	 * Flag indicating whether an error has occurred in the process.
+	 * This volatile field tracks whether any error has been encountered during the process. 
+	 * It can be accessed and modified by multiple threads.
+	 */
 	private volatile boolean isError = false;
+
+	/**
+	 * Message detailing the error encountered during the process.
+	 * This field holds the error message, if any, that explains the issue encountered during the execution.
+	 */
 	private String messageError;
+
+	/**
+	 * InputStream for the file content to be processed.
+	 * This field holds the content of a file that is being processed. It can be used to read the file data.
+	 */
 	private InputStream contentFile;
+
+	/**
+	 * Flag indicating whether to overwrite existing data during the process.
+	 * This field is used to determine whether to overwrite existing data if a conflict occurs.
+	 */
 	private boolean overwrite;
+
+	/**
+	 * List of serialized elements to be processed.
+	 * This field holds a list of objects that have been serialized, which will be deserialized and processed during the task.
+	 */
 	private List<Object> listSerializedElements;
+
+	/**
+	 * List of TSL data that has not been updated.
+	 * This list contains TSL data records that have been retrieved but have not been updated yet.
+	 */
 	private List<TslData> listTslDataNotUpdate;
+
+	/**
+	 * Number of TSL data records imported.
+	 * This field tracks the number of TSL data records that have been successfully imported.
+	 */
 	private int numTslImp;
+
+	/**
+	 * Number of TSL country-region mappings imported.
+	 * This field tracks the number of TSL mappings related to country regions that have been successfully imported.
+	 */
 	private int numMappingByTslImp;
+
+	/**
+	 * Number of TSL service mappings imported.
+	 * This field tracks the number of TSL mappings related to services that have been successfully imported.
+	 */
 	private int numMappingByServImp;
+
+	/**
+	 * Number of TSL data records that were not imported.
+	 * This field tracks the number of TSL data records that were not imported due to certain conditions.
+	 */
 	private int numTslDataNotImp;
+
+	/**
+	 * Number of TSL country-region mappings that were not imported.
+	 * This field tracks the number of TSL country-region mappings that were not imported due to certain conditions.
+	 */
 	private int numMappingByTslNotImp;
+
+	/**
+	 * Number of TSL service mappings that were not imported.
+	 * This field tracks the number of TSL service mappings that were not imported due to certain conditions.
+	 */
 	private int numMappingByServNotImp;
+
+	/**
+	 * List of TSL data identifiers that were not imported due to the "not overwrite" condition.
+	 * This list contains the identifiers of TSL data records that were not imported because the "overwrite" flag was not set to true.
+	 */
 	private List<String> listTslDataNotImpByNotOverrite;
+
+	/**
+	 * List of TSL data identifiers that were not imported due to a lower version number.
+	 * This list contains the identifiers of TSL data records that were not imported because their version number is lower than the registered version.
+	 */
 	private List<String> listTslDataNotImpByVersionMinor;
+
+	/**
+	 * List of TSL country-region mapping identifiers that were not imported due to the "not overwrite" condition.
+	 * This list contains the identifiers of TSL country-region mappings that were not imported because the "overwrite" flag was not set to true.
+	 */
 	private List<String> listMappingByTslNotImpByNotOverrite;
+
+	/**
+	 * List of TSL service mapping identifiers that were not imported due to the "not overwrite" condition.
+	 * This list contains the identifiers of TSL service mappings that were not imported because the "overwrite" flag was not set to true.
+	 */
 	private List<String> listMappingByServNotImpByNotOverrite;
+
+	/**
+	 * List of TSL data summaries.
+	 * This list contains summaries of the TSL data imported, typically including information like country, version, and location.
+	 */
 	private List<TslDataSummary> lisTslDataSummary;
+
+	/**
+	 * List of TSL country-region mapping summaries.
+	 * This list contains summaries of TSL country-region mappings that were imported, including mapping identifiers and values.
+	 */
 	private List<MappingByTslSummary> listMappingByTslSummary;
+
+	/**
+	 * List of TSL service mapping summaries.
+	 * This list contains summaries of TSL service mappings that were imported, including mapping identifiers, field values, and associated service names.
+	 */
 	private List<MappingByServSummary> listMappingByServDTO;
+
+	/**
+	 * StringBuilder used for building a summary of the import process.
+	 * This field is used to accumulate a textual summary of the import process, such as the number of records imported or any errors encountered.
+	 */
 	private StringBuilder sbSummaryImport;
+
 	
+	/**
+	 * Service for handling operations related to TSL country-region data.
+	 * This service is responsible for managing TSL country-region data, including fetching and updating records.
+	 */
 	@Autowired
 	private ITslCountryRegionService iTslCountryRegionService;
-	
+
+	/**
+	 * Repository for managing TSL country-region mappings.
+	 * This repository is responsible for performing CRUD operations on TSL country-region mapping records in the database.
+	 */
 	@Autowired
 	private TslCountryRegionMappingRepository tslCountryRegionMappingRepository;
-	
+
+	/**
+	 * Repository for managing association types in the TSL mapping process.
+	 * This repository is responsible for performing CRUD operations on the association type records in the database.
+	 */
 	@Autowired
 	private CAssociationTypeRepository cAssociationTypeRepository;
-	
+
+	/**
+	 * Repository for managing TSL country-region records.
+	 * This repository is responsible for performing CRUD operations on the TSL country-region records in the database.
+	 */
 	@Autowired
 	private TslCountryRegionRepository tslCountryRegionRepository;
-	
+
+	/**
+	 * Service for managing tasks in the import process.
+	 * This service is responsible for handling task operations, including task creation, execution, and tracking.
+	 */
 	@Autowired
 	private ITaskService iTaskService;
+
 	
+	/**
+	 * Repository for managing TSL mappings.
+	 * This repository is responsible for performing CRUD operations on the TSL mapping records in the database.
+	 */
 	@Autowired
 	private TslMappingRepository tslMappingRepository;
-	
+
+	/**
+	 * Repository for managing TSL data.
+	 * This repository is responsible for performing CRUD operations on the TSL data records in the database.
+	 */
 	@Autowired
 	private TslDataRepository tslDataRepository;
-	
+
+	/**
+	 * Repository for managing TSL implementation details.
+	 * This repository is responsible for performing CRUD operations on the TSL implementation records in the database.
+	 */
 	@Autowired
 	private CTslImplRepository cTslImplRepository;
-	
+
+	/**
+	 * Repository for managing TSL service data.
+	 * This repository is responsible for performing CRUD operations on the TSL service records in the database.
+	 */
 	@Autowired
 	private TslServiceRepository tslServiceRepository;
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#startProcessImport(org.springframework.web.multipart.MultipartFile, boolean)
+	 */
 	public void startProcessImport(MultipartFile tslsFile, boolean overwrite) throws IOException, ImportException {
 		// Reseteamos todos los parametros pertenecientes al avance del proceso
 		resetProcess();
@@ -168,8 +386,12 @@ public class ImporTslService implements IImporTslService {
 		sbSummaryImport = new StringBuilder();
 	}
 
+	/**
+	 * Resets the process by clearing flags and progress values. This method is used to initialize or reset
+	 * the state of the process before starting a new import.
+	 */
 	private void resetProcess() {
-		LOGGER.info("Reseteamos los valores principales del proceso de importacion");
+		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP001));
 		isRunning = false;
 		isError = false;
 		currentStep.set(1);
@@ -178,6 +400,11 @@ public class ImporTslService implements IImporTslService {
 		}
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#imporTslsUniqueTransaction()
+	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = { ImporTslsException.class, Exception.class })
 	public void imporTslsUniqueTransaction() throws ImporTslsException {
 		currentStep.set(NumberConstants.NUM2);
@@ -190,8 +417,13 @@ public class ImporTslService implements IImporTslService {
 		importMappingByService();
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#enableTslRelatedTask()
+	 */
 	public void enableTslRelatedTask() throws ImporTslsException {
-		LOGGER.info("habilitando tareas relacionadas con las TSL");
+		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP002));
 		try {
 			Task task1 = iTaskService.getTaskByToken(TASK_TASK01);
 			TasksManager.addOrUpdateTask(task1);
@@ -201,12 +433,17 @@ public class ImporTslService implements IImporTslService {
 			getAllProgress()[NumberConstants.NUM4] = NumberConstants.NUM100;
 		} catch (TaskValetException e) {
 			LOGGER.error(e);
-			throw new ImporTslsException("Se ha producido un fallo al iniciar las tareas relacionadas con las TSL");
+			throw new ImporTslsException(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP003));
 		}
 	}
 	
+	/**
+	 * Imports the TSL service mapping data for each TSL service. It checks if a mapping already exists for each 
+	 * service, and either updates or creates new mappings based on the provided DTOs. The progress of the import 
+	 * is tracked and updated during the process.
+	 */
 	private void importMappingByService() {
-		LOGGER.info("Comenzamos con la importación de mapeos por certificado");
+		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP004));
 		
 		@SuppressWarnings("unchecked")
 		List<TslServiceDTO> listTslServiceDTO = (List<TslServiceDTO>) listSerializedElements.get(NumberConstants.NUM2);
@@ -291,8 +528,13 @@ public class ImporTslService implements IImporTslService {
 		getAllProgress()[NumberConstants.NUM3] = NumberConstants.NUM100;
 	}
 	
+	/**
+	 * Imports the TSL mapping data for each country/region. It checks if a mapping already exists for each TSL 
+	 * country/region, and either updates or creates new mappings based on the provided DTOs. The progress of the 
+	 * import is tracked and updated during the process.
+	 */
 	private void importMappingByTsl() {
-		LOGGER.info("Comenzamos con la importación de mapeos para las tsl");
+		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP005));
 		
 		List<CAssociationType> listCAssociationType = cAssociationTypeRepository.findAll();
 		
@@ -348,8 +590,15 @@ public class ImporTslService implements IImporTslService {
 		getAllProgress()[NumberConstants.NUM2] = NumberConstants.NUM100;
 	}
 	
+	/**
+	 * Imports TSL (Trusted Service List) data by processing each {@link TslDataDTO}. 
+	 * For each TSL, the method checks if the country/region is already registered, compares the versions, 
+	 * and either updates or saves new data accordingly. It also tracks the progress of the import process.
+	 * 
+	 * @throws ImporTslsException if an error occurs during the import process
+	 */
 	private void importDataTsl() throws ImporTslsException {
-		LOGGER.info("Comenzamos con la importanción de los datos para las TSL");
+		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP006));
 		
 		@SuppressWarnings("unchecked")
 		List<TslDataDTO> listTslDataDTO = (List<TslDataDTO>) listSerializedElements.get(NumberConstants.NUM0);
@@ -391,6 +640,17 @@ public class ImporTslService implements IImporTslService {
 		}
 	}
 
+	/**
+	 * Saves a new TSL (Trusted Service List) into the system, processing it from the provided {@link TslDataDTO}.
+	 * This method decodes the XML document, retrieves the associated country/region, constructs the necessary objects
+	 * (such as {@link TslCountryRegion}, {@link TslData}, and {@link ITSLObject}), and persists them in the database and cache.
+	 * It also updates relevant mappings and summaries for the processed TSL data.
+	 *
+	 * @param tslDataDTO DTO containing the new TSL data to be saved
+	 * @param countryRegionCode the country/region code for the TSL
+	 * @param tslCountryRegion the existing {@link TslCountryRegion} object linked to the TSL data
+	 * @throws ImporTslsException if an error occurs during processing or saving the TSL data
+	 */
 	private void saveNewTsl(TslDataDTO tslDataDTO, String countryRegionCode, TslCountryRegion tslCountryRegion) throws ImporTslsException {
 		try {
 			
@@ -449,15 +709,31 @@ public class ImporTslService implements IImporTslService {
 			lisTslDataSummary.add(tslDataSummary);
 			
 		} catch (TSLManagingException e) {
-			LOGGER.error("Se ha producido un fallo al añadir los datos de la tsl", e);
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP007), e);
 			throw new ImporTslsException();
 		} catch (TSLCacheException e) {
-			LOGGER.error("Se ha producido un fallo en la cache de las tsls", e);
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP008), e);
 			throw new ImporTslsException();
 		}
 		
 	}
 
+	/**
+	 * Updates an existing TSL (Trusted Service List) entity in the database and cache using
+	 * the information provided in the given {@link TslDataDTO}. This method updates fields
+	 * such as sequence number, responsible entity, issue and expiration dates, and the XML document.
+	 * It also ensures that the updated data is correctly reflected in:
+	 * <ul>
+	 *   <li>The database via {@code tslDataRepository}</li>
+	 *   <li>The in-memory cache through {@code TSLManager}</li>
+	 *   <li>The mapping tree managed by the {@code TSLManager}</li>
+	 *   <li>A summary list used to collect processed TSLs</li>
+	 * </ul>
+	 *
+	 * @param tslDataDTO DTO containing updated TSL data
+	 * @param tslCountryRegion the region object linked to the TSL entry to be updated
+	 * @throws ImporTslsException if any issue occurs during update, conversion, or cache synchronization
+	 */
 	private void updateTsls(TslDataDTO tslDataDTO, TslCountryRegion tslCountryRegion) throws ImporTslsException {
 		try {
 			TslData tslData = tslCountryRegion.getTslData();
@@ -485,17 +761,32 @@ public class ImporTslService implements IImporTslService {
 			lisTslDataSummary.add(tslDataSummary);
 			
 		} catch (TSLManagingException e) {
-			LOGGER.error("Se ha producido un fallo al actualizar los datos de la tsl", e);
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP009), e);
 			throw new ImporTslsException();
 		} catch (ParseException e) {
-			LOGGER.error("Se ha producido un fallo al parsear las fechas de la tsl", e);
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP010), e);
 			throw new ImporTslsException();
 		} catch (TSLCacheException e) {
-			LOGGER.error("Se ha producido un fallo al obtener la tsl serializable de la cache", e);
+			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP011), e);
 			throw new ImporTslsException();
 		}
 	}
 	
+	/**
+	 * Converts a version string (e.g., "1.2.3") into an integer representation
+	 * to allow easy comparison between versions. Each part of the version is
+	 * normalized to two digits and concatenated to form the resulting integer.
+	 *
+	 * <p>Example:
+	 * <ul>
+	 *     <li>"1.2.3" → "010203" → 10203</li>
+	 *     <li>"10.0" → "1000" → 1000</li>
+	 * </ul>
+	 *
+	 * @param version the version string in dot-separated format (e.g., "1.2.3")
+	 * @return an integer representation of the version
+	 * @throws NumberFormatException if any part of the version is not a valid number
+	 */
 	public int versionToInt(String version) {
 	    String[] parts = version.split("\\.");
 	    StringBuilder number = new StringBuilder();
@@ -508,6 +799,19 @@ public class ImporTslService implements IImporTslService {
 	    return Integer.parseInt(number.toString());
 	}
 
+	/**
+	 * Reads the ZIP file provided in the input stream and deserializes its content
+	 * into three separate lists:
+	 * <ul>
+	 *     <li>TslDataDTO objects (tslData)</li>
+	 *     <li>TslCountryRegionDTO objects (tslCountryRegionMapping)</li>
+	 *     <li>TslServiceDTO objects (tslMapping)</li>
+	 * </ul>
+	 * Each recognized entry is processed using {@link #readZIPEntry}, and the resulting
+	 * lists are stored in {@code listSerializedElements}.
+	 *
+	 * @throws ImportException if an error occurs while reading or processing the ZIP file
+	 */
 	private void readZipFile() throws ImportException {
 	    /*
 	     * Definimos una lista de listas con los objetos serializados. La lista se compondrá de 3 entradas:
@@ -533,18 +837,29 @@ public class ImporTslService implements IImporTslService {
 	            readZIPEntry(entry, buffer, zipStream, mapper, listTslDataDTO, listTslCountryRegionDTO, listTslServiceDTO);
 	        }
 	    } catch (IOException e) {
-	        LOGGER.error("Se ha producido un error al procesar el ZIP", e);
+	        LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP012), e);
 	        throw new ImportException();
 	    }
 
-	    LOGGER.info("Cargamos los datos deserializados en una lista resultante");
+	    LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP013));
 	    listSerializedElements.add(listTslDataDTO);
 	    listSerializedElements.add(listTslCountryRegionDTO);
 	    listSerializedElements.add(listTslServiceDTO);
 	}
 
-
-
+	/**
+	 * Reads and processes a single entry from a ZIP archive. Depending on the entry name,
+	 * the content is deserialized into the corresponding DTO and added to the appropriate list.
+	 *
+	 * @param entry the ZIP entry to read
+	 * @param buffer the buffer used for reading data from the input stream
+	 * @param stream the input stream of the ZIP file
+	 * @param mapper the JSON object mapper used to deserialize the data
+	 * @param listTslDataDTO the list to populate with TSL data DTOs
+	 * @param listTslCountryRegionDTO the list to populate with TSL country-region mapping DTOs
+	 * @param listTslServiceDTO the list to populate with TSL service mapping DTOs
+	 * @throws ImportException if there is an error reading or processing the entry
+	 */
 	private void readZIPEntry(ZipEntry entry, byte[ ] buffer, InputStream stream, ObjectMapper mapper, List<TslDataDTO> listTslDataDTO, List<TslCountryRegionDTO> listTslCountryRegionDTO, List<TslServiceDTO> listTslServiceDTO) throws ImportException {
 		// Comprobamos que la entrada no es un directorio
 		if (!entry.isDirectory()) {
@@ -559,16 +874,16 @@ public class ImporTslService implements IImporTslService {
 				// En función del fichero, lo parseamos y metemos en la lista adecuada
 				if (entry.getName().startsWith("tslData/")) {
 					listTslDataDTO.add(mapper.readValue(((ByteArrayOutputStream) output).toByteArray(), TslDataDTO.class));
-					LOGGER.info("Entrada "+ entry.getName() + " deserializada");
+					LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP014, new Object[ ] { entry.getName() }));
 				} else if (entry.getName().startsWith("tslCountryRegionMapping/")) {
 					listTslCountryRegionDTO.add(mapper.readValue(((ByteArrayOutputStream) output).toByteArray(), TslCountryRegionDTO.class));
-					LOGGER.info("Entrada "+ entry.getName() + " deserializada");
+					LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP014, new Object[ ] { entry.getName() }));
 				} else if (entry.getName().startsWith("tslMapping/")) {
 					listTslServiceDTO.add(mapper.readValue(((ByteArrayOutputStream) output).toByteArray(), TslServiceDTO.class));
-					LOGGER.info("Entrada "+ entry.getName() + " deserializada");
+					LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP014, new Object[ ] { entry.getName() }));
 				}
 			} catch (IOException e) {
-				LOGGER.error("Se ha producido un fallo al leer una entrada del zip", e);
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP015), e);
 				throw new ImportException();
 			} finally {
 				// Cerramos recursos
@@ -578,8 +893,13 @@ public class ImporTslService implements IImporTslService {
 		
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#disableTslRelatedTask()
+	 */
 	public void disableTslRelatedTask() throws ImporTslsException {
-		LOGGER.info("deshabilitando tareas relacionadas con las TSL");
+		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP016));
 		
 		// Obtenemos una instancia del scheduler.
 		TasksScheduler tasksScheduler = TasksScheduler.getInstance();
@@ -590,87 +910,148 @@ public class ImporTslService implements IImporTslService {
 			if (tasksScheduler.checkIfExistsTask(taskTslSyncro)) {
 				tasksScheduler.stopTask(taskTslSyncro);
 			} else {
-				LOGGER.warn("La tarea "+taskTslSyncro+" no existe");
+				LOGGER.warn(Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP017, new Object[ ] { taskTslSyncro }));
 			}
 			getAllProgress()[NumberConstants.NUM0] = NumberConstants.NUM50;
 			if (tasksScheduler.checkIfExistsTask(taskExternalAccess)) {
 				tasksScheduler.stopTask(taskExternalAccess);
 			} else {
-				LOGGER.warn("La tarea "+taskExternalAccess+" no existe");
+				LOGGER.warn(Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP017, new Object[ ] { taskExternalAccess }));
 			}
 			getAllProgress()[NumberConstants.NUM0] = NumberConstants.NUM100;
 		}  catch (ValetSchedulerException e) {
 			LOGGER.error(e);
-			throw new ImporTslsException("Se ha producido un fallo al detener las tareas relacionadas con las TSL");
+			throw new ImporTslsException(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP018));
 		}
 	}
-
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#isRunning()
+	 */
 	public boolean isRunning() {
 		return isRunning;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#isError()
+	 */
 	public boolean isError() {
 		return isError;
 	}
 	
+	/**
+	 * Sets the running status of the import process.
+	 *
+	 * @param isRunning {@code true} if the process is currently running, {@code false} otherwise
+	 */
 	public void setRunning(boolean isRunning) {
-		this.isRunning = isRunning;
+	    this.isRunning = isRunning;
 	}
 
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#setError(boolean)
+	 */
 	public void setError(boolean isError) {
 		this.isError = isError;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#getCurrentStep()
+	 */
 	public int getCurrentStep() {
 		return currentStep.get();
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#setCurrentStep(int)
+	 */
 	public void setCurrentStep(int i) {
 		currentStep.set(i);
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#getStepProgress(int)
+	 */
 	public int getStepProgress(int step) {
 		return stepProgress[step - 1];
 	}
 
-	public synchronized int[ ] getAllProgress() {
-		return stepProgress;
+	/**
+	 * Returns the array containing the progress percentage of each step.
+	 * Each element represents a specific step in the import process.
+	 *
+	 * @return an array of integers indicating step progress
+	 */
+	public synchronized int[] getAllProgress() {
+	    return stepProgress;
 	}
-	
+
+	/**
+	 * Returns the error message associated with the import process, if any.
+	 *
+	 * @return a string with the error message or {@code null} if no error occurred
+	 */
 	public String getMessageError() {
-		return messageError;
+	    return messageError;
 	}
-	
+
+	/**
+	 * Sets the error message for the import process.
+	 *
+	 * @param messageError the error message to set
+	 */
 	public void setMessageError(String messageError) {
-		this.messageError = messageError;
+	    this.messageError = messageError;
 	}
 
+	/**
+	 * Returns the number of TSL entries that were successfully imported.
+	 *
+	 * @return the count of imported TSL entries
+	 */
 	public int getNumTslImp() {
-		return numTslImp;
+	    return numTslImp;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#getSbSummaryImport()
+	 */
 	public String getSbSummaryImport() {
 		if(this.overwrite) {
-			sbSummaryImport.append("RESUMEN IMPORTACIÓN CON SOBREESCRITURA\n");
+			sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP019) + LINE_BREAK);
 		} else {
-			sbSummaryImport.append("RESUMEN IMPORTACIÓN SIN SOBREESCRITURA\n");
+			sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP020) + LINE_BREAK);
 		}
 		
 		if(!lisTslDataSummary.isEmpty() && lisTslDataSummary.size() > NumberConstants.NUM0) {
-			sbSummaryImport.append("TSLS IMPORTADAS:\n");
+			sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP021) + LINE_BREAK);
 			
 			for (TslDataSummary tslDataSummary: lisTslDataSummary) {
-				sbSummaryImport.append("\tPAIS: "+tslDataSummary.getCountry()+"\n");
-				sbSummaryImport.append("\t\tNº SECUENCIA: "+tslDataSummary.getNumberSequence()+"\n");
-				sbSummaryImport.append("\t\tRESPONSABLE: "+tslDataSummary.getResponsible()+"\n");
-				sbSummaryImport.append("\t\tFECHA DE EMISIÓN: "+tslDataSummary.getIssueDate()+"\n");
-				sbSummaryImport.append("\t\tFECHA DE CADUCIDAD: "+tslDataSummary.getExpireDate()+"\n");
-				sbSummaryImport.append("\t\tPUNTO DE DISTRIBUCIÓN: "+tslDataSummary.getDistributionPoint()+"\n");
+				sbSummaryImport.append(TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP022, new Object[ ] { tslDataSummary.getCountry() }) + LINE_BREAK);
+				sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP023, new Object[ ] { tslDataSummary.getNumberSequence() }) + LINE_BREAK);
+				sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP024, new Object[ ] { tslDataSummary.getResponsible() }) + LINE_BREAK);
+				sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP025, new Object[ ] { tslDataSummary.getIssueDate() }) + LINE_BREAK);
+				sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP026, new Object[ ] { tslDataSummary.getExpireDate() }) + LINE_BREAK);
+				sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP027, new Object[ ] { tslDataSummary.getExpireDate() }) + LINE_BREAK);
 			}
 		}
 		
 		if(!listMappingByTslSummary.isEmpty() && listMappingByTslSummary.size() > NumberConstants.NUM0) {
-			sbSummaryImport.append("MAPEOS IMPORTADOS POR TLS:\n");
+			sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP028) + LINE_BREAK);
 			
 			Map<String, List<MappingByTslSummary>> groupByCountry =
 				    listMappingByTslSummary.stream()
@@ -680,18 +1061,18 @@ public class ImporTslService implements IImporTslService {
 				String country = entry.getKey();
 			    List<MappingByTslSummary> listMappingByTslSummary = entry.getValue();
 			    
-			    sbSummaryImport.append("\tPAIS: "+country+"\n");
+			    sbSummaryImport.append(TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP022, new Object[ ] { country }) + LINE_BREAK);
 			    
 			    for (MappingByTslSummary mappingByTslSummary: listMappingByTslSummary) {
-			    	sbSummaryImport.append("\t\tIDENTIFICADOR: "+mappingByTslSummary.getIdentificator()+"\n");
-			    	sbSummaryImport.append("\t\t\tTIPO DE ASOCIACIÓN: "+mappingByTslSummary.getAssociationType()+"\n");
-					sbSummaryImport.append("\t\t\tVALOR: "+mappingByTslSummary.getValue()+"\n");
+			    	sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP029, new Object[ ] { mappingByTslSummary.getIdentificator() }) + LINE_BREAK);
+			    	sbSummaryImport.append(TAB + TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP030, new Object[ ] { mappingByTslSummary.getAssociationType() }) + LINE_BREAK);
+					sbSummaryImport.append(TAB + TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP031, new Object[ ] { mappingByTslSummary.getValue() }) + LINE_BREAK);
 			    }
 			}
 		}
 		
 		if(!listMappingByServDTO.isEmpty() && listMappingByServDTO.size() > NumberConstants.NUM0) {
-			sbSummaryImport.append("MAPEOS IMPORTADOS POR SERVICIOS:\n");
+			sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP032) + LINE_BREAK);
 			
 			Map<String, List<MappingByServSummary>> groupByCountry =
 					listMappingByServDTO.stream()
@@ -700,7 +1081,7 @@ public class ImporTslService implements IImporTslService {
 			for (Map.Entry<String, List<MappingByServSummary>> entry : groupByCountry.entrySet()) {
 				String country = entry.getKey();
 				
-				sbSummaryImport.append("\tPAIS: "+country+"\n");
+				sbSummaryImport.append(TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP022, new Object[ ] { country }) + LINE_BREAK);
 				
 				Map<String, List<MappingByServSummary>> groupByTspAndService =
 						entry.getValue().stream()
@@ -709,15 +1090,15 @@ public class ImporTslService implements IImporTslService {
 				));
 
 				for (Map.Entry<String, List<MappingByServSummary>> entry2 : groupByTspAndService.entrySet()) {
-					sbSummaryImport.append("\t\tNOMBRE DEL TSP: "+entry2.getKey().split("&")[0]+"\n");		
-					sbSummaryImport.append("\t\t\tNOMBRE DEL SERVICIO TSP: "+entry2.getKey().split("&")[1]+"\n");
-				
+					sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP033, new Object[ ] { entry2.getKey().split("&")[0] }) + LINE_BREAK);
+					sbSummaryImport.append(TAB + TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP034, new Object[ ] { entry2.getKey().split("&")[1] }) + LINE_BREAK);
+					
 					List<MappingByServSummary> listMappingByServSummary = entry2.getValue();
 					
 					for (MappingByServSummary mappingByServSummary: listMappingByServSummary) {
-						sbSummaryImport.append("\t\t\t\tID CAMPO LÓGICO: "+mappingByServSummary.getIdLogicalField()+"\n");
-						sbSummaryImport.append("\t\t\t\t\tTIPO DE ASOCIACIÓN: "+mappingByServSummary.getAssociationType()+"\n");
-						sbSummaryImport.append("\t\t\t\t\tVALOR CAMPO LÓGICO: "+mappingByServSummary.getValueLogicalField()+"\n");
+						sbSummaryImport.append(TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP035, new Object[ ] { mappingByServSummary.getIdLogicalField() }) + LINE_BREAK);
+						sbSummaryImport.append(TAB + TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP036, new Object[ ] { mappingByServSummary.getIdLogicalField() }) + LINE_BREAK);
+						sbSummaryImport.append(TAB + TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP037, new Object[ ] { mappingByServSummary.getValueLogicalField() }) + LINE_BREAK);
 					}
 				}
 				
@@ -726,57 +1107,87 @@ public class ImporTslService implements IImporTslService {
 		
 		if(this.overwrite) {
 			String message = this.getListTslDataNotImpByVersionMinor();
-			if(!message.isEmpty()) {
-				sbSummaryImport.append("TSLs no importadas:\n");
+			if(message != null && message.length() > NumberConstants.NUM0) {
+				sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP038) + LINE_BREAK);
 				sbSummaryImport.append(message);
 			}
 		} else {
 			if(listTslDataNotImpByNotOverrite.size()>NumberConstants.NUM0) {
-				sbSummaryImport.append("TSLs no importadas por existir previamente en el sistema y tener desactivada la opción de sobreescritura:\n");
-				sbSummaryImport.append(String.join(", ", listTslDataNotImpByNotOverrite)+"\n\n");
+				sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP039) + LINE_BREAK);
+				sbSummaryImport.append(String.join(", ", listTslDataNotImpByNotOverrite)+ LINE_BREAK + LINE_BREAK);
 			}
 			if(listTslDataNotImpByVersionMinor.size()>NumberConstants.NUM0) {
-				sbSummaryImport.append("TSLs no importadas por tener una version inferior a la registrada en el sistema:\n");
-				sbSummaryImport.append(String.join(", ", listTslDataNotImpByVersionMinor)+"\n\n");
+				sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP040) + LINE_BREAK);
+				sbSummaryImport.append(String.join(", ", listTslDataNotImpByVersionMinor)+LINE_BREAK+LINE_BREAK);
 			}
 			if(listMappingByTslNotImpByNotOverrite.size()>NumberConstants.NUM0) {
-				sbSummaryImport.append("Mapeos por TSL NO importados por existir previamente en el sistema y tener desactivada la opción de sobreescritura:\n");
-				sbSummaryImport.append(listMappingByTslNotImpByNotOverrite.stream().distinct().collect(Collectors.joining(", "))+"\n\n");
+				sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP041) + LINE_BREAK);
+				sbSummaryImport.append(listMappingByTslNotImpByNotOverrite.stream().distinct().collect(Collectors.joining(", "))+LINE_BREAK+LINE_BREAK);
 			}
 			if(listMappingByServNotImpByNotOverrite.size()>NumberConstants.NUM0) {
-				sbSummaryImport.append("Mapeos por Servicio NO importados por existir previamente en el sistema y tener desactivada la opción de sobreescritura:\n");
-				sbSummaryImport.append(String.join(", ", listMappingByServNotImpByNotOverrite)+"\n\n");
+				sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP042) + LINE_BREAK);
+				sbSummaryImport.append(String.join(", ", listMappingByServNotImpByNotOverrite)+LINE_BREAK+LINE_BREAK);
 			}
 		}
 		
 		return Base64.getEncoder().encodeToString(sbSummaryImport.toString().getBytes());
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#getListTslDataNotImpByVersionMinor()
+	 */
 	public String getListTslDataNotImpByVersionMinor() {
 		String message = null;
 		if(listTslDataNotImpByVersionMinor != null && !listTslDataNotImpByVersionMinor.isEmpty()) {
 			String countries = String.join(", ", listTslDataNotImpByVersionMinor);
-			message = "Se ha intentando importar (" + countries + "), pero su version es inferior a la registrada en el sistema.";
+			message = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP043, new Object[ ] { countries });
 		}
 		return message;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#getNumMappingByTslImp()
+	 */
 	public int getNumMappingByTslImp() {
 		return numMappingByTslImp;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#getNumMappingByServImp()
+	 */
 	public int getNumMappingByServImp() {
 		return numMappingByServImp;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#getNumTslDataNotImp()
+	 */
 	public int getNumTslDataNotImp() {
 		return numTslDataNotImp;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#getNumMappingByTslNotImp()
+	 */
 	public int getNumMappingByTslNotImp() {
 		return numMappingByTslNotImp;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.importsls.IImporTslService#getNumMappingByServNotImp()
+	 */
 	public int getNumMappingByServNotImp() {
 		return numMappingByServNotImp;
 	}

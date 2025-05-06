@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 19/03/2025.
+ * @version 1.1, 06/05/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -33,7 +33,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 /** 
  * <p>Class that represents an object that relates the code of a to the TSL Country Region DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19/03/2025.
+ * @version 1.1, 06/05/2025.
  */
 public class TslCountryRegionDTO {
 
@@ -57,6 +57,12 @@ public class TslCountryRegionDTO {
 	 */
 	private List<TslCountryRegionMappingDTO> listTslCountryRegionMappingDTO;
 
+	/**
+	 * Default constructor for {@code TslCountryRegionDTO}.
+	 * <p>
+	 * Creates an empty instance of the DTO without initializing any fields.
+	 * This constructor is typically used by serialization frameworks or when fields are set manually later.
+	 */
 	public TslCountryRegionDTO() {}
 	
 	/**
