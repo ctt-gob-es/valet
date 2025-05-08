@@ -381,9 +381,7 @@ public class ImporTslService implements IImporTslService {
 		
 		// Deserializamos y cargamos el contenido del fichero
 		readZipFile();
-		
-		// Inicializamos el string buffer
-		sbSummaryImport = new StringBuilder();
+	
 	}
 
 	/**
@@ -1031,6 +1029,9 @@ public class ImporTslService implements IImporTslService {
 	 * @see es.gob.valet.importsls.IImporTslService#getSbSummaryImport()
 	 */
 	public String getSbSummaryImport() {
+		// Inicializamos el string buffer
+		sbSummaryImport = new StringBuilder();
+		
 		if(this.overwrite) {
 			sbSummaryImport.append(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP019) + LINE_BREAK);
 		} else {

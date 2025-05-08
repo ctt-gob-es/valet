@@ -162,12 +162,12 @@ public class ImporTslsRestController {
 		            LOGGER.error(e);
 		            msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP026);
 		     }
-
-	    	 // Si se ha detectado un error, registramos el mensaje en el JSON
-	 	    if (msgError != null) {
-	 	        json.put(FIELD_ID_FILE_IMPORT + "_span", msgError);
-	 	    }
 	    }
+	    
+	    // Si se ha detectado un error, registramos el mensaje en el JSON
+ 	    if (msgError != null) {
+ 	        json.put(FIELD_ID_FILE_IMPORT + "_span", msgError);
+ 	    }
 	}
 
 	/**  
