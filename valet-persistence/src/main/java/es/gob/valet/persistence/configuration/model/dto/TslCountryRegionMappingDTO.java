@@ -58,6 +58,8 @@ public class TslCountryRegionMappingDTO {
 	 */
 	private CAssociationTypeDTO cAssociationTypeDTO;
 
+	public TslCountryRegionMappingDTO(){}
+	
 	/**
 	 * Constructs a TslCountryRegionMappingDTO from a TslCountryRegionMapping entity.
 	 * 

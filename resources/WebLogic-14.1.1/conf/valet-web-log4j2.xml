@@ -18,7 +18,7 @@
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />
             </Policies>
 		</RollingFile>
-		<RollingFile name="VALET-IMPORT-TSL" fileName="${sys:weblogic.config.path.logs.dir}\valet-web.log" filePattern="${sys:weblogic.config.path.logs.dir}\valet-import-tsl.log-%d{yyyy-MM-dd}.log">
+		<RollingFile name="VALET-IMPORT-TSL" fileName="${sys:weblogic.config.path.logs.dir}\valet-import-tsl.log" filePattern="${sys:weblogic.config.path.logs.dir}\valet-import-tsl.log-%d{yyyy-MM-dd}.log">
 		    <PatternLayout>
                 <pattern>%d %x %-5level [%c] %msg%n</pattern>
             </PatternLayout>
@@ -37,7 +37,7 @@
 		<Logger name="es.gob.valet" level="info" additivity="false">
             <appender-ref ref="VALET-FILE-WEB" level="info" />
         </Logger>
-		<Logger name="Valet-Import-Tsl" level="info" additivity="false">
+		<Logger name="es.gob.valet.importsls" level="info" additivity="false">
             <appender-ref ref="VALET-IMPORT-TSL" level="info" />
         </Logger>
 		<!-- ======================= -->

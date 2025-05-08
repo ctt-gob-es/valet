@@ -62,4 +62,6 @@ public interface ITaskService {
 	 * @return {@link Task} an object that represents the Task.
 	 */
 	Task saveTask(Task task);
+
+	Task getTaskByToken(String token);
 }

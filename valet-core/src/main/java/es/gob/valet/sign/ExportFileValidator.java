@@ -47,9 +47,10 @@ import es.gob.valet.sign.cades.SignatureValidator;
  */
 public class ExportFileValidator {
 
-	private static final String ZIP_ENTRY_METAINF_SUFIX = "META-INF/"; //$NON-NLS-1$
-	private static final String ZIP_ENTRY_HASHES_FILE = ZIP_ENTRY_METAINF_SUFIX + "files_hash.properties"; //$NON-NLS-1$
-	private static final String ZIP_ENTRY_SIGNATURE_FILE = ZIP_ENTRY_METAINF_SUFIX + "signature.p7s"; //$NON-NLS-1$
+	private static final String ZIP_ENTRY_METAINF_PREFIX = "META-INF/"; //$NON-NLS-1$
+	private static final String ZIP_ENTRY_HASHES_FILE = ZIP_ENTRY_METAINF_PREFIX + "files_hash_v_"; //$NON-NLS-1$
+	private static final String ZIP_ENTRY_METAINF_SUFIX = ".properties"; //$NON-NLS-1$
+	private static final String ZIP_ENTRY_SIGNATURE_FILE = ZIP_ENTRY_METAINF_PREFIX + "signature.p7s"; //$NON-NLS-1$
 
 	private static final String HASH_ENTRY_SUFFIX = "tsls_valet/"; //$NON-NLS-1$
 
@@ -57,6 +58,8 @@ public class ExportFileValidator {
 
 	private static MessageDigest md = null;
 
+	public static String version = null; 
+	
 	/**
 	 * Valida un fichero de exportaci&oacute;n firmado.
 	 * @param exportFileData Contenido del fichero de exportaci&oacute;n.
@@ -105,8 +108,10 @@ public class ExportFileValidator {
 			ZipEntry entry;
 			while ((fileHash == null || signature == null) && (entry = zis.getNextEntry()) != null) {
 				final String entryName = entry.getName();
-				if (entryName.startsWith(ZIP_ENTRY_METAINF_SUFIX)) {
-					if (entryName.equals(ZIP_ENTRY_HASHES_FILE)) {
+				if (entryName.startsWith(ZIP_ENTRY_METAINF_PREFIX)) {
+					if (entryName.startsWith(ZIP_ENTRY_HASHES_FILE) && entryName.endsWith(ZIP_ENTRY_METAINF_SUFIX)) {
+						// Obtenemos la version
+						version = entryName.replace(ZIP_ENTRY_HASHES_FILE, "").replace(ZIP_ENTRY_METAINF_SUFIX, "");
 						fileHash = readInputStream(zis);
 					}
 					else if (entryName.equals(ZIP_ENTRY_SIGNATURE_FILE)) {
@@ -169,7 +174,7 @@ public class ExportFileValidator {
 		// Cargamos la informacion del fichero de hashes
 		final Properties fileHashEntries = new Properties();
 		fileHashEntries.load(new ByteArrayInputStream(fileHash));
-
+		
 		int validateEntriesCount = 0;
 
 		// Leemos y comprobamos las entradas del fichero de exportacion
@@ -178,7 +183,7 @@ public class ExportFileValidator {
 
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
-				if (!entry.isDirectory() && !entry.getName().startsWith(ZIP_ENTRY_METAINF_SUFIX)) {
+				if (!entry.isDirectory() && !entry.getName().startsWith(ZIP_ENTRY_METAINF_PREFIX)) {
 					checkEntry(entry, zis, fileHashEntries);
 					validateEntriesCount++;
 				}
@@ -212,7 +217,7 @@ public class ExportFileValidator {
 		if (hashB64 == null) {
 			throw new SecurityException("Se ha encontrado en el fichero de importacion una entrada no firmada: " + entryName); //$NON-NLS-1$
 		}
-
+		
 		final byte[] entryContent = readInputStream(zis);
 		final byte[] realHash = calculateHash(entryContent);
 		final byte[] expectedHash = Base64.getDecoder().decode(hashB64);

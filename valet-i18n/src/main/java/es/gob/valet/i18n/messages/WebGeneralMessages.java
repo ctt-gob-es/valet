@@ -959,4 +959,9 @@ public class WebGeneralMessages {
 	 */
 	public static final String LOG_EXP026 = "EXP026";
 
+	/**
+	 * Constant attribute that represents the property key <code>EXP027</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_EXP027 = "EXP027";
+
 }

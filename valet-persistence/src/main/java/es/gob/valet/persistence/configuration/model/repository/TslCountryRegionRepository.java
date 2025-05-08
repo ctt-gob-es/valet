@@ -79,4 +79,6 @@ public interface TslCountryRegionRepository extends JpaRepository<TslCountryRegi
 	@Query("SELECT DISTINCT tcr FROM TslCountryRegion tcr LEFT JOIN FETCH tcr.listTslCountryRegionMappings mappings WHERE mappings IS NOT NULL")
 	List<TslCountryRegion> findAllWithMappings();
 
+	@Query("SELECT tcr FROM TslCountryRegion tcr LEFT JOIN FETCH tcr.tslData WHERE tcr.countryRegionCode=?1")
+	TslCountryRegion findByCountryRegionWithTslData(String countryRegionCode);
 }

@@ -95,4 +95,5 @@ public interface ITslCountryRegionService {
 	 */
 	void deleteTslCountryRegionById(Long idTslCountryRegion);
 
+	TslCountryRegion getTslCountryRegionWithTslData(String countryRegionCode);
 }

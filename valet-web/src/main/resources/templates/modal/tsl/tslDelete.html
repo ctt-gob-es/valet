@@ -29,6 +29,11 @@
 		// Obtenemos la fila seleccionada
 		var selectedRow = table.row({ selected: true });
 		
+		// Si hay alguna fila seleccionada, la deseleccionamos
+		if (selectedRow.count() > 0) {
+		    table.rows({ selected: true }).deselect();
+		}
+		
 		// Obtenemos los datos de la fila seleccionada
 		var rowData = selectedRow.data();
 		

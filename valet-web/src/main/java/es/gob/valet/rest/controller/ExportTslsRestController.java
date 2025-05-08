@@ -255,10 +255,10 @@ public class ExportTslsRestController {
 					break;
 				case NumberConstants.NUM4:
 					messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP007, currentStep);
-					iExportService.exportMappingToCert(this.filesHashProperties, this.tslMappingFolder);
+					iExportService.exportMappingToService(this.filesHashProperties, this.tslMappingFolder);
 					break;
 				case NumberConstants.NUM5:
-					messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP008, currentStep);
+					messageInfoStep = Language.getFormatResWebGeneral(WebGeneralMessages.LOG_EXP008, new Object[ ] { currentStep, this.exporTslsDTO.getValetVersionDTO().getVersion() });
 					hashByteArray = iExportService.addMetaInf(this.filesHashProperties, this.metaInfFolder, this.exporTslsDTO.getValetVersionDTO().getVersion(), this.tslsValetFolder);
 					currentThread.sleep(2000);
 					break;
@@ -322,7 +322,7 @@ public class ExportTslsRestController {
         statusMap.put("progress", calculateProgress());
         statusMap.put("messageInfoStep", messageInfoStep);
         statusMap.put("isError", isError);
-        statusMap.put("fileNameExport", "valet_tsls_" + this.exporTslsDTO.getValetVersionDTO().getVersion() + ".zip");
+        statusMap.put("fileNameExport", "tsls_valet.zip");
         statusMap.put("zipValet", zipValet);
         return statusMap;
     }

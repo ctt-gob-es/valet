@@ -134,20 +134,17 @@
         	.css("width", data.progress + "%") // Mantenemos el progreso real
         	.text(data.progress + "%");
 	    	$("#exporTslStep").text(/*[[#{form.exporTsls.label.export.text.finish}]]*/);
-	
-	    	setTimeout(function(data) {
+			
+	    	setTimeout(function() {
 	            // Refrescamos la barra de progreso y el select
 	            $("#progressbarIdStep").css("width", "0%").text("0%").removeClass("bg-success");
 	            $("#selectValetVersionId").val("-1");
 	            
-	            // Descargamos el fichero
+		        // Descargamos el fichero
 	            downLoadZip(data.zipValet, data.fileNameExport);
 	            
 	            updateButtons("Stopped");
-	        }, 2000); // 2000 milisegundos (2 segundos) para mostrar el 100% antes de restablecer y descargar el fichero
-	    	
-	    	// Descargamos el fichero
-	    	downLoadZip(data.zipValet, data.fileNameExport);
+	        }, 2000); // 2000 milisegundos (2 segundos) para mostrar el 100% antes de restablecer y descargar el fichero	
 	    	
 	        updateButtons("Stopped");
 	        return;

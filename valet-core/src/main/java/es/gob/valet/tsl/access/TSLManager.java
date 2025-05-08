@@ -44,6 +44,8 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
@@ -113,7 +115,7 @@ public final class TSLManager {
 	/**
 	 * Constant attribute that represents the token 'UNKNOWN'.
 	 */
-	private static final String TOKEN_UNKNOWN = "UNKNOWN";
+	public static final String TOKEN_UNKNOWN = "UNKNOWN";
 	
 	/**
 	 * Constant attribute that represents the Sun property for the connection timeout.
