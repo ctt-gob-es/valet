@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/10/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 11/10/2022.
+ * @version 1.2, 06/05/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -33,7 +33,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslMapping;
 /** 
  * <p>Class that represents an object that relates the code of a to the Mapping TSL DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 11/10/2022.
+ * @version 1.2, 06/05/2025.
  */
 public class MappingTslDTO implements Serializable {
 

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 28/03/2025.
+ * @version 2.1, 06/05/2025.
  */
 package es.gob.valet.tsl.access;
 
@@ -103,7 +103,7 @@ import es.gob.valet.utils.TSLCommonURIs;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 28/03/2025.
+ * @version 2.1, 06/05/2025.
  */
 public final class TSLManager {
 
@@ -2366,8 +2366,7 @@ public final class TSLManager {
 				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService().deleteTslCountryRegionMappingByCountry(idCountryRegion);
 
 				// Lo eliminamos el mapeo la caché compartida.
-				ConfigurationCacheFacade.tslRemoveMappingFromCountryRegion(crc, null);
-				
+				ConfigurationCacheFacade.tslRemoveMappingFromCountryRegion(crc, null);			
 				
 				// Se elimina el país de la caché compartida
 				ConfigurationCacheFacade.tslRemoveTSLCountryRegion(crc);

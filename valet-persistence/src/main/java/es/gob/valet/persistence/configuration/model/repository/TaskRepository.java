@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>2 oct. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 06/05/2025.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -35,7 +35,7 @@ import es.gob.valet.persistence.configuration.model.entity.Task;
 /** 
  * <p>Interface that provides CRUD functionality for the Task entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 2 oct. 2018.
+ * @version 1.1, 06/05/2025.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -48,6 +48,13 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 	 */
 	Task findByIdTask(Long id);
 
+	/**
+	 * Retrieves a {@link Task} entity based on its token name.
+	 *
+	 * @param token the unique token identifier of the task.
+	 * @return the {@link Task} associated with the given token name, or {@code null} if not found.
+	 */
 	Task findByTokenName(String token);
+
 	
 }

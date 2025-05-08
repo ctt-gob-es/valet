@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/03/2025.
+ * @version 1.1, 06/05/2025.
  */
 package es.gob.valet.importsls;
 
@@ -53,13 +53,12 @@ import es.gob.valet.persistence.configuration.model.dto.ImporTslsDTO;
 import es.gob.valet.persistence.configuration.model.dto.ValetVersionDTO;
 import es.gob.valet.persistence.exceptions.ImportException;
 import es.gob.valet.sign.ExportFileValidator;
-import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.utils.GeneralConstantsValetWeb;
 
 /**
  * <p>Class that manages the REST request related to the Import Tsls administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/03/2025.
+ * @version 1.1, 06/05/2025.
  */
 @RestController
 public class ImporTslsRestController {
@@ -84,6 +83,21 @@ public class ImporTslsRestController {
 	 */  
 	@Value("${max.fileSize}")  
 	private long maxFileSize;
+
+	/**
+	 * Service used for asynchronous import operations.
+	 * This service handles tasks related to importing data in an asynchronous manner.
+	 */
+	@Autowired
+	private IAsyncImportService iAsyncImportService;
+
+	/**
+	 * Service used for importing TSL (Time Stamping List) data.
+	 * This service is responsible for managing the import process of TSL-related data.
+	 */
+	@Autowired
+	private IImporTslService iImporTslService;
+
 	
 	/**  
 	 * Handles the upload of a TSLS file, validating its content and returning a response.  
@@ -176,41 +190,55 @@ public class ImporTslsRestController {
 	    return false;
 	}
 	
-	@Autowired
-	private IAsyncImportService iAsyncImportService;
-	
-	@Autowired
-	private IImporTslService iImporTslService;
-	
+	/**
+	 * Starts the import process using the provided TSL file and overwrite flag.
+	 * 
+	 * @param tslsFile the TSL file to be imported
+	 * @param overwrite flag indicating whether to overwrite existing data
+	 * @param httpSession the HTTP session associated with the request
+	 * @throws IOException if an I/O error occurs during the file handling
+	 * @throws ImportException if an error occurs during the import process
+	 */
 	@RequestMapping(value = "/startprocessimport", method = RequestMethod.POST)
-    public void startProcess(@RequestParam("tslsFile") MultipartFile tslsFile, @RequestParam("overwrite") boolean overwrite, HttpSession httpSession) throws IOException, ImportException {
-		iImporTslService.startProcessImport(tslsFile, overwrite);
-		iAsyncImportService.executeProcessImport();
+	public void startProcess(@RequestParam("tslsFile") MultipartFile tslsFile, @RequestParam("overwrite") boolean overwrite, HttpSession httpSession) throws IOException, ImportException {
+	    iImporTslService.startProcessImport(tslsFile, overwrite);
+	    iAsyncImportService.executeProcessImport();
 	}
-	
+
+	/**
+	 * Retrieves the status of the import process, including progress of each step and error information.
+	 * 
+	 * @param httpSession the HTTP session associated with the request
+	 * @return a map containing the status information, such as step progress, error status, and the number of imported items
+	 */
 	@RequestMapping(value = "/statusimport", method = RequestMethod.GET)
-    public Map<String, Object> getStatus(HttpSession httpSession) {
-		Map<String, Object> statusMap = new HashMap<>();
-        for(int i = 1; i<=5; i++) {
-        	statusMap.put("step" + i, iImporTslService.getStepProgress(i));
-        }
-        statusMap.put("isRunning", iImporTslService.isRunning());
-        statusMap.put("isError", iImporTslService.isError());
-        statusMap.put("messageError", iImporTslService.getMessageError());
-        statusMap.put("numTslImpSpan", iImporTslService.getNumTslImp());
-        statusMap.put("numMappingByTslImpSpan", iImporTslService.getNumMappingByTslImp());
-        statusMap.put("numMappingByServImpSpan", iImporTslService.getNumMappingByServImp());
-        statusMap.put("reasonTslData1", iImporTslService.getListTslDataNotImpByVersionMinor());
-        statusMap.put("numTslDataNotImpSpan", iImporTslService.getNumTslDataNotImp());
-        statusMap.put("numMappingByTslNotImpSpan", iImporTslService.getNumMappingByTslNotImp());
-        statusMap.put("numMappingByServNotImpSpan", iImporTslService.getNumMappingByServNotImp());
-        
-        return statusMap;
-    }
-	
+	public Map<String, Object> getStatus(HttpSession httpSession) {
+	    Map<String, Object> statusMap = new HashMap<>();
+	    for (int i = 1; i <= 5; i++) {
+	        statusMap.put("step" + i, iImporTslService.getStepProgress(i));
+	    }
+	    statusMap.put("isRunning", iImporTslService.isRunning());
+	    statusMap.put("isError", iImporTslService.isError());
+	    statusMap.put("messageError", iImporTslService.getMessageError());
+	    statusMap.put("numTslImpSpan", iImporTslService.getNumTslImp());
+	    statusMap.put("numMappingByTslImpSpan", iImporTslService.getNumMappingByTslImp());
+	    statusMap.put("numMappingByServImpSpan", iImporTslService.getNumMappingByServImp());
+	    statusMap.put("reasonTslData1", iImporTslService.getListTslDataNotImpByVersionMinor());
+	    statusMap.put("numTslDataNotImpSpan", iImporTslService.getNumTslDataNotImp());
+	    statusMap.put("numMappingByTslNotImpSpan", iImporTslService.getNumMappingByTslNotImp());
+	    statusMap.put("numMappingByServNotImpSpan", iImporTslService.getNumMappingByServNotImp());
+	    
+	    return statusMap;
+	}
+
+	/**
+	 * Retrieves the summary of the import process, including details about the imported TSL data.
+	 * 
+	 * @return a string containing the summary of the import process
+	 */
 	@RequestMapping(value = "/obtainfilesummary", method = RequestMethod.POST)
 	public String obtainFileSummary() {
-		return iImporTslService.getSbSummaryImport().toString();
+	    return iImporTslService.getSbSummaryImport().toString();
 	}
 	
 }

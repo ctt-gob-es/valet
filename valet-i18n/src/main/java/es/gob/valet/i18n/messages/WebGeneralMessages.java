@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 2.5, 28/03/2025.
+ * @version 2.6, 06/05/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.5, 28/03/2025.
+ * @version 2.6, 06/05/2025.
  */
 public class WebGeneralMessages {
 
@@ -964,4 +964,243 @@ public class WebGeneralMessages {
 	 */
 	public static final String LOG_EXP027 = "EXP027";
 
+	/**
+	 * Constant attribute that represents the property key <code>IMP001</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP001 = "IMP001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP002</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP002 = "IMP002";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP003</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP003 = "IMP003";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP004</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP004 = "IMP004";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP005</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP005 = "IMP005";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP006</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP006 = "IMP006";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP007</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP007 = "IMP007";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP008</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP008 = "IMP008";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP009</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP009 = "IMP009";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP010</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP010 = "IMP010";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP011</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP011 = "IMP011";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP012</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP012 = "IMP012";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP013</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP013 = "IMP013";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP014</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP014 = "IMP014";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP015</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP015 = "IMP015";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP016</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP016 = "IMP016";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP017</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP017 = "IMP017";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP018</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP018 = "IMP018";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP019</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP019 = "IMP019";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP020</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP020 = "IMP020";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP021</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP021 = "IMP021";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP022</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP022 = "IMP022";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP023</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP023 = "IMP023";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP024</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP024 = "IMP024";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP025</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP025 = "IMP025";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP026</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP026 = "IMP026";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP027</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP027 = "IMP027";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP028</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP028 = "IMP028";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP029</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP029 = "IMP029";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP030</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP030 = "IMP030";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP031</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP031 = "IMP031";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP032</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP032 = "IMP032";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP033</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP033 = "IMP033";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP034</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP034 = "IMP034";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP035</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP035 = "IMP035";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP036</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP036 = "IMP036";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP037</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP037 = "IMP037";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP038</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP038 = "IMP038";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP039</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP039 = "IMP039";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP040</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP040 = "IMP040";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP041</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP041 = "IMP041";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP042</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP042 = "IMP042";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP043</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP043 = "IMP043";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP044</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP044 = "IMP044";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP045</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP045 = "IMP045";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP046</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP046 = "IMP046";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP047</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP047 = "IMP047";
+	
+	/**
+	 * Constant attribute that represents the property key <code>IMP048</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_IMP048 = "IMP048";
 }

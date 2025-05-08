@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 19/03/2025.
+ * @version 1.1, 06/05/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -32,7 +32,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /** 
  * <p>Class that represents an object that relates the code of a to the TSL Data DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19/03/2025.
+ * @version 1.1, 06/05/2025.
  */
 public class TslDataDTO {
 
@@ -96,6 +96,12 @@ public class TslDataDTO {
 	 */
 	private String lastNewTSLAvailableFind;
 
+	/**
+	 * Default constructor for {@code TslDataDTO}.
+	 * <p>
+	 * Initializes an empty instance of TslDataDTO.
+	 * Useful for frameworks that require a no-argument constructor, such as serialization libraries or dependency injection tools.
+	 */
 	public TslDataDTO() {}
 	
 	/**

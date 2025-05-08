@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 19/03/2025.
+ * @version 1.6, 06/05/2025.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -39,7 +39,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionS
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for TslCountryRegion.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 19/03/2025.
+ * @version 1.6, 06/05/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -81,6 +81,11 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 		return result;
 	}
 	
+	/**
+	 *  
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getTslCountryRegionWithTslData(java.lang.String)
+	 */
 	public TslCountryRegion getTslCountryRegionWithTslData(String countryRegionCode) {
 		return repository.findByCountryRegionWithTslData(countryRegionCode);
 	}
