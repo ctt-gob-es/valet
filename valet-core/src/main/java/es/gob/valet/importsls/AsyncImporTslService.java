@@ -72,9 +72,9 @@ public class AsyncImporTslService implements IAsyncImportService {
 	 */
     public void executeProcessImport() {
         executorServiceImport.submit(new DelegatingCallable<Void>(() -> {
-        	LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_IMP044));
         	iImporTslService.setRunning(true);
     		try {
+    			LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_IMP044));
                 for (int i = 1; i <= 3; i++) {
                     if (!iImporTslService.isRunning()) {
                         return null;

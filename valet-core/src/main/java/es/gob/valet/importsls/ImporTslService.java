@@ -382,9 +382,7 @@ public class ImporTslService implements IImporTslService {
 		
 		// Deserializamos y cargamos el contenido del fichero
 		readZipFile();
-		
-		// Inicializamos el string buffer
-		sbSummaryImport = new StringBuilder();
+	
 	}
 
 	/**
@@ -1032,6 +1030,9 @@ public class ImporTslService implements IImporTslService {
 	 * @see es.gob.valet.importsls.IImporTslService#getSbSummaryImport()
 	 */
 	public String getSbSummaryImport() {
+		// Inicializamos el string buffer
+		sbSummaryImport = new StringBuilder();
+		
 		if(this.overwrite) {
 			sbSummaryImport.append(Language.getResWebGeneral(WebGeneralMessages.LOG_IMP019) + LINE_BREAK);
 		} else {
@@ -1098,7 +1099,7 @@ public class ImporTslService implements IImporTslService {
 					
 					for (MappingByServSummary mappingByServSummary: listMappingByServSummary) {
 						sbSummaryImport.append(TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP035, new Object[ ] { mappingByServSummary.getIdLogicalField() }) + LINE_BREAK);
-						sbSummaryImport.append(TAB + TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP036, new Object[ ] { mappingByServSummary.getIdLogicalField() }) + LINE_BREAK);
+						sbSummaryImport.append(TAB + TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP036, new Object[ ] { mappingByServSummary.getAssociationType() }) + LINE_BREAK);
 						sbSummaryImport.append(TAB + TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP037, new Object[ ] { mappingByServSummary.getValueLogicalField() }) + LINE_BREAK);
 					}
 				}
