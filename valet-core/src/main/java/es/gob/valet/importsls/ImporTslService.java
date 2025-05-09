@@ -1098,7 +1098,7 @@ public class ImporTslService implements IImporTslService {
 					
 					for (MappingByServSummary mappingByServSummary: listMappingByServSummary) {
 						sbSummaryImport.append(TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP035, new Object[ ] { mappingByServSummary.getIdLogicalField() }) + LINE_BREAK);
-						sbSummaryImport.append(TAB + TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP036, new Object[ ] { mappingByServSummary.getIdLogicalField() }) + LINE_BREAK);
+						sbSummaryImport.append(TAB + TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP036, new Object[ ] { mappingByServSummary.getAssociationType() }) + LINE_BREAK);
 						sbSummaryImport.append(TAB + TAB + TAB + TAB + TAB + Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP037, new Object[ ] { mappingByServSummary.getValueLogicalField() }) + LINE_BREAK);
 					}
 				}
