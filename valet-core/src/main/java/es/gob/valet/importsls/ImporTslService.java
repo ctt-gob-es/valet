@@ -560,6 +560,8 @@ public class ImporTslService implements IImporTslService {
 		@SuppressWarnings("unchecked")
 		List<TslCountryRegionDTO> listTslCountryRegionDTO = (List<TslCountryRegionDTO>) listSerializedElements.get(NumberConstants.NUM1);
 		Map<Long, String> hashMapSimpleAssocValues = exportService.loadSimpleAssociationValues();
+		List<TslCountryRegion> listTslCountryRegion = tslCountryRegionRepository.findAll();
+		
 		
 		int totalTslCountryRegion = listTslCountryRegionDTO.size();
         int processedTslCountryRegion = 0;
@@ -570,7 +572,8 @@ public class ImporTslService implements IImporTslService {
 				for (TslCountryRegionMappingDTO tslCountryRegionMappingDTO: tslCountryRegionDTO.getListTslCountryRegionMappingDTO()) {
 					String mappingIdentificator = tslCountryRegionMappingDTO.getMappingIdentificator();
 					CAssociationType cAssociationType = listCAssociationType.stream().filter(p -> Language.getResPersistenceConstants(p.getTokenName()).equals(tslCountryRegionMappingDTO.getcAssociationTypeDTO().getTokenName())).findAny().orElse(null);
-					TslCountryRegionMapping tslCountryRegionMapping = tslCountryRegionMappingRepository.findMappingByIdentificatorAndCountryRegion(mappingIdentificator, tslCountryRegionDTO.getIdTslCountryRegion());
+					TslCountryRegion tslCountryRegion = listTslCountryRegion.stream().filter(p -> p.getCountryRegionCode().equals(tslCountryRegionDTO.getCountryRegionCode())).findAny().orElse(new TslCountryRegion());
+					TslCountryRegionMapping tslCountryRegionMapping = tslCountryRegionMappingRepository.findMappingByIdentificatorAndCountryRegion(mappingIdentificator, tslCountryRegion.getIdTslCountryRegion());
 					if(tslCountryRegionMapping != null) {
 						if(overwrite) {							
 							tslCountryRegionMapping.setAssociationType(cAssociationType);
@@ -604,7 +607,6 @@ public class ImporTslService implements IImporTslService {
 						} else if(cAssociationType.getIdAssociationType() == NumberConstants.NUM4) {
 							tslCountryRegionMapping.setMappingValue(tslCountryRegionMappingDTO.getMappingValue());
 						}
-						TslCountryRegion tslCountryRegion = tslCountryRegionRepository.findByCountryRegionCode(tslCountryRegionDTO.getCountryRegionCode());
 						tslCountryRegionMapping.setTslCountryRegion(tslCountryRegion);
 						tslCountryRegionMappingRepository.save(tslCountryRegionMapping);
 						numMappingByTslImp++;
