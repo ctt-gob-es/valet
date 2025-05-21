@@ -20,12 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/05/2025.
+ * @version 1.2, 21/05/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
@@ -33,7 +34,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 /** 
  * <p>Class that represents an object that relates the code of a to the TSL Country Region DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/05/2025.
+ * @version 1.2, 21/05/2025.
  */
 public class TslCountryRegionDTO {
 
@@ -70,8 +71,9 @@ public class TslCountryRegionDTO {
 	 * 
 	 * @param tslCountryRegion the TslCountryRegion entity to create the DTO from
 	 * @param loadCountryRegionMapping flag to indicate if country region mappings should be loaded
+	 * @param hashMapLoadAssociationValues map containing association values used when loading mappings 
 	 */
-	public TslCountryRegionDTO(TslCountryRegion tslCountryRegion, boolean loadCountryRegionMapping) {
+	public TslCountryRegionDTO(TslCountryRegion tslCountryRegion, boolean loadCountryRegionMapping, Map<Long, String> hashMapLoadAssociationValues) {
 		this.idTslCountryRegion = tslCountryRegion.getIdTslCountryRegion();
 		this.countryRegionCode = tslCountryRegion.getCountryRegionCode();
 		this.countryRegionName = tslCountryRegion.getCountryRegionName();
@@ -79,7 +81,7 @@ public class TslCountryRegionDTO {
 		if (loadCountryRegionMapping && tslCountryRegion.getListTslCountryRegionMappings() != null) {
 			listTslCountryRegionMappingDTO = new ArrayList<TslCountryRegionMappingDTO>();
 			for (TslCountryRegionMapping tslCountryRegionMapping: tslCountryRegion.getListTslCountryRegionMappings()) {
-				listTslCountryRegionMappingDTO.add(new TslCountryRegionMappingDTO(tslCountryRegionMapping));
+				listTslCountryRegionMappingDTO.add(new TslCountryRegionMappingDTO(tslCountryRegionMapping, hashMapLoadAssociationValues));
 			}
 		}
 	}

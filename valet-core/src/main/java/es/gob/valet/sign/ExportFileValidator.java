@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>30/12/2022.</p>
  * @author Gobierno de España.
- * @version 1.2, 06/05/2025.
+ * @version 1.3, 21/05/2025.
  */
 package es.gob.valet.sign;
 
@@ -37,13 +37,14 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import es.gob.valet.persistence.configuration.model.dto.ValetVersionDTO;
 import es.gob.valet.sign.cades.SignatureException;
 import es.gob.valet.sign.cades.SignatureValidator;
 
 /** 
  * <p>Class that validates the signature of a hash in CADES-BES format.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 06/05/2025.
+ * @version 1.3, 21/05/2025.
  */
 public class ExportFileValidator {
 
@@ -122,10 +123,10 @@ public class ExportFileValidator {
 		}
 
 		if (fileHash == null) {
-			throw new SecurityException("No se ha encontrado el fichero de hash"); //$NON-NLS-1$
+			throw new SecurityException("El fichero esperado files_hash_v_"+ValetVersionDTO.VersionEnum.V2.getVersion()+".properties no se ha encontrado dentro de META-INF"); //$NON-NLS-1$
 		}
 		if (signature == null) {
-			throw new SecurityException("No se ha encontrado el fichero de firma"); //$NON-NLS-1$
+			throw new SecurityException("El fichero esperado signature.p7s no se ha encontrado dentro de META-INF"); //$NON-NLS-1$
 		}
 
 		return new ExportationCryptoFiles(fileHash, signature);

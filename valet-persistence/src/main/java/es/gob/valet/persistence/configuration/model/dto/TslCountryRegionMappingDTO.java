@@ -20,16 +20,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/05/2025.
+ * @version 1.2, 21/05/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
+import java.util.Map;
+
+import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 
 /** 
  * <p>Class that represents an object that relates the code of a to the TSL Country Region Mapping DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/05/2025.
+ * @version 1.2, 21/05/2025.
  */
 public class TslCountryRegionMappingDTO {
 
@@ -70,13 +73,18 @@ public class TslCountryRegionMappingDTO {
 	 * Constructs a TslCountryRegionMappingDTO from a TslCountryRegionMapping entity.
 	 * 
 	 * @param tslCountryRegionMapping the TslCountryRegionMapping entity to create the DTO from
+	 * @param hashMapLoadAssociationValues map containing association values used when loading mappings 
 	 */
-	public TslCountryRegionMappingDTO(TslCountryRegionMapping tslCountryRegionMapping) {
+	public TslCountryRegionMappingDTO(TslCountryRegionMapping tslCountryRegionMapping, Map<Long, String> hashMapLoadAssociationValues) {
 		idTslCountryRegionMapping = tslCountryRegionMapping.getIdTslCountryRegionMapping();
 		mappingDescription = tslCountryRegionMapping.getMappingDescription();
 		mappingIdentificator = tslCountryRegionMapping.getMappingIdentificator();
-		mappingValue = tslCountryRegionMapping.getMappingValue();
 		cAssociationTypeDTO = new CAssociationTypeDTO(tslCountryRegionMapping.getAssociationType());
+		if(cAssociationTypeDTO.getIdAssociationType().intValue() == NumberConstants.NUM0) {
+			mappingValue =  hashMapLoadAssociationValues.get(new Long(tslCountryRegionMapping.getMappingValue())).toString();
+		} else if(cAssociationTypeDTO.getIdAssociationType().intValue() == NumberConstants.NUM4) {
+			mappingValue =  tslCountryRegionMapping.getMappingValue();
+		}
 	}
 
 	/**

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/05/2025.
+ * @version 1.1, 21/05/2025.
  */
 package es.gob.valet.importsls;
 
@@ -34,7 +34,7 @@ import es.gob.valet.persistence.exceptions.ImportException;
 /**
  * <p>interface that contains all the methods necessary to carry out the import of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/05/2025.
+ * @version 1.1, 21/05/2025.
  */
 public interface IImporTslService {
 
@@ -91,15 +91,6 @@ public interface IImporTslService {
 	 * @return the number of imported TSLs
 	 */
 	int getNumTslImp();
-		
-	/**
-	 * Performs the TSL import process in a new transaction, including importing TSL data, 
-	 * mapping by TSL, and mapping by service.
-	 * Each step updates the current step and handles the respective import operation.
-	 *
-	 * @throws ImporTslsException if an error occurs during the import process
-	 */
-	void imporTslsUniqueTransaction() throws ImporTslsException;
 	
 	/**
 	 * Sets the current step of the import process.
@@ -198,4 +189,25 @@ public interface IImporTslService {
      * @return the count of mappings by service not imported
      */
 	int getNumMappingByServNotImp();
+
+	/**
+	 * Executes the full import process of TSL-related data in multiple sequential steps.
+	 * <p>
+	 * The method performs five defined steps:
+	 * <ol>
+	 *     <li>Disables TSL-related scheduled tasks.</li>
+	 *     <li>Imports raw TSL data.</li>
+	 *     <li>Imports mappings associated with the TSL data.</li>
+	 *     <li>Imports service-related mappings.</li>
+	 *     <li>Re-enables TSL-related scheduled tasks.</li>
+	 * </ol>
+	 * <p>
+	 * Each step is registered using {@code setCurrentStep(int)} to allow tracking of the import progress.
+	 * <p>
+	 * The method is transactional and uses {@code REQUIRES_NEW} propagation, meaning it always executes in a new transaction.
+	 * If any exception occurs during the process, the transaction is rolled back.
+	 *
+	 * @throws ImporTslsException if any error occurs during any step of the import process.
+	 */
+	void doImport() throws ImporTslsException, Exception;
 }

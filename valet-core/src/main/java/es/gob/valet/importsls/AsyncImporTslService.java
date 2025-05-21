@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/05/2025.
+ * @version 1.1, 21/05/2025.
  */
 package es.gob.valet.importsls;
 
@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.exceptions.ImporTslsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.WebGeneralMessages;
@@ -41,7 +40,7 @@ import es.gob.valet.tsl.access.TSLManager;
 /**
  * <p>Class with Service responsible for executing the Trusted Service List (TSL) import process asynchronously.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/05/2025.
+ * @version 1.1, 21/05/2025.
  */
 @Service
 public class AsyncImporTslService implements IAsyncImportService {
@@ -75,36 +74,21 @@ public class AsyncImporTslService implements IAsyncImportService {
         	iImporTslService.setRunning(true);
     		try {
     			LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_IMP044));
-                for (int i = 1; i <= 3; i++) {
-                    if (!iImporTslService.isRunning()) {
-                        return null;
-                    }
-                    switch (i) {
-                        case NumberConstants.NUM1:
-                            iImporTslService.setCurrentStep(NumberConstants.NUM1);
-                            iImporTslService.disableTslRelatedTask();
-                            break;
-                        case NumberConstants.NUM2:
-                            iImporTslService.imporTslsUniqueTransaction();
-                            break;
-                        case NumberConstants.NUM3:
-                            iImporTslService.setCurrentStep(NumberConstants.NUM5);
-                            iImporTslService.enableTslRelatedTask();
-                            break;
-                        default:
-                            break;
-                    }
-                }
+    			iImporTslService.doImport();
                 LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_IMP045));
             } catch (ImporTslsException e) {
                 iImporTslService.setMessageError(Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP046, new Object[ ] { iImporTslService.getCurrentStep() }));
                 iImporTslService.setError(true);
+                TSLManager.getInstance().clearAllCache();
                 TSLManager.getInstance().reloadTSLCache();
+                return null; // <<<<< Corta ejecución del hilo lanzado
             } catch (Exception e) {
                 LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.LOG_IMP047), e);
                 iImporTslService.setMessageError(Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP046, new Object[ ] { iImporTslService.getCurrentStep() }));
                 iImporTslService.setError(true);
+                TSLManager.getInstance().clearAllCache();
                 TSLManager.getInstance().reloadTSLCache();
+                return null; // <<<<< Corta ejecución del hilo lanzado
             } finally {
                 iImporTslService.setRunning(false);
             }

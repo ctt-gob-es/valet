@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/05/2025.
+ * @version 1.2, 21/05/2025.
  */
 package es.gob.valet.importsls;
 
@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -92,6 +93,7 @@ import es.gob.valet.persistence.exceptions.ImportException;
 import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.scheduler.TasksScheduler;
 import es.gob.valet.quartz.scheduler.ValetSchedulerException;
+import es.gob.valet.service.impl.ExportService;
 import es.gob.valet.tasks.FindNewTslRevisionsTaskConstants;
 import es.gob.valet.tasks.TasksManager;
 import es.gob.valet.tsl.access.TSLManager;
@@ -101,7 +103,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>interface that contains all the methods necessary to carry out the import of TSLs.</p>
  * <b>Project:</b><p>Class that contains all the methods necessary to carry out the import of TSLs.</p>
- * @version 1.0, 06/05/2025.
+ * @version 1.1, 21/05/2025.
  */
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -352,6 +354,15 @@ public class ImporTslService implements IImporTslService {
 	private TslServiceRepository tslServiceRepository;
 	
 	/**
+	 * Service responsible for handling export operations.
+	 * <p>
+	 * This service is automatically injected by Spring's dependency injection mechanism
+	 * and provides methods to export data related to the application domain.
+	 */
+	@Autowired
+	private ExportService exportService;
+	
+	/**
 	 * 
 	 * {@inheritDoc}
 	 * @see es.gob.valet.importsls.IImporTslService#startProcessImport(org.springframework.web.multipart.MultipartFile, boolean)
@@ -402,18 +413,34 @@ public class ImporTslService implements IImporTslService {
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.importsls.IImporTslService#imporTslsUniqueTransaction()
+	 * @see es.gob.valet.importsls.IImporTslService#doImport()
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = { ImporTslsException.class, Exception.class })
-	public void imporTslsUniqueTransaction() throws ImporTslsException {
-		currentStep.set(NumberConstants.NUM2);
-		importDataTsl();
-	
-		currentStep.set(NumberConstants.NUM3);
-		importMappingByTsl();
-		
-		currentStep.set(NumberConstants.NUM4);
-		importMappingByService();
+	public void doImport() throws ImporTslsException {
+		for (int i = 1; i <= TOTAL_STEPS; i++) {
+			switch (i) {
+				case NumberConstants.NUM1:
+					this.setCurrentStep(NumberConstants.NUM1);
+					this.disableTslRelatedTask();
+					break;
+				case NumberConstants.NUM2:
+					this.setCurrentStep(NumberConstants.NUM2);
+					this.importDataTsl();
+				case NumberConstants.NUM3:
+					this.setCurrentStep(NumberConstants.NUM3);
+					importMappingByTsl();
+				case NumberConstants.NUM4:
+					this.setCurrentStep(NumberConstants.NUM4);
+					importMappingByService();
+					break;
+				case NumberConstants.NUM5:
+					this.setCurrentStep(NumberConstants.NUM5);
+					this.enableTslRelatedTask();
+					break;
+				default:
+					break;
+			}
+		}
 	}
 
 	/**
@@ -539,6 +566,7 @@ public class ImporTslService implements IImporTslService {
 		
 		@SuppressWarnings("unchecked")
 		List<TslCountryRegionDTO> listTslCountryRegionDTO = (List<TslCountryRegionDTO>) listSerializedElements.get(NumberConstants.NUM1);
+		Map<Long, String> hashMapSimpleAssocValues = exportService.loadSimpleAssociationValues();
 		
 		int totalTslCountryRegion = listTslCountryRegionDTO.size();
         int processedTslCountryRegion = 0;
@@ -549,12 +577,19 @@ public class ImporTslService implements IImporTslService {
 				for (TslCountryRegionMappingDTO tslCountryRegionMappingDTO: tslCountryRegionDTO.getListTslCountryRegionMappingDTO()) {
 					String mappingIdentificator = tslCountryRegionMappingDTO.getMappingIdentificator();
 					CAssociationType cAssociationType = listCAssociationType.stream().filter(p -> Language.getResPersistenceConstants(p.getTokenName()).equals(tslCountryRegionMappingDTO.getcAssociationTypeDTO().getTokenName())).findAny().orElse(null);
-					TslCountryRegionMapping tslCountryRegionMapping = tslCountryRegionMappingRepository.findByMappingIdentificator(mappingIdentificator);
+					TslCountryRegionMapping tslCountryRegionMapping = tslCountryRegionMappingRepository.findMappingByIdentificatorAndCountryRegion(mappingIdentificator, tslCountryRegionDTO.getIdTslCountryRegion());
 					if(tslCountryRegionMapping != null) {
 						if(overwrite) {							
 							tslCountryRegionMapping.setAssociationType(cAssociationType);
 							tslCountryRegionMapping.setMappingDescription(tslCountryRegionMappingDTO.getMappingDescription());
-							tslCountryRegionMapping.setMappingValue(tslCountryRegionMappingDTO.getMappingValue());
+							
+							if(cAssociationType.getIdAssociationType() == NumberConstants.NUM0) {
+								Optional<Long> key = hashMapSimpleAssocValues.entrySet().stream().filter(p -> p.getValue().equals(tslCountryRegionMappingDTO.getMappingValue())).map(Map.Entry::getKey).findFirst();
+								tslCountryRegionMapping.setMappingValue(key.get().toString());
+							} else if(cAssociationType.getIdAssociationType() == NumberConstants.NUM4) {
+								tslCountryRegionMapping.setMappingValue(tslCountryRegionMappingDTO.getMappingValue());
+							}
+							
 							tslCountryRegionMappingRepository.save(tslCountryRegionMapping);
 							numMappingByTslImp++;
 							
@@ -570,7 +605,12 @@ public class ImporTslService implements IImporTslService {
 						tslCountryRegionMapping.setAssociationType(cAssociationType);
 						tslCountryRegionMapping.setMappingDescription(tslCountryRegionMappingDTO.getMappingDescription());
 						tslCountryRegionMapping.setMappingIdentificator(tslCountryRegionMappingDTO.getMappingIdentificator());
-						tslCountryRegionMapping.setMappingValue(tslCountryRegionMappingDTO.getMappingValue());
+						if(cAssociationType.getIdAssociationType() == NumberConstants.NUM0) {
+							Optional<Long> key = hashMapSimpleAssocValues.entrySet().stream().filter(p -> p.getValue().equals(tslCountryRegionMappingDTO.getMappingValue())).map(Map.Entry::getKey).findFirst();
+							tslCountryRegionMapping.setMappingValue(key.get().toString());
+						} else if(cAssociationType.getIdAssociationType() == NumberConstants.NUM4) {
+							tslCountryRegionMapping.setMappingValue(tslCountryRegionMappingDTO.getMappingValue());
+						}
 						TslCountryRegion tslCountryRegion = tslCountryRegionRepository.findByCountryRegionCode(tslCountryRegionDTO.getCountryRegionCode());
 						tslCountryRegionMapping.setTslCountryRegion(tslCountryRegion);
 						tslCountryRegionMappingRepository.save(tslCountryRegionMapping);
@@ -578,7 +618,6 @@ public class ImporTslService implements IImporTslService {
 						
 						MappingByTslSummary mappingByTslSummary = new MappingByTslSummary(tslCountryRegionDTO.getCountryRegionName()+"("+tslCountryRegionDTO.getCountryRegionCode()+")",tslCountryRegionMappingDTO.getcAssociationTypeDTO().getTokenName(),tslCountryRegionMappingDTO.getMappingIdentificator(),tslCountryRegionMappingDTO.getMappingValue());
 						listMappingByTslSummary.add(mappingByTslSummary);
-						
 					}
 				}
 			}
@@ -1048,7 +1087,7 @@ public class ImporTslService implements IImporTslService {
 				sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP024, new Object[ ] { tslDataSummary.getResponsible() }) + LINE_BREAK);
 				sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP025, new Object[ ] { tslDataSummary.getIssueDate() }) + LINE_BREAK);
 				sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP026, new Object[ ] { tslDataSummary.getExpireDate() }) + LINE_BREAK);
-				sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP027, new Object[ ] { tslDataSummary.getExpireDate() }) + LINE_BREAK);
+				sbSummaryImport.append(TAB + TAB + Language.getFormatResWebGeneral(WebGeneralMessages.LOG_IMP027, new Object[ ] { tslDataSummary.getDistributionPoint() }) + LINE_BREAK);
 			}
 		}
 		

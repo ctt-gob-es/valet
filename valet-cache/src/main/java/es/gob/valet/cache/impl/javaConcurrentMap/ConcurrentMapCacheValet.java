@@ -331,4 +331,24 @@ public class ConcurrentMapCacheValet extends ACacheValet {
 		ConcurrentMapCacheValet.concurrentMapCacheReloadingName = concurrentMapCacheReloadingName;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.cache.ifaces.ICacheValet#clearAllCache()
+	 */
+	@Override
+	public void clearAllCache() {
+		LOGGER.info("Limpiando todas las caches: principal y auxiliar.");
+		
+		if (concurrentMapCache != null) {
+			concurrentMapCache.clear();
+			LOGGER.info("Cache principal limpiada.");
+		}
+
+		if (concurrentMapCacheReloading != null) {
+			concurrentMapCacheReloading.clear();
+			LOGGER.info("Cache auxiliar limpiada.");
+		}
+	}
+
 }

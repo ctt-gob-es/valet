@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 06/05/2025.
+ * @version 2.2, 21/05/2025.
  */
 package es.gob.valet.tsl.access;
 
@@ -44,8 +44,6 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
 import es.gob.valet.audit.utils.CommonsTslAuditTraces;
@@ -63,10 +61,12 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
+import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionMappingCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
+import es.gob.valet.persistence.configuration.cache.modules.tsl.engine.TSLCache;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslMappingDTO;
@@ -103,7 +103,7 @@ import es.gob.valet.utils.TSLCommonURIs;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.1, 06/05/2025.
+ * @version 2.2, 21/05/2025.
  */
 public final class TSLManager {
 
@@ -2066,7 +2066,12 @@ public final class TSLManager {
 			
 			// Recuperamos el país/región.
 			TslCountryRegion tcrp = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getTslCountryRegionById(tcrco.getCountryRegionId(), false);
-
+			
+			// Dado que el pais aun no existe crearemos el objeto desde 0
+			if(tcrp == null) {
+				tcrp = new TslCountryRegion();
+			}
+			
 			// Recuperamos la constante que representa la especificación y versión asociada a la TSL.
 			CTslImpl ctip = null;
 			List<CTslImpl> cTslImplList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService().getAllCTSLImpl();
@@ -2733,5 +2738,14 @@ public final class TSLManager {
 			result = mapCertificateTSL.get(codeCountry);
 		}
 		return result;
+	}
+
+	/**
+	 * Clears all entries from the TSL cache.
+	 *
+	 * @throws ConfigurationCacheException if an error occurs while clearing the cache
+	 */
+	public void clearAllCache() throws ConfigurationCacheException {
+		TSLCache.getInstance().getCacheValet().clearAllCache();
 	}
 }

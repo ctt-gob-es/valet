@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 19/03/2025.
+ * @version 1.1, 21/05/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -38,7 +38,9 @@ import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -51,11 +53,10 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import es.gob.valet.commons.utils.AESCipher;
+import es.gob.valet.commons.utils.CertificateConstants;
 import es.gob.valet.commons.utils.CryptographicConstants;
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCrypto;
@@ -85,7 +86,7 @@ import es.gob.valet.sign.cades.SignatureException;
 /** 
  * <p>Class that implements the communication with the operations of the persistence layer for ExportTsls.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 19/03/2025.
+ * @version 1.1, 21/05/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -176,7 +177,7 @@ public class ExportService implements IExportService {
 		
 		for (TslCountryRegion tslCountryRegion: listTslCountryRegion) {
 			
-			TslCountryRegionDTO tslCountryRegionDTO = new TslCountryRegionDTO(tslCountryRegion, true);
+			TslCountryRegionDTO tslCountryRegionDTO = new TslCountryRegionDTO(tslCountryRegion, true, this.loadSimpleAssociationValues());
 			
 			String jsonFileName = "MAPEO" + "-" + tslCountryRegionDTO.getCountryRegionCode() + JSON_EXTENSION;
 			
@@ -375,5 +376,44 @@ public class ExportService implements IExportService {
 				UtilsResources.safeCloseInputStream(fis);
 			}
 		}
+	}
+	
+	/**
+	 * Returns a map of certificate attribute identifiers to their localized display names.
+	 * Used for UI representation of certificate field mappings.
+	 *
+	 * @return map of attribute IDs and their corresponding display names
+	 */
+
+	public Map<Long, String> loadSimpleAssociationValues() {
+
+		Map<Long, String> result = new HashMap<Long, String>();
+
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_CERT_VERSION).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_CERTVERSION));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_SUBJECT));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_ISSUER).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_ISSUER));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_COMMON_NAME).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COMMON_NAME));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_GIVEN_NAME).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_GIVEN_NAME));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_SURNAME).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SURNAME));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_COUNTRY).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_COUNTRY));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_SERIALNUMBER));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_PSEUDONYM).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_GENERAL_SUBJECT_PSEUDONYM));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_SERIAL_NUMBER).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_SERIALNUMBER));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_SIGALG_NAME).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_SIGALGNAME));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_SIGALG_OID).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_SIGALGOID));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_VALID_FROM).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_VALIDFROM));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_VALID_TO).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_VALIDTO));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_CERTPOL_INFO_OIDS).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CERTPOLINFOOIDS));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_QC_STATEMENTS_OIDS).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATOIDS));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_QC_STATEMENTS_EXTEUTYPE_OIDS).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_QCSTATEUTYPEOIDS));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_SUBJECT_ALT_NAME).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_SUBJECTALTNAME));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_IS_CA).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_BASICCONSTRAINTISCA));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_KEY_USAGE).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_KEYUSAGE));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_CRL_DISTRIBUTION_POINTS).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_CRLDISTPOINT));
+		result.put(Integer.valueOf(CertificateConstants.INFOCERT_AUTHORITY_INFORMATION_ACCESS).longValue(), Language.getResWebGeneral(WebGeneralMessages.MAPPING_SIMPLE_EXTENSION_AIA));
+		
+
+		return result;
+
 	}
 }

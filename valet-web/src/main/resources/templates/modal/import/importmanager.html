@@ -137,7 +137,7 @@
         	return;
         }
         
-        await updateProgressByStep(1);
+        await updateProgressByStep();
     }
 
 	function resetProgressBars() {
@@ -147,13 +147,7 @@
 	    }
 	}
 
-	async function updateProgressByStep(step) {
-	    if (step > 5) {
-	    	$("#imporTslSummary").slideDown(500);
-	    	unlockModal();
-	        return;
-	    }
-	    
+	async function updateProgressByStep() {
 	    var statusimport = /*[[@{/statusimport}]]*/;
 	    let response = await fetch(statusimport, { method: 'GET' });
         let data = await response.json();
@@ -178,29 +172,40 @@
         $("#numTslDataNotImpSpan").text(data.numTslDataNotImpSpan);
         $("#numMappingByTslNotImpSpan").text(data.numMappingByTslNotImpSpan);
         $("#numMappingByServNotImpSpan").text(data.numMappingByServNotImpSpan);
-                
-        let progress = data["step" + step] || 0;
-        let $progressBar = $("#progressbarIdStep" + step);
-        $progressBar.css("width", progress + "%").text(progress + "%");
-
+        
+        for(let i=1; i <= data.currentStep; i++) {
+    		let progress = data["step" + i] || 0;
+        	let $progressBar = $("#progressbarIdStep" + i);
+        	$progressBar.css("width", progress + "%").text(progress + "%");
+        	if (progress === 100) {
+        		$progressBar.addClass("bg-success");
+        	}
+        } 
+        
      	// Verificamos si hay un error antes de continuar
         if (data.isError) {
-        	$('#messageModalImportManager').html(data.messageError);
-			$('#messageModalImportManager').addClass('alert alert-danger');
-            $("#messageModalImportManager").fadeTo(5000, 500).slideUp(500, function() {
-                $("#messageModalImportManager").slideUp(500);
-            });  
-            $progressBar.addClass("bg-danger");
-            unlockModal();
-            return; // Detenemos la ejecución
+        	
+        	let $progressBarError = $("#progressbarIdStep" + data.currentStep);
+        	$progressBarError.addClass("bg-danger");
+
+        	$('#messageModalImportManager').hide().html(data.messageError).removeClass().addClass('alert alert-danger').slideDown(500).fadeTo(5000, 500).slideUp(500);
+        	
+            $("#downLoadImpSummaryBtn").prop("disabled", true);
+            $("#cancelBtn").prop("disabled", false);
+            
+            return; // Detenemos aquí la recursión
         }
-     
-        if (progress === 100) {
-            $progressBar.addClass("bg-success");
-            await updateProgressByStep(step + 1);
-        } else {
-            setTimeout(() => updateProgressByStep(step), 1000);
-        }
+     	
+        if (data.currentStep === 5 && !data.isRunning) {
+	    	$("#imporTslSummary").slideDown(500);
+	    	unlockModal();
+	    	// detenemos la recursión
+	        return;
+	    } else {
+	    	// Repetimos la llamada recursivamente
+	        setTimeout(() => updateProgressByStep(data.currentStep), 1000);
+	    }
+    
 	}
 
 	function unlockModal() {
