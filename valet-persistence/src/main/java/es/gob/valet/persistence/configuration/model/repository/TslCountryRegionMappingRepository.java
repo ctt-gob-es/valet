@@ -20,13 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>08/08/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 06/05/2025.
+ * @version 1.4, 21/05/2025.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
@@ -34,7 +35,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 /**
  * <p>Interface that provides CRUD functionality for the TslCountryRegionMapping entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 06/05/2025.
+ * @version 1.4, 21/05/2025.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -54,12 +55,14 @@ public interface TslCountryRegionMappingRepository extends JpaRepository<TslCoun
 	void deleteByTslCountryRegionIdTslCountryRegion(Long idCountryRegion);
 
 	/**
-	 * Retrieves a {@link TslCountryRegionMapping} entity based on its unique mapping identifier.
+	 * Finds a {@code TslCountryRegionMapping} entity by its mapping identifier and associated country region ID.
 	 *
-	 * @param mappingIdentificator the unique identifier used to find the mapping.
-	 * @return the {@link TslCountryRegionMapping} associated with the given identifier, or {@code null} if none is found.
+	 * @param mappingIdentificator the identifier of the mapping to find
+	 * @param idTslCountryRegion the ID of the associated country region
+	 * @return the matching {@code TslCountryRegionMapping} entity, or {@code null} if none found
 	 */
-	TslCountryRegionMapping findByMappingIdentificator(String mappingIdentificator);
+	@Query("SELECT t FROM TslCountryRegionMapping t WHERE t.mappingIdentificator = ?1 AND t.tslCountryRegion.idTslCountryRegion = ?2")
+	TslCountryRegionMapping findMappingByIdentificatorAndCountryRegion(String mappingIdentificator, Long idTslCountryRegion);
 
 	
 }

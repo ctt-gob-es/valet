@@ -17,14 +17,14 @@
 						<div class="custom-file mb-2">
 							<input type="file" class="custom-file-input" id="keystoreFile" name="keystoreFile" aria-describedby="fileHelp">
 							<label class="custom-file-label" for="keystoreFile" th:text="#{form.confAddSigningCert.field.file.choose}"></label>
-						    <span id="keystoreFile_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						    <span id="keystoreFile_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill mt-1"></span>
 						</div>
 					</div>
 					<!-- Password Keystore -->
 					<div class="form-group row col-sm-12 mx-auto">
 						<label for="password" th:text="#{form.confAddSigningCert.field.keystore.password}"></label>
 						<input type="password" name="passwordKeystore" id="passwordKeystore" class="form-control" th:value="*{passwordKeystore}"/>
-						<span id="passwordKeystore_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<span id="passwordKeystore_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill mt-1"></span>
 					</div>
 				</form>
 			</div>

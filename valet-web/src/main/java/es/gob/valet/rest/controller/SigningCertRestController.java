@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 12/03/2025.
+ * @version 1.1, 21/05/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -59,7 +60,7 @@ import es.gob.valet.service.ifaces.ISigningCertService;
 /**
  * <p>Class that manages the REST request related to the proxy configuration.</p>
  * <b>Project:</b><p>Class that manages the REST request related to the Signing Certificate Configuration.</p>
- * @version 1.0, 12/03/2025.
+ * @version 1.1, 21/05/2025.
  */
 @RestController
 public class SigningCertRestController {
@@ -69,6 +70,9 @@ public class SigningCertRestController {
 	 */
 	private static final Logger LOGGER = Logger.getLogger(SigningCertRestController.class);
 	
+	/**
+	 * Service for managing signing certificates.
+	 */
 	@Autowired
 	private ISigningCertService iSigningCertService;
 	
@@ -182,9 +186,15 @@ public class SigningCertRestController {
 				String msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_CCF007);
 				json.put(FIELD_KEYSTORE_FILE + "_span", msgError);
 			} catch (IOException e) {
-				LOGGER.error(e);
-				String msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_CCF008);
-				json.put(FIELD_KEYSTORE_FILE + "_span", msgError);
+				if(e.getCause() instanceof UnrecoverableKeyException) {
+					String msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_CCF008);
+					LOGGER.error(msgError);
+					json.put(FIELD_PASSWORD_KEYSTORE + "_span", msgError);
+				} else {
+					String msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_CCF011);
+					LOGGER.error(msgError);
+					json.put(FIELD_KEYSTORE_FILE + "_span", msgError);
+				}
 			}
 		}
 	}

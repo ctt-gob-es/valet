@@ -97,8 +97,11 @@
 	        .css("width", data.progress + "%") // Mantenemos el último avance
 	        .text(data.progress + "%");
 	    $("#exporTslStep").text(/*[[#{form.exporTsls.label.export.text.stop}]]*/);
-
-	    updateButtons("Stopped"); // Habilitar botones
+	
+	    setTimeout(function() {
+	    	 $("#progressbarIdStep").css("width", "0%").text("0%").removeClass("bg-info");
+	    	 updateButtons("Stopped"); // Habilitar botones
+	    }, 2000);
 	}
 	
 	async function checkProcessStatus() {

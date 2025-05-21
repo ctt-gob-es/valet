@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 21/05/2025.
  */
 package es.gob.valet.cache.ifaces;
 
@@ -31,7 +31,7 @@ import es.gob.valet.cache.exceptions.ManagingObjectCacheValetException;
 /**
  * <p>Interface that represents a cache manager regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 25/09/2018.
+ * @version 1.1, 21/05/2025.
  */
 public interface ICacheValet {
 
@@ -114,4 +114,8 @@ public interface ICacheValet {
 	 */
 	boolean isReloadingCacheAtTheMoment();
 
+	/**
+	 * Clears both the main cache and the auxiliary reloading cache if they exist.
+	 */
+	void clearAllCache();
 }

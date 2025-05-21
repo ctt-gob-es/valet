@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/05/2025.
+ * @version 1.2, 21/05/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -32,7 +32,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /** 
  * <p>Class that represents an object that relates the code of a to the TSL Data DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/05/2025.
+ * @version 1.2, 21/05/2025.
  */
 public class TslDataDTO {
 
@@ -118,7 +118,7 @@ public class TslDataDTO {
 		this.newTSLAvailable = tslData.getNewTSLAvailable();
 		this.responsible = tslData.getResponsible() != null ? tslData.getResponsible() : "";
 		this.sequenceNumber = tslData.getSequenceNumber();
-		this.tslCountryRegionDTO = new TslCountryRegionDTO(tslData.getTslCountryRegion(), false);
+		this.tslCountryRegionDTO = new TslCountryRegionDTO(tslData.getTslCountryRegion(), false, null);
 		this.cTslImplDTO = new CTslImplDTO(tslData.getTslImpl());
 		this.uriTslLocation = tslData.getUriTslLocation();
 		this.xmlDocument = Base64.getEncoder().encodeToString(tslData.getXmlDocument());

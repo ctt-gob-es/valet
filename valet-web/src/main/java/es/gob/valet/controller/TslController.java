@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 31/03/2025.
+ * @version 2.1, 21/05/2025.
  */
 package es.gob.valet.controller;
 
@@ -65,7 +65,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 2.0, 31/03/2025.
+ *  @version 2.1, 21/05/2025.
  */
 @Controller
 public class TslController {
@@ -333,7 +333,7 @@ public class TslController {
 	 * Method that loads the options for a simple association.
 	 * @return List of constants that represents the options for a simple association.
 	 */
-	private List<ConstantsForm> loadSimpleAssociationValues() {
+	public List<ConstantsForm> loadSimpleAssociationValues() {
 
 		List<ConstantsForm> result = new ArrayList<ConstantsForm>();
 

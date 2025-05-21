@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/05/2025.
+ * @version 1.2, 21/05/2025.
  */
 package es.gob.valet.importsls;
 
@@ -56,7 +56,7 @@ import es.gob.valet.sign.ExportFileValidator;
 /**
  * <p>Class that manages the REST request related to the Import Tsls administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/05/2025.
+ * @version 1.2, 21/05/2025.
  */
 @RestController
 public class ImporTslsRestController {
@@ -130,7 +130,8 @@ public class ImporTslsRestController {
 
 	    // Verificamos las condiciones en un único bloque secuencial
 	    if (tslsFile.getSize() > maxFileSize) {
-	        msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP023);
+	    	double megas = maxFileSize / 1_000_000.0;
+	    	msgError = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP023, new Object[ ] { megas });
 	        LOGGER.error(msgError);
 	    } 
 	    // Si la extensión no es ZIP
@@ -163,7 +164,7 @@ public class ImporTslsRestController {
 		            msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP026);
 		     }
 	    }
-	    
+
 	    // Si se ha detectado un error, registramos el mensaje en el JSON
  	    if (msgError != null) {
  	        json.put(FIELD_ID_FILE_IMPORT + "_span", msgError);
@@ -212,11 +213,7 @@ public class ImporTslsRestController {
 	@RequestMapping(value = "/statusimport", method = RequestMethod.GET)
 	public Map<String, Object> getStatus(HttpSession httpSession) {
 	    Map<String, Object> statusMap = new HashMap<>();
-	    for (int i = 1; i <= 5; i++) {
-	        statusMap.put("step" + i, iImporTslService.getStepProgress(i));
-	    }
 	    statusMap.put("isRunning", iImporTslService.isRunning());
-	    statusMap.put("isError", iImporTslService.isError());
 	    statusMap.put("messageError", iImporTslService.getMessageError());
 	    statusMap.put("numTslImpSpan", iImporTslService.getNumTslImp());
 	    statusMap.put("numMappingByTslImpSpan", iImporTslService.getNumMappingByTslImp());
@@ -225,7 +222,18 @@ public class ImporTslsRestController {
 	    statusMap.put("numTslDataNotImpSpan", iImporTslService.getNumTslDataNotImp());
 	    statusMap.put("numMappingByTslNotImpSpan", iImporTslService.getNumMappingByTslNotImp());
 	    statusMap.put("numMappingByServNotImpSpan", iImporTslService.getNumMappingByServNotImp());
-	    
+	    int currentStep = iImporTslService.getCurrentStep();
+	    statusMap.put("currentStep", currentStep);
+	    statusMap.put("isError", iImporTslService.isError());
+	    if(!iImporTslService.isError()) {
+	    	for (int i = 1; i <= currentStep; i++) {
+		        statusMap.put("step" + i, iImporTslService.getStepProgress(i));
+		    }
+	    } else {
+	    	for (int i = 1; i <= iImporTslService.getCurrentStep(); i++) {
+		        statusMap.put("step" + i, iImporTslService.getStepProgress(i));
+		    }
+	    }
 	    return statusMap;
 	}
 

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 2.6, 06/05/2025.
+ * @version 2.7, 21/05/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.6, 06/05/2025.
+ * @version 2.7, 21/05/2025.
  */
 public interface IWebGeneralMessages {
 
@@ -814,6 +814,10 @@ public interface IWebGeneralMessages {
 	 */
 	String LOG_CCF010 = "CCF010";
 	
+	/**
+	 * Constant attribute that represents the property key <code>CCF011</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	String LOG_CCF011 = "CCF011";
 	
 	/***********************/
 	/** Mensajes de trazas en el módulo de importacion/exportacion **/ 

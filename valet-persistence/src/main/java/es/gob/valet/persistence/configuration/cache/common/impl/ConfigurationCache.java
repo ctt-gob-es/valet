@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 22/10/2018.
+ * @version 1.3, 21/05/2025.
  */
 package es.gob.valet.persistence.configuration.cache.common.impl;
 
@@ -42,7 +42,7 @@ import es.gob.valet.persistence.configuration.cache.common.exceptions.Configurat
 /**
  * <p>Class to handle the configuration objects in the ValET Cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 22/10/2018.
+ * @version 1.3, 21/05/2025.
  */
 public abstract class ConfigurationCache {
 
@@ -78,7 +78,7 @@ public abstract class ConfigurationCache {
 	 * @throws ConfigurationCacheException In case of some error initializating the configuration cache.
 	 * @return the unique instance of the configuration cache.
 	 */
-	private ICacheValet getCacheValet() throws ConfigurationCacheException {
+	public ICacheValet getCacheValet() throws ConfigurationCacheException {
 
 		try {
 			return FactoryCacheValet.getCacheValetInstance();
