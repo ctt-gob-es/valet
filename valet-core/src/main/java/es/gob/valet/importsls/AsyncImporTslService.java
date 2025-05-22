@@ -81,7 +81,7 @@ public class AsyncImporTslService implements IAsyncImportService {
                 TSLManager.getInstance().clearAllCache();
                 TSLManager.getInstance().reloadTSLCache();
             } catch (Exception e) {
-                LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP047), e);
+            	LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP047, new Object[ ] { iImporTslService.getCurrentStep() }), e);
                 iImporTslService.setMessageError(Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_IMP046, new Object[ ] { iImporTslService.getCurrentStep() }));
                 iImporTslService.setError(true);
                 TSLManager.getInstance().clearAllCache();

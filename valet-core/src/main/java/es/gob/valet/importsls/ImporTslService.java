@@ -556,13 +556,11 @@ public class ImporTslService implements IImporTslService {
 		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP005));
 		
 		List<CAssociationType> listCAssociationType = cAssociationTypeRepository.findAll();
-		
-		@SuppressWarnings("unchecked")
-		List<TslCountryRegionDTO> listTslCountryRegionDTO = (List<TslCountryRegionDTO>) listSerializedElements.get(NumberConstants.NUM1);
 		Map<Long, String> hashMapSimpleAssocValues = exportService.loadSimpleAssociationValues();
 		List<TslCountryRegion> listTslCountryRegion = tslCountryRegionRepository.findAll();
 		
-		
+		@SuppressWarnings("unchecked")
+		List<TslCountryRegionDTO> listTslCountryRegionDTO = (List<TslCountryRegionDTO>) listSerializedElements.get(NumberConstants.NUM1);
 		int totalTslCountryRegion = listTslCountryRegionDTO.size();
         int processedTslCountryRegion = 0;
         

@@ -225,14 +225,8 @@ public class ImporTslsRestController {
 	    int currentStep = iImporTslService.getCurrentStep();
 	    statusMap.put("currentStep", currentStep);
 	    statusMap.put("isError", iImporTslService.isError());
-	    if(!iImporTslService.isError()) {
-	    	for (int i = 1; i <= currentStep; i++) {
-		        statusMap.put("step" + i, iImporTslService.getStepProgress(i));
-		    }
-	    } else {
-	    	for (int i = 1; i <= iImporTslService.getCurrentStep(); i++) {
-		        statusMap.put("step" + i, iImporTslService.getStepProgress(i));
-		    }
+	    for (int i = 1; i <= currentStep; i++) {
+	        statusMap.put("step" + i, iImporTslService.getStepProgress(i));
 	    }
 	    return statusMap;
 	}
