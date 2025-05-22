@@ -426,9 +426,11 @@ public class ImporTslService implements IImporTslService {
 				case NumberConstants.NUM2:
 					this.setCurrentStep(NumberConstants.NUM2);
 					this.importDataTsl();
+					break;
 				case NumberConstants.NUM3:
 					this.setCurrentStep(NumberConstants.NUM3);
 					importMappingByTsl();
+					break;
 				case NumberConstants.NUM4:
 					this.setCurrentStep(NumberConstants.NUM4);
 					importMappingByService();
@@ -563,11 +565,11 @@ public class ImporTslService implements IImporTslService {
 		LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_IMP005));
 		
 		List<CAssociationType> listCAssociationType = cAssociationTypeRepository.findAll();
+		Map<Long, String> hashMapSimpleAssocValues = exportService.loadSimpleAssociationValues();
+		List<TslCountryRegion> listTslCountryRegion = tslCountryRegionRepository.findAll();
 		
 		@SuppressWarnings("unchecked")
 		List<TslCountryRegionDTO> listTslCountryRegionDTO = (List<TslCountryRegionDTO>) listSerializedElements.get(NumberConstants.NUM1);
-		Map<Long, String> hashMapSimpleAssocValues = exportService.loadSimpleAssociationValues();
-		
 		int totalTslCountryRegion = listTslCountryRegionDTO.size();
         int processedTslCountryRegion = 0;
         
@@ -577,7 +579,8 @@ public class ImporTslService implements IImporTslService {
 				for (TslCountryRegionMappingDTO tslCountryRegionMappingDTO: tslCountryRegionDTO.getListTslCountryRegionMappingDTO()) {
 					String mappingIdentificator = tslCountryRegionMappingDTO.getMappingIdentificator();
 					CAssociationType cAssociationType = listCAssociationType.stream().filter(p -> Language.getResPersistenceConstants(p.getTokenName()).equals(tslCountryRegionMappingDTO.getcAssociationTypeDTO().getTokenName())).findAny().orElse(null);
-					TslCountryRegionMapping tslCountryRegionMapping = tslCountryRegionMappingRepository.findMappingByIdentificatorAndCountryRegion(mappingIdentificator, tslCountryRegionDTO.getIdTslCountryRegion());
+					TslCountryRegion tslCountryRegion = listTslCountryRegion.stream().filter(p -> p.getCountryRegionCode().equals(tslCountryRegionDTO.getCountryRegionCode())).findAny().orElse(new TslCountryRegion());
+					TslCountryRegionMapping tslCountryRegionMapping = tslCountryRegionMappingRepository.findMappingByIdentificatorAndCountryRegion(mappingIdentificator, tslCountryRegion.getIdTslCountryRegion());
 					if(tslCountryRegionMapping != null) {
 						if(overwrite) {							
 							tslCountryRegionMapping.setAssociationType(cAssociationType);
@@ -611,7 +614,6 @@ public class ImporTslService implements IImporTslService {
 						} else if(cAssociationType.getIdAssociationType() == NumberConstants.NUM4) {
 							tslCountryRegionMapping.setMappingValue(tslCountryRegionMappingDTO.getMappingValue());
 						}
-						TslCountryRegion tslCountryRegion = tslCountryRegionRepository.findByCountryRegionCode(tslCountryRegionDTO.getCountryRegionCode());
 						tslCountryRegionMapping.setTslCountryRegion(tslCountryRegion);
 						tslCountryRegionMappingRepository.save(tslCountryRegionMapping);
 						numMappingByTslImp++;
