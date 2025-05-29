@@ -1,0 +1,56 @@
+<!-- ===================================================================== -->
+<!-- -->
+<!-- Log4j2 Configuration												   -->
+<!-- -->
+<!-- ===================================================================== -->
+
+<Configuration status="warn">
+
+    <Appenders>
+        <!-- Appender de log diario -->
+        <RollingFile name="FILE"
+                     fileName="logs/standalone-statistics.log"
+                     filePattern="logs/standalone-statistics-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%d %x %-5level [%c] %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- Appender para BackupAuditTraces -->
+        <RollingFile name="BackupAuditTracesAppender"
+                     fileName="logs/backup-standalone-statistics.log"
+                     filePattern="logs/backup-standalone-statistics-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- Appender de consola -->
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss,SSS} %-5level [%c{1}] %msg%n"/>
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <!-- Logger para BackupAuditTraces -->
+        <Logger name="BackupAuditTraces" level="info" additivity="false">
+            <AppenderRef ref="BackupAuditTracesAppender"/>
+        </Logger>
+
+        <!-- Logger para es.gob.afirma -->
+        <Logger name="es.gob.afirma" level="debug" additivity="true"/>
+
+        <!-- Logger para org.hibernate -->
+        <Logger name="org.hibernate" level="error" additivity="true"/>
+
+        <!-- Logger raíz -->
+        <Root level="info">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="FILE"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

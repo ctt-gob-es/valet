@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 06/05/2025.
+ * @version 1.6, 29.05/2025.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -33,11 +33,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
+import es.gob.valet.persistence.configuration.model.entity.TslData;
 
 /**
  * <p>Interface that provides CRUD functionality for the TslCountryRegion entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 06/05/2025.
+ * @version 1.6, 29.05/2025.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)

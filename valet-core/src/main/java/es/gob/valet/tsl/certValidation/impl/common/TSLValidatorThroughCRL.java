@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.5, 29/04/2024.
+ * @version 2.6, 29.05/2025.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -41,7 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
@@ -81,14 +82,14 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that represents a TSL validation operation process through a CRL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.5, 29/04/2024.
+ * @version 2.6, 29.05/2025.
  */
 public class TSLValidatorThroughCRL implements ITSLValidatorThroughSomeMethod {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TSLValidatorThroughCRL.class);
+	private static final Logger LOGGER = LogManager.getLogger(TSLValidatorThroughCRL.class);
 
 	/**
 	 * Constant attribute that represents the Sun property for the connection

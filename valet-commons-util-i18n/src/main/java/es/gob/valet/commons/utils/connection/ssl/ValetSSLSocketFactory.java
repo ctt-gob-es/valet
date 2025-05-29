@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 05/12/2018.
+ * @version 1.2, 29.05/2025.
  */
 package es.gob.valet.commons.utils.connection.ssl;
 
@@ -40,7 +40,8 @@ import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.protocol.HttpContext;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.StaticValetConfig;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -50,14 +51,14 @@ import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 /**
  * <p>Class that represents a custom SSL Sockect Factory for HTTP Client.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 05/12/2018.
+ * @version 1.2, 29.05/2025.
  */
 public class ValetSSLSocketFactory implements LayeredConnectionSocketFactory {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ValetSSLSocketFactory.class);
+	private static final Logger LOGGER = LogManager.getLogger(ValetSSLSocketFactory.class);
 
 	/**
 	 * Attribute that represents the SSL Context.

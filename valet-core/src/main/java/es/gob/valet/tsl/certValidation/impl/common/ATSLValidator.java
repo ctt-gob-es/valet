@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.6, 30/10/2024.
+ * @version 2.7, 29.05/2025.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -37,7 +37,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.client.methods.HttpGet;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.springframework.beans.BeansException;
@@ -107,14 +108,14 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 2.6, 30/10/2024.
+ * @version 2.7, 29.05/2025.
  */
 public abstract class ATSLValidator implements ITSLValidator {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ATSLValidator.class);
+	private static final Logger LOGGER = LogManager.getLogger(ATSLValidator.class);
 
 	/**
 	 * Constant attribute that represents a token for a TSP Service Name when

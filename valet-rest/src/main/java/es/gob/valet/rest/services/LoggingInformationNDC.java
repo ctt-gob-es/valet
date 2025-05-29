@@ -20,13 +20,13 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.0, 12/02/2019.
+ * @version 1.1, 29.05/2025.
  */
 package es.gob.valet.rest.services;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.NDC;
+import org.apache.logging.log4j.ThreadContext;
 
 import es.gob.valet.commons.utils.UtilsIdentifiersGenerator;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -34,7 +34,7 @@ import es.gob.valet.commons.utils.UtilsStringChar;
 /**
  * <p>Class that manages the NDC information added in the logs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 12/02/2019.
+ * @version 1.1, 29.05/2025.
  */
 public final class LoggingInformationNDC {
 
@@ -81,9 +81,9 @@ public final class LoggingInformationNDC {
 
 		String result = UtilsIdentifiersGenerator.generateNumbersUniqueId();
 
-		NDC.push(OPEN_CLIENT_TOKEN + getClientHostName(httpServletRequest) + UtilsStringChar.SYMBOL_CLOSE_SQUARE_BRACKET_STRING);
-		NDC.push(OPEN_ID_TOKEN + result + UtilsStringChar.SYMBOL_CLOSE_SQUARE_BRACKET_STRING);
-		NDC.push(OPEN_SERVICE_TOKEN + serviceName + UtilsStringChar.SYMBOL_CLOSE_SQUARE_BRACKET_STRING);
+		ThreadContext.push(OPEN_CLIENT_TOKEN + getClientHostName(httpServletRequest) + UtilsStringChar.SYMBOL_CLOSE_SQUARE_BRACKET_STRING);
+		ThreadContext.push(OPEN_ID_TOKEN + result + UtilsStringChar.SYMBOL_CLOSE_SQUARE_BRACKET_STRING);
+		ThreadContext.push(OPEN_SERVICE_TOKEN + serviceName + UtilsStringChar.SYMBOL_CLOSE_SQUARE_BRACKET_STRING);
 
 		return result;
 
@@ -117,7 +117,7 @@ public final class LoggingInformationNDC {
 	 * This method removes all the registered NDC information to this thread could be cleaned.
 	 */
 	public static void unregisterNdcInf() {
-		NDC.remove();
+		ThreadContext.removeStack();
 	}
 
 }

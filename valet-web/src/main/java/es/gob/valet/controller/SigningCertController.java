@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 12/03/2025.
+ * @version 1.1, 29.05/2025.
  */
 package es.gob.valet.controller;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +38,7 @@ import es.gob.valet.service.ifaces.ISigningCertService;
 /**
  * <p>Class that manages the requests related to the configuration of the Signing Certificate.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 12/03/2025.
+ * @version 1.1, 29.05/2025.
  */
 @Controller
 public class SigningCertController {
@@ -45,7 +46,7 @@ public class SigningCertController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(SigningCertController.class);
+	private static final Logger LOGGER = LogManager.getLogger(SigningCertController.class);
 	
 	/**
 	 * Service for handling operations related to signing certificates.

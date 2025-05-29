@@ -20,13 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>22/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 21/05/2025.
+ * @version 1.4, 29.05/2025.
  */
 package es.gob.valet.persistence.configuration.cache.common.impl;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.cache.FactoryCacheValet;
 import es.gob.valet.cache.exceptions.BadPathCacheValetException;
@@ -42,14 +43,14 @@ import es.gob.valet.persistence.configuration.cache.common.exceptions.Configurat
 /**
  * <p>Class to handle the configuration objects in the ValET Cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 21/05/2025.
+ * @version 1.4, 29.05/2025.
  */
 public abstract class ConfigurationCache {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ConfigurationCache.class);
+	private static final Logger LOGGER = LogManager.getLogger(ConfigurationCache.class);
 
 	/**
 	 * Constant attribute that represents a separator token for the TSA platform ID.

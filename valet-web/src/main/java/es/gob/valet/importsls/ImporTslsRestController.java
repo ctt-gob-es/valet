@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.2, 21/05/2025.
+ * @version 1.3, 29.05/2025.
  */
 package es.gob.valet.importsls;
 
@@ -33,7 +33,8 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +57,7 @@ import es.gob.valet.sign.ExportFileValidator;
 /**
  * <p>Class that manages the REST request related to the Import Tsls administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 21/05/2025.
+ * @version 1.3, 29.05/2025.
  */
 @RestController
 public class ImporTslsRestController {
@@ -64,7 +65,7 @@ public class ImporTslsRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ImporTslsRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger(ImporTslsRestController.class);
 
 	/**  
 	 * Constant representing the field ID for file import.  

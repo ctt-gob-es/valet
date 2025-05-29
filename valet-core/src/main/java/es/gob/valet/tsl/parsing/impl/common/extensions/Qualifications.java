@@ -24,7 +24,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 29.05/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -35,11 +35,11 @@ import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
-import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeExtension;
 import es.gob.valet.tsl.parsing.ifaces.ITSLCommonURIs;
 import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
+import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 
 /**
  * <p>Class that represents a qualification criteria extension. The qualification criteria
@@ -48,7 +48,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * The certificate is qualified with all the qualifiers obtained with the application of all the qualification
  * elements.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 29.05/2025.
  */
 public class Qualifications extends Extension {
 

@@ -20,11 +20,12 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>13 jun. 2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 13 jun. 2018.
+ * @version 1.1, 29.05/2025.
  */
 package es.gob.valet.spring.config;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -41,7 +42,7 @@ import es.gob.valet.service.impl.UserDetailServiceImpl;
 /** 
  * <p>Class that enables and configures the security of the Valet application. </p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 13 jun. 2018.
+ * @version 1.1, 29.05/2025.
  */
 @Configuration
 @EnableWebSecurity
@@ -49,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
+	private static final Logger LOGGER = LogManager.getLogger(GeneralConstants.LOGGER_NAME_VALET_LOG);
 
 	
 	/**

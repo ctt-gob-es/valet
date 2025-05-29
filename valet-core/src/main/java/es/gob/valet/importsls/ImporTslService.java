@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.2, 21/05/2025.
+ * @version 1.3, 29.05/2025.
  */
 package es.gob.valet.importsls;
 
@@ -39,7 +39,8 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -102,7 +103,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>interface that contains all the methods necessary to carry out the import of TSLs.</p>
  * <b>Project:</b><p>Class that contains all the methods necessary to carry out the import of TSLs.</p>
- * @version 1.1, 21/05/2025.
+ * @version 1.3, 29.05/2025.
  */
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -111,7 +112,7 @@ public class ImporTslService implements IImporTslService {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ImporTslService.class);
+	private static final Logger LOGGER = LogManager.getLogger(ImporTslService.class);
 	
 	/**
 	 * Identifier for task TASK01.

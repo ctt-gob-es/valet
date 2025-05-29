@@ -20,13 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 29.05/2025.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -47,7 +48,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ISystemCertificate
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for SystemCertificate.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 06/11/2018.
+ * @version 1.2, 29.05/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -56,7 +57,7 @@ public class SystemCertificateService implements ISystemCertificateService {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(SystemCertificateService.class);
+	private static final Logger LOGGER = LogManager.getLogger(SystemCertificateService.class);
 	
 	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.

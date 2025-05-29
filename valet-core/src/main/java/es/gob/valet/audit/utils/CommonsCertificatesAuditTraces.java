@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/02/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 10/05/2019.
+ * @version 1.3, 29.05/2025.
  */
 package es.gob.valet.audit.utils;
 
@@ -36,7 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.ResponderID;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -61,14 +62,14 @@ import es.gob.valet.rest.elements.json.DateString;
 /**
  * <p>Class that provides methods for registering the most commons audit traces associated to the certificates.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 10/05/2019.
+ * @version 1.3, 29.05/2025.
  */
 public final class CommonsCertificatesAuditTraces {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(CommonsCertificatesAuditTraces.class);
+	private static final Logger LOGGER = LogManager.getLogger(CommonsCertificatesAuditTraces.class);
 
 	/**
 	 * Attribute that represents the map that has the relations between the certificate operation id

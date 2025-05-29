@@ -20,18 +20,19 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/05/2025.
+ * @version 1.1, 29.05/2025.
  */
 package es.gob.valet.importsls;
 
+import java.util.concurrent.Callable;
+
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import java.util.concurrent.Callable;
 
 /**
  * <p>Class with Service responsible for executing the Trusted Service List (TSL) import process asynchronously.</p>
  * <b>Project:</b><p>Wrapper for a {@link Callable} that preserves and restores the {@link RequestContextHolder} request attributes when executing code in a separate thread.</p>
- * @version 1.0, 06/05/2025.
+ * @version 1.1, 29.05/2025.
  */
 public class DelegatingCallable<V> implements Callable<V> {
 
