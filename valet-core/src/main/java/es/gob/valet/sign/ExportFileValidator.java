@@ -123,7 +123,7 @@ public class ExportFileValidator {
 		}
 
 		if (fileHash == null) {
-			throw new SecurityException("El fichero esperado files_hash_v_"+ValetVersionDTO.VersionEnum.V2.getVersion()+".properties no se ha encontrado dentro de META-INF"); //$NON-NLS-1$
+			throw new SecurityException("El contenido del fichero importado no coincide con la información firmada. Es posible que haya sido modificado tras su firma"); //$NON-NLS-1$
 		}
 		if (signature == null) {
 			throw new SecurityException("El fichero esperado signature.p7s no se ha encontrado dentro de META-INF"); //$NON-NLS-1$
