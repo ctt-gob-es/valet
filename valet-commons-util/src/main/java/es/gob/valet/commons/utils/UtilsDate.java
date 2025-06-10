@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 19/09/2023.
+ * @version 1.5, 10/06/2025.
  */
 package es.gob.valet.commons.utils;
 
@@ -36,7 +36,7 @@ import java.util.TimeZone;
  * <p>Class that provides methods for managing dates.</p>
  * <b>Project:</b><p>Horizontal platform of validation services of multiPKI
  * certificates and electronic signature.</p>
- * @version 1.4, 19/09/2023.
+ * @version 1.5, 10/06/2025.
  */
 public class UtilsDate {
 
@@ -114,6 +114,11 @@ public class UtilsDate {
 	 * Constant attribute that represents the date format <code>"dd-MMM-yyyy HH:mm"</code>.
 	 */
 	public static final String FORMAT_DATE_TIME_MINUTES = "dd-MMM-yyyy HH:mm";
+
+	/**
+	 * Constant attribute that represents the date format <code>"dd-MM-yyyy HH:mm"</code>.
+	 */
+	public static final String FORMAT_DATE_TIME_MINUTES2 = "dd-MM-yyyy HH:mm";
 
 	/**
 	 * Constant attribute that represents the date format <code>"yyyy-MM-dd HH:mm:ss ZZZZ"</code>.

@@ -20,10 +20,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 28/03/2025.
+ * @version 1.6, 10/06/2025.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,9 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.repository.TslDataRepository;
@@ -44,7 +47,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer related to TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 28/03/2025.
+ * @version 1.6, 10/06/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -178,4 +181,22 @@ public class TslDataService implements ITslDataService {
 		return repository.findTslDataByCountryAndSqNumber(tcrp.getIdTslCountryRegion(), tslSequenceNumber);
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#obtainAllTslDTO()
+	 */
+	public List<TslDataDTO> obtainAllTslDTO() {
+		List<TslDataDTO> listTslDataDTO = new ArrayList<TslDataDTO>();
+		List<TslData> listTslData = repository.findAll();
+		for (TslData tslData: listTslData) {
+			TslDataDTO tslDataDTO = new TslDataDTO(tslData);
+			String issueDate = (tslData.getIssueDate() != null) ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslData.getIssueDate()) : "";
+			String expirationDate = (tslData.getExpirationDate() != null) ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslData.getExpirationDate()) : "";
+			tslDataDTO.setIssueDate(issueDate);
+			tslDataDTO.setExpirationDate(expirationDate);
+			listTslDataDTO.add(tslDataDTO);
+		}
+		return listTslDataDTO;
+	}
 }

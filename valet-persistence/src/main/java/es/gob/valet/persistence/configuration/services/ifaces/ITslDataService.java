@@ -31,6 +31,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 
@@ -120,5 +121,17 @@ public interface ITslDataService {
 	 * @return The {@link TslData} entity matching the given criteria, or {@code null} if no match is found.
 	 */
 	TslData getTslByCountryAndSequenceNumber(TslCountryRegion tcrp, int tslSequenceNumber);
+
+	/**
+	 * Retrieves all TSL data from the repository and maps each entry to a {@link TslDataDTO} object.
+	 * <p>
+	 * For each {@link TslData} entity retrieved, this method creates a corresponding {@link TslDataDTO},
+	 * formatting the issue and expiration dates into strings using the {@link UtilsDate#FORMAT_DATE_TIME_MINUTES2}
+	 * format. If the issue or expiration date is null, the corresponding string in the DTO will be empty.
+	 * </p>
+	 *
+	 * @return a list of {@link TslDataDTO} instances containing the TSL data from the repository.
+	 */
+	List<TslDataDTO> obtainAllTslDTO();
 
 }

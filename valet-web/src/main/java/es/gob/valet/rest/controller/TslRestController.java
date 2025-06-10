@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 31/03/2025.
+ * @version 2.3, 10/06/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -40,13 +40,11 @@ import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotEmpty;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -95,7 +93,7 @@ import es.gob.valet.utils.GeneralConstantsValetWeb;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.2, 31/03/2025.
+ * @version 2.3, 10/06/2025.
  */
 @RestController
 public class TslRestController {
@@ -205,21 +203,6 @@ public class TslRestController {
 	 */  
 	@Autowired
 	private ISigningCertService iSigningCertService;
-
-	
-	/**
-	 * Method that maps the list users web requests to the controller and
-	 * forwards the list of users to the view.
-	 * @param input Holder object for datatable attributes.
-	 * @return String that represents the name of the view to forward.
-	 */
-	@JsonView(DataTablesOutput.View.class)
-	@RequestMapping(path = "/tsldatatable", method = RequestMethod.GET)
-	public DataTablesOutput<TslData> loadTslDataTable(@NotEmpty DataTablesInput input) {
-		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
-		return tslDataService.obtainAllTslToDatatable(input);
-
-	}
 
 	/**
 	 * Method that obtains the list of available versions for the indicated specification.

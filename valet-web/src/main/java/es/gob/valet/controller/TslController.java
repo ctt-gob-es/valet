@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 21/05/2025.
+ * @version 2.2, 10/06/2025.
  */
 package es.gob.valet.controller;
 
@@ -53,10 +53,12 @@ import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationSer
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.model.dto.SigningCertificateDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
 import es.gob.valet.persistence.configuration.model.entity.CAssociationType;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.utils.AssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ICAssociationTypeService;
+import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.service.ifaces.ISigningCertService;
 import es.gob.valet.service.impl.SigningCertService;
 import es.gob.valet.tsl.access.TSLManager;
@@ -66,7 +68,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 2.1, 21/05/2025.
+ *  @version 2.2, 10/06/2025.
  */
 @Controller
 public class TslController {
@@ -129,6 +131,9 @@ public class TslController {
 	 */
 	@RequestMapping(value = "tsladmin", method = RequestMethod.GET)
 	public String tslAdmin(Model model) {
+		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
+		List<TslDataDTO> listTslDataDTO = tslDataService.obtainAllTslDTO();
+		model.addAttribute("listTslDataDTO", listTslDataDTO);
 		return "fragments/tsladmin.html";
 	}
 
