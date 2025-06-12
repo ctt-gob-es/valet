@@ -36,16 +36,16 @@
 		<!-- Preserve messages in a local file -->
 		<!-- ================================= -->
 		<Logger name="es.gob.valet" level="info" additivity="false">
-            <appender-ref ref="VALET-FILE-REST" level="info" />
+            <AppenderRef ref="VALET-FILE-REST" level="info" />
         </Logger>
 		<logger name="Valet-Audit" level="info" additivity="false">
-			<appender-ref ref="VALET-AUDIT-FILE-REST" level="info"/>
+			<AppenderRef ref="VALET-AUDIT-FILE-REST" level="info"/>
 		</logger>
 		<!-- ======================= -->
 		<!-- Setup the Root category -->
 		<!-- ======================= -->
 		<Root level="error" additivity="false">
-            <appender-ref ref="VALET-FILE-REST" />
+            <AppenderRef ref="VALET-FILE-REST" />
 		</Root>
 	</Loggers>
 </Configuration>

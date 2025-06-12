@@ -35,16 +35,16 @@
 		<!-- Preserve messages in a local file -->
 		<!-- ================================= -->
 		<Logger name="es.gob.valet" level="info" additivity="false">
-            <appender-ref ref="VALET-FILE-WEB" level="info" />
+            <AppenderRef ref="VALET-FILE-WEB" level="info" />
         </Logger>
 		<Logger name="es.gob.valet.importsls" level="info" additivity="false">
-            <appender-ref ref="VALET-IMPORT-TSL" level="info" />
+            <AppenderRef ref="VALET-IMPORT-TSL" level="info" />
         </Logger>
 		<!-- ======================= -->
 		<!-- Setup the Root category -->
 		<!-- ======================= -->
 		<Root level="error" additivity="false">
-            <appender-ref ref="VALET-FILE-WEB" />
+            <AppenderRef ref="VALET-FILE-WEB" />
 		</Root>
 	</Loggers>
 </Configuration>
