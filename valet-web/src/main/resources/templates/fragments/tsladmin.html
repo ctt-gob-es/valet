@@ -36,12 +36,9 @@ var btnDelTsl =  /*[[#{tsl.admin.btn.delete}]]*/;
 
 var btnShowMapping =  /*[[#{table.tsl.mapeo.alt}]]*/;
 
-var listTslDataDTO = [[${listTslDataDTO}]];
-
 var tbl = $('#tslTable').DataTable({
 		dom: 'Bfrti',
 		pageLength: 50,
-		data: listTslDataDTO,
 		columnDefs: [
 	        {className: "text-center", targets: [6], 
 			order:[ 2, "asc" ]}
@@ -123,6 +120,10 @@ var tbl = $('#tslTable').DataTable({
 	    "iTotalDisplayRecords": "numberOfElements",
 	  	"processing": false,
 	    "serverSide": false,
+	    "ajax": {
+	    	"url": getTsls,
+	    	"dataSrc" : ""
+	    },
 		"language": {
 	        "url": "js/datatables/i18n/spanish.json",
 	        select: {

@@ -20,13 +20,15 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 10/06/2025.
+ * @version 1.7, 12/06/2025.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -47,12 +49,14 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer related to TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 10/06/2025.
+ * @version 1.7, 12/06/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class TslDataService implements ITslDataService {
 
+	private static final Logger LOGGER = LogManager.getLogger(TslDataService.class);
+	
 	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
 	 */
@@ -187,16 +191,6 @@ public class TslDataService implements ITslDataService {
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#obtainAllTslDTO()
 	 */
 	public List<TslDataDTO> obtainAllTslDTO() {
-		List<TslDataDTO> listTslDataDTO = new ArrayList<TslDataDTO>();
-		List<TslData> listTslData = repository.findAll();
-		for (TslData tslData: listTslData) {
-			TslDataDTO tslDataDTO = new TslDataDTO(tslData);
-			String issueDate = (tslData.getIssueDate() != null) ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslData.getIssueDate()) : "";
-			String expirationDate = (tslData.getExpirationDate() != null) ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslData.getExpirationDate()) : "";
-			tslDataDTO.setIssueDate(issueDate);
-			tslDataDTO.setExpirationDate(expirationDate);
-			listTslDataDTO.add(tslDataDTO);
-		}
-		return listTslDataDTO;
+		return repository.findAllTslDataDTO();
 	}
 }

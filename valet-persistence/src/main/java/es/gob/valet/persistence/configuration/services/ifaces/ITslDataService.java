@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 28/03/2025.
+ * @version 1.6, 12/06/2025.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -38,7 +38,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to TslData.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 28/03/2025.
+ * @version 1.6, 12/06/2025.
  */
 public interface ITslDataService {
 
@@ -123,14 +123,10 @@ public interface ITslDataService {
 	TslData getTslByCountryAndSequenceNumber(TslCountryRegion tcrp, int tslSequenceNumber);
 
 	/**
-	 * Retrieves all TSL data from the repository and maps each entry to a {@link TslDataDTO} object.
-	 * <p>
-	 * For each {@link TslData} entity retrieved, this method creates a corresponding {@link TslDataDTO},
-	 * formatting the issue and expiration dates into strings using the {@link UtilsDate#FORMAT_DATE_TIME_MINUTES2}
-	 * format. If the issue or expiration date is null, the corresponding string in the DTO will be empty.
-	 * </p>
+	 * Returns a list of all TSL entries as {@link TslDataDTO} objects.
+	 * Delegates the retrieval to the repository query method.
 	 *
-	 * @return a list of {@link TslDataDTO} instances containing the TSL data from the repository.
+	 * @return a list of {@link TslDataDTO} with data from TSL and associated country/region
 	 */
 	List<TslDataDTO> obtainAllTslDTO();
 

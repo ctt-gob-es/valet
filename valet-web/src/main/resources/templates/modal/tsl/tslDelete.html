@@ -44,7 +44,7 @@
             success: function(data){
             	// Se oculta la capa 'cargando...'
             	hide();
-                $('#tslTable').DataTable().row(data.index).remove().draw();
+                $('#tslTable').DataTable().row(selectedRow.index()).remove().draw();
                 closeModalDeleteTsl('modalDeleteTsl');
             },
             error:function(){}
