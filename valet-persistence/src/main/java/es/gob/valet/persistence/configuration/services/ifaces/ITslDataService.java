@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 28/03/2025.
+ * @version 1.6, 12/06/2025.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -31,13 +31,14 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to TslData.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 28/03/2025.
+ * @version 1.6, 12/06/2025.
  */
 public interface ITslDataService {
 
@@ -120,5 +121,13 @@ public interface ITslDataService {
 	 * @return The {@link TslData} entity matching the given criteria, or {@code null} if no match is found.
 	 */
 	TslData getTslByCountryAndSequenceNumber(TslCountryRegion tcrp, int tslSequenceNumber);
+
+	/**
+	 * Returns a list of all TSL entries as {@link TslDataDTO} objects.
+	 * Delegates the retrieval to the repository query method.
+	 *
+	 * @return a list of {@link TslDataDTO} with data from TSL and associated country/region
+	 */
+	List<TslDataDTO> obtainAllTslDTO();
 
 }

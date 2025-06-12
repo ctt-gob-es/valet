@@ -332,34 +332,44 @@ function downloadTsl(){
 function confirmTsl() {
 	var actionUpdate = /*[[@{/updatetsl}]]*/;
 	var formDataEdit = new FormData(document.forms["tslFormEdit"]);	        	
+
 	$.ajax(actionUpdate, {
-		data :formDataEdit,
+		data: formDataEdit,
 		contentType: false,
-		processData : false,
-        type:'POST',
-        success: function(data){
-    		// Se oculta la capa 'cargando...'
-    		hide();
-    		
-    		var errores = JSON.parse(data.error);
-			if(data.error != null){
+		processData: false,
+		type: 'POST',
+		success: function(data) {
+			hide();
+
+			if (data.error !== undefined) {
+				var errores = JSON.parse(data.error);
 				jQuery.each(errores, function(i, val) {
-				if(i == "errorSaveTsl"){
-					var messageError = val;
-					$('#errorUpdateTsl').html(messageError);
-					$('#errorUpdateTsl').addClass('alert alert-danger');
-				 }
-				}) 
-			}else{
+					if (i === "errorSaveTsl") {
+						var messageError = val;
+						$('#errorUpdateTsl').html(messageError);
+						$('#errorUpdateTsl').addClass('alert alert-danger');
+					}
+				});
+			} else {
 				closeModalEdiTsl('modalEditTsl');
 				$("#tableMapping").hide();
-				$('#tslTable').DataTable().row.add($(data.data)).draw(false);
-				// Si hay alguna fila seleccionada, la deseleccionamos
-				$('#tslTable').DataTable().rows({ selected: true }).deselect();
+
+				var table = $('#tslTable').DataTable();
+
+				// Obtener la fila seleccionada
+				var selectedRow = table.row({ selected: true });
+				
+				if (selectedRow.any()) {
+					selectedRow.data(data.data).draw(false);
+				}
+
+				// Deseleccionar cualquier fila seleccionada
+				table.rows({ selected: true }).deselect();
 			}
 		}
-    });//end ajax edit
+	});
 }
+
 
 //Funcion para cerrar el modal
 function closeModalEdiTsl(modalId){

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.3, 29.05/2025.
+ * @version 2.4, 12.06/2025.
  */
 package es.gob.valet.tsl.access;
 
@@ -99,7 +99,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.3, 29.05/2025.
+ * @version 2.4, 12.06/2025.
  */
 public final class TSLManager {
 
@@ -2074,9 +2074,9 @@ public final class TSLManager {
 				}
 
 			}
-
+			
 			// Evaluamos si la tsl existe
-			TslData tslData = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslByCountryAndSequenceNumber(tcrp, tslObject.getSchemeInformation().getTslSequenceNumber());
+			TslData tslData = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslByCountryRegion(tcrp, false, false);
 			if (tslData != null) {
 				throw new TSLManagingException(IValetException.COD_204, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171));
 			}

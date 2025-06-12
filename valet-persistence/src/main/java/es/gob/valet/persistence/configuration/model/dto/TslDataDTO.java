@@ -25,6 +25,7 @@
 package es.gob.valet.persistence.configuration.model.dto;
 
 import java.util.Base64;
+import java.util.Date;
 
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
@@ -122,6 +123,18 @@ public class TslDataDTO {
 		this.cTslImplDTO = new CTslImplDTO(tslData.getTslImpl());
 		this.uriTslLocation = tslData.getUriTslLocation();
 		this.xmlDocument = Base64.getEncoder().encodeToString(tslData.getXmlDocument());
+	}
+	
+	public TslDataDTO(Long idTslData, Long idTslCountryRegion, String countryRegionName, Integer sequenceNumber, Date issueDate, Date expirationDate, String countryRegionCode) {
+		this.idTslData = idTslData;
+		TslCountryRegionDTO tslCountryRegionDTO = new TslCountryRegionDTO();
+		tslCountryRegionDTO.setIdTslCountryRegion(idTslCountryRegion);
+		tslCountryRegionDTO.setCountryRegionName(countryRegionName);
+		tslCountryRegionDTO.setCountryRegionCode(countryRegionCode);
+		this.tslCountryRegionDTO = tslCountryRegionDTO;
+		this.sequenceNumber = sequenceNumber;
+		this.issueDate = (issueDate != null) ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, issueDate) : "";
+		this.expirationDate = (expirationDate != null) ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, expirationDate) : "";
 	}
 
 	/**
