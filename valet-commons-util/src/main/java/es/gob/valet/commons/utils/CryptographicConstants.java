@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/03/2025.
  */
 package es.gob.valet.commons.utils;
 
 /**
  * <p>Class that contains references and values to differents cryptographic constants.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 19/03/2025.
  */
 public final class CryptographicConstants {
 
@@ -69,6 +69,11 @@ public final class CryptographicConstants {
 	public static final String HASH_ALGORITHM_SHA256 = "SHA256";
 
 	/**
+	 * Constant attribute that represents the string to identify the hash algorithm: <code>SHA-256</code>.
+	 */
+	public static final String OFFICIAL_HASH_ALGORITHM_SHA256 = "SHA-256";
+	
+	/**
 	 * Constant attribute that represents the string to identify the hash algorithm: <code>SHA384</code>.
 	 */
 	public static final String HASH_ALGORITHM_SHA384 = "SHA384";
@@ -77,6 +82,11 @@ public final class CryptographicConstants {
 	 * Constant attribute that represents the string to identify the hash algorithm: <code>SHA512</code>.
 	 */
 	public static final String HASH_ALGORITHM_SHA512 = "SHA512";
+	
+	/**
+	 * Constant attribute that represents the string to identify the signature algorithm: <code>SHA256withRSA</code>.
+	 */
+	public static final String HASH_ALGORITHM_SHA256withRSA = "SHA256withRSA";
 
 	/**
 	 * Constant attribute that represents the URI string to identify the hash algorithm for signatures on XML format: <code>MD5</code>.

@@ -1,59 +1,105 @@
-<form name="altEditor-form" role="form" id="tslForm"
-	th:object="${tslform}" th:action="@{/savetsl}" method="post"
-	enctype="multipart/form-data" class="form-horizontal">
-	<div id="errorAddTsl" role="alert"></div>
-	<input type='hidden' class='primarykey' id="idTslData"
-		th:field="*{idTslData}">
-
-
-	<div class="form-group col-md-8">
-		<label for="idSpecification" th:text="#{form.newTsl.specification}"></label>
-		 <span id="specification_span"
-			class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
-		<select id="idSpecification" class="form-control"
-			th:field="*{specification}" required onchange="cleanSpan('specification_span');">
-			<option selected="selected" value="-1"
-				th:text="#{form.newTsl.specification.select}"></option>
-			<option th:each="ts: ${listSpecifications}" th:value="${ts}"
-				th:text="${ts}"></option>
-		</select>
-		
-
-		<div style="clear: both;"></div>
-	</div>
-
-	<div class="form-group col-md-8">
-		<label for="idVersion" th:text="#{form.newTsl.version}"></label>  <span
-			id="version_span"
-			class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
-		<select id="idVersion" class="form-control" th:field="*{version}"
-			required onchange="cleanSpan('version_span');">
-			<option selected="selected" value="-1"
-				th:text="#{form.newTsl.version.select}"></option>
-			<option th:each="ts: ${versions}" th:value="${ts}" th:text="#{ts}">
-		</select>
-		
-
-	</div>
-	<div class="form-group col-md-12">
-		<label for="idUrlTSL" th:text="#{form.newTsl.urlTSL}"></label> <input
-			type="text" id="idUrlTSL" class="form-control" th:field="*{urlTsl}"></input>
-
-	</div>
-
-	<div class="form-group col-md-12">
-		<label for="fileId" th:text="#{form.newTsl.fileTSL}"></label>  <span
-			id="implTslFile_span"
-			class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
-		<div id="customFile" class="form-group col-md-8">
-			<input type="file" class="custom-file-input" id="fileId"
-				th:field="*{implTslFile}" aria-describedby="fileHelp" onchange="cleanSpan('implTslFile_span');"> <label
-				class="custom-file-label" for="fileId"
-				th:text="#{form.newTsl.fileTSL.input}"></label>
+<!-- Modal para a�adir una tls nueva -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalAddTsl" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.newTsl.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.newTsl.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form name="tslForm" role="form" id="tslForm" th:object="${tslform}" th:action="@{/savetsl}" method="post"
+					enctype="multipart/form-data" class="form-horizontal">
+					<div id="errorAddTsl" role="alert"></div>
+					<input type='hidden' class='primarykey' id="idTslData"
+						th:field="*{idTslData}">
+				
+				
+					<div class="form-group col-md-8">
+						<label for="idSpecification" th:text="#{form.newTsl.specification}"></label>
+						 <span id="specification_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
+						<select id="idSpecification" class="form-control"
+							th:field="*{specification}" required onchange="cleanSpan('specification_span');">
+							<option selected="selected" value="-1"
+								th:text="#{form.newTsl.specification.select}"></option>
+							<option th:each="ts: ${listSpecifications}" th:value="${ts}"
+								th:text="${ts}"></option>
+						</select>
+						
+				
+						<div style="clear: both;"></div>
+					</div>
+				
+					<div class="form-group col-md-8">
+						<label for="idVersion" th:text="#{form.newTsl.version}"></label>  <span
+							id="version_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
+						<select id="idVersion" class="form-control" th:field="*{version}"
+							required onchange="cleanSpan('version_span');">
+							<option selected="selected" value="-1"
+								th:text="#{form.newTsl.version.select}"></option>
+							<option th:each="ts: ${versions}" th:value="${ts}" th:text="#{ts}">
+						</select>
+						
+				
+					</div>
+					<div class="form-group col-md-12">
+						<label for="idUrlTSL" th:text="#{form.newTsl.urlTSL}"></label> <input
+							type="text" id="idUrlTSL" class="form-control" th:field="*{urlTsl}"></input>
+				
+					</div>
+				
+					<div class="form-group col-md-12">
+						<label for="fileId" th:text="#{form.newTsl.fileTSL}"></label>  <span
+							id="implTslFile_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
+						<div id="customFile" class="form-group col-md-8">
+							<input type="file" class="custom-file-input" id="fileId"
+								th:field="*{implTslFile}" aria-describedby="fileHelp" onchange="cleanSpan('implTslFile_span');"> <label
+								class="custom-file-label" for="fileId"
+								th:text="#{form.newTsl.fileTSL.input}"></label>
+						</div>
+						<div style="clear: both;"></div>
+					</div>
+					
+					<div id="fieldsSignTsl" style="display: none;">
+						<input type='hidden' id="certificateB64" name="certificateB64">
+									
+						<div class="form-group col-md-12">
+							<label for="subjectSigningCertForm" th:text="#{form.newTsl.subject}"></label> 
+							<input type="text" class="form-control" id="subject" name="subject">
+						</div>
+									
+						<div class="form-group col-md-12">
+							<label for="issuerSigningCertForm" th:text="#{form.newTsl.issuer}"></label> 
+							<input type="text" class="form-control" id="issuer" name="issuer">
+						</div>
+									
+						<div class="form-group col-md-12">
+							<label for="serialNumberSigningCertForm" th:text="#{form.newTsl.serialNumber}"></label> 
+							<input type="text" class="form-control" id="serialNumber" name="serialNumber">
+						</div>
+									
+						<div class="form-group col-md-6">
+							<label for="dateExpiredSigningCertForm" th:text="#{form.newTsl.dateExpired}"></label> 
+							<input type="text" class="form-control" id="dateExpired" name="dateExpired">
+						</div>
+					</div>
+					
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" th:text="#{form.newTsl.close}" onclick="closeModalAddTsl('modalAddTsl')"></button>
+				<button type="button" id="idObtainTslBtn" name="idObtainTslBtn" class="btn btn-primary" th:text="#{form.newTsl.obtainTsl}" onclick="obtainTsl();"></button>
+				<button type="button" id="idDownloadTslBtn" name="idDownloadTslBtn" class="btn btn-primary" th:text="#{form.newTsl.downloadTsl}" onclick="downloadTsl();" style="display:none"></button>
+				<button type="button" id="idConfirmTslBtn" name="idConfirmTslBtn" class="btn btn-primary" th:text="#{form.newTsl.ConfirmTsl}" onclick="confirmTsl();" style="display:none"></button>
+			</div>
 		</div>
-		<div style="clear: both;"></div>
 	</div>
-</form>
+</div>
+
 <script th:inline="javascript">
 	$(document).ready(
 			function() {
@@ -97,7 +143,129 @@
 								$('#errorAddTsl').html('');
 				});
 			
-			});
-			
+	});
+	
+	function obtainTsl() {
+		var actionObtainTsl = /*[[@{/obtaintsl}]]*/;
+		var formData = new FormData(document.forms["tslForm"]);
+		loading();
+    	$.ajax(actionObtainTsl, {
+    		data :formData,
+    		contentType: false,
+    		processData : false,
+    		type : 'POST',
+    		success: function(data){
+   				var errores = JSON.parse(data.error);
+				$("#tableMapping").hide();						 
+				if (data.error != null){
+					hide();
+				  	jQuery.each(errores, function(i, val) {
+						if(i == "existTsl"){
+							var messageError = val;
+							$('#errorAddTsl').html(messageError);
+							$('#errorAddTsl').addClass('alert alert-danger');
+						} 
+						if(i == "errorObtainTsl"){
+							var messageError = val;
+							$('#errorAddTsl').html(messageError);
+							$('#errorAddTsl').addClass('alert alert-danger');
+						} 
+						  
+						$('#tslForm *').filter('span').each(function(){
+							if (i == $(this).attr('id')){
+								$("#" + i).text(val);
+								$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+							}
+						});
+					})
 
+			  	}else{
+					hide();
+					$("#fieldsSignTsl").slideDown(500);
+					$('#idObtainTslBtn').hide();
+					$('#idDownloadTslBtn').show();
+					$('#idConfirmTslBtn').show();
+					$('#tslForm :input').prop('disabled', true);
+					// Cambiamos el estilo del input file para reflejar el estado deshabilitado
+				    $('#fileId').next('.custom-file-label').css({
+				        'background-color': '#e9ecef',
+				        'color': '#6c757d',
+				        'border-color': '#ced4da'
+				    });
+					
+					// actualizamos la informacion de los inputs
+					Object.keys(data).forEach(function(key) {
+				        let input = $('#' + key); // Buscar input por ID
+				        if (input.length) {
+				            input.val(data[key]);
+				        }
+				    });
+				}   
+        	},
+        	error : function(data) {			
+        		// se oculta al capa 'cargando...'
+        		hide();
+        		// se obtiene el JSON de los campos con errores de validación y se modifican los estilos y se añaden mensajes
+        		var validation = $(data)["0"].responseJSON;
+        		drawValidationResult(validation.fieldErrors);
+        	}
+    	});//end add ajax
+	}
+	
+	function downloadTsl(){
+		var keystoreBlob = b64toBlob($("#certificateB64").val(), 'application/x-x509-ca-cert');
+		var fileName = "CertificadoFirmante.cer";
+		
+		var reader = new FileReader();
+		reader.onload = function(event) {
+			var save = document.createElement('a');
+			save.href = event.target.result;
+			save.target = '_blank';
+			save.download = fileName || 'certificado.cer';
+			var clicEvent = new MouseEvent('click', {
+				'view' : window,
+				'bubbles' : true,
+				'cancelable' : true
+			});
+			save.dispatchEvent(clicEvent);
+			(window.URL || window.webkitURL)
+					.revokeObjectURL(save.href);
+						
+		};
+		reader.readAsDataURL(keystoreBlob);
+	}
+	
+	function confirmTsl() {
+		var confirmTsl = /*[[@{/confirmTsl}]]*/;
+        loading();
+
+        $.ajax({
+            url: confirmTsl,
+            type: 'POST',
+            cache: false,
+            success: function(data) {
+            	hide();
+            	if(data.error != undefined) {
+            		$("#tableMapping").hide();
+            		var errores = JSON.parse(data.error);
+            		jQuery.each(errores, function(i, val) {
+						if(i == "errorSaveTsl"){
+							var messageError = val;
+							$('#errorAddTsl').html(messageError);
+							$('#errorAddTsl').addClass('alert alert-danger');
+						} 
+					})
+			  	} else {
+			  		$('#tslTable').DataTable().row.add($(data.data)).draw(false);	
+			  		closeModalAddTsl('modalAddTsl');
+			  	}
+            }
+        });
+	}
+	
+	//Funcion para cerrar el modal
+	function closeModalAddTsl(modalId){
+		$('#' + modalId).modal('hide');
+		$('.modal-backdrop').remove();
+	}
 </script>

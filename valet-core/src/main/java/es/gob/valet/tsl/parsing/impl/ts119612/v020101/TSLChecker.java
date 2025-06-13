@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 07/03/2024.
+ * @version 1.8, 31/03/2025.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -103,7 +103,7 @@ import es.gob.valet.utils.TSLSignatureConstants;
  * <p>Class that represents a TSL Data Checker of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 07/03/2024.
+ * @version 1.8, 31/03/2025.
  */
 public class TSLChecker extends ATSLChecker {
 
@@ -1761,10 +1761,6 @@ public class TSLChecker extends ATSLChecker {
 						// según determina
 						// la especificación.
 						checkX509v3SigningCertificateDateDependingOnSpecification(x509Certificate);
-
-						// Comprobamos que el certificado firmante se encuentre
-						// en el almacén de confianza de firmantes de TSL.
-						checkX509v3SigningCertificateIsInTrustStore(x509Certificate);
 
 					}
 

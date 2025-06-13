@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/05/2025.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -41,7 +41,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITaskService;
 /** 
  * <p>Class that implements the communication with the operations of the persistence layer for Task.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/05/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -83,6 +83,13 @@ public class TaskService implements ITaskService {
 	public Task saveTask(Task task){
 		return repository.save(task);
 	}
-		
-
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITaskService#getTaskByToken(java.lang.String)
+	 */
+	public Task getTaskByToken(String token) {
+		return repository.findByTokenName(token);
+	}
 }

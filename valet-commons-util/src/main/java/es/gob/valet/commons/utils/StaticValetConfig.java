@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>20/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.2, 17/06/2024.
+ * @version 2.3, 19/03/2025.
  */
 package es.gob.valet.commons.utils;
 
@@ -34,13 +34,13 @@ import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.QuartzGeneralMessages;
-import es.gob.valet.i18n.utils.UtilsTomcat;
+import es.gob.valet.i18n.utils.UtilsServer;
 
 /**
  * <p>Class contains static properties of valET. This properties are immutable
  * and they can be modified only restarted the server context.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.1, 19/09/2023.
+ * @version 2.3, 19/03/2025.
  */
 public final class StaticValetConfig {
 
@@ -357,7 +357,7 @@ public final class StaticValetConfig {
 		synchronized (StaticValetConfig.class) {
 			if (staticProperties == null) {
 				staticProperties = new Properties();
-				try (FileInputStream configStream = new FileInputStream(UtilsTomcat.createAbsolutePath(UtilsTomcat.getValetConfigDir(), STATIC_VALET_FILENAME))) {
+				try (FileInputStream configStream = new FileInputStream(UtilsServer.createAbsolutePath(UtilsServer.getValetConfigDir(), STATIC_VALET_FILENAME))) {
 					LOGGER.info(Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOG2, new Object[ ] { STATIC_VALET_FILENAME }));
 					staticProperties.load(configStream);
 					LOGGER.info(Language.getFormatResQuartzGeneral(QuartzGeneralMessages.LOG2, new Object[ ] { staticProperties }));

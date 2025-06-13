@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 19/09/2023.
+ * @version 1.6, 19/03/2025.
  */
 package es.gob.valet.persistence.configuration.cache.modules.tsl.elements;
 
@@ -40,7 +40,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMappi
 /**
  * <p>Class that represents a TSL Country/Region Info in the clustered cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 19/09/2023.
+ * @version 1.6, 19/03/2025.
  */
 public class TSLCountryRegionCacheObject extends ConfigurationCacheObject implements Serializable {
 
@@ -102,7 +102,7 @@ public class TSLCountryRegionCacheObject extends ConfigurationCacheObject implem
 			setName(tcr.getCountryRegionName());
 
 			// Obtenemos la lista de mapeos.
-			List<TslCountryRegionMapping> tcrmList = tcr.getListTslCountryRegionMapping();
+			List<TslCountryRegionMapping> tcrmList = tcr.getListTslCountryRegionMappings();
 			// Si no es nula ni vacía, la recorremos creando los objectos de
 			// caché
 			// para finalmente establecerla.

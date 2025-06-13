@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>11/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 10/08/2023.
+ * @version 1.4, 19/03/2025.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -48,7 +48,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class the maps the <i>TSL_COUNTRY_REGION</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 10/08/2023.
+ * @version 1.4, 19/03/2025.
  */
 @Entity
 @Table(name = "TSL_COUNTRY_REGION")
@@ -151,7 +151,7 @@ public class TslCountryRegion implements Serializable {
 	 * @return the value of the attribute {@link #listTslCountryRegionMappings}.
 	 */
 	@OneToMany(mappedBy = "tslCountryRegion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public List<TslCountryRegionMapping> getListTslCountryRegionMapping() {
+	public List<TslCountryRegionMapping> getListTslCountryRegionMappings() {
 		return listTslCountryRegionMappings;
 	}
 
@@ -159,7 +159,7 @@ public class TslCountryRegion implements Serializable {
 	 * Sets the value of the attribute {@link #listTslCountryRegionMappings}.
 	 * @param listTslCountryRegionMappingsParam The value for the attribute {@link #listTslCountryRegionMappings}.
 	 */
-	public void setListTslCountryRegionMapping(List<TslCountryRegionMapping> listTslCountryRegionMappingsParam) {
+	public void setListTslCountryRegionMappings(List<TslCountryRegionMapping> listTslCountryRegionMappingsParam) {
 		this.listTslCountryRegionMappings = listTslCountryRegionMappingsParam;
 	}
 	

@@ -41,8 +41,7 @@ import es.gob.valet.persistence.configuration.model.specification.ExternalAccess
 import es.gob.valet.persistence.configuration.services.ifaces.IAlarmService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
-import es.gob.valet.service.ExternalAccessService;
-
+import es.gob.valet.service.impl.ExternalAccessService;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
 

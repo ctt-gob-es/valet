@@ -42,6 +42,9 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
@@ -149,4 +152,24 @@ public class ValetConfigOwner {
 		}
 		return (DataSource) bean.getObject();
 	}
+	
+//	@Bean
+//	public DataSource hsqlDataSource() {
+//	    HikariConfig config = new HikariConfig();
+//	    
+//	    // Configuración de HikariCP
+//	    config.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:XE"); // Reemplaza con tu URL de la base de datos
+//	    config.setUsername("VALET_CONFIGOWNER"); // Reemplaza con tu nombre de usuario
+//	    config.setPassword("123456"); // Reemplaza con tu contraseña
+//	    config.setDriverClassName("oracle.jdbc.OracleDriver"); // Driver de oracle
+//	    
+//	    // Configura el máximo de conexiones
+//	    config.setMaximumPoolSize(10);
+//	    config.setIdleTimeout(600000);
+//	    
+//	    // Crear la fuente de datos
+//	    HikariDataSource dataSource = new HikariDataSource(config);
+//	    
+//	    return dataSource;
+//	}
 }

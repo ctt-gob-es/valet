@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>02/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/05/2025.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -35,7 +35,7 @@ import es.gob.valet.persistence.configuration.model.entity.Task;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the Task entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 25/10/2018.
+ * @version 1.2, 06/05/2025.
  */
 public interface ITaskService {
 	/**
@@ -62,4 +62,14 @@ public interface ITaskService {
 	 * @return {@link Task} an object that represents the Task.
 	 */
 	Task saveTask(Task task);
+
+	/**
+	 * Retrieves a {@link Task} entity based on its token identifier.
+	 *
+	 * @param token the unique token representing the task.
+	 * @return the {@link Task} associated with the specified token,
+	 *         or {@code null} if no matching task is found.
+	 */
+	Task getTaskByToken(String token);
+
 }

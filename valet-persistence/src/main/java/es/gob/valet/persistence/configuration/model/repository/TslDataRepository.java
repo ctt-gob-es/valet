@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 20/07/2021.
+ * @version 1.7, 12/06/2025.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -33,13 +33,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 
 /**
  * <p>Interface that provides CRUD functionality for the TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4,  20/07/2021.
+ * @version 1.7, 12/06/2025.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -72,5 +73,24 @@ public interface TslDataRepository extends JpaRepository<TslData, Long> {
 	 */
 	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO(tsl.sequenceNumber, c.countryRegionCode) FROM TslData tsl, TslCountryRegion c WHERE tsl.tslCountryRegion.idTslCountryRegion = c.idTslCountryRegion")
 	List<TslCountryVersionDTO> findTslCountryVersionAvailable();
+
+	/**
+	 * Retrieves a {@link TslData} entity based on the given country/region ID and sequence number.
+	 *
+	 * @param idCountryRegion The ID of the country or region associated with the TSL data.
+	 * @param sequenceNumber The sequence number of the TSL data.
+	 * @return The {@link TslData} entity matching the given criteria, or {@code null} if no match is found.
+	 */
+	@Query("SELECT t FROM TslData t WHERE t.tslCountryRegion.idTslCountryRegion = ?1 AND t.sequenceNumber = ?2")
+	TslData findTslDataByCountryAndSqNumber(Long idCountryRegion, Integer sequenceNumber);
+
+	/**
+	 * Retrieves all TSL records as {@link TslDataDTO} objects.
+	 * This query joins each TSL entry with its associated country or region.
+	 *
+	 * @return a list of {@link TslDataDTO} containing selected fields from TSL and country/region entities
+	 */
+	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslDataDTO(tsl.idTslData, countryRegion.idTslCountryRegion, countryRegion.countryRegionName, tsl.sequenceNumber,tsl.issueDate,tsl.expirationDate, countryRegion.countryRegionCode)  FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion")
+	List<TslDataDTO> findAllTslDataDTO();
 
 }

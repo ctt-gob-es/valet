@@ -20,19 +20,20 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 24/03/2021.
+ * @version 1.2, 28/03/2025.
  */
 package es.gob.valet.tsl.parsing.ifaces;
 
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
+import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.w3.x2000.x09.xmldsig.SignatureType;
 
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
-import es.gob.valet.tsl.exceptions.TSLEncodingException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.parsing.impl.common.SchemeInformation;
@@ -41,7 +42,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Interface that represents a TSL object regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 24/03/2021.
+ * @version 1.2, 28/03/2025.
  */
 public interface ITSLObject extends Serializable {
 
@@ -130,13 +131,12 @@ public interface ITSLObject extends Serializable {
 	void setSignature(SignatureType signature);
 
 	/**
-	 * Checks all the actual values assigned to this TSL as the concrecte specification and version
-	 * requires.
-	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
-	 * @throws TSLKeystoreException In case that an error is generated regarding the TSL certificate.
+	 * Retrieves the atomic reference holding the X.509 certificate used for signing the TSL.
+	 *
+	 * @return An {@code AtomicReference} containing the TSL signing certificate.
 	 */
-	void checkTSLValues() throws TSLMalformedException;
-
+	AtomicReference<X509Certificate> getSignTsl();
+	
 	/**
 	 * Method that builds the TSL data from a input XML. This process overwrites
 	 * the actual information of the object, but if there is some error parsing the XML,
@@ -175,15 +175,5 @@ public interface ITSLObject extends Serializable {
 	 * @throws TSLKeystoreException In case that an error is generated regarding the TSL certificate.
 	 */
 	void buildTSLFromXMLcheckValues(InputStream is, boolean checkSignature, boolean cache) throws TSLArgumentException, TSLParsingException, TSLMalformedException;
-
-	/**
-	 * Method that check that the data of the TSL is correct as the specification and version requires.
-	 * After this, builds the XML representation (concrete specification and version) of the TSL.
-	 * @return byte array that represents the XML of the TSL.
-	 * @throws TSLMalformedException In case of some data does not exist or has not a correct value.
-	 * @throws TSLEncodingException In case of some error encoding the TSL.
-	 * @throws TSLKeystoreException In case that an error is generated regarding the TSL certificate.
-	 */
-	byte[ ] checkValuesBuildXMLfromTSL() throws TSLMalformedException, TSLEncodingException;
 
 }

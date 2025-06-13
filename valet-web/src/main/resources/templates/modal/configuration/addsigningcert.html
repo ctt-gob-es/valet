@@ -1,0 +1,132 @@
+<!-- Modal para añadir un certificado firmante -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalAddSigningCert" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.confAddSigningCert.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.confAddSigningCert.btn.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form name="altEditor-form" role="form" id="addSigningCertForm" th:object="${signingCertificateDTO}">
+					<div id="messageAddSigningCert" role="alert"></div>
+					
+					<!-- Keystore -->
+					<div class="form-group row col-sm-12 mx-auto">
+						<div class="custom-file mb-2">
+							<input type="file" class="custom-file-input" id="keystoreFile" name="keystoreFile" aria-describedby="fileHelp">
+							<label class="custom-file-label" for="keystoreFile" th:text="#{form.confAddSigningCert.field.file.choose}"></label>
+						    <span id="keystoreFile_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill mt-1"></span>
+						</div>
+					</div>
+					<!-- Password Keystore -->
+					<div class="form-group row col-sm-12 mx-auto">
+						<label for="password" th:text="#{form.confAddSigningCert.field.keystore.password}"></label>
+						<input type="password" name="passwordKeystore" id="passwordKeystore" class="form-control" th:value="*{passwordKeystore}"/>
+						<span id="passwordKeystore_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill mt-1"></span>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" th:text="#{form.confAddSigningCert.btn.close}" onclick="closeModalAddSigningCert('modalAddSigningCert')"></button>
+				<button type="button" id="idAddSigningCertBtn" class="btn btn-primary" th:text="#{form.confAddSigningCert.btn.save}" onclick="saveSigningCert();"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+
+$(document).ready(function() {
+	$("#keystoreFile").change(function() {
+		var selectFile = /*[[#{form.confAddSigningCert.field.file.choose}]]*/;
+		
+		var file = $(this).prop("files")[0]; // Obtenemos el archivo seleccionado
+	    if (file) {
+	        $(this).next(".custom-file-label").text(file.name); // Actualizamos el label con el nombre del archivo
+	    } else {
+	        $(this).next(".custom-file-label").text(selectFile); // Texto por defecto
+	    }
+	});
+});
+
+function saveSigningCert() {
+	cleanSpan();
+	
+	var formData = new FormData();
+	
+ 	var file =  $('#keystoreFile').prop('files')[0];
+ 	
+ 	if (file == undefined) {
+ 		file = new File([""], "nofile", {type: "text/plain", lastModified: new Date()});
+ 	}
+ 	
+ 	var blob = new Blob([JSON.stringify($("#addSigningCertForm").serializeJSON())], {type: "application/json"});
+ 	
+ 	formData.append('signingCertificateDTO', blob);
+    formData.append("keystoreFile", file);
+ 	
+    var updateSigningCertAction = /*[[@{/updateSigningCert}]]*/;
+	
+    loading();
+    
+	$.ajax({
+		url: updateSigningCertAction,
+		type: "POST",
+		data: formData,
+		processData: false,
+			contentType: false,
+			success: function(data){
+				hide();
+				if(data.error != "" && data.error != null) {
+					var errores = JSON.parse(data.error);
+					jQuery.each(errores, function(i, val) {
+						$('#addSigningCertForm *').filter('span').each(function(){
+							if (i == $(this).attr('id')){
+								$("#" + i).text(val);
+							}
+						});
+					});
+				} else {
+					closeModalAddSigningCert('modalAddSigningCert');
+					
+					var messageOk = /*[[#{form.confSigningCert.message.ok}]]*/;
+					$('#messageUpdateSigningCert').html(messageOk);
+					$('#messageUpdateSigningCert').addClass('alert alert-success');
+					$("#messageUpdateSigningCert").fadeTo(5000, 500).slideUp(500, function() {
+						$("#messageUpdateSigningCert").slideUp(500);
+					});
+					// Asignamos los valores del objeto `SigningCertificateDTO` a los campos del formulario
+			        $("#confSigningCertForm").find(":input").each(function() {
+			            var inputName = $(this).attr("name"); // Nombre del input en el formulario
+	
+			            if (inputName && data[inputName] !== undefined) {
+			                $(this).val(data[inputName]); // Asigna el valor del DTO al campo correspondiente
+			            }
+			        });
+					
+					window.changeStatusBtn();
+			    }
+			},
+			error:function() {
+				hide();
+				var messageResponse = /*[[#{form.confAddSigningCert.message.error}]]*/;
+				$('#messageAddSigningCert').removeClass('alert-success')	
+				$('#messageAddSigningCert').addClass('alert alert-danger');
+				$("#messageAddSigningCert").html(messageResponse);
+			}
+	});
+}
+
+//Funcion para cerrar el modal
+function closeModalAddSigningCert(modalId){
+	$('#' + modalId).modal('hide');
+	$('.modal-backdrop').remove();
+}
+
+function cleanSpan(){
+	$('#addSigningCertForm *').filter('span.badge').each(function(){
+		$(this).text("");				
+	});
+}
+</script>

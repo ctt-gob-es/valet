@@ -20,15 +20,17 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/12/2022.</p>
  * @author Gobierno de España.
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 12/03/2025.
  */
 package es.gob.valet.commons.utils;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -47,7 +49,7 @@ import es.gob.valet.i18n.messages.CommonsUtilLogMessages;
 /** 
  * <p>Class to decode and encode password using AES algorithm.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 12/03/2025.
  */
 public class AESCipher implements Serializable {
 	/**
@@ -64,6 +66,8 @@ public class AESCipher implements Serializable {
 	 * Attribute that represents an instance of the class.
 	 */
 	private static AESCipher instance = null;
+	
+	private static final String BC_PROVIDER = "BC";
 	
 	/**
 	 * Method that inits the class.
@@ -117,5 +121,52 @@ public class AESCipher implements Serializable {
 				| InvalidAlgorithmParameterException e) {
 			throw new CipherException(Language.getResCommonsUtilsValet(CommonsUtilLogMessages.ERRORUTILS002));
 		}
+	}
+	
+	/**
+	 * Method that decrypting a message.
+	 * @param msg The message to decrypt.
+	 * @return the message decrypted.
+	 * @throws CipherException If the method fails.
+	 */
+	public String decryptMessageBC(String msg) throws CipherException {
+		try {
+			Cipher cipher = Cipher.getInstance(StaticValetConfig.getProperty(StaticConstants.AES_NO_PADDING_ALG), BC_PROVIDER);
+			IvParameterSpec ivspec = new IvParameterSpec(key.getEncoded());
+			cipher.init(Cipher.DECRYPT_MODE, key, ivspec);
+			byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(msg));
+			return new String(decryptedBytes, StandardCharsets.UTF_8);
+		} catch (BadPaddingException e) {
+			try {
+				Cipher cipher = Cipher.getInstance(StaticValetConfig.getProperty(StaticConstants.AES_PADDING_ALG), BC_PROVIDER);
+				cipher.init(Cipher.DECRYPT_MODE, key);
+				byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(msg));
+				return new String(decryptedBytes, StandardCharsets.UTF_8);
+			} catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException
+					| IllegalBlockSizeException | BadPaddingException e2) {
+				throw new CipherException(Language.getResCommonsUtilsValet(CommonsUtilLogMessages.ERRORUTILS002));
+			}
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException
+				| InvalidAlgorithmParameterException | IllegalBlockSizeException e) {
+			throw new CipherException(Language.getResCommonsUtilsValet(CommonsUtilLogMessages.ERRORUTILS002));
+		}
+	}
+	
+	/**
+	 * Method that encrypt a message.
+	 * @param msg The message to encrypt.
+	 * @return the message encrypted.
+	 * @throws CipherException If the method fails. 
+	 */
+	public String encryptMessageWithBC(String msg) throws CipherException {
+	    Cipher cipher;
+	    try {
+	        cipher = Cipher.getInstance(StaticValetConfig.getProperty(StaticConstants.AES_PADDING_ALG), BC_PROVIDER);
+	        cipher.init(Cipher.ENCRYPT_MODE, key);
+	        byte[] encryptedBytes = cipher.doFinal(msg.getBytes());
+	        return Base64.encodeBase64String(encryptedBytes);
+	    } catch (NoSuchProviderException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+	        throw new CipherException(Language.getResCommonsUtilsValet(CommonsUtilLogMessages.ERRORUTILS002));
+	    } 
 	}
 }

@@ -10,7 +10,15 @@
 		<!-- Preserve messages in a local file -->
 		<!-- ================================= -->
 		<!-- A time/date based rolling appender yyyy-MM-dd,yyyy-MM-dd-HH-mm-->
-        <RollingFile name="VALET-FILE-WEB" fileName="${sys:weblogic.config.path.logs.dir}\valet-web.log" filePattern="${sys:weblogic.config.path.logs.dir}\valet-web.log-%d{yyyy-MM-dd-HH-mm}.log">
+        <RollingFile name="VALET-FILE-WEB" fileName="${sys:weblogic.config.path.logs.dir}\valet-web.log" filePattern="${sys:weblogic.config.path.logs.dir}\valet-web.log-%d{yyyy-MM-dd}.log">
+		    <PatternLayout>
+                <pattern>%d %x %-5level [%c] %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+		</RollingFile>
+		<RollingFile name="VALET-IMPORT-TSL" fileName="${sys:weblogic.config.path.logs.dir}\valet-import-tsl.log" filePattern="${sys:weblogic.config.path.logs.dir}\valet-import-tsl.log-%d{yyyy-MM-dd}.log">
 		    <PatternLayout>
                 <pattern>%d %x %-5level [%c] %msg%n</pattern>
             </PatternLayout>
@@ -27,13 +35,16 @@
 		<!-- Preserve messages in a local file -->
 		<!-- ================================= -->
 		<Logger name="es.gob.valet" level="info" additivity="false">
-            <appender-ref ref="VALET-FILE-WEB" level="info" />
+            <AppenderRef ref="VALET-FILE-WEB" level="info" />
+        </Logger>
+		<Logger name="es.gob.valet.importsls" level="info" additivity="false">
+            <AppenderRef ref="VALET-IMPORT-TSL" level="info" />
         </Logger>
 		<!-- ======================= -->
 		<!-- Setup the Root category -->
 		<!-- ======================= -->
 		<Root level="error" additivity="false">
-            <appender-ref ref="VALET-FILE-WEB" />
+            <AppenderRef ref="VALET-FILE-WEB" />
 		</Root>
 	</Loggers>
 </Configuration>

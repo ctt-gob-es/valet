@@ -1,0 +1,243 @@
+<!-- Modal para ver información del certificado firmante -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalImportManager" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{modal.importManager.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{modal.importManager.btn.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id="messageModalImportManager" role="alert"></div>
+				<h6 class="c-grey-900" th:text="#{modal.importManager.h6.process.title}"></h6>
+				<div class="bgc-white p-20 bd">
+					<div class="form-row">
+						<div class="form-group col-md-12 mb-0">
+							<label for="imporTslStep1" id="imporTslStep1" th:text="#{modal.importManager.label.step1}"></label>
+							<div class="progress" style="height: 30px;width: auto;line-height: 30px;">
+								<div class="progress-bar" role="progressbarStep1" id="progressbarIdStep1" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12 mb-0">
+							<label for="imporTslStep2" id="imporTslStep2" th:text="#{modal.importManager.label.step2}"></label>
+							<div class="progress" style="height: 30px;width: auto;line-height: 30px;">
+								<div class="progress-bar" role="progressbarStep2" id="progressbarIdStep2" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12 mb-0">
+							<label for="imporTslStep3" id="imporTslStep3" th:text="#{modal.importManager.label.step3}"></label>
+							<div class="progress" style="height: 30px;width: auto;line-height: 30px;">
+								<div class="progress-bar" role="progressbarStep3" id="progressbarIdStep3" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12 mb-0">
+							<label for="imporTslStep4" id="imporTslStep4" th:text="#{modal.importManager.label.step4}"></label>
+							<div class="progress" style="height: 30px;width: auto;line-height: 30px;">
+								<div class="progress-bar" role="progressbarStep4" id="progressbarIdStep4" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12 mb-0">
+							<label for="imporTslStep5" id="imporTslStep5" th:text="#{modal.importManager.label.step5}"></label>
+							<div class="progress" style="height: 30px;width: auto;line-height: 30px;">
+								<div class="progress-bar" role="progressbarStep5" id="progressbarIdStep5" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="imporTslSummary" style="display: none; margin-top:10px;">
+					<h6 class="c-grey-900" id="titleSummaryImport"></h6>
+					<div class="bgc-white p-20 bd">
+						<div class="form-inline mb-2">
+							<label for="numTslImp" th:text="#{modal.importManager.label.numTslImp}"></label>
+							<span id="numTslImpSpan" style="margin-left:10px"></span>
+						</div>
+						<div class="form-inline mb-2">
+							<label for="numMappingByTslImp" th:text="#{modal.importManager.label.numMappingByTslImp}"></label>
+							<span id="numMappingByTslImpSpan" style="margin-left:10px"></span>
+						</div>
+						<div class="form-inline mb-2">
+							<label for="numMappingByServImp" th:text="#{modal.importManager.label.numMappingByServImp}"></label>
+							<span id="numMappingByServImpSpan" style="margin-left:10px"></span>
+						</div>
+						<div class="form-inline mb-2" style="display:none" id="tslDataNotImpDiv">
+							<label for="tslDataNotImpLabel" th:text="#{modal.importManager.label.tslDataNotImp}"></label>
+						</div>
+						<div class="form-inline mb-2" style="display:none" id="reasonTslDataDiv">
+							<span id="reasonTslData1" style="margin-left:10px;display:none;"></span>
+						</div>
+						
+						<div id="infoWithoutOverride" style="display:none">
+							<div class="form-inline mb-2">
+								<label for="numTslDataNotImp" th:text="#{modal.importManager.label.numTslDataNotImp}"></label>
+								<span id="numTslDataNotImpSpan" style="margin-left:10px"></span>
+							</div>
+							<div class="form-inline mb-2">
+								<label for="numMappingByTslNotImp" th:text="#{modal.importManager.label.numMappingByTslNotImp}"></label>
+								<span id="numMappingByTslNotImpSpan" style="margin-left:10px"></span>
+							</div>
+							<div class="form-inline mb-2">
+								<label for="numMappingByServNotImp" th:text="#{modal.importManager.label.numMappingByServNotImp}"></label>
+								<span id="numMappingByServNotImpSpan" style="margin-left:10px"></span>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancelBtn" type="submit" class="btn btn-default" th:utext="#{modal.importManager.btn.cancel}" onclick="closeImportManager('modalImportManager')"></button>
+				<button id="continueImpBtn" type="submit" class="btn btn-primary" th:utext="#{modal.importManager.btn.start}" onclick="startProcessImport();"></button>
+				<button id="downLoadImpSummaryBtn" type="submit" class="btn btn-primary" th:utext="#{modal.importManager.btn.downloadSummary}" onclick="downloadImpSumm();" disabled></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script th:inline="javascript">
+
+	async function startProcessImport() {
+		
+		$("#continueImpBtn").fadeOut();
+	    $("#cancelBtn, #downLoadImpSummaryBtn").prop("disabled", true);
+	    resetProgressBars();
+	    
+	    var file =  $('#idFileImport').prop('files')[0];
+	    
+	    var overwrite = $('#idOverwrite').val();
+		if($('#idOverwrite').is(':checked')){
+			overwrite = true;
+		} else {
+			overwrite = false;
+		}
+	    
+	    var formData = new FormData();
+        
+        formData.append("tslsFile", file);
+        formData.append("overwrite", overwrite);
+	    
+        var startprocessimport = /*[[@{/startprocessimport}]]*/;
+        let response = await fetch(startprocessimport, { method: 'POST', body: formData });
+	
+        if (!response.ok) {
+        	$('#messageModalImportManager').html("Se ha producido un fallo al comenzar la importación");
+			$('#messageModalImportManager').addClass('alert alert-danger');
+            $("#messageModalImportManager").fadeTo(5000, 500).slideUp(500, function() {
+                $("#messageModalImportManager").slideUp(500);
+            });  
+        	unlockModal();
+        	return;
+        }
+        
+        await updateProgressByStep();
+    }
+
+	function resetProgressBars() {
+	    for (let i = 1; i <= 5; i++) {
+	        let $progressBar = $("#progressbarIdStep" + i);
+	        $progressBar.css("width", "0%").text("0%").removeClass("bg-success bg-danger");
+	    }
+	}
+
+	async function updateProgressByStep() {
+	    var statusimport = /*[[@{/statusimport}]]*/;
+	    let response = await fetch(statusimport, { method: 'GET' });
+        let data = await response.json();
+		
+        var overwrite = $('#idOverwrite').val();
+  		if($('#idOverwrite').is(':checked')){
+  			var text = /*[[#{modal.importManager.h6.summary.withOverride.title}]]*/;
+  			$("#titleSummaryImport").text(text);
+  		} else {
+  			var text = /*[[#{modal.importManager.h6.summary.withoutOverride.title}]]*/;
+  			$("#titleSummaryImport").text(text);
+  			$("#infoWithoutOverride").show();
+  		}
+        
+        $("#numTslImpSpan").text(data.numTslImpSpan);
+        $("#numMappingByTslImpSpan").text(data.numMappingByTslImpSpan);
+        $("#numMappingByServImpSpan").text(data.numMappingByServImpSpan);
+        if(data.reasonTslData1 !== null) {
+        	$("#tslDataNotImpDiv, #reasonTslDataDiv, #reasonTslData1").show();
+        	$("#reasonTslData1").text(data.reasonTslData1);
+        }
+        $("#numTslDataNotImpSpan").text(data.numTslDataNotImpSpan);
+        $("#numMappingByTslNotImpSpan").text(data.numMappingByTslNotImpSpan);
+        $("#numMappingByServNotImpSpan").text(data.numMappingByServNotImpSpan);
+        
+        for(let i=1; i <= data.currentStep; i++) {
+    		let progress = data["step" + i] || 0;
+        	let $progressBar = $("#progressbarIdStep" + i);
+        	$progressBar.css("width", progress + "%").text(progress + "%");
+        	if (progress === 100) {
+        		$progressBar.addClass("bg-success");
+        	}
+        } 
+        
+     	// Verificamos si hay un error antes de continuar
+        if (data.isError) {
+        	
+        	let $progressBarError = $("#progressbarIdStep" + data.currentStep);
+        	$progressBarError.addClass("bg-danger");
+
+        	$('#messageModalImportManager').hide().html(data.messageError).removeClass().addClass('alert alert-danger').slideDown(500).fadeTo(5000, 500).slideUp(500);
+        	
+            $("#downLoadImpSummaryBtn").prop("disabled", true);
+            $("#cancelBtn").prop("disabled", false);
+            
+            return; // Detenemos aquí la recursión
+        }
+     	
+        if (data.currentStep === 5 && !data.isRunning) {
+	    	$("#imporTslSummary").slideDown(500);
+	    	unlockModal();
+	    	// detenemos la recursión
+	        return;
+	    } else {
+	    	// Repetimos la llamada recursivamente
+	        setTimeout(() => updateProgressByStep(data.currentStep), 1000);
+	    }
+    
+	}
+
+	function unlockModal() {
+	    $("#cancelBtn, #downLoadImpSummaryBtn").prop("disabled", false);
+	}
+
+	function closeImportManager(modalId){
+		$('#' + modalId).modal('hide');
+		$('.modal-backdrop').remove();
+	}
+	
+	async function downloadImpSumm() {
+		var obtainfilesummary = /*[[@{/obtainfilesummary}]]*/;
+		var response = await fetch(obtainfilesummary, { method: 'POST' });
+		var base64Data = await response.text();
+		
+	    var textBlob = b64toBlob(base64Data, 'text/plain');
+	    var fileName = 'ResumenImportacion.txt';
+
+	    var reader = new FileReader();
+	    reader.onload = function(event) {
+	        var save = document.createElement('a');
+	        save.href = event.target.result;
+	        save.download = fileName;
+	        save.dispatchEvent(new MouseEvent('click', {
+	            'view': window,
+	            'bubbles': true,
+	            'cancelable': true
+	        }));
+	        (window.URL || window.webkitURL).revokeObjectURL(save.href);
+	    };
+	    reader.readAsDataURL(textBlob);
+	}
+
+</script>

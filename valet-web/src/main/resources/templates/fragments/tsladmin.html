@@ -29,11 +29,6 @@
 <script th:inline="javascript">
 $(document).ready(function() {
 var getTsls =/*[[@{/tsldatatable}]]*/;
-var addTemplate = /*[[@{/addTsl}]]*/;
-var editTemplate = /*[[@{/edittsl}]]*/;
-var actionSave = /*[[@{/savetsl}]]*/;
-var actionUpdate = /*[[@{/updatetsl}]]*/;
-var actionDelete = /*[[@{/deletetsl}]]*/;
 
 var btnAddTsl =  /*[[#{tsl.admin.btn.add}]]*/;
 var btnEditTsl =  /*[[#{tsl.admin.btn.edit}]]*/;
@@ -42,199 +37,129 @@ var btnDelTsl =  /*[[#{tsl.admin.btn.delete}]]*/;
 var btnShowMapping =  /*[[#{table.tsl.mapeo.alt}]]*/;
 
 var tbl = $('#tslTable').DataTable({
-	dom: 'Bfrti',
-	pageLength: 50,
-	columnDefs: [
-        {className: "text-center", targets: [6], 
-		order:[ 2, "asc" ]}
-    ],
-	select: 'single',
-	responsive : true,
-	altEditor: true,
-	  buttons: [{text: btnAddTsl,name: 'add'}, 
-		  {extend: 'selected',text: btnEditTsl,name: 'edit'}, 
-		  {extend: 'selected',text: btnDelTsl,name: 'delete'}],
-	  		"iTotalRecords": "totalElements",
-      		"iTotalDisplayRecords": "numberOfElements",
-  			"processing": false,
-    		"serverSide": true,
-			"ajax": {
-      			  	"url": getTsls,
-     			   	"dataSrc" : "data",
-        			"data": function (data) {
-        			// Datos a pasar al modal
-           			 data.formId = "tslForm";
-            		 data.editTemplate = editTemplate;
-            		 data.addTemplate = addTemplate;
-        }
-      },
-      "language": {
-        "url": "js/datatables/i18n/spanish.json",
-        select: {
-            rows: {
-                _: "%d filas seleccionadas",
-                1: "1 fila seleccionada"
-            }
-          }
-        },
-        "order" : [ 2, 'asc' ],
-	"columns": [
-        { "data": "idTslData","visible": false},
-        { "data": "tslCountryRegion.idTslCountryRegion", "visible":false},
-        { "data": "tslCountryRegion.countryRegionName","width": "25%"},
-        { "data": "sequenceNumber","width": "15%"},
-        { "data": "issueDate","width": "25%", "render": function(data, type, row){
-		return moment(data).format("DD-MM-YYYY HH:mm");}},
-        { "data": "expirationDate", "width": "25%", "render": function(data, type, row){
-        	if(data != null){
-        		return moment(data).format("DD-MM-YYYY HH:mm");} else {
-			return '<p></p>';
-				}
-				}
-        	},
-		
-        { "data": "tslCountryRegion.countryRegionCode", "width": "10%", 
-        	"render": function(data, type, row){		
-        		return '<a onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'>	<span class="c-green-900 ti-list"></span></a>';
-        	}
-        } 
-        ]
-}).on('crudaction', function(e, accion, idTslData, data, rowindex) {
-	// e          Evento Jquery
-    // accion     [add|edit|delete]
-    // pkid       Primer campo en la data [id]                ... en add,    retorna null
-    // data       Los campos adicionales  [campo_1, campo_n]  ... en delete, retorna null
-    // rowindex   El index de la fila para el dataTable       ... en add,    retorna null
-	 $('#altEditor-modal .modal-body .alert').remove();
-	    // Se muestra la capa 'cargando...'
-	    loading();
-	    
-	    switch(accion){
-	        case 'add':
-	        	var formData = new FormData(document.forms["tslForm"]);
-	        	$.ajax(actionSave, {
-	        		data :formData,
-	        		contentType: false,
-	        		processData : false,
-	        		type : 'POST',
-	        		success: function(data){
-
-	        			var errores = JSON.parse(data.error);
-						$("#tableMapping").hide();						 
-						if (data.error != null){
-						 	hide();
-					  		jQuery.each(errores, function(i, val) {
-						  	if(i == "existTsl"){
-								var messageError = val;
-								$('#errorAddTsl').html(messageError);
-								$('#errorAddTsl').addClass('alert alert-danger');
-
-						 	 } 
-							if(i == "errorSaveTsl"){
-								var messageError = val;
-								$('#errorAddTsl').html(messageError);
-								$('#errorAddTsl').addClass('alert alert-danger');
-						 	 } 
-						  
-						  	$('#tslForm *').filter('span').each(function(){
-								if (i == $(this).attr('id')){
-									$("#" + i).text(val);
-									$("#" + i).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
-								}
-							});
-					  })
-
-				  }else{
-
-						  hide();
-						  tbl.row.add($(data.data)).draw(false);
-						  $('#altEditor-modal .modal-body .alert').remove();
-			              $('#altEditor-modal').modal('hide');
-					}   
-	        	},
-	        	error : function(data){			
-	        		// se oculta al capa 'cargando...'
-	        		hide();
-	        		// se obtiene el JSON de los campos con errores de validación y se modifican los estilos y se añaden mensajes
-	        		var validation = $(data)["0"].responseJSON;
-	        		drawValidationResult(validation.fieldErrors);
-	        		}
-	        	});//end add ajax
-	        	//}$('#tslForm').addClass('was-validated');
-	            break;
-	        case 'edit':
-	        	var formDataEdit = new FormData(document.forms["tslFormEdit"]);	        	
-	        	$.ajax(actionUpdate, {
-	        		data :formDataEdit,
-	        		contentType: false,
-	        		processData : false,
-	                type:'POST',
-	                success: function(data){
-	            		// Se oculta la capa 'cargando...'
-	            		hide();
-	            		
-	            		var errores = JSON.parse(data.error);
-						if(data.error != null){
-							jQuery.each(errores, function(i, val) {
-							if(i == "errorSaveTsl"){
-								var messageError = val;
-								$('#errorUpdateTsl').html(messageError);
-								$('#errorUpdateTsl').addClass('alert alert-danger');
-							 }
-							}) 
-						}else{
-							tbl.row.add($(data.data)).draw(false);
-							$('#altEditor-modal .modal-body .alert').remove();
-							$('#altEditor-modal').modal('hide');
-							$("#tableMapping").hide();
-}
+		dom: 'Bfrti',
+		pageLength: 50,
+		columnDefs: [
+	        {className: "text-center", targets: [6], 
+			order:[ 2, "asc" ]}
+	    ],
+		select: 'single',
+		responsive : true,
+		altEditor: false,
+		buttons: [
+			{
+		        text: btnAddTsl,
+		        name: 'add',
+		        action: function (e, dt, node, config) {
+		            var addTsl = /*[[@{/addTsl}]]*/;
+		            loading();
+	
+		            $.ajax({
+		                url: addTsl,
+		                type: 'POST',
+		                cache: false,
+		                success: function(xhr) {
+		                    hide();
+		                    $('#modal').html(xhr);
+		                    $('#modalAddTsl').modal('show');
+		                }
+		            });
+		        }
+		    },  
+			{
+		        text: btnEditTsl,
+		        name: 'edit',
+		        action: function (e, dt, node, config) {
+		        	var editTsl = /*[[@{/edittsl}]]*/;
+		            
+		        	// Obtenemos la fila seleccionada
+		        	var selectedRow = dt.row({ selected: true }).data();
+		        	
+		        	// Obtenemos el id
+		        	var idTslData = selectedRow.idTslData;
+		        
+		        	loading();
 					
-	                		                    
-	                },
-	                error:function(data){
-	                	// Se oculta la capa 'cargando...'
-	                	hide();
-	                	// Se eliminan los posibles errores anteriores...
-	                	cleanValidationResult('tslForm');
-	                	// Se obtiene el JSON de los campos con errores de validaciÃ³n
-	                	// y se modifican los estilos/aÃ±aden mensajes
-	                	var validation = $(data)["0"].responseJSON;
-	                	drawValidationResult(validation.fieldErrors);
-	                	
-	              
-	                }
-	            });//end ajax edit
-        	$('#tslForm').addClass('was-validated');
-         	break;
-	        case 'delete':
-	        	 $.ajax(actionDelete,{
-		            	data:$.param({'id':data.idTslData, 'index':rowindex}),
-		                type:'POST',
-		                success: function(data){
-		                	// Se oculta la capa 'cargando...'
-		                	hide();
-		                    tbl.row(data.index).remove().draw();
-							
-		                    $("#tableMapping").hide();
-		                    $('#altEditor-modal .modal-body .alert').remove();
-		                    $('#altEditor-modal').modal('hide');
-		                },
-		                error:function(){}
-		            });	
-	        	
-	       break;
-	    }
+		            $.ajax({
+		                url: editTsl,
+		                type: 'POST',
+		                data: { id: idTslData },
+		                cache: false,
+		                success: function(xhr) {
+		                    hide();
+		                    $('#modal').html(xhr);
+		                    $('#modalEditTsl').modal('show');
+		                }
+		            });
+		        },
+		        enabled: false  // Deshabilitado por defecto
+		    },  
+		    {
+		        text: btnDelTsl,
+		        name: 'delete',
+		        action: function (e, dt, node, config) {
+		        	var viewdeletetsl = /*[[@{/viewdeletetsl}]]*/;
+		            
+		        	loading();
+					
+		        	$.ajax({
+			        	url: viewdeletetsl,
+			            type: 'POST',
+			            cache: false,
+			            success: function(xhr) {
+			            	hide();
+			                $('#modal').html(xhr);
+			                $('#modalDeleteTsl').modal('show');
+						}
+					});
+		        },
+		        enabled: false  // Deshabilitado por defecto
+		    }, 
+		],
+		"iTotalRecords": "totalElements",
+	    "iTotalDisplayRecords": "numberOfElements",
+	  	"processing": false,
+	    "serverSide": false,
+	    "ajax": {
+	    	"url": getTsls,
+	    	"dataSrc" : ""
+	    },
+		"language": {
+	        "url": "js/datatables/i18n/spanish.json",
+	        select: {
+	            rows: {
+	                _: "%d filas seleccionadas",
+	                1: "1 fila seleccionada"
+	            }
+	          }
+	        },
+	        "order" : [ 2, 'asc' ],
+		"columns": [
+	        { "data": "idTslData","visible": false},
+	        { "data": "tslCountryRegionDTO.idTslCountryRegion", "visible":false},
+	        { "data": "tslCountryRegionDTO.countryRegionName","width": "25%"},
+	        { "data": "sequenceNumber","width": "15%"},
+	        { "data": "issueDate","width": "25%"},
+	        { "data": "expirationDate", "width": "25%"},
+			{ "data": "tslCountryRegionDTO.countryRegionCode", "width": "10%", 
+	        	"render": function(data, type, row){		
+	        		return '<a onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'>	<span class="c-green-900 ti-list"></span></a>';
+	        	}
+	        } 
+	        ]
+	});	
 
-});	//	
+	//Actualizar el estado de los botones al seleccionar o deseleccionar filas
+	$('#tslTable').on('select.dt deselect.dt', function () {
+	    var dt = $('#tslTable').DataTable();
+	    var selectedRows = dt.rows({ selected: true }).count();
+	    
+	    // Habilitar los botones "Editar" y "Eliminar" si hay una fila seleccionada, deshabilitarlos si no hay selecci�n
+	    dt.button('edit:name').enable(selectedRows > 0);
+	    dt.button('delete:name').enable(selectedRows > 0);
+	});
 
-
-//si se selecciona otra TSL se oculta la tabla de mapeo
-tbl.on( 'select', function ( e, dt, type, indexes ) {
-            $("#tableMapping").hide();
-        } );
-
-});// documentReady
-
+});
 
 //función para cargar la tabla con los valores del mapeo
 function loadMappingDatatable(countryRegionCode) {
