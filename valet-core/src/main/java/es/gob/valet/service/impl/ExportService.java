@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.1, 21/05/2025.
+ * @version 1.2, 29.05/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -46,7 +46,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -85,7 +86,7 @@ import es.gob.valet.sign.cades.SignatureException;
 /** 
  * <p>Class that implements the communication with the operations of the persistence layer for ExportTsls.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 21/05/2025.
+ * @version 1.2, 29.05/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -94,7 +95,7 @@ public class ExportService implements IExportService {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ExportService.class);
+	private static final Logger LOGGER = LogManager.getLogger(ExportService.class);
 	
 	/**
 	 * Constant attribute that represents the extension used to define JSON files.

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.2, 21/05/2025.
+ * @version 1.3, 29.05/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -34,7 +34,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,7 +58,7 @@ import es.gob.valet.sign.cades.SignatureException;
 /**
  * <p>Class that manages the REST requests related to the ExportTsls administration and JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 21/05/2025.
+ * @version 1.3, 29.05/2025.
  */
 @RestController
 public class ExportTslsRestController {
@@ -65,7 +66,7 @@ public class ExportTslsRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ExportTslsRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger(ExportTslsRestController.class);
 	
 	/**
 	 * Flag indicating if the process is currently running.

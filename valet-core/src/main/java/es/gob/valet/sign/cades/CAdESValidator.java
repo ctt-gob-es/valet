@@ -11,8 +11,9 @@ package es.gob.valet.sign.cades;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.logging.Logger;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -28,7 +29,7 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
  * los firmantes. */
 public final class CAdESValidator {
 
-    private static final Logger LOGGER = Logger.getLogger("es.gob.afima"); //$NON-NLS-1$
+    private static final Logger LOGGER = LogManager.getLogger(CAdESValidator.class); //$NON-NLS-1$
 
     private CAdESValidator() {
         // No permitimos la instanciacion
@@ -55,7 +56,7 @@ public final class CAdESValidator {
             // Elementos que contienen los elementos OID SignedData
             final ASN1ObjectIdentifier doi = (ASN1ObjectIdentifier) e.nextElement();
             if (!doi.equals(PKCSObjectIdentifiers.signedData)) {
-            	LOGGER.fine(
+            	LOGGER.debug(
     				"Los datos proporcionados no son de tipo SignedData de CAdES (no esta declarado el OID de SignedData)" //$NON-NLS-1$
 				);
         		return false;
@@ -73,7 +74,7 @@ public final class CAdESValidator {
 
             for (int i = 0; i < signerInfosSd.size(); i++) {
             	if (!verifySignerInfo(SignerInfo.getInstance(signerInfosSd.getObjectAt(i)))) {
-            		LOGGER.fine(
+            		LOGGER.debug(
             				"Los datos proporcionados no son de tipo SignedData de CAdES (al menos un SignerInfo no se ha declarado de tipo CAdES)" //$NON-NLS-1$
             				);
             		return false;
@@ -81,7 +82,7 @@ public final class CAdESValidator {
             }
         }
         catch (final Exception ex) {
-        	LOGGER.fine("Los datos proporcionados no son de tipo SignedData de CAdES: " + ex); //$NON-NLS-1$
+        	LOGGER.debug("Los datos proporcionados no son de tipo SignedData de CAdES: " + ex); //$NON-NLS-1$
             return false;
         }
 

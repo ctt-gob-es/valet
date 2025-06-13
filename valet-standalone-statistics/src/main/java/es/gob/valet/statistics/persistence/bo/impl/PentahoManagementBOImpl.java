@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>21/10/2019.</p>
  * @author Gobierno de España.
- * @version 1.2, 29/11/2021.
+ * @version 1.3, 29.05/2025.
  */
 package es.gob.valet.statistics.persistence.bo.impl;
 
@@ -32,8 +32,8 @@ import java.util.Map;
 
 import javax.persistence.EntityTransaction;
 
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.statistics.ValetStatisticsException;
 import es.gob.valet.statistics.i18n.Language;
@@ -53,7 +53,7 @@ import es.gob.valet.statistics.persistence.pojo.FctValidationPOJO;
 /** 
  * <p>Class that implements all the operations related with de database schema.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 29/11/2021.
+ * @version 1.3, 29.05/2025.
  */
 public final class PentahoManagementBOImpl implements IPentahoManagementBO {
 
@@ -64,7 +64,7 @@ public final class PentahoManagementBOImpl implements IPentahoManagementBO {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(PentahoManagementBOImpl.class);
+	private static final Logger LOGGER = LogManager.getLogger(PentahoManagementBOImpl.class);
 	/**
 	 * Constant that represents the attribute name associated to filename field.
 	 */

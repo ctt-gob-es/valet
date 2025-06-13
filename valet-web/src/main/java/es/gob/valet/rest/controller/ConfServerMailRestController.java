@@ -21,11 +21,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 30/01/2024.
+ * @version 1.9, 29.05/2025.
  */
 package es.gob.valet.rest.controller;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,7 +48,7 @@ import es.gob.valet.persistence.utils.UtilsAESCipher;
  * <p>Class that manages the REST requests related to the ConfServerMails administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 30/01/2024.
+ * @version 1.9, 29.05/2025.
  */
 @RestController
 public class ConfServerMailRestController {
@@ -55,7 +56,7 @@ public class ConfServerMailRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(ConfServerMailRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger(ConfServerMailRestController.class);
 	/**
 	 * Constant that represents the default text string of the password displayed in edit mode.
 	 */

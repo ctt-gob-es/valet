@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.3, 20/02/2024.
+ * @version 2.4, 29.05/2025.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -41,7 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -114,7 +115,7 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 2.3, 20/02/2024.
+ * @version 2.4, 29.05/2025.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -175,7 +176,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TSLValidatorThroughOCSP.class);
+	private static final Logger LOGGER = LogManager.getLogger(TSLValidatorThroughOCSP.class);
 
 	/**
 	 * Attribute that represents the digital identities processor.

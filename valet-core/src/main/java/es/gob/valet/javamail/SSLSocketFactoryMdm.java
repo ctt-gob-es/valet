@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>30/01/2024.</p>
  * @author Gobierno de España.
- * @version 1.0, 30/01/2024.
+ * @version 1.1, 29.05/2025.
  */
 package es.gob.valet.javamail;
 
@@ -33,18 +33,19 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * <p>Custom implementation of SSLSocketFactory that enhances SSL/TLS socket creation by providing a specific TrustManager, {@link HandshakeValidationMdm}, for handshake validation. This implementation aims to improve security by carefully validating certificates presented by the server.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 30/01/2024.
+ * @version 1.1, 29.05/2025.
  */
 public class SSLSocketFactoryMdm extends SSLSocketFactory {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-    private static final Logger LOGGER = Logger.getLogger(SSLSocketFactoryMdm.class);
+    private static final Logger LOGGER = LogManager.getLogger(SSLSocketFactoryMdm.class);
 	
 	 /**
      * The underlying SSLSocketFactory used for creating SSL sockets.

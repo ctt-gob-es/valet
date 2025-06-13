@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.1, 21/05/2025.
+ * @version 1.2, 29.05/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -36,7 +36,8 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -60,7 +61,7 @@ import es.gob.valet.service.ifaces.ISigningCertService;
 /**
  * <p>Class that manages the REST request related to the proxy configuration.</p>
  * <b>Project:</b><p>Class that manages the REST request related to the Signing Certificate Configuration.</p>
- * @version 1.1, 21/05/2025.
+ * @version 1.2, 29.05/2025.
  */
 @RestController
 public class SigningCertRestController {
@@ -68,7 +69,7 @@ public class SigningCertRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(SigningCertRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger(SigningCertRestController.class);
 	
 	/**
 	 * Service for managing signing certificates.

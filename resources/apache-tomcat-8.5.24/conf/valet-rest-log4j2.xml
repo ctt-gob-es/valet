@@ -1,0 +1,57 @@
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Log4j2 Configuration                                                 -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<Configuration status="WARN" monitorInterval="10">
+    <Appenders>
+        <!-- VALET-FILE: Rota diariamente -->
+        <RollingFile name="VALET-FILE"
+                     fileName="${sys:catalina.base}/logs/valet-rest.log"
+                     filePattern="${sys:catalina.base}/logs/valet-rest.%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d %x %-5p [%c] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- VALET-AUDIT-FILE: Rota diariamente, solo mensaje -->
+        <RollingFile name="VALET-AUDIT-FILE"
+                     fileName="${sys:catalina.base}/logs/valet-audit-rest.log"
+                     filePattern="${sys:catalina.base}/logs/valet-audit-rest.%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- Loggers personalizados -->
+        <Logger name="Valet-Rest" level="info" additivity="false">
+            <AppenderRef ref="VALET-FILE"/>
+        </Logger>
+
+        <Logger name="Valet-Audit" level="info" additivity="false">
+            <AppenderRef ref="VALET-AUDIT-FILE"/>
+        </Logger>
+
+        <!-- Logger para es.gob.valet -->
+        <Logger name="es.gob.valet" level="info"/>
+
+        <!-- Limitamos categorías verbosas -->
+        <Logger name="org.apache" level="info"/>
+        <Logger name="org.hibernate" level="info"/>
+        <Logger name="org.springframework" level="info"/>
+
+        <!-- Logger raíz -->
+        <Root level="info">
+            <AppenderRef ref="VALET-FILE"/>
+        </Root>
+    </Loggers>
+</Configuration>

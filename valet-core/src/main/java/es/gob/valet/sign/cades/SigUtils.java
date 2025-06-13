@@ -11,8 +11,8 @@ package es.gob.valet.sign.cades;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
 
+import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -114,7 +114,7 @@ public final class SigUtils {
 			);
 		}
 
-		Logger.getLogger("es.gob.afirma").warning( //$NON-NLS-1$
+		LogManager.getLogger(SigUtils.class).warn( //$NON-NLS-1$
 			"Algoritmo de huella desconocido, no se normalizara su nombre: " + pseudoName //$NON-NLS-1$
 		);
 

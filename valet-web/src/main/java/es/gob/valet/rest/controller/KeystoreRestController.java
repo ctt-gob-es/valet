@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 19/12/2023.
+ * @version 2.2, 29.05/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -42,7 +42,8 @@ import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -76,7 +77,7 @@ import es.gob.valet.persistence.exceptions.CryptographyException;
 /**
  * <p>Class that manages the REST request related to the Keystore's administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.1, 19/12/2023.
+ * @version 2.2, 29.05/2025.
  */
 @RestController
 public class KeystoreRestController {
@@ -84,7 +85,7 @@ public class KeystoreRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(KeystoreRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger(KeystoreRestController.class);
 
 	/**
 	 * Constant that represents the parameter 'idKeystore'.

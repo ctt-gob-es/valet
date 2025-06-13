@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 31/03/2025.
+ * @version 2.4, 12/06/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -40,12 +40,11 @@ import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotEmpty;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,7 +60,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsMappings;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
@@ -76,6 +78,7 @@ import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.model.dto.SigningCertificateDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
@@ -93,7 +96,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 31/03/2025.
+ * @version 2.4, 12/06/2025.
  */
 @RestController
 public class TslRestController {
@@ -101,7 +104,7 @@ public class TslRestController {
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TslRestController.class);
+	private static final Logger LOGGER = LogManager.getLogger(TslRestController.class);
 
 	/**
 	 * Constant attribute that represents the token 'text/xml'.
@@ -203,7 +206,6 @@ public class TslRestController {
 	 */  
 	@Autowired
 	private ISigningCertService iSigningCertService;
-
 	
 	/**
 	 * Method that maps the list users web requests to the controller and
@@ -211,14 +213,14 @@ public class TslRestController {
 	 * @param input Holder object for datatable attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
-	@JsonView(DataTablesOutput.View.class)
-	@RequestMapping(path = "/tsldatatable", method = RequestMethod.GET)
-	public DataTablesOutput<TslData> loadTslDataTable(@NotEmpty DataTablesInput input) {
+	@RequestMapping(path = "/tsldatatable", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<TslDataDTO> loadTslDataTable() {
 		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
-		return tslDataService.getAllTsl(input);
-
+	    List<TslDataDTO> listTslDataDTO = tslDataService.obtainAllTslDTO();
+	    return listTslDataDTO;
 	}
-
+	
 	/**
 	 * Method that obtains the list of available versions for the indicated specification.
 	 * @param specification Specification selected in the form.
@@ -320,41 +322,48 @@ public class TslRestController {
 	 * @return A {@link DataTablesOutput} containing the updated TSL data or an error message if the operation fails.
 	 */
 	@RequestMapping(value = "/confirmTsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody DataTablesOutput<TslData> confirmTsl(HttpSession httpSession) {
-		
-		DataTablesOutput<TslData> dtOutput = new DataTablesOutput<>();
-		List<TslData> listTSL = new ArrayList<TslData>();
-		
-		// Obtengo los parametros de la session que fueron previamente almacenados
-		ITSLObject tslObject = (ITSLObject) httpSession.getAttribute("tslObject");
-		String urlTsl = (String) httpSession.getAttribute("urlTsl");
-		byte[] tslXMLbytes = (byte[ ]) httpSession.getAttribute("fileBytes");
-		
-		try {
-			// almaceno la tsa en la BD
-			TslData tslNew = TSLManager.getInstance().addNewTSLData(tslObject, urlTsl, tslXMLbytes);
-			
-			// se actualiza la lsita de TSL para mostrar en la datatable.
-			listTSL.add(tslNew);
-			dtOutput.setData(listTSL);
-			
-		} catch (TSLManagingException e) {
-			LOGGER.error(e);
-			String msgErrorWeb;
-			if (e.getErrorCode() != null && e.getErrorCode().equals(IValetException.COD_204)) {
-				msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_TSL_EXISTS);
-			} else {
-				msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL_WEB);
-			}
-			JSONObject json = new JSONObject();
+	public @ResponseBody String confirmTsl(HttpSession httpSession) {
+	    
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    ObjectNode responseNode = objectMapper.createObjectNode();
+
+	    ITSLObject tslObject = (ITSLObject) httpSession.getAttribute("tslObject");
+	    String urlTsl = (String) httpSession.getAttribute("urlTsl");
+	    byte[] tslXMLbytes = (byte[]) httpSession.getAttribute("fileBytes");
+
+	    try {
+	        TslData tslNew = TSLManager.getInstance().addNewTSLData(tslObject, urlTsl, tslXMLbytes);
+
+	        TslDataDTO tslDataDTO = new TslDataDTO(tslNew);
+	        tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getIssueDate()));
+	        tslDataDTO.setExpirationDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getExpirationDate()));
+
+	        responseNode.set("data", objectMapper.valueToTree(tslDataDTO));
+
+	    } catch (TSLManagingException e) {
+	        LOGGER.error(e);
+
+	        String msgErrorWeb;
+	        if (IValetException.COD_204.equals(e.getErrorCode())) {
+	            msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_TSL_EXISTS);
+	        } else {
+	            msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL_WEB);
+	        }
+
+	        JSONObject json = new JSONObject();
 			json.put(KEY_JS_ERROR_SAVE_TSL, msgErrorWeb);
-			ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
-			listTSL = StreamSupport.stream(tslDataService.getAllTSL().spliterator(), false).collect(Collectors.toList());
-			dtOutput.setError(json.toString());
-		}
-		
-		return dtOutput;
+	        
+	        responseNode.put("error", json.toString());
+	    }
+
+	    try {
+	        return objectMapper.writeValueAsString(responseNode);
+	    } catch (Exception e) {
+	        LOGGER.error(e);
+	        return e.getMessage();
+	    }
 	}
+
 
 	/**
 	 * Method that updates a TSL.
@@ -368,17 +377,15 @@ public class TslRestController {
 	@JsonView(DataTablesOutput.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/updatetsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody DataTablesOutput<TslData> updateTsl(@RequestParam(FIELD_ID_TSL) Long idTSL, @RequestParam(FIELD_URL) String urlTsl, @RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_FILE_DOC) MultipartFile fileDocument) throws IOException {
+	public @ResponseBody String updateTsl(@RequestParam(FIELD_ID_TSL) Long idTSL, @RequestParam(FIELD_URL) String urlTsl, @RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_FILE_DOC) MultipartFile fileDocument) throws IOException {
 
-		DataTablesOutput<TslData> dtOutput = new DataTablesOutput<>();
+		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectNode responseNode = objectMapper.createObjectNode();
 
 		byte[ ] tslXMLbytes = null;
 		byte[ ] legibleDocumentArrayByte = null;
 		JSONObject json = new JSONObject();
-		List<TslData> listTSL = new ArrayList<TslData>();
-
-		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
-
+		
 		// comprobamos que no se haya dejado vacío el campo del fichero de TSL.
 		if (implTslFile == null || implTslFile.getSize() == 0 || implTslFile.getBytes() == null || implTslFile.getBytes().length == 0) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_NULL_FILE_IMPL_TSL));
@@ -394,18 +401,23 @@ public class TslRestController {
 
 		try {
 			TslData tslDataUpdated = TSLManager.getInstance().updateTSLData(idTSL, tslXMLbytes, urlTsl, legibleDocumentArrayByte);
-			listTSL.add(tslDataUpdated);
-			dtOutput.setData(listTSL);
+			TslDataDTO tslDataDTO = new TslDataDTO(tslDataUpdated);
+		    tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getIssueDate()));
+		    tslDataDTO.setExpirationDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getExpirationDate()));
+			responseNode.set("data", objectMapper.valueToTree(tslDataDTO));
 
 		} catch (Exception e) {
 			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
 			json.put(KEY_JS_ERROR_SAVE_TSL, Language.getResWebGeneral(IWebGeneralMessages.ERROR_EDIT_TSL_WEB));
-			listTSL = StreamSupport.stream(tslDataService.getAllTSL().spliterator(), false).collect(Collectors.toList());
-			dtOutput.setError(json.toString());
+			responseNode.put("error", json.toString());
 
 		}
-		dtOutput.setData(listTSL);
-		return dtOutput;
+		try {
+			return objectMapper.writeValueAsString(responseNode);
+		} catch (Exception e) {
+			LOGGER.error(e);
+			return e.getMessage();
+		}
 	}
 
 	/**

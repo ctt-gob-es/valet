@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>30/01/2024.</p>
  * @author Gobierno de España.
- * @version 1.1, 17/09/2024.
+ * @version 1.2, 29.05/2025.
  */
 package es.gob.valet.javamail;
 
@@ -29,7 +29,8 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCertificate;
@@ -39,14 +40,14 @@ import es.gob.valet.persistence.configuration.model.entity.ConfServerMail;
 /**
  * <p> Implementation of X509TrustManager used for SSL/TLS handshake validation. This implementation fully trusts certificates presented by the client and performs specific verification in the case of certificates presented by the server.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 17/09/2024.
+ * @version 1.2, 29.05/2025.
  */
 public class HandshakeValidationMdm implements X509TrustManager {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(HandshakeValidationMdm.class);
+	private static final Logger LOGGER = LogManager.getLogger(HandshakeValidationMdm.class);
 	
 	/**
      * {@inheritDoc}

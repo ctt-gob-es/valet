@@ -20,23 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 30/01/2024.
+ * @version 1.6, 29.05/2025.
  */
 package es.gob.valet.form;
-
-import javax.persistence.Column;
-
-import org.hibernate.annotations.Type;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-
-import com.fasterxml.jackson.annotation.JsonView;
-
-import es.gob.valet.commons.utils.NumberConstants;
 
 /**
  * <p>Class that represents the backing form for adding/editing a server mail.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 30/01/2024.
+ * @version 1.6, 29.05/2025.
  */
 public class ConfServerMailForm {
 

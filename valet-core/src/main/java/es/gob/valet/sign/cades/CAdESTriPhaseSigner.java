@@ -16,8 +16,8 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
+import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -334,7 +334,7 @@ public final class CAdESTriPhaseSigner {
             	);
             }
             catch(final Exception e) {
-                Logger.getLogger("es.gob.afirma").severe( //$NON-NLS-1$
+                LogManager.getLogger(CAdESTriPhaseSigner.class).error( //$NON-NLS-1$
             		"Error insertando el certificado en la cadena de confianza: " + e //$NON-NLS-1$
         		);
             }

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.2, 21/05/2025.
+ * @version 2.4, 12.06/2025.
  */
 package es.gob.valet.tsl.access;
 
@@ -40,7 +40,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import es.gob.valet.audit.utils.CommonsCertificatesAuditTraces;
@@ -98,14 +99,14 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.2, 21/05/2025.
+ * @version 2.4, 12.06/2025.
  */
 public final class TSLManager {
 
 	/**
 	 * Attribute that represents the object that manages the log of the class.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(TSLManager.class);
+	private static final Logger LOGGER = LogManager.getLogger(TSLManager.class);
 
 	/**
 	 * Constant attribute that represents the token 'UNKNOWN'.
@@ -2073,9 +2074,9 @@ public final class TSLManager {
 				}
 
 			}
-
+			
 			// Evaluamos si la tsl existe
-			TslData tslData = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslByCountryAndSequenceNumber(tcrp, tslObject.getSchemeInformation().getTslSequenceNumber());
+			TslData tslData = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslByCountryRegion(tcrp, false, false);
 			if (tslData != null) {
 				throw new TSLManagingException(IValetException.COD_204, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171));
 			}

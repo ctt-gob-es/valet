@@ -245,11 +245,10 @@
             cache: false,
             success: function(data) {
             	hide();
-            	var errores = JSON.parse(data.error);
-				$("#tableMapping").hide();						 
-				if (data.error != null){
-					hide();
-				  	jQuery.each(errores, function(i, val) {
+            	if(data.error != undefined) {
+            		$("#tableMapping").hide();
+            		var errores = JSON.parse(data.error);
+            		jQuery.each(errores, function(i, val) {
 						if(i == "errorSaveTsl"){
 							var messageError = val;
 							$('#errorAddTsl').html(messageError);

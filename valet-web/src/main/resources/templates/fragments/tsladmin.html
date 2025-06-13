@@ -119,18 +119,12 @@ var tbl = $('#tslTable').DataTable({
 		"iTotalRecords": "totalElements",
 	    "iTotalDisplayRecords": "numberOfElements",
 	  	"processing": false,
-	    "serverSide": true,
-		"ajax": {
+	    "serverSide": false,
+	    "ajax": {
 	    	"url": getTsls,
-	     	"dataSrc" : "data",
-	        "data": function (data) {
-	        	// Datos a pasar al modal
-	           	// data.formId = "tslForm";
-	            // data.editTemplate = editTemplate;
-	            // data.addTemplate = addTemplate;
-	        }
-		},
-	      "language": {
+	    	"dataSrc" : ""
+	    },
+		"language": {
 	        "url": "js/datatables/i18n/spanish.json",
 	        select: {
 	            rows: {
@@ -142,20 +136,12 @@ var tbl = $('#tslTable').DataTable({
 	        "order" : [ 2, 'asc' ],
 		"columns": [
 	        { "data": "idTslData","visible": false},
-	        { "data": "tslCountryRegion.idTslCountryRegion", "visible":false},
-	        { "data": "tslCountryRegion.countryRegionName","width": "25%"},
+	        { "data": "tslCountryRegionDTO.idTslCountryRegion", "visible":false},
+	        { "data": "tslCountryRegionDTO.countryRegionName","width": "25%"},
 	        { "data": "sequenceNumber","width": "15%"},
-	        { "data": "issueDate","width": "25%", "render": function(data, type, row){
-			return moment(data).format("DD-MM-YYYY HH:mm");}},
-	        { "data": "expirationDate", "width": "25%", "render": function(data, type, row){
-	        	if(data != null){
-	        		return moment(data).format("DD-MM-YYYY HH:mm");} else {
-				return '<p></p>';
-					}
-					}
-	        	},
-			
-	        { "data": "tslCountryRegion.countryRegionCode", "width": "10%", 
+	        { "data": "issueDate","width": "25%"},
+	        { "data": "expirationDate", "width": "25%"},
+			{ "data": "tslCountryRegionDTO.countryRegionCode", "width": "10%", 
 	        	"render": function(data, type, row){		
 	        		return '<a onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'>	<span class="c-green-900 ti-list"></span></a>';
 	        	}

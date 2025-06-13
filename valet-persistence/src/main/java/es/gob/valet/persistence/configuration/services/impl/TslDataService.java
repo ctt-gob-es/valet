@@ -20,12 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 28/03/2025.
+ * @version 1.7, 12/06/2025.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.dto.TslCountryVersionDTO;
+import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.repository.TslDataRepository;
@@ -44,12 +47,14 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer related to TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 28/03/2025.
+ * @version 1.7, 12/06/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class TslDataService implements ITslDataService {
 
+	private static final Logger LOGGER = LogManager.getLogger(TslDataService.class);
+	
 	/**
 	 * Attribute that represents the injected interface that provides CRUD operations for the persistence.
 	 */
@@ -178,4 +183,12 @@ public class TslDataService implements ITslDataService {
 		return repository.findTslDataByCountryAndSqNumber(tcrp.getIdTslCountryRegion(), tslSequenceNumber);
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#obtainAllTslDTO()
+	 */
+	public List<TslDataDTO> obtainAllTslDTO() {
+		return repository.findAllTslDataDTO();
+	}
 }
