@@ -198,6 +198,16 @@
 		               			</script>
 							</a>
 						</li>
+						<li>
+							<a id="aConfTslsRegAdmin" class='sidebar-link' href="#">
+								<span class="icon-holder"><i class="c-black-500 ti-archive"></i></span>
+								<span class="title" th:text="#{menu.admin.confTslsReg}"></span>
+								<script th:inline="javascript">
+		                 			var actionLoadConfTslsReg = /*[[@{/loadConfTslsReg}]]*/;
+		                 			$('#aConfTslsRegAdmin').click(function(e){e.preventDefault(); loadIntoAjax('formMenu', actionLoadConfTslsReg, 'optionReplacement', 'GET', null, true); return false;});
+		               			</script>
+							</a>
+						</li>
 					</ul></li>
 
 			</ul>
