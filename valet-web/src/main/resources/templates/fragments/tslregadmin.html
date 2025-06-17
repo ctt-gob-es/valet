@@ -1,0 +1,82 @@
+<div class="container-fluid">
+	<h4 class="c-grey-900 mT-10 mB-30" th:text="#{form.confTslReg.title}"></h4>
+	<div class="masonry-item col-md-12">
+		
+		<div class="bgc-white p-20 bd">
+			<div class="mT-30">
+				<form id="confTslRegForm" th:object="${confTslRegDTO}">
+					<div id="confTslRegFormError" role="alert"></div>
+					
+					<input type='hidden' id="idConfTslReg" th:field="*{idConfTslReg}">
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="tslRegEnabled" th:text="#{form.confTslReg.check.enableTlsReg}"></label> 
+							<input type="checkbox" id="tslRegEnabled" name="tslRegEnabled" th:field="*{tslRegEnabled}">
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="selectListModeReg" th:text="#{form.confTslReg.select.modeTlsReg}"></label>
+							<select id="selectListModeReg" name="selectListModeReg" class="form-control" th:field="*{idModeReg}">
+								<option th:value="-1" th:text="#{form.confTslReg.select.version.text}"></option>
+								<option th:each="tp: ${confTslRegDTO.listTslModeRegDTO}" th:value="${tp.idModeReg}" th:text="${tp.tslModeRegTokenValue}" th:selected="${idModeReg == tp.idModeReg}" />
+							</select>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="selectListTypeFilterReg" th:text="#{form.confTslReg.select.typeFilterTlsReg}"></label>
+							<select id="selectListTypeFilterReg" name="selectListTypeFilterReg" class="form-control" th:field="*{idTypeFilterReg}">
+								<option th:value="-1" th:text="#{form.confTslReg.select.version.text}"></option>
+								<option th:each="tp: ${confTslRegDTO.listTslTypeFilterRegDTO}" th:value="${tp.idTypeFilterReg}" th:text="${tp.typeFilterRegTokenValue}" th:selected="${idTypeFilterReg == tp.idTypeFilterReg}" />
+							</select>
+						</div>
+					</div>
+					
+					<button id="saveBtn" type="submit" class="btn btn-primary" th:utext="#{button.save}">
+					</button>
+					
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script th:inline="javascript">
+$(document).ready(function() {
+	$("#saveBtn").click(function (event){
+		event.preventDefault();
+		
+		var confTslRegFormSerialized = JSON.stringify($("#confTslRegForm").serializeJSON());
+		
+		var saveConfTslReg = /*[[@{/saveConfTslReg}]]*/;
+		loading();
+		$.ajax({
+			url: saveConfTslReg,
+			type: 'POST',
+			data: confTslRegFormSerialized,
+			contentType : "application/json",
+			cache: false,
+			success: function(xhr) {
+				hide();
+				$('#confTslRegFormError').html(/*[[#{form.confTslReg.field.ok}]]*/);
+                $('#confTslRegFormError').addClass('alert alert-success');
+                $("#confTslRegFormError").fadeTo(5000, 500).slideUp(500, function() {
+                    $("#confTslRegFormError").slideUp(500);
+                });
+			} ,
+			error:  function(xhr) {
+				hide();
+				$('#confTslRegFormError').html(/*[[#{form.confTslReg.field.error}]]*/);
+                $('#confTslRegFormError').addClass('alert alert-danger');
+                $("#confTslRegFormError").fadeTo(5000, 500).slideUp(500, function() {
+                    $("#confTslRegFormError").slideUp(500);
+                });  
+			}
+		});
+	});
+});
+</script>
