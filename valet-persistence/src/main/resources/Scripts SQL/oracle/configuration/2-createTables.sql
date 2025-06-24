@@ -478,4 +478,14 @@ COMMENT ON COLUMN "CONF_TSL_REGISTRATION"."TSL_REG_ENABLED" IS 'check para activ
 COMMENT ON COLUMN "CONF_TSL_REGISTRATION"."MODE_REG_TOKEN_NAME" IS 'token para obtener el modo de registro de las TSLs.';
 COMMENT ON COLUMN "CONF_TSL_REGISTRATION"."TYPE_FILTER_REG_TOKEN_NAME" IS 'token para obtener el tipo de TSLs seleccionada para su registro.';
 
+-- Table TSL_PEND_VAL
+CREATE TABLE "TSL_PEND_VAL"(
+  "ID_TSL_PEND_VAL" Number(19,0) NOT NULL,
+  "XML_DOCUMENT" Blob NOT NULL
+) INITRANS 1 MAXTRANS 255 NOCACHE;
+ALTER TABLE "TSL_PEND_VAL" ADD CONSTRAINT "ID_TSL_PEND_VAL" PRIMARY KEY ("ID_TSL_PEND_VAL");
+COMMENT ON TABLE "TSL_PEND_VAL" IS 'Tabla que almacena el estado de validación para la lista de listas en las TSLs.';
+COMMENT ON COLUMN "TSL_PEND_VAL"."ID_TSL_PEND_VAL" IS 'Identificador de la tabla.';
+COMMENT ON COLUMN "TSL_PEND_VAL"."XML_DOCUMENT" IS 'Representación en bytes del documento XML que define a la TSL.';
+
 COMMIT;

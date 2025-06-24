@@ -1,0 +1,87 @@
+<div class="container-fluid" id="tableTslPendVal">
+	<h4 class="c-grey-900 mT-10 mB-30" th:text="#{tsls.pend.val.admin.title}"></h4>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="bgc-white bd bdrs-3 p-20 mB-20">
+				<h4 class="c-grey-900 mB-20" th:text="#{tsls.pend.val.admin.table.title}"></h4>
+				<div id="msgTslPendValAlert"></div>
+				<table id="tslPendValTable" class="table table-striped table-bordered"
+					cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<!-- Columna oculta para el identificador de la TSL -->
+							<th></th>
+							<th th:text="#{tsls.pend.val.admin.table.country}"></th>
+							<th th:text="#{tsls.pend.val.admin.table.sequence}"></th>
+							<th th:text="#{tsls.pend.val.admin.table.issueDate}"></th>
+							<th th:text="#{tsls.pend.val.admin.table.distributionPoint}"></th>
+							<th></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+$(document).ready(function() {
+	var getTslsPendVal =/*[[@{/tslpendvaldatatable}]]*/;
+	
+	var btnViewTsl =  /*[[#{tsls.pend.val.admin.table.alt}]]*/;
+	
+	var tblPendVal = $('#tslPendValTable').DataTable({
+		pageLength: 20,	
+		lengthChange: false,
+		columnDefs: [
+	        { className: "text-center", targets: [5] } // columna del icono
+	    ],
+		responsive : true,
+		altEditor: false,
+		"processing": false,
+	    "serverSide": false,
+	    "ajax": {
+	    	"url": getTslsPendVal,
+	    	"dataSrc" : ""
+	    },
+		"language": {
+	        "url": "js/datatables/i18n/spanish.json",
+	        select: {
+	            rows: {
+	                _: "%d filas seleccionadas",
+	                1: "1 fila seleccionada"
+	            }
+	          }
+	        },
+	        "order" : [ 1, 'asc' ],
+	    "columns": [
+	        { "data": "idTslPendVal","visible": false},
+	        { "data": "countryRegionName","width": "25%"},
+	        { "data": "sequenceNumber","width": "15%"},
+	        { "data": "issueDate","width": "25%"},
+	        { "data": "urlDistributionPoint", "width": "25%"},
+			{ "data": "idTslPendVal", "width": "3%", 
+	        	"render": function(data, type, row){
+	        		return '<a onclick="viewInfoTsl(\''+data+'\');" alt='+btnViewTsl+' title='+btnViewTsl+'>' +
+	        		       '<span class="c-green-900 ti-info-alt"></span></a>';
+	        	},
+	        	"orderable" : false
+	        } 
+	        ]
+	});
+});
+
+function viewInfoTsl(idTslPendVal) {
+	var viewinfotsl =/*[[@{/viewinfotsl}]]*/;
+	loading();
+	$.ajax({
+		url:viewinfotsl,	
+		data:$.param({'idTslPendVal':idTslPendVal} ),
+		type:'POST',
+		success: function(data){
+			hide();
+			$('#modal').html(data);
+			$('#modalInfoTslPendVal').modal('show');
+		}
+	});
+}
+</script>
