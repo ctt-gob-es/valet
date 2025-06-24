@@ -1,3 +1,27 @@
+/*
+/*******************************************************************************
+ * Copyright (C) 2018 MINHAFP, Gobierno de España
+ * This program is licensed and may be used, modified and redistributed under the  terms
+ * of the European Public License (EUPL), either version 1.1 or (at your option)
+ * any later version as soon as they are approved by the European Commission.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and
+ * more details.
+ * You should have received a copy of the EUPL1.1 license
+ * along with this program; if not, you may find it at
+ * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ ******************************************************************************/
+
+/**
+ * <b>File:</b><p>es.gob.valet.persistence.configuration.services.impl.TslPendValService.java.</p>
+ * <b>Description:</b><p>Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>24/06/2025.</p>
+ * @author Gobierno de España.
+ * @version 1.0, 24/06/2025.
+ */
 package es.gob.valet.service.impl;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +47,7 @@ import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
+import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.dto.SigningCertificateDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslPendValDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
@@ -40,21 +65,43 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 import es.gob.valet.utils.TSLSpecificationsVersions;
 
+/**
+ * <p>Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
+ * <b>Project:</b><p> Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
+ * @version 1.2, 28/03/2025.
+ */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class TslPendValService implements ITslPendValService {
 
+	/** 
+	 * Logger for the TslPendValService class, used to log application events and errors.
+	 */
 	private static final Logger LOGGER = LogManager.getLogger(TslPendValService.class);
-	
+
+	/**
+	 * Repository for accessing and managing pending TSL validation entries.
+	 */
 	@Autowired
 	private TslPendValRepository tslPendValRepository;
-	
+
+	/**
+	 * Service for extracting and processing data from TSL signing certificates.
+	 */
 	@Autowired
 	private ISigningCertService iSigningCertService;
-	
+
+	/**
+	 * Repository for accessing and managing persisted TSL data records.
+	 */
 	@Autowired
 	private TslDataRepository tslDataRepository;
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ITslPendValService#obtainAllTslPendVal()
+	 */
 	@Override
 	public List<TslPendValDTO> obtainAllTslPendVal() {
 		List<TslPendValDTO> lisTslPendValDTO = new ArrayList<TslPendValDTO>();
@@ -108,7 +155,7 @@ public class TslPendValService implements ITslPendValService {
 			} catch (IOException e) {
 				LOGGER.error(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { "ByteArrayInputStream" }), e);
 			} catch (TSLArgumentException | TSLParsingException | TSLMalformedException | CertificateEncodingException | CommonUtilsException e) {
-				LOGGER.error("Se ha producido un fallo al construir la tsl a partir del xml", e);
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.LOG_TSLPENDVAL001), e);
 			} 
 		
 		}
@@ -116,6 +163,22 @@ public class TslPendValService implements ITslPendValService {
 		return lisTslPendValDTO;
 	}
 	
+	/**
+	 * Retrieves and parses the TSL identified by the given ID, and constructs a map
+	 * containing structured and raw data related to it.
+	 *
+	 * The returned map includes:
+	 * <ul>
+	 *   <li><b>tslPendValDTO</b> - A DTO with summarized TSL information for presentation.</li>
+	 *   <li><b>uriTslLocation</b> - The URL of the main distribution point (non-PDF).</li>
+	 *   <li><b>xmlDocument</b> - The raw XML content as a byte array.</li>
+	 *   <li><b>iTSLObject</b> - The parsed TSL object model.</li>
+	 *   <li><b>tslPendVal</b> - The original entity from the database.</li>
+	 * </ul>
+	 *
+	 * @param idTslPendVal the identifier of the pending TSL
+	 * @return a map containing parsed and raw TSL data elements
+	 */
 	public Map<String, Object> obtainTslPendVal(Long idTslPendVal) {
 		TslPendVal tslPendVal = tslPendValRepository.findById(idTslPendVal).get();
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
@@ -171,12 +234,17 @@ public class TslPendValService implements ITslPendValService {
 		} catch (IOException e) {
 			LOGGER.error(Language.getFormatResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { "ByteArrayInputStream" }), e);
 		} catch (TSLArgumentException | TSLParsingException | TSLMalformedException | CertificateEncodingException | CommonUtilsException e) {
-			LOGGER.error("Se ha producido un fallo al construir la tsl a partir del xml", e);
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.LOG_TSLPENDVAL001), e);
 		} 
 		
 		return hashMap;
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ITslPendValService#confirmTslPendVal(java.lang.Long)
+	 */
 	public void confirmTslPendVal(Long idTslPendVal) {
 		try {
 			Map<String, Object> hashMapTslPendVal = this.obtainTslPendVal(idTslPendVal);
@@ -190,10 +258,15 @@ public class TslPendValService implements ITslPendValService {
 			// Eliminamos la TSL que estaba pendiente de validar
 			tslPendValRepository.delete((TslPendVal) hashMapTslPendVal.get("tslPendVal"));
 		} catch (TSLManagingException e) {
-			LOGGER.error("Se ha producido un fallo al insertar o actualizar la TSL", e);
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.LOG_TSLPENDVAL002), e);
 		}
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ITslPendValService#declineTslPendVal(java.lang.Long)
+	 */
 	public void declineTslPendVal(Long idTslPendVal) {
 		TslPendVal tslPendVal = tslPendValRepository.findById(idTslPendVal).get();
 		tslPendValRepository.delete(tslPendVal);
