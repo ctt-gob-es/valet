@@ -157,7 +157,7 @@ public class SigningCertService implements ISigningCertService {
         certificateDetails.put(ISSUER, UtilsCertificate.getCertificateIssuerId(x509Certificate));
         certificateDetails.put(SUBJECT, UtilsCertificate.getCertificateId(x509Certificate));
         certificateDetails.put(SERIAL_NUMBER, UtilsCertificate.getCertificateSerialNumber(x509Certificate).toString());
-        certificateDetails.put(DATE_EXPIRED, new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotAfter()));
+        certificateDetails.put(DATE_EXPIRED, new SimpleDateFormat(UtilsDate.FORMAT_DATE_INVERTED).format(x509Certificate.getNotAfter()));
         certificateDetails.put(VALID_FROM, new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotBefore()));
         certificateDetails.put(VALID_TO, new SimpleDateFormat(UtilsDate.FORMAT_DATE_TIME_STANDARD).format(x509Certificate.getNotAfter()));
         certificateDetails.put(COUNTRY, UtilsCertificate.getRDNFirstValueFromX500Principal(x509Certificate.getSubjectX500Principal(), X509ObjectIdentifiers.countryName));

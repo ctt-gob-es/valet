@@ -1,0 +1,68 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="modalDeclineTslPendVal" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.declineTslPendVal.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.declineTslPendVal.btn.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="modal-pre">
+					<p th:text="#{form.declineTslPendVal.message.confirm}"></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="idDeclinePendValTslBtn" name="idDeclinePendValTslBtn" class="btn btn-primary" th:text="#{form.declineTslPendVal.btn.confirmDeclineTsl}" onclick="declineTslPendVal();"></button>
+				<button type="button" class="btn btn-default" th:text="#{form.declineTslPendVal.btn.cancel}" onclick="cancelDeclineTsl()"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+
+function cancelDeclineTsl() {
+	closeModalDeclineTslPendVal('modalDeclineTslPendVal');
+	window.viewInfoTsl(window.idTslPendVal);
+}
+
+function declineTslPendVal() {
+	var confirmdeclinetslpendval =/*[[@{/confirmdeclinetslpendval}]]*/;
+	loading();
+	$.ajax({
+		url:confirmdeclinetslpendval,	
+		data:$.param({'idTslPendVal':window.idTslPendVal} ),
+		type:'POST',
+		success: function(data) {
+			hide();
+			
+			closeModalDeclineTslPendVal('modalDeclineTslPendVal');
+			
+			var table = $('#tslPendValTable').DataTable();
+
+		    table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+		        var data = this.data();
+		        if (data.idTslPendVal == window.idTslPendVal) {
+		            this.remove();
+		        }
+		    });
+
+		    table.draw(false);
+			
+		    var msgOk = /*[[#{tsls.pend.val.admin.message.decline.ok}]]*/;
+		    
+		    $('#msgTslPendValAlert').html(msgOk);
+			$('#msgTslPendValAlert').addClass('alert alert-success');
+			$("#msgTslPendValAlert").fadeTo(5000, 500).slideUp(500, function() {
+				$("#msgTslPendValAlert").slideUp(500);
+			});
+		}
+	});
+}
+
+//Funcion para cerrar el modal
+function closeModalDeclineTslPendVal(modalId){
+	$('#' + modalId).modal('hide');
+	$('.modal-backdrop').remove();
+}
+</script>

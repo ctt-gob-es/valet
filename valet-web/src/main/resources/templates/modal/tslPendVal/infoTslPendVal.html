@@ -1,0 +1,202 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="modalInfoTslPendVal" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog" style="max-width:880px">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.infoTslPendVal.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.infoTslPendVal.btn.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form name="altEditor-form" role="form" id="tslPendValForm" th:object="${tslPendValDTO}">
+					<h6 class="c-grey-900" th:text="#{form.infoTslPendVal.infoTsl.title}"></h6>
+					<div class="mT-20">
+						<div id="errorInfoTslPendVal" role="alert"></div>
+						<input type='hidden' class='primarykey' id="idTslPendVal" th:field="*{idTslPendVal}">
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="countryRegionName" class="col-form-label" th:text="#{form.infoTslPendVal.country}"></label>
+								<input type="text" id="countryRegionName" th:field="*{countryRegionName}" readonly class="form-control" />
+							</div>
+							<div class="form-group col-md-6">
+								<label for="sequenceNumber" class="col-form-label" th:text="#{form.infoTslPendVal.sequenceNumber}"></label> 
+								<input type="text" id="sequenceNumber" th:field="*{sequenceNumber}" readonly class="form-control" />
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="tslName" class="col-form-label" th:text="#{form.infoTslPendVal.tslName}"></label>
+								<input type="text" id="tslName" th:field="*{tslName}" readonly class="form-control" />
+							</div>
+							<div class="form-group col-md-6">
+								<label for="tslResponsible" class="col-form-label" th:text="#{form.infoTslPendVal.responsible}"></label>
+								<input type="text" id="tslResponsible" th:field="*{tslResponsible}" readonly class="form-control" />
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="issueDate" class="col-form-label" th:text="#{form.infoTslPendVal.issueDate}"></label>
+								<input type="text" id="issueDate" th:field="*{issueDate}" readonly class="form-control" />
+							</div>
+							<div class="form-group col-md-6">
+								<label for="expirationDate" class="col-form-label" th:text="#{form.infoTslPendVal.expirationDate}"></label>
+								<input type="text" id="expirationDate" th:field="*{expirationDate}" readonly class="form-control" />
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-12">
+								<label for="urlDistributionPoint" class="col-form-label" th:text="#{form.infoTslPendVal.urlTSL}"></label>
+								<input type="text" id="urlDistributionPoint" th:field="*{urlDistributionPoint}" readonly class="form-control" />
+							</div>
+						</div>
+					</div>
+					<h6 class="c-grey-900" th:text="#{form.infoTslPendVal.cerTsl.title}"></h6>
+					<div class="mT-20 mb-3">
+						<input type='hidden' id="certificateB64" name="certificateB64" th:field="*{signingCertificateDTO.certificateB64}">
+					
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="subject" class="col-form-label" th:text="#{form.infoTslPendVal.subject}"></label> 
+								<input type="text"id="subject" th:field="*{signingCertificateDTO.subject}" readonly class="form-control" />
+							</div>
+							<div class="form-group col-md-6">
+								<label for="issuer" class="col-form-label" th:text="#{form.infoTslPendVal.issuer}"></label> 
+								<input type="text"id="subject" th:field="*{signingCertificateDTO.issuer}" readonly class="form-control" />
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="serialNumber" class="col-form-label" th:text="#{form.infoTslPendVal.serialNumber}"></label> 
+								<input type="text"id="serialNumber" th:field="*{signingCertificateDTO.serialNumber}" readonly class="form-control" />
+							</div>
+							
+							<div class="form-group col-md-6">
+								<label for="dateExpired" class="col-form-label" th:text="#{form.infoTslPendVal.dateExpired}"></label> 
+								<input type="text"id="dateExpired" th:field="*{signingCertificateDTO.dateExpired}" readonly class="form-control" />
+							</div>	
+						</div>
+						
+						<div class="form-row">
+							<div class="col-sm-12 d-flex justify-content-end">
+								<button type="button" id="idDownloadTslBtn" name="idDownloadTslBtn" class="btn btn-primary" th:text="#{form.infoTslPendVal.downloadTsl}" onclick="downloadTsl();"></button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="idAcceptAndRegTslBtn" name="idAcceptAndRegTslBtn" class="btn btn-primary" th:text="#{form.infoTslPendVal.AcceptAndReg}" onclick="acceptAndRegTsl();"></button>
+				<button type="button" id="idDeclineTslBtn" name="idDeclineTslBtn" class="btn btn-primary" th:text="#{form.infoTslPendVal.Decline}" onclick="declineTsl();"></button>
+				<button type="button" id="idCancelTslBtn" name="idCancelTslBtn" class="btn btn-secondary" th:text="#{form.infoTslPendVal.Cancel}" onclick="closeModalInfoTslPendVal('modalInfoTslPendVal');"></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script th:inline="javascript" type="text/javascript">
+
+var idTslPendVal;
+
+function downloadTsl(){
+	var keystoreBlob = b64toBlob($("#certificateB64").val(), 'application/x-x509-ca-cert');
+	var fileName = "CertificadoFirmante.cer";
+	
+	var reader = new FileReader();
+	reader.onload = function(event) {
+		var save = document.createElement('a');
+		save.href = event.target.result;
+		save.target = '_blank';
+		save.download = fileName || 'certificado.cer';
+		var clicEvent = new MouseEvent('click', {
+			'view' : window,
+			'bubbles' : true,
+			'cancelable' : true
+		});
+		save.dispatchEvent(clicEvent);
+		(window.URL || window.webkitURL)
+				.revokeObjectURL(save.href);
+					
+	};
+	reader.readAsDataURL(keystoreBlob);
+}
+
+function declineTsl() {
+	idTslPendVal = $("#idTslPendVal").val();
+	closeModalInfoTslPendVal('modalInfoTslPendVal');
+	var declinetslpendval =/*[[@{/declinetslpendval}]]*/;
+	loading();
+	$.ajax({
+		url:declinetslpendval,	
+		type:'GET',
+		success: function(data){
+			hide();
+			$('#modal').html(data);
+			$('#modalDeclineTslPendVal').modal('show');
+		}
+	});
+}
+
+//Funcion para cerrar el modal
+function closeModalInfoTslPendVal(modalId){
+	$('#' + modalId).modal('hide');
+	$('.modal-backdrop').remove();
+}
+
+function acceptAndRegTsl() {
+	idTslPendVal = $("#idTslPendVal").val();
+	closeModalInfoTslPendVal('modalInfoTslPendVal');
+	var confirmtslpendval =/*[[@{/confirmtslpendval}]]*/;
+	loading();
+	$.ajax({
+		url:confirmtslpendval,	
+		type:'GET',
+		success: function(data){
+			hide();
+			$('#modal').html(data);
+			$('#modalConfirmTslPendVal').modal('show');
+		}
+	});
+}
+
+function confirmTsl() {
+	var actionUpdate = /*[[@{/updatetsl}]]*/;
+	var formDataEdit = new FormData(document.forms["tslFormEdit"]);	        	
+
+	$.ajax(actionUpdate, {
+		data: formDataEdit,
+		contentType: false,
+		processData: false,
+		type: 'POST',
+		success: function(data) {
+			hide();
+
+			if (data.error !== undefined) {
+				var errores = JSON.parse(data.error);
+				jQuery.each(errores, function(i, val) {
+					if (i === "errorSaveTsl") {
+						var messageError = val;
+						$('#errorUpdateTsl').html(messageError);
+						$('#errorUpdateTsl').addClass('alert alert-danger');
+					}
+				});
+			} else {
+				closeModalEdiTsl('modalEditTsl');
+				$("#tableMapping").hide();
+
+				var table = $('#tslTable').DataTable();
+
+				// Obtener la fila seleccionada
+				var selectedRow = table.row({ selected: true });
+				
+				if (selectedRow.any()) {
+					selectedRow.data(data.data).draw(false);
+				}
+
+				// Deseleccionar cualquier fila seleccionada
+				table.rows({ selected: true }).deselect();
+			}
+		}
+	});
+}
+
+</script>

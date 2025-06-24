@@ -1,0 +1,69 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="modalConfirmTslPendVal" data-backdrop="static" data-keyboard="false">
+   <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.confirmTslPendVal.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.confirmTslPendVal.btn.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="modal-pre">
+					<p th:text="#{form.confirmTslPendVal.message.confirm}"></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="idConfirmPendValTslBtn" name="idConfirmPendValTslBtn" class="btn btn-primary" th:text="#{form.confirmTslPendVal.btn.confirmTsl}" onclick="confirmTslPendVal();"></button>
+				<button type="button" class="btn btn-default" th:text="#{form.confirmTslPendVal.btn.cancel}" onclick="cancelConfirmTsl()"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+
+function cancelConfirmTsl() {
+	closeModalConfirmTslPendVal('modalConfirmTslPendVal');
+	window.viewInfoTsl(window.idTslPendVal);
+}
+
+function confirmTslPendVal() {
+	var confirmtslpendval =/*[[@{/confirmtslpendval}]]*/;
+	loading();
+	$.ajax({
+		url:confirmtslpendval,	
+		data:$.param({'idTslPendVal':window.idTslPendVal} ),
+		type:'POST',
+		success: function(data) {
+			hide();
+			
+			closeModalConfirmTslPendVal('modalConfirmTslPendVal');
+			
+			var table = $('#tslPendValTable').DataTable();
+
+		    table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+		        var data = this.data();
+		        if (data.idTslPendVal == window.idTslPendVal) {
+		            this.remove();
+		        }
+		    });
+
+		    table.draw(false);
+			
+		    var msgOk = /*[[#{tsls.pend.val.admin.message.confirm.ok}]]*/;
+		    
+		    $('#msgTslPendValAlert').html(msgOk);
+			$('#msgTslPendValAlert').addClass('alert alert-success');
+			$("#msgTslPendValAlert").fadeTo(5000, 500).slideUp(500, function() {
+				$("#msgTslPendValAlert").slideUp(500);
+			});
+		}
+	});
+}
+
+//Funcion para cerrar el modal
+function closeModalConfirmTslPendVal(modalId){
+	$('#' + modalId).modal('hide');
+	$('.modal-backdrop').remove();
+}
+
+</script>
