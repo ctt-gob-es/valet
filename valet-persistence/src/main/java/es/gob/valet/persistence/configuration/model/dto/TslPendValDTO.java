@@ -1,25 +1,94 @@
+/* 
+/*******************************************************************************
+ * Copyright (C) 2018 MINHAFP, Gobierno de España
+ * This program is licensed and may be used, modified and redistributed under the  terms
+ * of the European Public License (EUPL), either version 1.1 or (at your option)
+ * any later version as soon as they are approved by the European Commission.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and
+ * more details.
+ * You should have received a copy of the EUPL1.1 license
+ * along with this program; if not, you may find it at
+ * http:joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ ******************************************************************************/
+
+/** 
+ * <b>File:</b><p>es.gob.valet.dto.TslPendValDTO.java.</p>
+ * <b>Description:</b><p>Class that represents an object that relates the code of a to the TSL Pending Validation DTO administration.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * <b>Date:</b><p>24/06/2025.</p>
+ * @author Gobierno de España.
+ * @version 1.0, 24/06/2025.
+ */
 package es.gob.valet.persistence.configuration.model.dto;
 
+/** 
+ * <p>Class that represents an object that relates the code of a to the TSL Pending Validation DTO administration.</p>
+ * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
+ * @version 1.0, 24/06/2025.
+ */
 public class TslPendValDTO {
 
+	/** 
+	 * Unique identifier of the pending TSL validation entry.
+	 */
 	private Long idTslPendVal;
 
+	/** 
+	 * Name of the country or region associated with the TSL.
+	 */
 	private String countryRegionName;
 
+	/** 
+	 * Sequence number of the TSL.
+	 */
 	private Integer sequenceNumber;
 
+	/** 
+	 * Issue date of the TSL in string format.
+	 */
 	private String issueDate;
 
+	/** 
+	 * URL of the TSL distribution point.
+	 */
 	private String urlDistributionPoint;
 
+	/** 
+	 * Name of the TSL.
+	 */
 	private String tslName;
 
+	/** 
+	 * Name of the responsible entity or operator of the TSL.
+	 */
 	private String tslResponsible;
 
+	/** 
+	 * Expiration date of the TSL in string format.
+	 */
 	private String expirationDate;
 
+	/** 
+	 * DTO containing information about the certificate used to sign the TSL.
+	 */
 	private SigningCertificateDTO signingCertificateDTO;
 
+	/**
+	 * Constructs a new {@code TslPendValDTO} with the provided TSL metadata and signing certificate information.
+	 *
+	 * @param idTslPendVal         Unique identifier of the pending TSL validation entry.
+	 * @param countryRegionName    Name of the country or region associated with the TSL.
+	 * @param sequenceNumber       Sequence number of the TSL.
+	 * @param issueDate            Issue date of the TSL.
+	 * @param uriTslLocation       URL of the TSL distribution point.
+	 * @param tslName              Name of the TSL.
+	 * @param tslResponsible       Responsible entity or operator of the TSL.
+	 * @param expirationDate       Expiration date of the TSL.
+	 * @param signingCertificateDTO DTO containing details of the TSL signing certificate.
+	 */
 	public TslPendValDTO(Long idTslPendVal, String countryRegionName, int sequenceNumber, String issueDate, String uriTslLocation, String tslName, String tslResponsible, String expirationDate, SigningCertificateDTO signingCertificateDTO) {
 		this.idTslPendVal = idTslPendVal;
 		this.countryRegionName = countryRegionName;

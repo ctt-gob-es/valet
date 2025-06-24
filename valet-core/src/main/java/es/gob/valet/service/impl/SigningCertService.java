@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>12/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.2, 28/03/2025.
+ * @version 1.3, 24/06/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -59,7 +59,7 @@ import es.gob.valet.service.ifaces.ISigningCertService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for ExternalAccess.</p>
  * <b>Project:</b><p> Class that implements the communication with the operations of the persistence layer for Signing Certificate.</p>
- * @version 1.2, 28/03/2025.
+ * @version 1.3, 24/06/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)

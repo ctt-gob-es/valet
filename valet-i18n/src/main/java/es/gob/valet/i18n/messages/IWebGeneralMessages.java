@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 2.7, 21/05/2025.
+ * @version 2.8, 24/06/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.7, 21/05/2025.
+ * @version 2.8, 24/06/2025.
  */
 public interface IWebGeneralMessages {
 
@@ -1197,4 +1197,18 @@ public interface IWebGeneralMessages {
 	 * Constant attribute that represents the property key <code>IMP048</code> belonging to the file messages/valet-web/general_xx_YY.properties.
 	 */
 	String LOG_IMP048 = "IMP048";
+	
+	/***********************/
+	/** Mensajes de trazas en el módulo de gestión de TSLs **/ 
+	/***********************/
+	
+	/**
+	 * Constant attribute that represents the property key <code>TSLPENDVAL001</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	String LOG_TSLPENDVAL001 = "TSLPENDVAL001";
+
+	/**
+	 * Constant attribute that represents the property key <code>TSLPENDVAL002</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	String LOG_TSLPENDVAL002 = "TSLPENDVAL002";
 }
