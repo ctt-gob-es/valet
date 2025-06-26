@@ -50,6 +50,7 @@ import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.dto.SigningCertificateDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslPendValDTO;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.entity.TslLotlData;
 import es.gob.valet.persistence.configuration.model.entity.TslPendVal;
@@ -261,14 +262,14 @@ public class TslPendValService implements ITslPendValService {
 			boolean lotl = tSLValidator.checkIfTSLisListOfLists(iTSLObject.getSchemeInformation().getTslType().toString());
 			
 			// Actualizamos o insertamos una nueva TSL la cual estaba pendiente de validar
-			TslData tslData = tslCountryRegionRepository.findByCountryRegionWithTslData(hashMapTslPendVal.get("uriTslLocation").toString()).getTslData();
-			if(null != tslData) {
+			TslCountryRegion tslCountryRegion = tslCountryRegionRepository.findByCountryRegionWithTslData(iTSLObject.getSchemeInformation().getSchemeTerritory());
+			if(null != tslCountryRegion && null != tslCountryRegion.getTslData()) {
 				// Chequeamos si la TSL es una lista de listas
 				if(lotl) {
-					TslLotlData tslLotlData = tslData.getTslLotlData();
+					TslLotlData tslLotlData = tslCountryRegion.getTslData().getTslLotlData();
 					// TODO: 921 - que campos actualizaremos y como los actualizaremos?¿?¿
 				}
-				TSLManager.getInstance().updateTSLData(tslData, (byte[ ]) hashMapTslPendVal.get("xmlDocument") , hashMapTslPendVal.get("uriTslLocation").toString(), tslData.getLegibleDocument());
+				TSLManager.getInstance().updateTSLData(tslCountryRegion.getTslData(), (byte[ ]) hashMapTslPendVal.get("xmlDocument") , hashMapTslPendVal.get("uriTslLocation").toString(), tslCountryRegion.getTslData().getLegibleDocument());
 			} else {
 				TSLManager.getInstance().addNewTSLData(iTSLObject, hashMapTslPendVal.get("uriTslLocation").toString(), (byte[ ]) hashMapTslPendVal.get("xmlDocument"), lotl);
 			}

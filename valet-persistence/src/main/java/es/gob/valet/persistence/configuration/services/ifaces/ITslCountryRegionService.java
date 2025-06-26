@@ -73,6 +73,11 @@ public interface ITslCountryRegionService {
 	@Transactional
 	List<TslCountryRegion> getAllTslCountryRegion(boolean loadMappings);
 	
+	/**
+	 * Retrieves all {@link TslCountryRegion} entities that have associated TSL data.
+	 *
+	 * @return a list of country or region entities with their corresponding TSL data.
+	 */
 	List<TslCountryRegion> getAllTslCountryRegion();
 	
 	/**

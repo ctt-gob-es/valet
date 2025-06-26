@@ -73,7 +73,6 @@ import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
@@ -362,7 +361,7 @@ public class TslRestController {
 
 	    try {
 	    	// Evaluaremos si la TSL es una lista de listas
-			validateTsl(tslObject, lotl);
+	    	validateTsl(tslObject, lotl);
 	    				
 	        TslData tslNew = TSLManager.getInstance().addNewTSLData(tslObject, urlTsl, tslXMLbytes, lotl);
 
@@ -376,13 +375,9 @@ public class TslRestController {
 	        LOGGER.error(e);
 
 	        String msgErrorWeb;
-	        if (e.getErrorCode() != null && e.getErrorCode().equals(ValetExceptionConstants.COD_187)) {
-	        	msgErrorWeb = Language.getResWebGeneral(WebGeneralMessages.ERROR_TSL_NOT_LIST_OF_LISTS);
-	        } else if (e.getErrorCode() != null && e.getErrorCode().equals(ValetExceptionConstants.COD_198)) {
-	        	msgErrorWeb = Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_INCLUDE_TSL_WITH_LIST_OF_LISTS);
-	        } else  if (e.getErrorCode() != null && e.getErrorCode().equals(ValetExceptionConstants.COD_204)) {
-				msgErrorWeb = Language.getResWebGeneral(WebGeneralMessages.ERROR_TSL_EXISTS);
-			} else {
+	        if (e.getErrorCode() == null) {
+	        	msgErrorWeb = e.getErrorDescription();
+	        } else {
 				msgErrorWeb = Language.getResWebGeneral(WebGeneralMessages.ERROR_SAVE_TSL_WEB);
 			}
 
@@ -413,19 +408,18 @@ public class TslRestController {
 		TSLValidator tSLValidator = new TSLValidator(tslObject);
 		if (lotl) {
 			if (!tSLValidator.checkIfTSLisListOfLists(tslObject.getSchemeInformation().getTslType().toString())) {
-				throw new TSLManagingException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL171));
+				throw new TSLManagingException(Language.getResWebGeneral(WebGeneralMessages.ERROR_TSL_NOT_LIST_OF_LISTS));
 			}
 		} else {
 			if (tSLValidator.checkIfTSLisListOfLists(tslObject.getSchemeInformation().getTslType().toString())) {
-				throw new TSLManagingException(ValetExceptionConstants.COD_198, Language.getResCoreTsl(CoreTslMessages.LOGMTSL171));
+				throw new TSLManagingException(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_INCLUDE_TSL_WITH_LIST_OF_LISTS));
 			}
 		}
 		
 		// Evaluamos si la tsl existe
-		List<TslCountryRegion> listTslCountryRegion = tslCountryRegionService.getAllTslCountryRegion();
-		TslCountryRegion tslCountryRegion = listTslCountryRegion.stream().filter(p -> p.getCountryRegionCode().equals(tslObject.getSchemeInformation().getSchemeTerritory())).findAny().orElse(null);
-		if (null != tslCountryRegion.getTslData()) {
-			throw new TSLManagingException(ValetExceptionConstants.COD_204, Language.getResCoreTsl(CoreTslMessages.LOGMTSL171));
+		TslCountryRegion tslCountryRegion = tslCountryRegionService.getTslCountryRegionWithTslData(tslObject.getSchemeInformation().getSchemeTerritory());
+		if (null != tslCountryRegion && null != tslCountryRegion.getTslData()) {
+			throw new TSLManagingException(Language.getResWebGeneral(WebGeneralMessages.ERROR_TSL_EXISTS));
 		}
 	}
 	
