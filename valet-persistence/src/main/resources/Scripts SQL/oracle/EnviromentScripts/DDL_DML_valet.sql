@@ -128,6 +128,19 @@ COMMENT ON TABLE "TSL_PEND_VAL" IS 'Tabla que almacena el estado de validación 
 COMMENT ON COLUMN "TSL_PEND_VAL"."ID_TSL_PEND_VAL" IS 'Identificador de la tabla.';
 COMMENT ON COLUMN "TSL_PEND_VAL"."XML_DOCUMENT" IS 'Representación en bytes del documento XML que define a la TSL.';
 
+-- Table TSL_LOTL_DATA
+CREATE TABLE "TSL_LOTL_DATA"(
+  "ID_TSL_LOTL_DATA" Number(19,0) NOT NULL
+) INITRANS 1 MAXTRANS 255 NOCACHE;
+ALTER TABLE "TSL_LOTL_DATA" ADD CONSTRAINT "ID_TSL_LOTL_DATA" PRIMARY KEY ("ID_TSL_LOTL_DATA");
+COMMENT ON TABLE "TSL_LOTL_DATA" IS 'Tabla que almacena información acerca de la lista de listas.';
+COMMENT ON COLUMN "TSL_LOTL_DATA"."ID_TSL_LOTL_DATA" IS 'Identificador de la tabla.';
+
+-- Table TSL_DATA
+ALTER TABLE "TSL_DATA" ADD "ID_TSL_LOTL_DATA" NUMBER(19,0) NULL;
+COMMENT ON COLUMN "TSL_DATA"."ID_TSL_LOTL_DATA" IS 'Identificador de lista de listas asignado a esta TSL.';
+ALTER TABLE "TSL_DATA" ADD CONSTRAINT "FK_ID_TSL_LOTL_DATA" FOREIGN KEY ("ID_TSL_LOTL_DATA") REFERENCES "TSL_LOTL_DATA" ("ID_TSL_LOTL_DATA");
+
 -- ######################################################## 2. CREACIÓN DE SEQUENCIAS ########################################################
 ALTER SESSION SET CURRENT_SCHEMA="VALET_CONFIGOWNER";
 
@@ -175,6 +188,16 @@ CREATE SEQUENCE SQ_TSL_PEND_VAL
   NOCYCLE
   CACHE 20
   ORDER;
+
+-- Secuencia necesaria para la clave de la tabla TSL_LOTL_DATA.
+CREATE SEQUENCE SQ_TSL_LOTL_DATA
+  START WITH 1
+  MAXVALUE 999999999999999999999999999
+  MINVALUE 1
+  NOCYCLE
+  CACHE 20
+  ORDER;
+  
   
 -- ######################################################## 3. CREACIÓN DE PERMISOS DE USUARIO ########################################################
  ALTER SESSION SET CURRENT_SCHEMA="SYS";

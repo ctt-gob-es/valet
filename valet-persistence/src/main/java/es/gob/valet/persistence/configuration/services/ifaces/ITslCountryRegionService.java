@@ -73,6 +73,7 @@ public interface ITslCountryRegionService {
 	@Transactional
 	List<TslCountryRegion> getAllTslCountryRegion(boolean loadMappings);
 	
+	List<TslCountryRegion> getAllTslCountryRegion();
 	
 	/**
 	 * Gets all the TSL Country Region from the data base.

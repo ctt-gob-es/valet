@@ -119,6 +119,10 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 		return result;
 	}
 
+	public List<TslCountryRegion> getAllTslCountryRegion() {
+		return repository.findAllWithTslData();
+	}
+
 	
 	/**
 	 * {@inheritDoc}

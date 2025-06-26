@@ -128,7 +128,14 @@ public class TslForm {
 	 */  
 	private SigningCertificateDTO signingCertificateDTO;
 
+	/**
+	 * Indicates whether the TSL is a List of Trusted Lists (LOTL).
+	 */
+	private Boolean lotl;
 	
+	/**
+	 * Default constructor that initializes the signing certificate DTO.
+	 */
 	public TslForm() {
 		signingCertificateDTO = new SigningCertificateDTO();
 	}
@@ -413,6 +420,22 @@ public class TslForm {
 	 */
 	public void setSigningCertificateDTO(SigningCertificateDTO signingCertificateDTO) {
 		this.signingCertificateDTO = signingCertificateDTO;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #lotl}.
+	 * @return the value of the attribute {@link #lotl}.
+	 */
+	public Boolean getLotl() {
+		return lotl;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #lotl}.
+	 * @param lotl The value for the attribute {@link #lotl}.
+	 */
+	public void setLotl(Boolean lotl) {
+		this.lotl = lotl;
 	}
 
 	/**

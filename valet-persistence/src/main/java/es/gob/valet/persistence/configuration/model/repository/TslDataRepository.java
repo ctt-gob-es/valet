@@ -90,7 +90,10 @@ public interface TslDataRepository extends JpaRepository<TslData, Long> {
 	 *
 	 * @return a list of {@link TslDataDTO} containing selected fields from TSL and country/region entities
 	 */
-	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslDataDTO(tsl.idTslData, countryRegion.idTslCountryRegion, countryRegion.countryRegionName, tsl.sequenceNumber,tsl.issueDate,tsl.expirationDate, countryRegion.countryRegionCode)  FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion")
+	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslDataDTO(tsl.idTslData, countryRegion.idTslCountryRegion, countryRegion.countryRegionName, tsl.sequenceNumber,tsl.issueDate,tsl.expirationDate, countryRegion.countryRegionCode)  FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion LEFT JOIN tsl.tslLotlData tslLotlData WHERE tslLotlData IS NULL")
 	List<TslDataDTO> findAllTslDataDTO();
+
+	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslDataDTO(tsl.idTslData, countryRegion.idTslCountryRegion, countryRegion.countryRegionName, tsl.sequenceNumber,tsl.issueDate,tsl.expirationDate, countryRegion.countryRegionCode)  FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion JOIN tsl.tslLotlData tslLotlData")
+	List<TslDataDTO> findAllTslLotlDataDTO();
 
 }

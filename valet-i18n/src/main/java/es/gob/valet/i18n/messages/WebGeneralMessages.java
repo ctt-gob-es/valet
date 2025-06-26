@@ -505,6 +505,18 @@ public class WebGeneralMessages {
 	 */
 	public static final String ERROR_NOT_BLANK_RESP_PHONE = "errorNotBlankPhone";
 
+	/**
+	 * Constant attribute that represents the name of the property <code>errorTslNotListOfLists</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String ERROR_TSL_NOT_LIST_OF_LISTS = "errorTslNotListOfLists";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotIncludeTslWithListOfLists</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String ERROR_NOT_INCLUDE_TSL_WITH_LIST_OF_LISTS = "errorNotIncludeTslWithListOfLists";
+
 
 
 	/**

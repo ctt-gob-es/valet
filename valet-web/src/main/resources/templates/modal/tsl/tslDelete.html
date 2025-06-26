@@ -24,8 +24,15 @@
 	function deleteTsl() {
 		loading();
 		
-		var table = $('#tslTable').DataTable();
-
+		var table;
+		
+		// Dado que tenemos 2 datatables en tsladmin evaluaramos cual es el registro que hemos seleccionado para eliminar
+		if(window.lotl) {
+			table = $('#lotlTable').DataTable();
+		} else {
+			table = $('#tslTable').DataTable(); 	
+		}
+		
 		// Obtenemos la fila seleccionada
 		var selectedRow = table.row({ selected: true });
 		
@@ -44,10 +51,14 @@
             success: function(data){
             	// Se oculta la capa 'cargando...'
             	hide();
-                $('#tslTable').DataTable().row(selectedRow.index()).remove().draw();
+            	table.row(selectedRow.index()).remove().draw();
                 closeModalDeleteTsl('modalDeleteTsl');
             },
-            error:function(){}
+            error:function(){},
+            complete: function() {
+                // Reinicializamos la variable
+            	window.lotl = null;
+            }
         });	
 	}
 	

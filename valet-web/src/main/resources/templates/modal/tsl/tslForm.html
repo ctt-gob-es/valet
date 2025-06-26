@@ -12,8 +12,8 @@
 				<form name="tslForm" role="form" id="tslForm" th:object="${tslform}" th:action="@{/savetsl}" method="post"
 					enctype="multipart/form-data" class="form-horizontal">
 					<div id="errorAddTsl" role="alert"></div>
-					<input type='hidden' class='primarykey' id="idTslData"
-						th:field="*{idTslData}">
+					<input type='hidden' class='primarykey' id="idTslData" th:field="*{idTslData}">
+					<input type='hidden' id="lotl" th:field="*{lotl}">
 				
 				
 					<div class="form-group col-md-8">
@@ -256,7 +256,13 @@
 						} 
 					})
 			  	} else {
-			  		$('#tslTable').DataTable().row.add($(data.data)).draw(false);	
+			  		// Dado que tenemos 2 datatables en tsladmin evaluaramos cual es el registro que hemos seleccionado para eliminar
+					if(window.lotl) {
+						$('#lotlTable').DataTable().row.add($(data.data)).draw(false);
+					} else {
+						$('#tslTable').DataTable().row.add($(data.data)).draw(false); 	
+					}
+			  		
 			  		closeModalAddTsl('modalAddTsl');
 			  	}
             }

@@ -91,7 +91,7 @@ public class TSLValidator extends ATSLValidator {
 	 * @see es.gob.valet.tsl.certValidation.impl.common.ATSLValidator#checkIfTSLisListOfLists(java.lang.String)
 	 */
 	@Override
-	protected boolean checkIfTSLisListOfLists(String tslType) {
+	public boolean checkIfTSLisListOfLists(String tslType) {
 		return tslType.equalsIgnoreCase(TSLCommonURIs.TSL_TYPE_EULISTOFTHELIST) || tslType.startsWith(TSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX) && tslType.endsWith(TSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX);
 	}
 

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 29/11/2021.
+ * @version 1.6, 26/06/2025.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -52,7 +53,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>TSL_DATA</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 29/11/2021.
+ * @version 1.6, 26/06/2025.
  */
 @Entity
 @Table(name = "TSL_DATA")
@@ -122,6 +123,11 @@ public class TslData implements Serializable {
 	 * Attribute that represents the last new TSL available are find.
 	 */
 	private Date lastNewTSLAvailableFind;
+	
+	/**
+	 * Associated LOTL (List of the Lists) data for this TSL, if applicable.
+	 */
+	private TslLotlData tslLotlData;
 
 	/**
 	 * Gets the value of the attribute {@link #idTslData}.
@@ -350,4 +356,25 @@ public class TslData implements Serializable {
 		this.lastNewTSLAvailableFind = lastNewTSLAvailableFindParam;
 	}
 
+	
+	/**
+	 * Gets the value of the attribute {@link #tslLotlData}.
+	 * @return the value of the attribute {@link #tslLotlData}.
+	 */
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "ID_TSL_LOTL_DATA", nullable = true)
+	public TslLotlData getTslLotlData() {
+		return tslLotlData;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #tslLotlData}.
+	 * @param tslLotlData The value for the attribute {@link #tslLotlData}.
+	 */
+	public void setTslLotlData(TslLotlData tslLotlData) {
+		this.tslLotlData = tslLotlData;
+	}
+
+	
 }

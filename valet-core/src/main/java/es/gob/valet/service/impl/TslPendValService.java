@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/06/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/06/2025.
+ * @version 1.3, 26/06/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -51,12 +51,15 @@ import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.dto.SigningCertificateDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslPendValDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
+import es.gob.valet.persistence.configuration.model.entity.TslLotlData;
 import es.gob.valet.persistence.configuration.model.entity.TslPendVal;
+import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
 import es.gob.valet.persistence.configuration.model.repository.TslDataRepository;
 import es.gob.valet.persistence.configuration.model.repository.TslPendValRepository;
 import es.gob.valet.service.ifaces.ISigningCertService;
 import es.gob.valet.service.ifaces.ITslPendValService;
 import es.gob.valet.tsl.access.TSLManager;
+import es.gob.valet.tsl.certValidation.impl.ts119612.v020101.TSLValidator;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
@@ -68,7 +71,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
  * <b>Project:</b><p> Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
- * @version 1.2, 28/03/2025.
+ * @version 1.3, 26/06/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -96,6 +99,9 @@ public class TslPendValService implements ITslPendValService {
 	 */
 	@Autowired
 	private TslDataRepository tslDataRepository;
+	
+	@Autowired
+	private TslCountryRegionRepository tslCountryRegionRepository;
 	
 	/**
 	 * 
@@ -248,12 +254,23 @@ public class TslPendValService implements ITslPendValService {
 	public void confirmTslPendVal(Long idTslPendVal) {
 		try {
 			Map<String, Object> hashMapTslPendVal = this.obtainTslPendVal(idTslPendVal);
+			
+			// Obtenemos una variable para ver si el tipo de TSLs es una lista de listas
+			ITSLObject iTSLObject = (ITSLObject) hashMapTslPendVal.get("iTSLObject");
+			TSLValidator tSLValidator = new TSLValidator(iTSLObject);
+			boolean lotl = tSLValidator.checkIfTSLisListOfLists(iTSLObject.getSchemeInformation().getTslType().toString());
+			
 			// Actualizamos o insertamos una nueva TSL la cual estaba pendiente de validar
-			TslData tslData = tslDataRepository.findByUriTslLocation(hashMapTslPendVal.get("uriTslLocation").toString());
+			TslData tslData = tslCountryRegionRepository.findByCountryRegionWithTslData(hashMapTslPendVal.get("uriTslLocation").toString()).getTslData();
 			if(null != tslData) {
-				TSLManager.getInstance().updateTSLData(tslData.getIdTslData(), (byte[ ]) hashMapTslPendVal.get("xmlDocument") , hashMapTslPendVal.get("uriTslLocation").toString(), tslData.getLegibleDocument());
+				// Chequeamos si la TSL es una lista de listas
+				if(lotl) {
+					TslLotlData tslLotlData = tslData.getTslLotlData();
+					// TODO: 921 - que campos actualizaremos y como los actualizaremos?¿?¿
+				}
+				TSLManager.getInstance().updateTSLData(tslData, (byte[ ]) hashMapTslPendVal.get("xmlDocument") , hashMapTslPendVal.get("uriTslLocation").toString(), tslData.getLegibleDocument());
 			} else {
-				TSLManager.getInstance().addNewTSLData((ITSLObject) hashMapTslPendVal.get("iTSLObject"), hashMapTslPendVal.get("uriTslLocation").toString(), (byte[ ]) hashMapTslPendVal.get("xmlDocument"));
+				TSLManager.getInstance().addNewTSLData(iTSLObject, hashMapTslPendVal.get("uriTslLocation").toString(), (byte[ ]) hashMapTslPendVal.get("xmlDocument"), lotl);
 			}
 			// Eliminamos la TSL que estaba pendiente de validar
 			tslPendValRepository.delete((TslPendVal) hashMapTslPendVal.get("tslPendVal"));
