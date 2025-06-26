@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 12/06/2025.
+ * @version 1.8, 26/06/2025.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
@@ -47,7 +47,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer related to TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 12/06/2025.
+ * @version 1.8, 26/06/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -191,4 +191,15 @@ public class TslDataService implements ITslDataService {
 	public List<TslDataDTO> obtainAllTslDTO() {
 		return repository.findAllTslDataDTO();
 	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslDataService#obtainAllLotlDTO()
+	 */
+	@Override
+	public List<TslDataDTO> obtainAllLotlDTO() {
+		return repository.findAllTslLotlDataDTO();
+	}
+
 }

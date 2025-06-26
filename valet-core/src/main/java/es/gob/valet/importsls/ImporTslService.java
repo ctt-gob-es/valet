@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.3, 29.05/2025.
+ * @version 1.3, 26/06/2025.
  */
 package es.gob.valet.importsls;
 
@@ -78,6 +78,7 @@ import es.gob.valet.persistence.configuration.model.entity.Task;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
+import es.gob.valet.persistence.configuration.model.entity.TslLotlData;
 import es.gob.valet.persistence.configuration.model.entity.TslMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslService;
 import es.gob.valet.persistence.configuration.model.repository.CAssociationTypeRepository;
@@ -97,13 +98,14 @@ import es.gob.valet.service.impl.ExportService;
 import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
 import es.gob.valet.tasks.TasksManager;
 import es.gob.valet.tsl.access.TSLManager;
+import es.gob.valet.tsl.certValidation.impl.ts119612.v020101.TSLValidator;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 
 /**
  * <p>interface that contains all the methods necessary to carry out the import of TSLs.</p>
  * <b>Project:</b><p>Class that contains all the methods necessary to carry out the import of TSLs.</p>
- * @version 1.3, 29.05/2025.
+ * @version 1.3, 26/06/2025.
  */
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -728,6 +730,14 @@ public class ImporTslService implements IImporTslService {
 			tslData.setSequenceNumber(tslObject.getSchemeInformation().getTslSequenceNumber());
 			tslData.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
 			
+			// Evaluaremos si es una lista de listas
+			TSLValidator tSLValidator = new TSLValidator(tslObject);
+			if(tSLValidator.checkIfTSLisListOfLists(tslObject.getSchemeInformation().getTslType().toString())) {
+				TslLotlData tslLotlData = tslData.getTslLotlData();
+				tslData.setTslLotlData(tslLotlData);
+				// TODO: 921 - que campos insertaremos y como los insertaremos?¿?¿
+			}
+			
 			// Lo añadimos en base de datos.
 			tslDataRepository.save(tslData);
 			
@@ -778,12 +788,21 @@ public class ImporTslService implements IImporTslService {
 			tslData.setExpirationDate(tslDataDTO.getExpirationDate() != null && !tslDataDTO.getExpirationDate().isEmpty() ? UtilsDate.transformDate(tslDataDTO.getExpirationDate(), UtilsDate.FORMAT_DATE_TIME_STANDARD) : null);
 			tslData.setXmlDocument(Base64.getDecoder().decode(tslDataDTO.getXmlDocument()));
 			
+			// Obtenemos la TSL
+			TSLDataCacheObject tdco = TSLManager.getInstance().getTSLDataCacheObject(tslCountryRegion.getTslData().getIdTslData());
+			ITSLObject tslObject = (ITSLObject) tdco.getTslObject();
+			
+			// Evaluaremos si es una lista de listas
+			TSLValidator tSLValidator = new TSLValidator(tslObject);
+			if(tSLValidator.checkIfTSLisListOfLists(tslObject.getSchemeInformation().getTslType().toString())) {
+				TslLotlData tslLotlData = tslData.getTslLotlData();
+				// TODO: 921 - que campos actualizaremos y como los actualizaremos?¿?¿
+			}
+						
 			// Actualizamos la TSL en BD
 			tslDataRepository.save(tslData);
 			
 			// Actualizamos la TSL en cache
-			TSLDataCacheObject tdco = TSLManager.getInstance().getTSLDataCacheObject(tslCountryRegion.getTslData().getIdTslData());
-			ITSLObject tslObject = (ITSLObject) tdco.getTslObject();
 			ConfigurationCacheFacade.tslAddUpdateTSLData(tslData, tslObject);
 			
 			// Actualizamos las TSL del arbol de mapeos

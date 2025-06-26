@@ -119,6 +119,15 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 		return result;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getAllTslCountryRegion()
+	 */
+	public List<TslCountryRegion> getAllTslCountryRegion() {
+		return repository.findAllWithTslData();
+	}
+
 	
 	/**
 	 * {@inheritDoc}

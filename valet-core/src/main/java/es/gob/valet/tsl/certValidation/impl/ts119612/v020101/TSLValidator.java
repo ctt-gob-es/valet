@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version  1.8, 29.05/2025.
+ * @version 1.9, 19/09/2023.
  */
 package es.gob.valet.tsl.certValidation.impl.ts119612.v020101;
 
@@ -58,7 +58,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.AdditionalServiceInformat
  * <p>Class that represents a TSL Validator implementation for the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version  1.8, 29.05/2025.
+ * @version 1.9, 19/09/2023.
  */
 public class TSLValidator extends ATSLValidator {
 
@@ -90,7 +90,7 @@ public class TSLValidator extends ATSLValidator {
 	 * @see es.gob.valet.tsl.certValidation.impl.common.ATSLValidator#checkIfTSLisListOfLists(java.lang.String)
 	 */
 	@Override
-	protected boolean checkIfTSLisListOfLists(String tslType) {
+	public boolean checkIfTSLisListOfLists(String tslType) {
 		return tslType.equalsIgnoreCase(ITSLCommonURIs.TSL_TYPE_EULISTOFTHELIST) || tslType.startsWith(ITSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX) && tslType.endsWith(ITSLCommonURIs.TSL_TYPE_NONEULISTOFTHELISTS_PREFFIX);
 	}
 

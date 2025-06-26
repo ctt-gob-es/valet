@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 2.4, 12/06/2025.
+ * @version 2.5, 26/06/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -70,24 +70,31 @@ import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.dto.MappingDTO;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.model.dto.SigningCertificateDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
+import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
+import es.gob.valet.persistence.configuration.services.impl.TslCountryRegionService;
+import es.gob.valet.persistence.configuration.services.impl.TslDataService;
 import es.gob.valet.service.ifaces.ISigningCertService;
 import es.gob.valet.service.impl.SigningCertService;
 import es.gob.valet.tsl.access.TSLManager;
+import es.gob.valet.tsl.certValidation.impl.ts119612.v020101.TSLValidator;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
@@ -96,7 +103,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.4, 12/06/2025.
+ * @version 2.5, 26/06/2025.
  */
 @RestController
 public class TslRestController {
@@ -208,6 +215,27 @@ public class TslRestController {
 	private ISigningCertService iSigningCertService;
 	
 	/**
+	 * Service for managing TSL country/region data, injected by Spring.
+	 */
+	@Autowired
+	private TslCountryRegionService tslCountryRegionService;
+	
+	/**
+	 * Service for managing TSL data, injected by Spring.
+	 */
+	@Autowired
+	private TslDataService tslDataService;
+	
+	@RequestMapping(path = "/lotldatatable", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<TslDataDTO> loadLotlDataTable() {
+		ITslDataService tslDataService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService();
+	    List<TslDataDTO> listTslDataDTO = tslDataService.obtainAllLotlDTO();
+	    return listTslDataDTO;
+	}
+	
+	
+	/**
 	 * Method that maps the list users web requests to the controller and
 	 * forwards the list of users to the view.
 	 * @param input Holder object for datatable attributes.
@@ -248,7 +276,7 @@ public class TslRestController {
 	 * @throws IOException If the method fails.
 	 */
 	@RequestMapping(value = "/obtaintsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody SigningCertificateDTO obtainTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_SPECIFICATION) String specificationTsl, @RequestParam(FIELD_URL) String urlTsl, @RequestParam(FIELD_VERSION) String versionTsl, Model model, HttpSession httpSession) throws IOException {
+	public @ResponseBody SigningCertificateDTO obtainTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_SPECIFICATION) String specificationTsl, @RequestParam(FIELD_URL) String urlTsl, @RequestParam(FIELD_VERSION) String versionTsl, @RequestParam("lotl") Boolean lotl, Model model, HttpSession httpSession) throws IOException {
 
 		boolean error = false;
 		byte[ ] fileBytes = null;
@@ -291,6 +319,7 @@ public class TslRestController {
 				httpSession.setAttribute("tslObject", tslObject);
 				httpSession.setAttribute("urlTsl", urlTsl);
 				httpSession.setAttribute("fileBytes", fileBytes);
+				httpSession.setAttribute("lotl", lotl);
 				
 				// Añadimos el DTO que usaremos en la interfaz de información
 				model.addAttribute("signingCertificateDTO", signingCertificateDTO);
@@ -330,9 +359,13 @@ public class TslRestController {
 	    ITSLObject tslObject = (ITSLObject) httpSession.getAttribute("tslObject");
 	    String urlTsl = (String) httpSession.getAttribute("urlTsl");
 	    byte[] tslXMLbytes = (byte[]) httpSession.getAttribute("fileBytes");
+	    Boolean lotl = (Boolean) httpSession.getAttribute("lotl");
 
 	    try {
-	        TslData tslNew = TSLManager.getInstance().addNewTSLData(tslObject, urlTsl, tslXMLbytes);
+	    	// Evaluaremos si la TSL es una lista de listas
+	    	validateTsl(tslObject, lotl);
+	    				
+	        TslData tslNew = TSLManager.getInstance().addNewTSLData(tslObject, urlTsl, tslXMLbytes, lotl);
 
 	        TslDataDTO tslDataDTO = new TslDataDTO(tslNew);
 	        tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getIssueDate()));
@@ -344,11 +377,11 @@ public class TslRestController {
 	        LOGGER.error(e);
 
 	        String msgErrorWeb;
-	        if (IValetException.COD_204.equals(e.getErrorCode())) {
-	            msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_TSL_EXISTS);
+	        if (e.getErrorCode() == null) {
+	        	msgErrorWeb = e.getErrorDescription();
 	        } else {
-	            msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL_WEB);
-	        }
+				msgErrorWeb = Language.getResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL_WEB);
+			}
 
 	        JSONObject json = new JSONObject();
 			json.put(KEY_JS_ERROR_SAVE_TSL, msgErrorWeb);
@@ -364,7 +397,34 @@ public class TslRestController {
 	    }
 	}
 
-
+	/**
+	 * Validates the given TSL object according to its type and existence.
+	 *
+	 * @param tslObject The TSL object to validate.
+	 * @param lotl Boolean indicating if the TSL is a List Of Trusted Lists (LOTL).
+	 * @throws TSLManagingException If the TSL type does not match the expected LOTL status,
+	 *                              or if a TSL for the same country/region already exists.
+	 */
+	private void validateTsl(ITSLObject tslObject, Boolean lotl) throws TSLManagingException {
+		// Evaluamos de donde procede la TSL añadida.
+		TSLValidator tSLValidator = new TSLValidator(tslObject);
+		if (lotl) {
+			if (!tSLValidator.checkIfTSLisListOfLists(tslObject.getSchemeInformation().getTslType().toString())) {
+				throw new TSLManagingException(Language.getResWebGeneral(IWebGeneralMessages.ERROR_TSL_NOT_LIST_OF_LISTS));
+			}
+		} else {
+			if (tSLValidator.checkIfTSLisListOfLists(tslObject.getSchemeInformation().getTslType().toString())) {
+				throw new TSLManagingException(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_INCLUDE_TSL_WITH_LIST_OF_LISTS));
+			}
+		}
+		
+		// Evaluamos si la tsl existe
+		TslCountryRegion tslCountryRegion = tslCountryRegionService.getTslCountryRegionWithTslData(tslObject.getSchemeInformation().getSchemeTerritory());
+		if (null != tslCountryRegion && null != tslCountryRegion.getTslData()) {
+			throw new TSLManagingException(Language.getResWebGeneral(IWebGeneralMessages.ERROR_TSL_EXISTS));
+		}
+	}
+	
 	/**
 	 * Method that updates a TSL.
 	 * @param idTSL Parameter that represents the identifier TSL.
@@ -400,7 +460,8 @@ public class TslRestController {
 		}
 
 		try {
-			TslData tslDataUpdated = TSLManager.getInstance().updateTSLData(idTSL, tslXMLbytes, urlTsl, legibleDocumentArrayByte);
+			TslData tslData = tslDataService.getTslDataById(idTSL, false, false);
+			TslData tslDataUpdated = TSLManager.getInstance().updateTSLData(tslData, tslXMLbytes, urlTsl, legibleDocumentArrayByte);
 			TslDataDTO tslDataDTO = new TslDataDTO(tslDataUpdated);
 		    tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getIssueDate()));
 		    tslDataDTO.setExpirationDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getExpirationDate()));

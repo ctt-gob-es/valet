@@ -64,4 +64,12 @@ public class TSLException extends ValetException {
 		super(errorCodeParam, errorDescParam, exceptionParam);
 	}
 
+	/**
+	 * Constructor method for the class TSLException.java.
+	 * @param errorDescParam Error description.
+	 */
+	public TSLException(String errorDescParam) {
+		super(errorDescParam);
+	}
+
 }

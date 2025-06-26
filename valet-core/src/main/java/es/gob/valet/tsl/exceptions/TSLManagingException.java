@@ -62,4 +62,11 @@ public class TSLManagingException extends TSLException {
 		super(errorCodeParam, errorDescParam, exceptionParam);
 	}
 
+	/**
+	 * Constructor method for the class TSLManagingException.java.
+	 * @param errorDescParam Error description.
+	 */
+	public TSLManagingException(String errorDescParam) {
+		super(errorDescParam);
+	}
 }

@@ -1,5 +1,26 @@
-<div class="container-fluid" id="tableTsl">
+<div class="container-fluid" id="managerTsl">
 	<h4 class="c-grey-900 mT-10 mB-30" th:text="#{tsl.admin.title}"></h4>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="bgc-white bd bdrs-3 p-20 mB-20">
+				<h4 class="c-grey-900 mB-20" th:text="#{table.lotl.title}"></h4>
+				<div id="msgLotlAlert"></div>
+				<table id="lotlTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th></th>
+							<th></th>
+							<th th:text="#{table.lotl.country}"></th>
+							<th th:text="#{table.lotl.sequence}"></th>
+							<th th:text="#{table.lotl.issueDate}"></th>
+							<th th:text="#{table.lotl.expirationDate}"></th>
+							<th></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col-md-12">
 			<div class="bgc-white bd bdrs-3 p-20 mB-20">
@@ -27,16 +48,19 @@
 </div>
 <div id="tableMapping"></div>
 <script th:inline="javascript">
+var lotl;
 $(document).ready(function() {
-var getTsls =/*[[@{/tsldatatable}]]*/;
-
-var btnAddTsl =  /*[[#{tsl.admin.btn.add}]]*/;
-var btnEditTsl =  /*[[#{tsl.admin.btn.edit}]]*/;
-var btnDelTsl =  /*[[#{tsl.admin.btn.delete}]]*/;
-
-var btnShowMapping =  /*[[#{table.tsl.mapeo.alt}]]*/;
-
-var tbl = $('#tslTable').DataTable({
+	
+	var getLotl =/*[[@{/lotldatatable}]]*/;
+	var getTsls =/*[[@{/tsldatatable}]]*/;
+	
+	var btnAddTsl =  /*[[#{tsl.admin.btn.add}]]*/;
+	var btnEditTsl =  /*[[#{tsl.admin.btn.edit}]]*/;
+	var btnDelTsl =  /*[[#{tsl.admin.btn.delete}]]*/;
+	
+	var btnShowMapping =  /*[[#{table.tsl.mapeo.alt}]]*/;
+	
+	var lotlTbl = $('#lotlTable').DataTable({
 		dom: 'Bfrti',
 		pageLength: 50,
 		columnDefs: [
@@ -52,10 +76,11 @@ var tbl = $('#tslTable').DataTable({
 		        name: 'add',
 		        action: function (e, dt, node, config) {
 		            var addTsl = /*[[@{/addTsl}]]*/;
+		            lotl = true;
 		            loading();
-	
-		            $.ajax({
+					$.ajax({
 		                url: addTsl,
+		                data:$.param({'lotl':lotl} ),
 		                type: 'POST',
 		                cache: false,
 		                success: function(xhr) {
@@ -99,10 +124,9 @@ var tbl = $('#tslTable').DataTable({
 		        name: 'delete',
 		        action: function (e, dt, node, config) {
 		        	var viewdeletetsl = /*[[@{/viewdeletetsl}]]*/;
-		            
+		        	lotl = true;
 		        	loading();
-					
-		        	$.ajax({
+					$.ajax({
 			        	url: viewdeletetsl,
 			            type: 'POST',
 			            cache: false,
@@ -121,7 +145,7 @@ var tbl = $('#tslTable').DataTable({
 	  	"processing": false,
 	    "serverSide": false,
 	    "ajax": {
-	    	"url": getTsls,
+	    	"url": getLotl,
 	    	"dataSrc" : ""
 	    },
 		"language": {
@@ -147,14 +171,127 @@ var tbl = $('#tslTable').DataTable({
 	        	}
 	        } 
 	        ]
+	});
+	
+	
+	var tbl = $('#tslTable').DataTable({
+			dom: 'Bfrti',
+			pageLength: 50,
+			columnDefs: [
+		        {className: "text-center", targets: [6], 
+				order:[ 2, "asc" ]}
+		    ],
+			select: 'single',
+			responsive : true,
+			altEditor: false,
+			buttons: [
+				{
+			        text: btnAddTsl,
+			        name: 'add',
+			        action: function (e, dt, node, config) {
+			            var addTsl = /*[[@{/addTsl}]]*/;
+			            lotl = false;
+			            loading();
+						$.ajax({
+			                url: addTsl,
+			                data:$.param({'lotl':lotl} ),
+			                type: 'POST',
+			                cache: false,
+			                success: function(xhr) {
+			                    hide();
+			                    $('#modal').html(xhr);
+			                    $('#modalAddTsl').modal('show');
+			                }
+			            });
+			        }
+			    },  
+				{
+			        text: btnEditTsl,
+			        name: 'edit',
+			        action: function (e, dt, node, config) {
+			        	var editTsl = /*[[@{/edittsl}]]*/;
+			            
+			        	// Obtenemos la fila seleccionada
+			        	var selectedRow = dt.row({ selected: true }).data();
+			        	
+			        	// Obtenemos el id
+			        	var idTslData = selectedRow.idTslData;
+			        
+			        	loading();
+						
+			            $.ajax({
+			                url: editTsl,
+			                type: 'POST',
+			                data: { id: idTslData },
+			                cache: false,
+			                success: function(xhr) {
+			                    hide();
+			                    $('#modal').html(xhr);
+			                    $('#modalEditTsl').modal('show');
+			                }
+			            });
+			        },
+			        enabled: false  // Deshabilitado por defecto
+			    },  
+			    {
+			        text: btnDelTsl,
+			        name: 'delete',
+			        action: function (e, dt, node, config) {
+			        	var viewdeletetsl = /*[[@{/viewdeletetsl}]]*/;
+			        	lotl = false;
+			        	loading();
+						$.ajax({
+				        	url: viewdeletetsl,
+				            type: 'POST',
+				            cache: false,
+				            success: function(xhr) {
+				            	hide();
+				                $('#modal').html(xhr);
+				                $('#modalDeleteTsl').modal('show');
+							}
+						});
+			        },
+			        enabled: false  // Deshabilitado por defecto
+			    }, 
+			],
+			"iTotalRecords": "totalElements",
+		    "iTotalDisplayRecords": "numberOfElements",
+		  	"processing": false,
+		    "serverSide": false,
+		    "ajax": {
+		    	"url": getTsls,
+		    	"dataSrc" : ""
+		    },
+			"language": {
+		        "url": "js/datatables/i18n/spanish.json",
+		        select: {
+		            rows: {
+		                _: "%d filas seleccionadas",
+		                1: "1 fila seleccionada"
+		            }
+		          }
+		        },
+		        "order" : [ 2, 'asc' ],
+			"columns": [
+		        { "data": "idTslData","visible": false},
+		        { "data": "tslCountryRegionDTO.idTslCountryRegion", "visible":false},
+		        { "data": "tslCountryRegionDTO.countryRegionName","width": "25%"},
+		        { "data": "sequenceNumber","width": "15%"},
+		        { "data": "issueDate","width": "25%"},
+		        { "data": "expirationDate", "width": "25%"},
+				{ "data": "tslCountryRegionDTO.countryRegionCode", "width": "10%", 
+		        	"render": function(data, type, row){		
+		        		return '<a onclick="loadMappingDatatable(\''+data+'\');" alt='+btnShowMapping+' title='+btnShowMapping+'>	<span class="c-green-900 ti-list"></span></a>';
+		        	}
+		        } 
+		        ]
 	});	
 
 	//Actualizar el estado de los botones al seleccionar o deseleccionar filas
-	$('#tslTable').on('select.dt deselect.dt', function () {
-	    var dt = $('#tslTable').DataTable();
+	$('#tslTable, #lotlTable').on('select.dt deselect.dt', function () {
+	    var dt = $(this).DataTable(); // obtenemos el datatable que ha disparado el evento
 	    var selectedRows = dt.rows({ selected: true }).count();
-	    
-	    // Habilitar los botones "Editar" y "Eliminar" si hay una fila seleccionada, deshabilitarlos si no hay selección
+
 	    dt.button('edit:name').enable(selectedRows > 0);
 	    dt.button('delete:name').enable(selectedRows > 0);
 	});

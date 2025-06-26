@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/06/2018.</p>
  * @author Gobierno de España.
- * @version 2.3, 12/06/2025.
+ * @version 2.4, 26/06/2025.
  */
 package es.gob.valet.controller;
 
@@ -66,7 +66,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>Class that manages the requests related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 2.3, 12/06/2025.
+ *  @version 2.4, 26/06/2025.
  */
 @Controller
 public class TslController {
@@ -119,7 +119,7 @@ public class TslController {
 	 * @return String that represents the name of the view to forward.
 	 */
 	@RequestMapping(value = "addTsl")
-	public String addTsl(Model model) {
+	public String addTsl(Model model, @RequestParam("lotl") Boolean lotl) {
 
 		List<String> listSpecifications = new ArrayList<String>();
 		List<String> listVersions = new ArrayList<String>();
@@ -132,6 +132,8 @@ public class TslController {
 		}
 
 		TslForm tslForm = new TslForm();
+		tslForm.setLotl(lotl);
+		
 		model.addAttribute("tslform", tslForm);
 		model.addAttribute("versions", listVersions);
 		model.addAttribute("listSpecifications", listSpecifications);

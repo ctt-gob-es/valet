@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.4, 12.06/2025.
+ * @version 2.5, 26/06/2025.
  */
 package es.gob.valet.tsl.access;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -73,6 +74,7 @@ import es.gob.valet.persistence.configuration.model.entity.CTslImpl;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
+import es.gob.valet.persistence.configuration.model.entity.TslLotlData;
 import es.gob.valet.persistence.configuration.model.utils.IAssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
@@ -99,7 +101,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.4, 12.06/2025.
+ * @version 2.5, 26/06/2025.
  */
 public final class TSLManager {
 
@@ -2028,16 +2030,25 @@ public final class TSLManager {
 	}
 	
 	/**
-	 *Adds a new TSL Data in the data base and in the cache.
-	 * @param urlTsl URL location for the TSL.
-	 * @param tslSpecification TSL Specification that covers the input TSL.
-	 * @param tslSpecificationVersion TSL Specification Version that covers the input TSL.
-	 * @param tslXMLbytes Array of bytes that defines the TSL in a XML format.
-	 * @return TSL Data data base object representation of the TSL data added. <code>null</code> if
-	 * some input parameter is not correctly defined.
-	 * @throws TSLManagingException In case of some error adding the TSL in the data base or the cache.
-	*/
-	public TslData addNewTSLData(ITSLObject tslObject, String urlTsl, byte[ ] tslXMLbytes) throws TSLManagingException {
+	 * Adds a new TSL Data to the database and updates the cache with the new information.
+	 * <p>
+	 * This method determines the country or region associated with the provided TSL object.
+	 * If the country/region is not present in the cache, it is added to the database and then reloaded.
+	 * If the country/region already has an associated TSL Data, it is removed before inserting the new one.
+	 * The new TSL Data is then added to the database and the shared cache, and the internal mapping tree is updated accordingly.
+	 * </p>
+	 *
+	 * @param tslObject Object representation of the parsed TSL, which contains metadata and trust service list structure.
+	 * @param urlTsl URL where the TSL is located.
+	 * @param tslXMLbytes Byte array containing the XML content of the TSL.
+	 * @param lotl Flag indicating whether the TSL is also a LOTL (List of Trusted Lists).
+	 *
+	 * @return The newly created {@link TslData} entity, persisted in the database and added to the cache.
+	 *         Returns <code>null</code> if input parameters are invalid or creation fails silently before exception.
+	 *
+	 * @throws TSLManagingException If an error occurs while processing the TSL, accessing the database, or updating the cache.
+	 */
+	public TslData addNewTSLData(ITSLObject tslObject, String urlTsl, byte[ ] tslXMLbytes, Boolean lotl) throws TSLManagingException {
 		TslData result;
 
 		// Una vez parseada la TSL, comprobamos a que país/region pertenece.
@@ -2074,12 +2085,6 @@ public final class TSLManager {
 				}
 
 			}
-			
-			// Evaluamos si la tsl existe
-			TslData tslData = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslByCountryRegion(tcrp, false, false);
-			if (tslData != null) {
-				throw new TSLManagingException(IValetException.COD_204, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL171));
-			}
 						
 			// Si el país/región ya tiene un TSL Data asociado, lo
 			// eliminamos.
@@ -2090,7 +2095,7 @@ public final class TSLManager {
 			}
 			
 			// Añadimos un nuevo TSL Data asociado al país/región.
-			TslData td = addNewTSLDataInDataBase(tcrp, ctip, urlTsl, tslXMLbytes, tslObject);
+			TslData td = addNewTSLDataInDataBase(tcrp, ctip, urlTsl, tslXMLbytes, tslObject, lotl);
 
 			// Y ahora lo añadimos en la caché compartida.
 			ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
@@ -2131,14 +2136,24 @@ public final class TSLManager {
 	}
 
 	/**
-	 * Add a new TSL Data in the data base.
-	 * @param countryRegionId Country/Region ID to which add the new TSL Data.
-	 * @param urlTsl URL location for the TSL.
-	 * @param tslXMLbytes Array of bytes that represents the XML of the TSL.
-	 * @param tslObject TSL Object representation (already parsed).
-	 * @return the TSL Data POJO added.
+	 * Adds a new {@link TslData} entry into the database, associating it with the specified country/region and TSL specification.
+	 * <p>
+	 * This method constructs a new {@code TslData} object using the metadata and content from the given parsed TSL object.
+	 * It determines the TSL's distribution URI, sets its issue and expiration dates, sequence number, and associates the corresponding
+	 * {@link TslCountryRegion} and {@link CTslImpl}. If the TSL is marked as a LOTL (List of Trusted Lists), a {@link TslLotlData}
+	 * object is also created and linked.
+	 * </p>
+	 *
+	 * @param tcrp The {@link TslCountryRegion} entity representing the country or region to associate the TSL with.
+	 * @param ctip The {@link CTslImpl} specification and version associated with the TSL.
+	 * @param urlTsl Optional URL location for the TSL; if not provided, a valid one will be extracted from the parsed object.
+	 * @param tslXMLbytes Byte array containing the XML representation of the TSL.
+	 * @param tslObject Parsed TSL object containing metadata (such as issue date, sequence number, etc.).
+	 * @param lotl {@code true} if the TSL is also a LOTL; in this case, a {@link TslLotlData} will be created and linked.
+	 *
+	 * @return The persisted {@link TslData} entity created in the database.
 	 */
-	private TslData addNewTSLDataInDataBase(TslCountryRegion tcrp, CTslImpl ctip, String urlTsl, byte[ ] tslXMLbytes, ITSLObject tslObject) {
+	private TslData addNewTSLDataInDataBase(TslCountryRegion tcrp, CTslImpl ctip, String urlTsl, byte[ ] tslXMLbytes, ITSLObject tslObject, Boolean lotl) {
 
 		// Counstruimos el TslDataPojo y vamos insertando los datos.
 		TslData td = new TslData();
@@ -2162,6 +2177,12 @@ public final class TSLManager {
 		td.setExpirationDate(tslObject.getSchemeInformation().getNextUpdate());
 		td.setSequenceNumber(tslObject.getSchemeInformation().getTslSequenceNumber());
 		td.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
+
+		if(lotl) {
+			TslLotlData tslLotlData = new TslLotlData();
+			td.setTslLotlData(tslLotlData);
+			// TODO: 921 - que campos insertaremos y como los insertaremos?¿?¿
+		}
 
 		// Lo añadimos en base de datos.
 		td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().saveTSL(td);
@@ -2446,26 +2467,32 @@ public final class TSLManager {
 	}
 
 	/**
-	 * Update the TSLData in the database and in the cache.
-	 * @param tslDataId TSL ID which identifies the TSL to update.
-	 * @param tslXMLbytes Array of bytes that defines the TSL in a XML.
-	 * @param urlTsl URL location for the TSL.
-	 * @param legibleDocumentArrayByte Array of bytes that represents the legible document. It can be <code>null</code>.
-	 * @return Updated TslData.
-	 * @throws TSLManagingException In case of some error updating the TSL Legible Document in the data base and the cache.
+	 * Updates an existing {@link TslData} entry in both the database and the shared cache.
+	 * <p>
+	 * This method takes a parsed TSL object from the cache and updates its values based on a new XML input.
+	 * It updates key metadata such as the sequence number, issue and expiration dates, responsible organization,
+	 * and distribution point. If a legible document is provided, it is also updated.
+	 * The method ensures that the cache is kept consistent with the database and triggers updates to external access points.
+	 * </p>
+	 *
+	 * @param td The {@link TslData} object to update.
+	 * @param tslXMLbytes Byte array containing the new TSL XML to parse and update in the database and cache.
+	 * @param urlTsl Optional updated distribution point URL for the TSL.
+	 * @param legibleDocumentArrayByte Optional byte array representing a legible (human-readable) version of the TSL document.
+	 *
+	 * @return The updated {@link TslData} object persisted in the database.
+	 *
+	 * @throws TSLManagingException If any error occurs during the update of the TSL data or its cache entry.
 	 */
-	public TslData updateTSLData(long tslDataId, byte[ ] tslXMLbytes, String urlTsl, byte[ ] legibleDocumentArrayByte) throws TSLManagingException {
+	public TslData updateTSLData(TslData td, byte[ ] tslXMLbytes, String urlTsl, byte[ ] legibleDocumentArrayByte) throws TSLManagingException {
 		TslData result = null;
 		try {
 
 			// Recuperamos de la caché compartida el TSLData a actualizar, y de
 			// esta el objeto serializable que representa a la TSL.
-			TSLDataCacheObject tdco = getTSLDataCacheObject(tslDataId);
+			TSLDataCacheObject tdco = getTSLDataCacheObject(td.getIdTslData());
 
 			ITSLObject tslObject = (ITSLObject) tdco.getTslObject();
-
-			// Cargamos el pojo de base de datos.
-			TslData td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().getTslDataById(tslDataId, false, false);
 
 			// se obtiene la información de la nueva TSL
 
@@ -2540,12 +2567,12 @@ public final class TSLManager {
 			}
 			// Punto de distribución
 			if (!UtilsStringChar.isNullOrEmpty(urlTsl)) {
-				updateDistributionPointTSLData(tslDataId, urlTsl);
+				updateDistributionPointTSLData(td.getIdTslData(), urlTsl);
 			}
 
 			// se actualiza documento legible
 			if (legibleDocumentArrayByte != null) {
-				updateTSLDataLegibleDocument(tslDataId, legibleDocumentArrayByte);
+				updateTSLDataLegibleDocument(td.getIdTslData(), legibleDocumentArrayByte);
 			}
 			result = td;
 			// se actualiza la información en los datos del arbol de mapeos de
@@ -2555,7 +2582,7 @@ public final class TSLManager {
 
 		Exception e) {
 
-			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL259, new Object[ ] { tslDataId }), e);
+			throw new TSLManagingException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL259, new Object[ ] { td.getIdTslData() }), e);
 
 		}
 		return result;
