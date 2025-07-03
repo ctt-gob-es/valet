@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.5, 26/06/2025.
+ * @version 2.6, 03/07/2025.
  */
 package es.gob.valet.tsl.access;
 
@@ -104,7 +104,7 @@ import es.gob.valet.utils.TSLCommonURIs;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.5, 26/06/2025.
+ * @version 2.6, 03/07/2025.
  */
 public final class TSLManager {
 
@@ -2112,6 +2112,9 @@ public final class TSLManager {
 
 			// se actualiza la información en los datos del arbol de mapeos de TSLs.
 			updateMapTslMappingTree(td.getTslCountryRegion().getCountryRegionCode(), td.getSequenceNumber().toString(), tslObject);
+			
+			// Se actualizan los accessos externos con las url de los distintos distribution point que contenga la tsl.
+			ApplicationContextProvider.getApplicationContext().getBean(ExternalAccessService.class).new ExternalAccessServiceThread(ExternalAccessService.OPERATION2, tslObject).start();
 		} catch (TSLManagingException e) {
 			throw e;
 		} catch (Exception e) {

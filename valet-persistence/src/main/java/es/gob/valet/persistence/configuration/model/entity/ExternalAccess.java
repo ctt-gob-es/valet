@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 19/03/2025.
+ * @version 1.5, 03/07/2025.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -50,7 +50,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  *<p>Class that maps the <i>EXTERNAL_ACCESS</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 19/03/2025.
+ * @version 1.5, 03/07/2025.
  */
 @Entity
 @Table(name = "EXTERNAL_ACCESS")
@@ -116,7 +116,7 @@ public class ExternalAccess implements Serializable {
 	 * Gets the value of the attribute {@link #url}.
 	 * @return the value of the attribute {@link #url}.
 	 */
-	@Column(name = "URL", nullable = false, length = NumberConstants.NUM4000)
+	@Column(name = "URL", nullable = false, length = NumberConstants.NUM4000, unique = true)
 	@JsonView(DataTablesOutput.View.class)
 	public String getUrl() {
 		return url;

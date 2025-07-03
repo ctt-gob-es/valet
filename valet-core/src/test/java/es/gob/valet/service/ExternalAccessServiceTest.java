@@ -44,7 +44,8 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.service.impl.ExternalAccessService;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
 import es.gob.valet.tsl.exceptions.TSLCertificateValidationException;
-
+import es.gob.valet.tsl.exceptions.TSLMalformedException;
+import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.SchemeInformation;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
@@ -567,7 +568,7 @@ public class ExternalAccessServiceTest {
 
 	@Test
 	public final void testPrepareUrlExternalAccessToDelete()
-			throws TSLArgumentException, TSLCertificateValidationException {
+			throws TSLArgumentException, TSLCertificateValidationException, TSLParsingException, TSLMalformedException {
 		// Montamos los objetos para las pruebas
 		ITSLObject tslObject = new TSLObject("Country", "1.2");
 

@@ -23,15 +23,6 @@ public class TestsValetSpringInWeblogic {
 		System.setProperty("com.sun.management.jmxremote.authenticate", "false");
 		System.setProperty("com.sun.management.jmxremote.ssl", "false");
 		
-		System.setProperty("XX:MetaspaceSize", "128M");
-		System.setProperty("XX:MaxMetaspaceSize", "256M");
-		System.setProperty("XX:MinMetaspaceFreeRatio", "20");
-		System.setProperty("XX:MaxMetaspaceFreeRatio", "50");
-		System.setProperty("XX:+UseG1GC", "");
-		System.setProperty("XX:MaxNewSize", "3584m");
-		System.setProperty("XX:NewSize", "3584m");
-		System.setProperty("XX:SurvivorRatio", "6");
-		
 		System.setProperty("clave.path", "C:\\Oracle\\Middleware\\Oracle_Home\\user_projects\\domains\\base_domain\\servers\\VALET-ADM\\conf\\clave");
 		System.setProperty("integra.config", "C:\\Oracle\\Middleware\\Oracle_Home\\user_projects\\domains\\base_domain\\servers\\VALET-ADM\\conf\\clave\\integra");
 		System.setProperty("weblogic.server.temp.dir", "C:\\Oracle\\Middleware\\Oracle_Home\\user_projects\\domains\\base_domain\\servers\\VALET-ADM\\tmp");

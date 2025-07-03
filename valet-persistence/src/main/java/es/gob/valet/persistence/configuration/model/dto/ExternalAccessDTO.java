@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>09/08/2023.</p>
  * @author Gobierno de España.
- * @version 1.1, 10/08/2023.
+ * @version 1.2, 03/07/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -35,7 +35,7 @@ import es.gob.valet.persistence.configuration.model.entity.ExternalAccess;
 /** 
  * <p>Class that represents an object that relates the code of a to the Constants DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 10/08/2023.
+ * @version 1.2, 03/07/2025.
  */
 public class ExternalAccessDTO implements Serializable {
 
@@ -69,6 +69,11 @@ public class ExternalAccessDTO implements Serializable {
 	 */
 	private List<ExternalAccess> listExternalAccessResult = new ArrayList<ExternalAccess>();
 
+	/**
+	 * List of TSLLocation URLs resulting from the external access processing.
+	 */
+	private List<String> listUrlTSLLocationResult = new ArrayList<String>();
+	
 	/**
 	 * Attribute that represents id country region.
 	 */
@@ -104,6 +109,10 @@ public class ExternalAccessDTO implements Serializable {
 	 */
 	private String messageError;
 	
+	/**
+	 * Flag indicating whether the processed TSL is a List of Lists.
+	 */
+	private boolean checkListOfLists = Boolean.FALSE;
 
 	/**
 	 * Gets the value of the attribute {@link #listUrlDistributionPointCRLResult}.
@@ -200,6 +209,22 @@ public class ExternalAccessDTO implements Serializable {
 	public void setListExternalAccessResult(List<ExternalAccess> listExternalAccessResult) {
 		this.listExternalAccessResult = listExternalAccessResult;
 	}
+		
+	/**
+	 * Gets the value of the attribute {@link #listUrlTSLLocationResult}.
+	 * @return the value of the attribute {@link #listUrlTSLLocationResult}.
+	 */
+	public List<String> getListUrlTSLLocationResult() {
+		return listUrlTSLLocationResult;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #listUrlTSLLocationResult}.
+	 * @param listUrlTSLLocationResult The value for the attribute {@link #listUrlTSLLocationResult}.
+	 */
+	public void setListUrlTSLLocationResult(List<String> listUrlTSLLocationResult) {
+		this.listUrlTSLLocationResult = listUrlTSLLocationResult;
+	}
 
 	/**
 	 * @return the idUrl
@@ -284,5 +309,21 @@ public class ExternalAccessDTO implements Serializable {
 	public void setMessageError(String messageError) {
 		this.messageError = messageError;
 	}
+	
+	/**
+	 * Gets the value of the attribute {@link #checkListOfLists}.
+	 * @return the value of the attribute {@link #checkListOfLists}.
+	 */
+	public boolean isCheckListOfLists() {
+		return checkListOfLists;
+	}
 
+	/**
+	 * Sets the value of the attribute {@link #checkListOfLists}.
+	 * @param checkListOfLists The value for the attribute {@link #checkListOfLists}.
+	 */
+	public void setCheckListOfLists(boolean checkListOfLists) {
+		this.checkListOfLists = checkListOfLists;
+	}
+	
 }

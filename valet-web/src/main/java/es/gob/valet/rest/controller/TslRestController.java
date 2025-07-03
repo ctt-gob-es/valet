@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 2.5, 26/06/2025.
+ * @version 2.6, 03/07/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -101,7 +101,7 @@ import es.gob.valet.utils.GeneralConstantsValetWeb;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.5, 26/06/2025.
+ * @version 2.6, 03/07/2025.
  */
 @RestController
 public class TslRestController {
@@ -367,7 +367,7 @@ public class TslRestController {
 
 	        TslDataDTO tslDataDTO = new TslDataDTO(tslNew);
 	        tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getIssueDate()));
-	        tslDataDTO.setExpirationDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getExpirationDate()));
+	        tslDataDTO.setExpirationDate(null != tslNew.getExpirationDate() ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getExpirationDate()) : "");
 
 	        responseNode.set("data", objectMapper.valueToTree(tslDataDTO));
 

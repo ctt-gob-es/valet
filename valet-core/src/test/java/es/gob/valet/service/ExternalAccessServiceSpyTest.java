@@ -1,8 +1,18 @@
 package es.gob.valet.service;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import org.mockito.Spy;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
 import java.net.URI;
@@ -29,10 +39,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import es.gob.valet.alarms.AlarmsManager;
+import es.gob.valet.alarms.conf.AlarmsConfiguration;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.CoreGeneralMessages;
+import es.gob.valet.i18n.messages.CoreTslMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.ManagerPersistenceConfigurationServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
@@ -56,11 +72,6 @@ import es.gob.valet.tsl.exceptions.TSLParsingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.SchemeInformation;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
-import es.gob.valet.alarms.AlarmsManager;
-import es.gob.valet.alarms.conf.AlarmsConfiguration;
-import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.CoreGeneralMessages;
-import es.gob.valet.i18n.messages.CoreTslMessages;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Language.class,AlarmsManager.class,AlarmsConfiguration.class,ManagerPersistenceServices.class,ManagerPersistenceConfigurationServices.class,
@@ -197,7 +208,7 @@ public class ExternalAccessServiceSpyTest {
 
 
 	@Test
-	public final void testOperationsOnExternalAccessOp1() throws TSLCertificateValidationException {
+	public final void testOperationsOnExternalAccessOp1() throws TSLCertificateValidationException, TSLArgumentException, TSLParsingException, TSLMalformedException {
 		
 		SchemeInformation si =  new SchemeInformation();
 		si.setSchemeTerritory("Local");
@@ -220,7 +231,7 @@ public class ExternalAccessServiceSpyTest {
         verify(externalAccessService, never()).prepareUrlExternalAccessForTask();
 	}
 	@Test
-	public final void testOperationsOnExternalAccessOp2() throws TSLCertificateValidationException {
+	public final void testOperationsOnExternalAccessOp2() throws TSLCertificateValidationException, TSLArgumentException, TSLParsingException, TSLMalformedException {
 		
 		SchemeInformation si =  new SchemeInformation();
 		si.setSchemeTerritory("Local");
@@ -243,7 +254,7 @@ public class ExternalAccessServiceSpyTest {
         verify(externalAccessService, never()).prepareUrlExternalAccessForTask();
 	}
 	@Test
-	public final void testOperationsOnExternalAccessOp3() throws TSLCertificateValidationException {
+	public final void testOperationsOnExternalAccessOp3() throws TSLCertificateValidationException, TSLArgumentException, TSLParsingException, TSLMalformedException {
 		
 		SchemeInformation si =  new SchemeInformation();
 		si.setSchemeTerritory("Local");
@@ -265,7 +276,7 @@ public class ExternalAccessServiceSpyTest {
         verify(externalAccessService, never()).prepareUrlExternalAccessForTask();
 	}
 	@Test
-	public final void testOperationsOnExternalAccessOp4() throws TSLCertificateValidationException {
+	public final void testOperationsOnExternalAccessOp4() throws TSLCertificateValidationException, TSLArgumentException, TSLParsingException, TSLMalformedException {
 		
 		SchemeInformation si =  new SchemeInformation();
 		si.setSchemeTerritory("Local");
@@ -427,7 +438,7 @@ public class ExternalAccessServiceSpyTest {
         PowerMockito.when(TSLManager.getInstance()).thenReturn(tSLManagerMock);
         PowerMockito.when(tSLManagerMock.getListCertificatesTSL(tslObject)).thenReturn(listCertificate);
        
-        externalAccessService.extractUrlToDistributionPoints(externalAccessDTO, tslObjectMock);
+        externalAccessService.extractUrlFromOrigin(externalAccessDTO, tslObjectMock);
 
         // Verificar que las URL válidas se han agregado a la lista de resultados
         assertEquals(1, externalAccessDTO.getListUrlDistributionPointDPResult().size());
@@ -452,7 +463,7 @@ public class ExternalAccessServiceSpyTest {
         PowerMockito.when(TSLManager.getInstance()).thenReturn(tSLManagerMock);
         PowerMockito.when(Language.getFormatResCoreTsl(eq(CoreTslMessages.LOGMTSL416), new Object[ ] { anyString() })).thenReturn("Mensaje de prueba");
 
-        externalAccessService.extractUrlToDistributionPoints(externalAccessDTO, tslObjectMock);
+        externalAccessService.extractUrlFromOrigin(externalAccessDTO, tslObjectMock);
 
         PowerMockito.verifyStatic(Language.class);
         Language.getFormatResCoreTsl(eq(CoreTslMessages.LOGMTSL416), new Object[ ] { anyString() });

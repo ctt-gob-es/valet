@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/07/2023.</p>
  * @author Gobierno de España.
- * @version 2.0, 19/12/2023.
+ * @version 2.1, 03/07/2025.
  */
 package es.gob.valet.service.ifaces;
 
@@ -41,7 +41,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSLObject;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the ExternalAccess entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 19/12/2023.
+ * @version 2.1, 03/07/2025.
  */
 public interface IExternalAccessService {
 	
@@ -69,13 +69,13 @@ public interface IExternalAccessService {
 	void prepareUrlExternalAccessForTask();
 	
 	/**
-	 * Method that extract all distribution point from TSL.
+	 * Method that extract all url downloads from TSL.
 	 * 
 	 * @param externalAccessDTO parameter that contain all information about operation.
 	 * @param tslObject TSL object representation to use.
 	 * @throws TSLCertificateValidationException if occurs any error.
 	 */
-	void extractUrlToDistributionPoints(ExternalAccessDTO externalAccessDTO, ITSLObject tslObject) throws TSLCertificateValidationException;
+	void extractUrlFromOrigin(ExternalAccessDTO externalAccessDTO, ITSLObject tslObject) throws TSLCertificateValidationException;
 	
 	/**
 	 * Method that make changes in external access. We can save/update externall access or delete. Here we will check for indeterminism over operations on the EXTERNAL_ACCCESS table.
