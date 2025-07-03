@@ -122,11 +122,11 @@ Insert into ALARM (ID_ALARM, DESCRIPTION, TIME_BLOCK, ACTIVE)
   Values ('ALM009', 'ALARMDESC009', null, 'Y');
   Insert into ALARM (ID_ALARM, DESCRIPTION, TIME_BLOCK, ACTIVE)
   Values ('ALM010', 'ALARMDESC010', null, 'Y');
+Insert into ALARM (ID_ALARM, DESCRIPTION, TIME_BLOCK, ACTIVE)
+  Values ('ALM011', 'ALARMDESC011', null, 'Y');
   
 -- TABLA TASK 
 Insert into TASK (ID_TASK, TOKEN_NAME, IMPLEMENTATION_CLASS, IS_ENABLED) Values (1, 'TASK01', 'es.gob.valet.tasks.FindNewTSLRevisionsTask', 'N');
-
-
 
 -- TABLA PLANNER
   Insert into PLANNER
