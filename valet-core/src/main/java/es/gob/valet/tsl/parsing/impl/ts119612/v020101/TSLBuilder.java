@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 19/09/2023.
+ * @version 1.4, 10/07/2025.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -130,7 +130,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
  * <p>Class that represents a TSL Builder of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 19/09/2023.
+ * @version 1.4, 10/07/2025.
  */
 public class TSLBuilder extends ATSLBuilder {
 

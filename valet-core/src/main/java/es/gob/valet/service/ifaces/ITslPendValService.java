@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/06/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/06/2025.
+ * @version 1.1, 10/07/2025.
  */
 package es.gob.valet.service.ifaces;
 
@@ -32,7 +32,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslPendVal;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer in relation of the Tsl pending validation entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/06/2025.
+ * @version 1.1, 10/07/2025.
  */
 public interface ITslPendValService {
 
@@ -61,19 +61,34 @@ public interface ITslPendValService {
 	 * @param idTslPendVal the ID of the pending TSL to confirm
 	 */
 	void confirmTslPendVal(Long idTslPendVal);
-
+	
 	/**
-	 * Declines a pending TSL validation by removing the entry from the database.
+	 * Persists the given TSL pending validation entity to the database.
 	 *
-	 * @param idTslPendVal the ID of the pending TSL to decline
+	 * @param tslPendVal the TSL pending validation entity to be saved
 	 */
 	void declineTslPendVal(Long idTslPendVal);
-
+	
+	/**
+	 * Persists the given TSL pending validation entity to the database.
+	 *
+	 * @param tslPendVal the TSL pending validation entity to be saved
+	 */
 	void addTslPendVal(TslPendVal tslPendVal);
-
+	
+	/**
+	 * Checks if there is at least one TSL pending validation entity in the database.
+	 *
+	 * @return true if at least one entity exists, false otherwise
+	 */
 	boolean exitsTslPendVal();
 
+	/**
+	 * Checks if there is a TSL pending validation entity for the specified country.
+	 *
+	 * @param country the country code to check
+	 * @return true if an entity exists for the given country, false otherwise
+	 */
 	boolean exitsTslPendVal(String schemeTerritory);
-	
 
 }

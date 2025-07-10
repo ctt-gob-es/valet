@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.4, 12/01/2024.
+ * @version 1.5, 10/07/2025.
  */
 package es.gob.valet.persistence.configuration.model.utils;
 
 /**
  * <p>Class that contains all the IDs of the alarms.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 12/01/2024.
+ * @version 1.5, 10/07/2025.
  */
 public class AlarmIdConstants {
 
@@ -87,7 +87,7 @@ public class AlarmIdConstants {
 	public static final String ALM011_CONNECTION_FAIL = "ALM011";
 
 	/**
-	 * Constant attribute that represents the ID for the Alarm 012: Existen TSLs pendientes de validar.
+	 * Constant attribute that represents the ID for the Alarm 011: Existen TSLs pendientes de validar.
 	 */
 	public static final String ALM012_EXISTING_TSL_PEND_VAL = "ALM012";
 }

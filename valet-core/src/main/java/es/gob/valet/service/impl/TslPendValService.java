@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/06/2025.</p>
  * @author Gobierno de España.
- * @version 1.3, 26/06/2025.
+ * @version 1.4, 10/07/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -53,7 +53,6 @@ import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.model.dto.SigningCertificateDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslPendValDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
-import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.entity.TslLotlData;
 import es.gob.valet.persistence.configuration.model.entity.TslPendVal;
 import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
@@ -74,7 +73,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
  * <b>Project:</b><p> Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
- * @version 1.3, 26/06/2025.
+ * @version 1.4, 10/07/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -289,15 +288,31 @@ public class TslPendValService implements ITslPendValService {
 		tslPendValRepository.delete(tslPendVal);
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ITslPendValService#addTslPendVal(es.gob.valet.persistence.configuration.model.entity.TslPendVal)
+	 */
 	public void addTslPendVal(TslPendVal tslPendVal) {
-		tslPendValRepository.save(tslPendVal);
+	    tslPendValRepository.save(tslPendVal);
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ITslPendValService#exitsTslPendVal()
+	 */
 	public boolean exitsTslPendVal() {
-		return tslPendValRepository.findAll().size() > NumberConstants.NUM0 ? true : false;
+	    return tslPendValRepository.findAll().size() > NumberConstants.NUM0 ? true : false;
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ITslPendValService#exitsTslPendVal(java.lang.String)
+	 */
 	public boolean exitsTslPendVal(String country) {
-		return tslPendValRepository.findAll().stream().anyMatch(p -> p.getCountry().equals(country));
+	    return tslPendValRepository.findAll().stream().anyMatch(p -> p.getCountry().equals(country));
 	}
+
 }
