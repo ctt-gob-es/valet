@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 06/05/2025.
+ * @version 1.5, 10/07/2025.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -33,7 +33,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer.</p>
  * <b>Project:</b><p>Interface that provides communication with the operations of the persistence layer related to TslCountryRegion entity.</p>
- * @version 1.4, 06/05/2025.
+ * @version 1.5, 10/07/2025.
  */
 public interface ITslCountryRegionService {
 
@@ -111,6 +111,12 @@ public interface ITslCountryRegionService {
 	 */
 	TslCountryRegion getTslCountryRegionWithTslData(String countryRegionCode);
 
+	/**
+	 * Checks if a TSL exists for the specified country or region code.
+	 *
+	 * @param countryRegionCode the country or region code to look up
+	 * @return true if a TSL exists for the given code, false otherwise
+	 */
 	boolean existsTslForThisCountry(String schemeTerritory);
 
 }

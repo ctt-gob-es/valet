@@ -20,14 +20,14 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/01/2019.</p>
  * @author Gobierno de España.
- * @version 1.4, 12/01/2024.
+ * @version 1.5, 10/07/2025.
  */
 package es.gob.valet.persistence.configuration.model.utils;
 
 /**
  * <p>Interface that contains all the IDs of the alarms.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 12/01/2024.
+ * @version 1.5, 10/07/2025.
  */
 public interface IAlarmIdConstants {
 
@@ -82,7 +82,7 @@ public interface IAlarmIdConstants {
 	String ALM010_OCSP_RESPONSE_NOT_TRUSTED = "ALM010";
 
 	/**
-	 * Constant attribute that represents the ID for the Alarm 012: Existen TSLs pendientes de validar.
+	 * Constant attribute that represents the ID for the Alarm 011: Existen TSLs pendientes de validar.
 	 */
 	String ALM011_EXISTING_TSL_PEND_VAL = "ALM011";
 	

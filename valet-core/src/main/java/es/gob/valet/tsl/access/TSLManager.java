@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.5, 26/06/2025.
+ * @version 2.6, 10/07/2025.
  */
 package es.gob.valet.tsl.access;
 
@@ -100,7 +100,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.5, 26/06/2025.
+ * @version 2.6, 10/07/2025.
  */
 public final class TSLManager {
 

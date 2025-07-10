@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/06/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/06/2025.
+ * @version 1.1, 10/07/2025.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -43,7 +43,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>TSL_PEND_VAL</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.0, 24/06/2025.
+ *  @version 1.1, 10/07/2025.
  */
 @Entity
 @Table(name = "TSL_PEND_VAL")
@@ -81,8 +81,13 @@ public class TslPendVal implements Serializable {
 	@Column(name = "XML_DOCUMENT", nullable = false)
 	private byte[] xmlDocument;
 	
+	/**
+	 * Country name associated with the TSL (e.g., "Spain" ).
+	 * This field is mandatory.
+	 */
 	@Column(name = "COUNTRY", nullable = false)
 	private String country;
+
 	
 	/**
 	 * Gets the value of the attribute {@link #idTslPendVal}.

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 10/07/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -40,7 +40,7 @@ import es.gob.valet.tsl.exceptions.TSLParsingException;
  * <p>Class that defines a TSL pointer with all its information not dependent
  * of the specification or version.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 06/11/2018.
+ * @version 1.1, 10/07/2025.
  */
 public class TSLPointer implements Serializable {
 
@@ -54,14 +54,29 @@ public class TSLPointer implements Serializable {
 	 */
 	private URI tslLocation = null;
 	
+	/** 
+	 * Type of the TSL (e.g., List of Trusted Lists, National List, etc.).
+	 */
 	private String tSLType;
-	
+
+	/**
+	 *  Country or territory to which the TSL applies. 
+	 */
 	private String schemeTerritory;
-	
+
+	/** 
+	 * MIME type of the TSL document (e.g., application/xml). 
+	 */
 	private String mimeType;
-	
+
+	/**
+	 *  Name or identifier of the TSL document. 
+	 */
 	private String name;
-	
+
+	/**
+	 * URI where the TSL document is located. 
+	 */
 	private String uri;
 
 	/**

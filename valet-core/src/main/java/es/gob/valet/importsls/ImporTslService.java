@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.3, 26/06/2025.
+ * @version 1.4, 10/07/2025.
  */
 package es.gob.valet.importsls;
 
@@ -106,7 +106,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>interface that contains all the methods necessary to carry out the import of TSLs.</p>
  * <b>Project:</b><p>Class that contains all the methods necessary to carry out the import of TSLs.</p>
- * @version 1.3, 26/06/2025.
+ * @version 1.4, 10/07/2025.
  */
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)

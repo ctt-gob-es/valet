@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>26/06/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 26/06/2025.
+ * @version 1.1, 10/07/2025.
  */
 package es.gob.valet.persistence.configuration.model.entity;
 
@@ -43,7 +43,7 @@ import es.gob.valet.commons.utils.NumberConstants;
 /**
  * <p>Class that maps the <i>TSL_PEND_VAL</i> database table as a Plain Old Java Object.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- *  @version 1.0, 26/06/2025.
+ *  @version 1.1, 10/07/2025.
  */
 @Entity
 @Table(name = "TSL_LOTL_DATA")
@@ -64,10 +64,14 @@ public class TslLotlData implements Serializable {
 	@GenericGenerator(name = "sq_tsl_lotl_data", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = { @Parameter(name = "sequence_name", value = "SQ_TSL_LOTL_DATA"), @Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
 	private Long idTslLotlData;
 
+	/**
+	 * Signing certificate associated with the TSL, stored as a byte array.
+	 * This field is mandatory and loaded lazily from the database.
+	 */
 	@Lob
 	@Basic(fetch = FetchType.LAZY, optional = false)
 	@Column(name = "SIGNING_CERTIFICATE", nullable = false)
-	private byte[ ] signingCertificate;
+	private byte[] signingCertificate;
 	
 	/**
 	 * Gets the value of the attribute {@link #idTslLotlData}.

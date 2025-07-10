@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 26/06/2025.
+ * @version 1.8, 10/07/2025.
  */
 package es.gob.valet.persistence.configuration.services.ifaces;
 
@@ -38,7 +38,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Interface that provides communication with the operations of the persistence layer related to TslData.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 26/06/2025.
+ * @version 1.8, 10/07/2025.
  */
 public interface ITslDataService {
 
@@ -137,6 +137,11 @@ public interface ITslDataService {
 	 */
 	List<TslDataDTO> obtainAllLotlDTO();
 
+	/**
+	 * Retrieves all TSL data entries that are associated with TSL LOTL data.
+	 *
+	 * @return a list of TSL data entities linked to TSL LOTL data
+	 */
 	List<TslData> obtainAllTslDataWithTslLotlData();
 	
 }

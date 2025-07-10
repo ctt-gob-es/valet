@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 29/05/2025.
+ * @version 1.4, 10/07/2025.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -36,9 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.etsi.uri.x01903.v13.IdentifierType;
@@ -84,7 +81,6 @@ import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.additionalTypes.ExtendedKe
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.additionalTypes.ExtendedKeyUsageType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.additionalTypes.TakenOverByDocument;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.additionalTypes.TakenOverByType;
-import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.impl.AnyTypeImpl;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.sie.CriteriaListType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.sie.KeyUsageBitType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.sie.KeyUsageType;
@@ -130,7 +126,7 @@ import es.gob.valet.tsl.parsing.impl.common.extensions.TakenOverBy;
  * <p>Class that represents a TSL Builder of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 29/05/2025.
+ * @version 1.4, 10/07/2025.
  */
 public class TSLBuilder extends ATSLBuilder {
 
