@@ -26,10 +26,13 @@ package es.gob.valet.persistence.configuration.model.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -61,6 +64,11 @@ public class TslLotlData implements Serializable {
 	@GenericGenerator(name = "sq_tsl_lotl_data", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = { @Parameter(name = "sequence_name", value = "SQ_TSL_LOTL_DATA"), @Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
 	private Long idTslLotlData;
 
+	@Lob
+	@Basic(fetch = FetchType.LAZY, optional = false)
+	@Column(name = "SIGNING_CERTIFICATE", nullable = false)
+	private byte[ ] signingCertificate;
+	
 	/**
 	 * Gets the value of the attribute {@link #idTslLotlData}.
 	 * @return the value of the attribute {@link #idTslLotlData}.
@@ -75,6 +83,22 @@ public class TslLotlData implements Serializable {
 	 */
 	public void setIdTslLotlData(Long idTslLotlData) {
 		this.idTslLotlData = idTslLotlData;
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #signingCertificate}.
+	 * @return the value of the attribute {@link #signingCertificate}.
+	 */
+	public byte[ ] getSigningCertificate() {
+		return signingCertificate;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #signingCertificate}.
+	 * @param signingCertificate The value for the attribute {@link #signingCertificate}.
+	 */
+	public void setSigningCertificate(byte[ ] signingCertificate) {
+		this.signingCertificate = signingCertificate;
 	}
 
 }

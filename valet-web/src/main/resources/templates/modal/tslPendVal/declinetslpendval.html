@@ -42,7 +42,8 @@ function declineTslPendVal() {
 
 		    table.rows().every(function(rowIdx, tableLoop, rowLoop) {
 		        var data = this.data();
-		        if (data.idTslPendVal == window.idTslPendVal) {
+		        debugger;
+		        if (data && data.idTslPendVal === Number(window.idTslPendVal)) {
 		            this.remove();
 		        }
 		    });

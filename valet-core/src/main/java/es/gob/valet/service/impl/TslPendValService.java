@@ -41,10 +41,12 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsCountryLanguage;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
+import es.gob.valet.exceptions.ImporTslsException;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 import es.gob.valet.i18n.messages.WebGeneralMessages;
@@ -94,12 +96,6 @@ public class TslPendValService implements ITslPendValService {
 	 */
 	@Autowired
 	private ISigningCertService iSigningCertService;
-
-	/**
-	 * Repository for accessing and managing persisted TSL data records.
-	 */
-	@Autowired
-	private TslDataRepository tslDataRepository;
 	
 	@Autowired
 	private TslCountryRegionRepository tslCountryRegionRepository;
@@ -267,6 +263,7 @@ public class TslPendValService implements ITslPendValService {
 				// Chequeamos si la TSL es una lista de listas
 				if(lotl) {
 					TslLotlData tslLotlData = tslCountryRegion.getTslData().getTslLotlData();
+					tslLotlData.setSigningCertificate(iTSLObject.getSignTsl().get().getEncoded());
 					// TODO: 921 - que campos actualizaremos y como los actualizaremos?¿?¿
 				}
 				TSLManager.getInstance().updateTSLData(tslCountryRegion.getTslData(), (byte[ ]) hashMapTslPendVal.get("xmlDocument") , hashMapTslPendVal.get("uriTslLocation").toString(), tslCountryRegion.getTslData().getLegibleDocument());
@@ -277,6 +274,8 @@ public class TslPendValService implements ITslPendValService {
 			tslPendValRepository.delete((TslPendVal) hashMapTslPendVal.get("tslPendVal"));
 		} catch (TSLManagingException e) {
 			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.LOG_TSLPENDVAL002), e);
+		} catch (CertificateEncodingException e) {
+			LOGGER.error(Language.getResCommonsUtilGeneral(CommonsUtilGeneralMessages.UTILS_CERTIFICATE_002), e);
 		}
 	}
 	
@@ -288,5 +287,17 @@ public class TslPendValService implements ITslPendValService {
 	public void declineTslPendVal(Long idTslPendVal) {
 		TslPendVal tslPendVal = tslPendValRepository.findById(idTslPendVal).get();
 		tslPendValRepository.delete(tslPendVal);
+	}
+	
+	public void addTslPendVal(TslPendVal tslPendVal) {
+		tslPendValRepository.save(tslPendVal);
+	}
+
+	public boolean exitsTslPendVal() {
+		return tslPendValRepository.findAll().size() > NumberConstants.NUM0 ? true : false;
+	}
+	
+	public boolean exitsTslPendVal(String country) {
+		return tslPendValRepository.findAll().stream().anyMatch(p -> p.getCountry().equals(country));
 	}
 }

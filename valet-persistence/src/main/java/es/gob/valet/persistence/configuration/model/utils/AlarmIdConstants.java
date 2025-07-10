@@ -85,4 +85,9 @@ public class AlarmIdConstants {
 	 * Constant attribute that represents the ID for the Alarm 011: Conexiones fallidas.
 	 */
 	public static final String ALM011_CONNECTION_FAIL = "ALM011";
+
+	/**
+	 * Constant attribute that represents the ID for the Alarm 012: Existen TSLs pendientes de validar.
+	 */
+	public static final String ALM012_EXISTING_TSL_PEND_VAL = "ALM012";
 }

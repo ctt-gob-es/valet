@@ -373,6 +373,46 @@ public class WebGeneralMessages {
 	 */
 	public static final String TASK_FIND_NEW_TSL_REV_LOG_013 = "task.findNewTslRev.LOG013";
 	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG014</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_014 = "task.findNewTslRev.LOG014";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG015</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_015 = "task.findNewTslRev.LOG015";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG016</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_016 = "task.findNewTslRev.LOG016";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG017</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_017 = "task.findNewTslRev.LOG017";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG018</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_018 = "task.findNewTslRev.LOG018";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG019</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_019 = "task.findNewTslRev.LOG019";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG020</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_020 = "task.findNewTslRev.LOG020";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG021</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_021 = "task.findNewTslRev.LOG021";
+	/**
 	 * Constant attribute that represents the name of the property <code>errorUpdateTask</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */

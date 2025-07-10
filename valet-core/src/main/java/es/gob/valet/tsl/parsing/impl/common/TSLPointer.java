@@ -53,6 +53,16 @@ public class TSLPointer implements Serializable {
 	 * Attribute that represents the URI location for this TSL Pointer.
 	 */
 	private URI tslLocation = null;
+	
+	private String tSLType;
+	
+	private String schemeTerritory;
+	
+	private String mimeType;
+	
+	private String name;
+	
+	private String uri;
 
 	/**
 	 * Attribute that represents the list of service digital identities associted to this TSL pointer.
@@ -117,4 +127,116 @@ public class TSLPointer implements Serializable {
 		}
 	}
 
+	
+	/**
+	 * Gets the value of the attribute {@link #tslLocation}.
+	 * @return the value of the attribute {@link #tslLocation}.
+	 */
+	public URI getTslLocation() {
+		return tslLocation;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #tslLocation}.
+	 * @param tslLocation The value for the attribute {@link #tslLocation}.
+	 */
+	public void setTslLocation(URI tslLocation) {
+		this.tslLocation = tslLocation;
+	}
+
+	
+	/**
+	 * Gets the value of the attribute {@link #tSLType}.
+	 * @return the value of the attribute {@link #tSLType}.
+	 */
+	public String gettSLType() {
+		return tSLType;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #tSLType}.
+	 * @param tSLType The value for the attribute {@link #tSLType}.
+	 */
+	public void settSLType(String tSLType) {
+		this.tSLType = tSLType;
+	}
+
+	
+	/**
+	 * Gets the value of the attribute {@link #schemeTerritory}.
+	 * @return the value of the attribute {@link #schemeTerritory}.
+	 */
+	public String getSchemeTerritory() {
+		return schemeTerritory;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #schemeTerritory}.
+	 * @param schemeTerritory The value for the attribute {@link #schemeTerritory}.
+	 */
+	public void setSchemeTerritory(String schemeTerritory) {
+		this.schemeTerritory = schemeTerritory;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #mimeType}.
+	 * @return the value of the attribute {@link #mimeType}.
+	 */
+	public String getMimeType() {
+		return mimeType;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #mimeType}.
+	 * @param mimeType The value for the attribute {@link #mimeType}.
+	 */
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #name}.
+	 * @return the value of the attribute {@link #name}.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #name}.
+	 * @param name The value for the attribute {@link #name}.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	/**
+	 * Gets the value of the attribute {@link #uri}.
+	 * @return the value of the attribute {@link #uri}.
+	 */
+	public String getUri() {
+		return uri;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #uri}.
+	 * @param uri The value for the attribute {@link #uri}.
+	 */
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #serviceDigitalIdentities}.
+	 * @param serviceDigitalIdentities The value for the attribute {@link #serviceDigitalIdentities}.
+	 */
+	public void setServiceDigitalIdentities(List<ServiceDigitalIdentity> serviceDigitalIdentities) {
+		this.serviceDigitalIdentities = serviceDigitalIdentities;
+	}
+	
 }

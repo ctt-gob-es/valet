@@ -36,16 +36,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
+import org.apache.logging.log4j.LogManager;
 import org.etsi.uri.x01903.v13.IdentifierType;
 import org.etsi.uri.x01903.v13.ObjectIdentifierType;
 import org.etsi.uri.x01903.v13.QualifierType;
 import org.w3.x2000.x09.xmldsig.SignatureType;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.AdditionalInformationType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.AdditionalServiceInformationDocument;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.AdditionalServiceInformationType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.AddressType;
+import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.AnyType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.DigitalIdentityListType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.DigitalIdentityType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.ElectronicAddressType;
@@ -77,6 +83,7 @@ import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.additionalTypes.ExtendedKe
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.additionalTypes.ExtendedKeyUsageType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.additionalTypes.TakenOverByDocument;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.additionalTypes.TakenOverByType;
+import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.impl.AnyTypeImpl;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.sie.CriteriaListType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.sie.KeyUsageBitType;
 import es.gob.afirma.xmlbeans.v230.tsl.r119612v020101.sie.KeyUsageType;
@@ -534,12 +541,69 @@ public class TSLBuilder extends ATSLBuilder {
 
 		}
 
-		// TODO: Falta tratar el AdditionalInformation de cada TSLPointer.
+		AdditionalInformationType additionalInformationType = tslPointer.getAdditionalInformation();
+		if (additionalInformationType != null && additionalInformationType.sizeOfOtherInformationArray() > 0) {
+		    AnyType[] arrayAnyType = additionalInformationType.getOtherInformationArray();
 
+		    for (AnyType anyType : arrayAnyType) {
+		        Node domNode = anyType.getDomNode();
+
+		        if (domNode != null && domNode.hasChildNodes()) {
+		            NodeList children = domNode.getChildNodes();
+
+		            for (int i = 0; i < children.getLength(); i++) {
+		                Node child = children.item(i);
+
+		                if (child.getNodeType() == Node.ELEMENT_NODE) {
+		                    String localName = child.getLocalName();
+		                    String namespace = child.getNamespaceURI();
+		                    String value = searchFirstTextNodeValue(child);
+
+		                    // Namespace de los elementos estándar
+		                    if ("http://uri.etsi.org/02231/v2#".equals(namespace)) {
+		                        switch (localName) {
+		                            case "TSLType":
+		                                result.settSLType(value);
+		                                break;
+		                            case "SchemeTerritory":
+		                                result.setSchemeTerritory(value);
+		                                break;
+		                            case "SchemeOperatorName":
+		                                result.setName(getFirstElementValueByLocalName(child, "Name"));
+		                                break;
+		                            case "SchemeTypeCommunityRules":
+		                                result.setUri(getFirstElementValueByLocalName(child, "URI"));
+		                                break;
+		                        }
+		                    }
+		                    // Namespace específico para MimeType
+		                    else if ("http://uri.etsi.org/02231/v2/additionaltypes#".equals(namespace)) {
+		                        if ("MimeType".equals(localName)) {
+		                            result.setMimeType(value);
+		                        }
+		                    }
+		                }
+		            }
+		        }
+		    }
+		}
+		
 		return result;
 
 	}
 
+	private String getFirstElementValueByLocalName(Node parent, String targetLocalName) {
+	    NodeList children = parent.getChildNodes();
+	    for (int i = 0; i < children.getLength(); i++) {
+	        Node child = children.item(i);
+	        if (child.getNodeType() == Node.ELEMENT_NODE && targetLocalName.equals(child.getLocalName())) {
+	            return searchFirstTextNodeValue(child);
+	        }
+	    }
+	    return null;
+	}
+
+	
 	/**
 	 * Private method that build a Service Digital Identity from the information loaded.
 	 * @param sdi XML Service Digital Identity representation.

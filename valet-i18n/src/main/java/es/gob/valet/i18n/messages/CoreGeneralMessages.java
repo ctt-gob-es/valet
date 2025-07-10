@@ -1327,6 +1327,12 @@ public class CoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	public static final String ALM011_EVENT_003 = "ALM011_EVENT_003";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM012_EVENT_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	public static final String ALM012_EVENT_001 = "ALM012_EVENT_001";
 	
 	/**
 	 * Constant attribute that represents the property key <code>CSAT_000</code> belonging to the

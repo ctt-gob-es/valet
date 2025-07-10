@@ -142,34 +142,37 @@ public class ValetConfigOwner {
 	 */
 	@Bean
 	public DataSource hsqlDataSource() {
-		JndiObjectFactoryBean bean = new JndiObjectFactoryBean();
-		bean.setJndiName(oracleJndiDataSource);
-		bean.setProxyInterface(DataSource.class);
-		try {
-			bean.afterPropertiesSet();
-		} catch (IllegalArgumentException | NamingException e) {
-			LOGGER.error(e);
+		// Para desarrollar con spring boot definimos la variable en la jvm mode_developer a true
+		boolean devMode = Boolean.parseBoolean(System.getProperty("mode_developer", "false"));
+
+		// Si no estamos en modo desarrollador obtenemos el datasource por jndi el cual es el que está configurado en los entornos productivos
+		if(!devMode) {
+			JndiObjectFactoryBean bean = new JndiObjectFactoryBean();
+			bean.setJndiName(oracleJndiDataSource);
+			bean.setProxyInterface(DataSource.class);
+			try {
+				bean.afterPropertiesSet();
+			} catch (IllegalArgumentException | NamingException e) {
+				LOGGER.error(e);
+			}
+			return (DataSource) bean.getObject();
+		} else {
+			HikariConfig config = new HikariConfig();
+		    
+		    // Configuración de HikariCP
+		    config.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:XE"); // Reemplaza con tu URL de la base de datos
+		    config.setUsername("VALET_CONFIGOWNER"); // Reemplaza con tu nombre de usuario
+		    config.setPassword("123456"); // Reemplaza con tu contraseña
+		    config.setDriverClassName("oracle.jdbc.OracleDriver"); // Driver de oracle
+		    
+		    // Configura el máximo de conexiones
+		    config.setMaximumPoolSize(10);
+		    config.setIdleTimeout(600000);
+		    
+		    // Crear la fuente de datos
+		    HikariDataSource dataSource = new HikariDataSource(config);
+		    
+		    return dataSource;
 		}
-		return (DataSource) bean.getObject();
 	}
-	
-//	@Bean
-//	public DataSource hsqlDataSource() {
-//	    HikariConfig config = new HikariConfig();
-//	    
-//	    // Configuración de HikariCP
-//	    config.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:XE"); // Reemplaza con tu URL de la base de datos
-//	    config.setUsername("VALET_CONFIGOWNER"); // Reemplaza con tu nombre de usuario
-//	    config.setPassword("123456"); // Reemplaza con tu contraseña
-//	    config.setDriverClassName("oracle.jdbc.OracleDriver"); // Driver de oracle
-//	    
-//	    // Configura el máximo de conexiones
-//	    config.setMaximumPoolSize(10);
-//	    config.setIdleTimeout(600000);
-//	    
-//	    // Crear la fuente de datos
-//	    HikariDataSource dataSource = new HikariDataSource(config);
-//	    
-//	    return dataSource;
-//	}
 }

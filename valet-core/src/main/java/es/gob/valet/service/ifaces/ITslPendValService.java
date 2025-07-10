@@ -27,6 +27,7 @@ package es.gob.valet.service.ifaces;
 import java.util.List;
 
 import es.gob.valet.persistence.configuration.model.dto.TslPendValDTO;
+import es.gob.valet.persistence.configuration.model.entity.TslPendVal;
 
 /**
  * <p>Interface that provides communication with the operations of the persistence layer in relation of the Tsl pending validation entity.</p>
@@ -67,6 +68,12 @@ public interface ITslPendValService {
 	 * @param idTslPendVal the ID of the pending TSL to decline
 	 */
 	void declineTslPendVal(Long idTslPendVal);
+
+	void addTslPendVal(TslPendVal tslPendVal);
+
+	boolean exitsTslPendVal();
+
+	boolean exitsTslPendVal(String schemeTerritory);
 	
 
 }
