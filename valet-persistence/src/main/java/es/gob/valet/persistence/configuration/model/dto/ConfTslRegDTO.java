@@ -81,7 +81,11 @@ public class ConfTslRegDTO {
     public ConfTslRegDTO(ConfTslReg confTslReg) {
         if (null != confTslReg) {
             this.idConfTslReg = confTslReg.getIdConfTslReg();
-            this.tslRegEnabled = confTslReg.getTslRegEnabled();
+            if(null == confTslReg.getTslRegEnabled()) {
+            	this.tslRegEnabled = Boolean.FALSE;
+            } else {
+            	this.tslRegEnabled = confTslReg.getTslRegEnabled();
+            }
             if (null != confTslReg.getModeRegTokenName()) {
                 this.idModeReg = Integer.valueOf(
                     confTslReg.getModeRegTokenName()
