@@ -125,7 +125,7 @@ public class FindNewTSLRevisionsTask extends Task {
 		// Obtenemos la configuración sobre el registro de TSLs
 		ConfTslRegDTO confTslRegDTO = iConfTslRegService.obtainConfTslReg();
 			
-		if(!confTslRegDTO.getTslRegEnabled()) {
+		if(null != confTslRegDTO.getTslRegEnabled() && !confTslRegDTO.getTslRegEnabled()) {
 			try {
 				// Obtenemos la lista de códigos de los países/regiones de TSL.
 				List<String> tslsCountryRegionCodes = TSLManager.getInstance().getAllTSLCountriesRegionsCodes();
