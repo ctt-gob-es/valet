@@ -93,7 +93,20 @@ public interface TslDataRepository extends JpaRepository<TslData, Long> {
 	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslDataDTO(tsl.idTslData, countryRegion.idTslCountryRegion, countryRegion.countryRegionName, tsl.sequenceNumber,tsl.issueDate,tsl.expirationDate, countryRegion.countryRegionCode)  FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion LEFT JOIN tsl.tslLotlData tslLotlData WHERE tslLotlData IS NULL")
 	List<TslDataDTO> findAllTslDataDTO();
 
+	/**
+	 * Retrieves all TSL data entries that are part of the List of Trusted Lists (LOTL),
+	 * returning them as DTOs with selected fields.
+	 *
+	 * @return A list of {@link TslDataDTO} containing filtered TSL data and country region information.
+	 */
 	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslDataDTO(tsl.idTslData, countryRegion.idTslCountryRegion, countryRegion.countryRegionName, tsl.sequenceNumber,tsl.issueDate,tsl.expirationDate, countryRegion.countryRegionCode)  FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion JOIN tsl.tslLotlData tslLotlData")
 	List<TslDataDTO> findAllTslLotlDataDTO();
 
+	/**
+	 * Retrieves all full {@link TslData} entities that are associated with LOTL entries.
+	 *
+	 * @return A list of {@link TslData} objects linked to the List of Trusted Lists.
+	 */
+	@Query("SELECT tsl FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion JOIN tsl.tslLotlData tslLotlData")
+	List<TslData> findAllTslDataWithTslLotlData();
 }

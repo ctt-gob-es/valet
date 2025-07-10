@@ -80,5 +80,10 @@ public interface IAlarmIdConstants {
 	 * Constant attribute that represents the ID for the Alarm 010: No se confía en la respuesta OCPS, su emisor está registrado y aún no ha sido validado.
 	 */
 	String ALM010_OCSP_RESPONSE_NOT_TRUSTED = "ALM010";
+
+	/**
+	 * Constant attribute that represents the ID for the Alarm 012: Existen TSLs pendientes de validar.
+	 */
+	String ALM011_EXISTING_TSL_PEND_VAL = "ALM011";
 	
 }

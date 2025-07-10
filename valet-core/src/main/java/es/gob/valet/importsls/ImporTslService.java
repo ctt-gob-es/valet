@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.cert.CertificateEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -60,9 +61,9 @@ import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.ImporTslsException;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
-import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.dto.MappingByServSummary;
 import es.gob.valet.persistence.configuration.model.dto.MappingByTslSummary;
@@ -692,7 +693,8 @@ public class ImporTslService implements IImporTslService {
 			String urlTsl = tslDataDTO.getUriTslLocation();
 			String specificationTsl = tslDataDTO.getcTslImplDTO().getSpecification();
 			String versionTsl = tslDataDTO.getcTslImplDTO().getVersion();
-
+			String responsible = tslDataDTO.getResponsible();
+			
 			// Obtenemos la TSL
 			ITSLObject tslObject = TSLManager.getInstance().obtainTslAndCertFromSign(urlTsl, specificationTsl, versionTsl, tslXMLbytes);
 
@@ -723,6 +725,7 @@ public class ImporTslService implements IImporTslService {
 					}
 				}
 			}
+			tslData.setResponsible(responsible);
 			tslData.setUriTslLocation(uriTslLocation);
 			tslData.setXmlDocument(tslXMLbytes);
 			tslData.setIssueDate(tslObject.getSchemeInformation().getListIssueDateTime());
@@ -730,12 +733,14 @@ public class ImporTslService implements IImporTslService {
 			tslData.setSequenceNumber(tslObject.getSchemeInformation().getTslSequenceNumber());
 			tslData.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
 			
-			// Evaluaremos si es una lista de listas
+			// Evaluamos si la TSL es una lista de listas
 			TSLValidator tSLValidator = new TSLValidator(tslObject);
 			if(tSLValidator.checkIfTSLisListOfLists(tslObject.getSchemeInformation().getTslType().toString())) {
-				TslLotlData tslLotlData = tslData.getTslLotlData();
-				tslData.setTslLotlData(tslLotlData);
 				// TODO: 921 - que campos insertaremos y como los insertaremos?¿?¿
+				TslLotlData tslLotlData = new TslLotlData();
+				tslLotlData.setSigningCertificate(tslObject.getSignTsl().get().getEncoded());
+				// añadimos la información de la lista de listas a la TSL asociada
+				tslData.setTslLotlData(tslLotlData);
 			}
 			
 			// Lo añadimos en base de datos.
@@ -755,6 +760,9 @@ public class ImporTslService implements IImporTslService {
 			throw new ImporTslsException();
 		} catch (TSLCacheException e) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP008), e);
+			throw new ImporTslsException();
+		} catch (CertificateEncodingException e) {
+			LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_002), e);
 			throw new ImporTslsException();
 		}
 		
@@ -779,23 +787,29 @@ public class ImporTslService implements IImporTslService {
 	private void updateTsls(TslDataDTO tslDataDTO, TslCountryRegion tslCountryRegion) throws ImporTslsException {
 		try {
 			TslData tslData = tslCountryRegion.getTslData();
+			byte [] byteTsl = Base64.getDecoder().decode(tslDataDTO.getXmlDocument());
 			
+			CTslImpl cTslImpl = cTslImplRepository.findAll().stream().filter(p -> p.getSpecification().equals(tslDataDTO.getcTslImplDTO().getSpecification())).findAny().orElse(null);
 			tslData.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
 			tslData.setLastNewTSLAvailableFind(null);
 			tslData.setSequenceNumber(tslDataDTO.getSequenceNumber());
 			tslData.setResponsible(tslDataDTO.getResponsible());
 			tslData.setIssueDate(UtilsDate.transformDate(tslDataDTO.getIssueDate(), UtilsDate.FORMAT_DATE_TIME_STANDARD));
 			tslData.setExpirationDate(tslDataDTO.getExpirationDate() != null && !tslDataDTO.getExpirationDate().isEmpty() ? UtilsDate.transformDate(tslDataDTO.getExpirationDate(), UtilsDate.FORMAT_DATE_TIME_STANDARD) : null);
-			tslData.setXmlDocument(Base64.getDecoder().decode(tslDataDTO.getXmlDocument()));
+			tslData.setXmlDocument(byteTsl);
+			tslData.setUriTslLocation(tslDataDTO.getUriTslLocation());
+			tslData.setTslImpl(cTslImpl);
 			
 			// Obtenemos la TSL
-			TSLDataCacheObject tdco = TSLManager.getInstance().getTSLDataCacheObject(tslCountryRegion.getTslData().getIdTslData());
-			ITSLObject tslObject = (ITSLObject) tdco.getTslObject();
+			String specificationTsl = tslDataDTO.getcTslImplDTO().getSpecification();
+			String versionTsl = tslDataDTO.getcTslImplDTO().getVersion();
+			ITSLObject tslObject = TSLManager.getInstance().obtainTslAndCertFromSign(tslDataDTO.getUriTslLocation(), specificationTsl, versionTsl, byteTsl);
 			
 			// Evaluaremos si es una lista de listas
 			TSLValidator tSLValidator = new TSLValidator(tslObject);
 			if(tSLValidator.checkIfTSLisListOfLists(tslObject.getSchemeInformation().getTslType().toString())) {
 				TslLotlData tslLotlData = tslData.getTslLotlData();
+				tslLotlData.setSigningCertificate(tslObject.getSignTsl().get().getEncoded());
 				// TODO: 921 - que campos actualizaremos y como los actualizaremos?¿?¿
 			}
 						
@@ -819,6 +833,9 @@ public class ImporTslService implements IImporTslService {
 			throw new ImporTslsException();
 		} catch (TSLCacheException e) {
 			LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.LOG_IMP011), e);
+			throw new ImporTslsException();
+		} catch (CertificateEncodingException e) {
+			LOGGER.error(Language.getResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_CERTIFICATE_002), e);
 			throw new ImporTslsException();
 		}
 	}

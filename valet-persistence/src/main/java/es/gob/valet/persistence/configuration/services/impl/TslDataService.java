@@ -201,5 +201,10 @@ public class TslDataService implements ITslDataService {
 	public List<TslDataDTO> obtainAllLotlDTO() {
 		return repository.findAllTslLotlDataDTO();
 	}
+	
+	public List<TslData> obtainAllTslDataWithTslLotlData() {
+		return repository.findAllTslDataWithTslLotlData();
+	}
+	
 
 }

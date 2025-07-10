@@ -81,6 +81,15 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 		return result;
 	}
 	
+	public boolean existsTslForThisCountry(String countryRegionCode) {
+		TslCountryRegion result = repository.findByCountryRegionCode(countryRegionCode);
+		if(null != result) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	/**
 	 *  
 	 * {@inheritDoc}

@@ -111,4 +111,6 @@ public interface ITslCountryRegionService {
 	 */
 	TslCountryRegion getTslCountryRegionWithTslData(String countryRegionCode);
 
+	boolean existsTslForThisCountry(String schemeTerritory);
+
 }

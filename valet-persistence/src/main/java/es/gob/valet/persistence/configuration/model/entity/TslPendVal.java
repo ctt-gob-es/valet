@@ -81,6 +81,9 @@ public class TslPendVal implements Serializable {
 	@Column(name = "XML_DOCUMENT", nullable = false)
 	private byte[] xmlDocument;
 	
+	@Column(name = "COUNTRY", nullable = false)
+	private String country;
+	
 	/**
 	 * Gets the value of the attribute {@link #idTslPendVal}.
 	 * @return the value of the attribute {@link #idTslPendVal}.
@@ -115,5 +118,20 @@ public class TslPendVal implements Serializable {
 		this.xmlDocument = xmlDocument;
 	}
 	
+	/**
+	 * Gets the value of the attribute {@link #country}.
+	 * @return the value of the attribute {@link #country}.
+	 */
+	public String getCountry() {
+		return country;
+	}
+	
+	/**
+	 * Sets the value of the attribute {@link #country}.
+	 * @param country The value for the attribute {@link #country}.
+	 */
+	public void setCountry(String country) {
+		this.country = country;
+	}
 	
 }

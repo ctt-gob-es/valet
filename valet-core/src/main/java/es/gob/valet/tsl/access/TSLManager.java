@@ -25,7 +25,6 @@
 package es.gob.valet.tsl.access;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -2152,8 +2151,9 @@ public final class TSLManager {
 	 * @param lotl {@code true} if the TSL is also a LOTL; in this case, a {@link TslLotlData} will be created and linked.
 	 *
 	 * @return The persisted {@link TslData} entity created in the database.
+	 * @throws CertificateEncodingException 
 	 */
-	private TslData addNewTSLDataInDataBase(TslCountryRegion tcrp, CTslImpl ctip, String urlTsl, byte[ ] tslXMLbytes, ITSLObject tslObject, Boolean lotl) {
+	private TslData addNewTSLDataInDataBase(TslCountryRegion tcrp, CTslImpl ctip, String urlTsl, byte[ ] tslXMLbytes, ITSLObject tslObject, Boolean lotl) throws CertificateEncodingException {
 
 		// Counstruimos el TslDataPojo y vamos insertando los datos.
 		TslData td = new TslData();
@@ -2179,9 +2179,11 @@ public final class TSLManager {
 		td.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
 
 		if(lotl) {
-			TslLotlData tslLotlData = new TslLotlData();
-			td.setTslLotlData(tslLotlData);
 			// TODO: 921 - que campos insertaremos y como los insertaremos?¿?¿
+			TslLotlData tslLotlData = new TslLotlData();
+			tslLotlData.setSigningCertificate(tslObject.getSignTsl().get().getEncoded());
+			// añadimos la información de la lista de listas a la TSL asociada
+			td.setTslLotlData(tslLotlData);
 		}
 
 		// Lo añadimos en base de datos.

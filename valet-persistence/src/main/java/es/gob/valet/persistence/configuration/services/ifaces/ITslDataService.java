@@ -137,4 +137,6 @@ public interface ITslDataService {
 	 */
 	List<TslDataDTO> obtainAllLotlDTO();
 
+	List<TslData> obtainAllTslDataWithTslLotlData();
+	
 }

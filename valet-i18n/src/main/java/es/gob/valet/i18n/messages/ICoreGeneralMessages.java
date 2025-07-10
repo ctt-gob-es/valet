@@ -1304,6 +1304,12 @@ public interface ICoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	String ALM010_EVENT_000 = "ALM010_EVENT_000";
+
+	/**
+	 * Constant attribute that represents the property key <code>ALM012_EVENT_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	public static final String ALM011_EVENT_001 = "ALM011_EVENT_001";
 	
 	/**
 	 * Constant attribute that represents the property key <code>CSAT_000</code> belonging to the
@@ -1339,4 +1345,26 @@ public interface ICoreGeneralMessages {
 	 * file messages/valet-core/general_xx_YY.properties.
 	 */
 	String CC_001 = "CC_001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>HVMDM_001</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HVMDM_001 = "HVMDM_001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>HVMDM_002</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HVMDM_002 = "HVMDM_002";
+	/**
+	 * Constant attribute that represents the property key <code>HVMDM_003</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HVMDM_003 = "HVMDM_003";
+	/**
+	 * Constant attribute that represents the property key <code>HVMDM_004</code> belonging to the
+	 * file messages/valet-core/general_xx_YY.properties.
+	 */
+	String HVMDM_004 = "HVMDM_004";
 }
