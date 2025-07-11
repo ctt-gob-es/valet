@@ -175,6 +175,21 @@
 	                	</li>
 	                </ul>
 				</li>
+				<li class="nav-item">
+					<a id="aCertificateValidationAdmin" class='sidebar-link' href="#">
+						<span class="icon-holder">
+							<i class="c-brown-500 ti-check-box"></i>
+						</span>
+						<span class="title" th:text="#{menu.admin.certificateValidation}"></span>
+						<script th:inline="javascript">
+		                 	var actionCertificatevalidation = /*[[@{/loadCertificateValidation}]]*/;
+		                 	$('#aCertificateValidationAdmin').click(function(e) {
+		                 		e.preventDefault(); 
+		                 		loadIntoAjax('formMenu', actionCertificatevalidation, 'optionReplacement', 'GET', null, true); return false;
+	                 		});
+	                	</script>
+					</a>
+				</li>
 				<li class="nav-item dropdown"><a class='sidebar-link' href="#">
 						<span class="icon-holder"><i
 							class="c-black-500 ti-settings"></i></span> <span class="title"

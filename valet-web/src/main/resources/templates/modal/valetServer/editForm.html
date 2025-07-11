@@ -1,0 +1,112 @@
+<!-- Modal edición ValetServer -->
+<div class="modal fade" id="modalEditValetServer" tabindex="-1" role="dialog" aria-labelledby="modalEditValetServerLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<form id="valetServerFormEdit"
+		      th:object="${valetServerForm}"
+		      th:attr="data-id=*{idValetServer}"
+		      th:action="@{/valetServer}"
+		      method="post">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" th:text="#{valet.modal.editTitle}">Editar Servidor</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span>&times;</span>
+					</button>
+				</div>
+
+				<div class="modal-body">
+					<input type="hidden" id="idValetServer" th:field="*{idValetServer}" />
+
+					<!-- Nombre del servidor -->
+					<div class="form-group">
+						<label for="serverName" th:text="#{valet.server.name}"></label>
+						<script th:inline="javascript">
+							var messageServerName = /*[[#{valet.server.name.pattern}]]*/ 'default';
+						</script>
+						<span id="serverName_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageServerName);" type="text" id="serverName" th:field="*{serverName}" class="form-control" required pattern=".{3,255}" />
+					</div>
+
+					<!-- URL del servidor -->
+					<div class="form-group">
+						<label for="serverUrl" th:text="#{valet.server.url}"></label>
+						<script th:inline="javascript">
+							var messageServerUrl = /*[[#{valet.server.url.pattern}]]*/ 'default';
+						</script>
+						<span id="serverUrl_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageServerUrl);" type="url" id="serverUrl" th:field="*{serverUrl}" class="form-control" required pattern=".{3,4000}" />
+					</div>
+
+					<!-- Aplicación -->
+					<div class="form-group">
+						<label for="application" th:text="#{valet.server.app}"></label>
+						<script th:inline="javascript">
+							var messageApplication = /*[[#{valet.server.app.pattern}]]*/ 'default';
+						</script>
+						<span id="application_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageApplication);" type="text" id="application" th:field="*{application}" class="form-control" required pattern=".{2,100}" />
+					</div>
+
+					<!-- Versión -->
+					<div class="form-group">
+						<label for="version" th:text="#{valet.server.version}"></label>
+						<span id="version_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<select id="version" th:field="*{version}" class="form-control" required>
+							<option value="">--</option>
+							<option value="1.1.0" th:selected="${valetServerForm.version == '1.1.0'}">v.1.1.0</option>
+							<option value="1.2.0" th:selected="${valetServerForm.version == '1.2.0'}">v.1.2.0 o superior</option>
+						</select>
+					</div>
+
+					<!-- Timeout -->
+					<div class="form-group">
+						<label for="connectionTimeout" th:text="#{valet.server.timeout}"></label>
+						<script th:inline="javascript">
+							var messageTimeout = /*[[#{valet.server.timeout.pattern}]]*/ 'default';
+						</script>
+						<span id="connectionTimeout_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageTimeout);" type="number" id="connectionTimeout" th:field="*{connectionTimeout}" class="form-control" min="100" max="100000" required />
+					</div>
+
+					<!-- Error general -->
+					<div id="errorModalEdit" class="alert alert-danger d-none" role="alert"></div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{button.cancel}">Cancelar</button>
+					<button type="submit" class="btn btn-primary" id="editBtn" th:text="#{button.save}">Guardar</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script th:inline="javascript">
+	$("#valetServerFormEdit").submit(function (event) {
+		event.preventDefault();
+
+		const idValetServer = $("#idValetServer").val();
+		const formData = JSON.stringify($(this).serializeJSON());
+		const updateUrl = /*[[@{/valetServer}]]*/ '';
+
+		loading();
+
+		$.ajax(updateUrl + "?" + $.param({ id: idValetServer }), {
+			type: "PUT",
+			data: formData,
+			contentType: "application/json",
+			dataType: "json",
+			success: function () {
+				hide();
+				$("#modalEditValetServer").modal("hide");
+				valetTable.ajax.reload();
+				updateServerSelect();
+			},
+			error: function () {
+				hide();
+				const msgError = /*[[#{form.valetServer.error}]]*/ 'Error al actualizar servidor.';
+				$("#errorModalEdit").removeClass("d-none").text(msgError);
+			}
+		});
+	});
+</script>

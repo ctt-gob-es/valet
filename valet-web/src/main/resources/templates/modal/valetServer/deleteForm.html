@@ -1,0 +1,62 @@
+<!-- Modal eliminar ValetServer -->
+<div class="modal fade" id="modalDeleteValetServer" tabindex="-1" role="dialog" aria-labelledby="modalDeleteValetServerLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<form id="valetServerFormDelete" th:object="${valetServerForm}">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" th:text="#{valet.modal.deleteTitle}">Eliminar Servidor</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span>&times;</span>
+					</button>
+				</div>
+
+				<div class="modal-body">
+					<input type="hidden" id="idValetServer" th:field="*{idValetServer}" />
+
+					<p th:text="#{valet.modal.deleteConfirm}">¿Estás seguro de que deseas eliminar este servidor?</p>
+
+					<ul class="list-group">
+						<li class="list-group-item"><strong th:text="#{valet.server.name} + ':'"></strong> <span th:text="*{serverName}"></span></li>
+						<li class="list-group-item"><strong th:text="#{valet.server.url} + ':'"></strong> <span th:text="*{serverUrl}"></span></li>
+						<li class="list-group-item"><strong th:text="#{valet.server.app} + ':'"></strong> <span th:text="*{application}"></span></li>
+					</ul>
+
+					<!-- Error general -->
+					<div id="errorModalDelete" class="alert alert-danger d-none mt-3" role="alert"></div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{button.cancel}">Cancelar</button>
+					<button type="button" class="btn btn-danger" id="confirmDeleteBtn" th:text="#{button.delete}">Eliminar</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script th:inline="javascript">
+	$('#confirmDeleteBtn').click(function (e) {
+		e.preventDefault();
+
+		const idServer = $('#valetServerFormDelete #idValetServer').val();
+		const deleteUrl = /*[[@{/valetServer}]]*/ '';
+
+		loading();
+
+		$.ajax(deleteUrl, {
+			data: $.param({ id: idServer }),
+			type: 'DELETE',
+			success: function () {
+				hide();
+				$('#modalDeleteValetServer').modal('hide');
+				valetTable.ajax.reload();
+				updateServerSelect();
+			},
+			error: function () {
+				hide();
+				const msgError = /*[[#{valet.msg.error.delete}]]*/ 'Error al eliminar el servidor.';
+				$('#errorModalDelete').removeClass('d-none').text(msgError);
+			}
+		});
+	});
+</script>

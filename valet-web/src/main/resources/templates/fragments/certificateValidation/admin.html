@@ -1,0 +1,329 @@
+<div class="container-fluid">
+    <h4 class="c-grey-900 mT-10 mB-30" th:text="#{valet.validation.title}"></h4>
+
+    <!-- Botón para mostrar/ocultar tabla -->
+    <button class="btn btn-primary mb-3 ml-3" type="button" id="toggleTableBtn" th:text="#{valet.button.toggleTable}"></button>
+
+    <!-- Tabla de servidores -->
+    <div class="masonry-item col-md-12 mb-3" id="valetTableContainer" style="display:none;">
+        <div class="bgc-white p-20 bd">
+            <table id="valetServersTable" class="table table-bordered table-hover w-100">
+                <thead>
+                    <tr>
+                        <th th:text="#{valet.server.name}"></th>
+                        <th th:text="#{valet.server.url}"></th>
+                        <th th:text="#{valet.server.app}"></th>
+                        <th th:text="#{valet.server.version}"></th>
+                        <th th:text="#{valet.server.timeout}"></th>
+                        <th th:text="#{valet.server.actions}"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rellenado por JavaScript -->
+                </tbody>
+            </table>
+            <button class="btn btn-primary mt-3" id="btnAddServer" th:text="#{valet.button.addServer}"></button>
+        </div>
+    </div>
+
+    <!-- Formulario principal -->
+    <div class="masonry-item col-md-12">
+        <div class="bgc-white p-20 bd">
+            <div class="mT-30">
+                <form id="valetValidationForm" th:action="@{/validateCertificate}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="advancedMode" name="advancedMode" value="false">
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="valetServerSelect" th:text="#{valet.select.server}"></label>
+                            <select class="form-control" id="valetServerSelect" name="valetServerSelect">
+                                <option value="" th:text="#{valet.select.option}"></option>
+                                <!-- Rellenado dinámicamente -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="certFile" th:text="#{valet.select.certificate}"></label>
+                            <input type="file" class="form-control-file" id="certFile" name="certFile" accept=".cer,.crt">
+                            <span id="certFile_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <input type="checkbox" id="fetchMappings" name="fetchMappings" class="mr-2">
+                            <label for="fetchMappings" th:text="#{valet.checkbox.mappings}"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12 d-flex gap-buttons">
+							<button type="submit" id="validateCertBtn" class="btn btn-primary"
+								th:text="#{valet.button.validate}"
+								data-advanced="false">
+							</button>
+							<button type="button" id="advancedConfigBtn" class="btn btn-secondary" th:text="#{valet.button.advanced}"></button>
+							<button type="reset" class="btn btn-danger" th:text="#{valet.button.clearForm}"></button>
+						</div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+	var valetTable;
+	
+	$(document).ready(function () {
+		valetTable = $('#valetServersTable').DataTable({
+			responsive: true,
+			ajax: {
+				url: /*[[@{/valetServer}]]*/,
+				dataSrc: ''
+			},
+			columns: [
+				{ data: 'serverName' },
+				{ data: 'serverUrl' },
+				{ data: 'application' },
+				{ 
+					data: 'version',
+					render: function (data) {
+						// Traduce versión numérica a formato texto
+						if (data === 1) return "1.1.0";
+						if (data === 2) return "1.2.0 o superior";
+						return data;
+					}
+				},
+				{ data: 'connectionTimeout' },
+				{
+					data: 'idValetServer',
+					render: function (id) {
+						return `
+							<button class="btn btn-sm" onclick="editServer(${id})" title="Editar">
+								<i class="ti-pencil" style="font-size: 1.2rem;"></i>
+							</button>
+							<button class="btn btn-sm btn-danger" onclick="deleteServer(${id})" title="Eliminar">
+								<i class="ti-trash" style="font-size: 1.2rem;"></i>
+							</button>
+						`;
+					}
+				}
+			]
+		});
+	
+		$('#toggleTableBtn').click(() => {
+			$('#valetTableContainer').toggle();
+			valetTable.ajax.reload(); // Recarga datos
+		});
+	
+		$('#btnAddServer').click(function (event) {
+			event.preventDefault();
+
+			const url = /*[[@{/addValetServer}]]*/;
+
+			loading();
+
+			$.ajax({
+				type: "GET",
+				url: url,
+				success: function (html) {
+					hide();
+
+					// Si ya existe el modal, lo quitamos antes de insertar
+					if ($('#modalAddValetServer').length > 0) {
+						$('#modalAddValetServer').remove();
+					}
+
+					$('body').append(html); // Insertamos el contenido del modal recibido
+					$('#modalAddValetServer').modal('show');
+				},
+				error: function () {
+					hide();
+					alert("Error al cargar el formulario de alta de servidor.");
+				}
+			});
+		});
+	
+		// Validación simple
+		$('#validateCertBtn').click(function (e) {
+			e.preventDefault();
+	
+			const certFile = document.getElementById("certFile").files[0];
+			const valetServerId = document.getElementById("valetServerSelect").value;
+			const isAdvanced = document.getElementById("advancedMode").value === "true";
+			const fetchMappings = document.getElementById("fetchMappings").checked;
+	
+			if (!valetServerId) {
+				alert(/*[[#{valet.alert.selectServer}]]*/ 'Selecciona un servidor');
+				return;
+			}
+	
+			if (!certFile || !/\.(cer|crt)$/i.test(certFile.name)) {
+				$('#certFile_span').text(/*[[#{valet.alert.invalidCert}]]*/ 'Certificado inválido')
+					.addClass('badge bgc-red-50 c-red-700');
+				return;
+			} else {
+				$('#certFile_span').text('');
+			}
+	
+			const endpoint = isAdvanced
+				? /*[[@{/validateCertificate/advanced}]]*/ '/validateCertificate/advanced'
+				: /*[[@{/validateCertificate/simple}]]*/ '/validateCertificate/simple';
+	
+			const formData = new FormData();
+			formData.append("valetServerSelect", valetServerId);
+			formData.append("certFile", certFile);
+			formData.append("fetchMappings", fetchMappings);
+	
+			loading();
+	
+			$.ajax({
+				type: "POST",
+				url: endpoint,
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function (data) {
+					hide();
+					alert(/*[[#{valet.success.validation}]]*/ 'Validación completada.');
+					console.log(data);
+				},
+				error: function (xhr) {
+					hide();
+					const msg = xhr.responseText || 'Error al validar el certificado.';
+					$('#certFile_span').text(msg).addClass('badge bgc-red-50 c-red-700');
+				}
+			});
+		});
+
+		// Validación avanzada
+		$('#advancedValidateBtn').click(function (e) {
+			e.preventDefault();
+			sendValidationRequest(true);
+		});
+	    
+	    updateServerSelect();
+	});
+
+	function updateServerSelect() {
+		const $select = $('#valetServerSelect');
+		const placeholder = '<option value="">' + /*[[#{valet.select.option}]]*/ '-- Selecciona un servidor --' + '</option>';
+
+		$.ajax({
+			type: "GET",
+			url: /*[[@{/valetServer}]]*/,
+			dataType: "json",
+			success: function (data) {
+				$select.empty().append(placeholder);
+				data.forEach(server => {
+					const option = $('<option>')
+						.val(server.idValetServer)
+						.text(server.serverName);
+					$select.append(option);
+				});
+			},
+			error: function () {
+				alert("Error al cargar servidores ValET.");
+			}
+		});
+	}
+	
+	function editServer(id) {
+		const loadEditUrl = /*[[@{/editValetServer}]]*/ '';
+
+		$.ajax(loadEditUrl, {
+			data: $.param({ id: id }),
+			type: 'GET',
+			success: function (html) {
+				hide();
+
+				if ($('#modalEditValetServer').length > 0) {
+					$('#modalEditValetServer').remove();
+				}
+
+				$('body').append(html);
+				$('#modalEditValetServer').modal('show');
+			},
+			error: function () {
+				hide();
+				const msgError = /*[[#{valet.msg.error.loadEdit}]]*/ 'Error al cargar el formulario de edición.';
+				$('body').append('<div class="alert alert-danger" role="alert"><strong>' + msgError + '</strong></div>');
+			}
+		});
+	}
+	
+	function deleteServer(id) {
+		const loadDeleteUrl = /*[[@{/deleteValetServer}]]*/ '';
+
+		$.ajax(loadDeleteUrl, {
+			data: $.param({ id: id }),
+			type: 'GET',
+			success: function (html) {
+				hide();
+
+				if ($('#modalDeleteValetServer').length > 0) {
+					$('#modalDeleteValetServer').remove();
+				}
+
+				$('body').append(html);
+				$('#modalDeleteValetServer').modal('show');
+			},
+			error: function () {
+				hide();
+				const msgError = /*[[#{valet.msg.error.loadDelete}]]*/ 'Error al cargar el formulario de eliminación.';
+				$('body').append('<div class="alert alert-danger" role="alert"><strong>' + msgError + '</strong></div>');
+			}
+		});
+	}
+	
+	function sendValidationRequest(isAdvanced) {
+		const fileInput = document.getElementById("certFile");
+		const serverId = document.getElementById("valetServerSelect").value;
+		const certFile = fileInput.files[0];
+
+		if (!serverId) {
+			alert(/*[[#{valet.alert.selectServer}]]*/ 'Selecciona un servidor');
+			return;
+		}
+
+		if (!certFile || !/\.(cer|crt)$/i.test(certFile.name)) {
+			$('#certFile_span').text(/*[[#{valet.alert.invalidCert}]]*/ 'Certificado inválido')
+				.addClass('badge bgc-red-50 c-red-700');
+			return;
+		} else {
+			$('#certFile_span').text('');
+		}
+
+		const endpoint = isAdvanced 
+			? /*[[@{/validateCertificate/advanced}]]*/ '/validateCertificate/advanced'
+			: /*[[@{/validateCertificate/simple}]]*/ '/validateCertificate/simple';
+
+		const formData = new FormData();
+		formData.append("valetServerId", serverId);
+		formData.append("certFile", certFile);
+
+		loading();
+
+		$.ajax({
+			type: "POST",
+			url: endpoint,
+			data: formData,
+			processData: false,
+			contentType: false,
+			success: function (response) {
+				hide();
+				alert(/*[[#{valet.success.validation}]]*/ 'Validación completada.');
+				console.log(response);
+			},
+			error: function (xhr) {
+				hide();
+				const errorMsg = xhr.responseText || "Error al validar el certificado.";
+				$('#certFile_span').text(errorMsg)
+					.addClass('badge bgc-red-50 c-red-700');
+			}
+		});
+	}
+</script>
