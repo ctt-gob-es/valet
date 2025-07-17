@@ -209,13 +209,6 @@ public class FindNewTSLRevisionsTask extends Task {
 	 *
 	 * @param confTslRegDTO DTO containing the LOTL update configuration, including
 	 *                      registration mode and filter type.
-	 * @throws CommonUtilsException If an error occurs during the TSL download or processing.
-	 * @throws TSLArgumentException If there is an issue with TSL parameters.
-	 * @throws TSLParsingException If the downloaded TSL cannot be parsed correctly.
-	 * @throws TSLMalformedException If the TSL format is invalid.
-	 * @throws IOException If there is an I/O error during processing.
-	 * @throws TSLManagingException If an error occurs during TSL management.
-	 * @throws CertificateEncodingException If a certificate in the TSL is improperly encoded.
 	 */
 	private void updatedLotlWithCurrentVersion(ConfTslRegDTO confTslRegDTO) throws CommonUtilsException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException, TSLManagingException, CertificateEncodingException {
 		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_014));
@@ -238,6 +231,12 @@ public class FindNewTSLRevisionsTask extends Task {
 				}
 				// Actualizaremos las TSLs de nuestro sistema con las TSLs descargadas a partir de la lista de listas
 				this.updatedTSLCurrentVersionWithTSLLocationFromLotl(iTSLObjectLotlDownload, idTypeFilterReg, idModeReg);
+			} catch (CertificateEncodingException | TSLManagingException e) {
+				// Si se produce algun fallo en la actualizacion de BD imprimimos el fallo
+				LOGGER.error(e);
+			} catch (TSLArgumentException | TSLParsingException | TSLMalformedException | IOException e) {
+				// Si se produce algun fallo en la construccion de la TSL imprimimos el fallo
+				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_022), e);
 			} catch (CommonUtilsException e) {
 				// Si se produce algun fallo en la descarga de la TSL lanzamos la alarma
 				LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_010, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName() }));
@@ -258,13 +257,6 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @param iTSLObjectLotlDownload The LOTL object containing TSL pointers to process.
 	 * @param idTypeFilterReg The registration filter type (e.g., whether to register all TSLs).
 	 * @param idModeReg The registration mode to apply for updates.
-	 * @throws CommonUtilsException If an error occurs during the TSL download or decoding.
-	 * @throws TSLArgumentException If there is an invalid parameter in TSL data.
-	 * @throws TSLParsingException If parsing the TSL fails.
-	 * @throws TSLMalformedException If the TSL structure is invalid.
-	 * @throws IOException If there is an I/O issue during processing.
-	 * @throws TSLManagingException If TSL management fails.
-	 * @throws CertificateEncodingException If certificate encoding is incorrect or unsupported.
 	 */
 	private void updatedTSLCurrentVersionWithTSLLocationFromLotl(ITSLObject iTSLObjectLotlDownload, int idTypeFilterReg, int idModeReg) throws CommonUtilsException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException, TSLManagingException, CertificateEncodingException {
 		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_016));
@@ -289,6 +281,12 @@ public class FindNewTSLRevisionsTask extends Task {
 							LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_017, new Object[ ] { tslCountryRegion.getCountryRegionName()}));
 							updatesTSLforLoggingMode(idModeReg, tslDataBD, tslLocation, fullTSLxml, iTSLObjectTslDownload);
 						}
+					} catch (CertificateEncodingException | TSLManagingException e) {
+						// Si se produce algun fallo en la actualizacion de BD imprimimos el fallo
+						LOGGER.error(e);
+					} catch (TSLArgumentException | TSLParsingException | TSLMalformedException | IOException e) {
+						// Si se produce algun fallo en la construccion de la TSL imprimimos el fallo
+						LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_022), e);
 					} catch (CommonUtilsException e) {
 						// Si se produce algun fallo en la descarga de la TSL lanzamos la alarma
 						LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_010, new Object[ ] { UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory) }));
