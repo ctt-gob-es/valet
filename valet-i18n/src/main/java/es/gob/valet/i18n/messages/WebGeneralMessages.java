@@ -413,6 +413,11 @@ public class WebGeneralMessages {
 	 */
 	public static final String TASK_FIND_NEW_TSL_REV_LOG_021 = "task.findNewTslRev.LOG021";
 	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG022</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_022 = "task.findNewTslRev.LOG022";
+	/**
 	 * Constant attribute that represents the name of the property <code>errorUpdateTask</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
