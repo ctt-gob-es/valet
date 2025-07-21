@@ -181,13 +181,6 @@ public class FindNewTSLRevisionsTask extends Task {
 			try {
 				// Actualizaremos todas las listas de listas a la versión mas reciente si está disponible
 				updatedLotlWithCurrentVersion(confTslRegDTO);
-				
-				// Si se han establecido TSLs pendientes de validar, avisaremos enviando una alarma
-				if(iTslPendValService.exitsTslPendVal()) {
-					LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_020));
-					String countriesPendVal = iTslPendValService.obtainAllTslPendVal().stream().map(TslPendValDTO::getCountryRegionName).filter(Objects::nonNull).distinct().collect(Collectors.joining(", ")); 
-					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM012_EXISTING_TSL_PEND_VAL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM012_EVENT_001, new Object[ ] { countriesPendVal }));
-				}
 			} catch (Exception e) {
 				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_014), e);
 			}
@@ -242,6 +235,13 @@ public class FindNewTSLRevisionsTask extends Task {
 					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM002_EVENT_002, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName() }));
 					break; // finalizamos la ejecución de la actualización de lotl y tsls
 				}
+			}
+			
+			// Si se han establecido TSLs pendientes de validar, avisaremos enviando una alarma
+			if(iTslPendValService.exitsTslPendVal()) {
+				LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_020));
+				String countriesPendVal = iTslPendValService.obtainAllTslPendVal().stream().map(TslPendValDTO::getCountryRegionName).filter(Objects::nonNull).distinct().collect(Collectors.joining(", ")); 
+				AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM012_EXISTING_TSL_PEND_VAL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM012_EVENT_001, new Object[ ] { countriesPendVal }));
 			}
 		} else {
 			LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_024));
@@ -299,6 +299,24 @@ public class FindNewTSLRevisionsTask extends Task {
 		}
 	}
 
+	/**
+	 * Updates the TSL entry in the system if a newer version is available for an already registered country.
+	 *
+	 * @param idModeReg Registration mode ID.
+	 * @param schemeTerritory Country or region code (Scheme Territory).
+	 * @param tslLocation Location (URL) of the TSL.
+	 * @param fullTSLxml Raw byte content of the TSL file.
+	 * @param iTSLObjectTslDownload Parsed TSL object from the downloaded file.
+	 * @param tslCountryRegion Country or region metadata.
+	 * @param tslDataBD Current TSL data stored in the database.
+	 * @throws TSLManagingException If a TSL management error occurs.
+	 * @throws CommonUtilsException If a utility-related error occurs.
+	 * @throws CertificateEncodingException If certificate encoding fails.
+	 * @throws TSLArgumentException If a TSL argument is invalid.
+	 * @throws TSLParsingException If parsing the TSL fails.
+	 * @throws TSLMalformedException If the TSL structure is malformed.
+	 * @throws IOException If an I/O error occurs.
+	 */
 	private void treatmentUpdateTslRegisteredInSystem(int idModeReg, String schemeTerritory, String tslLocation, byte[ ] fullTSLxml, ITSLObject iTSLObjectTslDownload, TslCountryRegion tslCountryRegion, TslData tslDataBD) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
 		// si existe la TSL para el país que estamos tratando evaluaremos si existe una versión nueva.
 		if (iTslCountryRegionService.existsTslForThisCountry(schemeTerritory)) {
@@ -310,6 +328,25 @@ public class FindNewTSLRevisionsTask extends Task {
 		}
 	}
 
+	/**
+	 * Updates the TSL entry regardless of whether the country is already registered or not.
+	 * If the country is not registered, it logs the action and proceeds with the update.
+	 *
+	 * @param idModeReg Registration mode ID.
+	 * @param schemeTerritory Country or region code (Scheme Territory).
+	 * @param tslLocation Location (URL) of the TSL.
+	 * @param fullTSLxml Raw byte content of the TSL file.
+	 * @param iTSLObjectTslDownload Parsed TSL object from the downloaded file.
+	 * @param tslCountryRegion Country or region metadata.
+	 * @param tslDataBD Current TSL data stored in the database.
+	 * @throws TSLManagingException If a TSL management error occurs.
+	 * @throws CommonUtilsException If a utility-related error occurs.
+	 * @throws CertificateEncodingException If certificate encoding fails.
+	 * @throws TSLArgumentException If a TSL argument is invalid.
+	 * @throws TSLParsingException If parsing the TSL fails.
+	 * @throws TSLMalformedException If the TSL structure is malformed.
+	 * @throws IOException If an I/O error occurs.
+	 */
 	private void treatmentUpdateAllTsls(int idModeReg, String schemeTerritory, String tslLocation, byte[ ] fullTSLxml, ITSLObject iTSLObjectTslDownload, TslCountryRegion tslCountryRegion, TslData tslDataBD) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
 		// si existe la TSL para el país que estamos tratando evaluaremos si existe una versión nueva.
 		if (iTslCountryRegionService.existsTslForThisCountry(schemeTerritory)) {

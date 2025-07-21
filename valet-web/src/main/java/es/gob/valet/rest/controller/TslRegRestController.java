@@ -55,8 +55,14 @@ public class TslRegRestController {
 	 */
 	private static final Logger LOGGER = LogManager.getLogger(TslRegRestController.class);
 	
+	/**
+	 * Field name used to identify the registration mode selection list in the UI or form.
+	 */
 	private static final String FIELD_SELECT_LIST_MODE_REG = "selectListModeReg";
 
+	/**
+	 * Field name used to identify the type filter selection list in the UI or form.
+	 */
 	private static final String FIELD_SELECT_LIST_TYPE_FILTER_REG = "selectListTypeFilterReg";
 	
 	/**
