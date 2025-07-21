@@ -181,13 +181,6 @@ public class FindNewTSLRevisionsTask extends Task {
 			try {
 				// Actualizaremos todas las listas de listas a la versión mas reciente si está disponible
 				updatedLotlWithCurrentVersion(confTslRegDTO);
-				
-				// Si se han establecido TSLs pendientes de validar, avisaremos enviando una alarma
-				if(iTslPendValService.exitsTslPendVal()){
-					LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_020));
-					String countriesPendVal = iTslPendValService.obtainAllTslPendVal().stream().map(TslPendValDTO::getCountryRegionName).filter(Objects::nonNull).distinct().collect(Collectors.joining(", ")); 
-					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM011_EXISTING_TSL_PEND_VAL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM011_EVENT_001, new Object[ ] { countriesPendVal }));
-				}
 			} catch (Exception e) {
 				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_014), e);
 			}
@@ -243,6 +236,14 @@ public class FindNewTSLRevisionsTask extends Task {
 					break; // finalizamos la ejecución de la actualización de lotl y tsls
 				}
 			}
+			
+			// Si se han establecido TSLs pendientes de validar, avisaremos enviando una alarma
+			if(iTslPendValService.exitsTslPendVal()){
+				LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_020));
+				String countriesPendVal = iTslPendValService.obtainAllTslPendVal().stream().map(TslPendValDTO::getCountryRegionName).filter(Objects::nonNull).distinct().collect(Collectors.joining(", ")); 
+				AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM011_EXISTING_TSL_PEND_VAL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM011_EVENT_001, new Object[ ] { countriesPendVal }));
+			}
+			
 		} else {
 			LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_024));
 		}
