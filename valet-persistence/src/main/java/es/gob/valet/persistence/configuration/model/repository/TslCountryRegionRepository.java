@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 26/06/2025.
+ * @version 1.7, 21/07/2025.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -33,11 +34,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
+import es.gob.valet.persistence.configuration.model.entity.TslData;
 
 /**
  * <p>Interface that provides CRUD functionality for the TslCountryRegion entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 26/06/2025.
+ * @version 1.7, 21/07/2025.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -88,7 +90,7 @@ public interface TslCountryRegionRepository extends JpaRepository<TslCountryRegi
 	 *         or {@code null} if no match is found.
 	 */
 	@Query("SELECT tcr FROM TslCountryRegion tcr LEFT JOIN FETCH tcr.tslData WHERE tcr.countryRegionCode=?1")
-	TslCountryRegion findByCountryRegionWithTslData(String countryRegionCode);
+	Optional<TslCountryRegion> findByCountryRegionWithTslData(String countryRegionCode);
 
 	/**
 	 * Retrieves all country or region entities that have associated TSL data.

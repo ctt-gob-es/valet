@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/06/2025.</p>
  * @author Gobierno de España.
- * @version 1.4, 10/07/2025.
+ * @version 1.5, 21/07/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -72,7 +72,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
  * <b>Project:</b><p> Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
- * @version 1.4, 10/07/2025.
+ * @version 1.5, 21/07/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -262,7 +262,7 @@ public class TslPendValService implements ITslPendValService {
 			boolean lotl = tSLValidator.checkIfTSLisListOfLists(iTSLObject.getSchemeInformation().getTslType().toString());
 			
 			// Actualizamos o insertamos una nueva TSL la cual estaba pendiente de validar
-			TslCountryRegion tslCountryRegion = tslCountryRegionRepository.findByCountryRegionWithTslData(iTSLObject.getSchemeInformation().getSchemeTerritory());
+			TslCountryRegion tslCountryRegion = tslCountryRegionRepository.findByCountryRegionWithTslData(iTSLObject.getSchemeInformation().getSchemeTerritory()).get();
 			if(null != tslCountryRegion && null != tslCountryRegion.getTslData()) {
 				// Chequeamos si la TSL es una lista de listas
 				if(lotl) {

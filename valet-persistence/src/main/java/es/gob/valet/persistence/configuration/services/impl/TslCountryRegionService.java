@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>23/07/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 10/07/2025.
+ * @version 1.8, 21/07/2025.
  */
 package es.gob.valet.persistence.configuration.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -33,13 +34,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
+import es.gob.valet.persistence.configuration.model.entity.TslData;
 import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService;
 
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for TslCountryRegion.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 10/07/2025.
+ * @version 1.8, 21/07/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -101,11 +103,11 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getTslCountryRegionWithTslData(java.lang.String)
 	 */
 	public TslCountryRegion getTslCountryRegionWithTslData(String countryRegionCode) {
-		return repository.findByCountryRegionWithTslData(countryRegionCode);
+		Optional<TslCountryRegion> optionalTslCountryRegion = repository.findByCountryRegionWithTslData(countryRegionCode);
+		optionalTslCountryRegion.ifPresent(tcr -> { TslData tslData = tcr.getTslData();});
+		return optionalTslCountryRegion.get();
 	}
 	
-	
-
 	/**
 	 * {@inheritDoc}
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getNameCountryRegionById(java.lang.Long)

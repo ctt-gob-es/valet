@@ -3,7 +3,10 @@
    <div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" th:text="#{form.newTsl.title}"></h4>
+				<!-- Mostrar título si lotl es true -->
+				<h4 class="modal-title" th:if="${tslform.lotl}" th:text="#{form.newLotl.title}"></h4>
+				<!-- Mostrar título si lotl es false -->
+				<h4 class="modal-title" th:unless="${tslform.lotl}" th:text="#{form.newTsl.title}"></h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.newTsl.close}">
 					<span aria-hidden="true">&times;</span>
 				</button>

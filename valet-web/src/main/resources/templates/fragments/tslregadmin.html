@@ -23,6 +23,7 @@
 								<option th:value="-1" th:text="#{form.confTslReg.select.version.text}"></option>
 								<option th:each="tp: ${confTslRegDTO.listTslModeRegDTO}" th:value="${tp.idModeReg}" th:text="${tp.tslModeRegTokenValue}" th:selected="${idModeReg == tp.idModeReg}" />
 							</select>
+							<span id="selectListModeReg_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill mt-1"></span>
 						</div>
 					</div>
 					
@@ -33,6 +34,7 @@
 								<option th:value="-1" th:text="#{form.confTslReg.select.version.text}"></option>
 								<option th:each="tp: ${confTslRegDTO.listTslTypeFilterRegDTO}" th:value="${tp.idTypeFilterReg}" th:text="${tp.typeFilterRegTokenValue}" th:selected="${idTypeFilterReg == tp.idTypeFilterReg}" />
 							</select>
+							<span id="selectListTypeFilterReg_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill mt-1"></span>
 						</div>
 					</div>
 					
@@ -50,6 +52,8 @@ $(document).ready(function() {
 	$("#saveBtn").click(function (event){
 		event.preventDefault();
 		
+		cleanSpan();
+		
 		var confTslRegFormSerialized = JSON.stringify($("#confTslRegForm").serializeJSON());
 		
 		var saveConfTslReg = /*[[@{/saveConfTslReg}]]*/;
@@ -60,13 +64,24 @@ $(document).ready(function() {
 			data: confTslRegFormSerialized,
 			contentType : "application/json",
 			cache: false,
-			success: function(xhr) {
+			success: function(data) {
 				hide();
-				$('#confTslRegFormError').html(/*[[#{form.confTslReg.field.ok}]]*/);
-                $('#confTslRegFormError').addClass('alert alert-success');
-                $("#confTslRegFormError").fadeTo(5000, 500).slideUp(500, function() {
-                    $("#confTslRegFormError").slideUp(500);
-                });
+				if(data.error != "" && data.error != null) {
+					var errores = JSON.parse(data.error);
+					jQuery.each(errores, function(i, val) {
+						$('#confTslRegForm *').filter('span').each(function() {
+							if (i == $(this).attr('id')){
+								$("#" + i).text(val);
+							}
+						});
+					});
+				} else {
+					$('#confTslRegFormError').html(/*[[#{form.confTslReg.field.ok}]]*/);
+	                $('#confTslRegFormError').addClass('alert alert-success');
+	                $("#confTslRegFormError").fadeTo(5000, 500).slideUp(500, function() {
+	                    $("#confTslRegFormError").slideUp(500);
+	                });
+				}
 			} ,
 			error:  function(xhr) {
 				hide();
@@ -78,5 +93,21 @@ $(document).ready(function() {
 			}
 		});
 	});
+	
+	$('#tslRegEnabled').change(function () {
+		if (!$(this).is(':checked')) {
+			// Limpiar selects y spans de validación, pero dejar el checkbox como está
+			$('#selectListModeReg').val('-1');
+			$('#selectListTypeFilterReg').val('-1');
+			cleanSpan();
+		}
+	});
+
 });
+
+function cleanSpan() {
+	$('#confTslRegForm *').filter('span.badge').each(function() {
+		$(this).text("");				
+	});
+}
 </script>
