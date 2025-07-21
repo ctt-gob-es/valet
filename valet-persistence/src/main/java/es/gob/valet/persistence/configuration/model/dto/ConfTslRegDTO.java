@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/06/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 17/06/2025.
+ * @version 1.1, 21/07/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -33,7 +33,7 @@ import es.gob.valet.persistence.configuration.model.entity.ConfTslReg;
 /** 
  * <p>Class that represents an object that relates the code of a to the Association Type DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 17/06/2025.
+ * @version 1.1, 21/07/2025.
  */
 public class ConfTslRegDTO {
 
@@ -68,6 +68,11 @@ public class ConfTslRegDTO {
      */
     private List<TslTypeFilterRegDTO> listTslTypeFilterRegDTO;
 
+    /**
+     *  Error message if any occurred.
+     */
+    private String error;
+    
     /**
      * Default constructor.
      */
@@ -209,6 +214,22 @@ public class ConfTslRegDTO {
 	 */
 	public void setListTslTypeFilterRegDTO(List<TslTypeFilterRegDTO> listTslTypeFilterRegDTO) {
 		this.listTslTypeFilterRegDTO = listTslTypeFilterRegDTO;
+	}
+
+	/**
+	 * Gets the value of the attribute {@link #error}.
+	 * @return the value of the attribute {@link #error}.
+	 */
+	public String getError() {
+		return error;
+	}
+
+	/**
+	 * Sets the value of the attribute {@link #error}.
+	 * @param error The value for the attribute {@link #error}.
+	 */
+	public void setError(String error) {
+		this.error = error;
 	}
 
 }

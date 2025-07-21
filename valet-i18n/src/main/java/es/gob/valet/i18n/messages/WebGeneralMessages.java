@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 2.9, 10/07/2025.
+ * @version 3.0, 21/07/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.9, 10/07/2025.
+ * @version 3.0, 21/07/2025.
  */
 public class WebGeneralMessages {
 
@@ -418,6 +418,16 @@ public class WebGeneralMessages {
 	 */
 	public static final String TASK_FIND_NEW_TSL_REV_LOG_022 = "task.findNewTslRev.LOG022";
 	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG023</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_023 = "task.findNewTslRev.LOG023";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG024</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_024 = "task.findNewTslRev.LOG024";
+	/**
 	 * Constant attribute that represents the name of the property <code>errorUpdateTask</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
@@ -561,8 +571,6 @@ public class WebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String ERROR_NOT_INCLUDE_TSL_WITH_LIST_OF_LISTS = "errorNotIncludeTslWithListOfLists";
-
-
 
 	/**
 	 * Constant attribute that represents the name of the property <code>mapping.simple.CertVersion</code> belonging to the
@@ -886,6 +894,16 @@ public class WebGeneralMessages {
 	 * Constant attribute that represents the property key <code>CCF011</code> belonging to the file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String LOG_CCF011 = "CCF011";
+
+	/**
+	 * Constant attribute that represents the property key <code>CRT001</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CRT001 = "CRT001";
+
+	/**
+	 * Constant attribute that represents the property key <code>CRT002</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_CRT002 = "CRT002";
 	
 	/***********************/
 	/** Mensajes de trazas en el módulo de importacion/exportacion **/ 
