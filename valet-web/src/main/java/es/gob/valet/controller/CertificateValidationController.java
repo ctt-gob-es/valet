@@ -17,4 +17,9 @@ public class CertificateValidationController {
 		
 		return "fragments/certificateValidation/admin.html";
 	}
+	
+	@GetMapping("/loadCertificateValidationResponse")
+	public String loadCertificateValidationResponse(Model model) {
+		return "fragments/certificateValidation/validationResponse.html";
+	}
 }

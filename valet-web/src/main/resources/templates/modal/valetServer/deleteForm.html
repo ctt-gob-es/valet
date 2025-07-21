@@ -4,7 +4,7 @@
 		<form id="valetServerFormDelete" th:object="${valetServerForm}">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" th:text="#{valet.modal.deleteTitle}">Eliminar Servidor</h5>
+					<h5 class="modal-title" th:text="#{valetServer.modal.deleteTitle}">Eliminar Servidor</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span>&times;</span>
 					</button>
@@ -13,12 +13,12 @@
 				<div class="modal-body">
 					<input type="hidden" id="idValetServer" th:field="*{idValetServer}" />
 
-					<p th:text="#{valet.modal.deleteConfirm}">¿Estás seguro de que deseas eliminar este servidor?</p>
+					<p th:text="#{valetServer.modal.deleteConfirm}">¿Estás seguro de que deseas eliminar este servidor?</p>
 
 					<ul class="list-group">
-						<li class="list-group-item"><strong th:text="#{valet.server.name} + ':'"></strong> <span th:text="*{serverName}"></span></li>
-						<li class="list-group-item"><strong th:text="#{valet.server.url} + ':'"></strong> <span th:text="*{serverUrl}"></span></li>
-						<li class="list-group-item"><strong th:text="#{valet.server.app} + ':'"></strong> <span th:text="*{application}"></span></li>
+						<li class="list-group-item"><strong th:text="#{valetServer.name} + ':'"></strong> <span th:text="*{serverName}"></span></li>
+						<li class="list-group-item"><strong th:text="#{valetServer.url} + ':'"></strong> <span th:text="*{serverUrl}"></span></li>
+						<li class="list-group-item"><strong th:text="#{valetServer.app} + ':'"></strong> <span th:text="*{application}"></span></li>
 					</ul>
 
 					<!-- Error general -->
@@ -26,8 +26,8 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{button.cancel}">Cancelar</button>
-					<button type="button" class="btn btn-danger" id="confirmDeleteBtn" th:text="#{button.delete}">Eliminar</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{valetServer.button.cancel}">Cancelar</button>
+					<button type="button" class="btn btn-danger" id="confirmDeleteBtn" th:text="#{valetServer.button.delete}">Eliminar</button>
 				</div>
 			</div>
 		</form>
@@ -39,13 +39,13 @@
 		e.preventDefault();
 
 		const idServer = $('#valetServerFormDelete #idValetServer').val();
-		const deleteUrl = /*[[@{/valetServer}]]*/ '';
+		const deleteUrl = /*[[@{/valetServer/delete}]]*/ '';
 
 		loading();
 
 		$.ajax(deleteUrl, {
 			data: $.param({ id: idServer }),
-			type: 'DELETE',
+			type: 'POST',
 			success: function () {
 				hide();
 				$('#modalDeleteValetServer').modal('hide');
@@ -54,7 +54,7 @@
 			},
 			error: function () {
 				hide();
-				const msgError = /*[[#{valet.msg.error.delete}]]*/ 'Error al eliminar el servidor.';
+				const msgError = /*[[#{valetServer.form.error.delete}]]*/ 'Error al eliminar el servidor.';
 				$('#errorModalDelete').removeClass('d-none').text(msgError);
 			}
 		});

@@ -1,8 +1,8 @@
-<div class="container-fluid">
-    <h4 class="c-grey-900 mT-10 mB-30" th:text="#{valet.validation.title}"></h4>
+<div class="container-fluid"> 
+    <h4 class="c-grey-900 mT-10 mB-30" th:text="#{validateCertificate.title}"></h4>
 
     <!-- Botón para mostrar/ocultar tabla -->
-    <button class="btn btn-primary mb-3 ml-3" type="button" id="toggleTableBtn" th:text="#{valet.button.toggleTable}"></button>
+    <button class="btn btn-primary mb-3 ml-3" type="button" id="toggleTableBtn" th:text="#{validateCertificate.button.toggleTable}"></button>
 
     <!-- Tabla de servidores -->
     <div class="masonry-item col-md-12 mb-3" id="valetTableContainer" style="display:none;">
@@ -10,19 +10,19 @@
             <table id="valetServersTable" class="table table-bordered table-hover w-100">
                 <thead>
                     <tr>
-                        <th th:text="#{valet.server.name}"></th>
-                        <th th:text="#{valet.server.url}"></th>
-                        <th th:text="#{valet.server.app}"></th>
-                        <th th:text="#{valet.server.version}"></th>
-                        <th th:text="#{valet.server.timeout}"></th>
-                        <th th:text="#{valet.server.actions}"></th>
+                        <th th:text="#{valetServer.name}"></th>
+                        <th th:text="#{valetServer.url}"></th>
+                        <th th:text="#{valetServer.app}"></th>
+                        <th th:text="#{valetServer.version}"></th>
+                        <th th:text="#{valetServer.timeout}"></th>
+                        <th th:text="#{valetServer.actions}"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Rellenado por JavaScript -->
                 </tbody>
             </table>
-            <button class="btn btn-primary mt-3" id="btnAddServer" th:text="#{valet.button.addServer}"></button>
+            <button class="btn btn-primary mt-3" id="btnAddServer" th:text="#{valetServer.button.addServer}"></button>
         </div>
     </div>
 
@@ -35,9 +35,9 @@
                     
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label for="valetServerSelect" th:text="#{valet.select.server}"></label>
+                            <label for="valetServerSelect" th:text="#{validateCertificate.select.server}"></label>
                             <select class="form-control" id="valetServerSelect" name="valetServerSelect">
-                                <option value="" th:text="#{valet.select.option}"></option>
+                                <option value="" th:text="#{validateCertificate.select.option}"></option>
                                 <!-- Rellenado dinámicamente -->
                             </select>
                         </div>
@@ -45,7 +45,7 @@
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="certFile" th:text="#{valet.select.certificate}"></label>
+                            <label for="certFile" th:text="#{validateCertificate.select.certificate}"></label>
                             <input type="file" class="form-control-file" id="certFile" name="certFile" accept=".cer,.crt">
                             <span id="certFile_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
                         </div>
@@ -54,28 +54,99 @@
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <input type="checkbox" id="fetchMappings" name="fetchMappings" class="mr-2">
-                            <label for="fetchMappings" th:text="#{valet.checkbox.mappings}"></label>
+                            <label for="fetchMappings" th:text="#{validateCertificate.checkbox.mappings}"></label>
                         </div>
                     </div>
+                    
+                    <div id="advancedConfigFields" style="display:none;">
+					    <div class="form-row">
+					        <div class="form-group col-md-12">
+					            <label for="tslLocation" th:text="#{validateCertificate.input.tslLocation}"></label>
+					            <input type="text" class="form-control" id="tslLocation" name="tslLocation">
+					        </div>
+					    </div>
+					
+					    <div class="form-row">
+					        <div class="form-group col-md-6">
+					            <label for="detectionDate" th:text="#{validateCertificate.input.detectionDate}"></label>
+					            <input type="datetime-local" class="form-control" id="detectionDate" name="detectionDate">
+					        </div>
+					    </div>
+					
+					    <div class="form-row">
+					        <div class="form-group col-md-12">
+					            <div class="form-check">
+					                <input type="checkbox" class="form-check-input" id="checkRevocationStatus" name="checkRevocationStatus">
+					                <label class="form-check-label" for="checkRevocationStatus" th:text="#{validateCertificate.checkbox.checkRevocation}"></label>
+					            </div>
+					            <div class="form-check">
+					                <input type="checkbox" class="form-check-input" id="returnRevocationEvidence" name="returnRevocationEvidence">
+					                <label class="form-check-label" for="returnRevocationEvidence" th:text="#{validateCertificate.checkbox.returnEvidence}"></label>
+					            </div>
+					            <div class="form-check">
+					                <input type="checkbox" class="form-check-input" id="returnCertificateChain" name="returnCertificateChain">
+					                <label class="form-check-label" for="returnCertificateChain" th:text="#{validateCertificate.checkbox.returnChain}"></label>
+					            </div>
+					        </div>
+					    </div>
+					</div>
 
                     <div class="form-row">
                         <div class="form-group col-md-12 d-flex gap-buttons">
 							<button type="submit" id="validateCertBtn" class="btn btn-primary"
-								th:text="#{valet.button.validate}"
 								data-advanced="false">
+								<span class="icon-holder mr-2"><i class="c-white-500 ti-check-box"></i></span>
+								<span th:text="#{validateCertificate.button.validate}"></span>
 							</button>
-							<button type="button" id="advancedConfigBtn" class="btn btn-secondary" th:text="#{valet.button.advanced}"></button>
-							<button type="reset" class="btn btn-danger" th:text="#{valet.button.clearForm}"></button>
+							<button type="button" id="advancedConfigBtn" class="btn btn-secondary">
+								<span class="icon-holder mr-2"><i class="c-white-500 ti-settings"></i></span>
+								<span th:text="#{validateCertificate.button.advanced}"></span>
+							</button>
+							<button type="button" id="basicConfigBtn" class="btn btn-secondary" style="display:none;">
+								<span class="icon-holder mr-2"><i class="c-white-500 ti-settings"></i></span>
+								<span th:text="#{validateCertificate.button.basic}"></span>
+							</button>
+							<button type="reset" class="btn btn-danger">
+								<span class="icon-holder mr-2"><i class="c-white-500 ti-reload"></i></span>
+								<span th:text="#{validateCertificate.button.clearForm}"></span>
+							</button>
 						</div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- Resumen de opciones utilizadas -->
+    <div id="validationSummarySection" class="masonry-item col-md-12 mb-2" style="display: none;">
+        <div class="bgc-white p-15 bd" id="validationSummaryContent">
+            <!-- Se completa dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Resultado de la validación -->
+    <div id="validationResultSection" class="masonry-item col-md-12" style="display: none;">
+        <div class="bgc-white p-20 bd" id="validationResultContent">
+            <!-- Contenido cargado dinámicamente desde /loadValidationResult -->
+        </div>
+    </div>
 </div>
 
 <script th:inline="javascript">
 	var valetTable;
+	
+	var validationRequestData = {
+		valetServerId: null,
+		serverName: null,
+		fetchMappings: false,
+		isAdvanced: false,
+		tslLocation: null,
+		detectionDate: null,
+		checkRevocationStatus: false,
+		returnRevocationEvidence: false,
+		returnCertificateChain: false,
+		showTSPRevocationEvidence: false
+	};
 	
 	$(document).ready(function () {
 		valetTable = $('#valetServersTable').DataTable({
@@ -84,6 +155,15 @@
 				url: /*[[@{/valetServer}]]*/,
 				dataSrc: ''
 			},
+			language: {
+		        url: "js/datatables/i18n/spanish.json",
+		        select: {
+		            rows: {
+		                _: "%d filas seleccionadas",
+		                1: "1 fila seleccionada"
+		            }
+	          	}
+	        },
 			columns: [
 				{ data: 'serverName' },
 				{ data: 'serverUrl' },
@@ -102,10 +182,10 @@
 					data: 'idValetServer',
 					render: function (id) {
 						return `
-							<button class="btn btn-sm" onclick="editServer(${id})" title="Editar">
+							<button class="btn btn-sm valetServer-table-btn" onclick="editServer(${id})" title="Editar">
 								<i class="ti-pencil" style="font-size: 1.2rem;"></i>
 							</button>
-							<button class="btn btn-sm btn-danger" onclick="deleteServer(${id})" title="Eliminar">
+							<button class="btn btn-sm btn-danger valetServer-table-btn" onclick="deleteServer(${id})" title="Eliminar">
 								<i class="ti-trash" style="font-size: 1.2rem;"></i>
 							</button>
 						`;
@@ -174,9 +254,40 @@
 				: /*[[@{/validateCertificate/simple}]]*/ '/validateCertificate/simple';
 	
 			const formData = new FormData();
-			formData.append("valetServerSelect", valetServerId);
+			formData.append("valetServerId", valetServerId);
 			formData.append("certFile", certFile);
 			formData.append("fetchMappings", fetchMappings);
+			
+			validationRequestData.valetServerId = valetServerId;
+			validationRequestData.serverName = $('#valetServerSelect option:selected').text();
+			validationRequestData.fetchMappings = fetchMappings;
+			validationRequestData.isAdvanced = isAdvanced;
+			
+			if (isAdvanced) {
+			    const tslLocation = $('#tslLocation').val();
+			    const detectionDate = $('#detectionDate').val();
+			    const checkRevocationStatus = $('#checkRevocationStatus').is(':checked');
+			    const returnRevocationEvidence = $('#returnRevocationEvidence').is(':checked');
+			    const returnCertificateChain = $('#returnCertificateChain').is(':checked');
+
+			    formData.append("tslLocation", tslLocation);
+			    formData.append("detectionDate", detectionDate);
+			    formData.append("checkRevocationStatus", checkRevocationStatus);
+			    formData.append("returnRevocationEvidence", returnRevocationEvidence);
+			    formData.append("returnCertificateChain", returnCertificateChain);
+			    
+			    validationRequestData.tslLocation = $('#tslLocation').val();
+				validationRequestData.detectionDate = $('#detectionDate').val();
+				validationRequestData.checkRevocationStatus = $('#checkRevocationStatus').is(':checked');
+				validationRequestData.returnRevocationEvidence = $('#returnRevocationEvidence').is(':checked');
+				validationRequestData.returnCertificateChain = $('#returnCertificateChain').is(':checked');
+			} else {
+				validationRequestData.tslLocation = null;
+				validationRequestData.detectionDate = null;
+				validationRequestData.checkRevocationStatus = true;
+				validationRequestData.returnRevocationEvidence = true;
+				validationRequestData.returnCertificateChain = true;
+			}
 	
 			loading();
 	
@@ -188,8 +299,35 @@
 				contentType: false,
 				success: function (data) {
 					hide();
-					alert(/*[[#{valet.success.validation}]]*/ 'Validación completada.');
-					console.log(data);
+					validationResponse = data;
+
+					// Oculta botón, tabla y formulario
+					$('#toggleTableBtn').hide();
+					$('#valetTableContainer').hide();
+					$('#valetValidationForm').closest('.bgc-white').hide();
+
+					// Genera resumen de opciones enviadas
+					const summaryHtml = generateValidationSummary();
+
+					$('#validationSummaryContent').html(summaryHtml);
+					$('#validationSummarySection').slideDown();
+
+					// Carga vista del resultado
+					$.ajax({
+						type: "GET",
+						url: /*[[@{/loadCertificateValidationResponse}]]*/ "/loadCertificateValidationResponse",
+						data: JSON.stringify(validationResponse),
+						contentType: "application/json",
+						success: function (html) {
+							$('#validationResultContent').html(html);
+							$('#validationResultSection').slideDown();
+
+						    // renderValidationResult(validationResponse);
+						},
+						error: function () {
+							alert("Error al cargar el resultado de validación.");
+						}
+					});
 				},
 				error: function (xhr) {
 					hide();
@@ -200,9 +338,19 @@
 		});
 
 		// Validación avanzada
-		$('#advancedValidateBtn').click(function (e) {
-			e.preventDefault();
-			sendValidationRequest(true);
+		$('#advancedConfigBtn').click(function () {
+		    $('#advancedMode').val('true');
+		    $('#advancedConfigFields').slideDown();
+		    $('#advancedConfigBtn').hide();
+		    $('#basicConfigBtn').show();
+		});
+		
+		// Validación básica
+		$('#basicConfigBtn').click(function () {
+		    $('#advancedMode').val('false');
+		    $('#advancedConfigFields').slideUp();
+		    $('#basicConfigBtn').hide();
+		    $('#advancedConfigBtn').show();
 		});
 	    
 	    updateServerSelect();
@@ -210,7 +358,7 @@
 
 	function updateServerSelect() {
 		const $select = $('#valetServerSelect');
-		const placeholder = '<option value="">' + /*[[#{valet.select.option}]]*/ '-- Selecciona un servidor --' + '</option>';
+		const placeholder = '<option value="">' + /*[[#{validateCertificate.select.option}]]*/ '-- Selecciona un servidor --' + '</option>';
 
 		$.ajax({
 			type: "GET",
@@ -304,6 +452,20 @@
 		const formData = new FormData();
 		formData.append("valetServerId", serverId);
 		formData.append("certFile", certFile);
+		
+		if (isAdvanced) {
+			const tslLocation = $('#tslLocation').val();
+			const detectionDate = $('#detectionDate').val();
+			const checkRevocationStatus = $('#checkRevocationStatus').is(':checked');
+			const returnRevocationEvidence = $('#returnRevocationEvidence').is(':checked');
+			const returnCertificateChain = $('#returnCertificateChain').is(':checked');
+
+			formData.append("tslLocation", tslLocation);
+			formData.append("detectionDate", detectionDate);
+			formData.append("checkRevocationStatus", checkRevocationStatus);
+			formData.append("returnRevocationEvidence", returnRevocationEvidence);
+			formData.append("returnCertificateChain", returnCertificateChain);
+		}
 
 		loading();
 
@@ -326,4 +488,36 @@
 			}
 		});
 	}
+	
+	function generateValidationSummary() {
+		const chips = [];
+
+		chips.push(`<span class="validation-chip"><strong>Servidor:</strong> ${validationRequestData.serverName}</span>`);
+		chips.push(`<span class="validation-chip"><strong>Obtener Mappings:</strong> ${validationRequestData.fetchMappings ? 'Sí' : 'No'}</span>`);
+		chips.push(`<span class="validation-chip"><strong>Modo:</strong> ${validationRequestData.isAdvanced ? 'Avanzado' : 'Básico'}</span>`);
+
+		if (validationRequestData.isAdvanced) {
+			if (validationRequestData.tslLocation) {
+				chips.push(`<span class="validation-chip"><strong>TSL Location:</strong> ${validationRequestData.tslLocation}</span>`);
+			}
+			if (validationRequestData.detectionDate) {
+				chips.push(`<span class="validation-chip"><strong>Fecha detección:</strong> ${validationRequestData.detectionDate}</span>`);
+			}
+			chips.push(`<span class="validation-chip"><strong>Check revocación:</strong> ${validationRequestData.checkRevocationStatus ? 'Sí' : 'No'}</span>`);
+			chips.push(`<span class="validation-chip"><strong>Devolver evidencia:</strong> ${validationRequestData.returnRevocationEvidence ? 'Sí' : 'No'}</span>`);
+			chips.push(`<span class="validation-chip"><strong>Devolver cadena:</strong> ${validationRequestData.returnCertificateChain ? 'Sí' : 'No'}</span>`);
+		}
+
+		return chips.join('');
+	}
+	
+	function restoreValidationUI() {
+		$('#toggleTableBtn').show();
+		$('#valetTableContainer').show();
+		$('#valetValidationForm').closest('.bgc-white').show();
+		$('#validationSummarySection').hide();
+		$('#validationResultSection').hide();
+	}
+	
+	
 </script>

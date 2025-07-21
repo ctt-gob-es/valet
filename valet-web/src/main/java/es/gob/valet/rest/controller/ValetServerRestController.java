@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.gob.valet.form.ValetServerForm;
@@ -43,19 +44,23 @@ public class ValetServerRestController {
         return ResponseEntity.ok(valetServerService.findAll());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-    	valetServerService.deleteById(id);
+    @PostMapping("/delete")
+    public ResponseEntity<Void> delete(@RequestParam(required = true) Long id) {
+        if (id == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        valetServerService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
     
-    @PutMapping("/{id}")
-	public ResponseEntity<ValetServer> updateValetServer(@PathVariable Long id, @RequestBody ValetServerForm serverForm) {
-		if (!valetServerService.findById(id).isPresent()) {
+    @PostMapping("/update")
+	public ResponseEntity<ValetServer> updateValetServer(@RequestBody ValetServerForm serverForm) {
+		if (serverForm.getIdValetServer() != null && !valetServerService.findById(serverForm.getIdValetServer()).isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
 		ValetServer entity = serverForm.toEntity();
-		entity.setIdValetServer(id); // Garantizamos que se actualiza el existente
+		entity.setIdValetServer(serverForm.getIdValetServer()); // Garantizamos que se actualiza el existente
 		ValetServer updated = valetServerService.save(entity);
 		return ResponseEntity.ok(updated);
 	}
