@@ -103,9 +103,7 @@ public class TslCountryRegionService implements ITslCountryRegionService {
 	 * @see es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionService#getTslCountryRegionWithTslData(java.lang.String)
 	 */
 	public TslCountryRegion getTslCountryRegionWithTslData(String countryRegionCode) {
-		Optional<TslCountryRegion> optionalTslCountryRegion = repository.findByCountryRegionWithTslData(countryRegionCode);
-		optionalTslCountryRegion.ifPresent(tcr -> { TslData tslData = tcr.getTslData();});
-		return optionalTslCountryRegion.get();
+		return repository.findByCountryRegionWithTslData(countryRegionCode);
 	}
 	
 	/**

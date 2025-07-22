@@ -255,7 +255,7 @@ public class TslPendValService implements ITslPendValService {
 			boolean lotl = tSLValidator.checkIfTSLisListOfLists(iTSLObject.getSchemeInformation().getTslType().toString());
 			
 			// Actualizamos o insertamos una nueva TSL la cual estaba pendiente de validar
-			TslCountryRegion tslCountryRegion = tslCountryRegionRepository.findByCountryRegionWithTslData(iTSLObject.getSchemeInformation().getSchemeTerritory()).get();
+			TslCountryRegion tslCountryRegion = tslCountryRegionRepository.findByCountryRegionWithTslData(iTSLObject.getSchemeInformation().getSchemeTerritory());
 			if(null != tslCountryRegion && null != tslCountryRegion.getTslData()) {
 				// Chequeamos si la TSL es una lista de listas
 				if(lotl) {

@@ -25,7 +25,6 @@
 package es.gob.valet.persistence.configuration.model.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -90,7 +89,7 @@ public interface TslCountryRegionRepository extends JpaRepository<TslCountryRegi
 	 *         or {@code null} if no match is found.
 	 */
 	@Query("SELECT tcr FROM TslCountryRegion tcr LEFT JOIN FETCH tcr.tslData WHERE tcr.countryRegionCode=?1")
-	Optional<TslCountryRegion> findByCountryRegionWithTslData(String countryRegionCode);
+	TslCountryRegion findByCountryRegionWithTslData(String countryRegionCode);
 
 	/**
 	 * Retrieves all country or region entities that have associated TSL data.
