@@ -286,6 +286,11 @@ public class TslPendValService implements ITslPendValService {
 		tslPendValRepository.delete(tslPendVal);
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ITslPendValService#declineTslPendVal(es.gob.valet.persistence.configuration.model.entity.TslPendVal)
+	 */
 	public void declineTslPendVal(TslPendVal tslPendVal) {
 		tslPendValRepository.delete(tslPendVal);
 	}
@@ -317,6 +322,11 @@ public class TslPendValService implements ITslPendValService {
 	    return tslPendValRepository.findAll().stream().anyMatch(p -> p.getCountry().equals(country));
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ITslPendValService#obtainTslPendVal(java.lang.String)
+	 */
 	public TslPendVal obtainTslPendVal(String country) {
 		return tslPendValRepository.findAll().stream().filter(p -> p.getCountry().equals(country)).findAny().orElse(null);
 	}
