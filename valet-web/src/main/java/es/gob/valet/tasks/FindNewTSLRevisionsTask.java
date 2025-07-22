@@ -207,12 +207,12 @@ public class FindNewTSLRevisionsTask extends Task {
 		int idTypeFilterReg = confTslRegDTO.getIdTypeFilterReg();
 		
 		List<TslData> listTslData = iTslDataService.obtainAllTslDataWithTslLotlData();
-		if(listTslData.size() > NumberConstants.NUM1) {
+		if(listTslData.size() > NumberConstants.NUM0) {
 			// Recorremos todas las lista de listas
 			for (TslData tslDataLotlBD: listTslData) {
 				try {
 					// Obtenemos la url de descarga
-					String url = tslDataLotlBD.getUriTslLocation();
+ 					String url = tslDataLotlBD.getUriTslLocation();
 					// Intentamos descargarnos la TSL...
 					byte[ ] fullTSLxml = this.downloadTslFromUrl(url);
 					ITSLObject iTSLObjectLotlDownload = obtainTSLObject(fullTSLxml);
