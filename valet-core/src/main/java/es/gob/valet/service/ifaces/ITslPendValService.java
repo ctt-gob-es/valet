@@ -69,6 +69,8 @@ public interface ITslPendValService {
 	 */
 	void declineTslPendVal(Long idTslPendVal);
 	
+	void declineTslPendVal(TslPendVal tslPendVal);
+	
 	/**
 	 * Persists the given TSL pending validation entity to the database.
 	 *
@@ -91,4 +93,5 @@ public interface ITslPendValService {
 	 */
 	boolean exitsTslPendVal(String schemeTerritory);
 
+	TslPendVal obtainTslPendVal(String country);
 }
