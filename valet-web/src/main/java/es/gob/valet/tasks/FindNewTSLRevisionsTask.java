@@ -393,6 +393,12 @@ public class FindNewTSLRevisionsTask extends Task {
 			} else {
 				TSLManager.getInstance().addNewTSLData(iTSLObjectLotlDownload, url, fullTSLxml, lotl);
 			}
+			// Dado que siempre registramos TSLs, si ya existe para este pais alguna pendiente de validar la eliminaremos
+			String country = UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(iTSLObjectLotlDownload.getSchemeInformation().getSchemeTerritory());
+			if(iTslPendValService.exitsTslPendVal(country)) {
+				TslPendVal tslPendVal = iTslPendValService.obtainTslPendVal(country);
+				iTslPendValService.declineTslPendVal(tslPendVal);
+			}
 		} else if(idModeReg == NumberConstants.NUM2) {
 			if(!this.isNewTslData(tslDataLotlBD)) {
 				X509Certificate x509CertSignFromTslDownload = iTSLObjectLotlDownload.getSignTsl().get();

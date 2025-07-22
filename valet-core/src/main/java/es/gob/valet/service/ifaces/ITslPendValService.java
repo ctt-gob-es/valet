@@ -70,6 +70,16 @@ public interface ITslPendValService {
 	void declineTslPendVal(Long idTslPendVal);
 	
 	/**
+	 * Deletes the given pending TSL validation entry from the system.
+	 *
+	 * <p>This method is typically used to decline or discard a TSL that is pending validation
+	 * and should no longer be processed.</p>
+	 *
+	 * @param tslPendVal The {@link TslPendVal} entity to be removed.
+	 */
+	void declineTslPendVal(TslPendVal tslPendVal);
+	
+	/**
 	 * Persists the given TSL pending validation entity to the database.
 	 *
 	 * @param tslPendVal the TSL pending validation entity to be saved
@@ -91,4 +101,14 @@ public interface ITslPendValService {
 	 */
 	boolean exitsTslPendVal(String schemeTerritory);
 
+	/**
+	 * Retrieves a pending TSL validation entry for the specified country.
+	 *
+	 * <p>This method searches through all stored {@link TslPendVal} entries and returns one
+	 * that matches the given country code. If no match is found, it returns {@code null}.</p>
+	 *
+	 * @param country The country code used to search for a matching TSL pending validation entry.
+	 * @return A {@link TslPendVal} object matching the given country, or {@code null} if none is found.
+	 */
+	TslPendVal obtainTslPendVal(String country);
 }

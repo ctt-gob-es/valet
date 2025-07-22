@@ -55,7 +55,6 @@ import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslLotlData;
 import es.gob.valet.persistence.configuration.model.entity.TslPendVal;
 import es.gob.valet.persistence.configuration.model.repository.TslCountryRegionRepository;
-import es.gob.valet.persistence.configuration.model.repository.TslDataRepository;
 import es.gob.valet.persistence.configuration.model.repository.TslPendValRepository;
 import es.gob.valet.service.ifaces.ISigningCertService;
 import es.gob.valet.service.ifaces.ITslPendValService;
@@ -96,14 +95,13 @@ public class TslPendValService implements ITslPendValService {
 	private ISigningCertService iSigningCertService;
 
 	/**
-	 * Repository for accessing and managing persisted TSL data records.
+	 * Repository used to access and manage {@link TslCountryRegion} entities.
+	 *
+	 * <p>Provides data access operations related to country/region information associated with TSLs.</p>
 	 */
 	@Autowired
-	private TslDataRepository tslDataRepository;
-	
-	@Autowired
 	private TslCountryRegionRepository tslCountryRegionRepository;
-	
+
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -296,6 +294,15 @@ public class TslPendValService implements ITslPendValService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ITslPendValService#declineTslPendVal(es.gob.valet.persistence.configuration.model.entity.TslPendVal)
+	 */
+	public void declineTslPendVal(TslPendVal tslPendVal) {
+		tslPendValRepository.delete(tslPendVal);
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
 	 * @see es.gob.valet.service.ifaces.ITslPendValService#addTslPendVal(es.gob.valet.persistence.configuration.model.entity.TslPendVal)
 	 */
 	public void addTslPendVal(TslPendVal tslPendVal) {
@@ -320,4 +327,12 @@ public class TslPendValService implements ITslPendValService {
 	    return tslPendValRepository.findAll().stream().anyMatch(p -> p.getCountry().equals(country));
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see es.gob.valet.service.ifaces.ITslPendValService#obtainTslPendVal(java.lang.String)
+	 */
+	public TslPendVal obtainTslPendVal(String country) {
+		return tslPendValRepository.findAll().stream().filter(p -> p.getCountry().equals(country)).findAny().orElse(null);
+	}
 }
