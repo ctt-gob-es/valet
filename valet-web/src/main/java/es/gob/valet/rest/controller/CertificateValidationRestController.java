@@ -1,5 +1,11 @@
 package es.gob.valet.rest.controller;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -72,6 +78,9 @@ public class CertificateValidationRestController {
 			// PARAMETRO de Obtener mapeos
 			params.add("getInfo", String.valueOf(form.isFetchMappings()));
 			
+			DateTimeFormatter inputFormatter  = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+			DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+			
 			// PARAMETROS AVANZADOS
 			if (isAdvanced) {
 				// params.add("delegatedApp", "");
@@ -85,23 +94,23 @@ public class CertificateValidationRestController {
 				
 				// PARAMETRO de Fecha de validacion
 				if (form.getDetectionDate() != null && !form.getDetectionDate().isEmpty()) {
-					params.add("detectionDate", form.getDetectionDate() != null ? form.getDetectionDate() : "");
-				}
+			        // 1) Parse incoming string sin segundos ni offset
+			        LocalDateTime localDt = LocalDateTime.parse(form.getDetectionDate(), inputFormatter);
+			        // 2) Agregamos un offset
+			        OffsetDateTime offsetDt = localDt.atOffset(ZoneOffset.UTC);
+			        // 3) Formateamos con milisegundos y offset
+			        String formattedDate = offsetDt.format(outputFormatter);
+			        params.add("detectionDate", formattedDate);
+			    }
 				
 				// PARAMETRO de Obtener Cadena de Certificacion
-				if (form.isReturnCertificateChain()) {
-					params.add("returnCertificateChain", String.valueOf(form.isReturnCertificateChain()));
-				}
+				params.add("returnCertificateChain", String.valueOf(form.isReturnCertificateChain()));
 				
 				// PARAMETRO de Obtener Estado Revocacion
-				if (form.isCheckRevocationStatus()) {
-					params.add("checkRevocationStatus", String.valueOf(form.isCheckRevocationStatus()));
-				}
+				params.add("checkRevocationStatus", String.valueOf(form.isCheckRevocationStatus()));
 				
 				// PARAMETRO de Obtener Evidencia de Revocacion
-				if (form.isReturnRevocationEvidence()) {
-					params.add("returnRevocationEvidence", String.valueOf(form.isReturnRevocationEvidence()));
-				}
+				params.add("returnRevocationEvidence", String.valueOf(form.isReturnRevocationEvidence()));
 			} else {
 				// PARAMETRO de Obtener Estado Revocacion y Obtener Evidencia de Revocacion
 				//En caso de no estar en Formulario avanzado se marca el valor a true siempre

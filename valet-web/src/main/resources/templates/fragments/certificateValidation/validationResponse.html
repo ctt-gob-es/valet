@@ -225,76 +225,84 @@
 
 		const cert = data.resultTslInfVal?.certDetectedInTSL;
 		
-		// SECCIÓN TSP
-		setText('tspName', fixEncoding(cert?.tspName));
-		
-		const tsp = cert?.tspServiceInformation;
-		
-		setLink('tspServiceName', fixEncoding(tsp?.tspServiceName));
-		setLink('tspServiceType', fixEncoding(tsp?.tspServiceType));
-		setLink('tspServiceStatus', fixEncoding(tsp?.tspServiceStatus));
-		setText('tspServiceHistoryInf', fixEncoding(tsp?.tspServiceHistoryInf));
-		
-		// SECCIÓN INFORMACIÓN CERTIFICADO
-		const certInfo = cert?.certInfo;
-		
-		setText('certClassification', fixEncoding(certInfo?.certClassification));
-		setText('etsiResult', fixEncoding(certInfo?.ETSI_Result));
-		setText('certQualified', fixEncoding(certInfo?.certQualified));
-		setText('certQscd', fixEncoding(certInfo?.qscd));
-		
-		// SECCIÓN ESTADO DE REVOCACIÓN
-		const revocationStatus = cert?.tslRevocStatus;
-		
-		setText('revocationStatus', fixEncoding(revocationStatus.revocationStatus + ' ' + revocationStatus.revocationDesc));
-		setLink('revocationURL', revocationStatus?.url);
-		
-		setText('revocationDpAia', revocationStatus.dpAia === true ? TEXT_YES : revocationStatus.dpAia === false ? TEXT_NO : '-');
+		if (cert) {
+			// SECCIÓN TSP
+			setText('tspName', fixEncoding(cert?.tspName));
+			
+			const tsp = cert?.tspServiceInformation;
+			
+			if (tsp) {
+				setLink('tspServiceName', fixEncoding(tsp?.tspServiceName));
+				setLink('tspServiceType', fixEncoding(tsp?.tspServiceType));
+				setLink('tspServiceStatus', fixEncoding(tsp?.tspServiceStatus));
+				setText('tspServiceHistoryInf', fixEncoding(tsp?.tspServiceHistoryInf));
+			}
+			
+			// SECCIÓN INFORMACIÓN CERTIFICADO
+			const certInfo = cert?.certInfo;
+			
+			if (certInfo) {
+				setText('certClassification', fixEncoding(certInfo?.certClassification));
+				setText('etsiResult', fixEncoding(certInfo?.ETSI_Result));
+				setText('certQualified', fixEncoding(certInfo?.certQualified));
+				setText('certQscd', fixEncoding(certInfo?.qscd));
+			}
+			
+			// SECCIÓN ESTADO DE REVOCACIÓN
+			const revocationStatus = cert?.tslRevocStatus;
+			
+			if (revocationStatus) {
+				setText('revocationStatus', fixEncoding(revocationStatus.revocationStatus + ' ' + revocationStatus.revocationDesc));
+				setLink('revocationURL', revocationStatus?.url);
+				
+				setText('revocationDpAia', revocationStatus.dpAia === true ? TEXT_YES : revocationStatus.dpAia === false ? TEXT_NO : '-');
 
-		if (revocationStatus.dpAia === true) {
-			validationRequestData.showTSPRevocationEvidence = false;
-		} else {
-			validationRequestData.showTSPRevocationEvidence = true;
-		}
-		
-		const revocationTSPEvidence = revocationStatus?.tspServiceInformation;
-		
-		if (revocationTSPEvidence) {
-			setText('revocationEvidenceService', fixEncoding(revocationTSPEvidence.tspServiceName));
-			setText('revocationEvidenceServiceType', fixEncoding(revocationTSPEvidence.tspServiceType));
-			setText('revocationEvidenceStatus', fixEncoding(revocationTSPEvidence.tspServiceStatus));
-			setText('revocationEvidenceHistoryInf', fixEncoding(revocationTSPEvidence.tspServiceHistoryInf));
-		}
-		
-		setText('evidenceType', fixEncoding(getEvidenceType(revocationStatus.evidenceType)));
-		setText('evidence', fixEncoding(revocationStatus.evidence.byteArray));
-		
-		setText('revocation', fixEncoding(getRevocationStatusDescription(revocationStatus.revocationReason)) + ' ' + formatDate(revocationStatus.revocationDate?.dateString));
-		
-		// CERTIFICATE CHAIN
-		const certificateChain = cert?.certificateChain?.certificates;
-
-		const $certificateList = $('#certificateList');
-		$certificateList.empty();
-
-		if (Array.isArray(certificateChain) && certificateChain.length > 0) {
-			certificateChain.forEach((item, index) => {
-				const subject = item.certificateValue?.subject ?? `cert${index + 1}`;
-				const revStatus = item.tslRevocStatus;
-
-				let revocationText = '-';
-				if (revStatus) {
-					const status = fixEncoding(revStatus.revocationStatus);
-					const desc = fixEncoding(revStatus.revocationDesc || '');
-					revocationText = `${status} - ${desc}`;
+				if (revocationStatus.dpAia === true) {
+					validationRequestData.showTSPRevocationEvidence = false;
+				} else {
+					validationRequestData.showTSPRevocationEvidence = true;
 				}
+				
+				const revocationTSPEvidence = revocationStatus?.tspServiceInformation;
+				
+				if (revocationTSPEvidence) {
+					setText('revocationEvidenceService', fixEncoding(revocationTSPEvidence.tspServiceName));
+					setText('revocationEvidenceServiceType', fixEncoding(revocationTSPEvidence.tspServiceType));
+					setText('revocationEvidenceStatus', fixEncoding(revocationTSPEvidence.tspServiceStatus));
+					setText('revocationEvidenceHistoryInf', fixEncoding(revocationTSPEvidence.tspServiceHistoryInf));
+				}
+				
+				setText('evidenceType', fixEncoding(getEvidenceType(revocationStatus.evidenceType)));
+				setText('evidence', fixEncoding(revocationStatus.evidence.byteArray));
+				
+				setText('revocation', fixEncoding(getRevocationStatusDescription(revocationStatus.revocationReason)) + ' ' + formatDate(revocationStatus.revocationDate?.dateString));
+			}
+			
+			// CERTIFICATE CHAIN
+			const certificateChain = cert?.certificateChain?.certificates;
 
-				const li = `<li><strong>${subject}</strong>: ${revocationText}</li>`;
-				$certificateList.append(li);
-			});
-		} else {
-			// En caso de que no se devuelvan entradas de la cadena de certificación no la mostramos
-			validationRequestData.returnCertificateChain = false;
+			const $certificateList = $('#certificateList');
+			$certificateList.empty();
+
+			if (Array.isArray(certificateChain) && certificateChain.length > 0) {
+				certificateChain.forEach((item, index) => {
+					const subject = item.certificateValue?.subject ?? `cert${index + 1}`;
+					const revStatus = item.tslRevocStatus;
+
+					let revocationText = '-';
+					if (revStatus) {
+						const status = fixEncoding(revStatus.revocationStatus);
+						const desc = fixEncoding(revStatus.revocationDesc || '');
+						revocationText = `${status} - ${desc}`;
+					}
+
+					const li = `<li><strong>${subject}</strong>: ${revocationText}</li>`;
+					$certificateList.append(li);
+				});
+			} else {
+				// En caso de que no se devuelvan entradas de la cadena de certificación no la mostramos
+				validationRequestData.returnCertificateChain = false;
+			}
 		}
 		
 		//Ocultamos las secciones AVANZADAS

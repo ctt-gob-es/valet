@@ -33,8 +33,13 @@
                 <form id="valetValidationForm" th:action="@{/validateCertificate}" method="post" enctype="multipart/form-data">
                     <input type="hidden" id="advancedMode" name="advancedMode" value="false">
                     
+                    <div id="errorMessageContainer">
+                    	<span class="icon-holder mr-2"><i class="c-white-500 ti-alert"></i></span>
+						<span id="errorMessage"></span>
+                    </div>
+                    
                     <div class="form-row">
-                        <div class="form-group col-md-12">
+                        <div class="form-group col-md-6">
                             <label for="valetServerSelect" th:text="#{validateCertificate.select.server}"></label>
                             <select class="form-control" id="valetServerSelect" name="valetServerSelect">
                                 <option value="" th:text="#{validateCertificate.select.option}"></option>
@@ -52,7 +57,7 @@
                     </div>
 
                     <div class="form-row">
-                        <div class="form-group col-md-12">
+                        <div class="form-group col-md-6">
                             <input type="checkbox" id="fetchMappings" name="fetchMappings" class="mr-2">
                             <label for="fetchMappings" th:text="#{validateCertificate.checkbox.mappings}"></label>
                         </div>
@@ -193,6 +198,8 @@
 				}
 			]
 		});
+
+		$('#errorMessageContainer').hide();
 	
 		$('#toggleTableBtn').click(() => {
 			$('#valetTableContainer').toggle();
@@ -230,6 +237,8 @@
 		// Validación simple
 		$('#validateCertBtn').click(function (e) {
 			e.preventDefault();
+			
+			$('#errorMessageContainer').slideUp();
 	
 			const certFile = document.getElementById("certFile").files[0];
 			const valetServerId = document.getElementById("valetServerSelect").value;
@@ -300,39 +309,56 @@
 				success: function (data) {
 					hide();
 					validationResponse = data;
-
-					// Oculta botón, tabla y formulario
-					$('#toggleTableBtn').hide();
-					$('#valetTableContainer').hide();
-					$('#valetValidationForm').closest('.bgc-white').hide();
-
-					// Genera resumen de opciones enviadas
-					const summaryHtml = generateValidationSummary();
-
-					$('#validationSummaryContent').html(summaryHtml);
-					$('#validationSummarySection').slideDown();
-
-					// Carga vista del resultado
-					$.ajax({
-						type: "GET",
-						url: /*[[@{/loadCertificateValidationResponse}]]*/ "/loadCertificateValidationResponse",
-						data: JSON.stringify(validationResponse),
-						contentType: "application/json",
-						success: function (html) {
-							$('#validationResultContent').html(html);
-							$('#validationResultSection').slideDown();
-
-						    // renderValidationResult(validationResponse);
-						},
-						error: function () {
-							alert("Error al cargar el resultado de validación.");
+					
+					if (typeof data === 'string') {
+						try {
+							data = JSON.parse(data);
+						} catch (e) {
+							console.error('JSON inválido en validationResult:', e);
+							return;
 						}
-					});
+					}
+					
+					if (data.status == 0 || data.status == 1) {
+						const msg = data.description;
+						$('#errorMessageContainer').slideDown();
+						$('#errorMessage').text(msg);
+					} else {
+						// Oculta botón, tabla y formulario
+						$('#toggleTableBtn').hide();
+						$('#valetTableContainer').hide();
+						$('#valetValidationForm').closest('.bgc-white').hide();
+
+						// Genera resumen de opciones enviadas
+						const summaryHtml = generateValidationSummary();
+
+						$('#validationSummaryContent').html(summaryHtml);
+						$('#validationSummarySection').slideDown();
+
+						// Carga vista del resultado
+						$.ajax({
+							type: "GET",
+							url: /*[[@{/loadCertificateValidationResponse}]]*/ "/loadCertificateValidationResponse",
+							data: JSON.stringify(validationResponse),
+							contentType: "application/json",
+							success: function (html) {
+								$('#validationResultContent').html(html);
+								$('#validationResultSection').slideDown();
+
+							    // renderValidationResult(validationResponse);
+							},
+							error: function () {
+								alert("Error al cargar el resultado de validación.");
+							}
+						});
+					}
 				},
 				error: function (xhr) {
 					hide();
 					const msg = xhr.responseText || 'Error al validar el certificado.';
-					$('#certFile_span').text(msg).addClass('badge bgc-red-50 c-red-700');
+
+					$('#errorMessageContainer').slideDown();
+					$('#errorMessage').text(msg);
 				}
 			});
 		});
@@ -343,6 +369,8 @@
 		    $('#advancedConfigFields').slideDown();
 		    $('#advancedConfigBtn').hide();
 		    $('#basicConfigBtn').show();
+			
+			$('#errorMessageContainer').slideUp();
 		});
 		
 		// Validación básica
@@ -351,6 +379,8 @@
 		    $('#advancedConfigFields').slideUp();
 		    $('#basicConfigBtn').hide();
 		    $('#advancedConfigBtn').show();
+			
+			$('#errorMessageContainer').slideUp();
 		});
 	    
 	    updateServerSelect();
@@ -360,6 +390,8 @@
 		const $select = $('#valetServerSelect');
 		const placeholder = '<option value="">' + /*[[#{validateCertificate.select.option}]]*/ '-- Selecciona un servidor --' + '</option>';
 
+		$('#errorMessageContainer').slideUp();
+		
 		$.ajax({
 			type: "GET",
 			url: /*[[@{/valetServer}]]*/,
