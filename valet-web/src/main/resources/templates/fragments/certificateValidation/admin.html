@@ -33,7 +33,7 @@
                 <form id="valetValidationForm" th:action="@{/validateCertificate}" method="post" enctype="multipart/form-data">
                     <input type="hidden" id="advancedMode" name="advancedMode" value="false">
                     
-                    <div id="errorMessageContainer">
+                    <div id="errorMessageContainer" class="alert alert-danger" role="alert">
                     	<span class="icon-holder mr-2"><i class="c-white-500 ti-alert"></i></span>
 						<span id="errorMessage"></span>
                     </div>
@@ -41,7 +41,11 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="valetServerSelect" th:text="#{validateCertificate.select.server}"></label>
-                            <select class="form-control" id="valetServerSelect" name="valetServerSelect">
+                            <script th:inline="javascript">
+								var messageServerSelect = /*[[#{validateCertificate.server.pattern}]]*/ 'default';
+							</script>
+                            <span id="valetServerSelect_span" style="display: none;" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+							<select class="form-control" id="valetServerSelect" name="valetServerSelect">
                                 <option value="" th:text="#{validateCertificate.select.option}"></option>
                                 <!-- Rellenado dinámicamente -->
                             </select>
@@ -51,8 +55,11 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="certFile" th:text="#{validateCertificate.select.certificate}"></label>
+                            <script th:inline="javascript">
+								var messageCertificateFile = /*[[#{validateCertificate.certFile.pattern}]]*/ 'default';
+							</script>
+							<span id="certFile_span" style="display: none;" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
                             <input type="file" class="form-control-file" id="certFile" name="certFile" accept=".cer,.crt">
-                            <span id="certFile_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
                         </div>
                     </div>
 
@@ -187,12 +194,12 @@
 					data: 'idValetServer',
 					render: function (id) {
 						return `
-							<button class="btn btn-sm valetServer-table-btn" onclick="editServer(${id})" title="Editar">
-								<i class="ti-pencil" style="font-size: 1.2rem;"></i>
-							</button>
-							<button class="btn btn-sm btn-danger valetServer-table-btn" onclick="deleteServer(${id})" title="Eliminar">
-								<i class="ti-trash" style="font-size: 1.2rem;"></i>
-							</button>
+							<a class="mr-2" onclick="editServer(${id})">
+								<i class="c-green-700 ti-pencil-alt" style="font-size: 1.2rem;"></i>
+							</a>
+							<a class="" onclick="deleteServer(${id})">
+								<i class="c-red-700 ti-trash" style="font-size: 1.2rem;"></i>
+							</a>
 						`;
 					}
 				}
@@ -204,6 +211,16 @@
 		$('#toggleTableBtn').click(() => {
 			$('#valetTableContainer').toggle();
 			valetTable.ajax.reload(); // Recarga datos
+		});
+		
+		// Oculta mensaje de error al cambiar selección del servidor
+		$('#valetServerSelect').on('change', function () {
+			clearValidationError('valetServerSelect_span');
+		});
+
+		// Oculta mensaje de error al seleccionar un archivo
+		$('#certFile').on('change', function () {
+			clearValidationError('certFile_span');
 		});
 	
 		$('#btnAddServer').click(function (event) {
@@ -244,19 +261,11 @@
 			const valetServerId = document.getElementById("valetServerSelect").value;
 			const isAdvanced = document.getElementById("advancedMode").value === "true";
 			const fetchMappings = document.getElementById("fetchMappings").checked;
-	
-			if (!valetServerId) {
-				alert(/*[[#{valet.alert.selectServer}]]*/ 'Selecciona un servidor');
-				return;
-			}
-	
-			if (!certFile || !/\.(cer|crt)$/i.test(certFile.name)) {
-				$('#certFile_span').text(/*[[#{valet.alert.invalidCert}]]*/ 'Certificado inválido')
-					.addClass('badge bgc-red-50 c-red-700');
-				return;
-			} else {
-				$('#certFile_span').text('');
-			}
+			
+			// Validate all fields before sending
+		    if (!validateForm()) {
+		      return;
+		    }
 	
 			const endpoint = isAdvanced
 				? /*[[@{/validateCertificate/advanced}]]*/ '/validateCertificate/advanced'
@@ -297,6 +306,8 @@
 				validationRequestData.returnRevocationEvidence = true;
 				validationRequestData.returnCertificateChain = true;
 			}
+			
+			
 	
 			loading();
 	
@@ -348,17 +359,17 @@
 							    // renderValidationResult(validationResponse);
 							},
 							error: function () {
-								alert("Error al cargar el resultado de validación.");
+								console.log("Error al cargar el resultado de validación.");
 							}
 						});
 					}
 				},
 				error: function (xhr) {
 					hide();
-					const msg = xhr.responseText || 'Error al validar el certificado.';
+					const messageValidationError = /*[[#{validateCertificate.error.default}]]*/ 'default';
 
 					$('#errorMessageContainer').slideDown();
-					$('#errorMessage').text(msg);
+					$('#errorMessage').text(messageValidationError);
 				}
 			});
 		});
@@ -459,68 +470,6 @@
 		});
 	}
 	
-	function sendValidationRequest(isAdvanced) {
-		const fileInput = document.getElementById("certFile");
-		const serverId = document.getElementById("valetServerSelect").value;
-		const certFile = fileInput.files[0];
-
-		if (!serverId) {
-			alert(/*[[#{valet.alert.selectServer}]]*/ 'Selecciona un servidor');
-			return;
-		}
-
-		if (!certFile || !/\.(cer|crt)$/i.test(certFile.name)) {
-			$('#certFile_span').text(/*[[#{valet.alert.invalidCert}]]*/ 'Certificado inválido')
-				.addClass('badge bgc-red-50 c-red-700');
-			return;
-		} else {
-			$('#certFile_span').text('');
-		}
-
-		const endpoint = isAdvanced 
-			? /*[[@{/validateCertificate/advanced}]]*/ '/validateCertificate/advanced'
-			: /*[[@{/validateCertificate/simple}]]*/ '/validateCertificate/simple';
-
-		const formData = new FormData();
-		formData.append("valetServerId", serverId);
-		formData.append("certFile", certFile);
-		
-		if (isAdvanced) {
-			const tslLocation = $('#tslLocation').val();
-			const detectionDate = $('#detectionDate').val();
-			const checkRevocationStatus = $('#checkRevocationStatus').is(':checked');
-			const returnRevocationEvidence = $('#returnRevocationEvidence').is(':checked');
-			const returnCertificateChain = $('#returnCertificateChain').is(':checked');
-
-			formData.append("tslLocation", tslLocation);
-			formData.append("detectionDate", detectionDate);
-			formData.append("checkRevocationStatus", checkRevocationStatus);
-			formData.append("returnRevocationEvidence", returnRevocationEvidence);
-			formData.append("returnCertificateChain", returnCertificateChain);
-		}
-
-		loading();
-
-		$.ajax({
-			type: "POST",
-			url: endpoint,
-			data: formData,
-			processData: false,
-			contentType: false,
-			success: function (response) {
-				hide();
-				alert(/*[[#{valet.success.validation}]]*/ 'Validación completada.');
-				console.log(response);
-			},
-			error: function (xhr) {
-				hide();
-				const errorMsg = xhr.responseText || "Error al validar el certificado.";
-				$('#certFile_span').text(errorMsg)
-					.addClass('badge bgc-red-50 c-red-700');
-			}
-		});
-	}
-	
 	function generateValidationSummary() {
 		const chips = [];
 
@@ -551,5 +500,42 @@
 		$('#validationResultSection').hide();
 	}
 	
+	function validateForm() {
+		var isValid = true;
+
+		const valetServerId = $('#valetServerSelect').val();
+		const certFile = $('#certFile')[0].files[0];
+
+		// Validar selección de servidor
+		if (!valetServerId) {
+			showValidationError('valetServerSelect_span', messageServerSelect);
+			isValid = false;
+		} else {
+			clearValidationError('valetServerSelect_span');
+		}
+
+		// Validar fichero de certificado
+		if (!certFile || !/\.(cer|crt)$/i.test(certFile.name)) {
+			showValidationError('certFile_span', messageCertificateFile);
+			isValid = false;
+		} else {
+			clearValidationError('certFile_span');
+		}
+
+		return isValid;
+	}
+	
+	function showValidationError(spanId, message) {
+		const $span = $('#' + spanId);
+		$span.text(message).addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill").slideDown();
+	}
+
+	function clearValidationError(spanId) {
+		const $span = $('#' + spanId);
+		$span.slideUp(() => {
+			$span.text('').removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+		});
+	}
+
 	
 </script>

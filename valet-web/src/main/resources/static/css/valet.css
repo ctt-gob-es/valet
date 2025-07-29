@@ -253,9 +253,8 @@
 }
 
 #errorMessageContainer {
-	background-color: #f44336;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
+}
+
+#validationResultSection {
+	font-size: 15px;
 }

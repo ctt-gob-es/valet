@@ -4,7 +4,7 @@
 		<form id="valetServerForm" th:object="${valetServerForm}" th:action="@{/valetServer}" method="post">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" th:text="#{valet.modal.addTitle}">Nuevo Servidor</h5>
+					<h5 class="modal-title" th:text="#{valetServer.modal.addTitle}">Nuevo Servidor</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span>&times;</span>
 					</button>
@@ -15,53 +15,60 @@
 
 					<!-- Nombre del servidor -->
 					<div class="form-group">
-						<label for="serverName" th:text="#{valet.server.name}"></label>
+						<label for="serverName" th:text="#{valetServer.name}"></label>
 						<script th:inline="javascript">
 							var messageServerName = /*[[#{valetServer.name.pattern}]]*/ 'default';
 						</script>
 						<span id="serverName_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageServerName);" type="text" id="serverName" th:field="*{serverName}" class="form-control" required pattern=".{3,255}" />
+						<input onblur="validateField(this, messageServerName);" type="text" id="serverName" th:field="*{serverName}" class="form-control" required />
 					</div>
 
 					<!-- URL del servidor -->
 					<div class="form-group">
-						<label for="serverUrl" th:text="#{valet.server.url}"></label>
+						<label for="serverUrl" th:text="#{valetServer.url}"></label>
 						<script th:inline="javascript">
 							var messageServerUrl = /*[[#{valetServer.url.pattern}]]*/ 'default';
 						</script>
 						<span id="serverUrl_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageServerUrl);" type="url" id="serverUrl" th:field="*{serverUrl}" class="form-control" required pattern=".{3,4000}" />
+						<input onblur="validateField(this, messageServerUrl);" type="url" id="serverUrl" th:field="*{serverUrl}" class="form-control" required />
 					</div>
 
 					<!-- Aplicación -->
 					<div class="form-group">
-						<label for="application" th:text="#{valet.server.app}"></label>
+						<label for="application" th:text="#{valetServer.app}"></label>
 						<script th:inline="javascript">
 							var messageApplication = /*[[#{valetServer.app.pattern}]]*/ 'default';
 						</script>
 						<span id="application_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageApplication);" type="text" id="application" th:field="*{application}" class="form-control" required pattern=".{2,100}" />
+						<input onblur="validateField(this, messageApplication);" type="text" id="application" th:field="*{application}" class="form-control" required />
 					</div>
 
 					<!-- Versión -->
 					<div class="form-group">
-						<label for="version" th:text="#{valet.server.version}"></label>
-						<span id="version_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<select id="version" th:field="*{version}" class="form-control" required>
-							<option value="">--</option>
-							<option value="1.1.0">v.1.1.0</option>
-							<option value="1.2.0">v.1.2.0 o superior</option>
-						</select>
+					  <label for="version" th:text="#{valetServer.version}"></label>
+					  <script th:inline="javascript">
+					    var messageVersion = /*[[#{valetServer.version.pattern}]]*/ 'default';
+					  </script>
+					  <span id="version_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+					  <select id="version"
+					          th:field="*{version}"
+					          class="form-control"
+					          required
+					          onblur="validateField(this, messageVersion);">
+					    <option value="">--</option>
+					    <option value="1.1.0">v.1.1.0</option>
+					    <option value="1.2.0">v.1.2.0 o superior</option>
+					  </select>
 					</div>
 
 					<!-- Timeout -->
 					<div class="form-group">
-						<label for="connectionTimeout" th:text="#{valet.server.timeout}"></label>
+						<label for="connectionTimeout" th:text="#{valetServer.timeout}"></label>
 						<script th:inline="javascript">
 							var messageTimeout = /*[[#{valetServer.timeout.pattern}]]*/ 'default';
 						</script>
 						<span id="connectionTimeout_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageTimeout);" type="number" id="connectionTimeout" th:field="*{connectionTimeout}" class="form-control" min="100" max="100000" required />
+						<input onblur="validateField(this, messageTimeout);" type="number" id="connectionTimeout" th:field="*{connectionTimeout}" class="form-control" required />
 					</div>
 
 					<!-- Error general -->
@@ -69,8 +76,8 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{button.cancel}">Cancelar</button>
-					<button type="submit" class="btn btn-primary" id="addBtn" th:text="#{button.save}">Guardar</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{valetServer.button.cancel}">Cancelar</button>
+					<button type="submit" class="btn btn-primary" id="addBtn" th:text="#{valetServer.button.save}">Guardar</button>
 				</div>
 			</div>
 		</form>
@@ -78,43 +85,69 @@
 </div>
 
 <script th:inline="javascript">
-	$("#valetServerForm").submit(function (event) {
-		event.preventDefault();
+  $("#valetServerForm").submit(function (event) {
+    event.preventDefault();
+    
+    // Valida todos los campos antes de enviar el formulario
+    if (!validateForm()) {
+      return;
+    }
 
-		const formData = JSON.stringify($(this).serializeJSON());
+    const formData = JSON.stringify($(this).serializeJSON());
+    loading();
 
-		loading();
+    $.ajax({
+      type: "POST",
+      url: /*[[@{/valetServer}]]*/,
+      data: formData,
+      contentType: "application/json",
+      dataType: "json",
+      success: function () {
+        hide();
+        $("#modalAddValetServer").modal("hide");
+        valetTable.ajax.reload();
+        updateServerSelect();
+      },
+      error: function () {
+        hide();
+        const msgError = /*[[#{valetServer.form.error}]]*/ 'Error al guardar el servidor.';
+        $("#errorModalAdd").removeClass("d-none").text(msgError);
+      }
+    });
+  });
 
-		$.ajax({
-			type: "POST",
-			url: /*[[@{/valetServer}]]*/,
-			data: formData,
-			contentType: "application/json",
-			dataType: "json",
-			success: function () {
-				hide();
-				$("#modalAddValetServer").modal("hide");
-				valetTable.ajax.reload();
-				updateServerSelect();
-			},
-			error: function () {
-				hide();
-				const msgError = /*[[#{valetServer.form.error}]]*/ 'Error al guardar el servidor.';
-				$("#errorModalAdd").removeClass("d-none").text(msgError);
-			}
-		});
-	});
-
-	function validateField(input, errorMsg) {
-		const $input = $(input);
-		const $span = $("#" + input.id + "_span");
-
-		if (!$input[0].checkValidity()) {
-			$span.text(errorMsg);
-			$span.addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-		} else {
-			$span.text('');
-			$span.removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-		}
+  function validateForm() {
+	  let isValid = true;
+	  
+	  // Todos los campos a validar
+	  const fields = [
+	    { id: 'serverName',        msg: messageServerName },
+	    { id: 'serverUrl',         msg: messageServerUrl    },
+	    { id: 'application',       msg: messageApplication  },
+	    { id: 'connectionTimeout', msg: messageTimeout      },
+	    { id: 'version',           msg: messageVersion      }
+	  ];
+	  fields.forEach(function(field) {
+	    const input = document.getElementById(field.id);
+	    validateField(input, field.msg);
+	    if (!input.checkValidity()) {
+	      isValid = false;
+	    }
+	  });
+	  
+	  return isValid;
 	}
+
+  function validateField(input, errorMsg) {
+    const $input = $(input);
+    const $span = $("#" + input.id + "_span");
+
+    if (!$input[0].checkValidity()) {
+      $span.text(errorMsg);
+      $span.addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+    } else {
+      $span.text('');
+      $span.removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+    }
+  }
 </script>

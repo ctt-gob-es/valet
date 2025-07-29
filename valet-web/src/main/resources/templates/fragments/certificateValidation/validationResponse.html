@@ -32,9 +32,9 @@
 
     <!-- SECCIÓN TSL -->
     <div class="mb-3" id="tslSection">
-        <h4>
+        <h5>
             <strong th:text="#{validateCertificate.result.tsl}"></strong> <span id="tslCountry"></span> - <span id="tslSequence"></span>
-        </h4>
+        </h5>
          <!-- RESPUESTA AVANZADA -->
         <div id="tslAdvanced">
         	<ul>
@@ -48,9 +48,9 @@
     
     <!-- SECCIÓN TSP - RESPUESTA AVANZADA -->
     <div class="mb-3" id="tspSection">
-    	<h4>
+    	<h5>
             <strong th:text="#{validateCertificate.result.tsp}"></strong> <span id="tspName"></span>
-        </h4>
+        </h5>
         
         <div id="tspValues">
         	<ul>
@@ -64,7 +64,7 @@
     
     <!-- SECCIÓN INFORMACIÓN CERTIFICADO - SI SE MARCA OBTENER MAPEOS -->
     <div class="mb-3" id="certInfoSection">
-        <h4 th:text="#{validateCertificate.result.certInfo.title}">Información del Certificado</h4>
+        <h5 th:text="#{validateCertificate.result.certInfo.title}">Información del Certificado</h5>
         <ul>
             <li><strong th:text="#{validateCertificate.result.cert.classification}">Clasificación:</strong> <span id="certClassification"></span></li>
             <li><strong th:text="#{validateCertificate.result.cert.etsiResult}">Resultado ETSI:</strong> <span id="etsiResult"></span></li>
@@ -75,7 +75,7 @@
     
     <!-- SECCIÓN ESTADO DE REVOCACIÓN - SI SE MARCA OBTENER MAPEOS -->
     <div class="mb-3" id="revocationSection">
-        <h4 th:text="#{validateCertificate.result.revocation.title}">Estado de Revocación</h4>
+        <h5 th:text="#{validateCertificate.result.revocation.title}">Estado de Revocación</h5>
         <ul>
             <li><strong th:text="#{validateCertificate.result.revocation.status}">Estado:</strong> <span id="revocationStatus"></span></li>
             <li id="revocationURLElement"><strong th:text="#{validateCertificate.result.revocation.url}">URL Evidencia:</strong> <a id="revocationURL" target="_blank"></a></li>
@@ -112,12 +112,14 @@
     
     <!-- SECCIÓN CADENA DE CERTIFICACIÓN -->
     <div id="certificationChainSection">
-        <h4>
+        <h5>
             <strong th:text="#{validateCertificate.result.certificationChain}"></strong>
-        </h4>
+        </h5>
         <ul id="certificateList">
         	<!-- Relleno dinámico -->
         </ul>
+        <span id="noCertificateChainMessage" th:text="#{validateCertificate.result.certificationChain.none}" style="display: none;">
+		</span>
     </div>
 </div>
 
@@ -140,10 +142,10 @@
 	/*<![CDATA[*/
 	var TEXT_YES = '[[#{validateCertificate.common.yes}]]';
 	var TEXT_NO = '[[#{validateCertificate.common.no}]]';
+	var rootCertificateText = '[[#{validateCertificate.result.certificationChain.rootCertificate}]]';
 	/*]]>*/
 
 	$(document).ready(function () {
-		console.log("Hola");
 		if (typeof validationResponse !== 'undefined') {
 			renderValidationResult(validationResponse);
 		}
@@ -279,18 +281,27 @@
 			}
 			
 			// CERTIFICATE CHAIN
-			const certificateChain = cert?.certificateChain?.certificates;
 
+			const certificateChain = cert?.certificateChain?.certificates;
+			
 			const $certificateList = $('#certificateList');
+			const $noCertificateMessage = $('#noCertificateChainMessage');
+
 			$certificateList.empty();
 
 			if (Array.isArray(certificateChain) && certificateChain.length > 0) {
+				$noCertificateMessage.hide();
+
 				certificateChain.forEach((item, index) => {
 					const subject = item.certificateValue?.subject ?? `cert${index + 1}`;
 					const revStatus = item.tslRevocStatus;
+					const isRoot = item.isRoot;
 
 					let revocationText = '-';
-					if (revStatus) {
+
+					if (isRoot) {
+						revocationText = rootCertificateText;
+					} else if (revStatus) {
 						const status = fixEncoding(revStatus.revocationStatus);
 						const desc = fixEncoding(revStatus.revocationDesc || '');
 						revocationText = `${status} - ${desc}`;
@@ -300,9 +311,9 @@
 					$certificateList.append(li);
 				});
 			} else {
-				// En caso de que no se devuelvan entradas de la cadena de certificación no la mostramos
-				validationRequestData.returnCertificateChain = false;
+				$noCertificateMessage.show();
 			}
+
 		}
 		
 		//Ocultamos las secciones AVANZADAS
