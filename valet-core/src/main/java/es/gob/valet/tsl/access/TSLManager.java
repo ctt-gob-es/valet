@@ -2391,6 +2391,9 @@ public final class TSLManager {
 				//se elimina de base de datos
 				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().deleteTslCountryRegionById(idCountryRegion);
 				
+				// se actualiza el mapa mapTslMappingTree
+				deleteMapTslMappingTree(crc);
+
 			}
 
 		} catch (Exception e) {
