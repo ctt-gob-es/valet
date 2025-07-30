@@ -2407,6 +2407,9 @@ public final class TSLManager {
 				
 				// Eliminamos los acceso externos.
 				ApplicationContextProvider.getApplicationContext().getBean(ExternalAccessService.class).new ExternalAccessServiceThread(ExternalAccessService.OPERATION3, tslObjectParser).start();
+				
+				// se actualiza el mapa mapTslMappingTree
+				deleteMapTslMappingTree(crc);
 			}
 
 		} catch (Exception e) {
