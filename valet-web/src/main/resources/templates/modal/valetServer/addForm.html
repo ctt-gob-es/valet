@@ -128,8 +128,8 @@
 	  ];
 	  fields.forEach(function(field) {
 	    var input = document.getElementById(field.id);
-	    validateField(input, field.msg);
-	    if (!input.checkValidity()) {
+	    var isInputValid = validateField(input, field.msg);
+	    if (!isInputValid) {
 	      isValid = false;
 	    }
 	  });

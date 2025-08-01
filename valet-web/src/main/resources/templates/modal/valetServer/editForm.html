@@ -19,39 +19,42 @@
 
 					<!-- Nombre del servidor -->
 					<div class="form-group">
-						<label for="serverName" th:text="#{valetServer.name}"></label>
+						<label for="serverNameEdit" th:text="#{valetServer.name}"></label>
 						<script th:inline="javascript">
 							var messageServerName = /*[[#{valetServer.name.pattern}]]*/ 'default';
 						</script>
-						<span id="serverName_edit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageServerName);" type="text" id="serverName" th:field="*{serverName}" class="form-control"/>
+						<span id="serverNameEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageServerName);" type="text" id="serverNameEdit" th:field="*{serverName}" class="form-control"/>
 					</div>
 
 					<!-- URL del servidor -->
 					<div class="form-group">
-						<label for="serverUrl" th:text="#{valetServer.url}"></label>
+						<label for="serverUrlEdit" th:text="#{valetServer.url}"></label>
 						<script th:inline="javascript">
 							var messageServerUrl = /*[[#{valetServer.url.pattern}]]*/ 'default';
 						</script>
-						<span id="serverUrl_edit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageServerUrl);" type="url" id="serverUrl" th:field="*{serverUrl}" class="form-control"/>
+						<span id="serverUrlEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageServerUrl);" type="url" id="serverUrlEdit" th:field="*{serverUrl}" class="form-control"/>
 					</div>
 
 					<!-- Aplicación -->
 					<div class="form-group">
-						<label for="application" th:text="#{valetServer.app}"></label>
+						<label for="applicationEdit" th:text="#{valetServer.app}"></label>
 						<script th:inline="javascript">
 							var messageApplication = /*[[#{valetServer.app.pattern}]]*/ 'default';
 						</script>
-						<span id="application_edit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageApplication);" type="text" id="application" th:field="*{application}" class="form-control"  />
+						<span id="applicationEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageApplication);" type="text" id="applicationEdit" th:field="*{application}" class="form-control"  />
 					</div>
 
 					<!-- Versión -->
 					<div class="form-group">
-						<label for="version" th:text="#{valetServer.version}"></label>
-						<span id="version_edit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<select id="version" 
+						<label for="versionEdit" th:text="#{valetServer.version}"></label>
+						<script th:inline="javascript">
+						    var messageVersion = /*[[#{valetServer.version.pattern}]]*/ 'default';
+						  </script>
+						<span id="versionEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<select id="versionEdit" 
 							th:field="*{version}" 
 							class="form-control"
 					          onblur="validateField(this, messageVersion);">
@@ -63,12 +66,12 @@
 
 					<!-- Timeout -->
 					<div class="form-group">
-						<label for="connectionTimeout" th:text="#{valetServer.timeout}"></label>
+						<label for="connectionTimeoutEdit" th:text="#{valetServer.timeout}"></label>
 						<script th:inline="javascript">
 							var messageTimeout = /*[[#{valetServer.timeout.pattern}]]*/ 'default';
 						</script>
-						<span id="connectionTimeout_edit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageTimeout);" type="number" id="connectionTimeout" th:field="*{connectionTimeout}" class="form-control" />
+						<span id="connectionTimeoutEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageTimeout);" type="number" id="connectionTimeoutEdit" th:field="*{connectionTimeout}" class="form-control" />
 					</div>
 
 					<!-- Error general -->
@@ -95,8 +98,8 @@
 	    if (!validateForm()) {
 	      return;
 	    }
-		
-	    var formData = JSON.stringify($(this).serializeJSON());
+	    
+	    const formData = JSON.stringify($(this).serializeJSON());
 
 		loading();
 
@@ -124,16 +127,17 @@
 		  
 		  // Todos los campos a validar
 		  var fields = [
-		    { id: 'serverName',        msg: messageServerName },
-		    { id: 'serverUrl',         msg: messageServerUrl    },
-		    { id: 'application',       msg: messageApplication  },
-		    { id: 'connectionTimeout', msg: messageTimeout      },
-		    { id: 'version',           msg: messageVersion      }
-		  ];
+			  { id: 'serverNameEdit',        msg: messageServerName },
+			  { id: 'serverUrlEdit',         msg: messageServerUrl },
+			  { id: 'applicationEdit',       msg: messageApplication },
+			  { id: 'connectionTimeoutEdit', msg: messageTimeout },
+			  { id: 'versionEdit',           msg: messageVersion }
+			];
+
 		  fields.forEach(function(field) {
 		    var input = document.getElementById(field.id);
-		    validateField(input, field.msg);
-		    if (!input.checkValidity()) {
+		    var isInputValid = validateField(input, field.msg);
+		    if (!isInputValid) {
 		      isValid = false;
 		    }
 		  });
@@ -143,7 +147,7 @@
 
 	function validateField(input, errorMsg) {
 		  var $input = $(input);
-		  var $span = $("#" + input.id + "_edit_span");
+		  var $span = $("#" + input.id + "_span");
 		  var value = $input.val()?.trim();
 
 		  var isValid = true;
