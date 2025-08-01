@@ -29,97 +29,99 @@
         <strong th:text="#{validateCertificate.result.status}">Estado:</strong> <span id="resultStatus"></span><br>
         <strong th:text="#{validateCertificate.result.description}">Descripción:</strong> <span id="resultDescription"></span>
     </div>
-
-    <!-- SECCIÓN TSL -->
-    <div class="mb-3" id="tslSection">
-        <h5>
-            <strong th:text="#{validateCertificate.result.tsl}"></strong> <span id="tslCountry"></span> - <span id="tslSequence"></span>
-        </h5>
-         <!-- RESPUESTA AVANZADA -->
-        <div id="tslAdvanced">
-        	<ul>
-        		<li><strong th:text="#{validateCertificate.result.tsl.etsiSpecification}">Especificación ETSI:</strong> <span id="etsiSpecification"></span></li>
-                <li><strong th:text="#{validateCertificate.result.tsl.etsiVersion}">Versión ETSI:</strong> <span id="etsiVersion"></span></li>
-                <li><strong th:text="#{validateCertificate.result.tsl.tslLocation}">Ubicación TSL:</strong> <a id="tslLocation" target="_blank"></a></li>
-                <li><strong th:text="#{validateCertificate.result.tsl.tslIssued}">Emitido:</strong> <span id="tslIssued"></span></li>
-             </ul>
-        </div>
-    </div>
     
-    <!-- SECCIÓN TSP - RESPUESTA AVANZADA -->
-    <div class="mb-3" id="tspSection">
-    	<h5>
-            <strong th:text="#{validateCertificate.result.tsp}"></strong> <span id="tspName"></span>
-        </h5>
-        
-        <div id="tspValues">
-        	<ul>
-        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceName}">Servicio:</strong> <span id="tspServiceName"></span></li>
-        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceType}">Tipo de Servicio:</strong> <a id="tspServiceType" target="_blank"></a></li>
-        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceStatus}">Estado:</strong> <a id="tspServiceStatus" target="_blank"></a></li>
-        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceHistoryInf}">Histórico:</strong> <span id="tspServiceHistoryInf"></span></li>
-            </ul>
-        </div>
-    </div>
-    
-    <!-- SECCIÓN INFORMACIÓN CERTIFICADO - SI SE MARCA OBTENER MAPEOS -->
-    <div class="mb-3" id="certInfoSection">
-        <h5 th:text="#{validateCertificate.result.certInfo.title}">Información del Certificado</h5>
-        <ul>
-            <li><strong th:text="#{validateCertificate.result.cert.classification}">Clasificación:</strong> <span id="certClassification"></span></li>
-            <li><strong th:text="#{validateCertificate.result.cert.etsiResult}">Resultado ETSI:</strong> <span id="etsiResult"></span></li>
-            <li><strong th:text="#{validateCertificate.result.cert.qualified}">Cert. cualificado:</strong> <span id="certQualified"></span></li>
-            <li><strong th:text="#{validateCertificate.result.cert.qscd}">QSCD:</strong> <span id="certQscd"></span></li>
-        </ul>
-    </div>
-    
-    <!-- SECCIÓN ESTADO DE REVOCACIÓN - SI SE MARCA OBTENER MAPEOS -->
-    <div class="mb-3" id="revocationSection">
-        <h5 th:text="#{validateCertificate.result.revocation.title}">Estado de Revocación</h5>
-        <ul>
-            <li><strong th:text="#{validateCertificate.result.revocation.status}">Estado:</strong> <span id="revocationStatus"></span></li>
-            <li id="revocationURLElement"><strong th:text="#{validateCertificate.result.revocation.url}">URL Evidencia:</strong> <a id="revocationURL" target="_blank"></a></li>
-            
-            <!-- RESPUESTA AVANZADA -->
-            <li id="revocationDpAiaElement"><strong th:text="#{validateCertificate.result.revocation.dpAia}">DP-AIA:</strong> <span id="revocationDpAia"></span></li>
-            <li id="revocationTSPEvidenceElement"><strong th:text="#{validateCertificate.result.revocation.tspEvidence}">TSP Evidencia Revocación:</strong> <span id="revocationTSPEvidence"></span>
-            	<ul>
-            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.service}">Service:</strong> <span id="revocationEvidenceService"></span>
-            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.serviceType}">Tipo de Servicio:</strong> <span id="revocationEvidenceServiceType"></span>
-            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.status}">Estado:</strong> <span id="revocationEvidenceStatus"></span>
-            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.historyInf}">Histórico:</strong> <span id="revocationEvidenceHistoryInf"></span>
-            	</ul>
-            </li>
-            <li><strong th:text="#{validateCertificate.result.revocation.evidenceType}">Tipo de Evidencia:</strong> <span id="evidenceType"></span></li>
-            <li>
-            	<strong th:text="#{validateCertificate.result.revocation.evidence}">Evidencia:</strong> 
-            	<pre id="evidence"
-				     class="text-break bg-light p-2 rounded small"
-				     style="white-space: pre-wrap;
-				            word-break: break-word;
-				            overflow-wrap: break-word;
-				            max-height: 150px;
-				            overflow-y: auto;
-				            font-size: 0.75rem;
-				            line-height: 1.2;">
-				</pre>
-			</li>
-            <!-- FIN DE RESPUESTA AVANZADA -->
-            
-            <li id="revocationElement"><strong th:text="#{validateCertificate.result.revocation.revocation}">Revocado:</strong> <span id="revocation"></span></li>
-        </ul>
-    </div>
-    
-    <!-- SECCIÓN CADENA DE CERTIFICACIÓN -->
-    <div id="certificationChainSection">
-        <h5>
-            <strong th:text="#{validateCertificate.result.certificationChain}"></strong>
-        </h5>
-        <ul id="certificateList">
-        	<!-- Relleno dinámico -->
-        </ul>
-        <span id="noCertificateChainMessage" th:text="#{validateCertificate.result.certificationChain.none}" style="display: none;">
-		</span>
+    <div id="resultDetailsSection">
+    	<!-- SECCIÓN TSL -->
+	    <div class="mb-3" id="tslSection">
+	        <h5>
+	            <strong th:text="#{validateCertificate.result.tsl}"></strong> <span id="tslCountry"></span> - <span id="tslSequence"></span>
+	        </h5>
+	         <!-- RESPUESTA AVANZADA -->
+	        <div id="tslAdvanced">
+	        	<ul>
+	        		<li><strong th:text="#{validateCertificate.result.tsl.etsiSpecification}">Especificación ETSI:</strong> <span id="etsiSpecification"></span></li>
+	                <li><strong th:text="#{validateCertificate.result.tsl.etsiVersion}">Versión ETSI:</strong> <span id="etsiVersion"></span></li>
+	                <li><strong th:text="#{validateCertificate.result.tsl.tslLocation}">Ubicación TSL:</strong> <a id="tslLocationLink" target="_blank"></a></li>
+	                <li><strong th:text="#{validateCertificate.result.tsl.tslIssued}">Emitido:</strong> <span id="tslIssued"></span></li>
+	             </ul>
+	        </div>
+	    </div>
+	    
+	    <!-- SECCIÓN TSP - RESPUESTA AVANZADA -->
+	    <div class="mb-3" id="tspSection">
+	    	<h5>
+	            <strong th:text="#{validateCertificate.result.tsp}"></strong> <span id="tspName"></span>
+	        </h5>
+	        
+	        <div id="tspValues">
+	        	<ul>
+	        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceName}">Servicio:</strong> <span id="tspServiceName"></span></li>
+	        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceType}">Tipo de Servicio:</strong> <a id="tspServiceType" target="_blank"></a></li>
+	        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceStatus}">Estado:</strong> <a id="tspServiceStatus" target="_blank"></a></li>
+	        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceHistoryInf}">Histórico:</strong> <span id="tspServiceHistoryInf"></span></li>
+	            </ul>
+	        </div>
+	    </div>
+	    
+	    <!-- SECCIÓN INFORMACIÓN CERTIFICADO - SI SE MARCA OBTENER MAPEOS -->
+	    <div class="mb-3" id="certInfoSection">
+	        <h5 th:text="#{validateCertificate.result.certInfo.title}">Información del Certificado</h5>
+	        <ul>
+	            <li><strong th:text="#{validateCertificate.result.cert.classification}">Clasificación:</strong> <span id="certClassification"></span></li>
+	            <li><strong th:text="#{validateCertificate.result.cert.etsiResult}">Resultado ETSI:</strong> <span id="etsiResult"></span></li>
+	            <li><strong th:text="#{validateCertificate.result.cert.qualified}">Cert. cualificado:</strong> <span id="certQualified"></span></li>
+	            <li><strong th:text="#{validateCertificate.result.cert.qscd}">QSCD:</strong> <span id="certQscd"></span></li>
+	        </ul>
+	    </div>
+	    
+	    <!-- SECCIÓN ESTADO DE REVOCACIÓN - SI SE MARCA OBTENER MAPEOS -->
+	    <div class="mb-3" id="revocationSection">
+	        <h5 th:text="#{validateCertificate.result.revocation.title}">Estado de Revocación</h5>
+	        <ul>
+	            <li><strong th:text="#{validateCertificate.result.revocation.status}">Estado:</strong> <span id="revocationStatus"></span></li>
+	            <li id="revocationURLElement"><strong th:text="#{validateCertificate.result.revocation.url}">URL Evidencia:</strong> <a id="revocationURL" target="_blank"></a></li>
+	            
+	            <!-- RESPUESTA AVANZADA -->
+	            <li id="revocationDpAiaElement"><strong th:text="#{validateCertificate.result.revocation.dpAia}">DP-AIA:</strong> <span id="revocationDpAia"></span></li>
+	            <li id="revocationTSPEvidenceElement"><strong th:text="#{validateCertificate.result.revocation.tspEvidence}">TSP Evidencia Revocación:</strong> <span id="revocationTSPEvidence"></span>
+	            	<ul>
+	            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.service}">Service:</strong> <span id="revocationEvidenceService"></span>
+	            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.serviceType}">Tipo de Servicio:</strong> <span id="revocationEvidenceServiceType"></span>
+	            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.status}">Estado:</strong> <span id="revocationEvidenceStatus"></span>
+	            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.historyInf}">Histórico:</strong> <span id="revocationEvidenceHistoryInf"></span>
+	            	</ul>
+	            </li>
+	            <li id="evidenceTypeElement"><strong th:text="#{validateCertificate.result.revocation.evidenceType}">Tipo de Evidencia:</strong> <span id="evidenceType"></span></li>
+	            <li id="evidenceElement">
+	            	<strong th:text="#{validateCertificate.result.revocation.evidence}">Evidencia:</strong> 
+	            	<pre id="evidence"
+					     class="text-break bg-light p-2 rounded small"
+					     style="white-space: pre-wrap;
+					            word-break: break-word;
+					            overflow-wrap: break-word;
+					            max-height: 150px;
+					            overflow-y: auto;
+					            font-size: 0.75rem;
+					            line-height: 1.2;">
+					</pre>
+				</li>
+	            <!-- FIN DE RESPUESTA AVANZADA -->
+	            
+	            <li id="revocationElement"><strong th:text="#{validateCertificate.result.revocation.revocation}">Revocado:</strong> <span id="revocation"></span></li>
+	        </ul>
+	    </div>
+	    
+	    <!-- SECCIÓN CADENA DE CERTIFICACIÓN -->
+	    <div id="certificationChainSection">
+	        <h5>
+	            <strong th:text="#{validateCertificate.result.certificationChain}"></strong>
+	        </h5>
+	        <ul id="certificateList">
+	        	<!-- Relleno dinámico -->
+	        </ul>
+	        <span id="noCertificateChainMessage" th:text="#{validateCertificate.result.certificationChain.none}" style="display: none;">
+			</span>
+	    </div>
     </div>
 </div>
 
@@ -212,20 +214,27 @@
 		setText('resultStatus', data.status);
 		setText('resultDescription', fixEncoding(data.description));
 		
+		if (!data.resultTslInfVal) {
+			validationRequestData.hideResult = true;
+		}
+		
 		// SECCIÓN TSL
 		const tsl = data.resultTslInfVal?.tslInformation;
 		
 		const specificationAndVersion = tsl?.etsiSpecificationAndVersion ?? '';
 		const [etsiSpecification, etsiVersion] = specificationAndVersion.split(' ', 2);
+		const tslLocationUrl = tsl?.tslLocation;
 		
 		setText('tslCountry', fixEncoding(tsl?.countryRegion));
 		setText('tslSequence', tsl?.sequenceNumber);
-		setText('etsiSpecification', fixEncoding(tsl?.etsiSpecification));
-		setText('etsiVersion', fixEncoding(tsl?.etsiVersion));
-		setLink('tslLocation', tsl?.tslLocation);
+		setText('etsiSpecification', fixEncoding(etsiSpecification));
+		setText('etsiVersion', fixEncoding(etsiVersion));
+		setLink('tslLocationLink', tslLocationUrl);
 		setText('tslIssued', formatDate(tsl?.issued?.dateString));
 
 		const cert = data.resultTslInfVal?.certDetectedInTSL;
+		
+		console.log("GUIA");
 		
 		if (cert) {
 			// SECCIÓN TSP
@@ -237,7 +246,7 @@
 				setLink('tspServiceName', fixEncoding(tsp?.tspServiceName));
 				setLink('tspServiceType', fixEncoding(tsp?.tspServiceType));
 				setLink('tspServiceStatus', fixEncoding(tsp?.tspServiceStatus));
-				setText('tspServiceHistoryInf', fixEncoding(tsp?.tspServiceHistoryInf));
+				setText('tspServiceHistoryInf', tsp?.tspServiceHistoryInf === true ? TEXT_YES : TEXT_NO);
 			}
 			
 			// SECCIÓN INFORMACIÓN CERTIFICADO
@@ -275,13 +284,16 @@
 				}
 				
 				setText('evidenceType', fixEncoding(getEvidenceType(revocationStatus.evidenceType)));
-				setText('evidence', fixEncoding(revocationStatus.evidence.byteArray));
+
+				const revocationStatusEvidence = revocationStatus?.evidence;
+				if (revocationStatusEvidence) {
+					setText('evidence', fixEncoding(revocationStatus.evidence.byteArray));
+				}
 				
 				setText('revocation', fixEncoding(getRevocationStatusDescription(revocationStatus.revocationReason)) + ' ' + formatDate(revocationStatus.revocationDate?.dateString));
 			}
 			
 			// CERTIFICATE CHAIN
-
 			const certificateChain = cert?.certificateChain?.certificates;
 			
 			const $certificateList = $('#certificateList');
@@ -296,6 +308,7 @@
 					const subject = item.certificateValue?.subject ?? `cert${index + 1}`;
 					const revStatus = item.tslRevocStatus;
 					const isRoot = item.isRoot;
+					const certContent = fixEncoding(item.certificateValue?.byteArray ?? '');
 
 					let revocationText = '-';
 
@@ -307,7 +320,20 @@
 						revocationText = `${status} - ${desc}`;
 					}
 
-					const li = `<li><strong>${subject}</strong>: ${revocationText}</li>`;
+					const li = `
+						<li>
+							<strong>${subject}</strong>:
+							<pre class="text-break bg-light p-2 rounded small"
+							     style="white-space: pre-wrap;
+							            word-break: break-word;
+							            overflow-wrap: break-word;
+							            max-height: 150px;
+							            overflow-y: auto;
+							            font-size: 0.75rem;
+							            line-height: 1.2;">
+								${certContent}
+							</pre>
+						</li>`;
 					$certificateList.append(li);
 				});
 			} else {
@@ -316,37 +342,43 @@
 
 		}
 		
-		//Ocultamos las secciones AVANZADAS
-		$('#tslAdvanced').hide();
-		$('#tspSection').hide();
-		$('#revocationDpAiaElement').hide();
-		$('#revocationTSPEvidenceElement').hide();
-		$('#evidenceTypeElement').hide();
-		$('#evidenceElement').hide();
-		
-		// Mostrar Información de Certificado si se ha marcado Obtener mapeos
-		if (validationRequestData.fetchMappings) {
-			$('#certInfoSection').show();
+		if (validationRequestData.hideResult) {
+			$('#resultDetailsSection').hide();
 		} else {
-			$('#certInfoSection').hide();
-		}
-		
-		if (validationRequestData.checkRevocationStatus) {
-			$('#revocationSection').show();
-		} else {
-			$('#revocationSection').hide();
-		}
-		
-		if (validationRequestData.returnCertificateChain) {
-			$('#certificationChainSection').show();
-		} else {
-			$('#certificationChainSection').hide();
-		}
-		
-		if (validationRequestData.showTSPRevocationEvidence) {
-			$('#revocationTSPEvidenceElement').show();
-		} else {
+			//Ocultamos las secciones AVANZADAS
+			$('#tslAdvanced').hide();
+			$('#tspSection').hide();
+			$('#revocationDpAiaElement').hide();
 			$('#revocationTSPEvidenceElement').hide();
+			
+			// Mostrar Información de Certificado si se ha marcado Obtener mapeos
+			if (validationRequestData.fetchMappings) {
+				$('#certInfoSection').show();
+			} else {
+				$('#certInfoSection').hide();
+			}
+			
+			if (validationRequestData.checkRevocationStatus) {
+				$('#revocationSection').show();
+			} else {
+				$('#revocationSection').hide();
+			}
+			
+			if (validationRequestData.returnCertificateChain) {
+				$('#certificationChainSection').show();
+			} else {
+				$('#certificationChainSection').hide();
+			}
+			
+			if (validationRequestData.showTSPRevocationEvidence) {
+				$('#revocationTSPEvidenceElement').show();
+				$('#evidenceTypeElement').show();
+				$('#evidenceElement').show();
+			} else {
+				$('#revocationTSPEvidenceElement').hide();
+				$('#evidenceTypeElement').hide();
+				$('#evidenceElement').hide();
+			}
 		}
 	}
 
@@ -355,46 +387,57 @@
 
 		currentValidationMode = mode;
 
-		// Mostrar/Ocultar secciones avanzadas
-		if (isDetailed) {
-			$('#tslAdvanced, #tspSection').slideDown();
+		if (validationRequestData.hideResult) {
+			$('#resultDetailsSection').hide();
 		} else {
-			$('#tslAdvanced, #tspSection').slideUp();
-		}
-
-		if (validationRequestData.checkRevocationStatus) {
-			$('#revocationSection').slideDown();
-			
-			if (validationRequestData.returnRevocationEvidence) {
-				$('#revocationURLElement').slideDown();
+			// Mostrar/Ocultar secciones avanzadas
+			if (isDetailed) {
+				$('#tslAdvanced').slideDown();
 				
-				if (isDetailed) {
-					$('#revocationDpAiaElement, #evidenceTypeElement, #evidenceElement').slideDown();
-					
-					if (validationRequestData.showTSPRevocationEvidence) {
-						$('#revocationTSPEvidenceElement').slideDown();
-					} else {
-						$('#revocationTSPEvidenceElement').slideUp();
-					}
-				} else {
-					$('#revocationDpAiaElement, #evidenceTypeElement, #evidenceElement').slideUp();
+				if (validationRequestData.fetchMappings) {
+					$('#tspSection').slideDown();
 				}
 			} else {
-				$('#revocationURLElement').slideUp();
+				$('#tslAdvanced').slideUp();
+				
+				if (validationRequestData.fetchMappings) {
+					$('#tspSection').slideUp();
+				}
 			}
-		} else {
-			$('#revocationDpAiaElement').slideUp();
-		}
-		
-		if (validationRequestData.showTSPRevocationEvidence) {
-			$('#revocationTSPEvidenceElement').slideDown();
-		} else {
-			$('#revocationTSPEvidenceElement').slideUp();
-		}
 
-		// Alternar botones
-		$('#toggleToDetailedBtn').toggle(!isDetailed);
-		$('#toggleToSummaryBtn').toggle(isDetailed);
+			if (validationRequestData.checkRevocationStatus) {
+				$('#revocationSection').slideDown();
+				
+				if (validationRequestData.returnRevocationEvidence) {
+					$('#revocationURLElement').slideDown();
+					
+					if (isDetailed) {
+						$('#revocationDpAiaElement').slideDown();
+						$('#evidenceTypeElement').slideDown();
+						$('#evidenceElement').slideDown();
+						
+						if (validationRequestData.showTSPRevocationEvidence) {
+							$('#revocationTSPEvidenceElement').slideDown();
+						} else {
+							$('#revocationTSPEvidenceElement').slideUp();
+						}
+					} else {
+						$('#revocationDpAiaElement').slideUp();
+						$('#revocationTSPEvidenceElement').slideUp();
+						$('#evidenceTypeElement').slideUp();
+						$('#evidenceElement').slideUp();
+					}
+				} else {
+					$('#revocationURLElement').slideUp();
+				}
+			} else {
+				$('#revocationDpAiaElement').slideUp();
+			}
+
+			// Alternar botones
+			$('#toggleToDetailedBtn').toggle(!isDetailed);
+			$('#toggleToSummaryBtn').toggle(isDetailed);
+		}
 	}
 
 	function setText(id, value) {

@@ -163,7 +163,9 @@
 		checkRevocationStatus: false,
 		returnRevocationEvidence: false,
 		returnCertificateChain: false,
-		showTSPRevocationEvidence: false
+		showTSPRevocationEvidence: false,
+		showTSP: false,
+		hideResult: false,
 	};
 	
 	$(document).ready(function () {
@@ -238,6 +240,23 @@
 		$('#certFile').on('change', function () {
 			clearValidationError('certFile_span');
 		});
+		
+		// Control de dependencia entre checkboxes
+		$('#checkRevocationStatus').on('change', function () {
+			const isChecked = $(this).is(':checked');
+			const $returnRevocationEvidence = $('#returnRevocationEvidence');
+
+			$returnRevocationEvidence.prop('disabled', !isChecked);
+
+			if (!isChecked) {
+				$returnRevocationEvidence.prop('checked', false); // Desmarcar si checkRevocationStatus se desactiva
+			}
+		});
+
+		// Estado inicial al cargar la página
+		if (!$('#checkRevocationStatus').is(':checked')) {
+			$('#returnRevocationEvidence').prop('disabled', true).prop('checked', false);
+		}
 	
 		$('#btnAddServer').click(function (event) {
 			event.preventDefault();
