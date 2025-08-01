@@ -38,8 +38,8 @@
 	$('#confirmDeleteBtn').click(function (e) {
 		e.preventDefault();
 
-		const idServer = $('#valetServerFormDelete #idValetServer').val();
-		const deleteUrl = /*[[@{/valetServer/delete}]]*/ '';
+		var idServer = $('#valetServerFormDelete #idValetServer').val();
+		var deleteUrl = /*[[@{/valetServer/delete}]]*/ '';
 
 		loading();
 
@@ -54,7 +54,7 @@
 			},
 			error: function () {
 				hide();
-				const msgError = /*[[#{valetServer.form.error.delete}]]*/ 'Error al eliminar el servidor.';
+				var msgError = /*[[#{valetServer.form.error.delete}]]*/ 'Error al eliminar el servidor.';
 				$('#errorModalDelete').removeClass('d-none').text(msgError);
 			}
 		});

@@ -23,8 +23,8 @@
 						<script th:inline="javascript">
 							var messageServerName = /*[[#{valetServer.name.pattern}]]*/ 'default';
 						</script>
-						<span id="serverName_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageServerName);" type="text" id="serverName" th:field="*{serverName}" class="form-control" required pattern=".{3,255}" />
+						<span id="serverName_edit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageServerName);" type="text" id="serverName" th:field="*{serverName}" class="form-control"/>
 					</div>
 
 					<!-- URL del servidor -->
@@ -33,8 +33,8 @@
 						<script th:inline="javascript">
 							var messageServerUrl = /*[[#{valetServer.url.pattern}]]*/ 'default';
 						</script>
-						<span id="serverUrl_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageServerUrl);" type="url" id="serverUrl" th:field="*{serverUrl}" class="form-control" required pattern=".{3,4000}" />
+						<span id="serverUrl_edit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageServerUrl);" type="url" id="serverUrl" th:field="*{serverUrl}" class="form-control"/>
 					</div>
 
 					<!-- Aplicación -->
@@ -43,15 +43,18 @@
 						<script th:inline="javascript">
 							var messageApplication = /*[[#{valetServer.app.pattern}]]*/ 'default';
 						</script>
-						<span id="application_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageApplication);" type="text" id="application" th:field="*{application}" class="form-control" required pattern=".{2,100}" />
+						<span id="application_edit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageApplication);" type="text" id="application" th:field="*{application}" class="form-control"  />
 					</div>
 
 					<!-- Versión -->
 					<div class="form-group">
 						<label for="version" th:text="#{valetServer.version}"></label>
-						<span id="version_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<select id="version" th:field="*{version}" class="form-control" required>
+						<span id="version_edit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<select id="version" 
+							th:field="*{version}" 
+							class="form-control"
+					          onblur="validateField(this, messageVersion);">
 							<option value="">--</option>
 							<option value="1.1.0" th:selected="${valetServerForm.version == '1.1.0'}">v.1.1.0</option>
 							<option value="1.2.0" th:selected="${valetServerForm.version == '1.2.0'}">v.1.2.0 o superior</option>
@@ -64,8 +67,8 @@
 						<script th:inline="javascript">
 							var messageTimeout = /*[[#{valetServer.timeout.pattern}]]*/ 'default';
 						</script>
-						<span id="connectionTimeout_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageTimeout);" type="number" id="connectionTimeout" th:field="*{connectionTimeout}" class="form-control" min="100" max="100000" required />
+						<span id="connectionTimeout_edit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageTimeout);" type="number" id="connectionTimeout" th:field="*{connectionTimeout}" class="form-control" />
 					</div>
 
 					<!-- Error general -->
@@ -85,16 +88,15 @@
 	$("#valetServerFormEdit").submit(function (event) {
 		event.preventDefault();
 
-		const idValetServer = $("#idValetServer").val();
-		const formData = JSON.stringify($(this).serializeJSON());
-		const updateUrl = /*[[@{/valetServer/update}]]*/ '';
+		var idValetServer = $("#idValetServer").val();
+		var updateUrl = /*[[@{/valetServer/update}]]*/ '';
 		
 		// Valida todos los campos antes de enviar el formulario
 	    if (!validateForm()) {
 	      return;
 	    }
 		
-	    const formData = JSON.stringify($(this).serializeJSON());
+	    var formData = JSON.stringify($(this).serializeJSON());
 
 		loading();
 
@@ -111,17 +113,17 @@
 			},
 			error: function () {
 				hide();
-				const msgError = /*[[#{valetServer.form.error}]]*/ 'Error al actualizar servidor.';
+				var msgError = /*[[#{valetServer.form.error}]]*/ 'Error al actualizar servidor.';
 				$("#errorModalEdit").removeClass("d-none").text(msgError);
 			}
 		});
 	});
 	
 	function validateForm() {
-		  let isValid = true;
+		  var isValid = true;
 		  
 		  // Todos los campos a validar
-		  const fields = [
+		  var fields = [
 		    { id: 'serverName',        msg: messageServerName },
 		    { id: 'serverUrl',         msg: messageServerUrl    },
 		    { id: 'application',       msg: messageApplication  },
@@ -129,7 +131,7 @@
 		    { id: 'version',           msg: messageVersion      }
 		  ];
 		  fields.forEach(function(field) {
-		    const input = document.getElementById(field.id);
+		    var input = document.getElementById(field.id);
 		    validateField(input, field.msg);
 		    if (!input.checkValidity()) {
 		      isValid = false;
@@ -139,16 +141,33 @@
 		  return isValid;
 		}
 
-	  function validateField(input, errorMsg) {
-	    const $input = $(input);
-	    const $span = $("#" + input.id + "_span");
+	function validateField(input, errorMsg) {
+		  var $input = $(input);
+		  var $span = $("#" + input.id + "_edit_span");
+		  var value = $input.val()?.trim();
 
-	    if (!$input[0].checkValidity()) {
-	      $span.text(errorMsg);
-	      $span.addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-	    } else {
-	      $span.text('');
-	      $span.removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-	    }
-	  }
+		  var isValid = true;
+
+		  // Validar si el campo está vacío
+		  if (!value) {
+		    isValid = false;
+		  }
+
+		  // Validación extra según tipo
+		  if (isValid && input.type === "number") {
+		    isValid = !isNaN(value);
+		  }
+
+		  // Mostrar mensaje si no es válido
+		  if (!isValid) {
+		    $span.text(errorMsg);
+		    $span.addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+		  } else {
+		    $span.text('');
+		    $span.removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+		  }
+
+		  return isValid;
+		}
+
 </script>

@@ -1208,4 +1208,74 @@ public class WebGeneralMessages {
 	 * Constant attribute that represents the property key <code>IMP048</code> belonging to the file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String LOG_IMP048 = "IMP048";
+	
+	/**
+	 * Constant attribute that represents the property key <code>VCR001</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VCR001 = "VCR001";
+	
+	/**
+	 * Constant attribute that represents the property key <code>VCR002</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VCR002 = "VCR002";
+	
+	/**
+	 * Constant attribute that represents the property key <code>VCR003</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VCR003 = "VCR003";
+
+	/**
+	 * Constant attribute that represents the property key <code>VCR004</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VCR004 = "VCR004";
+	
+	/**
+	 * Constant attribute that represents the property key <code>VSE001</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VSE001 = "VSE001";
+
+	/**
+	 * Constant attribute that represents the property key <code>VSE002</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VSE002 = "VSE002";
+
+	/**
+	 * Constant attribute that represents the property key <code>VSE003</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VSE003 = "VSE003";
+
+	/**
+	 * Constant attribute that represents the property key <code>VSE004</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VSE004 = "VSE004";
+
+	/**
+	 * Constant attribute that represents the property key <code>VSE005</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VSE005 = "VSE005";
+
+	/**
+	 * Constant attribute that represents the property key <code>VSE006</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VSE006 = "VSE006";
+
+	/**
+	 * Constant attribute that represents the property key <code>VSE007</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VSE007 = "VSE007";
+	
+	/**
+	 * Constant attribute that represents the property key <code>VSE008</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VSE008 = "VSE008";
+
+	/**
+	 * Constant attribute that represents the property key <code>VSE009</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VSE009 = "VSE009";
+
+	/**
+	 * Constant attribute that represents the property key <code>VSE010</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VSE010 = "VSE010";
 }

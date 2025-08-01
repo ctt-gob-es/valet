@@ -81,7 +81,12 @@
 					    <div class="form-row">
 					        <div class="form-group col-md-6">
 					            <label for="detectionDate" th:text="#{validateCertificate.input.detectionDate}"></label>
-					            <input type="datetime-local" class="form-control" id="detectionDate" name="detectionDate">
+					        	<div class="input-group date" id="datetimepicker1">
+									<input type='text' class="form-control" id="detectionDate" name="detectionDate">
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
 					        </div>
 					    </div>
 					
@@ -130,12 +135,13 @@
     </div>
 
     <!-- Resumen de opciones utilizadas -->
+    <!-- 
     <div id="validationSummarySection" class="masonry-item col-md-12 mb-2" style="display: none;">
         <div class="bgc-white p-15 bd" id="validationSummaryContent">
-            <!-- Se completa dinámicamente -->
+            
         </div>
     </div>
-
+	 -->
     <!-- Resultado de la validación -->
     <div id="validationResultSection" class="masonry-item col-md-12" style="display: none;">
         <div class="bgc-white p-20 bd" id="validationResultContent">
@@ -161,6 +167,16 @@
 	};
 	
 	$(document).ready(function () {
+		
+		//funciÃ³n para configurar el elemento datetimepicker
+		$('#datetimepicker1').datetimepicker({
+		 	format: 'DD/MM/YYYY HH:mm',
+		 	widgetPositioning:{
+				horizontal: 'auto',
+				vertical: 'top'
+			}
+		});
+		
 		valetTable = $('#valetServersTable').DataTable({
 			responsive: true,
 			ajax: {
@@ -300,14 +316,16 @@
 				validationRequestData.returnRevocationEvidence = $('#returnRevocationEvidence').is(':checked');
 				validationRequestData.returnCertificateChain = $('#returnCertificateChain').is(':checked');
 			} else {
-				validationRequestData.tslLocation = null;
-				validationRequestData.detectionDate = null;
-				validationRequestData.checkRevocationStatus = true;
-				validationRequestData.returnRevocationEvidence = true;
-				validationRequestData.returnCertificateChain = true;
+				formData.append("tslLocation", null);
+			    formData.append("detectionDate", null);
+			    formData.append("checkRevocationStatus", false);
+			    formData.append("returnRevocationEvidence", false);
+			    formData.append("returnCertificateChain", false);
+			    
+				validationRequestData.checkRevocationStatus = false;
+				validationRequestData.returnRevocationEvidence = false;
+				validationRequestData.returnCertificateChain = false;
 			}
-			
-			
 	
 			loading();
 	
@@ -341,10 +359,10 @@
 						$('#valetValidationForm').closest('.bgc-white').hide();
 
 						// Genera resumen de opciones enviadas
-						const summaryHtml = generateValidationSummary();
+						//const summaryHtml = generateValidationSummary();
 
-						$('#validationSummaryContent').html(summaryHtml);
-						$('#validationSummarySection').slideDown();
+						//$('#validationSummaryContent').html(summaryHtml);
+						//$('#validationSummarySection').slideDown();
 
 						// Carga vista del resultado
 						$.ajax({
@@ -496,7 +514,7 @@
 		$('#toggleTableBtn').show();
 		$('#valetTableContainer').show();
 		$('#valetValidationForm').closest('.bgc-white').show();
-		$('#validationSummarySection').hide();
+		//$('#validationSummarySection').hide();
 		$('#validationResultSection').hide();
 	}
 	
