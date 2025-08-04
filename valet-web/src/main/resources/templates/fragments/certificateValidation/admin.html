@@ -81,7 +81,11 @@
 					    <div class="form-row">
 					        <div class="form-group col-md-6">
 					            <label for="detectionDate" th:text="#{validateCertificate.input.detectionDate}"></label>
-					        	<div class="input-group date" id="datetimepicker1">
+					        	<script th:inline="javascript">
+									var messageDetectionDate = /*[[#{validateCertificate.detectionDate.pattern}]]*/ 'default';
+								</script>
+								<span id="detectionDate_span" style="display: none;" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+                            	<div class="input-group date" id="datetimepicker1">
 									<input type='text' class="form-control" id="detectionDate" name="detectionDate">
 									<span class="input-group-addon">
 										<span class="glyphicon glyphicon-calendar"></span>
@@ -403,10 +407,15 @@
 				},
 				error: function (xhr) {
 					hide();
-					const messageValidationError = /*[[#{validateCertificate.error.default}]]*/ 'default';
+					const defaultMessage = /*[[#{validateCertificate.error.default}]]*/ 'Error al validar el certificado.';
+					let finalMessage = defaultMessage;
+
+					if (xhr.status === 503 && xhr.responseText) {
+						finalMessage += ' - ' + xhr.responseText;
+					}
 
 					$('#errorMessageContainer').slideDown();
-					$('#errorMessage').text(messageValidationError);
+					$('#errorMessage').text(finalMessage);
 				}
 			});
 		});
@@ -559,6 +568,24 @@
 			clearValidationError('certFile_span');
 		}
 
+		// Validar que detectionDate no sea futura (si está presente)
+		const detectionDateStr = $('#detectionDate').val();
+		if (detectionDateStr) {
+			// Formato esperado: 'DD/MM/YYYY HH:mm:ss'
+			const detectionMoment = moment(detectionDateStr, 'DD/MM/YYYY HH:mm:ss', true);
+			const now = moment();
+
+			if (!detectionMoment.isValid() || detectionMoment.isAfter(now)) {
+				isValid = false;
+				showValidationError('detectionDate_span', messageDetectionDate);
+			}
+		}
+		
+		// Si todo está bien, limpiar todos los spans de error visibles
+		if (isValid) {
+			clearAllValidationErrors();
+		}
+
 		return isValid;
 	}
 	
@@ -571,6 +598,12 @@
 		const $span = $('#' + spanId);
 		$span.slideUp(() => {
 			$span.text('').removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+		});
+	}
+	
+	function clearAllValidationErrors() {
+		$('[id$="_span"]').each(function () {
+			clearValidationError(this.id);
 		});
 	}
 

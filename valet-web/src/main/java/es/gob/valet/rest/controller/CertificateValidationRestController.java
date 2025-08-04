@@ -26,6 +26,7 @@ package es.gob.valet.rest.controller;
 
 import java.net.ConnectException;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -173,7 +174,8 @@ public class CertificateValidationRestController {
 				
 				// PARAMETRO de Ubicacion de TSLs
 				if (form.getTslLocation() != null && !form.getTslLocation().isEmpty()) {
-					params.add(CertificateValidationConstants.PARAM_TSL_LOCATION, form.getTslLocation() != null ? form.getTslLocation() : "");
+					String encodedTslLocation = Base64.encode(form.getTslLocation().getBytes(StandardCharsets.UTF_8));
+					params.add(CertificateValidationConstants.PARAM_TSL_LOCATION, encodedTslLocation);
 				}
 				
 				// PARAMETRO de Fecha de validacion

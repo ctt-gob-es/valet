@@ -34,7 +34,7 @@
     	<!-- SECCIÓN TSL -->
 	    <div class="mb-3" id="tslSection">
 	        <h5>
-	            <strong th:text="#{validateCertificate.result.tsl}"></strong> <span id="tslCountry"></span> - <span id="tslSequence"></span>
+	            <span th:text="#{validateCertificate.result.tsl}"></span> <span id="tslCountry"></span> - <span id="tslSequence"></span>
 	        </h5>
 	         <!-- RESPUESTA AVANZADA -->
 	        <div id="tslAdvanced">
@@ -50,7 +50,7 @@
 	    <!-- SECCIÓN TSP - RESPUESTA AVANZADA -->
 	    <div class="mb-3" id="tspSection">
 	    	<h5>
-	            <strong th:text="#{validateCertificate.result.tsp}"></strong> <span id="tspName"></span>
+	            <span th:text="#{validateCertificate.result.tsp}"></span> <span id="tspName"></span>
 	        </h5>
 	        
 	        <div id="tspValues">
@@ -113,9 +113,7 @@
 	    
 	    <!-- SECCIÓN CADENA DE CERTIFICACIÓN -->
 	    <div id="certificationChainSection">
-	        <h5>
-	            <strong th:text="#{validateCertificate.result.certificationChain}"></strong>
-	        </h5>
+	        <h5 th:text="#{validateCertificate.result.certificationChain}"></h5>
 	        <ul id="certificateList">
 	        	<!-- Relleno dinámico -->
 	        </ul>
@@ -341,7 +339,11 @@
 			} else {
 				$noCertificateMessage.show();
 			}
-
+		} else {
+			if (validationRequestData.returnCertificateChain) {
+				const $noCertificateMessage = $('#noCertificateChainMessage');
+				$noCertificateMessage.show();
+			}
 		}
 		
 		if (validationRequestData.hideResult) {
