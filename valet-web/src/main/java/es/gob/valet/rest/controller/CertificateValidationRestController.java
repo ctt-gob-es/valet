@@ -24,6 +24,8 @@
  */
 package es.gob.valet.rest.controller;
 
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -43,6 +45,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import es.gob.afirma.core.misc.Base64;
@@ -159,7 +162,7 @@ public class CertificateValidationRestController {
 			// PARAMETRO de Obtener mapeos
 			params.add(CertificateValidationConstants.PARAM_GET_INFO, String.valueOf(form.isFetchMappings()));
 			
-			DateTimeFormatter inputFormatter  = DateTimeFormatter.ofPattern(UtilsDate.FORMAT_DATE_TIME_CRL_ISSUE_TIME);
+			DateTimeFormatter inputFormatter  = DateTimeFormatter.ofPattern(UtilsDate.FORMAT_DATE_TIME_STANDARD);
 			DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern(UtilsDate.FORMAT_DATE_TIME_JSON);
 			
 			// PARAMETROS AVANZADOS
@@ -194,7 +197,7 @@ public class CertificateValidationRestController {
 				params.add(CertificateValidationConstants.PARAM_RETURN_REVOCATION_EVIDENCE, String.valueOf(form.isReturnRevocationEvidence()));
 			} else {
 				// PARAMETRO de Obtener Estado Revocacion y Obtener Evidencia de Revocacion
-				//En caso de no estar en Formulario avanzado se marca el valor a false siempre
+				// En caso de no estar en Formulario avanzado se marca el valor a false siempre
 				params.add(CertificateValidationConstants.PARAM_CHECK_REVOCATION_STATUS, CertificateValidationConstants.FALSE_VALUE);
 				params.add(CertificateValidationConstants.PARAM_RETURN_REVOCATION_EVIDENCE, CertificateValidationConstants.FALSE_VALUE);
 				params.add(CertificateValidationConstants.PARAM_RETURN_CERT_CHAIN, CertificateValidationConstants.FALSE_VALUE);
@@ -204,6 +207,17 @@ public class CertificateValidationRestController {
 			ResponseEntity<String> response = restTemplate.postForEntity(endpointUrl, requestEntity, String.class);
 			return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
 
+		} catch (ResourceAccessException rae) {
+			Throwable cause = rae.getCause();
+			if (cause instanceof ConnectException || cause instanceof UnknownHostException || cause instanceof ConnectException) {
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.LOG_VCR005), rae);
+				return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+					.body(Language.getResWebGeneral(WebGeneralMessages.LOG_VCR006));
+			}
+			// Si es otro tipo de ResourceAccessException
+			LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.LOG_VCR005), rae);
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+				.body(Language.getResWebGeneral(WebGeneralMessages.LOG_VCR006));
 		} catch (Exception e) {
 			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.LOG_VCR001, e.getMessage()), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

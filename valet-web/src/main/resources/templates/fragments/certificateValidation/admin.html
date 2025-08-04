@@ -172,7 +172,7 @@
 		
 		//funciÃ³n para configurar el elemento datetimepicker
 		$('#datetimepicker1').datetimepicker({
-		 	format: 'DD/MM/YYYY HH:mm',
+		 	format: 'DD/MM/YYYY HH:mm:ss',
 		 	widgetPositioning:{
 				horizontal: 'auto',
 				vertical: 'top'
@@ -298,7 +298,7 @@
 			const fetchMappings = document.getElementById("fetchMappings").checked;
 			
 			// Validate all fields before sending
-		    if (!validateForm()) {
+		    if (!validateCertificateValidationForm()) {
 		      return;
 		    }
 	
@@ -368,7 +368,7 @@
 					}
 					
 					if (data.status == 0 || data.status == 1) {
-						const msg = data.description;
+						const msg = fixEncoding(data.description);
 						$('#errorMessageContainer').slideDown();
 						$('#errorMessage').text(msg);
 					} else {
@@ -537,7 +537,7 @@
 		$('#validationResultSection').hide();
 	}
 	
-	function validateForm() {
+	function validateCertificateValidationForm() {
 		var isValid = true;
 
 		const valetServerId = $('#valetServerSelect').val();
@@ -574,5 +574,11 @@
 		});
 	}
 
-	
+	function fixEncoding(str) {
+		try {
+			return decodeURIComponent(escape(str));
+		} catch (_) {
+			return str;
+		}
+	}
 </script>

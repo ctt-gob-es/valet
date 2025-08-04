@@ -1230,6 +1230,16 @@ public class WebGeneralMessages {
 	public static final String LOG_VCR004 = "VCR004";
 	
 	/**
+	 * Constant attribute that represents the property key <code>VCR005</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VCR005 = "VCR005";
+	
+	/**
+	 * Constant attribute that represents the property key <code>VCR006</code> belonging to the file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String LOG_VCR006 = "VCR006";
+	
+	/**
 	 * Constant attribute that represents the property key <code>VSE001</code> belonging to the file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String LOG_VSE001 = "VSE001";
