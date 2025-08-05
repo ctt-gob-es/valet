@@ -34,7 +34,7 @@
 							var messageServerUrl = /*[[#{valetServer.url.pattern}]]*/ 'default';
 						</script>
 						<span id="serverUrlEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageServerUrl);" type="url" id="serverUrlEdit" th:field="*{serverUrl}" class="form-control"/>
+						<input onblur="validateField(this, messageServerUrl);" type="text" id="serverUrlEdit" th:field="*{serverUrl}" class="form-control"/>
 					</div>
 
 					<!-- Aplicación -->
@@ -161,6 +161,11 @@
 		  if (isValid && input.type === "number") {
 		    isValid = !isNaN(value);
 		  }
+		  
+		  if (isValid && (input.id === "serverUrl" || input.id === "serverUrlEdit")) {
+			  var urlPattern = /^(https?:\/\/)?(localhost|(\d{1,3}\.){3}\d{1,3}|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[a-zA-Z0-9.-]+)(:\d+)?(\/.*)?$/;
+			  isValid = urlPattern.test(value);
+			}
 
 		  // Mostrar mensaje si no es válido
 		  if (!isValid) {

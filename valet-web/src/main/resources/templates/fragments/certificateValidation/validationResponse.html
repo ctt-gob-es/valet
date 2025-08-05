@@ -290,7 +290,12 @@
 					setText('evidence', fixEncoding(revocationStatus.evidence.byteArray));
 				}
 				
-				setText('revocation', fixEncoding(getRevocationStatusDescription(revocationStatus.revocationReason)) + ' ' + formatDate(revocationStatus.revocationDate?.dateString));
+				if (revocationStatus.revocationStatus == 2) {
+					validationRequestData.hideRevocationStatus = true;
+				} else {
+					setText('revocation', fixEncoding(getRevocationStatusDescription(revocationStatus.revocationStatus)) + ' - ' + formatDate(revocationStatus.revocationDate?.dateString));
+					validationRequestData.hideRevocationStatus = false;
+				}
 			}
 			
 			// CERTIFICATE CHAIN
@@ -382,6 +387,12 @@
 				$('#revocationTSPEvidenceElement').hide();
 				$('#evidenceTypeElement').hide();
 				$('#evidenceElement').hide();
+			}
+			
+			if (validationRequestData.hideRevocationStatus) {
+				$('#revocationElement').hide();
+			} else {
+				$('#revocationElement').show();
 			}
 		}
 	}
