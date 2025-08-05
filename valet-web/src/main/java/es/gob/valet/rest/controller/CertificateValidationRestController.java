@@ -180,12 +180,11 @@ public class CertificateValidationRestController {
 				
 				// PARAMETRO de Fecha de validacion
 				if (form.getDetectionDate() != null && !form.getDetectionDate().isEmpty()) {
-			        // 1) Parse incoming string sin segundos ni offset
-			        LocalDateTime localDt = LocalDateTime.parse(form.getDetectionDate(), inputFormatter);
-			        // 2) Agregamos un offset
-			        OffsetDateTime offsetDt = localDt.atOffset(ZoneOffset.UTC);
-			        // 3) Formateamos con milisegundos y offset
-			        String formattedDate = offsetDt.format(outputFormatter);
+					// Parseamos la fecha recibida con el formato estandar definido
+					UtilsDate parsedDate = new UtilsDate(form.getDetectionDate(), UtilsDate.FORMAT_DATE_TIME_STANDARD);
+					
+					// Formateamos a formato JSON (milisegundos + offset)
+					String formattedDate = parsedDate.toString(UtilsDate.FORMAT_DATE_TIME_JSON);
 			        params.add(CertificateValidationConstants.PARAM_DETECTION_DATE, formattedDate);
 			    }
 				
