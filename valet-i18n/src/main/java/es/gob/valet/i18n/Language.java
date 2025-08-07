@@ -205,11 +205,7 @@ public final class Language {
 	 * Attribute that represents the resource boundle with the general messages for the persistence module.
 	 */
 	private static ResourceBundle persistenceGeneral = null;
-	
-	/**
-	 * Attribute that represents the resource boundle with the general messages for the standalone statistics module.
-	 */
-	private static ResourceBundle standaloneStatisticsGeneral = null;
+
 
 	/**
 	 * Attribute that represents the properties for the locale for the core bundle messages.
@@ -338,7 +334,7 @@ public final class Language {
 		
 		resCore = ResourceBundle.getBundle(BUNDLENAME_CORE, currentLocale, urlClassLoaderMsg);
 		
-		standaloneStatisticsGeneral =  ResourceBundle.getBundle(CONTENT_STATISTICS_GENERAL_PATH, currentLocale, urlClassLoaderMsg);
+		
 		
 	}
 
@@ -560,25 +556,7 @@ public final class Language {
 		return persistenceGeneral.getString(key);
 	}
 
-	/**
-	 * Gets the general message (standalone-statistics module) with the key and values indicated as input parameters.
-	 * @param key Key for obtain the message.
-	 * @param values Values for insert in the message.
-	 * @return String with the message well-formed.
-	 */
-	public static String getFormatResStandaloneStatisticsGeneral(final String key, final Object... values) {
-		return new MessageFormat(standaloneStatisticsGeneral.getString(key), currentLocale).format(values);
-	}
-
-	/**
-	 * Gets the general message (standalone-statistics module) with the key indicated as input parameters.
-	 * @param key Key for obtain the message.
-	 * @return String with the message.
-	 */
-	public static String getResStandaloneStatisticsGeneral(final String key) {
-		return standaloneStatisticsGeneral.getString(key);
-	}
-
+	
 	/**
 	 * Gets the message with the key and values indicated as input parameters.
 	 * @param key Key for obtain the message.
