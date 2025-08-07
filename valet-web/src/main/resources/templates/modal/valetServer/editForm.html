@@ -1,0 +1,182 @@
+<!-- Modal edición ValetServer -->
+<div class="modal fade" id="modalEditValetServer" tabindex="-1" role="dialog" aria-labelledby="modalEditValetServerLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<form id="valetServerFormEdit"
+		      th:object="${valetServerForm}"
+		      th:attr="data-id=*{idValetServer}"
+		      th:action="@{/valetServer}"
+		      method="post">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" th:text="#{valetServer.modal.editTitle}">Editar Servidor</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span>&times;</span>
+					</button>
+				</div>
+
+				<div class="modal-body">
+					<input type="hidden" id="idValetServer" th:field="*{idValetServer}" />
+
+					<!-- Nombre del servidor -->
+					<div class="form-group">
+						<label for="serverNameEdit" th:text="#{valetServer.name}"></label>
+						<script th:inline="javascript">
+							var messageServerName = /*[[#{valetServer.name.pattern}]]*/ 'default';
+						</script>
+						<span id="serverNameEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageServerName);" type="text" id="serverNameEdit" th:field="*{serverName}" class="form-control"/>
+					</div>
+
+					<!-- URL del servidor -->
+					<div class="form-group">
+						<label for="serverUrlEdit" th:text="#{valetServer.url}"></label>
+						<script th:inline="javascript">
+							var messageServerUrl = /*[[#{valetServer.url.pattern}]]*/ 'default';
+						</script>
+						<span id="serverUrlEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageServerUrl);" type="text" id="serverUrlEdit" th:field="*{serverUrl}" class="form-control"/>
+					</div>
+
+					<!-- Aplicación -->
+					<div class="form-group">
+						<label for="applicationEdit" th:text="#{valetServer.app}"></label>
+						<script th:inline="javascript">
+							var messageApplication = /*[[#{valetServer.app.pattern}]]*/ 'default';
+						</script>
+						<span id="applicationEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageApplication);" type="text" id="applicationEdit" th:field="*{application}" class="form-control"  />
+					</div>
+
+					<!-- Versión -->
+					<div class="form-group">
+						<label for="versionEdit" th:text="#{valetServer.version}"></label>
+						<script th:inline="javascript">
+						    var messageVersion = /*[[#{valetServer.version.pattern}]]*/ 'default';
+						  </script>
+						<span id="versionEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<select id="versionEdit" 
+							th:field="*{version}" 
+							class="form-control"
+					          onblur="validateField(this, messageVersion);">
+							<option value="">--</option>
+							<option value="1.1.0" th:selected="${valetServerForm.version == '1.1.0'}">v.1.1.0</option>
+							<option value="1.2.0" th:selected="${valetServerForm.version == '1.2.0'}">v.1.2.0 o superior</option>
+						</select>
+					</div>
+
+					<!-- Timeout -->
+					<div class="form-group">
+						<label for="connectionTimeoutEdit" th:text="#{valetServer.timeout}"></label>
+						<script th:inline="javascript">
+							var messageTimeout = /*[[#{valetServer.timeout.pattern}]]*/ 'default';
+						</script>
+						<span id="connectionTimeoutEdit_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+						<input onblur="validateField(this, messageTimeout);" type="number" id="connectionTimeoutEdit" th:field="*{connectionTimeout}" class="form-control" />
+					</div>
+
+					<!-- Error general -->
+					<div id="errorModalEdit" class="alert alert-danger d-none" role="alert"></div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{valetServer.button.cancel}">Cancelar</button>
+					<button type="submit" class="btn btn-primary" id="editBtn" th:text="#{valetServer.button.save}">Guardar</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script th:inline="javascript">
+	$("#valetServerFormEdit").submit(function (event) {
+		event.preventDefault();
+
+		var idValetServer = $("#idValetServer").val();
+		var updateUrl = /*[[@{/valetServer/update}]]*/ '';
+		
+		// Valida todos los campos antes de enviar el formulario
+	    if (!validateForm()) {
+	      return;
+	    }
+	    
+	    const formData = JSON.stringify($(this).serializeJSON());
+
+		loading();
+
+		$.ajax(updateUrl, {
+			type: "POST",
+			data: formData,
+			contentType: "application/json",
+			dataType: "json",
+			success: function () {
+				hide();
+				$("#modalEditValetServer").modal("hide");
+				valetTable.ajax.reload();
+				updateServerSelect();
+			},
+			error: function () {
+				hide();
+				var msgError = /*[[#{valetServer.form.error}]]*/ 'Error al actualizar servidor.';
+				$("#errorModalEdit").removeClass("d-none").text(msgError);
+			}
+		});
+	});
+	
+	function validateForm() {
+		  var isValid = true;
+		  
+		  // Todos los campos a validar
+		  var fields = [
+			  { id: 'serverNameEdit',        msg: messageServerName },
+			  { id: 'serverUrlEdit',         msg: messageServerUrl },
+			  { id: 'applicationEdit',       msg: messageApplication },
+			  { id: 'connectionTimeoutEdit', msg: messageTimeout },
+			  { id: 'versionEdit',           msg: messageVersion }
+			];
+
+		  fields.forEach(function(field) {
+		    var input = document.getElementById(field.id);
+		    var isInputValid = validateField(input, field.msg);
+		    if (!isInputValid) {
+		      isValid = false;
+		    }
+		  });
+		  
+		  return isValid;
+		}
+
+	function validateField(input, errorMsg) {
+		  var $input = $(input);
+		  var $span = $("#" + input.id + "_span");
+		  var value = $input.val()?.trim();
+
+		  var isValid = true;
+
+		  // Validar si el campo está vacío
+		  if (!value) {
+		    isValid = false;
+		  }
+
+		  // Validación extra según tipo
+		  if (isValid && input.type === "number") {
+		    isValid = !isNaN(value);
+		  }
+		  
+		  if (isValid && (input.id === "serverUrl" || input.id === "serverUrlEdit")) {
+			  var urlPattern = /^(https?:\/\/)?(localhost|(\d{1,3}\.){3}\d{1,3}|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[a-zA-Z0-9.-]+)(:\d+)?(\/.*)?$/;
+			  isValid = urlPattern.test(value);
+			}
+
+		  // Mostrar mensaje si no es válido
+		  if (!isValid) {
+		    $span.text(errorMsg);
+		    $span.addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+		  } else {
+		    $span.text('');
+		    $span.removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+		  }
+
+		  return isValid;
+		}
+
+</script>

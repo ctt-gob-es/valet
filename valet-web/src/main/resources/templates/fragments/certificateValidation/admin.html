@@ -1,0 +1,618 @@
+<div class="container-fluid"> 
+    <h4 class="c-grey-900 mT-10 mB-30" th:text="#{validateCertificate.title}"></h4>
+
+    <!-- Botón para mostrar/ocultar tabla -->
+    <button class="btn btn-primary mb-3 ml-3" type="button" id="toggleTableBtn" th:text="#{validateCertificate.button.toggleTable}"></button>
+
+    <!-- Tabla de servidores -->
+    <div class="masonry-item col-md-12 mb-3" id="valetTableContainer" style="display:none;">
+        <div class="bgc-white p-20 bd">
+            <table id="valetServersTable" class="table table-bordered table-hover w-100">
+                <thead>
+                    <tr>
+                        <th th:text="#{valetServer.name}"></th>
+                        <th th:text="#{valetServer.url}"></th>
+                        <th th:text="#{valetServer.app}"></th>
+                        <th th:text="#{valetServer.version}"></th>
+                        <th th:text="#{valetServer.timeout}"></th>
+                        <th th:text="#{valetServer.actions}"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rellenado por JavaScript -->
+                </tbody>
+            </table>
+            <button class="btn btn-primary mt-3" id="btnAddServer" th:text="#{valetServer.button.addServer}"></button>
+        </div>
+    </div>
+
+    <!-- Formulario principal -->
+    <div class="masonry-item col-md-12">
+        <div class="bgc-white p-20 bd">
+            <div class="mT-30">
+                <form id="valetValidationForm" th:action="@{/validateCertificate}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="advancedMode" name="advancedMode" value="false">
+                    
+                    <div id="errorMessageContainer" class="alert alert-danger" role="alert">
+                    	<span class="icon-holder mr-2"><i class="c-white-500 ti-alert"></i></span>
+						<span id="errorMessage"></span>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="valetServerSelect" th:text="#{validateCertificate.select.server}"></label>
+                            <script th:inline="javascript">
+								var messageServerSelect = /*[[#{validateCertificate.server.pattern}]]*/ 'default';
+							</script>
+                            <span id="valetServerSelect_span" style="display: none;" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+							<select class="form-control" id="valetServerSelect" name="valetServerSelect">
+                                <option value="" th:text="#{validateCertificate.select.option}"></option>
+                                <!-- Rellenado dinámicamente -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="certFile" th:text="#{validateCertificate.select.certificate}"></label>
+                            <script th:inline="javascript">
+								var messageCertificateFile = /*[[#{validateCertificate.certFile.pattern}]]*/ 'default';
+							</script>
+							<span id="certFile_span" style="display: none;" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+                            <input type="file" class="form-control-file" id="certFile" name="certFile" accept=".cer,.crt">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <input type="checkbox" id="fetchMappings" name="fetchMappings" class="mr-2">
+                            <label for="fetchMappings" th:text="#{validateCertificate.checkbox.mappings}"></label>
+                        </div>
+                    </div>
+                    
+                    <div id="advancedConfigFields" style="display:none;">
+					    <div class="form-row">
+					        <div class="form-group col-md-12">
+					            <label for="tslLocation" th:text="#{validateCertificate.input.tslLocation}"></label>
+					            <input type="text" class="form-control" id="tslLocation" name="tslLocation">
+					        </div>
+					    </div>
+					
+					    <div class="form-row">
+					        <div class="form-group col-md-6">
+					            <label for="detectionDate" th:text="#{validateCertificate.input.detectionDate}"></label>
+					        	<script th:inline="javascript">
+									var messageDetectionDate = /*[[#{validateCertificate.detectionDate.pattern}]]*/ 'default';
+								</script>
+								<span id="detectionDate_span" style="display: none;" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
+                            	<div class="input-group date" id="datetimepicker1">
+									<input type='text' class="form-control" id="detectionDate" name="detectionDate">
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+					        </div>
+					    </div>
+					
+					    <div class="form-row">
+					        <div class="form-group col-md-12">
+					            <div class="form-check">
+					                <input type="checkbox" class="form-check-input" id="checkRevocationStatus" name="checkRevocationStatus">
+					                <label class="form-check-label" for="checkRevocationStatus" th:text="#{validateCertificate.checkbox.checkRevocation}"></label>
+					            </div>
+					            <div class="form-check">
+					                <input type="checkbox" class="form-check-input" id="returnRevocationEvidence" name="returnRevocationEvidence">
+					                <label class="form-check-label" for="returnRevocationEvidence" th:text="#{validateCertificate.checkbox.returnEvidence}"></label>
+					            </div>
+					            <div class="form-check">
+					                <input type="checkbox" class="form-check-input" id="returnCertificateChain" name="returnCertificateChain">
+					                <label class="form-check-label" for="returnCertificateChain" th:text="#{validateCertificate.checkbox.returnChain}"></label>
+					            </div>
+					        </div>
+					    </div>
+					</div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12 d-flex gap-buttons">
+							<button type="submit" id="validateCertBtn" class="btn btn-primary"
+								data-advanced="false">
+								<span class="icon-holder mr-2"><i class="c-white-500 ti-check-box"></i></span>
+								<span th:text="#{validateCertificate.button.validate}"></span>
+							</button>
+							<button type="button" id="advancedConfigBtn" class="btn btn-secondary">
+								<span class="icon-holder mr-2"><i class="c-white-500 ti-settings"></i></span>
+								<span th:text="#{validateCertificate.button.advanced}"></span>
+							</button>
+							<button type="button" id="basicConfigBtn" class="btn btn-secondary" style="display:none;">
+								<span class="icon-holder mr-2"><i class="c-white-500 ti-settings"></i></span>
+								<span th:text="#{validateCertificate.button.basic}"></span>
+							</button>
+							<button type="reset" class="btn btn-danger">
+								<span class="icon-holder mr-2"><i class="c-white-500 ti-reload"></i></span>
+								<span th:text="#{validateCertificate.button.clearForm}"></span>
+							</button>
+						</div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen de opciones utilizadas -->
+    <!-- 
+    <div id="validationSummarySection" class="masonry-item col-md-12 mb-2" style="display: none;">
+        <div class="bgc-white p-15 bd" id="validationSummaryContent">
+            
+        </div>
+    </div>
+	 -->
+    <!-- Resultado de la validación -->
+    <div id="validationResultSection" class="masonry-item col-md-12" style="display: none;">
+        <div class="bgc-white p-20 bd" id="validationResultContent">
+            <!-- Contenido cargado dinámicamente desde /loadValidationResult -->
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+	var valetTable;
+	
+	var validationRequestData = {
+		valetServerId: null,
+		serverName: null,
+		fetchMappings: false,
+		isAdvanced: false,
+		tslLocation: null,
+		detectionDate: null,
+		checkRevocationStatus: false,
+		returnRevocationEvidence: false,
+		returnCertificateChain: false,
+		showTSPRevocationEvidence: false,
+		showTSP: false,
+		hideResult: false,
+		hideRevocationStatus: false,
+	};
+	
+	$(document).ready(function () {
+		
+		//funciÃ³n para configurar el elemento datetimepicker
+		$('#datetimepicker1').datetimepicker({
+		 	format: 'DD/MM/YYYY HH:mm:ss',
+		 	widgetPositioning:{
+				horizontal: 'auto',
+				vertical: 'top'
+			}
+		});
+		
+		valetTable = $('#valetServersTable').DataTable({
+			responsive: true,
+			ajax: {
+				url: /*[[@{/valetServer}]]*/,
+				dataSrc: ''
+			},
+			language: {
+		        url: "js/datatables/i18n/spanish.json",
+		        select: {
+		            rows: {
+		                _: "%d filas seleccionadas",
+		                1: "1 fila seleccionada"
+		            }
+	          	}
+	        },
+			columns: [
+				{ data: 'serverName' },
+				{ data: 'serverUrl' },
+				{ data: 'application' },
+				{ 
+					data: 'version',
+					render: function (data) {
+						// Traduce versión numérica a formato texto
+						if (data === 1) return "1.1.0";
+						if (data === 2) return "1.2.0 o superior";
+						return data;
+					}
+				},
+				{ data: 'connectionTimeout' },
+				{
+					data: 'idValetServer',
+					render: function (id) {
+						return `
+							<a class="mr-2" onclick="editServer(${id})">
+								<i class="c-green-700 ti-pencil-alt"></i>
+							</a>
+							<a class="" onclick="deleteServer(${id})">
+								<i class="c-red-700 ti-trash"></i>
+							</a>
+						`;
+					}
+				}
+			]
+		});
+
+		$('#errorMessageContainer').hide();
+	
+		$('#toggleTableBtn').click(() => {
+			$('#valetTableContainer').toggle();
+			valetTable.ajax.reload(); // Recarga datos
+		});
+		
+		// Oculta mensaje de error al cambiar selección del servidor
+		$('#valetServerSelect').on('change', function () {
+			clearValidationError('valetServerSelect_span');
+		});
+
+		// Oculta mensaje de error al seleccionar un archivo
+		$('#certFile').on('change', function () {
+			clearValidationError('certFile_span');
+		});
+		
+		// Control de dependencia entre checkboxes
+		$('#checkRevocationStatus').on('change', function () {
+			const isChecked = $(this).is(':checked');
+			const $returnRevocationEvidence = $('#returnRevocationEvidence');
+
+			$returnRevocationEvidence.prop('disabled', !isChecked);
+
+			if (!isChecked) {
+				$returnRevocationEvidence.prop('checked', false); // Desmarcar si checkRevocationStatus se desactiva
+			}
+		});
+
+		// Estado inicial al cargar la página
+		if (!$('#checkRevocationStatus').is(':checked')) {
+			$('#returnRevocationEvidence').prop('disabled', true).prop('checked', false);
+		}
+	
+		$('#btnAddServer').click(function (event) {
+			event.preventDefault();
+
+			const url = /*[[@{/addValetServer}]]*/;
+
+			loading();
+
+			$.ajax({
+				type: "GET",
+				url: url,
+				success: function (html) {
+					hide();
+
+					// Si ya existe el modal, lo quitamos antes de insertar
+					if ($('#modalAddValetServer').length > 0) {
+						$('#modalAddValetServer').remove();
+					}
+
+					$('body').append(html); // Insertamos el contenido del modal recibido
+					$('#modalAddValetServer').modal('show');
+				},
+				error: function () {
+					hide();
+					alert("Error al cargar el formulario de alta de servidor.");
+				}
+			});
+		});
+	
+		// Validación simple
+		$('#validateCertBtn').click(function (e) {
+			e.preventDefault();
+			
+			$('#errorMessageContainer').slideUp();
+	
+			const certFile = document.getElementById("certFile").files[0];
+			const valetServerId = document.getElementById("valetServerSelect").value;
+			const isAdvanced = document.getElementById("advancedMode").value === "true";
+			const fetchMappings = document.getElementById("fetchMappings").checked;
+			
+			// Validate all fields before sending
+		    if (!validateCertificateValidationForm()) {
+		      return;
+		    }
+	
+			const endpoint = isAdvanced
+				? /*[[@{/validateCertificate/advanced}]]*/ '/validateCertificate/advanced'
+				: /*[[@{/validateCertificate/simple}]]*/ '/validateCertificate/simple';
+	
+			const formData = new FormData();
+			formData.append("valetServerId", valetServerId);
+			formData.append("certFile", certFile);
+			formData.append("fetchMappings", fetchMappings);
+			
+			validationRequestData.valetServerId = valetServerId;
+			validationRequestData.serverName = $('#valetServerSelect option:selected').text();
+			validationRequestData.fetchMappings = fetchMappings;
+			validationRequestData.isAdvanced = isAdvanced;
+			
+			if (isAdvanced) {
+			    const tslLocation = $('#tslLocation').val();
+			    const detectionDate = $('#detectionDate').val();
+			    const checkRevocationStatus = $('#checkRevocationStatus').is(':checked');
+			    const returnRevocationEvidence = $('#returnRevocationEvidence').is(':checked');
+			    const returnCertificateChain = $('#returnCertificateChain').is(':checked');
+
+			    formData.append("tslLocation", tslLocation);
+			    formData.append("detectionDate", detectionDate);
+			    formData.append("checkRevocationStatus", checkRevocationStatus);
+			    formData.append("returnRevocationEvidence", returnRevocationEvidence);
+			    formData.append("returnCertificateChain", returnCertificateChain);
+			    
+			    validationRequestData.tslLocation = $('#tslLocation').val();
+				validationRequestData.detectionDate = $('#detectionDate').val();
+				validationRequestData.checkRevocationStatus = $('#checkRevocationStatus').is(':checked');
+				validationRequestData.returnRevocationEvidence = $('#returnRevocationEvidence').is(':checked');
+				validationRequestData.returnCertificateChain = $('#returnCertificateChain').is(':checked');
+			} else {
+				formData.append("tslLocation", null);
+			    formData.append("detectionDate", null);
+			    formData.append("checkRevocationStatus", false);
+			    formData.append("returnRevocationEvidence", false);
+			    formData.append("returnCertificateChain", false);
+			    
+				validationRequestData.checkRevocationStatus = false;
+				validationRequestData.returnRevocationEvidence = false;
+				validationRequestData.returnCertificateChain = false;
+			}
+	
+			loading();
+	
+			$.ajax({
+				type: "POST",
+				url: endpoint,
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function (data) {
+					hide();
+					validationResponse = data;
+					
+					if (typeof data === 'string') {
+						try {
+							data = JSON.parse(data);
+						} catch (e) {
+							console.error('JSON inválido en validationResult:', e);
+							return;
+						}
+					}
+					
+					if (data.status == 0 || data.status == 1) {
+						const msg = fixEncoding(data.description);
+						$('#errorMessageContainer').slideDown();
+						$('#errorMessage').text(msg);
+					} else {
+						// Oculta botón, tabla y formulario
+						$('#toggleTableBtn').hide();
+						$('#valetTableContainer').hide();
+						$('#valetValidationForm').closest('.bgc-white').hide();
+
+						// Genera resumen de opciones enviadas
+						//const summaryHtml = generateValidationSummary();
+
+						//$('#validationSummaryContent').html(summaryHtml);
+						//$('#validationSummarySection').slideDown();
+
+						// Carga vista del resultado
+						$.ajax({
+							type: "GET",
+							url: /*[[@{/loadCertificateValidationResponse}]]*/ "/loadCertificateValidationResponse",
+							data: JSON.stringify(validationResponse),
+							contentType: "application/json",
+							success: function (html) {
+								$('#validationResultContent').html(html);
+								$('#validationResultSection').slideDown();
+
+							    // renderValidationResult(validationResponse);
+							},
+							error: function () {
+								console.log("Error al cargar el resultado de validación.");
+							}
+						});
+					}
+				},
+				error: function (xhr) {
+					hide();
+					const defaultMessage = /*[[#{validateCertificate.error.default}]]*/ 'Error al validar el certificado.';
+					let finalMessage = defaultMessage;
+
+					if (xhr.status === 503 && xhr.responseText) {
+						finalMessage += ' - ' + xhr.responseText;
+					}
+
+					$('#errorMessageContainer').slideDown();
+					$('#errorMessage').text(finalMessage);
+				}
+			});
+		});
+
+		// Validación avanzada
+		$('#advancedConfigBtn').click(function () {
+		    $('#advancedMode').val('true');
+		    $('#advancedConfigFields').slideDown();
+		    $('#advancedConfigBtn').hide();
+		    $('#basicConfigBtn').show();
+			
+			$('#errorMessageContainer').slideUp();
+		});
+		
+		// Validación básica
+		$('#basicConfigBtn').click(function () {
+		    $('#advancedMode').val('false');
+		    $('#advancedConfigFields').slideUp();
+		    $('#basicConfigBtn').hide();
+		    $('#advancedConfigBtn').show();
+			
+			$('#errorMessageContainer').slideUp();
+		});
+	    
+	    updateServerSelect();
+	});
+
+	function updateServerSelect() {
+		const $select = $('#valetServerSelect');
+		const placeholder = '<option value="">' + /*[[#{validateCertificate.select.option}]]*/ '-- Selecciona un servidor --' + '</option>';
+
+		$('#errorMessageContainer').slideUp();
+		
+		$.ajax({
+			type: "GET",
+			url: /*[[@{/valetServer}]]*/,
+			dataType: "json",
+			success: function (data) {
+				$select.empty().append(placeholder);
+				data.forEach(server => {
+					const option = $('<option>')
+						.val(server.idValetServer)
+						.text(server.serverName);
+					$select.append(option);
+				});
+			},
+			error: function () {
+				alert("Error al cargar servidores ValET.");
+			}
+		});
+	}
+	
+	function editServer(id) {
+		const loadEditUrl = /*[[@{/editValetServer}]]*/ '';
+
+		$.ajax(loadEditUrl, {
+			data: $.param({ id: id }),
+			type: 'GET',
+			success: function (html) {
+				hide();
+
+				if ($('#modalEditValetServer').length > 0) {
+					$('#modalEditValetServer').remove();
+				}
+
+				$('body').append(html);
+				$('#modalEditValetServer').modal('show');
+			},
+			error: function () {
+				hide();
+				const msgError = /*[[#{valet.msg.error.loadEdit}]]*/ 'Error al cargar el formulario de edición.';
+				$('body').append('<div class="alert alert-danger" role="alert"><strong>' + msgError + '</strong></div>');
+			}
+		});
+	}
+	
+	function deleteServer(id) {
+		const loadDeleteUrl = /*[[@{/deleteValetServer}]]*/ '';
+
+		$.ajax(loadDeleteUrl, {
+			data: $.param({ id: id }),
+			type: 'GET',
+			success: function (html) {
+				hide();
+
+				if ($('#modalDeleteValetServer').length > 0) {
+					$('#modalDeleteValetServer').remove();
+				}
+
+				$('body').append(html);
+				$('#modalDeleteValetServer').modal('show');
+			},
+			error: function () {
+				hide();
+				const msgError = /*[[#{valet.msg.error.loadDelete}]]*/ 'Error al cargar el formulario de eliminación.';
+				$('body').append('<div class="alert alert-danger" role="alert"><strong>' + msgError + '</strong></div>');
+			}
+		});
+	}
+	
+	function generateValidationSummary() {
+		const chips = [];
+
+		chips.push(`<span class="validation-chip"><strong>Servidor:</strong> ${validationRequestData.serverName}</span>`);
+		chips.push(`<span class="validation-chip"><strong>Obtener Mappings:</strong> ${validationRequestData.fetchMappings ? 'Sí' : 'No'}</span>`);
+		chips.push(`<span class="validation-chip"><strong>Modo:</strong> ${validationRequestData.isAdvanced ? 'Avanzado' : 'Básico'}</span>`);
+
+		if (validationRequestData.isAdvanced) {
+			if (validationRequestData.tslLocation) {
+				chips.push(`<span class="validation-chip"><strong>TSL Location:</strong> ${validationRequestData.tslLocation}</span>`);
+			}
+			if (validationRequestData.detectionDate) {
+				chips.push(`<span class="validation-chip"><strong>Fecha detección:</strong> ${validationRequestData.detectionDate}</span>`);
+			}
+			chips.push(`<span class="validation-chip"><strong>Check revocación:</strong> ${validationRequestData.checkRevocationStatus ? 'Sí' : 'No'}</span>`);
+			chips.push(`<span class="validation-chip"><strong>Devolver evidencia:</strong> ${validationRequestData.returnRevocationEvidence ? 'Sí' : 'No'}</span>`);
+			chips.push(`<span class="validation-chip"><strong>Devolver cadena:</strong> ${validationRequestData.returnCertificateChain ? 'Sí' : 'No'}</span>`);
+		}
+
+		return chips.join('');
+	}
+	
+	function restoreValidationUI() {
+		$('#toggleTableBtn').show();
+		$('#valetTableContainer').show();
+		$('#valetValidationForm').closest('.bgc-white').show();
+		//$('#validationSummarySection').hide();
+		$('#validationResultSection').hide();
+	}
+	
+	function validateCertificateValidationForm() {
+		var isValid = true;
+
+		const valetServerId = $('#valetServerSelect').val();
+		const certFile = $('#certFile')[0].files[0];
+
+		// Validar selección de servidor
+		if (!valetServerId) {
+			showValidationError('valetServerSelect_span', messageServerSelect);
+			isValid = false;
+		} else {
+			clearValidationError('valetServerSelect_span');
+		}
+
+		// Validar fichero de certificado
+		if (!certFile || !/\.(cer|crt)$/i.test(certFile.name)) {
+			showValidationError('certFile_span', messageCertificateFile);
+			isValid = false;
+		} else {
+			clearValidationError('certFile_span');
+		}
+
+		// Validar que detectionDate no sea futura (si está presente)
+		const detectionDateStr = $('#detectionDate').val();
+		if (detectionDateStr) {
+			// Formato esperado: 'DD/MM/YYYY HH:mm:ss'
+			const detectionMoment = moment(detectionDateStr, 'DD/MM/YYYY HH:mm:ss', true);
+			const now = moment();
+
+			if (!detectionMoment.isValid() || detectionMoment.isAfter(now)) {
+				isValid = false;
+				showValidationError('detectionDate_span', messageDetectionDate);
+			}
+		}
+		
+		// Si todo está bien, limpiar todos los spans de error visibles
+		if (isValid) {
+			clearAllValidationErrors();
+		}
+
+		return isValid;
+	}
+	
+	function showValidationError(spanId, message) {
+		const $span = $('#' + spanId);
+		$span.text(message).addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill").slideDown();
+	}
+
+	function clearValidationError(spanId) {
+		const $span = $('#' + spanId);
+		$span.slideUp(() => {
+			$span.text('').removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
+		});
+	}
+	
+	function clearAllValidationErrors() {
+		$('[id$="_span"]').each(function () {
+			clearValidationError(this.id);
+		});
+	}
+
+	function fixEncoding(str) {
+		try {
+			return decodeURIComponent(escape(str));
+		} catch (_) {
+			return str;
+		}
+	}
+</script>

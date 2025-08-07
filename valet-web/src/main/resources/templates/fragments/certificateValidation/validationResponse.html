@@ -1,0 +1,507 @@
+<div class="validation-result">
+    <div class="mb-2">
+	    <h3 th:text="#{validateCertificate.result.title}">Resultado de la Validación</h3>
+	    <div class="mt-2">
+	        <button class="btn btn-sm btn-primary me-2" id="toggleToDetailedBtn">
+	        	<span class="icon-holder mr-2"><i class="c-white-500 ti-layout-media-right-alt"></i></span>
+			    <span th:text="#{validateCertificate.result.button.detailedResponse}">Ver respuesta detallada</span>
+			</button>
+		
+			<button class="btn btn-sm btn-primary me-2" id="toggleToSummaryBtn">
+				<span class="icon-holder mr-2"><i class="c-white-500 ti-layout-list-thumb-alt"></i></span>
+			    <span th:text="#{validateCertificate.result.button.summaryResponse}">Ver respuesta resumida</span>
+			</button>
+			
+	        <button class="btn btn-sm btn-secondary me-2" id="downloadJsonBtn">
+                <span class="icon-holder mr-2"><i class="c-white-500 ti-download"></i></span>
+                <span th:text="#{validateCertificate.result.button.downloadJSON}">Descargar JSON</span>
+            </button>
+	        
+	        <button class="btn btn-sm btn-secondary me-2" id="backToFormBtn">
+				<span class="icon-holder mr-2"><i class="c-dark ti-arrow-left"></i></span>
+				<span th:text="#{validateCertificate.result.button.backToForn}">Volver</span>
+			</button>
+	    </div>
+	</div>
+
+    <!-- RESULTADO GENERAL -->
+    <div class="mb-4 mt-4" id="resultGeneralSection">
+        <strong th:text="#{validateCertificate.result.status}">Estado:</strong> <span id="resultStatus"></span><br>
+        <strong th:text="#{validateCertificate.result.description}">Descripción:</strong> <span id="resultDescription"></span>
+    </div>
+    
+    <div id="resultDetailsSection">
+    	<!-- SECCIÓN TSL -->
+	    <div class="mb-3" id="tslSection">
+	        <h5>
+	            <span th:text="#{validateCertificate.result.tsl}"></span> <span id="tslCountry"></span> - <span id="tslSequence"></span>
+	        </h5>
+	         <!-- RESPUESTA AVANZADA -->
+	        <div id="tslAdvanced">
+	        	<ul>
+	        		<li><strong th:text="#{validateCertificate.result.tsl.etsiSpecification}">Especificación ETSI:</strong> <span id="etsiSpecification"></span></li>
+	                <li><strong th:text="#{validateCertificate.result.tsl.etsiVersion}">Versión ETSI:</strong> <span id="etsiVersion"></span></li>
+	                <li><strong th:text="#{validateCertificate.result.tsl.tslLocation}">Ubicación TSL:</strong> <a id="tslLocationLink" target="_blank"></a></li>
+	                <li><strong th:text="#{validateCertificate.result.tsl.tslIssued}">Emitido:</strong> <span id="tslIssued"></span></li>
+	             </ul>
+	        </div>
+	    </div>
+	    
+	    <!-- SECCIÓN TSP - RESPUESTA AVANZADA -->
+	    <div class="mb-3" id="tspSection">
+	    	<h5>
+	            <span th:text="#{validateCertificate.result.tsp}"></span> <span id="tspName"></span>
+	        </h5>
+	        
+	        <div id="tspValues">
+	        	<ul>
+	        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceName}">Servicio:</strong> <span id="tspServiceName"></span></li>
+	        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceType}">Tipo de Servicio:</strong> <a id="tspServiceType" target="_blank"></a></li>
+	        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceStatus}">Estado:</strong> <a id="tspServiceStatus" target="_blank"></a></li>
+	        		<li><strong th:text="#{validateCertificate.result.tsp.tspServiceHistoryInf}">Histórico:</strong> <span id="tspServiceHistoryInf"></span></li>
+	            </ul>
+	        </div>
+	    </div>
+	    
+	    <!-- SECCIÓN INFORMACIÓN CERTIFICADO - SI SE MARCA OBTENER MAPEOS -->
+	    <div class="mb-3" id="certInfoSection">
+	        <h5 th:text="#{validateCertificate.result.certInfo.title}">Información del Certificado</h5>
+	        <ul>
+	            <li><strong th:text="#{validateCertificate.result.cert.classification}">Clasificación:</strong> <span id="certClassification"></span></li>
+	            <li><strong th:text="#{validateCertificate.result.cert.etsiResult}">Resultado ETSI:</strong> <span id="etsiResult"></span></li>
+	            <li><strong th:text="#{validateCertificate.result.cert.qualified}">Cert. cualificado:</strong> <span id="certQualified"></span></li>
+	            <li><strong th:text="#{validateCertificate.result.cert.qscd}">QSCD:</strong> <span id="certQscd"></span></li>
+	        </ul>
+	    </div>
+	    
+	    <!-- SECCIÓN ESTADO DE REVOCACIÓN - SI SE MARCA OBTENER MAPEOS -->
+	    <div class="mb-3" id="revocationSection">
+	        <h5 th:text="#{validateCertificate.result.revocation.title}">Estado de Revocación</h5>
+	        <ul>
+	            <li><strong th:text="#{validateCertificate.result.revocation.status}">Estado:</strong> <span id="revocationStatus"></span></li>
+	            <li id="revocationURLElement"><strong th:text="#{validateCertificate.result.revocation.url}">URL Evidencia:</strong> <a id="revocationURL" target="_blank"></a></li>
+	            
+	            <!-- RESPUESTA AVANZADA -->
+	            <li id="revocationDpAiaElement"><strong th:text="#{validateCertificate.result.revocation.dpAia}">DP-AIA:</strong> <span id="revocationDpAia"></span></li>
+	            <li id="revocationTSPEvidenceElement"><strong th:text="#{validateCertificate.result.revocation.tspEvidence}">TSP Evidencia Revocación:</strong> <span id="revocationTSPEvidence"></span>
+	            	<ul>
+	            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.service}">Service:</strong> <span id="revocationEvidenceService"></span>
+	            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.serviceType}">Tipo de Servicio:</strong> <span id="revocationEvidenceServiceType"></span>
+	            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.status}">Estado:</strong> <span id="revocationEvidenceStatus"></span>
+	            		<li><strong th:text="#{validateCertificate.result.revocation.tspEvidence.historyInf}">Histórico:</strong> <span id="revocationEvidenceHistoryInf"></span>
+	            	</ul>
+	            </li>
+	            <li id="evidenceTypeElement"><strong th:text="#{validateCertificate.result.revocation.evidenceType}">Tipo de Evidencia:</strong> <span id="evidenceType"></span></li>
+	            <li id="evidenceElement">
+	            	<strong th:text="#{validateCertificate.result.revocation.evidence}">Evidencia:</strong> 
+	            	<pre id="evidence"
+					     class="text-break bg-light p-2 rounded small"
+					     style="white-space: pre-wrap;
+					            word-break: break-word;
+					            overflow-wrap: break-word;
+					            max-height: 150px;
+					            overflow-y: auto;
+					            font-size: 0.75rem;
+					            line-height: 1.2;">
+					</pre>
+				</li>
+	            <!-- FIN DE RESPUESTA AVANZADA -->
+	            
+	            <li id="revocationElement"><strong th:text="#{validateCertificate.result.revocation.revocation}">Revocado:</strong> <span id="revocation"></span></li>
+	        </ul>
+	    </div>
+	    
+	    <!-- SECCIÓN CADENA DE CERTIFICACIÓN -->
+	    <div id="certificationChainSection">
+	        <h5 th:text="#{validateCertificate.result.certificationChain}"></h5>
+	        <ul id="certificateList">
+	        	<!-- Relleno dinámico -->
+	        </ul>
+	        <span id="noCertificateChainMessage" th:text="#{validateCertificate.result.certificationChain.none}" style="display: none;">
+			</span>
+	    </div>
+    </div>
+</div>
+
+<script>
+	var currentValidationMode = 'summary'; // 'summary' o 'detailed'
+	var validationResponseOriginal = null;
+	
+	/*<![CDATA[*/
+	var revocationStatusMap = {
+	    1: '[[#{validateCertificate.revocation.status.1}]]',
+	    2: '[[#{validateCertificate.revocation.status.2}]]',
+	    3: '[[#{validateCertificate.revocation.status.3}]]',
+	    4: '[[#{validateCertificate.revocation.status.4}]]',
+	    5: '[[#{validateCertificate.revocation.status.5}]]',
+	    6: '[[#{validateCertificate.revocation.status.6}]]',
+	    "default": '[[#{validateCertificate.revocation.status.unknown}]]'
+	};
+	/*]]>*/
+	
+	/*<![CDATA[*/
+	var TEXT_YES = '[[#{validateCertificate.common.yes}]]';
+	var TEXT_NO = '[[#{validateCertificate.common.no}]]';
+	var rootCertificateText = '[[#{validateCertificate.result.certificationChain.rootCertificate}]]';
+	/*]]>*/
+
+	$(document).ready(function () {
+		if (typeof validationResponse !== 'undefined') {
+			renderValidationResult(validationResponse);
+		}
+
+		$('#toggleToDetailedBtn').click(function () {
+			toggleMode('detailed');
+		});
+
+		$('#toggleToSummaryBtn').click(function () {
+			toggleMode('summary');
+		});
+
+		$('#downloadJsonBtn').click(function () {
+			if (!validationResponseOriginal) return;
+			const blob = new Blob([JSON.stringify(validationResponseOriginal, null, 2)], { type: 'application/json' });
+			const url = URL.createObjectURL(blob);
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = 'valet-validation-result.json';
+			link.click();
+			URL.revokeObjectURL(url);
+		});
+
+		$('#backToFormBtn').click(function () {
+		    $('#validationSummarySection').hide();
+		    $('#validationResultSection').hide();
+		    $('#valetTableContainer').hide();
+		    $('#valetValidationForm').closest('.bgc-white').show();
+		    $('#toggleTableBtn').show();
+		    
+		    // Vaciar contenido dinámico de resultados
+		    $('#validationResultContent').empty();
+		});
+	});
+
+	function renderValidationResult(data) {
+		if (!data) return;
+
+		if (typeof data === 'string') {
+			try {
+				data = JSON.parse(data);
+			} catch (e) {
+				console.error('JSON inválido en validationResult:', e);
+				return;
+			}
+		}
+
+		if (typeof data !== 'object') return;
+
+		validationResponseOriginal = data;
+		currentValidationMode = 'summary';
+
+		// Mostrar sección de resultado y ocultar el resto
+		$('#validationResultSection').show();
+		$('#summarySection').show();
+		$('#detailedSection').hide();
+		$('#valetTableContainer').hide();
+		$('#valetValidationForm').closest('.bgc-white').hide();
+		$('#toggleTableBtn').hide();
+		
+		$('#toggleToSummaryBtn').hide();
+
+		// RESULTADO GENERAL
+		setText('resultStatus', data.status);
+		setText('resultDescription', fixEncoding(data.description));
+		
+		if (!data.resultTslInfVal) {
+			validationRequestData.hideResult = true;
+		} else {
+			validationRequestData.hideResult = false;
+		}
+		
+		// SECCIÓN TSL
+		const tsl = data.resultTslInfVal?.tslInformation;
+		
+		const specificationAndVersion = tsl?.etsiSpecificationAndVersion ?? '';
+		const [etsiSpecification, etsiVersion] = specificationAndVersion.split(' ', 2);
+		const tslLocationUrl = tsl?.tslLocation;
+		
+		setText('tslCountry', fixEncoding(tsl?.countryRegion));
+		setText('tslSequence', tsl?.sequenceNumber);
+		setText('etsiSpecification', fixEncoding(etsiSpecification));
+		setText('etsiVersion', fixEncoding(etsiVersion));
+		setLink('tslLocationLink', tslLocationUrl);
+		setText('tslIssued', formatDate(tsl?.issued?.dateString));
+
+		const cert = data.resultTslInfVal?.certDetectedInTSL;
+		
+		console.log("GUIA");
+		
+		if (cert) {
+			// SECCIÓN TSP
+			setText('tspName', fixEncoding(cert?.tspName));
+			
+			const tsp = cert?.tspServiceInformation;
+			
+			if (tsp) {
+				setLink('tspServiceName', fixEncoding(tsp?.tspServiceName));
+				setLink('tspServiceType', fixEncoding(tsp?.tspServiceType));
+				setLink('tspServiceStatus', fixEncoding(tsp?.tspServiceStatus));
+				setText('tspServiceHistoryInf', tsp?.tspServiceHistoryInf === true ? TEXT_YES : TEXT_NO);
+			}
+			
+			// SECCIÓN INFORMACIÓN CERTIFICADO
+			const certInfo = cert?.certInfo;
+			
+			if (certInfo) {
+				setText('certClassification', fixEncoding(certInfo?.certClassification));
+				setText('etsiResult', fixEncoding(certInfo?.ETSI_Result));
+				setText('certQualified', fixEncoding(certInfo?.certQualified));
+				setText('certQscd', fixEncoding(certInfo?.qscd));
+			}
+			
+			// SECCIÓN ESTADO DE REVOCACIÓN
+			const revocationStatus = cert?.tslRevocStatus;
+			
+			if (revocationStatus) {
+				setText('revocationStatus', fixEncoding(revocationStatus.revocationStatus + ' ' + revocationStatus.revocationDesc));
+				setLink('revocationURL', revocationStatus?.url);
+				
+				setText('revocationDpAia', revocationStatus.dpAia === true ? TEXT_YES : revocationStatus.dpAia === false ? TEXT_NO : '-');
+
+				if (revocationStatus.dpAia === true) {
+					validationRequestData.showTSPRevocationEvidence = false;
+				} else {
+					validationRequestData.showTSPRevocationEvidence = true;
+				}
+				
+				const revocationTSPEvidence = revocationStatus?.tspServiceInformation;
+				
+				if (revocationTSPEvidence) {
+					setText('revocationEvidenceService', fixEncoding(revocationTSPEvidence.tspServiceName));
+					setText('revocationEvidenceServiceType', fixEncoding(revocationTSPEvidence.tspServiceType));
+					setText('revocationEvidenceStatus', fixEncoding(revocationTSPEvidence.tspServiceStatus));
+					setText('revocationEvidenceHistoryInf', fixEncoding(revocationTSPEvidence.tspServiceHistoryInf));
+				}
+				
+				setText('evidenceType', fixEncoding(getEvidenceType(revocationStatus.evidenceType)));
+
+				const revocationStatusEvidence = revocationStatus?.evidence;
+				if (revocationStatusEvidence) {
+					setText('evidence', fixEncoding(revocationStatus.evidence.byteArray));
+				}
+				
+				if (revocationStatus.revocationStatus == 2) {
+					validationRequestData.hideRevocationStatus = true;
+				} else {
+					setText('revocation', fixEncoding(getRevocationStatusDescription(revocationStatus.revocationStatus)) + ' - ' + formatDate(revocationStatus.revocationDate?.dateString));
+					validationRequestData.hideRevocationStatus = false;
+				}
+			}
+			
+			// CERTIFICATE CHAIN
+			const certificateChain = cert?.certificateChain?.certificates;
+			
+			const $certificateList = $('#certificateList');
+			const $noCertificateMessage = $('#noCertificateChainMessage');
+
+			$certificateList.empty();
+
+			if (Array.isArray(certificateChain) && certificateChain.length > 0) {
+				$noCertificateMessage.hide();
+
+				certificateChain.forEach((item, index) => {
+					const subject = item.certificateValue?.subject ?? `cert${index + 1}`;
+					const revStatus = item.tslRevocStatus;
+					const isRoot = item.isRoot;
+					const certContent = fixEncoding(item.certificateValue?.byteArray ?? '');
+
+					let revocationText = '-';
+
+					if (isRoot) {
+						revocationText = rootCertificateText;
+					} else if (revStatus) {
+						const status = fixEncoding(revStatus.revocationStatus);
+						const desc = fixEncoding(revStatus.revocationDesc || '');
+						revocationText = `${status} - ${desc}`;
+					}
+
+					const li = `
+						<li>
+							<strong>${subject}</strong>:
+							<pre class="text-break bg-light p-2 rounded small"
+							     style="white-space: pre-wrap;
+							            word-break: break-word;
+							            overflow-wrap: break-word;
+							            max-height: 150px;
+							            overflow-y: auto;
+							            font-size: 0.75rem;
+							            line-height: 1.2;">
+								${certContent}
+							</pre>
+						</li>`;
+					$certificateList.append(li);
+				});
+			} else {
+				$noCertificateMessage.show();
+			}
+		} else {
+			if (validationRequestData.returnCertificateChain) {
+				const $noCertificateMessage = $('#noCertificateChainMessage');
+				$noCertificateMessage.show();
+			}
+		}
+		
+		if (validationRequestData.hideResult) {
+			$('#resultDetailsSection').hide();
+		} else {
+			//Ocultamos las secciones AVANZADAS
+			$('#tslAdvanced').hide();
+			$('#tspSection').hide();
+			$('#revocationDpAiaElement').hide();
+			$('#revocationTSPEvidenceElement').hide();
+			
+			// Mostrar Información de Certificado si se ha marcado Obtener mapeos
+			if (validationRequestData.fetchMappings) {
+				$('#certInfoSection').show();
+			} else {
+				$('#certInfoSection').hide();
+			}
+			
+			if (validationRequestData.checkRevocationStatus) {
+				$('#revocationSection').show();
+			} else {
+				$('#revocationSection').hide();
+			}
+			
+			if (validationRequestData.returnCertificateChain) {
+				$('#certificationChainSection').show();
+			} else {
+				$('#certificationChainSection').hide();
+			}
+			
+			if (validationRequestData.showTSPRevocationEvidence) {
+				$('#revocationTSPEvidenceElement').show();
+				$('#evidenceTypeElement').show();
+				$('#evidenceElement').show();
+			} else {
+				$('#revocationTSPEvidenceElement').hide();
+				$('#evidenceTypeElement').hide();
+				$('#evidenceElement').hide();
+			}
+			
+			if (validationRequestData.hideRevocationStatus) {
+				$('#revocationElement').hide();
+			} else {
+				$('#revocationElement').show();
+			}
+		}
+	}
+
+	function toggleMode(mode) {
+		const isDetailed = mode === 'detailed';
+
+		currentValidationMode = mode;
+
+		if (validationRequestData.hideResult) {
+			$('#resultDetailsSection').hide();
+		} else {
+			// Mostrar/Ocultar secciones avanzadas
+			if (isDetailed) {
+				$('#tslAdvanced').slideDown();
+				
+				if (validationRequestData.fetchMappings) {
+					$('#tspSection').slideDown();
+				}
+			} else {
+				$('#tslAdvanced').slideUp();
+				
+				if (validationRequestData.fetchMappings) {
+					$('#tspSection').slideUp();
+				}
+			}
+
+			if (validationRequestData.checkRevocationStatus) {
+				$('#revocationSection').slideDown();
+				
+				if (validationRequestData.returnRevocationEvidence) {
+					$('#revocationURLElement').slideDown();
+					
+					if (isDetailed) {
+						$('#revocationDpAiaElement').slideDown();
+						$('#evidenceTypeElement').slideDown();
+						$('#evidenceElement').slideDown();
+						
+						if (validationRequestData.showTSPRevocationEvidence) {
+							$('#revocationTSPEvidenceElement').slideDown();
+						} else {
+							$('#revocationTSPEvidenceElement').slideUp();
+						}
+					} else {
+						$('#revocationDpAiaElement').slideUp();
+						$('#revocationTSPEvidenceElement').slideUp();
+						$('#evidenceTypeElement').slideUp();
+						$('#evidenceElement').slideUp();
+					}
+				} else {
+					$('#revocationURLElement').slideUp();
+				}
+			} else {
+				$('#revocationDpAiaElement').slideUp();
+			}
+
+			// Alternar botones
+			$('#toggleToDetailedBtn').toggle(!isDetailed);
+			$('#toggleToSummaryBtn').toggle(isDetailed);
+		}
+	}
+
+	function setText(id, value) {
+		const el = document.getElementById(id);
+		if (el) el.textContent = value ?? '-';
+	}
+
+	function setLink(id, href) {
+		const el = document.getElementById(id);
+		if (el) {
+			el.href = href ?? '#';
+			el.textContent = href ?? '-';
+		}
+	}
+
+	function hideSection(id) {
+		const el = document.getElementById(id);
+		if (el) el.style.display = 'none';
+	}
+
+	function showSection(id) {
+		const el = document.getElementById(id);
+		if (el) el.style.display = '';
+	}
+
+	function formatDate(dateStr) {
+		if (!dateStr) return '-';
+		const d = new Date(dateStr);
+		return isNaN(d.getTime()) ? '-' : d.toLocaleString();
+	}
+
+	function fixEncoding(str) {
+		try {
+			return decodeURIComponent(escape(str));
+		} catch (_) {
+			return str;
+		}
+	}
+	
+	function getRevocationStatusDescription(code) {
+		return revocationStatusMap[code] || revocationStatusMap["default"];
+	}
+	
+	function getEvidenceType(code) {
+		const revocationStatusMap = {
+			1: 'OCSP',
+			2: 'CRL',
+			"default": 'UNKNOWN'
+		};
+		return revocationStatusMap[code] || revocationStatusMap["default"];
+	}
+</script>
