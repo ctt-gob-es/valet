@@ -253,10 +253,16 @@
 			const certInfo = cert?.certInfo;
 			
 			if (certInfo) {
-				setText('certClassification', fixEncoding(certInfo?.certClassification));
-				setText('etsiResult', fixEncoding(certInfo?.ETSI_Result));
-				setText('certQualified', fixEncoding(certInfo?.certQualified));
-				setText('certQscd', fixEncoding(certInfo?.qscd));
+			    setText('certClassification', fixEncoding(certInfo?.certClassification));
+			    setText('etsiResult', fixEncoding(certInfo?.ETSI_Result));
+			    setText('certQualified', fixEncoding(certInfo?.certQualified));
+			    setText('certQscd', fixEncoding(certInfo?.qscd));
+
+			    // Render extra fields not listed above
+			    renderCertInfoExtras(certInfo);
+			} else {
+			    // If no certInfo, ensure extras are cleared
+			    $('#certInfoSection ul').find('li.cert-info-extra').remove();
 			}
 			
 			// SECCIÓN ESTADO DE REVOCACIÓN
@@ -503,5 +509,39 @@
 			"default": 'UNKNOWN'
 		};
 		return revocationStatusMap[code] || revocationStatusMap["default"];
+	}
+	
+	function renderCertInfoExtras(certInfo) {
+	    // Obtener el elemento de la lista
+	    const $list = $('#certInfoSection ul');
+	    if ($list.length === 0) return;
+
+	    // Eliminar las previas entradas para evitar duplicados
+	    $list.find('li.cert-info-extra').remove();
+
+	    // Constante para eliminar las entradas ya agregadas de forma fija
+	    const baseKeys = new Set(['certClassification', 'ETSI_Result', 'certQualified', 'qscd']);
+
+	    // Recorrer el array y añadir las entradas que no se habían agregado de forma fija
+	    Object.keys(certInfo || {}).forEach((key) => {
+	        if (baseKeys.has(key)) return;
+
+	        const value = formatCertInfoValue(certInfo[key]);
+	        const $li = $('<li>', { class: 'cert-info-extra' });
+	        const $strong = $('<strong>').text(`${key}:`);
+	        const $span = $('<span>').text(value);
+
+	        $li.append($strong).append(' ').append($span);
+	        $list.append($li);
+	    });
+	}
+	
+	function formatCertInfoValue(val) {
+	    if (val === null || val === undefined) return '-';
+	    if (typeof val === 'boolean') return val ? TEXT_YES : TEXT_NO;
+	    if (typeof val === 'object') {
+	        try { return JSON.stringify(val); } catch (_) { return String(val); }
+	    }
+	    return fixEncoding(String(val));
 	}
 </script>
