@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.4, 29.05/2025.
+ * @version 2.5, 12/09/2025.
  */
 package es.gob.valet.tsl.certValidation.impl.common;
 
@@ -48,6 +48,7 @@ import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
+import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.eac.PublicKeyDataObject;
@@ -55,6 +56,7 @@ import org.bouncycastle.asn1.ocsp.CertID;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AccessDescription;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
@@ -115,7 +117,7 @@ import es.gob.valet.utils.UtilsHTTP;
  * TSL.
  * </p>
  * 
- * @version 2.4, 29.05/2025.
+ * @version 2.5, 12/09/2025.
  */
 public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 
@@ -1364,15 +1366,19 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 			// certificado a validar.
 			SingleResp singleResponse = null;
 			if (singleResponsesArray != null) {
-				for (SingleResp singleResp : singleResponsesArray) {
+			    for (SingleResp singleResp : singleResponsesArray) {
 
-					CertificateID singleRespCertificateId = singleResp.getCertID();
-					if (singleRespCertificateId != null && singleRespCertificateId.equals(certificateId)) {
-						singleResponse = singleResp;
-						break;
-					}
+			        CertificateID singleRespCertificateId = singleResp.getCertID();
+			        if (singleRespCertificateId != null) {
+			            if (singleRespCertificateId.equals(certificateId) || 
+			                equivalentCertId(singleRespCertificateId, certificateId)) {
 
-				}
+			                singleResponse = singleResp;
+			                break;
+			            }
+			        }
+
+			    }
 			}
 
 			// La almacenamos en la respuesta.
@@ -1394,6 +1400,7 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		return result;
 
 	}
+
 
 	/**
 	 * Checks in the Basic OCSP response the revocation status of the
@@ -1980,5 +1987,55 @@ public class TSLValidatorThroughOCSP implements ITSLValidatorThroughSomeMethod {
 		return result;
 
 	}
+	
+	/**
+	 * Normalizes an AlgorithmIdentifier to handle differences in parameter
+	 * representation. Specifically, it converts parameters of type DERNull to
+	 * null to consider them semantically equivalent.
+	 * 
+	 * @param algId
+	 *            The AlgorithmIdentifier to normalize.
+	 * @return A normalized AlgorithmIdentifier where DERNull parameters are
+	 *         replaced with null, or the original AlgorithmIdentifier if no
+	 *         normalization is needed.
+	 */
+	private AlgorithmIdentifier normalize(AlgorithmIdentifier algId) {
+	    if (algId == null) {
+	        return null;
+	    }
+	    if (algId.getParameters() != null && algId.getParameters().equals(DERNull.INSTANCE)) {
+	        return new AlgorithmIdentifier(algId.getAlgorithm(), null);
+	    }
+	    return algId;
+	}
+	
+	/**
+	 * Compares two CertificateID objects for equivalence, taking into account
+	 * possible differences in AlgorithmIdentifier parameter representation
+	 * (e.g., null vs DERNull). The comparison includes algorithm, serial number,
+	 * issuer name hash, and issuer key hash.
+	 * 
+	 * @param id1
+	 *            First CertificateID to compare.
+	 * @param id2
+	 *            Second CertificateID to compare.
+	 * @return <code>true</code> if the two CertificateIDs are considered
+	 *         equivalent; <code>false</code> otherwise.
+	 */
+	private boolean equivalentCertId(CertificateID id1, CertificateID id2) {
+	    CertID asn1Id1 = CertID.getInstance(id1.toASN1Primitive());
+	    CertID asn1Id2 = CertID.getInstance(id2.toASN1Primitive());
+
+	    AlgorithmIdentifier alg1 = normalize(asn1Id1.getHashAlgorithm());
+	    AlgorithmIdentifier alg2 = normalize(asn1Id2.getHashAlgorithm());
+
+	    boolean sameAlg = alg1.equals(alg2);
+	    boolean sameSerial = id1.getSerialNumber().equals(id2.getSerialNumber());
+	    boolean sameIssuerNameHash = Arrays.equals(id1.getIssuerNameHash(), id2.getIssuerNameHash());
+	    boolean sameIssuerKeyHash = Arrays.equals(id1.getIssuerKeyHash(), id2.getIssuerKeyHash());
+
+	    return sameAlg && sameSerial && sameIssuerNameHash && sameIssuerKeyHash;
+	}
+
 
 }
