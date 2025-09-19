@@ -325,15 +325,19 @@ public final class TSLValidatorMappingCalculator {
 
 				// Por cada uno de los mapeos a extraer...
 				for (TSLCountryRegionMappingCacheObject tslCrmco : tslCrmcoSet) {
-
 					// Calculamos el valor extraído del certificado.
 					String mappingValue = calculateMapping(wrappedCert, tslCrmco);
 					// Si el valor extraido no es nulo ni vacío...
 					if (!UtilsStringChar.isNullOrEmptyTrim(mappingValue)) {
 						// Lo añadimos a la lista de mapeos resultantes.
-						mappings.put(UtilsMappings.getValueMapping(tslCrmco.getValue()), mappingValue);
+						if (AssociationTypeIdConstants.ID_SIMPLE_ASSOCIATION.longValue() == tslCrmco.getAssociationType()) {
+							// En caso de asociación simple, se añade el mapeo traducido.
+							mappings.put(UtilsMappings.getValueMapping(tslCrmco.getValue()), mappingValue);
+						} else {
+							// En caso de asociación libre, se añade el mapeo tal cual.
+							mappings.put(tslCrmco.getIdentificator(), tslCrmco.getValue());
+						}
 					}
-
 				}
 
 			} catch (Exception e) {
