@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Date:</b><p>21/12/2023.</p>
  * @author Gobierno de España.
- * @version 1.0, 21/12/2023.
+ * @version 1.1, 01/10/2025.
  */
 package es.gob.valet.weblogic.datasources;
 
@@ -49,7 +49,7 @@ import com.zaxxer.hikari.HikariDataSource;
 /**
  * <p>Spring configuration class that sets the configuration of Spring components, entities and repositories.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 21/12/2023.
+ * @version 1.1, 01/10/2025.
  */
 @Configuration
 @EnableJpaRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class, basePackages = "es.gob.valet.persistence.configuration.model.repository", entityManagerFactoryRef = "entityManagerValetConfigOwner", transactionManagerRef = "transManagerValetConfigOwner")
@@ -160,7 +160,7 @@ public class ValetConfigOwner {
 			HikariConfig config = new HikariConfig();
 		    
 		    // Configuración de HikariCP
-		    config.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:XE"); // Reemplaza con tu URL de la base de datos
+		    config.setJdbcUrl("jdbc:oracle:thin:@localhost:1521/XE"); // Reemplaza con tu URL de la base de datos
 		    config.setUsername("VALET_CONFIGOWNER"); // Reemplaza con tu nombre de usuario
 		    config.setPassword("123456"); // Reemplaza con tu contraseña
 		    config.setDriverClassName("oracle.jdbc.OracleDriver"); // Driver de oracle
