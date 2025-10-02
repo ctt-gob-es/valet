@@ -160,7 +160,7 @@ public class ValetConfigOwner {
 			HikariConfig config = new HikariConfig();
 		    
 		    // Configuración de HikariCP
-		    config.setJdbcUrl("jdbc:oracle:thin:@localhost:1521/XE"); // Reemplaza con tu URL de la base de datos
+		    config.setJdbcUrl("jdbc:oracle:thin:@//ESSVQ02L4X3ZNG3.ad.eu.rf-group.org:1521/XE"); // Reemplaza con tu URL de la base de datos. La cadena de conextión dependera de tu Tnsnames.ora
 		    config.setUsername("VALET_CONFIGOWNER"); // Reemplaza con tu nombre de usuario
 		    config.setPassword("123456"); // Reemplaza con tu contraseña
 		    config.setDriverClassName("oracle.jdbc.OracleDriver"); // Driver de oracle
