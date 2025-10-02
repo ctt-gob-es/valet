@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 3.1, 01/10/2025.
+ * @version 3.0, 21/07/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 3.1, 01/10/2025.
+ * @version 3.0, 21/07/2025.
  */
 public class WebGeneralMessages {
 
@@ -43,6 +43,18 @@ public class WebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	public static final String ERROR_NOT_NULL_FILE_IMPL_TSL = "errorNotNullFileImplTsl";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankSpecification</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String ERROR_NOT_BLANK_SPECIFICATION = "errorNotBlankSpecification";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorNotBlankVersion</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String ERROR_NOT_BLANK_VERSION = "errorNotBlankVersion";
 
 	/**
 	 * Constant attribute that represents the name of the property <code>errorNotBlankIdentificator</code> belonging to the

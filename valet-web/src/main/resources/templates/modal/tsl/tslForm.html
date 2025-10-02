@@ -17,7 +17,43 @@
 					<div id="errorAddTsl" role="alert"></div>
 					<input type='hidden' class='primarykey' id="idTslData" th:field="*{idTslData}">
 					<input type='hidden' id="lotl" th:field="*{lotl}">
-					
+				
+				
+					<div class="form-group col-md-8">
+						<label for="idSpecification" th:text="#{form.newTsl.specification}"></label>
+						 <span id="specification_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
+						<select id="idSpecification" class="form-control"
+							th:field="*{specification}" required onchange="cleanSpan('specification_span');">
+							<option selected="selected" value="-1"
+								th:text="#{form.newTsl.specification.select}"></option>
+							<option th:each="ts: ${listSpecifications}" th:value="${ts}"
+								th:text="${ts}"></option>
+						</select>
+						
+				
+						<div style="clear: both;"></div>
+					</div>
+				
+					<div class="form-group col-md-8">
+						<label for="idVersion" th:text="#{form.newTsl.version}"></label>  <span
+							id="version_span"
+							class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span> 
+						<select id="idVersion" class="form-control" th:field="*{version}"
+							required onchange="cleanSpan('version_span');">
+							<option selected="selected" value="-1"
+								th:text="#{form.newTsl.version.select}"></option>
+							<option th:each="ts: ${versions}" th:value="${ts}" th:text="#{ts}">
+						</select>
+						
+				
+					</div>
+					<div class="form-group col-md-12">
+						<label for="idUrlTSL" th:text="#{form.newTsl.urlTSL}"></label> <input
+							type="text" id="idUrlTSL" class="form-control" th:field="*{urlTsl}"></input>
+				
+					</div>
+				
 					<div class="form-group col-md-12">
 						<label for="fileId" th:text="#{form.newTsl.fileTSL}"></label>  <span
 							id="implTslFile_span"
@@ -59,7 +95,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" th:text="#{form.newTsl.close}" onclick="closeModalAddTsl('modalAddTsl')"></button>
-				<button type="button" id="idNextBtn" name="idNextBtn" class="btn btn-primary" th:text="#{form.newTsl.next}" onclick="obtainTsl();"></button>
+				<button type="button" id="idObtainTslBtn" name="idObtainTslBtn" class="btn btn-primary" th:text="#{form.newTsl.obtainTsl}" onclick="obtainTsl();"></button>
 				<button type="button" id="idDownloadTslBtn" name="idDownloadTslBtn" class="btn btn-primary" th:text="#{form.newTsl.downloadTsl}" onclick="downloadTsl();" style="display:none"></button>
 				<button type="button" id="idConfirmTslBtn" name="idConfirmTslBtn" class="btn btn-primary" th:text="#{form.newTsl.ConfirmTsl}" onclick="confirmTsl();" style="display:none"></button>
 			</div>
@@ -149,7 +185,7 @@
 			  	}else{
 					hide();
 					$("#fieldsSignTsl").slideDown(500);
-					$('#idNextBtn').hide();
+					$('#idObtainTslBtn').hide();
 					$('#idDownloadTslBtn').show();
 					$('#idConfirmTslBtn').show();
 					$('#tslForm :input').prop('disabled', true);

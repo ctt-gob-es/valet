@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 2.7, 01/10/2025.
+ * @version 2.6, 03/07/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -101,7 +101,7 @@ import es.gob.valet.utils.GeneralConstantsValetWeb;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.7, 01/10/2025.
+ * @version 2.6, 03/07/2025.
  */
 @RestController
 public class TslRestController {
@@ -150,6 +150,16 @@ public class TslRestController {
 	 * Constant that represents the parameter 'fileDocument'.
 	 */
 	private static final String FIELD_FILE_DOC = "fileDocument";
+
+	/**
+	 * Constant that represents the parameter 'specification'.
+	 */
+	private static final String FIELD_SPECIFICATION = "specification";
+
+	/**
+	 * Constant that represents the parameter 'version'.
+	 */
+	private static final String FIELD_VERSION = "version";
 
 	/**
 	 * Constant that represents the extension PDF.
@@ -257,21 +267,19 @@ public class TslRestController {
 	/**
 	 * Method that obtain a new TSL.
 	 * @param implTslFile Parameter that represents the file with the implementation of the TSL.
+	 * @param specificationTsl  Parameter that represents the ETSI TS number specification for TSL.
+	 * @param urlTsl Parameter that represents the URI where this TSL is officially located.
+	 * @param versionTsl Parameter that represents the ETSI TS specification version.
 	 * @return {@link DataTablesOutput<TslData>}
 	 * @throws IOException If the method fails.
 	 */
 	@RequestMapping(value = "/obtaintsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody SigningCertificateDTO obtainTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam("lotl") Boolean lotl, Model model, HttpSession httpSession) throws IOException {
+	public @ResponseBody SigningCertificateDTO obtainTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_SPECIFICATION) String specificationTsl, @RequestParam(FIELD_URL) String urlTsl, @RequestParam(FIELD_VERSION) String versionTsl, @RequestParam("lotl") Boolean lotl, Model model, HttpSession httpSession) throws IOException {
 
 		boolean error = false;
 		byte[ ] fileBytes = null;
 		JSONObject json = new JSONObject();
 		SigningCertificateDTO signingCertificateDTO = new SigningCertificateDTO();
-		
-		// TODO: SGAD1-39 de forma provisional dejaremos parametrizado, especificación, versión y url, hasta que sepamos obtener dichos parametros de distintas versiones
-		String specificationTsl = "119612";
-		String urlTsl = "";
-		String versionTsl = "2.1.1"; 
 		
 		try {
 			// comprobamos que se han indicado todos los campos obligatorios
@@ -282,6 +290,18 @@ public class TslRestController {
 
 			} else {
 				fileBytes = implTslFile.getBytes();
+			}
+
+			if (specificationTsl == null || specificationTsl.equals(String.valueOf(-1))) {
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
+				json.put(FIELD_SPECIFICATION + "_span", Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
+				error = true;
+			}
+
+			if (UtilsStringChar.isNullOrEmpty(versionTsl) || versionTsl.equals(String.valueOf(-1))) {
+				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_VERSION));
+				json.put(FIELD_VERSION + "_span", Language.getResWebGeneral(WebGeneralMessages.ERROR_NOT_BLANK_VERSION));
+				error = true;
 			}
 
 			if (!error) {
@@ -523,12 +543,8 @@ public class TslRestController {
 	@JsonView(TslForm.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/updateimplfile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public TslForm updateImplFile(@RequestParam(FIELD_ID_TSL) Long idTSL, @RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile) throws IOException {
+	public TslForm updateImplFile(@RequestParam(FIELD_ID_TSL) Long idTSL, @RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_SPECIFICATION) String specificationTsl, @RequestParam(FIELD_VERSION) String versionTsl) throws IOException {
 
-		// TODO: SGAD1-39 de forma provisional dejaremos parametrizado, especificación, versión y url, hasta que sepamos obtener dichos parametros de distintas versiones
-		String specificationTsl = "119612";
-		String versionTsl = "2.1.1"; 
-		
 		TslForm tslForm = new TslForm();
 		byte[ ] tslXMLbytes = null;
 		JSONObject json = new JSONObject();
