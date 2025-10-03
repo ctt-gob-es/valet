@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 28/03/2025.
+ * @version 1.6, 03/10/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -36,6 +36,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3.x2000.x09.xmldsig.SignatureType;
 
+import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
@@ -49,12 +50,13 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.TSLBuilderFactory;
 import es.gob.valet.tsl.parsing.impl.TSLCheckerFactory;
 import es.gob.valet.utils.TSLElementsAndAttributes;
+import es.gob.valet.utils.TSLSpecificationsVersions;
 
 /**
  * <p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 31/03/2025
+ * @version 1.6, 03/10/2025.
  */
 public class TSLObject implements ITSLObject {
 
@@ -125,16 +127,14 @@ public class TSLObject implements ITSLObject {
 	/**
 	 * Constructor method for the class TSLObject.java.
 	 * @param tslSpecificationParam TSL ETSI specification for this TSL Object.
-	 * @param tslSpecificationVersionParam TSL ETSI specification version for this TSL Object.
 	 * @throws TSLArgumentException In case of some of the input parameters are empty or null strings.
 	 */
-	public TSLObject(String tslSpecificationParam, String tslSpecificationVersionParam) throws TSLArgumentException {
+	public TSLObject(String tslSpecificationParam) throws TSLArgumentException {
 		this();
-		if (UtilsStringChar.isNullOrEmptyTrim(tslSpecificationParam) || UtilsStringChar.isNullOrEmptyTrim(tslSpecificationVersionParam)) {
+		if (UtilsStringChar.isNullOrEmptyTrim(tslSpecificationParam)) {
 			throw new TSLArgumentException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL021));
 		}
 		tslSpecification = tslSpecificationParam;
-		tslSpecificationVersion = tslSpecificationVersionParam;
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class TSLObject implements ITSLObject {
 	public final String getSpecificationVersion() {
 		return tslSpecificationVersion;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * @see es.gob.valet.tsl.parsing.ifaces.ITSLObject#getTSLTag()
@@ -370,6 +370,12 @@ public class TSLObject implements ITSLObject {
 			}
 			if (cache && !UtilsStringChar.isNullOrEmpty(msgError)) {
 				LOGGER.warn(msgError);
+			}
+			// Añadimos la versión de la especificacion
+			if(schemeInformation.getTslVersionIdentifier() == NumberConstants.NUM5) {
+				tslSpecificationVersion = TSLSpecificationsVersions.VERSION_020101;
+			} else if(schemeInformation.getTslVersionIdentifier() == NumberConstants.NUM6) {
+				tslSpecificationVersion = TSLSpecificationsVersions.VERSION_020301;
 			}
 		}
 

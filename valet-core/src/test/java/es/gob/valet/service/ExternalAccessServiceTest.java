@@ -541,7 +541,7 @@ public class ExternalAccessServiceTest {
 	public final void testPrepareUrlExternalAccessToTSL()
 			throws TSLCertificateValidationException, TSLArgumentException {
 		// Montamos los objetos para las pruebas
-		ITSLObject tslObject = new TSLObject("Country", "1.2");
+		ITSLObject tslObject = new TSLObject("Country");
 
 		TslCountryRegion tslCountry = new TslCountryRegion();
 		tslCountry.setIdTslCountryRegion(1L);
@@ -570,7 +570,7 @@ public class ExternalAccessServiceTest {
 	public final void testPrepareUrlExternalAccessToDelete()
 			throws TSLArgumentException, TSLCertificateValidationException, TSLParsingException, TSLMalformedException {
 		// Montamos los objetos para las pruebas
-		ITSLObject tslObject = new TSLObject("Country", "1.2");
+		ITSLObject tslObject = new TSLObject("Country");
 
 		// Simular llamadas a los métodos externos
 		PowerMockito.mockStatic(Language.class);

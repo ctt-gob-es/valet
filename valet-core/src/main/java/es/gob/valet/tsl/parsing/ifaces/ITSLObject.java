@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 28/03/2025.
+ * @version 1.3, 03/10/2025.
  */
 package es.gob.valet.tsl.parsing.ifaces;
 
@@ -42,7 +42,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Interface that represents a TSL object regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 28/03/2025.
+ * @version 1.3, 03/10/2025.
  */
 public interface ITSLObject extends Serializable {
 
@@ -57,7 +57,7 @@ public interface ITSLObject extends Serializable {
 	 * @return String with the version number.
 	 */
 	String getSpecificationVersion();
-
+	
 	/**
 	 * Gets the URI that represents the tag attribute for the TrustServiceStatus element.
 	 * @return URI that represents the tag attribute for the TrustServiceStatus element.

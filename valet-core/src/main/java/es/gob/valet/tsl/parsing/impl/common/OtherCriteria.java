@@ -21,10 +21,11 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 03/10/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
+import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.parsing.ifaces.IAnyTypeOtherCriteria;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
@@ -34,7 +35,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
  * <p>Abstract class that represents a TSL Other Criteria with could contains
  * differents elements regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 03/10/2025.
  */
 public abstract class OtherCriteria implements IAnyTypeOtherCriteria {
 
@@ -60,19 +61,16 @@ public abstract class OtherCriteria implements IAnyTypeOtherCriteria {
 		// En función de la especificación y versión de esta, se actúa de una
 		// manera u otra.
 		String tslSpecification = tsl.getSpecification();
-		String tslSpecificationVersion = tsl.getSpecificationVersion();
-
+		
 		// Según la especificación...
 		switch (tslSpecification) {
 			case TSLSpecificationsVersions.SPECIFICATION_119612:
-				// Según la versión...
-				switch (tslSpecificationVersion) {
-					case TSLSpecificationsVersions.VERSION_020101:
-						checkOtherCriteriaValueSpec119612Vers020101();
-						break;
-					default:
-						break;
+				
+				// Para las extensiones con versiones 2.1.1 o 2.3.1 usaremos las ya definidas en el standard 2.1.1 puesto que son iguales
+				if(tsl.getSchemeInformation().getTslVersionIdentifier() == NumberConstants.NUM5 || tsl.getSchemeInformation().getTslVersionIdentifier() == NumberConstants.NUM6) {
+					checkOtherCriteriaValueSpec119612Vers020101();
 				}
+				
 				break;
 
 			default:

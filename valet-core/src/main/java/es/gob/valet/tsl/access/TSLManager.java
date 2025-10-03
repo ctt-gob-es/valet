@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.6, 10/07/2025.
+ * @version 2.7, 03/10/2025.
  */
 package es.gob.valet.tsl.access;
 
@@ -104,7 +104,7 @@ import es.gob.valet.utils.TSLCommonURIs;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.6, 10/07/2025.
+ * @version 2.7, 03/10/2025.
  */
 public final class TSLManager {
 
@@ -1158,7 +1158,7 @@ public final class TSLManager {
 			if (td.getXmlDocument() != null) {
 
 				// Generamos el objeto resultante.
-				result = new TSLObject(td.getTslImpl().getSpecification(), td.getTslImpl().getVersion());
+				result = new TSLObject(td.getTslImpl().getSpecification());
 				
 				// Creamos un InputStream del array de bytes.
 				try (ByteArrayInputStream bais = new ByteArrayInputStream(td.getXmlDocument())){
@@ -1756,7 +1756,7 @@ public final class TSLManager {
 							ByteArrayInputStream bais = new ByteArrayInputStream(tslData.getXmlDocument());
 							ITSLObject tslObject = null;
 							try {
-								tslObject = new TSLObject(tslData.getTslImpl().getSpecification(), tslData.getTslImpl().getVersion());
+								tslObject = new TSLObject(tslData.getTslImpl().getSpecification());
 								tslObject.buildTSLFromXMLcheckValues(bais);
 							} finally {
 								UtilsResources.safeCloseInputStream(bais);
@@ -1813,7 +1813,7 @@ public final class TSLManager {
 						ByteArrayInputStream bais = new ByteArrayInputStream(tslData.getXmlDocument());
 						ITSLObject tslObject = null;
 						try {
-							tslObject = new TSLObject(tslData.getTslImpl().getSpecification(), tslData.getTslImpl().getVersion());
+							tslObject = new TSLObject(tslData.getTslImpl().getSpecification());
 							tslObject.buildTSLFromXMLcheckValues(bais);
 						} finally {
 							UtilsResources.safeCloseInputStream(bais);
@@ -2005,7 +2005,7 @@ public final class TSLManager {
 	public ITSLObject obtainTslAndCertFromSign(String urlTsl, String tslSpecification, String tslSpecificationVersion, byte[ ] tslXMLbytes) throws TSLManagingException {
 
 		// Comprobamos que los parámetros de entrada sean válidos.
-		if (!UtilsStringChar.isNullOrEmptyTrim(tslSpecification) && !UtilsStringChar.isNullOrEmptyTrim(tslSpecificationVersion) && tslXMLbytes != null) {
+		if (!UtilsStringChar.isNullOrEmptyTrim(tslSpecification) && tslXMLbytes != null) {
 
 			// Contruimos el InputStream asociado al array, y tratamos de
 			// parsearlo y añadirlo.
@@ -2013,7 +2013,7 @@ public final class TSLManager {
 			ITSLObject tslObject = null;
 			// try {
 			try {
-				tslObject = new TSLObject(tslSpecification, tslSpecificationVersion);
+				tslObject = new TSLObject(tslSpecification);
 
 				tslObject.buildTSLFromXMLcheckValues(bais);
 			} catch (TSLMalformedException e) {

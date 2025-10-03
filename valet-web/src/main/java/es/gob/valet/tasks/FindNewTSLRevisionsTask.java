@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 21/07/2025.
+ * @version 2.1, 03/10/2025.
  */
 package es.gob.valet.tasks;
 
@@ -82,7 +82,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 21/07/2025.
+ * @version 2.1, 03/10/2025.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
@@ -475,7 +475,7 @@ public class FindNewTSLRevisionsTask extends Task {
 		ITSLObject iTSLObjectLotlDownload;
 		// Abrimos un InputStream para el array de bytes.
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(fullTSLxml)){
-			iTSLObjectLotlDownload = new TSLObject(TSLSpecificationsVersions.SPECIFICATION_119612, TSLSpecificationsVersions.VERSION_020101);
+			iTSLObjectLotlDownload = new TSLObject(TSLSpecificationsVersions.SPECIFICATION_119612);
 			iTSLObjectLotlDownload.buildTSLFromXMLcheckValues(bais);
 		}
 		return iTSLObjectLotlDownload;
@@ -571,7 +571,7 @@ public class FindNewTSLRevisionsTask extends Task {
 					byte[ ] fullTSLxml = UtilsHTTP.getDataFromURI(distributionPoint, NumberConstants.NUM10000, NumberConstants.NUM10000, null, null, httpHeadersMap);
 					
 					// Creamos un objeto que representará la TSL descargada.
-					ITSLObject tslObject = new TSLObject(actualTslImpl.getSpecification(), actualTslImpl.getVersion());
+					ITSLObject tslObject = new TSLObject(actualTslImpl.getSpecification());
 					// Abrimos un InputStream para el array de bytes.
 					try (ByteArrayInputStream bais = new ByteArrayInputStream(fullTSLxml)){
 						tslObject.buildTSLFromXMLcheckValues(bais, false, false);
@@ -584,7 +584,7 @@ public class FindNewTSLRevisionsTask extends Task {
 						// ya)...
 						if (lastTslImpl != null && !actualTslImpl.getIdTSLImpl().equals(lastTslImpl.getIdTSLImpl())) {
 							LOGGER.warn(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_000, new Object[ ] { actualTslImpl.getSpecification(), actualTslImpl.getVersion(), lastTslImpl.getSpecification(), lastTslImpl.getVersion() }));
-							tslObject = new TSLObject(lastTslImpl.getSpecification(), lastTslImpl.getVersion());
+							tslObject = new TSLObject(lastTslImpl.getSpecification());
 							try (ByteArrayInputStream bais = new ByteArrayInputStream(fullTSLxml)){
 								tslObject.buildTSLFromXMLcheckValues(bais, false, false);
 							} catch (Exception e2) {

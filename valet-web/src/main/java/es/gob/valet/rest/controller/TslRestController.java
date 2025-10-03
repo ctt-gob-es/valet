@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 2.7, 01/10/2025.
+ * @version 2.8, 03/10/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -97,11 +97,12 @@ import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
 import es.gob.valet.utils.GeneralConstantsValetWeb;
+import es.gob.valet.utils.TSLSpecificationsVersions;
 
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.7, 01/10/2025.
+ * @version 2.8, 03/10/2025.
  */
 @RestController
 public class TslRestController {
@@ -264,10 +265,6 @@ public class TslRestController {
 	@RequestMapping(value = "/obtaintsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody SigningCertificateDTO obtainTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_URL) String urlTsl, @RequestParam("lotl") Boolean lotl, Model model, HttpSession httpSession) throws IOException {
 
-		// TODO: SGAD1-39 de forma provisional dejaremos parametrizado, especificación y versión, hasta que sepamos obtener dichos parametros de distintas versiones
-		String specificationTsl = "119612";
-		String versionTsl = "2.1.1";
-		
 		boolean error = false;
 		byte[ ] fileBytes = null;
 		JSONObject json = new JSONObject();
@@ -287,8 +284,23 @@ public class TslRestController {
 			if (!error) {
 				
 				// Obtenemos la TSL
-				ITSLObject tslObject = TSLManager.getInstance().obtainTslAndCertFromSign(urlTsl, specificationTsl, versionTsl, fileBytes);
+				ITSLObject tslObject = TSLManager.getInstance().obtainTslAndCertFromSign(urlTsl, TSLSpecificationsVersions.SPECIFICATION_119612, null, fileBytes);
 
+				if(!tslObject.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101) && 
+						!tslObject.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
+					json.put(KEY_JS_ERROR_OBTAIN_TSL, Language.getResWebGeneral(WebGeneralMessages.ERROR_VERSION_TSL_NOT_VALID));
+					signingCertificateDTO.setError(json.toString());
+					return signingCertificateDTO;
+				}
+				
+				if(urlTsl.isEmpty()) {
+					urlTsl = tslObject.getSchemeInformation().getDistributionPoints().stream()
+						    .map(Object::toString)
+						    .filter(uri -> !uri.endsWith(".pdf") && !uri.endsWith(".PDF"))
+						    .findFirst()
+						    .orElse(null);
+				}
+				
 				// Obtenemos los datos del certificado incluido en la firma
 				Map<String, String> mapSigningCert = iSigningCertService.getCertificateDetailsMap(tslObject.getSignTsl().get());
 				signingCertificateDTO = new SigningCertificateDTO((Long) null, mapSigningCert.get(SigningCertService.ISSUER), mapSigningCert.get(SigningCertService.SUBJECT), mapSigningCert.get(SigningCertService.SERIAL_NUMBER), mapSigningCert.get(SigningCertService.DATE_EXPIRED), mapSigningCert.get(SigningCertService.CERTIFICATE_B64));
@@ -524,10 +536,6 @@ public class TslRestController {
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/updateimplfile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public TslForm updateImplFile(@RequestParam(FIELD_ID_TSL) Long idTSL, @RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile) throws IOException {
-
-		// TODO: SGAD1-39 de forma provisional dejaremos parametrizado, especificación y versión, hasta que sepamos obtener dichos parametros de distintas versiones
-		String specificationTsl = "119612";
-		String versionTsl = "2.1.1";
 		
 		TslForm tslForm = new TslForm();
 		byte[ ] tslXMLbytes = null;
@@ -547,8 +555,16 @@ public class TslRestController {
 			ByteArrayInputStream bais = new ByteArrayInputStream(tslXMLbytes);
 			ITSLObject tslObject = null;
 			try {
-				tslObject = new TSLObject(specificationTsl, versionTsl);
+				tslObject = new TSLObject(TSLSpecificationsVersions.SPECIFICATION_119612);
 				tslObject.buildTSLFromXMLcheckValues(bais);
+				
+				if(!tslObject.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101) && 
+						!tslObject.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
+					error = true;
+					LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.ERROR_VERSION_TSL_NOT_VALID));
+					json.put(FIELD_IMPL_TSL_FILE + GeneralConstantsValetWeb.SPAN_ELEMENT, Language.getResWebGeneral(WebGeneralMessages.ERROR_VERSION_TSL_NOT_VALID));
+				}
+				
 				// se obtiene el código del país de la TSL que se está editando
 				String ccr = TSLManager.getInstance().getTSLCountryRegionByIdTslData(idTSL).getCode();
 				// se comprueba que sea del mismo país

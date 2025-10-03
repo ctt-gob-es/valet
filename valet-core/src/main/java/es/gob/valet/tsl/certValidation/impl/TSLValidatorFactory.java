@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 03/10/2025.
  */
 package es.gob.valet.tsl.certValidation.impl;
 
@@ -33,7 +33,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
  * <p>Class that represents a TSL Validator Factory for all differents
  * specification and versions of TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 03/10/2025.
  */
 public final class TSLValidatorFactory {
 
@@ -59,9 +59,7 @@ public final class TSLValidatorFactory {
 
 			if (TSLSpecificationsVersions.SPECIFICATION_119612.equals(tslObject.getSpecification())) {
 
-				if (TSLSpecificationsVersions.VERSION_020101.equals(tslObject.getSpecificationVersion())) {
 					result = new es.gob.valet.tsl.certValidation.impl.ts119612.v020101.TSLValidator(tslObject);
-				}
 
 			}
 
