@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.1, 21/05/2025.
+ * @version 1.2, 07/10/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -71,6 +72,7 @@ import es.gob.valet.i18n.utils.UtilsServer;
 import es.gob.valet.persistence.configuration.model.dto.TslCountryRegionDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
 import es.gob.valet.persistence.configuration.model.dto.TslServiceDTO;
+import es.gob.valet.persistence.configuration.model.dto.ValetVersionDTO;
 import es.gob.valet.persistence.configuration.model.entity.SigningCertificate;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
@@ -82,11 +84,12 @@ import es.gob.valet.persistence.configuration.model.repository.TslServiceReposit
 import es.gob.valet.service.ifaces.IExportService;
 import es.gob.valet.sign.ExportFileSigner;
 import es.gob.valet.sign.cades.SignatureException;
+import es.gob.valet.utils.TSLSpecificationsVersions;
 
 /** 
  * <p>Class that implements the communication with the operations of the persistence layer for ExportTsls.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 21/05/2025.
+ * @version 1.2, 07/10/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -129,13 +132,21 @@ public class ExportService implements IExportService {
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ifaces.IExportService#exportTslData(java.util.Properties, java.io.File)
+	 * @see es.gob.valet.service.ifaces.IExportService#exportTslData(java.util.Properties, java.io.File, String)
 	 */
 	@Override
-	public void exportTslData(Properties filesHashProperties, File tslDataFolder) throws IOException, NoSuchAlgorithmException {
+	public void exportTslData(Properties filesHashProperties, File tslDataFolder, String valetVersion) throws IOException, NoSuchAlgorithmException {
 		LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP013));
 		
-		List<TslData> lisTslData = tslDataRepository.findAll();
+		List<TslData> lisTslData;
+		
+		// Si la version de valet que ha elegido exportar el usuario es la 1.1.0 (Tomcat)
+		// solo elegiremos aquellas TSL que sean version 5 (2.1.1)
+		if(valetVersion.equals(ValetVersionDTO.VERSION_1_1_0)) {
+			lisTslData = tslDataRepository.findAll().stream().filter(p -> p.getTslImpl().getVersion().equals(TSLSpecificationsVersions.VERSION_020101)).collect(Collectors.toList());
+		} else {
+			lisTslData = tslDataRepository.findAll();
+		}
 		
 		String tempFolderPath = UtilsServer.getWeblogicServerTempDir().replace("\\", "/");
 		
@@ -165,15 +176,24 @@ public class ExportService implements IExportService {
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ifaces.IExportService#exportMappingToTsls(java.util.Properties, java.io.File)
+	 * @see es.gob.valet.service.ifaces.IExportService#exportMappingToTsls(java.util.Properties, java.io.File, String)
 	 */
 	@Override
-	public void exportMappingToTsls(Properties filesHashProperties, File tslCountryRegionMappingFolder) throws IOException, NoSuchAlgorithmException {
+	public void exportMappingToTsls(Properties filesHashProperties, File tslCountryRegionMappingFolder, String valetVersion) throws IOException, NoSuchAlgorithmException {
 		LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP014));
 		
 		String tempFolderPath = UtilsServer.getWeblogicServerTempDir().replace("\\", "/");
 		
-		List<TslCountryRegion> listTslCountryRegion = tslCountryRegionRepository.findAllWithMappings();
+		List<TslCountryRegion> listTslCountryRegion;
+		
+		// Si la version de valet que ha elegido exportar el usuario es la 1.1.0 (Tomcat)
+		// solo elegiremos aquellos paises con TSL que sean version 5 (2.1.1)
+		if(valetVersion.equals(ValetVersionDTO.VERSION_1_1_0)) {
+			listTslCountryRegion = tslCountryRegionRepository.findAllWithMappings().stream()
+					.filter(p -> p.getTslData().getTslImpl().getVersion().equals(TSLSpecificationsVersions.VERSION_020101)).collect(Collectors.toList());
+		} else {
+			listTslCountryRegion = tslCountryRegionRepository.findAllWithMappings();
+		}
 		
 		for (TslCountryRegion tslCountryRegion: listTslCountryRegion) {
 			
@@ -202,15 +222,25 @@ public class ExportService implements IExportService {
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see es.gob.valet.service.ifaces.IExportService#exportMappingToService(java.util.Properties, java.io.File)
+	 * @see es.gob.valet.service.ifaces.IExportService#exportMappingToService(java.util.Properties, java.io.File, String)
 	 */
 	@Override
-	public void exportMappingToService(Properties filesHashProperties, File tslMappingFolder) throws IOException, NoSuchAlgorithmException, CommonUtilsException {
+	public void exportMappingToService(Properties filesHashProperties, File tslMappingFolder, String valetVersion) throws IOException, NoSuchAlgorithmException, CommonUtilsException {
 		LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.LOG_EXP015));
 		
 		String tempFolderPath = UtilsServer.getWeblogicServerTempDir().replace("\\", "/");
 		
 		List<TslService> listTslService = tslServiceRepository.findAllWithMappingsNotNull();
+		
+		// Si la version de valet que ha elegido exportar el usuario es la 1.1.0 (Tomcat)
+		// solo elegiremos aquellas TSL que sean version 5 (2.1.1)
+		if(valetVersion.equals(ValetVersionDTO.VERSION_1_1_0)) {
+			List<String> listTslCountryRegionCode = tslCountryRegionRepository.findAllWithMappings().stream()
+				.filter(p -> p.getTslData().getTslImpl().getVersion().equals(TSLSpecificationsVersions.VERSION_020301))
+					.map(TslCountryRegion::getCountryRegionCode).collect(Collectors.toList());
+			
+			listTslService.removeIf(p -> listTslCountryRegionCode.contains(p.getCountry()));
+		}
 		
 		for (TslService tslService: listTslService) {
 			TslServiceDTO tslServiceDTO = new TslServiceDTO(tslService);

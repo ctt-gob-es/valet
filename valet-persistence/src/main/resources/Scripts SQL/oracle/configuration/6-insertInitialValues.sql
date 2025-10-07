@@ -79,6 +79,10 @@ Insert into C_TSL_IMPL
    (ID_TSL_IMPL, SPECIFICATION, VERSION, NAMESPACE)
  Values
    (3, '119612', '2.1.1', 'http://uri.etsi.org/02231/v2#');
+Insert into C_TSL_IMPL
+   (ID_TSL_IMPL, SPECIFICATION, VERSION, NAMESPACE)
+ Values
+   (4, '119612', '2.3.1', 'http://uri.etsi.org/02231/v2#');   
 
 
 -- TABLA USER_VALET 
