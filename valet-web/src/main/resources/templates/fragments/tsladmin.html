@@ -11,6 +11,7 @@
 							<th></th>
 							<th></th>
 							<th th:text="#{table.lotl.country}"></th>
+							<th th:text="#{table.lotl.version}"></th>
 							<th th:text="#{table.lotl.sequence}"></th>
 							<th th:text="#{table.lotl.issueDate}"></th>
 							<th th:text="#{table.lotl.expirationDate}"></th>
@@ -34,6 +35,7 @@
 							<th></th>
 							<th></th>
 							<th th:text="#{table.tsl.country}"></th>
+							<th th:text="#{table.tsl.version}"></th>
 							<th th:text="#{table.tsl.sequence}"></th>
 							<th th:text="#{table.tsl.issueDate}"></th>
 							<th th:text="#{table.tsl.expirationDate}"></th>
@@ -64,7 +66,7 @@ $(document).ready(function() {
 		dom: 'Bfrti',
 		pageLength: 50,
 		columnDefs: [
-	        {className: "text-center", targets: [6], 
+	        {className: "text-center", targets: [7], 
 			order:[ 2, "asc" ]}
 	    ],
 		select: 'single',
@@ -162,6 +164,7 @@ $(document).ready(function() {
 	        { "data": "idTslData","visible": false},
 	        { "data": "tslCountryRegionDTO.idTslCountryRegion", "visible":false},
 	        { "data": "tslCountryRegionDTO.countryRegionName","width": "25%"},
+	        { "data": "version","width": "15%"},
 	        { "data": "sequenceNumber","width": "15%"},
 	        { "data": "issueDate","width": "25%"},
 	        { "data": "expirationDate", "width": "25%"},
@@ -178,7 +181,7 @@ $(document).ready(function() {
 			dom: 'Bfrti',
 			pageLength: 50,
 			columnDefs: [
-		        {className: "text-center", targets: [6], 
+		        {className: "text-center", targets: [7], 
 				order:[ 2, "asc" ]}
 		    ],
 			select: 'single',
@@ -276,6 +279,7 @@ $(document).ready(function() {
 		        { "data": "idTslData","visible": false},
 		        { "data": "tslCountryRegionDTO.idTslCountryRegion", "visible":false},
 		        { "data": "tslCountryRegionDTO.countryRegionName","width": "25%"},
+		        { "data": "version","width": "15%"},
 		        { "data": "sequenceNumber","width": "15%"},
 		        { "data": "issueDate","width": "25%"},
 		        { "data": "expirationDate", "width": "25%"},

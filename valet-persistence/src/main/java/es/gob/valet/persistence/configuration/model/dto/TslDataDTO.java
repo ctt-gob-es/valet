@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.2, 21/05/2025.
+ * @version 1.3, 08/10/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -33,7 +33,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /** 
  * <p>Class that represents an object that relates the code of a to the TSL Data DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 21/05/2025.
+ * @version 1.3, 08/10/2025.
  */
 public class TslDataDTO {
 
@@ -96,6 +96,11 @@ public class TslDataDTO {
 	 * Attribute that represents the last new TSL available are find.
 	 */
 	private String lastNewTSLAvailableFind;
+	
+	/** 
+	 * Version of the entity.
+	 */
+	private String version;
 
 	/**
 	 * Default constructor for {@code TslDataDTO}.
@@ -125,7 +130,7 @@ public class TslDataDTO {
 		this.xmlDocument = Base64.getEncoder().encodeToString(tslData.getXmlDocument());
 	}
 	
-	public TslDataDTO(Long idTslData, Long idTslCountryRegion, String countryRegionName, Integer sequenceNumber, Date issueDate, Date expirationDate, String countryRegionCode) {
+	public TslDataDTO(Long idTslData, Long idTslCountryRegion, String countryRegionName, Integer sequenceNumber, Date issueDate, Date expirationDate, String countryRegionCode, String version) {
 		this.idTslData = idTslData;
 		TslCountryRegionDTO tslCountryRegionDTO = new TslCountryRegionDTO();
 		tslCountryRegionDTO.setIdTslCountryRegion(idTslCountryRegion);
@@ -135,6 +140,7 @@ public class TslDataDTO {
 		this.sequenceNumber = sequenceNumber;
 		this.issueDate = (issueDate != null) ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, issueDate) : "";
 		this.expirationDate = (expirationDate != null) ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, expirationDate) : "";
+		this.version = version;
 	}
 
 	/**
@@ -329,4 +335,23 @@ public class TslDataDTO {
 		this.lastNewTSLAvailableFind = lastNewTSLAvailableFind;
 	}
 
+	
+	/**
+	 * Gets the value of the attribute {@link #version}.
+	 * @return the value of the attribute {@link #version}.
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+	
+	/**
+	 * Sets the value of the attribute {@link #version}.
+	 * @param version The value for the attribute {@link #version}.
+	 */
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	
 }
