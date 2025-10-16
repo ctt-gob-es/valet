@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 3.1, 01/10/2025.
+ * @version 3.2, 03/10/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 3.1, 01/10/2025.
+ * @version 3.2, 03/10/2025.
  */
 public interface IWebGeneralMessages {
 
@@ -114,6 +114,12 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String ERROR_COUNTRY_INVALID = "errorCountryInvalid";
+
+	/**
+	 * Constant attribute that represents the name of the property <code>errorVersionTSLNotValid</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String ERROR_VERSION_TSL_NOT_VALID = "errorVersionTSLNotValid";
 
 	/**
 	 * Constant attribute that represents the name of the property <code>errorSaveTsl</code> belonging to the
