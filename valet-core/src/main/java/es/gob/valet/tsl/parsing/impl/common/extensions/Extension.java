@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 03/10/2025.
+ * @version 1.3, 16/10/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common.extensions;
 
@@ -39,7 +39,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
  * <p>Abstract class that represents a TSL Extension with could contains differents elements
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 03/10/2025.
+ * @version 1.3, 16/10/2025.
  */
 public abstract class Extension implements IAnyTypeExtension {
 
@@ -188,6 +188,8 @@ public abstract class Extension implements IAnyTypeExtension {
 					checkExtensionTypeSpec119612Vers020101();
 					checkExtensionValueSpec119612Vers020101(tsl, shi, isCritical());
 				}
+				
+				break;
 				
 			default:
 				break;
