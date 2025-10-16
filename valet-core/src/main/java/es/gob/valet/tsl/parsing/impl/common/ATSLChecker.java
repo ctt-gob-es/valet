@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 29.05/2025.
+ * @version 1.7, 07/10/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -70,7 +70,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * <p>Abstract class that represents a TSL data checker with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 29.05/2025.
+ * @version 1.7, 07/10/2025.
  */
 public abstract class ATSLChecker implements ITSLChecker {
 
@@ -112,7 +112,7 @@ public abstract class ATSLChecker implements ITSLChecker {
 	protected final ITSLObject getTSLObject() {
 		return tsl;
 	}
-	
+
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -161,8 +161,6 @@ public abstract class ATSLChecker implements ITSLChecker {
 	 */
 	private void checkSchemeInformation() throws TSLMalformedException {
 
-		// Comprobamos el identificador de versión.
-		checkSchemeInformationTSLVersionIdentifierValue();
 		// Comprobamos el número de secuencia.
 		checkSchemeInformationTSLSequenceNumber();
 		// Comprobamos el tipo de TSL.
@@ -197,13 +195,6 @@ public abstract class ATSLChecker implements ITSLChecker {
 		checkSchemeInformationExtensions();
 
 	}
-
-	/**
-	 * Checks if the Scheme Information TSL Version Identifier has a correct
-	 * value for the concrete specification and version.
-	 * @throws TSLMalformedException In case of some data has not a correct value.
-	 */
-	protected abstract void checkSchemeInformationTSLVersionIdentifierValue() throws TSLMalformedException;
 
 	/**
 	 * Checks if the Scheme Information Sequence Number has a correct value.

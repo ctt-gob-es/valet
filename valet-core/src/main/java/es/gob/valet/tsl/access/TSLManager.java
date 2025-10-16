@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.7, 03/10/2025.
+ * @version 2.8, 07/10/2025.
  */
 package es.gob.valet.tsl.access;
 
@@ -102,7 +102,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.7, 03/10/2025.
+ * @version 2.8, 07/10/2025.
  */
 public final class TSLManager {
 
@@ -2065,9 +2065,10 @@ public final class TSLManager {
 			// Recuperamos el país/región.
 			TslCountryRegion tcrp = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getTslCountryRegionById(tcrco.getCountryRegionId(), false);
 			
-			// Dado que el pais aun no existe crearemos el objeto desde 0
-			if(tcrp == null) {
-				tcrp = new TslCountryRegion();
+			// Dado que el pais solo existe en la caché, lo crearemos desde 0
+			if(tcrco != null && tcrp == null) {
+				addNewTSLCountryRegionInDataBase(tcrco.getCode());
+				tcrco = ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(tcrco.getCode());
 			}
 			
 			// Recuperamos la constante que representa la especificación y versión asociada a la TSL.

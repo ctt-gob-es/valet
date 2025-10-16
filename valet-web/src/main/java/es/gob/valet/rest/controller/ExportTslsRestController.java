@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.3, 29.05/2025.
+ * @version 1.3, 07/10/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -58,7 +58,7 @@ import es.gob.valet.sign.cades.SignatureException;
 /**
  * <p>Class that manages the REST requests related to the ExportTsls administration and JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 29.05/2025.
+ * @version 1.3, 07/10/2025.
  */
 @RestController
 public class ExportTslsRestController {
@@ -230,11 +230,10 @@ public class ExportTslsRestController {
      * @throws CertificateException if an error occurs with the certificate.
      * @throws SignatureException if an error occurs during the signing process.
      * @throws ExportException if an error occurs during the export process.
-     * @throws CommonUtilsException if an error occurs with i18 language.
      * @throws CipherException if an error occurs with the cipher string.
      */
 	@SuppressWarnings("static-access")
-	private void executeStep(int step) throws IOException, NoSuchAlgorithmException, InterruptedException, ExportException, UnrecoverableKeyException, KeyStoreException, CertificateException, SignatureException, ExportException, CommonUtilsException, CipherException {
+	private void executeStep(int step) throws IOException, NoSuchAlgorithmException, InterruptedException, ValetException, UnrecoverableKeyException, KeyStoreException, CertificateException, SignatureException, ExportException, CipherException {
     	synchronized (this) {
     		currentStep = step;
             
@@ -252,15 +251,15 @@ public class ExportTslsRestController {
 					break;
 				case NumberConstants.NUM2:
 					messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP005, currentStep);
-					iExportService.exportTslData(this.filesHashProperties, this.tslDataFolder);
+					iExportService.exportTslData(this.filesHashProperties, this.tslDataFolder, this.exporTslsDTO.getValetVersionDTO().getVersion());
 					break;
 				case NumberConstants.NUM3:
 					messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP006, currentStep);
-					iExportService.exportMappingToTsls(this.filesHashProperties, this.tslCountryRegionMappingFolder);
+					iExportService.exportMappingToTsls(this.filesHashProperties, this.tslCountryRegionMappingFolder, this.exporTslsDTO.getValetVersionDTO().getVersion());
 					break;
 				case NumberConstants.NUM4:
 					messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP007, currentStep);
-					iExportService.exportMappingToService(this.filesHashProperties, this.tslMappingFolder);
+					iExportService.exportMappingToService(this.filesHashProperties, this.tslMappingFolder, this.exporTslsDTO.getValetVersionDTO().getVersion());
 					break;
 				case NumberConstants.NUM5:
 					messageInfoStep = Language.getFormatResWebGeneral(IWebGeneralMessages.LOG_EXP008, new Object[ ] { currentStep, this.exporTslsDTO.getValetVersionDTO().getVersion() });
