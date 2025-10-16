@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.1, 03/10/2025.
+ * @version 2.2, 06/10/2025.
  */
 package es.gob.valet.tasks;
 
@@ -82,7 +82,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.1, 03/10/2025.
+ * @version 2.2, 06/10/2025.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
@@ -216,6 +216,13 @@ public class FindNewTSLRevisionsTask extends Task {
 					// Intentamos descargarnos la TSL...
 					byte[ ] fullTSLxml = this.downloadTslFromUrl(url);
 					ITSLObject iTSLObjectLotlDownload = obtainTSLObject(fullTSLxml);
+					// Evaluamos si la versión de la LOTL es soportada por el sistema
+					if(!iTSLObjectLotlDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101) && 
+							!iTSLObjectLotlDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
+						LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_025, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionCode() }));
+						AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM002_EVENT_004, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName() }));
+						break; // finalizamos la ejecución de la actualización de lotl y tsls
+					}
 					// Comprobamos si la versión de la lista de listas descargada es superior a la que ya tenemos en BD
 					if(iTSLObjectLotlDownload.getSchemeInformation().getTslSequenceNumber() > tslDataLotlBD.getSequenceNumber()) {
 						LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_015, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName()}));
@@ -274,13 +281,20 @@ public class FindNewTSLRevisionsTask extends Task {
 					// Intentamos descargarnos la TSL y ademas la obtenemos con java para tratarla
 					byte[ ] fullTSLxml = this.downloadTslFromUrl(tslLocation);
 					ITSLObject iTSLObjectTslDownload = obtainTSLObject(fullTSLxml);
-					// Comprobamos si se registran todas las TSLs
-    				if (idTypeFilterReg == NumberConstants.NUM1) {
-    					treatmentUpdateAllTsls(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload);
-    				// Comprobamos si solo tratamos TSLs registradas en el sistema
-    				} else if (idTypeFilterReg == NumberConstants.NUM2) {
-    					treatmentUpdateTslRegisteredInSystem(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload);
-    				}
+					// Evaluamos si la versión de la TSL descargada es soportada por el sistema
+					if(!iTSLObjectTslDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101) && 
+							!iTSLObjectTslDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
+						LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_025, new Object[ ] { schemeTerritory }));
+						AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM002_EVENT_004, new Object[ ] { schemeTerritory }));
+					} else {
+						// Comprobamos si se registran todas las TSLs
+	    				if (idTypeFilterReg == NumberConstants.NUM1) {
+	    					treatmentUpdateAllTsls(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload);
+	    				// Comprobamos si solo tratamos TSLs registradas en el sistema
+	    				} else if (idTypeFilterReg == NumberConstants.NUM2) {
+	    					treatmentUpdateTslRegisteredInSystem(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload);
+	    				}
+					}
 				} catch (CertificateEncodingException | TSLManagingException e) {
 					// Si se produce algun fallo en la actualizacion de BD imprimimos el fallo
 					LOGGER.error(e);
