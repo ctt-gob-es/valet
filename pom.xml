@@ -39,6 +39,7 @@
 		<valet.version.cache>1.2.0</valet.version.cache>
 		<valet.version.quartz>1.2.0</valet.version.quartz>
 		<valet.version.standalone.statistics>1.2.0</valet.version.standalone.statistics>
+		<valet-afirmaSchemaXMLTSLv6>1.2.0</valet-afirmaSchemaXMLTSLv6>
 
 		<!-- Versionado de otras dependencias. -->
 	<!-- Actualizados spring-data y spring-rest para evitar vulnerabilidad 
@@ -63,6 +64,7 @@
 		<module>valet-commons-util-i18n</module>
 		<module>valet-rest-client</module>
 		<module>valet-standalone-statistics</module>
+		<module>valet-afirmaSchemaXMLTSLv6</module>
 	</modules>
 
 	<!-- Definición de perfiles de construcción maven. -->
@@ -695,6 +697,12 @@
         <artifactId>eidas-engine</artifactId>
         <version>1.4.5</version>
     </dependency>
+    <!-- XMLBEANS dependencies -->
+    <dependency>
+		<groupId>org.apache.xmlbeans</groupId>
+		<artifactId>xmlbeans-afirma</artifactId>
+		<version>2.3.0</version>
+	</dependency>
 <!-- FIN JUNIT TEST -->
 
 		<!-- Forzamos a una version unica de Apache James Mime4J para evitar el uso de la version con vulnerabilidades importada por Axis 2 v1.8.2. -->
