@@ -352,7 +352,11 @@
 				<artifactId>valet-rest</artifactId>
 				<version>${valet.version.rest}</version>
 			</dependency>
-
+			<dependency>
+			    <groupId>es.gob.valet</groupId>
+			    <artifactId>valet-afirmaSchemaXMLTSLv6</artifactId>
+			    <version>${valet-afirmaSchemaXMLTSLv6}</version>
+			</dependency>
 			<!-- Módulos de vaLET -->
 			<!-- <dependency> -->
 			<!-- <groupId>javax.servlet</groupId> -->
@@ -697,12 +701,7 @@
         <artifactId>eidas-engine</artifactId>
         <version>1.4.5</version>
     </dependency>
-    <!-- XMLBEANS dependencies -->
-    <dependency>
-		<groupId>org.apache.xmlbeans</groupId>
-		<artifactId>xmlbeans-afirma</artifactId>
-		<version>2.3.0</version>
-	</dependency>
+    
 <!-- FIN JUNIT TEST -->
 
 		<!-- Forzamos a una version unica de Apache James Mime4J para evitar el uso de la version con vulnerabilidades importada por Axis 2 v1.8.2. -->
