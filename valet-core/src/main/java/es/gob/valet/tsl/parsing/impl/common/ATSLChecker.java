@@ -43,14 +43,13 @@ import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SchemaTypeLoader;
 import org.apache.xmlbeans.XmlBeans;
 import org.w3c.dom.Node;
-
-import es.gob.afirma.cert.signvalidation.SignValidity;
-import es.gob.afirma.cert.signvalidation.ValidateXMLSignature;
 import es.gob.afirma.core.AOInvalidFormatException;
 import es.gob.afirma.core.signers.AOSimpleSignInfo;
 import es.gob.afirma.core.util.tree.AOTreeModel;
 import es.gob.afirma.core.util.tree.AOTreeNode;
 import es.gob.afirma.signers.xades.AOXAdESSigner;
+import es.gob.afirma.signvalidation.SignValidity;
+import es.gob.afirma.signvalidation.ValidateXMLSignature;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.ValetExceptionConstants;
@@ -1328,7 +1327,15 @@ public abstract class ATSLChecker implements ITSLChecker {
 	 */
 	protected final void veryfyTSLSignature(byte[ ] fullTSLxml) throws TSLMalformedException {
 
-		SignValidity validity = new ValidateXMLSignature().validate(fullTSLxml);
+		 List<SignValidity> validities = new ValidateXMLSignature().validate(fullTSLxml);
+		 // Comprobamos que la lista no esté vacía
+		    if (validities == null || validities.isEmpty()) {
+		        throw new TSLMalformedException(ValetExceptionConstants.COD_187,
+		                Language.getResCoreTsl(CoreTslMessages.LOGMTSL078));
+		    }
+		    SignValidity validity = validities.get(0);
+
+		    
 		if (validity.getValidity() != SignValidity.SIGN_DETAIL_TYPE.OK) {
 			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(CoreTslMessages.LOGMTSL078));
 		}
