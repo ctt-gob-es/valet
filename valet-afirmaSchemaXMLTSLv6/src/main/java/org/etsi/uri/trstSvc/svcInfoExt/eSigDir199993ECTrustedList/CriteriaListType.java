@@ -16,7 +16,7 @@ package org.etsi.uri.trstSvc.svcInfoExt.eSigDir199993ECTrustedList;
 public interface CriteriaListType extends org.apache.xmlbeans.XmlObject
 {
     public static final org.apache.xmlbeans.SchemaType type = (org.apache.xmlbeans.SchemaType)
-        org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(CriteriaListType.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.s873B7E6C0380BA89DCCDC166F3A3B371").resolveHandle("criterialisttype3d02type");
+        org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(CriteriaListType.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.sC5CF2A71F720CEDDD610D691A94D54CD").resolveHandle("criterialisttype3d02type");
     
     /**
      * Gets array of all "KeyUsage" elements
@@ -231,7 +231,7 @@ public interface CriteriaListType extends org.apache.xmlbeans.XmlObject
     public interface Assert extends org.apache.xmlbeans.XmlString
     {
         public static final org.apache.xmlbeans.SchemaType type = (org.apache.xmlbeans.SchemaType)
-            org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(Assert.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.s873B7E6C0380BA89DCCDC166F3A3B371").resolveHandle("asserta6dcattrtype");
+            org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(Assert.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.sC5CF2A71F720CEDDD610D691A94D54CD").resolveHandle("asserta6dcattrtype");
         
         org.apache.xmlbeans.StringEnumAbstractBase enumValue();
         void set(org.apache.xmlbeans.StringEnumAbstractBase e);

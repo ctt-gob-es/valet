@@ -6,6 +6,9 @@
  * Automatically generated - do not modify.
  */
 package org.etsi.uri.x01903.v13.impl;
+
+import org.apache.xmlbeans.XmlObject;
+
 /**
  * An XML SignedSignaturePropertiesType(@http://uri.etsi.org/01903/v1.3.2#).
  *
@@ -23,6 +26,8 @@ public class SignedSignaturePropertiesTypeImpl extends org.apache.xmlbeans.impl.
         new javax.xml.namespace.QName("http://uri.etsi.org/01903/v1.3.2#", "SigningTime");
     private static final javax.xml.namespace.QName SIGNINGCERTIFICATE$2 = 
         new javax.xml.namespace.QName("http://uri.etsi.org/01903/v1.3.2#", "SigningCertificate");
+    private static final javax.xml.namespace.QName SIGNINGCERTIFICATEV2$2 = 
+    		new javax.xml.namespace.QName("http://uri.etsi.org/01903/v1.3.2#", "SigningCertificateV2");
     private static final javax.xml.namespace.QName SIGNATUREPOLICYIDENTIFIER$4 = 
         new javax.xml.namespace.QName("http://uri.etsi.org/01903/v1.3.2#", "SignaturePolicyIdentifier");
     private static final javax.xml.namespace.QName SIGNATUREPRODUCTIONPLACE$6 = 
@@ -140,6 +145,61 @@ public class SignedSignaturePropertiesTypeImpl extends org.apache.xmlbeans.impl.
                 return null;
             }
             return target;
+        }
+    }
+
+    /**
+     * Gets the "SigningCertificateV2" element
+     */
+    public org.etsi.uri.x01903.v13.CertIDListType getSigningCertificateV2() {
+        synchronized (monitor()) {
+            check_orphaned();
+            Object obj = get_store().find_element_user(SIGNINGCERTIFICATEV2$2, 0);
+            if (obj == null) {
+                return null;
+            }
+
+            org.etsi.uri.x01903.v13.CertIDListType certList = org.etsi.uri.x01903.v13.CertIDListType.Factory.newInstance();
+
+            try {
+                if (obj instanceof org.apache.xmlbeans.impl.values.XmlAnyTypeImpl) {
+                    org.apache.xmlbeans.impl.values.XmlAnyTypeImpl any = (org.apache.xmlbeans.impl.values.XmlAnyTypeImpl) obj;
+
+                    org.w3c.dom.NodeList certNodes = any.getDomNode().getChildNodes();
+                    for (int i = 0; i < certNodes.getLength(); i++) {
+                        org.w3c.dom.Node certNode = certNodes.item(i);
+
+                        if (certNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE &&
+                            "Cert".equals(certNode.getLocalName()) &&
+                            "http://uri.etsi.org/01903/v1.3.2#".equals(certNode.getNamespaceURI())) {
+
+                            // Crear un nuevo CertIDType en el CertIDListType
+                            org.etsi.uri.x01903.v13.CertIDType certId = certList.addNewCert();
+
+                            // Copiar el contenido del nodo <Cert> sin desconectar XMLBeans
+                            certId.set(org.apache.xmlbeans.XmlObject.Factory.parse(certNode));
+                        }
+                    }
+
+                    // Si no había ningún <Cert>, devolvemos null
+                    if (certList.sizeOfCertArray() == 0) {
+                        return null;
+                    }
+
+                    return certList;
+                }
+
+                // Si ya es del tipo esperado
+                if (obj instanceof org.etsi.uri.x01903.v13.CertIDListType) {
+                    return (org.etsi.uri.x01903.v13.CertIDListType) obj;
+                }
+
+            } catch (Exception e) {
+                // En caso de fallo, devolvemos null
+                return null;
+            }
+
+            return null;
         }
     }
     

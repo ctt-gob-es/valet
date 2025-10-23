@@ -363,22 +363,22 @@
 			<!-- <artifactId>servlet-api</artifactId> -->
 			<!-- <version>2.5</version> -->
 			<!-- </dependency> -->
-			<dependency>
-				<groupId>org.apache.xmlbeans</groupId>
-				<artifactId>xmlbeans-afirma</artifactId>
-				<version>2.3.0</version>
-				<exclusions>
-					<exclusion>
-						<groupId>stax</groupId>
-						<artifactId>stax-api</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>es.gob.afirma.xmlbeans.2_3_0</groupId>
-				<artifactId>afirmaSchemaXMLTSLv5</artifactId>
-				<version>119612v020101</version>
-			</dependency>
+<!-- 			<dependency> -->
+<!-- 				<groupId>org.apache.xmlbeans</groupId> -->
+<!-- 				<artifactId>xmlbeans-afirma</artifactId> -->
+<!-- 				<version>2.3.0</version> -->
+<!-- 				<exclusions> -->
+<!-- 					<exclusion> -->
+<!-- 						<groupId>stax</groupId> -->
+<!-- 						<artifactId>stax-api</artifactId> -->
+<!-- 					</exclusion> -->
+<!-- 				</exclusions> -->
+<!-- 			</dependency> -->
+<!-- 			<dependency> -->
+<!-- 				<groupId>es.gob.afirma.xmlbeans.2_3_0</groupId> -->
+<!-- 				<artifactId>afirmaSchemaXMLTSLv5</artifactId> -->
+<!-- 				<version>119612v020101</version> -->
+<!-- 			</dependency> -->
 			<dependency>
 				<groupId>es.gob.afirma</groupId>
 				<artifactId>afirma-crypto-validation</artifactId>

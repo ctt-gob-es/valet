@@ -16,7 +16,7 @@ package org.etsi.uri.trstSvc.svcInfoExt.eSigDir199993ECTrustedList;
 public interface PoliciesListType extends org.apache.xmlbeans.XmlObject
 {
     public static final org.apache.xmlbeans.SchemaType type = (org.apache.xmlbeans.SchemaType)
-        org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(PoliciesListType.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.s873B7E6C0380BA89DCCDC166F3A3B371").resolveHandle("policieslisttype44f3type");
+        org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(PoliciesListType.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.sC5CF2A71F720CEDDD610D691A94D54CD").resolveHandle("policieslisttype44f3type");
     
     /**
      * Gets array of all "PolicyIdentifier" elements

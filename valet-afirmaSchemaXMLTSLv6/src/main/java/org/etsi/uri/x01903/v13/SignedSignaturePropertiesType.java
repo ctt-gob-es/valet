@@ -52,6 +52,11 @@ public interface SignedSignaturePropertiesType extends org.apache.xmlbeans.XmlOb
      * Gets the "SigningCertificate" element
      */
     org.etsi.uri.x01903.v13.CertIDListType getSigningCertificate();
+
+    /**
+     * Gets the "SigningCertificate" element
+     */
+    org.etsi.uri.x01903.v13.CertIDListType getSigningCertificateV2();
     
     /**
      * True if has "SigningCertificate" element
