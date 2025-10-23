@@ -2563,6 +2563,10 @@ public final class TSLManager {
 				// Se actualiza la TSL en la base de datos.
 				td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().saveTSL(td);
 
+				// Actualizamos la version
+				CTslImpl cTslImpl = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService().getAllCTSLImpl().stream().filter( p -> tslObject.getSpecificationVersion().equals(p.getVersion())).findAny().orElse(null);
+				td.setTslImpl(cTslImpl);
+				
 				// Lo actualizamos en la caché con el nuevo pojo.
 				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
 
