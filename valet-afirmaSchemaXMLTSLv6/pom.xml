@@ -15,28 +15,10 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>es.gob.afirma.xmlbeans.2_3_0</groupId>
-			<artifactId>xmlSchema</artifactId>
-			<version>2001</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>es.gob.afirma.xmlbeans.2_3_0</groupId>
-			<artifactId>XMLDSig</artifactId>
-			<version>2000v09</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>es.gob.afirma.xmlbeans.2_3_0</groupId>
-			<artifactId>XAdES</artifactId>
-			<version>01903v132</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.xmlbeans</groupId>
 			<artifactId>xmlbeans-afirma</artifactId>
+			<version>2.3.0</version>
 		</dependency>
-		
 	</dependencies>
 	<build>
 		<plugins>

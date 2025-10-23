@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+    targetNamespace="http://uri.etsi.org/02231/v2#"
+    xmlns:tsl="http://uri.etsi.org/02231/v2#"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+    <!-- ================= IMPORTS ================= -->
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+    <xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+    <xsd:import namespace="http://uri.etsi.org/02231/v2#" schemaLocation="19612_xsd.xsd"/>
+
+    <!-- ================= ELEMENTOS PROPIOS DE TSL.XSD ================= -->
+    <!-- Solo elementos específicos de este esquema, nada duplicado -->
+    <!-- Por ejemplo, si tu tsl.xsd necesita un elemento propio: -->
+    <!-- <xsd:element name="MyCustomElement" type="tsl:MyCustomType"/> -->
+    <!-- Actualmente tsl.xsd no tiene nada adicional, todo viene de 19612_xsd.xsd -->
+
+</xsd:schema>

@@ -313,6 +313,11 @@
 				<artifactId>valet-rest</artifactId>
 				<version>${valet.version.rest}</version>
 			</dependency>
+			<dependency>
+			    <groupId>es.gob.valet</groupId>
+			    <artifactId>valet-afirmaSchemaXMLTSLv6</artifactId>
+			    <version>${valet-afirmaSchemaXMLTSLv6}</version>
+			</dependency>
 			<!-- Módulos de vaLET -->
 			<!-- <dependency> -->
 			<!-- <groupId>javax.servlet</groupId> -->
