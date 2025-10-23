@@ -40,6 +40,7 @@
 		<valet.version.cache>1.1.0</valet.version.cache>
 		<valet.version.quartz>1.1.0</valet.version.quartz>
 		<valet.version.standalone.statistics>1.1.0</valet.version.standalone.statistics>
+		<valet-afirmaSchemaXMLTSLv6>1.1.0</valet-afirmaSchemaXMLTSLv6>
 
 		<!-- Versionado de otras dependencias. -->
 	<!-- Actualizados spring-data y spring-rest para evitar vulnerabilidad 
@@ -64,6 +65,7 @@
 		<module>valet-commons-util-i18n</module>
 		<module>valet-rest-client</module>
 		<module>valet-standalone-statistics</module>
+		<module>valet-afirmaSchemaXMLTSLv6</module>
 	</modules>
 
 	<!-- Definición de perfiles de construcción maven. -->
