@@ -29,18 +29,18 @@
 		<java.version>${java.1.8.version}</java.version>
 
 		<!-- Versionado de módulos propios de valET. -->
-		<valet.version.commons-util>1.1.0</valet.version.commons-util>
-		<valet.version.commons-util-i18n>1.1.0</valet.version.commons-util-i18n>
-		<valet.version.i18n>1.1.0</valet.version.i18n>
-		<valet.version.persistence>1.1.0</valet.version.persistence>
-		<valet.version.core>1.1.0</valet.version.core>
-		<valet.version.web>1.1.0</valet.version.web>
-		<valet.version.rest>1.1.0</valet.version.rest>
-		<valet.version.rest-client>1.1.0</valet.version.rest-client>
-		<valet.version.cache>1.1.0</valet.version.cache>
-		<valet.version.quartz>1.1.0</valet.version.quartz>
-		<valet.version.standalone.statistics>1.1.0</valet.version.standalone.statistics>
-		<valet-afirmaSchemaXMLTSLv6>1.1.0</valet-afirmaSchemaXMLTSLv6>
+		<valet.version.commons-util>1.1.1</valet.version.commons-util>
+		<valet.version.commons-util-i18n>1.1.1</valet.version.commons-util-i18n>
+		<valet.version.i18n>1.1.1</valet.version.i18n>
+		<valet.version.persistence>1.1.1</valet.version.persistence>
+		<valet.version.core>1.1.1</valet.version.core>
+		<valet.version.web>1.1.1</valet.version.web>
+		<valet.version.rest>1.1.1</valet.version.rest>
+		<valet.version.rest-client>1.1.1</valet.version.rest-client>
+		<valet.version.cache>1.1.1</valet.version.cache>
+		<valet.version.quartz>1.1.1</valet.version.quartz>
+		<valet.version.standalone.statistics>1.1.1</valet.version.standalone.statistics>
+		<valet-afirmaSchemaXMLTSLv6>1.1.1</valet-afirmaSchemaXMLTSLv6>
 
 		<!-- Versionado de otras dependencias. -->
 	<!-- Actualizados spring-data y spring-rest para evitar vulnerabilidad 
@@ -324,22 +324,6 @@
 			<!-- <artifactId>servlet-api</artifactId> -->
 			<!-- <version>2.5</version> -->
 			<!-- </dependency> -->
-			<dependency>
-				<groupId>org.apache.xmlbeans</groupId>
-				<artifactId>xmlbeans-afirma</artifactId>
-				<version>2.3.0</version>
-				<exclusions>
-					<exclusion>
-						<groupId>stax</groupId>
-						<artifactId>stax-api</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>es.gob.afirma.xmlbeans.2_3_0</groupId>
-				<artifactId>afirmaSchemaXMLTSLv5</artifactId>
-				<version>119612v020101</version>
-			</dependency>
 			<dependency>
 				<groupId>es.gob.afirma</groupId>
 				<artifactId>afirma-crypto-validation</artifactId>

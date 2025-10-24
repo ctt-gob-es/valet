@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>es.gob.valet</groupId>
 		<artifactId>valet-parent</artifactId>
-		<version>1.1.0</version>
+		<version>1.1.1</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>valet-core</artifactId>
@@ -65,14 +65,8 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.xmlbeans</groupId>
-			<artifactId>xmlbeans-afirma</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>es.gob.afirma.xmlbeans.2_3_0</groupId>
-			<artifactId>afirmaSchemaXMLTSLv5</artifactId>
-			<scope>compile</scope>
+		    <groupId>es.gob.valet</groupId>
+		    <artifactId>valet-afirmaSchemaXMLTSLv6</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>es.gob.afirma</groupId>

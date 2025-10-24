@@ -16,7 +16,7 @@ package org.etsi.uri.trstSvc.svcInfoExt.eSigDir199993ECTrustedList;
 public interface KeyUsageType extends org.apache.xmlbeans.XmlObject
 {
     public static final org.apache.xmlbeans.SchemaType type = (org.apache.xmlbeans.SchemaType)
-        org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(KeyUsageType.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.s873B7E6C0380BA89DCCDC166F3A3B371").resolveHandle("keyusagetypee7e7type");
+        org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(KeyUsageType.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.sC5CF2A71F720CEDDD610D691A94D54CD").resolveHandle("keyusagetypee7e7type");
     
     /**
      * Gets array of all "KeyUsageBit" elements

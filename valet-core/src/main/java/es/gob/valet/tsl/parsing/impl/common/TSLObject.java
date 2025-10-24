@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 03/10/2025.
+ * @version 1.7, 23/10/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -56,7 +56,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
  * <p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 03/10/2025.
+ * @version 1.7, 23/10/2025.
  */
 public class TSLObject implements ITSLObject {
 
@@ -343,6 +343,12 @@ public class TSLObject implements ITSLObject {
 			// Comprobamos que los valores establecidos son los correctos.
 			if(schemeInformation != null){
 				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL347));
+				// Añadimos la versión de la especificacion
+				if(schemeInformation.getTslVersionIdentifier() == NumberConstants.NUM5) {
+					tslSpecificationVersion = TSLSpecificationsVersions.VERSION_020101;
+				} else if(schemeInformation.getTslVersionIdentifier() == NumberConstants.NUM6) {
+					tslSpecificationVersion = TSLSpecificationsVersions.VERSION_020301;
+				}
 				signTsl = new AtomicReference<X509Certificate>();
 				getTSLChecker().checkTSLValues(checkSignature, fullTSLxml, signTsl);
 			}
@@ -370,12 +376,6 @@ public class TSLObject implements ITSLObject {
 			}
 			if (cache && !UtilsStringChar.isNullOrEmpty(msgError)) {
 				LOGGER.warn(msgError);
-			}
-			// Añadimos la versión de la especificacion
-			if(schemeInformation.getTslVersionIdentifier() == NumberConstants.NUM5) {
-				tslSpecificationVersion = TSLSpecificationsVersions.VERSION_020101;
-			} else if(schemeInformation.getTslVersionIdentifier() == NumberConstants.NUM6) {
-				tslSpecificationVersion = TSLSpecificationsVersions.VERSION_020301;
 			}
 		}
 

@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.9, 07/10/2025.
+ * @version 2.0, 23/10/2025.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -97,12 +97,13 @@ import es.gob.valet.tsl.parsing.impl.common.ServiceHistoryInstance;
 import es.gob.valet.tsl.parsing.impl.common.ServiceInformation;
 import es.gob.valet.tsl.parsing.impl.common.TSLPointer;
 import es.gob.valet.tsl.parsing.impl.common.TSPInformation;
+import es.gob.valet.utils.TSLSpecificationsVersions;
 
 /**
  * <p>Class that represents a TSL Data Checker of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.9, 07/10/2025.
+ * @version 2.0, 23/10/2025.
  */
 public class TSLChecker extends ATSLChecker {
 
@@ -1729,8 +1730,16 @@ public class TSLChecker extends ATSLChecker {
 				SignedSignaturePropertiesType signedSignatureProps = signedProps.getSignedSignatureProperties();
 				if (signedSignatureProps != null) {
 
+					CertIDListType qPropsSignCertCertIdList = null;
+					
+					// Evaluamos los certificados segun la especificacion
+					if(super.getTSLObject().getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101)) {
+						qPropsSignCertCertIdList = signedSignatureProps.getSigningCertificate();
+					} else if(super.getTSLObject().getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
+						qPropsSignCertCertIdList = signedSignatureProps.getSigningCertificateV2();
+					}
+					
 					// Si no hay SigningCertificate, no comprobamos nada más.
-					CertIDListType qPropsSignCertCertIdList = signedSignatureProps.getSigningCertificate();
 					if (qPropsSignCertCertIdList != null && qPropsSignCertCertIdList.getCertArray() != null) {
 
 						// Recuperamos el certificado firmante.
@@ -1738,15 +1747,6 @@ public class TSLChecker extends ATSLChecker {
 						if (signingCert == null) {
 							throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL070));
 						}
-
-						// Comprobamos la correspondencia entre el
-						// SigningCertificate y el KeyInfo.
-						X509Certificate x509Certificate = validateMatchingCertificate(signingCert, qPropsSignCertCertIdList.getCertArray());
-
-						// Comprobamos atributos y extensiones del certificado
-						// según determina
-						// la especificación.
-						checkX509v3SigningCertificateDateDependingOnSpecification(x509Certificate);
 
 					}
 
@@ -1765,12 +1765,19 @@ public class TSLChecker extends ATSLChecker {
 	}
 
 	/**
-	 * Checks and validate the certificate information in the SigningCertificate element with the KeyInfo data.
-	 * @param signingCert X509 certificate that signs the TSL.
-	 * @param qPropsSignCertCertIdArray Array of CertID defined in QualifyingProperties - SigningCertificate.
-	 * @throws TSLMalformedException In case of some error checking the singning certificate.
-	 * @return X509v3 Signing Certificate.
-	 */
+
+	* Checks and validates the certificate information in the SigningCertificate element with the KeyInfo data.
+	*
+	* @param signingCert X509 certificate that signs the TSL.
+	* @param qPropsSignCertCertIdArray Array of CertID defined in QualifyingProperties - SigningCertificate.
+	* @throws TSLMalformedException In case of some error checking the signing certificate.
+	* @return X509v3 Signing Certificate.
+	*
+	* @deprecated As of TSL version 6. Deprecated according to task SGAD1-84
+	* ([https://ricoh-spain-it-services.atlassian.net/browse/SGAD1-84](https://ricoh-spain-it-services.atlassian.net/browse/SGAD1-84)),
+	* due to migration from TSL v5 to TSL v6, where certificate validation
+	* is handled differently.
+	  */
 	private X509Certificate validateMatchingCertificate(X509Certificate signingCert, CertIDType[ ] qPropsSignCertCertIdArray) throws TSLMalformedException {
 
 		try {
@@ -1804,10 +1811,14 @@ public class TSLChecker extends ATSLChecker {
 	}
 
 	/**
-	 * Checks the signing TSL certificate for a concrete attributes and extensions.
+	 * Checks the signing TSL certificate for specific attributes and extensions.
 	 * @param x509Certificate X509v3 certificate to check.
-	 * @throws TSLMalformedException In case of some error checking the singning certificate.
-	 */
+	 * @throws TSLMalformedException In case of some error checking the signing certificate.
+	 * @deprecated As of TSL version 6. Deprecated according to task SGAD1-84
+	 * (https://ricoh-spain-it-services.atlassian.net/browse/SGAD1-84),
+	 * due to migration from TSL v5 to TSL v6, where certificate validation
+	 * and extension handling are managed differently.
+	*/
 	private void checkX509v3SigningCertificateDateDependingOnSpecification(X509Certificate x509Certificate) throws TSLMalformedException {
 
 		// Comprobamos que el "Country Code" y "Organization" del subject del
