@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.3, 29.05/2025.
+ * @version 1.4, 28/10/2025.
  */
 package es.gob.valet.importsls;
 
@@ -57,7 +57,7 @@ import es.gob.valet.sign.ExportFileValidator;
 /**
  * <p>Class that manages the REST request related to the Import Tsls administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 29.05/2025.
+ * @version 1.4, 28/10/2025.
  */
 @RestController
 public class ImporTslsRestController {
@@ -152,7 +152,7 @@ public class ImporTslsRestController {
 		            X509Certificate signingCertificate = ExportFileValidator.validateExportFile(content);
 		            
 		         // Validaremos la version del fichero
-		         if(!ExportFileValidator.version.equals(ValetVersionDTO.VersionEnum.V1.getVersion())) {
+		         if(!ExportFileValidator.version.equals(ValetVersionDTO.VersionEnum.V1_1.getVersion())) {
 		        	 msgError = Language.getResWebGeneral(IWebGeneralMessages.LOG_EXP027);
 		    	     LOGGER.error(msgError);
 		         } else {

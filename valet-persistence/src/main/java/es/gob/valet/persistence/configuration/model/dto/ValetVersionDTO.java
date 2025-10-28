@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.2, 16/10/2025.
+ * @version 1.3, 28/10/2025.
  */
 package es.gob.valet.persistence.configuration.model.dto;
 
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 /** 
  * <p>Class that represents an object that relates the code of a to the Valet Version DTO administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 16/10/2025.
+ * @version 1.3, 28/10/2025.
  */
 public class ValetVersionDTO {
 
@@ -61,11 +61,6 @@ public class ValetVersionDTO {
     public static final String VERSION_1_1_1 = "1.1.1";
 
     /**
-     * Version string for version 1.2.0.
-     */
-    public static final String VERSION_1_2_0 = "1.2.0";
-
-    /**
      * Default constructor.
      */
     public ValetVersionDTO() {}
@@ -83,12 +78,7 @@ public class ValetVersionDTO {
         /**
          * Version 1.1.1.
          */
-        V1_1(2, VERSION_1_1_1),
-
-        /**
-         * Version 1.2.0.
-         */
-        V2(3, VERSION_1_2_0);
+        V1_1(2, VERSION_1_1_1);
 
         private final int id;
         private final String version;
