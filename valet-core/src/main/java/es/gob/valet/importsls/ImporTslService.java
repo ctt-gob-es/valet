@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.4, 10/07/2025.
+ * @version 1.5, 28/10/2025.
  */
 package es.gob.valet.importsls;
 
@@ -107,7 +107,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>interface that contains all the methods necessary to carry out the import of TSLs.</p>
  * <b>Project:</b><p>Class that contains all the methods necessary to carry out the import of TSLs.</p>
- * @version 1.4, 10/07/2025.
+ * @version 1.5, 28/10/2025.
  */
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -717,7 +717,7 @@ public class ImporTslService implements IImporTslService {
 
 			tslCountryRegionRepository.save(tslCountryRegion);
 							
-			CTslImpl cTslImpl = cTslImplRepository.findAll().stream().filter(p -> p.getSpecification().equals(tslDataDTO.getcTslImplDTO().getSpecification())).findAny().orElse(null);
+			CTslImpl cTslImpl = cTslImplRepository.findAll().stream().filter(p -> p.getVersion().equals(tslDataDTO.getcTslImplDTO().getVersion())).findAny().orElse(null);
 
 			// Counstruimos el TslDataPojo y vamos insertando los datos.
 			TslData tslData = new TslData();
@@ -798,7 +798,7 @@ public class ImporTslService implements IImporTslService {
 			TslData tslData = tslCountryRegion.getTslData();
 			byte [] byteTsl = Base64.getDecoder().decode(tslDataDTO.getXmlDocument());
 			
-			CTslImpl cTslImpl = cTslImplRepository.findAll().stream().filter(p -> p.getSpecification().equals(tslDataDTO.getcTslImplDTO().getSpecification())).findAny().orElse(null);
+			CTslImpl cTslImpl = cTslImplRepository.findAll().stream().filter(p -> p.getVersion().equals(tslDataDTO.getcTslImplDTO().getVersion())).findAny().orElse(null);
 			tslData.setNewTSLAvailable(FindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
 			tslData.setLastNewTSLAvailableFind(null);
 			tslData.setSequenceNumber(tslDataDTO.getSequenceNumber());
