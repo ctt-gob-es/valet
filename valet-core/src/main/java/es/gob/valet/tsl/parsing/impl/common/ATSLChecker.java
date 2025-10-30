@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.7, 07/10/2025.
+ * @version 1.8, 30/10/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -44,16 +44,17 @@ import org.apache.xmlbeans.SchemaTypeLoader;
 import org.apache.xmlbeans.XmlBeans;
 import org.w3c.dom.Node;
 
-import es.gob.afirma.cert.signvalidation.SignValidity;
-import es.gob.afirma.cert.signvalidation.ValidateXMLSignature;
 import es.gob.afirma.core.AOInvalidFormatException;
 import es.gob.afirma.core.signers.AOSimpleSignInfo;
 import es.gob.afirma.core.util.tree.AOTreeModel;
 import es.gob.afirma.core.util.tree.AOTreeNode;
 import es.gob.afirma.signers.xades.AOXAdESSigner;
+import es.gob.afirma.signvalidation.SignValidity;
+import es.gob.afirma.signvalidation.ValidateXMLSignature;
 import es.gob.valet.commons.utils.UtilsResources;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
+import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.tsl.access.TSLProperties;
@@ -70,7 +71,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
  * <p>Abstract class that represents a TSL data checker with the principal functions
  * regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.7, 07/10/2025.
+ * @version 1.8, 30/10/2025.
  */
 public abstract class ATSLChecker implements ITSLChecker {
 
@@ -1329,7 +1330,13 @@ public abstract class ATSLChecker implements ITSLChecker {
 	 */
 	protected final void veryfyTSLSignature(byte[ ] fullTSLxml) throws TSLMalformedException {
 
-		SignValidity validity = new ValidateXMLSignature().validate(fullTSLxml);
+		List<SignValidity> validities = new ValidateXMLSignature().validate(fullTSLxml);
+		// Comprobamos que la lista no esta vacia
+		if (validities == null || validities.isEmpty()) {
+			throw new TSLMalformedException(ValetExceptionConstants.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL078));
+		}
+		SignValidity validity = validities.get(0);
+		
 		if (validity.getValidity() != SignValidity.SIGN_DETAIL_TYPE.OK) {
 			throw new TSLMalformedException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL078));
 		}
