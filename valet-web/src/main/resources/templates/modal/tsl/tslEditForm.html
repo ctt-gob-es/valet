@@ -353,9 +353,15 @@ function confirmTsl() {
 			} else {
 				closeModalEdiTsl('modalEditTsl');
 				$("#tableMapping").hide();
-
-				var table = $('#tslTable').DataTable();
-
+				
+				var table;
+				if(window.lotl) {
+					table = $('#lotlTable').DataTable();
+					window.lotl = false;
+				} else {
+					table = $('#tslTable').DataTable();
+				}
+				
 				// Obtener la fila seleccionada
 				var selectedRow = table.row({ selected: true });
 				
