@@ -84,7 +84,7 @@ $(document).ready(function() {
 		                type: 'POST',
 		                cache: false,
 		                success: function(xhr) {
-		                    hide();
+		                	hide();
 		                    $('#modal').html(xhr);
 		                    $('#modalAddTsl').modal('show');
 		                }
@@ -96,7 +96,8 @@ $(document).ready(function() {
 		        name: 'edit',
 		        action: function (e, dt, node, config) {
 		        	var editTsl = /*[[@{/edittsl}]]*/;
-		            
+		        	lotl = true;
+		        	
 		        	// Obtenemos la fila seleccionada
 		        	var selectedRow = dt.row({ selected: true }).data();
 		        	
@@ -108,10 +109,10 @@ $(document).ready(function() {
 		            $.ajax({
 		                url: editTsl,
 		                type: 'POST',
-		                data: { id: idTslData },
+		                data:$.param({'id': idTslData, 'lotl':lotl} ),
 		                cache: false,
 		                success: function(xhr) {
-		                    hide();
+		                	hide();
 		                    $('#modal').html(xhr);
 		                    $('#modalEditTsl').modal('show');
 		                }

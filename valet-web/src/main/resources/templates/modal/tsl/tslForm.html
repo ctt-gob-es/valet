@@ -262,6 +262,7 @@
 			  		// Dado que tenemos 2 datatables en tsladmin evaluaramos cual es el registro que hemos seleccionado para eliminar
 					if(window.lotl) {
 						$('#lotlTable').DataTable().row.add($(data.data)).draw(false);
+						window.lotl = false;
 					} else {
 						$('#tslTable').DataTable().row.add($(data.data)).draw(false); 	
 					}
