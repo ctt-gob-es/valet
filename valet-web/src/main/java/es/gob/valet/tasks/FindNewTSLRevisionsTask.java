@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.0, 21/07/2025.
+ * @version 2.3, 31/10/2025.
  */
 package es.gob.valet.tasks;
 
@@ -82,7 +82,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 21/07/2025.
+ * @version 2.3, 31/10/2025.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
@@ -208,11 +208,12 @@ public class FindNewTSLRevisionsTask extends Task {
 		
 		List<TslData> listTslData = iTslDataService.obtainAllTslDataWithTslLotlData();
 		if(listTslData.size() > NumberConstants.NUM0) {
+			String url = null;
 			// Recorremos todas las lista de listas
 			for (TslData tslDataLotlBD: listTslData) {
 				try {
 					// Obtenemos la url de descarga
-					String url = tslDataLotlBD.getUriTslLocation();
+					url = tslDataLotlBD.getUriTslLocation();
 					// Intentamos descargarnos la TSL...
 					byte[ ] fullTSLxml = this.downloadTslFromUrl(url);
 					ITSLObject iTSLObjectLotlDownload = obtainTSLObject(fullTSLxml);
@@ -234,6 +235,9 @@ public class FindNewTSLRevisionsTask extends Task {
 					LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_010, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName() }));
 					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM002_EVENT_002, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName() }));
 					break; // finalizamos la ejecución de la actualización de lotl y tsls
+				} catch (Exception e) {
+					String messageError = Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_026, new Object[ ] { url });
+					LOGGER.error(messageError, e);
 				}
 			}
 			
@@ -291,6 +295,9 @@ public class FindNewTSLRevisionsTask extends Task {
 					// Si se produce algun fallo en la descarga de la TSL lanzamos la alarma
 					LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_010, new Object[ ] { UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory) }));
 					AlarmsManager.getInstance().registerAlarmEvent(IAlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(ICoreGeneralMessages.ALM002_EVENT_002, new Object[ ] { UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory) }));
+				} catch (Exception e) {
+					String messageError = Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_025, new Object[ ] { UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory) });
+					LOGGER.error(messageError, e);
 				}
 			}
 		}
