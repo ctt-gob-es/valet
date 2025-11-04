@@ -1,76 +1,96 @@
-<form name="altEditor-form" role="form" id="userForm" th:object="${userform}" th:action="@{/saveuser}" method="post">
-    <input type='hidden' class='primarykey' id="idUserValet" th:field="*{idUserValet}">
-    
-    <div class="form-group">
-        <label for="nif" th:text="#{form.user.nif}"></label>
-        <script th:inline="javascript" type="text/javascript">
-            /*<![CDATA[*/
-            var messageNif = /*[[#{form.user.nif.pattern}]]*/ 'default';
-            /*]]>*/
-        </script>
-        <span id="nif_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-        <input onblur="validateNif();" type="text" id="nif" th:field="*{nif}" class="form-control" required pattern=".{3,15}">
-    </div>
-    
-    <div class="form-group">
-        <label for="name" th:text="#{form.user.name}"></label>
-        <script th:inline="javascript" type="text/javascript">
-            /*<![CDATA[*/
-            var messageName = /*[[#{form.user.name.pattern}]]*/ 'default';
-            /*]]>*/
-        </script>
-        <span id="name_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-        <input onblur="validateField(this, messageName);" type="text" id="name" th:field="*{name}" class="form-control" required pattern=".{3,15}">
-    </div>
-    
-    <div class="form-group">
-        <label for="surnames" th:text="#{form.user.surnames}"></label>
-        <script th:inline="javascript" type="text/javascript">
-            /*<![CDATA[*/
-            var messageSurname = /*[[#{form.user.surnames.pattern}]]*/ 'default';
-            /*]]>*/
-        </script>
-        <span id="surnames_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-        <input onblur="validateField(this, messageSurname);" type="text" id="surnames" th:field="*{surnames}" class="form-control" required pattern=".{3,30}">
-    </div>
-    
-	<div class="form-group">
-		<label for="email" th:text="#{form.user.email}"></label>
-		<script th:inline="javascript" type="text/javascript">
-			/*<![CDATA[*/
-			var messageEmail = /*[[#{form.user.email.pattern}]]*/'default';
-			/*]]>*/
-		</script>
-		<span id="email_span"
-			class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-		<input onblur="validateField(this, messageEmail);" type="email"
-			id="email" th:field="*{email}" style="overflow: hidden"
-			class="form-control" required />
+<div class="modal fade" tabindex="-1" role="dialog" id="modalAddUser" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" th:text="#{form.user.title}"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.user.close}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			
+			<div class="modal-body">
+				<form name="userForm" role="form" id="userForm" th:object="${userform}" th:action="@{/saveuser}" method="post">
+				    <input type='hidden' class='primarykey' id="idUserValet" th:field="*{idUserValet}">
+				    
+				    <div class="form-group">
+				        <label for="nif" th:text="#{form.user.nif}"></label>
+				        <input type="text" id="nif" th:field="*{nif}" class="form-control">
+				        <span id="nif_span" ></span>
+				    </div>
+				    
+				    <div class="form-group">
+				        <label for="name" th:text="#{form.user.name}"></label>
+				        <input type="text" id="name" th:field="*{name}" class="form-control">
+				        <span id="name_span" ></span>
+				    </div>
+				    
+				    <div class="form-group">
+				        <label for="surnames" th:text="#{form.user.surnames}"></label>
+				        <input type="text" id="surnames" th:field="*{surnames}" class="form-control">
+				        <span id="surnames_span" ></span>
+				    </div>
+				    
+					<div class="form-group">
+						<label for="email" th:text="#{form.user.email}"></label>
+						<input type="email" id="email" th:field="*{email}" style="overflow: hidden" class="form-control" />
+						<span id="email_span"></span>
+					</div>
+				</form>
+			</div>
+			
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" th:text="#{form.user.close}" onclick="closeModalAddUser('modalAddUser')"></button>
+				<button type="button" id="idNextBtn" name="idSaveUserBtn" class="btn btn-primary" th:text="#{form.user.btn.save}" onclick="saveUser();"></button>
+			</div>
+		</div>
 	</div>
-</form>
+</div>
+
+
 
 <script th:inline="javascript" type="text/javascript">
-    function validateNif() {
-        var messageNifConfirm = /*[[#{form.user.nif.pattern}]]*/ 'default';
-        var messageNif = $('#nif').val();
-        const letraDNI = 'TRWAGMYFPDXBNJZSQVHLCKET';
-        const regex = /^[0-9]{8}[A-Z]$/;
+    
+	function saveUser() {
+		
+	    var actionsaveuseredit = /*[[@{/saveuseredit}]]*/;
+	    var form = document.forms["userForm"];
+	    var userForm = Object.fromEntries(new FormData(form));
+	    
+	    cleanSpan();
+	
+	    loading();
+	
+	    $.ajax({
+	    	url: actionsaveuseredit,
+	        data: JSON.stringify(userForm),
+	        contentType: "application/json",
+	        processData: false,
+	        type: 'POST',
+	        success: function(data) {
+	            hide();
+	            var result = JSON.parse(data);
+	            if (result.error) {
+	                $.each(result.error, function (i, val) {
+	                    $("#" + i).text(val).addClass('badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill');
+	                });
+	            } else {
+	                var tblUser = $('#userTable').DataTable();
+	                tblUser.row.add(result.data).draw(false);
+	                closeModalAddUser('modalAddUser');
+	            }
+	        }
+	    });
+	}
 
-        if (regex.test(messageNif)) {
-            const numero = messageNif.substr(0, 8);
-            const letra = messageNif.charAt(8);
-            const letraCorrecta = letraDNI.charAt(parseInt(numero) % 23);
-
-            if (letra === letraCorrecta) {
-                $("#nif_span").text('');
-                $("#nif_span").removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-            } else {
-                $("#nif_span").text(messageNifConfirm);
-                $("#nif_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-            }
-        } else {
-            $("#nif_span").text(messageNifConfirm);
-            $("#nif_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-        }
-    }
+	function cleanSpan(){
+		$('#userForm *').filter('span.badge').each(function(){
+			$(this).text("");				
+		});
+	}
+    
+  	//Funcion para cerrar el modal
+	function closeModalAddUser(modalId){
+		$('#' + modalId).modal('hide');
+		$('.modal-backdrop').remove();
+	}
 </script>

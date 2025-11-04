@@ -26,52 +26,84 @@
 <script th:inline="javascript">
 $(document).ready(function() {
 	
-	var actionSave = /*[[@{/saveuser}]]*/;
-	var actionDelete = /*[[@{/deleteuser}]]*/;
 	var getusers = /*[[@{/usersdatatable}]]*/;
-	var editTemplate = /*[[@{/edituser}]]*/;
-	var addTemplate = /*[[@{/adduser}]]*/;
 	
 	var btnAddUser =  /*[[#{table.user.action.add}]]*/;
 	var btnEditUser =  /*[[#{table.user.action.edit}]]*/;
 	var btnDelUser = /*[[#{table.user.action.delete}]]*/;
 	var usernameLogged = /*[[${#httpServletRequest.remoteUser}]]*/;
 	
-	
 	var tbl = $('#userTable').DataTable({
 		dom: 'Bfrtip',
 	    select: 'single',
 	    responsive: true,
-	    altEditor: true,
-	    buttons: [{text: btnAddUser,name: 'add'}, 
-	    		  {extend: 'selected',text: btnEditUser,name: 'editUser',
-	    			  action: function ( e, dt, node, config ) {	    				  
-	    				  for (var o = dt, a = [], e = 0; e < o.context[0].aoColumns.length; e++) a.push({
-							id: o.context[0].aoColumns[e].mData,
-							title: o.context[0].aoColumns[e].sTitle                
-						  });
-						  
-						  var d = dt.rows({
-	                        selected: !0
-						  });
-						  var name = d.data()[0][a[3].id];
-						  var menuEdit = /*[[@{/menuedit}]]*/;
-						  $.ajax({
-	      						url : menuEdit,
-	      						type : 'GET',
-	      						data : $.param({'username':name}),
-	      						cache : false,
-	      						success : function(data) {
-	      							hide();
-	      							$('#modal').html(data);
-	      							$('#modalEdit').modal('show');																
-	      						},
-	      						error : function() {}
-	      					});
-	    			  }
-	    		  }, 
-	    		  {extend: 'selected',text: btnDelUser,name: 'delete'} 
-	    		  ],
+	    buttons: [
+	    	{
+		        text: btnAddUser,
+		        name: 'add',
+		        action: function (e, dt, node, config) {
+		            var adduser = /*[[@{/adduser}]]*/;
+		            loading();
+					$.ajax({
+		                url: adduser,
+		                type: 'POST',
+		                cache: false,
+		                success: function(xhr) {
+		                	hide();
+		                    $('#modal').html(xhr);
+		                    $('#modalAddUser').modal('show');
+		                }
+		            });
+		        }
+		    },
+	    	{
+		        text: btnEditUser,
+		        name: 'edit',
+		        action: function (e, dt, node, config) {
+		            var editUser = /*[[@{/editUser}]]*/;
+		            
+		         	// Obtenemos la fila seleccionada
+		        	var selectedRow = dt.row({ selected: true }).data();
+		        	
+		        	// Obtenemos el id
+		        	var nif = selectedRow.nif;
+		            
+		            loading();
+					$.ajax({
+		                url: editUser,
+		                data: { nif: nif },
+		                type: 'POST',
+		                cache: false,
+		                success: function(xhr) {
+		                	hide();
+		                    $('#modal').html(xhr);
+		                    $('#modalAddUser').modal('show');
+		                }
+		            });
+		        },
+		    	enabled: false  // Deshabilitado por defecto
+		    },
+		    {
+		        text: btnDelUser,
+		        name: 'delete',
+		        action: function (e, dt, node, config) {
+		            var deleteUserView = /*[[@{/deleteuserview}]]*/;
+		            
+		            loading();
+					$.ajax({
+		                url: deleteUserView,
+		                type: 'POST',
+		                cache: false,
+		                success: function(xhr) {
+		                	hide();
+		                    $('#modal').html(xhr);
+		                    $('#modalDeleteUser').modal('show');
+		                }
+		            });
+		        },
+		    	enabled: false  // Deshabilitado por defecto
+		    },
+	    ],
 	    "iTotalRecords": "totalElements",
         "iTotalDisplayRecords": "numberOfElements",
 	    
@@ -79,12 +111,7 @@ $(document).ready(function() {
 	    "serverSide": true,
 		"ajax": {
 	        "url": getusers,
-	        "dataSrc" : "data",
-	        "data": function (data) {
-	        	// Datos a pasar al modal
-	            data.formId = "userForm";
-	            data.addTemplate = addTemplate;
-	        }
+	        "dataSrc" : "data"
 	    },
 	    "language": {
 	        "url": "js/datatables/i18n/spanish.json",
@@ -103,199 +130,15 @@ $(document).ready(function() {
 	        { "data": "nif" },
 	        { "data": "email" }
 	        ]
-		}).on('crudaction', function(e, accion, idUserValet, data, rowindex){
-		    // e          Evento Jquery
-		    // accion     [add|edit|delete]
-		    // pkid       Primer campo en la data [id]                ... en add,    retorna null
-		    // data       Los campos adicionales  [campo_1, campo_n]  ... en delete, retorna null
-		    // rowindex   El index de la fila para el dataTable       ... en add,    retorna null
-		    
-		    $('#altEditor-modal .modal-body .alert').remove();
-		    // Se muestra la capa 'cargando...'
-		    loading();
-		    
-		    switch(accion){
-		        case 'add':
-		        	if ($('#userForm')[0].checkValidity() === false) {
-		        		// Se oculta la capa 'cargando...'
-		        		hide();
-		                event.stopPropagation();
-		                
-		                $('#userForm *').filter(':input').each(function(){
-		            	    		            	    
-		                	if(!$(this)[0].checkValidity())
-		            	    {
-		                	$("#" + $(obj).attr('id')+"_span").html();
-		                	$("#" + $(obj).attr('id')+"_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-		              	    } else {
-		              	    	 $("#" + $(obj).attr('id')).removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-		            	    }
-		            	    
-		            	});
-		                
-		                // Esto es necesario para forzar que se muestren mensajes de validación de cliente
-		                $('<input type="submit">').hide().appendTo($('#userForm')).click().remove();
-		            } else {	            		
-	            		$.ajax(actionSave, {
-			            	dataType : 'json',
-			            	contentType:'application/json',
-			                data : JSON.stringify($("#userForm").serializeJSON()),
-			                type:'POST',
-			                success: function(data){
-			                	var errores = JSON.parse(data.error);
-			  				  	
-			  				  	if (data.error != null){
-									$('#userForm').append('<div id="errorModalUser2" class="alert alert-danger" role="alert"><strong>'+ errores["password_span"] +'</strong></div>');
-			  				  	}else{
-				  				  	tbl.row.add($(data.data)).draw(false);
-	    		                    
-				                    $('#altEditor-modal .modal-body .alert').remove();
-				                    $('#altEditor-modal').modal('hide');
-									
-									if ($('#errorModalUser').length > 0){
-										$('#errorModalUser').remove();
-									}
-									if ($('#errorModalUser2').length > 0){
-										$('#errorModalUser2').remove();
-									}
-									if ($('#errorModalUser3').length > 0){
-										$('#errorModalUser3').remove();
-									}
-			  				  	}
-								
-			            		// Se oculta la capa 'cargando...'
-			            		hide();
-			                    
-			                },
-			                error:function(data){
-			                	hide();
-			                	var msgExistLogin =  /*[[#{form.user.exist.login}]]*/;			                	
-			                	$('#errorModalUser').remove();
-			                	$('#userForm').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgExistLogin+'</strong></div>');
-			                }
-			            });
-		            }
-		        	$('#userForm').addClass('was-validated');
-		            break;
-		        case 'delete':
-		            $.ajax(actionDelete,{
-		            	data:$.param({'id':data.idUserValet, 'index':rowindex, 'remoteUser':usernameLogged}),
-		                type:'POST',
-		                success: function(data){
-		                    
-		                	// Se oculta la capa 'cargando...'
-		                	hide();
-		                	if(data =="-1"){
-							
-		                		var msgErrorLogged =  /*[[#{form.user.delete.logged}]]*/;    		
-								$('#messageError').html(msgErrorLogged);
-								$('#messageError').addClass('alert alert-danger');
-								 $("#messageError").fadeTo(5000, 500).slideUp(500, function() {
-								$(messageError).slideUp(500);
-		                	    });
-		                	}else{
-		                    tbl.row(data.index).remove().draw();
-		                    
-		                   
-		                	}
-		                	 $('#altEditor-modal .modal-body .alert').remove();
-			                    $('#altEditor-modal').modal('hide');
-		                },
-		                error:function(){}
-		            });
-		            break;
-		        default:
-		            $('#altEditor-modal .modal-body .alert').remove();
-		            $('#altEditor-modal .modal-body').append('<div class="alert alert-danger" role="alert"><strong>Acción "'+accion+'" no autorizada!</strong></div>');
-		            break;
-		    }
-		});
-		
-	$( "#passwordBtn" ).click(function( event ) {
-	  event.preventDefault();
-		
-	  var formData = JSON.stringify($("#userFormPassword").serializeJSON());
-	  var url = /*[[@{/saveuserpassword}]]*/;
-	  
-	  loading();
-	  
-	  $.ajax({
-		  type: "POST",
-		  url: url,
-		  data: formData,
-		  success: function(data){
-			hide();
-			
-			switch(data){
-			case 0:
-				$('#errorModalUser').remove();
-				$('#modalPassword').modal('hide');
-				break;
-			case -1:
-				var msgPasswordMath =  /*[[#{form.user.password.math}]]*/;
-				$('#errorModalUser').remove();
-				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgPasswordMath+'</strong></div>');
-				break;
-			case -2:
-				var msgError =  /*[[#{form.user.error}]]*/;
-				$('#errorModalUser').remove();
-				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
-				break;
-			default:
-				if (data != null){
-					jQuery.each(data, function(i, val) {
-						$('#userFormPassword *').filter('span').each(function(){
-							if (i == $(this).attr('id')){
-								$("#" + i).text(val);
-							}
-						});
-					});
-				}
-			}
-		  },
-		  error:function(){
-			  hide();
-			  var msgError =  /*[[#{form.user.error}]]*/;
-			  $('#errorModalUser').remove();
-			  $('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
-		  },
-		  dataType: "json",
-		  contentType : "application/json"
-		});
 	});
 	
-	$( "#editBtn" ).click(function( event ) {
-		  event.preventDefault();
-			
-		  var formData = JSON.stringify($("#userFormEdit").serializeJSON());
-		  var url = /*[[@{/saveuseredit}]]*/;
-		  
-		  loading();
-		  
-		  $.ajax({
-			  type: "POST",
-			  url: url,
-			  data: formData,
-			  success: function(data){
-				hide();
-				
-				tbl.row.add($(data.data)).draw(false);
-				
-				if ($('#errorModalEdit').length > 0){
-					$('#errorModalEdit').remove();
-				}
-				
-				$('#modalEditAdmin').modal('hide');
-				
-			  },
-			  error:function(){
-				  hide();
-				  var msgError =  /*[[#{form.user.error}]]*/;
-				  $('#errorModalEdit').remove();
-				  $('#userFormEdit').append('<div id="errorModalEdit" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
-			  },
-			  dataType: "json",
-			  contentType : "application/json"
-		});
+	//Actualizar el estado de los botones al seleccionar o deseleccionar filas
+	$('#userTable').on('select.dt deselect.dt', function () {
+	    var dt = $(this).DataTable(); // obtenemos el datatable que ha disparado el evento
+	    var selectedRows = dt.rows({ selected: true }).count();
+
+	    dt.button('edit:name').enable(selectedRows > 0);
+	    dt.button('delete:name').enable(selectedRows > 0);
 	});
+	
 });	
