@@ -45,8 +45,17 @@
             success: function(data){
             	// Se oculta la capa 'cargando...'
             	hide();
-            	table.row(selectedRow.index()).remove().draw();
-            	closeModalDeleteUser('modalDeleteUser');
+            	if(data =="-1"){
+					var msgErrorLogged =  /*[[#{form.user.delete.logged}]]*/;    		
+					$('#messageError').html(msgErrorLogged);
+					$('#messageError').addClass('alert alert-danger');
+					$("#messageError").fadeTo(5000, 500).slideUp(500, function() {
+						$(messageError).slideUp(500);
+            	    });
+            	}else{
+            		table.row(selectedRow.index()).remove().draw();
+                	closeModalDeleteUser('modalDeleteUser');		
+            	}
             },
             error:function(){}
         });	
