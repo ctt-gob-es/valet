@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/10/2018.</p>
  * @author Gobierno de España.
- * @version 3.4, 31/10/2025.
+ * @version 3.6, 05/11/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the web module of valET: general.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 3.4, 31/10/2025.
+ * @version 3.6, 05/11/2025.
  */
 public interface IWebGeneralMessages {
 
@@ -763,6 +763,46 @@ public interface IWebGeneralMessages {
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
 	String CMS_012 = "CMS_012";
+	/**
+	 * Constant attribute that represents the name of the property <code>URC_001</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String URC_001 = "URC_001";
+	/**
+	 * Constant attribute that represents the name of the property <code>URC_002</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String URC_002 = "URC_002";
+	/**
+	 * Constant attribute that represents the name of the property <code>URC_003</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String URC_003 = "URC_003";
+	/**
+	 * Constant attribute that represents the name of the property <code>URC_004</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String URC_004 = "URC_004";
+	/**
+	 * Constant attribute that represents the name of the property <code>URC_005</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String URC_005 = "URC_005";
+	/**
+	 * Constant attribute that represents the name of the property <code>URC_006</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String URC_006 = "URC_006";
+	/**
+	 * Constant attribute that represents the name of the property <code>URC_007</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String URC_007 = "URC_007";
+	/**
+	 * Constant attribute that represents the name of the property <code>URC_007</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String URC_008 = "URC_008";
 	/**
 	 * Constant attribute that represents the name of the property <code>wrongFileSize</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
