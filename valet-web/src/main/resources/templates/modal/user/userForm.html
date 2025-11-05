@@ -2,7 +2,8 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" th:text="#{form.user.title}"></h4>
+				<h4 class="modal-title" th:if="${add}" th:text="#{form.user.title}"></h4>
+				<h4 class="modal-title" th:unless="${add}" th:text="#{form.user.edit.title}"></h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="#{form.user.close}">
 					<span aria-hidden="true">&times;</span>
 				</button>

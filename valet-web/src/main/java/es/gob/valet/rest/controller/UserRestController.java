@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.5, 04/11/2025.
+ * @version 1.6, 05/11/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -68,7 +68,7 @@ import es.gob.valet.utils.GeneralConstantsValetWeb;
  * <p>Class that manages the REST requests related to the Users administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.5, 04/11/2025.
+ * @version 1.6, 05/11/2025.
  */
 @RestController
 public class UserRestController {
@@ -220,12 +220,12 @@ public class UserRestController {
 			LOGGER.error(msgError);
 			json.put(FIELD_NIF + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 		}
-		if (UtilsStringChar.isNullOrEmpty(userForm.getName()) || userForm.getName().length() < NumberConstants.NUM3 &&  userForm.getName().length() > NumberConstants.NUM15) {
+		if (UtilsStringChar.isNullOrEmpty(userForm.getName()) || !(userForm.getName().length() >= NumberConstants.NUM3 &&  userForm.getName().length() <= NumberConstants.NUM15)) {
 			String msgError = Language.getResWebGeneral(WebGeneralMessages.URC_002);
 			LOGGER.error(msgError);
 			json.put(FIELD_NAME + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
 		} 
-		if (UtilsStringChar.isNullOrEmpty(userForm.getSurnames()) || userForm.getSurnames().length() < NumberConstants.NUM3 &&  userForm.getSurnames().length() > NumberConstants.NUM30) {
+		if (UtilsStringChar.isNullOrEmpty(userForm.getSurnames()) || !(userForm.getSurnames().length() >= NumberConstants.NUM3 &&  userForm.getSurnames().length() <= NumberConstants.NUM30)) {
 			String msgError = Language.getResWebGeneral(WebGeneralMessages.URC_003);
 			LOGGER.error(msgError);
 			json.put(FIELD_SURNAMES + GeneralConstantsValetWeb.SPAN_ELEMENT, msgError);
