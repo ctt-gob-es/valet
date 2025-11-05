@@ -21,25 +21,22 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.3, 16/09/2021.
+ * @version 1.6, 05/11/2025.
  */
 package es.gob.valet.rest.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.validation.constraints.NotEmpty;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,26 +45,83 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.form.UserForm;
-import es.gob.valet.form.UserFormEdit;
 import es.gob.valet.form.UserFormPassword;
+import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
 import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
-import es.gob.valet.rest.exception.OrderedValidation;
 
 /**
  * <p>Class that manages the REST requests related to the Users administration and
  * JSON communication.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.3, 16/09/2021.
+ * @version 1.6, 05/11/2025.
  */
 @RestController
 public class UserRestController {
 
+	/**
+	 * Attribute that represents the object that manages the log of the class.
+	 */
+	private static final Logger LOGGER = LogManager.getLogger(UserRestController.class);
+	
+	/**
+	 * Constant that represents the parameter 'login'.
+	 */
+	private static final String FIELD_LOGIN = "login";
+
+	/**
+	 * Constant that represents the parameter 'name'.
+	 */
+	private static final String FIELD_NAME = "name";
+
+	/**
+	 * Constant that represents the parameter 'surnames'.
+	 */
+	private static final String FIELD_SURNAMES = "surnames";
+
+	/**
+	 * Constant that represents the parameter 'email'.
+	 */
+	private static final String FIELD_EMAIL = "email";
+
+	/**
+	 * Constant that represents the parameter 'passwordAdd'.
+	 */
+	private static final String FIELD_PASSWORD_ADD = "passwordAdd";
+
+	/**
+	 * Constant that represents the parameter 'password'.
+	 */
+	private static final String FIELD_PASSWORD= "password";
+
+	/**
+	 * Constant that represents the parameter 'confirmPasswordAdd'.
+	 */
+	private static final String FIELD_CONFIRM_PASSWORD_ADD = "confirmPasswordAdd";
+
+	/**
+	 * Constant that represents the parameter 'confirmPassword'.
+	 */
+	private static final String FIELD_CONFIRM_PASSWORD = "confirmPassword";
+
+	/**
+	 * Constant that represents the parameter 'oldPassword'.
+	 */
+	private static final String FIELD_OLD_PASSWORD = "oldPassword";
+	
+	/** 
+	 * Regular expression pattern used to validate email addresses. 
+	 */
+	private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+	
 	/**
 	 * Method that maps the list users web requests to the controller and
 	 * forwards the list of users to the view.
@@ -108,121 +162,115 @@ public class UserRestController {
 
 		return index;
 	}
-
+	
 	/**
-	 * Method that maps the save user web request to the controller and saves it
-	 * in the persistence.
-	 *
-	 * @param userForm
-	 *            Object that represents the backing user form.
-	 * @param bindingResult
-	 *            Object that represents the form validation result.
-	 * @return {@link DataTablesOutput<UserValet>}
+	 * Handles POST requests to save or update a user record.
+	 * Validates the provided user data and persists it if no errors are found.
+	 * 
+	 * @param userForm the form data containing user information
+	 * @return a JSON string containing either validation errors or the saved user data
+	 * @throws IOException if an error occurs while generating the JSON response
 	 */
-	@RequestMapping(value = "/saveuser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@JsonView(DataTablesOutput.View.class)
-	public @ResponseBody DataTablesOutput<UserValet> save(@Validated(OrderedValidation.class) @RequestBody UserForm userForm, BindingResult bindingResult) {
-		DataTablesOutput<UserValet> dtOutput = new DataTablesOutput<>();
+	@RequestMapping(value = "/saveuseredit", method = RequestMethod.POST)
+	public @ResponseBody String saveEdit(@RequestBody UserForm userForm) throws IOException {
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectNode responseNode = objectMapper.createObjectNode();
+		JSONObject json = new JSONObject();
 		UserValet userValet = null;
-		List<UserValet> listNewUser = new ArrayList<UserValet>();
+		boolean error = Boolean.FALSE;
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
-		if (bindingResult.hasErrors()) {
-			listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false).collect(Collectors.toList());
-			JSONObject json = new JSONObject();
-			for (FieldError o: bindingResult.getFieldErrors()) {
-				json.put(o.getField() + "_span", o.getDefaultMessage());
+		boolean searchLogin = Boolean.FALSE;
+		boolean validatePass = Boolean.FALSE;
+		
+		if (userForm.getIdUserValet() != null) {
+			userValet = userService.getUserValetById(userForm.getIdUserValet());
+			
+			if(!userValet.getLogin().equals(userForm.getLogin())) {
+				searchLogin = Boolean.TRUE;
 			}
-			dtOutput.setError(json.toString());
 		} else {
-			try {
-				if (userForm.getIdUserValet() != null) {
-					userValet = userService.getUserValetById(userForm.getIdUserValet());
-				} else {
-					userValet = new UserValet();
-				}
-				if (!UtilsStringChar.isNullOrEmpty(userForm.getPassword())) {
-					String pwd = userForm.getPassword();
-					BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
-					String hashPwd = bc.encode(pwd);
-
-					userValet.setPassword(hashPwd);
-				}
-
-				userValet.setLogin(userForm.getLogin());
-				userValet.setAttemptsNumber(NumberConstants.NUM0);
-				userValet.setEmail(userForm.getEmail());
-				userValet.setIsBlocked(Boolean.FALSE);
-				userValet.setLastAccess(null);
-				userValet.setLastIpAccess(null);
-				userValet.setName(userForm.getName());
-				userValet.setSurnames(userForm.getSurnames());
-
-				UserValet user = userService.saveUserValet(userValet);
-
-				listNewUser.add(user);
-			} catch (Exception e) {
-				listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false).collect(Collectors.toList());
-				throw e;
-			}
+			userValet = new UserValet();
+			searchLogin = Boolean.TRUE;
+			validatePass = Boolean.TRUE;
 		}
-
-		dtOutput.setData(listNewUser);
-
-		return dtOutput;
-
+		
+		validateUser(userForm, json, userService, searchLogin, validatePass);
+		
+		if (json.length() > 0) {
+			error = Boolean.TRUE;
+			responseNode.set("error", objectMapper.readTree(json.toString()));
+		}
+		
+		if (!error) {
+			String pwd = userForm.getPassword();
+			BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+			String hashPwd = bc.encode(pwd);
+			
+			userValet.setAttemptsNumber(NumberConstants.NUM0);
+			userValet.setEmail(userForm.getEmail());
+			userValet.setIsBlocked(Boolean.FALSE);
+			userValet.setLastAccess(null);
+			userValet.setLastIpAccess(null);
+			userValet.setName(userForm.getName());
+			userValet.setSurnames(userForm.getSurnames());
+			userValet.setLogin(userForm.getLogin());
+			userValet.setPassword(hashPwd);
+			
+			UserValet user = userService.saveUserValet(userValet);
+			
+			responseNode.set("data", objectMapper.valueToTree(user));
+		}
+		
+		return objectMapper.writeValueAsString(responseNode);
+		
 	}
 
 	/**
-	 * Method that maps the save user web request to the controller and saves it
-	 * in the persistence.
+	 * Validates the user form data and populates the provided JSON object with error messages if any fields are invalid.
+	 * Checks NIF format and uniqueness, as well as length and format constraints for name, surnames, and email.
 	 *
-	 * @param userForm Object that represents the backing user form.
-	 * @param bindingResult  Object that represents the form validation result.
-	 * @return  {@link DataTablesOutput<UserValet>}
+	 * @param userForm the form containing user input data
+	 * @param json the JSON object to store validation error messages
+	 * @param userService the service used to query existing users
+	 * @param searchLogin flag indicating whether to check for duplicate Login values
+	 * @param validatePass flag indicating whether to check password
 	 */
-	@RequestMapping(value = "/saveuseredit", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@JsonView(DataTablesOutput.View.class)
-	public @ResponseBody DataTablesOutput<UserValet> saveEdit(@Validated(OrderedValidation.class) @RequestBody UserFormEdit userForm, BindingResult bindingResult) {
-		DataTablesOutput<UserValet> dtOutput = new DataTablesOutput<>();
-		UserValet userValet = null;
-		List<UserValet> listNewUser = new ArrayList<UserValet>();
-		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
-		if (bindingResult.hasErrors()) {
-			listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false).collect(Collectors.toList());
-			JSONObject json = new JSONObject();
-			for (FieldError o: bindingResult.getFieldErrors()) {
-				json.put(o.getField() + "_span", o.getDefaultMessage());
-			}
-			dtOutput.setError(json.toString());
-		} else {
-			try {
-				if (userForm.getIdUserValetEdit() != null) {
-					userValet = userService.getUserValetById(userForm.getIdUserValetEdit());
-				} else {
-					userValet = new UserValet();
-				}
-				userValet.setLogin(userForm.getLoginEdit());
-				userValet.setAttemptsNumber(NumberConstants.NUM0);
-				userValet.setEmail(userForm.getEmailEdit());
-				userValet.setIsBlocked(Boolean.FALSE);
-				userValet.setLastAccess(null);
-				userValet.setLastIpAccess(null);
-				userValet.setName(userForm.getNameEdit());
-				userValet.setSurnames(userForm.getSurnamesEdit());
-
-				UserValet user = userService.saveUserValet(userValet);
-
-				listNewUser.add(user);
-			} catch (Exception e) {
-				listNewUser = StreamSupport.stream(userService.getAllUserValet().spliterator(), false).collect(Collectors.toList());
-				throw e;
-			}
+	private void validateUser(UserForm userForm, JSONObject json, IUserValetService userService, boolean searchLogin, boolean validatePass) {
+		if (UtilsStringChar.isNullOrEmpty(userForm.getName()) || !(userForm.getName().length() >= NumberConstants.NUM3 && userForm.getName().length() <= NumberConstants.NUM15)) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.URC_001);
+			LOGGER.error(msgError);
+			json.put(FIELD_NAME + "_span", msgError);
+		} 
+		if (UtilsStringChar.isNullOrEmpty(userForm.getSurnames()) || !(userForm.getSurnames().length() >= NumberConstants.NUM3 &&  userForm.getSurnames().length() <= NumberConstants.NUM30)) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.URC_002);
+			LOGGER.error(msgError);
+			json.put(FIELD_SURNAMES + "_span", msgError);
 		}
-
-		dtOutput.setData(listNewUser);
-
-		return dtOutput;
-
+		if (UtilsStringChar.isNullOrEmpty(userForm.getLogin())) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.URC_003);
+			LOGGER.error(msgError);
+			json.put(FIELD_LOGIN + "_span", msgError);
+		} else if(searchLogin && null != userService.getUserValetByLogin(userForm.getLogin())) { 
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.URC_007);
+			LOGGER.error(msgError);
+			json.put(FIELD_LOGIN + "_span", msgError);
+		}
+		if (validatePass && (UtilsStringChar.isNullOrEmpty(userForm.getPassword()) || !(userForm.getPassword().length() >= NumberConstants.NUM8 &&  userForm.getPassword().length() <= NumberConstants.NUM30))) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.URC_004);
+			LOGGER.error(msgError);
+			json.put(FIELD_PASSWORD_ADD + "_span", msgError);
+		}
+		if (validatePass && (UtilsStringChar.isNullOrEmpty(userForm.getConfirmPassword()) || !userForm.getPassword().equals(userForm.getConfirmPassword()))) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.URC_005);
+			LOGGER.error(msgError);
+			json.put(FIELD_CONFIRM_PASSWORD_ADD + "_span", msgError);
+		}
+		if (UtilsStringChar.isNullOrEmpty(userForm.getEmail()) || !isValidEmail(userForm.getEmail())) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.URC_006);
+			LOGGER.error(msgError);
+			json.put(FIELD_EMAIL + "_span", msgError);
+		}
 	}
 
 	/**
@@ -233,40 +281,84 @@ public class UserRestController {
 	 * @return String result
 	 */
 	@RequestMapping(value = "/saveuserpassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String savePassword(@Validated(OrderedValidation.class) @RequestBody UserFormPassword userFormPassword, BindingResult bindingResult) {
+	public String savePassword(@RequestBody UserFormPassword userFormPassword) {
 		String result = UtilsStringChar.EMPTY_STRING;
+		JSONObject json = new JSONObject();
+		boolean error = Boolean.FALSE;
+		
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		UserValet userValet = userService.getUserValetById(userFormPassword.getIdUserValetPass());
-
-		if (bindingResult.hasErrors()) {
-			JSONObject json = new JSONObject();
-			for (FieldError o: bindingResult.getFieldErrors()) {
-				json.put(o.getField() + "_span", o.getDefaultMessage());
-			}
-			result = json.toString();
-		} else {
-			String oldPwd = userFormPassword.getOldPassword();
+		
+		validatePassword(userFormPassword, json, userValet);
+		
+		
+		if (json.length() > 0) {
+			error = Boolean.TRUE;
+		}
+		
+		if (!error) {
 			String pwd = userFormPassword.getPassword();
-
 			BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
 			String hashPwd = bc.encode(pwd);
-
-			try {
-				if (bc.matches(oldPwd, userValet.getPassword())) {
-					userValet.setPassword(hashPwd);
-					userService.saveUserValet(userValet);
-					result = "0";
-				} else {
-					// no coincide la contraseña introducida, con la contraseña
-					// actual del usuario.
-					result = "-1";
-				}
-			} catch (Exception e) {
-				result = "-2";
-				throw e;
-			}
+			userValet.setPassword(hashPwd);
+			
+			userService.saveUserValet(userValet);
+			
+			result = "0";
+		} else {
+			result = json.toString();
 		}
-
+		
 		return result;
 	}
+	
+	/**
+	 * Validates the password change form fields.
+	 *
+	 * <p>This method performs the following checks:
+	 * <ul>
+	 *   <li>Verifies that the old password is not empty and matches the user's current encoded password.</li>
+	 *   <li>Ensures the new password is not empty and has a valid length (between 8 and 30 characters).</li>
+	 *   <li>Confirms that the confirmation password matches the new password.</li>
+	 * </ul>
+	 * Any validation errors are logged and added to the provided JSON object.
+	 *
+	 * @param userFormPassword the form object containing old, new, and confirmation passwords
+	 * @param json the JSON object to store validation error messages
+	 * @param userValet the user entity containing the current encoded password
+	 */
+	private void validatePassword(UserFormPassword userFormPassword, JSONObject json, UserValet userValet) {
+		
+		BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+		
+		if (UtilsStringChar.isNullOrEmpty(userFormPassword.getOldPassword()) || !bc.matches(userFormPassword.getOldPassword(), userValet.getPassword())) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.URC_008);
+			LOGGER.error(msgError);
+			json.put(FIELD_OLD_PASSWORD + "_span", msgError);
+		}
+		if (UtilsStringChar.isNullOrEmpty(userFormPassword.getPassword()) || !(userFormPassword.getPassword().length() >= NumberConstants.NUM8 &&  userFormPassword.getPassword().length() <= NumberConstants.NUM30)) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.URC_004);
+			LOGGER.error(msgError);
+			json.put(FIELD_PASSWORD + "_span", msgError);
+		}
+		if (UtilsStringChar.isNullOrEmpty(userFormPassword.getConfirmPassword()) || !userFormPassword.getPassword().equals(userFormPassword.getConfirmPassword())) {
+			String msgError = Language.getResWebGeneral(IWebGeneralMessages.URC_005);
+			LOGGER.error(msgError);
+			json.put(FIELD_CONFIRM_PASSWORD + "_span", msgError);
+		}
+		
+	}
+
+	/**
+	 * Validates the format of an email address using a predefined regular expression pattern.
+	 *
+	 * @param email the email address to validate
+	 * @return {@code true} if the email format is valid; {@code false} otherwise
+	 */
+	public static boolean isValidEmail(String email) {
+		if (email == null)
+			return false;
+		return EMAIL_PATTERN.matcher(email).matches();
+	}
+
 }

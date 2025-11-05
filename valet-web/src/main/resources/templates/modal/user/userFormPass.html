@@ -19,20 +19,20 @@
 					</div>
 					<div class="form-group">
 						<label for="oldPassword" class="col-form-label" th:text="#{form.user.oldPassword}"></label>
+						<input type="password" id="oldPassword" th:field="*{oldPassword}" class="form-control" />
 						<span id="oldPassword_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateField(this, messageName);" type="password" id="oldPassword" th:field="*{oldPassword}" class="form-control" />
 					</div>
 					
 					<div class="form-group">
 						<label for="password" class="col-form-label" th:text="#{form.user.password}"></label>
-						<span id="password_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
 						<input type="password" id="password" th:field="*{password}" class="form-control" />
+						<span id="password_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
 					</div>
 					
 					<div class="form-group">
 						<label for="confirmPassword" class="col-form-label" th:text="#{form.user.confirmPassword}"></label>
+						<input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" />
 						<span id="confirmPassword_span" class="badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill"></span>
-						<input onblur="validateConfirmPassword();" type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" />
 					</div>
 				</form>
 
@@ -46,60 +46,32 @@
 </div>
 
 <script th:inline="javascript">
-	function validateConfirmPassword(){
-	
-	var pass = $('#passwordAdd').val();
-    var repass = $('#confirmPasswordAdd').val();
-	var messageConfirmPassword = /*[[#{form.user.confirmPassword.pattern}]]*/ 'default';
-	
-	if(($('#passwordAdd').val().length == 0) || ($('#confirmPasswordAdd').val().length == 0)){
-		 $("#confirmPasswordAdd_span").text(messageConfirmPassword);
-		$("#confirmPasswordAdd_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-    }
-    else if (pass != repass) {
-    	$("#confirmPasswordAdd_span").text(messageConfirmPassword);
-		$("#confirmPasswordAdd_span").addClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-    }
-    else {
-    	$("#confirmPasswordAdd_span").text('');
-		$("#confirmPasswordAdd_span").removeClass("badge bgc-red-50 c-red-700 p-10 lh-0 badge-pill");
-    }
-	
-}
 	
 	//función para modificar contraseña
 	$( "#passwordBtn" ).click(function( event ) {
-	  event.preventDefault();
+		event.preventDefault();
 		
-	  var formData = JSON.stringify($("#userFormPassword").serializeJSON());
-	  var url = /*[[@{/saveuserpassword}]]*/;
+	  	var formData = JSON.stringify($("#userFormPassword").serializeJSON());
+	  	var url = /*[[@{/saveuserpassword}]]*/;
 	  
-	  loading();
+	  	cleanSpan();
+	  	
+	  	loading();
 	  
-	  $.ajax({
-		  type: "POST",
-		  url: url,
-		  data: formData,
-		  success: function(data){
-			hide();
+	  	$.ajax({
+			type: "POST",
+		  	url: url,
+		  	data: formData,
+		  	dataType: "json",
+		  	contentType : "application/json",
+		  	success: function(data){
 			
-			switch(data){
-			case 0:
-				$('#errorModalUser').remove();
-				$('#modalPassword').modal('hide');
-				break;
-			case -1:
-				  var msgError =  /*[[#{form.user.password.old}]]*/;
-				$('#errorModalUser').remove();
-				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
-				break;
-			case -2:
-				  var msgError =  /*[[#{form.user.error}]]*/;
-				$('#errorModalUser').remove();
-				$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
-				break;
-			default:
-				if (data != null){
+			  	hide();
+				
+				if(data =="0") {
+					$('#errorModalUser').remove();
+					$('#modalPassword').modal('hide');
+				} else {
 					jQuery.each(data, function(i, val) {
 						$('#userFormPassword *').filter('span').each(function(){
 							if (i == $(this).attr('id')){
@@ -108,15 +80,18 @@
 						});
 					});
 				}
-			}
-		  },
-		  error:function(){
-			  hide();
-			  var msgError =  /*[[#{form.user.error}]]*/;
-			  $('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
-		  },
-		  dataType: "json",
-		  contentType : "application/json"
+		  	},
+		  	error:function(){
+				hide();
+			  	var msgError =  /*[[#{form.user.error}]]*/;
+			  	$('#userFormPassword').append('<div id="errorModalUser" class="alert alert-danger" role="alert"><strong>'+msgError+'</strong></div>');
+		  	},
 		});
 	});
+	
+	function cleanSpan(){
+		$('#modalPassword *').filter('span.badge').each(function(){
+			$(this).text("");				
+		});
+	}
 </script>

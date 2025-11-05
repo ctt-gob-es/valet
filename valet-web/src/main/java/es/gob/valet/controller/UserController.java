@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>15/06/2018.</p>
  * @author Gobierno de España.
- * @version 1.2, 26/12/2018.
+ * @version 1.4, 05/11/2025.
  */
 package es.gob.valet.controller;
 
@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.gob.valet.form.UserForm;
-import es.gob.valet.form.UserFormEdit;
 import es.gob.valet.form.UserFormPassword;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.model.entity.UserValet;
@@ -40,7 +39,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.IUserValetService;
 /**
  * <p>Class that manages the requests related to the Users administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.2, 26/12/2018.
+ * @version 1.4, 05/11/2025.
  */
 @Controller
 public class UserController {
@@ -56,8 +55,6 @@ public class UserController {
 	 */
 	@RequestMapping(value = "useradmin")
 	public String index(Model model) {
-		model.addAttribute("userFormPassword", new UserFormPassword());
-		model.addAttribute("userformEdit", new UserFormEdit());
 		return "fragments/useradmin.html";
 	}
 
@@ -72,7 +69,7 @@ public class UserController {
 	@RequestMapping(value = "adduser", method = RequestMethod.POST)
 	public String addUser(Model model) {
 		model.addAttribute("userform", new UserForm());
-		model.addAttribute("accion", "add");
+		model.addAttribute("add", true);
 		return "modal/user/userForm";
 	}
 
@@ -83,8 +80,8 @@ public class UserController {
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
-	@RequestMapping(value = "menupass")
-	public String menuPass(@RequestParam("login") String login, Model model) {
+	@RequestMapping(value = "changepassview")
+	public String changePassView(@RequestParam("login") String login, Model model) {
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
 		UserValet userValet = userService.getUserValetByLogin(login);
 		UserFormPassword userFormPassword = new UserFormPassword();
@@ -99,24 +96,36 @@ public class UserController {
 	/**
 	 * Method that maps the editing of user data to the controller and sets the backing form.
 	 *
-	 * @param username User whose information will be modified.
+	 * @param nif User whose information will be modified.
 	 * @param model Holder object for model attributes.
 	 * @return String that represents the name of the view to forward.
 	 */
-	@RequestMapping(value = "menuedit")
-	public String menuEdit(@RequestParam("username") String username, Model model) {
+	@RequestMapping(value = "editUser", method = RequestMethod.POST)
+	public String menuEdit(@RequestParam("login") String login, Model model) {
 		IUserValetService userService = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getUserValetService();
-		UserValet userValet = userService.getUserValetByLogin(username);
-		UserFormEdit userFormEdit = new UserFormEdit();
+		UserValet userValet = userService.getUserValetByLogin(login);
+		UserForm userForm = new UserForm();
 
-		userFormEdit.setIdUserValetEdit(userValet.getIdUserValet());
-		userFormEdit.setNameEdit(userValet.getName());
-		userFormEdit.setSurnamesEdit(userValet.getSurnames());
-		userFormEdit.setEmailEdit(userValet.getEmail());
-		userFormEdit.setLoginEdit(userValet.getLogin());
+		userForm.setIdUserValet(userValet.getIdUserValet());
+		userForm.setName(userValet.getName());
+		userForm.setSurnames(userValet.getSurnames());
+		userForm.setEmail(userValet.getEmail());
+		userForm.setLogin(userValet.getLogin());
 
-		model.addAttribute("userformEdit", userFormEdit);
-		return "modal/user/userFormEdit.html";
+		model.addAttribute("userform", userForm);
+		model.addAttribute("add", false);
+		return "modal/user/userForm";
 	}
 
+	/**
+	 * Handles POST requests to load the user deletion view.
+	 * 
+	 * @param model the model used to pass attributes to the view
+	 * @return the name of the user deletion modal view
+	 */
+	@RequestMapping(value = "deleteuserview", method = RequestMethod.POST)
+	public String deleteuserview(Model model) {
+		return "modal/user/deleteUser";
+	}
+	
 }
