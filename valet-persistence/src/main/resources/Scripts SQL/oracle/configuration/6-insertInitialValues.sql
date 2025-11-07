@@ -152,4 +152,8 @@ Insert into PROXY
  Values
    (1, 1, '', NULL, '', '', '', '', 'N');
 
+   
+-- TABLA VALET_CACHE_VERSION
+ Insert into VALET_CACHE_VERSION (ID_VALET_CACHE_VERSION, VERSION_NUMBER, LAST_UPDATED) Values (1, 0, SYSTIMESTAMP);
+   
 COMMIT;

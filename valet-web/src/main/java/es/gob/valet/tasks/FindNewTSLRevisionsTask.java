@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.3, 31/10/2025.
+ * @version 2.4, 07/11/2025.
  */
 package es.gob.valet.tasks;
 
@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.apache.http.HttpHeaders;
@@ -67,6 +68,7 @@ import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.task.Task;
 import es.gob.valet.service.ifaces.IConfTslRegService;
 import es.gob.valet.service.ifaces.ITslPendValService;
+import es.gob.valet.service.impl.ValetCacheVersionService;
 import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.exceptions.TSLArgumentException;
@@ -82,7 +84,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.3, 31/10/2025.
+ * @version 2.4, 07/11/2025.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
@@ -205,6 +207,7 @@ public class FindNewTSLRevisionsTask extends Task {
 		// Obtenemos el modo de registro y los filtros
 		int idModeReg = confTslRegDTO.getIdModeReg();
 		int idTypeFilterReg = confTslRegDTO.getIdTypeFilterReg();
+		AtomicInteger numTslUpdated = new AtomicInteger(0);
 		
 		List<TslData> listTslData = iTslDataService.obtainAllTslDataWithTslLotlData();
 		if(listTslData.size() > NumberConstants.NUM0) {
@@ -227,10 +230,10 @@ public class FindNewTSLRevisionsTask extends Task {
 					// Comprobamos si la versión de la lista de listas descargada es superior a la que ya tenemos en BD
 					if(iTSLObjectLotlDownload.getSchemeInformation().getTslSequenceNumber() > tslDataLotlBD.getSequenceNumber()) {
 						LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_015, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName()}));
-						updatesTSLforLoggingMode(idModeReg, tslDataLotlBD, url, fullTSLxml, iTSLObjectLotlDownload, true);
+						updatesTSLforLoggingMode(idModeReg, tslDataLotlBD, url, fullTSLxml, iTSLObjectLotlDownload, true, numTslUpdated);
 					}
 					// Actualizaremos las TSLs de nuestro sistema con las TSLs descargadas a partir de la lista de listas
-					this.updatedTSLCurrentVersionWithTSLLocationFromLotl(iTSLObjectLotlDownload, idTypeFilterReg, idModeReg);
+					this.updatedTSLCurrentVersionWithTSLLocationFromLotl(iTSLObjectLotlDownload, idTypeFilterReg, idModeReg, numTslUpdated);
 				} catch (CertificateEncodingException | TSLManagingException e) {
 					// Si se produce algun fallo en la actualizacion de BD imprimimos el fallo
 					LOGGER.error(e);
@@ -246,6 +249,11 @@ public class FindNewTSLRevisionsTask extends Task {
 					String messageError = Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_027, new Object[ ] { url });
 					LOGGER.error(messageError, e);
 				}
+			}
+			
+			// Si se ha actualizado alguna TSL según su modo de registro cambiamos la version de la cache
+			if(numTslUpdated.get() > NumberConstants.NUM0) {
+				ApplicationContextProvider.getApplicationContext().getBean(ValetCacheVersionService.class).updateCacheVersion();
 			}
 			
 			// Si se han establecido TSLs pendientes de validar, avisaremos enviando una alarma
@@ -270,8 +278,9 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @param iTSLObjectLotlDownload The LOTL object containing TSL pointers to process.
 	 * @param idTypeFilterReg The registration filter type (e.g., whether to register all TSLs).
 	 * @param idModeReg The registration mode to apply for updates.
+	 * @param numTslUpdated An {@link AtomicInteger} used to track the number of TSLs successfully updated during this operation.
 	 */
-	private void updatedTSLCurrentVersionWithTSLLocationFromLotl(ITSLObject iTSLObjectLotlDownload, int idTypeFilterReg, int idModeReg) {
+	private void updatedTSLCurrentVersionWithTSLLocationFromLotl(ITSLObject iTSLObjectLotlDownload, int idTypeFilterReg, int idModeReg, AtomicInteger numTslUpdated) {
 		LOGGER.info(Language.getResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_016));
 		// Recorremos los TSLPointer
 		for (TSLPointer tSLPointer: iTSLObjectLotlDownload.getSchemeInformation().getPointersToOtherTSL()) {
@@ -293,10 +302,10 @@ public class FindNewTSLRevisionsTask extends Task {
 					} else {
 						// Comprobamos si se registran todas las TSLs
 	    				if (idTypeFilterReg == NumberConstants.NUM1) {
-	    					treatmentUpdateAllTsls(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload);
+	    					treatmentUpdateAllTsls(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload, numTslUpdated);
 	    				// Comprobamos si solo tratamos TSLs registradas en el sistema
 	    				} else if (idTypeFilterReg == NumberConstants.NUM2) {
-	    					treatmentUpdateTslRegisteredInSystem(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload);
+	    					treatmentUpdateTslRegisteredInSystem(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload, numTslUpdated);
 	    				}
 					}
 				} catch (CertificateEncodingException | TSLManagingException e) {
@@ -325,6 +334,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @param tslLocation Location (URL) of the TSL.
 	 * @param fullTSLxml Raw byte content of the TSL file.
 	 * @param iTSLObjectTslDownload Parsed TSL object from the downloaded file.
+	 * @param numTslUpdated An {@link AtomicInteger} used to track the number of TSLs successfully updated during this operation.
 	 * @throws TSLManagingException If a TSL management error occurs.
 	 * @throws CommonUtilsException If a utility-related error occurs.
 	 * @throws CertificateEncodingException If certificate encoding fails.
@@ -333,7 +343,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @throws TSLMalformedException If the TSL structure is malformed.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	private void treatmentUpdateTslRegisteredInSystem(int idModeReg, String schemeTerritory, String tslLocation, byte[ ] fullTSLxml, ITSLObject iTSLObjectTslDownload) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
+	private void treatmentUpdateTslRegisteredInSystem(int idModeReg, String schemeTerritory, String tslLocation, byte[ ] fullTSLxml, ITSLObject iTSLObjectTslDownload, AtomicInteger numTslUpdated) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
 		// si existe la TSL para el país que estamos tratando evaluaremos si existe una versión nueva.
 		if (iTslCountryRegionService.existsTslForThisCountry(schemeTerritory)) {
 			// Obtenemos la TSL de este pais a partir BD
@@ -342,7 +352,7 @@ public class FindNewTSLRevisionsTask extends Task {
 			// Comprobamos si la versión de la TSL descargada es superior a la que ya tenemos en BD
 			if (iTSLObjectTslDownload.getSchemeInformation().getTslSequenceNumber() > tslDataBD.getSequenceNumber()) {
 				LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_017, new Object[ ] { tslCountryRegion.getCountryRegionName()}));
-				updatesTSLforLoggingMode(idModeReg, tslDataBD, tslLocation, fullTSLxml, iTSLObjectTslDownload, false);
+				updatesTSLforLoggingMode(idModeReg, tslDataBD, tslLocation, fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
 			}
 		}
 	}
@@ -356,6 +366,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @param tslLocation Location (URL) of the TSL.
 	 * @param fullTSLxml Raw byte content of the TSL file.
 	 * @param iTSLObjectTslDownload Parsed TSL object from the downloaded file.
+	 * @param numTslUpdated An {@link AtomicInteger} used to track the number of TSLs successfully updated during this operation.
 	 * @throws TSLManagingException If a TSL management error occurs.
 	 * @throws CommonUtilsException If a utility-related error occurs.
 	 * @throws CertificateEncodingException If certificate encoding fails.
@@ -364,7 +375,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @throws TSLMalformedException If the TSL structure is malformed.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	private void treatmentUpdateAllTsls(int idModeReg, String schemeTerritory, String tslLocation, byte[ ] fullTSLxml, ITSLObject iTSLObjectTslDownload) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
+	private void treatmentUpdateAllTsls(int idModeReg, String schemeTerritory, String tslLocation, byte[ ] fullTSLxml, ITSLObject iTSLObjectTslDownload, AtomicInteger numTslUpdated) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
 		// si existe la TSL para el país que estamos tratando evaluaremos si existe una versión nueva.
 		if (iTslCountryRegionService.existsTslForThisCountry(schemeTerritory)) {
 			// Obtenemos la TSL de este pais a partir BD
@@ -373,12 +384,12 @@ public class FindNewTSLRevisionsTask extends Task {
 			// Comprobamos si la versión de la TSL descargada es superior a la que ya tenemos en BD
 			if (iTSLObjectTslDownload.getSchemeInformation().getTslSequenceNumber() > tslDataBD.getSequenceNumber()) {
 				LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_017, new Object[ ] { tslCountryRegion.getCountryRegionName()}));
-				updatesTSLforLoggingMode(idModeReg, tslDataBD, tslLocation, fullTSLxml, iTSLObjectTslDownload, false);
+				updatesTSLforLoggingMode(idModeReg, tslDataBD, tslLocation, fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
 			}
 		} else {
 			// si no existe el pais
 			LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_023, new Object[ ] { UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory)}));
-			updatesTSLforLoggingMode(idModeReg, null, tslLocation, fullTSLxml, iTSLObjectTslDownload, false);
+			updatesTSLforLoggingMode(idModeReg, null, tslLocation, fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
 		}
 	}
 	
@@ -404,6 +415,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @param fullTSLxml The downloaded TSL content in raw XML byte format.
 	 * @param iTSLObjectLotlDownload The parsed TSL object from the downloaded data.
 	 * @param lotl Boolean indicating whether the TSL is a LOTL (List of Trusted Lists). If {@code true}, it's handled as a LOTL.
+	 * @param numTslUpdated An {@link AtomicInteger} used to track the number of TSLs successfully updated during this operation.
 	 * @throws TSLManagingException If the update operation fails at the management layer.
 	 * @throws CommonUtilsException If a utility error occurs (e.g., file or I/O).
 	 * @throws CertificateEncodingException If there's a problem encoding or comparing certificates.
@@ -412,13 +424,15 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @throws TSLMalformedException If the TSL structure is malformed.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	private void updatesTSLforLoggingMode(int idModeReg, TslData tslDataLotlBD, String url, byte[ ] fullTSLxml, ITSLObject iTSLObjectLotlDownload, Boolean lotl) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
+	private void updatesTSLforLoggingMode(int idModeReg, TslData tslDataLotlBD, String url, byte[ ] fullTSLxml, ITSLObject iTSLObjectLotlDownload, Boolean lotl, AtomicInteger numTslUpdated) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
 		if(idModeReg == NumberConstants.NUM1) {
 			if(!this.isNewTslData(tslDataLotlBD)) {
 				TSLManager.getInstance().updateTSLData(tslDataLotlBD, fullTSLxml, url, tslDataLotlBD.getLegibleDocument());
 			} else {
 				TSLManager.getInstance().addNewTSLData(iTSLObjectLotlDownload, url, fullTSLxml, lotl);
 			}
+			
+			numTslUpdated.incrementAndGet();
 			
 			// Dado que siempre registramos TSLs, si ya existe para este pais alguna pendiente de validar la eliminaremos
 			String country = UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(iTSLObjectLotlDownload.getSchemeInformation().getSchemeTerritory());
@@ -432,7 +446,10 @@ public class FindNewTSLRevisionsTask extends Task {
 				X509Certificate x509CertSignFromTslBD = this.obtainTSLObject(tslDataLotlBD.getXmlDocument()).getSignTsl().get();
 				// Si es el mismo firmante actualizamos las TSLs
 				if(Arrays.equals(x509CertSignFromTslDownload.getEncoded(), x509CertSignFromTslBD.getEncoded())) {
+					
 					TSLManager.getInstance().updateTSLData(tslDataLotlBD, fullTSLxml, url, tslDataLotlBD.getLegibleDocument());
+					numTslUpdated.incrementAndGet();
+					
 				} else {
 					// Si no es el mismo firmante lo añadimos a las TSLs pendientes de registrar
 					insertNewTslPendVal(fullTSLxml, iTSLObjectLotlDownload);
