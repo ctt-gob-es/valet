@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 29.05/2025.
+ * @version 1.3, 07/11/2025.
  */
 package es.gob.valet.tasks;
 
@@ -39,7 +39,7 @@ import es.gob.valet.utils.UtilsCache;
 /**
  * <p>Class that represents a task to reload the cache.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 29.05/2025.
+ * @version 1.3, 07/11/2025.
  */
 public class ReloadCacheTask extends Task {
 
@@ -48,6 +48,17 @@ public class ReloadCacheTask extends Task {
 	 */
 	private static final Logger LOGGER = LogManager.getLogger(ReloadCacheTask.class);
 
+	/**
+	 * Stores in-memory the last processed cache version across all task executions.
+	 * <p>
+	 * Declared as {@code static} to ensure the value is shared among all instances of
+	 * {@link ReloadCacheTask} and persists during the application's lifetime.
+	 * <p>
+	 * Used to determine whether the cache needs to be reloaded by comparing with
+	 * the current Valet cache version.
+	 */
+	private static AtomicInteger localVersionNumber = new AtomicInteger(0);
+	
 	/**
 	 * {@inheritDoc}
 	 * @see es.gob.valet.quartz.task.Task#initialMessage()
@@ -65,7 +76,16 @@ public class ReloadCacheTask extends Task {
 	protected void doActionOfTheTask() throws Exception {
 
 		try {
-			UtilsCache.reloadConfigurationLocalCache(true);
+			// Obtenemos la versión de la cache de valet
+			Integer versionValet = ApplicationContextProvider.getApplicationContext().getBean(ValetCacheVersionService.class).obtainValetCacheVersion();
+			// Solo actualizamos la cache de servicios, cuando la versión de las TSL en valet administración haya cambiado
+			if(versionValet > localVersionNumber.get()) {
+				LOGGER.info(Language.getFormatResRestTasks(IRestTasksMessages.RELOAD_CACHE_003, new Object[ ] { versionValet }));
+				UtilsCache.reloadConfigurationLocalCache(true);
+				localVersionNumber.set(versionValet);
+			} else {
+				LOGGER.info(Language.getResRestTasks(IRestTasksMessages.RELOAD_CACHE_004));
+			}
 		} catch (ConfigurationCacheException e) {
 			// Se produjo un error durante la recarga de la caché.
 			LOGGER.error(Language.getFormatResRestTasks(IRestTasksMessages.RELOAD_CACHE_002), e);
