@@ -25,6 +25,7 @@
 package es.gob.valet.tasks;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +35,8 @@ import es.gob.valet.i18n.messages.IRestTasksMessages;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
 import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.task.Task;
+import es.gob.valet.service.impl.ValetCacheVersionService;
+import es.gob.valet.spring.config.ApplicationContextProvider;
 import es.gob.valet.utils.UtilsCache;
 
 /**
