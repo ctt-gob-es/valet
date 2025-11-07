@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.5, 28/10/2025.
+ * @version 1.6, 07/11/2025.
  */
 package es.gob.valet.importsls;
 
@@ -64,7 +64,6 @@ import es.gob.valet.i18n.Language;
 import es.gob.valet.i18n.messages.CommonsUtilGeneralMessages;
 import es.gob.valet.i18n.messages.WebGeneralMessages;
 import es.gob.valet.persistence.configuration.cache.engine.ConfigurationCacheFacade;
-import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLDataCacheObject;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.exceptions.TSLCacheException;
 import es.gob.valet.persistence.configuration.model.dto.MappingByServSummary;
 import es.gob.valet.persistence.configuration.model.dto.MappingByTslSummary;
@@ -96,6 +95,7 @@ import es.gob.valet.persistence.exceptions.ImportException;
 import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.scheduler.TasksScheduler;
 import es.gob.valet.quartz.scheduler.ValetSchedulerException;
+import es.gob.valet.service.ifaces.IValetCacheVersionService;
 import es.gob.valet.service.impl.ExportService;
 import es.gob.valet.tasks.FindNewTslRevisionsTaskConstants;
 import es.gob.valet.tasks.TasksManager;
@@ -107,7 +107,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>interface that contains all the methods necessary to carry out the import of TSLs.</p>
  * <b>Project:</b><p>Class that contains all the methods necessary to carry out the import of TSLs.</p>
- * @version 1.5, 28/10/2025.
+ * @version 1.6, 07/11/2025.
  */
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -365,6 +365,15 @@ public class ImporTslService implements IImporTslService {
 	 */
 	@Autowired
 	private ExportService exportService;
+	
+	/**
+	 * Injects the IValetCacheVersionService dependency.
+	 * <p>
+	 * This service handles operations related to valet cache versions.
+	 */
+	@Autowired
+	private IValetCacheVersionService iValetCacheVersionService;
+ 
 	
 	/**
 	 * 
@@ -682,6 +691,11 @@ public class ImporTslService implements IImporTslService {
 			// Calculamos el progreso
 			getAllProgress()[NumberConstants.NUM1] = (processedTslData * 100) / totalTslData;
 		}
+		
+		if(!lisTslDataSummary.isEmpty()) {
+			iValetCacheVersionService.updateCacheVersion();
+		}
+		
 	}
 
 	/**

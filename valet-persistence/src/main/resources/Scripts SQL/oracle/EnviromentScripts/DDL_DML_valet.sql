@@ -166,6 +166,19 @@ COMMENT ON COLUMN "VALET_SERVER"."APPLICATION" IS 'Identificador de la aplicaciï
 COMMENT ON COLUMN "VALET_SERVER"."VERSION" IS 'Versiï¿½n de valET: 1 si es v1.1, 2 si es v1.2 o superior.';
 COMMENT ON COLUMN "VALET_SERVER"."CONNECTION_TIMEOUT" IS 'Tiempo de espera para la conexiï¿½n.';
 
+-- Table VALET_CACHE_VERSION
+CREATE TABLE "VALET_CACHE_VERSION" (
+	"ID_VALET_CACHE_VERSION" NUMBER(19,0) NOT NULL,
+	"VERSION_NUMBER" NUMBER(8,0) NOT NULL,
+	"LAST_UPDATED" Timestamp NOT NULL
+) INITRANS 1 MAXTRANS 255 NOCACHE;
+
+ALTER TABLE "VALET_CACHE_VERSION" ADD CONSTRAINT "PK_VALET_CACHE_VERSION" PRIMARY KEY ("ID_VALET_CACHE_VERSION");
+
+COMMENT ON TABLE "VALET_CACHE_VERSION" IS 'Tabla que almacena la version actual de la cache.';
+COMMENT ON COLUMN "VALET_CACHE_VERSION"."ID_VALET_CACHE_VERSION" IS 'Identificador unico de la version actual de la cache.';
+COMMENT ON COLUMN "VALET_CACHE_VERSION"."VERSION_NUMBER" IS 'Numero de la version actual de la cache.';
+COMMENT ON COLUMN "VALET_CACHE_VERSION"."LAST_UPDATED" IS 'Hora de la ultima actualizacion de la version de la cache.';
 
 -- ######################################################## 2. CREACIÃ“N DE SEQUENCIAS ########################################################
 ALTER SESSION SET CURRENT_SCHEMA="VALET_CONFIGOWNER";

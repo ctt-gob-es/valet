@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 2.8, 03/10/2025.
+ * @version 2.9, 07/11/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -89,6 +89,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.persistence.configuration.services.impl.TslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.impl.TslDataService;
 import es.gob.valet.service.ifaces.ISigningCertService;
+import es.gob.valet.service.ifaces.IValetCacheVersionService;
 import es.gob.valet.service.impl.SigningCertService;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.certValidation.impl.ts119612.v020101.TSLValidator;
@@ -102,7 +103,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.8, 03/10/2025.
+ * @version 2.9, 07/11/2025.
  */
 @RestController
 public class TslRestController {
@@ -214,6 +215,14 @@ public class TslRestController {
 	 */
 	@Autowired
 	private TslDataService tslDataService;
+	
+	/**
+	 * Injects the IValetCacheVersionService dependency.
+	 * <p>
+	 * This service handles operations related to valet cache versions.
+	 */
+	@Autowired
+	private IValetCacheVersionService iValetCacheVersionService;
 	
 	@RequestMapping(path = "/lotldatatable", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -357,6 +366,9 @@ public class TslRestController {
 	    				
 	        TslData tslNew = TSLManager.getInstance().addNewTSLData(tslObject, urlTsl, tslXMLbytes, lotl);
 
+	        // Actualizamos la version de la cache despues de guardar la TSL en BD
+	        iValetCacheVersionService.updateCacheVersion();
+	        
 	        TslDataDTO tslDataDTO = new TslDataDTO(tslNew);
 	        tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getIssueDate()));
 	        tslDataDTO.setExpirationDate(null != tslNew.getExpirationDate() ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getExpirationDate()) : "");
@@ -452,6 +464,8 @@ public class TslRestController {
 		try {
 			TslData tslData = tslDataService.getTslDataById(idTSL, false, false);
 			TslData tslDataUpdated = TSLManager.getInstance().updateTSLData(tslData, tslXMLbytes, urlTsl, legibleDocumentArrayByte);
+			// Actualizamos la version de la cache despues de guardar la TSL en BD
+	        iValetCacheVersionService.updateCacheVersion();
 			TslDataDTO tslDataDTO = new TslDataDTO(tslDataUpdated);
 		    	tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getIssueDate()));
 		    	tslDataDTO.setExpirationDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getExpirationDate()));
@@ -927,6 +941,8 @@ public class TslRestController {
 		String index = indexParam;
 		try {
 			TSLManager.getInstance().removeTSLData(null, idTslData);
+			// Actualizamos la version de la cache despues de eliminar la TSL en BD
+			iValetCacheVersionService.updateCacheVersion();
 		} catch (TSLManagingException e) {
 			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
 			index = "-1";
