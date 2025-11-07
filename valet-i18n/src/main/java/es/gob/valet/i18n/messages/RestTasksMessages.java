@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>04/12/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 07/11/2025.
  */
 package es.gob.valet.i18n.messages;
 
@@ -29,7 +29,7 @@ package es.gob.valet.i18n.messages;
  * <p>Class that defines all the token constants for the messages
  * in the rest module of valET: tasks.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 07/11/2025.
  */
 public class RestTasksMessages {
 
@@ -50,5 +50,17 @@ public class RestTasksMessages {
 	 * file messages/valet-rest/general_xx_YY.properties.
 	 */
 	public static final String RELOAD_CACHE_002 = "RELOAD_CACHE_002";
+
+	/**
+	 * Constant attribute that represents the key of the property <code>RELOAD_CACHE_003</code> belonging to the
+	 * file messages/valet-rest/general_xx_YY.properties.
+	 */
+	public static final String RELOAD_CACHE_003 = "RELOAD_CACHE_003";
+
+	/**
+	 * Constant attribute that represents the key of the property <code>RELOAD_CACHE_004</code> belonging to the
+	 * file messages/valet-rest/general_xx_YY.properties.
+	 */
+	public static final String RELOAD_CACHE_004 = "RELOAD_CACHE_004";
 
 }

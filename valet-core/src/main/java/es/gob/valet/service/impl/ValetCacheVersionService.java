@@ -20,7 +20,7 @@
   * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>07/11/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 07/11/2025.
+ * @version 1.1, 07/11/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -63,4 +63,15 @@ public class ValetCacheVersionService implements IValetCacheVersionService {
     	valetCacheVersionRepository.save(valetCacheVersion);
 	}
 
+	/**
+	 * Returns the current Valet cache version from the repository.
+	 *
+	 * @return the version number as an Integer
+	 */
+	public Integer obtainValetCacheVersion() {
+	    ValetCacheVersion valetCacheVersion = valetCacheVersionRepository.findByIdValetCacheVersion(NumberConstants.NUM1_LONG);
+	    return valetCacheVersion.getVersionNumber();
+	}
+
+	
 }
