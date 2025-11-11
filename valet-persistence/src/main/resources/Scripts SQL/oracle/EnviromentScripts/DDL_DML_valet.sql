@@ -180,6 +180,25 @@ COMMENT ON COLUMN "VALET_CACHE_VERSION"."ID_VALET_CACHE_VERSION" IS 'Identificad
 COMMENT ON COLUMN "VALET_CACHE_VERSION"."VERSION_NUMBER" IS 'Numero de la version actual de la cache.';
 COMMENT ON COLUMN "VALET_CACHE_VERSION"."LAST_UPDATED" IS 'Hora de la ultima actualizacion de la version de la cache.';
 
+--Se añade el campo NIF a la tabla USER_VALET
+ALTER TABLE USER_VALET
+ADD NIF VARCHAR2(150) DEFAULT '12345678Z' NOT NULL;
+
+-- Eliminar restricción columna LOGIN
+ALTER TABLE "USER_VALET" 
+DROP CONSTRAINT "USER_UNIQUE_LOGIN";
+
+-- Eliminar las columnas LOGIN y PASSWORD
+ALTER TABLE "USER_VALET" 
+DROP COLUMN "LOGIN";
+
+ALTER TABLE "USER_VALET" 
+DROP COLUMN "PASSWORD";
+
+-- Agregar la restricción única a la columna NIF
+ALTER TABLE "USER_VALET"
+ADD CONSTRAINT "USER_UNIQUE_NIF" UNIQUE ("NIF");
+
 -- ######################################################## 2. CREACIÓN DE SEQUENCIAS ########################################################
 ALTER SESSION SET CURRENT_SCHEMA="VALET_CONFIGOWNER";
 
@@ -323,21 +342,5 @@ Insert into C_TSL_IMPL
  Values
    (4, '119612', '2.3.1', 'http://uri.etsi.org/02231/v2#');   
 
---Se añade el campo NIF a la tabla USER_VALET
-ALTER TABLE USER_VALET
-ADD NIF VARCHAR2(150) DEFAULT '12345678Z' NOT NULL;
-
--- Eliminar restricción columna LOGIN
-ALTER TABLE "USER_VALET" 
-DROP CONSTRAINT "USER_UNIQUE_LOGIN";
-
--- Eliminar las columnas LOGIN y PASSWORD
-ALTER TABLE "USER_VALET" 
-DROP COLUMN "LOGIN";
-
-ALTER TABLE "USER_VALET" 
-DROP COLUMN "PASSWORD";
-
--- Agregar la restricción única a la columna NIF
-ALTER TABLE "USER_VALET"
-ADD CONSTRAINT "USER_UNIQUE_NIF" UNIQUE ("NIF");
+-- TABLA VALET_CACHE_VERSION
+Insert into VALET_CACHE_VERSION (ID_VALET_CACHE_VERSION, VERSION_NUMBER, LAST_UPDATED) Values (1, 0, SYSTIMESTAMP);

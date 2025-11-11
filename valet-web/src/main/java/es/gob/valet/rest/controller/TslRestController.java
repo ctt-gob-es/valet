@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 2.9, 07/11/2025.
+ * @version 3.0, 11/11/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -103,7 +103,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.9, 07/11/2025.
+ * @version 3.0, 11/11/2025.
  */
 @RestController
 public class TslRestController {
@@ -766,6 +766,9 @@ public class TslRestController {
 				listTslCountryRegionMapping.add(mapping);
 				dtOutput.setData(listTslCountryRegionMapping);
 
+				// Actualizamos la version de la cache despues de guardar un mapping de TSL en BD
+		        iValetCacheVersionService.updateCacheVersion();
+		        
 			} else {
 				List<MappingDTO> listMappingOld = getListMappingDTOByCountryRegion(codeCountryRegion);
 				listTslCountryRegionMapping = StreamSupport.stream(listMappingOld.spliterator(), false).collect(Collectors.toList());
@@ -892,6 +895,9 @@ public class TslRestController {
 				// se actualiza la lista de mapeo
 				listTslCountryRegionMapping = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
 				dtOutput.setData(listTslCountryRegionMapping);
+				
+				// Actualizamos la version de la cache despues de editar un mapping de TSL en BD
+		        iValetCacheVersionService.updateCacheVersion();
 
 			} else {
 				List<MappingDTO> listTslCountryRegionMappingOld = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
@@ -923,6 +929,9 @@ public class TslRestController {
 
 		try {
 			TSLManager.getInstance().removeTSLCountryRegionMapping(codeCountryRegion, idTslCountryRegionMapping);
+			
+			// Actualizamos la version de la cache despues de eliminar un mapping de TSL en BD
+	        iValetCacheVersionService.updateCacheVersion();
 		} catch (Exception e) {
 			index = "-1";
 		}

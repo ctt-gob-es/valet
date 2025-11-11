@@ -96,7 +96,7 @@ import es.gob.valet.utils.GeneralConstantsValetWeb;
 /**
  * <p>Class that manages the REST request related to the Mapping Certificate TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.0, 19/09/2023.
+ * @version 2.0, 11/11/2025.
  */
 @RestController
 @RequestMapping(value = "/mappingCertTslRest")
@@ -124,6 +124,14 @@ public class MappingCertTslRestController {
 	 */
 	@Autowired
 	private Environment env;
+	
+	/**
+	 * Injects the IValetCacheVersionService dependency.
+	 * <p>
+	 * This service handles operations related to valet cache versions.
+	 */
+	@Autowired
+	private IValetCacheVersionService iValetCacheVersionService;
 	
 	/**
 	 * Attribute that represents the identifier of the html input file certificate tsl id.
@@ -446,6 +454,9 @@ public class MappingCertTslRestController {
 			} else {
 				Map<String, List<TslMappingDTO>> mapTslMappingDTO = tslInformationTree.getMapTslMappingTree();
 				iMappingCertTslService.addMappingLogicField(mapTslMappingDTO, mappingTslDTO, tspServiceNameSelectTree, tspNameSelectTree, countrySelectTree);
+				
+				// Actualizamos la version de la cache despues de añadir un mapping de TSL al servicio en BD
+		        iValetCacheVersionService.updateCacheVersion();
 			}
 		} catch (ParseException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -504,6 +515,9 @@ public class MappingCertTslRestController {
 				res = objectMapper.writeValueAsString(mErrors);
 			} else {
 				iMappingCertTslService.mergeMappingLogicField(mappingTslDTO);
+				
+				// Actualizamos la version de la cache despues de editar un mapping de TSL al servicio en BD
+		        iValetCacheVersionService.updateCacheVersion();
 			}
 		} catch (JsonProcessingException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -521,6 +535,8 @@ public class MappingCertTslRestController {
 	@PostMapping(value = "/deleteMappingLogicalField")
 	private void deleteMappingLogicalField(@RequestParam("idTslMappingDelete") Long idTslMappingDelete) {
 		iMappingCertTslService.deleteMappingLogicalField(idTslMappingDelete);
+		// Actualizamos la version de la cache despues de eliminar un mapping de TSL al servicio en BD
+        iValetCacheVersionService.updateCacheVersion();
 	}
 	
 	/**
