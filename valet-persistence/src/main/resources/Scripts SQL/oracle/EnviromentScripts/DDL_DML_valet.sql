@@ -249,3 +249,5 @@ Insert into C_TSL_IMPL
  Values
    (4, '119612', '2.3.1', 'http://uri.etsi.org/02231/v2#');   
 
+-- TABLA VALET_CACHE_VERSION
+ Insert into VALET_CACHE_VERSION (ID_VALET_CACHE_VERSION, VERSION_NUMBER, LAST_UPDATED) Values (1, 0, SYSTIMESTAMP);
