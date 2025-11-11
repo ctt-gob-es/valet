@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/06/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/06/2025.
+ * @version 1.1, 11/11/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -36,11 +36,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.gob.valet.persistence.configuration.model.dto.TslPendValDTO;
 import es.gob.valet.service.ifaces.ITslPendValService;
+import es.gob.valet.service.ifaces.IValetCacheVersionService;
 
 /**
  * <p>Class that manages the REST request related to the TSL Pending Validation administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 29.05/2025.
+ * @version 1.1, 11/11/2025.
  */
 @RestController
 public class TslPendValRestController {
@@ -51,6 +52,14 @@ public class TslPendValRestController {
 	@Autowired
 	private ITslPendValService iTslPendValService;
 
+	/**
+	 * Injects the IValetCacheVersionService dependency.
+	 * <p>
+	 * This service handles operations related to valet cache versions.
+	 */
+	@Autowired
+	private IValetCacheVersionService iValetCacheVersionService;
+	
 	/**
 	 * Returns a JSON list of all pending TSL validation DTOs for the datatable.
 	 * 
@@ -71,6 +80,8 @@ public class TslPendValRestController {
 	@RequestMapping(path = "/confirmtslpendval", method = RequestMethod.POST)
 	public void confirmTslPendVal(@RequestParam("idTslPendVal") Long idTslPendVal) {
 	    iTslPendValService.confirmTslPendVal(idTslPendVal);
+	    // Actualizamos la version de la cache despues de añadir/actualizar la TSL en BD
+        iValetCacheVersionService.updateCacheVersion();
 	}
 
 	/**
