@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 03/10/2025.
  */
 package es.gob.valet.utils;
 
@@ -29,7 +29,7 @@ package es.gob.valet.utils;
  * <p>Class that contains the tokens of the differents specifications and versions
  * of the TSL.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 03/10/2025.
  */
 public class TSLSpecificationsVersions {
 
@@ -48,6 +48,11 @@ public class TSLSpecificationsVersions {
 	 * Constant attribute that represents the version identifier 2.1.1.
 	 */
 	public static final String VERSION_020101 = "2.1.1";
+
+	/**
+	 * Constant attribute that represents the version identifier 2.3.1.
+	 */
+	public static final String VERSION_020301 = "2.3.1";
 
 	/**
 	 * Constant attribute that represents the specfication ETSI TS 119612 2.1.1.

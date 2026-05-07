@@ -79,6 +79,10 @@ Insert into C_TSL_IMPL
    (ID_TSL_IMPL, SPECIFICATION, VERSION, NAMESPACE)
  Values
    (3, '119612', '2.1.1', 'http://uri.etsi.org/02231/v2#');
+Insert into C_TSL_IMPL
+   (ID_TSL_IMPL, SPECIFICATION, VERSION, NAMESPACE)
+ Values
+   (4, '119612', '2.3.1', 'http://uri.etsi.org/02231/v2#');   
 
 
 -- TABLA USER_VALET 
@@ -148,4 +152,8 @@ Insert into PROXY
  Values
    (1, 1, '', NULL, '', '', '', '', 'N');
 
+   
+-- TABLA VALET_CACHE_VERSION
+ Insert into VALET_CACHE_VERSION (ID_VALET_CACHE_VERSION, VERSION_NUMBER, LAST_UPDATED) Values (1, 0, SYSTIMESTAMP);
+   
 COMMIT;

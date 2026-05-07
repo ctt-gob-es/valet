@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 1.4, 10/07/2025.
+ * @version 1.6, 07/11/2025.
  */
 package es.gob.valet.importsls;
 
@@ -95,6 +95,7 @@ import es.gob.valet.persistence.exceptions.ImportException;
 import es.gob.valet.quartz.job.TaskValetException;
 import es.gob.valet.quartz.scheduler.TasksScheduler;
 import es.gob.valet.quartz.scheduler.ValetSchedulerException;
+import es.gob.valet.service.ifaces.IValetCacheVersionService;
 import es.gob.valet.service.impl.ExportService;
 import es.gob.valet.tasks.IFindNewTslRevisionsTaskConstants;
 import es.gob.valet.tasks.TasksManager;
@@ -106,7 +107,7 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 /**
  * <p>interface that contains all the methods necessary to carry out the import of TSLs.</p>
  * <b>Project:</b><p>Class that contains all the methods necessary to carry out the import of TSLs.</p>
- * @version 1.4, 10/07/2025.
+ * @version 1.6, 07/11/2025.
  */
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -358,6 +359,15 @@ public class ImporTslService implements IImporTslService {
 	 */
 	@Autowired
 	private ExportService exportService;
+	
+	/**
+	 * Injects the IValetCacheVersionService dependency.
+	 * <p>
+	 * This service handles operations related to valet cache versions.
+	 */
+	@Autowired
+	private IValetCacheVersionService iValetCacheVersionService;
+ 
 	
 	/**
 	 * 
@@ -673,6 +683,11 @@ public class ImporTslService implements IImporTslService {
 			// Calculamos el progreso
 			getAllProgress()[NumberConstants.NUM1] = (processedTslData * 100) / totalTslData;
 		}
+		
+		if(!lisTslDataSummary.isEmpty()) {
+			iValetCacheVersionService.updateCacheVersion();
+		}
+		
 	}
 
 	/**
@@ -708,7 +723,7 @@ public class ImporTslService implements IImporTslService {
 
 			tslCountryRegionRepository.save(tslCountryRegion);
 							
-			CTslImpl cTslImpl = cTslImplRepository.findAll().stream().filter(p -> p.getSpecification().equals(tslDataDTO.getcTslImplDTO().getSpecification())).findAny().orElse(null);
+			CTslImpl cTslImpl = cTslImplRepository.findAll().stream().filter(p -> p.getVersion().equals(tslDataDTO.getcTslImplDTO().getVersion())).findAny().orElse(null);
 
 			// Counstruimos el TslDataPojo y vamos insertando los datos.
 			TslData tslData = new TslData();
@@ -789,7 +804,7 @@ public class ImporTslService implements IImporTslService {
 			TslData tslData = tslCountryRegion.getTslData();
 			byte [] byteTsl = Base64.getDecoder().decode(tslDataDTO.getXmlDocument());
 			
-			CTslImpl cTslImpl = cTslImplRepository.findAll().stream().filter(p -> p.getSpecification().equals(tslDataDTO.getcTslImplDTO().getSpecification())).findAny().orElse(null);
+			CTslImpl cTslImpl = cTslImplRepository.findAll().stream().filter(p -> p.getVersion().equals(tslDataDTO.getcTslImplDTO().getVersion())).findAny().orElse(null);
 			tslData.setNewTSLAvailable(IFindNewTslRevisionsTaskConstants.NO_TSL_AVAILABLE);
 			tslData.setLastNewTSLAvailableFind(null);
 			tslData.setSequenceNumber(tslDataDTO.getSequenceNumber());

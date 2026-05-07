@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/06/2025.</p>
  * @author Gobierno de España.
- * @version 1.5, 21/07/2025.
+ * @version 1.6, 03/10/2025.
  */
 package es.gob.valet.service.impl;
 
@@ -71,7 +71,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
 /**
  * <p>Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
  * <b>Project:</b><p> Class that implements the communication with the operations of the persistence layer for Tsl pending validation.</p>
- * @version 1.5, 21/07/2025.
+ * @version 1.6, 03/10/2025.
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -113,7 +113,7 @@ public class TslPendValService implements ITslPendValService {
 		List<TslPendVal> lisTslPendVal = tslPendValRepository.findAll();
 		for (TslPendVal tslPendVal: lisTslPendVal) {
 			try (ByteArrayInputStream bais = new ByteArrayInputStream(tslPendVal.getXmlDocument())){
-				ITSLObject iTSLObject = new TSLObject(TSLSpecificationsVersions.SPECIFICATION_119612, TSLSpecificationsVersions.VERSION_020101);
+				ITSLObject iTSLObject = new TSLObject(TSLSpecificationsVersions.SPECIFICATION_119612);
 				iTSLObject.buildTSLFromXMLcheckValues(bais);
 				
 				// Obtenemos los datos del datatable
@@ -188,7 +188,7 @@ public class TslPendValService implements ITslPendValService {
 		TslPendVal tslPendVal = tslPendValRepository.findById(idTslPendVal).get();
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(tslPendVal.getXmlDocument())){
-			ITSLObject iTSLObject = new TSLObject(TSLSpecificationsVersions.SPECIFICATION_119612, TSLSpecificationsVersions.VERSION_020101);
+			ITSLObject iTSLObject = new TSLObject(TSLSpecificationsVersions.SPECIFICATION_119612);
 			iTSLObject.buildTSLFromXMLcheckValues(bais);
 			
 			// Obtenemos los datos del datatable

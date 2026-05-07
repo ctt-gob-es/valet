@@ -467,4 +467,18 @@ COMMENT ON COLUMN "TSL_PEND_VAL"."ID_TSL_PEND_VAL" IS 'Identificador de la tabla
 COMMENT ON COLUMN "TSL_PEND_VAL"."XML_DOCUMENT" IS 'Representación en bytes del documento XML que define a la TSL.';
 COMMENT ON COLUMN "TSL_PEND_VAL"."COUNTRY" IS 'País al que pertenece la TSL pendiente de validar.';
 
+-- Table VALET_CACHE_VERSION
+CREATE TABLE "VALET_CACHE_VERSION" (
+	"ID_VALET_CACHE_VERSION" NUMBER(19,0) NOT NULL,
+	"VERSION_NUMBER" NUMBER(8,0) NOT NULL,
+	"LAST_UPDATED" Timestamp NOT NULL
+) INITRANS 1 MAXTRANS 255 NOCACHE;
+
+ALTER TABLE "VALET_CACHE_VERSION" ADD CONSTRAINT "PK_VALET_CACHE_VERSION" PRIMARY KEY ("ID_VALET_CACHE_VERSION");
+
+COMMENT ON TABLE "VALET_CACHE_VERSION" IS 'Tabla que almacena la version actual de la cache.';
+COMMENT ON COLUMN "VALET_CACHE_VERSION"."ID_VALET_CACHE_VERSION" IS 'Identificador unico de la version actual de la cache.';
+COMMENT ON COLUMN "VALET_CACHE_VERSION"."VERSION_NUMBER" IS 'Numero de la version actual de la cache.';
+COMMENT ON COLUMN "VALET_CACHE_VERSION"."LAST_UPDATED" IS 'Hora de la ultima actualizacion de la version de la cache.';
+
 COMMIT;

@@ -20,11 +20,12 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 2.6, 10/07/2025.
+ * @version 2.8, 07/10/2025.
  */
 package es.gob.valet.tsl.access;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -57,6 +58,7 @@ import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
+import es.gob.valet.i18n.messages.ICommonsUtilGeneralMessages;
 import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.common.exceptions.ConfigurationCacheException;
@@ -100,7 +102,7 @@ import es.gob.valet.tsl.parsing.impl.common.TrustServiceProvider;
 /**
  * <p>Class that reprensents the TSL Manager for all the differents operations.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.6, 10/07/2025.
+ * @version 2.8, 07/10/2025.
  */
 public final class TSLManager {
 
@@ -1133,7 +1135,7 @@ public final class TSLManager {
 	 * @throws TSLMalformedException In case of the TSL is malformed (is not valid).
 	 * @throws TSLParsingException In case of some error parsing the TSL.
 	 */
-	private ITSLObject buildAndCheckTSL(TslData td) throws TSLArgumentException, TSLParsingException, TSLMalformedException {
+	public ITSLObject buildAndCheckTSL(TslData td) throws TSLArgumentException, TSLParsingException, TSLMalformedException {
 
 		ITSLObject result = null;
 
@@ -1144,22 +1146,16 @@ public final class TSLManager {
 			if (td.getXmlDocument() != null) {
 
 				// Generamos el objeto resultante.
-				result = new TSLObject(td.getTslImpl().getSpecification(), td.getTslImpl().getVersion());
-
-				ByteArrayInputStream bais = null;
-				try {
-
-					// Creamos un InputStream del array de bytes.
-					bais = new ByteArrayInputStream(td.getXmlDocument());
+				result = new TSLObject(td.getTslImpl().getSpecification());
+				
+				// Creamos un InputStream del array de bytes.
+				try (ByteArrayInputStream bais = new ByteArrayInputStream(td.getXmlDocument())){
 
 					// Finalmente contruimos la TSL y la chequeamos.
 					result.buildTSLFromXMLcheckValuesCache(bais);
 
-				} finally {
-
-					// Aunque falle, cerramos el InputStream.
-					UtilsResources.safeCloseInputStream(bais);
-
+				} catch (IOException e) {
+					LOGGER.error(Language.getFormatResCommonsUtilGeneral(ICommonsUtilGeneralMessages.UTILS_RESOURCES_CODE_000, new Object[ ] { "ByteArrayInputStream" }), e);
 				}
 
 			}
@@ -1748,7 +1744,7 @@ public final class TSLManager {
 							ByteArrayInputStream bais = new ByteArrayInputStream(tslData.getXmlDocument());
 							ITSLObject tslObject = null;
 							try {
-								tslObject = new TSLObject(tslData.getTslImpl().getSpecification(), tslData.getTslImpl().getVersion());
+								tslObject = new TSLObject(tslData.getTslImpl().getSpecification());
 								tslObject.buildTSLFromXMLcheckValues(bais);
 							} finally {
 								UtilsResources.safeCloseInputStream(bais);
@@ -1805,7 +1801,7 @@ public final class TSLManager {
 						ByteArrayInputStream bais = new ByteArrayInputStream(tslData.getXmlDocument());
 						ITSLObject tslObject = null;
 						try {
-							tslObject = new TSLObject(tslData.getTslImpl().getSpecification(), tslData.getTslImpl().getVersion());
+							tslObject = new TSLObject(tslData.getTslImpl().getSpecification());
 							tslObject.buildTSLFromXMLcheckValues(bais);
 						} finally {
 							UtilsResources.safeCloseInputStream(bais);
@@ -1997,7 +1993,7 @@ public final class TSLManager {
 	public ITSLObject obtainTslAndCertFromSign(String urlTsl, String tslSpecification, String tslSpecificationVersion, byte[ ] tslXMLbytes) throws TSLManagingException {
 
 		// Comprobamos que los parámetros de entrada sean válidos.
-		if (!UtilsStringChar.isNullOrEmptyTrim(tslSpecification) && !UtilsStringChar.isNullOrEmptyTrim(tslSpecificationVersion) && tslXMLbytes != null) {
+		if (!UtilsStringChar.isNullOrEmptyTrim(tslSpecification) && tslXMLbytes != null) {
 
 			// Contruimos el InputStream asociado al array, y tratamos de
 			// parsearlo y añadirlo.
@@ -2005,7 +2001,7 @@ public final class TSLManager {
 			ITSLObject tslObject = null;
 			// try {
 			try {
-				tslObject = new TSLObject(tslSpecification, tslSpecificationVersion);
+				tslObject = new TSLObject(tslSpecification);
 
 				tslObject.buildTSLFromXMLcheckValues(bais);
 			} catch (TSLMalformedException e) {
@@ -2069,9 +2065,10 @@ public final class TSLManager {
 			// Recuperamos el país/región.
 			TslCountryRegion tcrp = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionService().getTslCountryRegionById(tcrco.getCountryRegionId(), false);
 			
-			// Dado que el pais aun no existe crearemos el objeto desde 0
-			if(tcrp == null) {
-				tcrp = new TslCountryRegion();
+			// Dado que el pais solo existe en la caché, lo crearemos desde 0
+			if(tcrco != null && tcrp == null) {
+				addNewTSLCountryRegionInDataBase(tcrco.getCode());
+				tcrco = ConfigurationCacheFacade.tslGetTSLCountryRegionCacheObject(tcrco.getCode());
 			}
 			
 			// Recuperamos la constante que representa la especificación y versión asociada a la TSL.
@@ -2383,7 +2380,7 @@ public final class TSLManager {
 				ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslCountryRegionMappingService().deleteTslCountryRegionMappingByCountry(idCountryRegion);
 
 				// Lo eliminamos el mapeo la caché compartida.
-				ConfigurationCacheFacade.tslRemoveMappingFromCountryRegion(crc, null);
+				ConfigurationCacheFacade.tslRemoveMappingFromCountryRegion(crc, null);			
 				
 				// Se elimina el país de la caché compartida
 				ConfigurationCacheFacade.tslRemoveTSLCountryRegion(crc);
@@ -2566,6 +2563,10 @@ public final class TSLManager {
 				// Se actualiza la TSL en la base de datos.
 				td = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getTslDataService().saveTSL(td);
 
+				// Actualizamos la version
+				CTslImpl cTslImpl = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService().getAllCTSLImpl().stream().filter( p -> tslObject.getSpecificationVersion().equals(p.getVersion())).findAny().orElse(null);
+				td.setTslImpl(cTslImpl);
+				
 				// Lo actualizamos en la caché con el nuevo pojo.
 				ConfigurationCacheFacade.tslAddUpdateTSLData(td, tslObject);
 
@@ -2693,7 +2694,7 @@ public final class TSLManager {
 	 * @param tslObject TSL object representation to use.
 	 * @return List of certificates.
 	 */
-	private List<X509Certificate> getListCertificatesTSL(ITSLObject tslObject) {
+	public List<X509Certificate> getListCertificatesTSL(ITSLObject tslObject) {
 
 		List<X509Certificate> result = new ArrayList<X509Certificate>();
 		// Recuperamos la lista de TSP y vamos analizando uno a uno.

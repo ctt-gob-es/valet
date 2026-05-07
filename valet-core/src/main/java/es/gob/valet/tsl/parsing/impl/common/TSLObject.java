@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.6, 29.05/2025.
+ * @version 1.7, 23/10/2025.
  */
 package es.gob.valet.tsl.parsing.impl.common;
 
@@ -36,6 +36,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3.x2000.x09.xmldsig.SignatureType;
 
+import es.gob.valet.commons.utils.NumberConstants;
 import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.exceptions.IValetException;
 import es.gob.valet.i18n.Language;
@@ -49,12 +50,13 @@ import es.gob.valet.tsl.parsing.ifaces.ITSLElementsAndAttributes;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.TSLBuilderFactory;
 import es.gob.valet.tsl.parsing.impl.TSLCheckerFactory;
+import es.gob.valet.utils.TSLSpecificationsVersions;
 
 /**
  * <p>Class that represents a TSL object with the principal functions
  * (access information) regardless it implementation.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.6, 29.05/2025.
+ * @version 1.7, 23/10/2025.
  */
 public class TSLObject implements ITSLObject {
 
@@ -95,12 +97,12 @@ public class TSLObject implements ITSLObject {
 	/**
 	 * Attribute that represents a list with all the Trust Services Providers associated to this TSL.
 	 */
-	private List<TrustServiceProvider> trustServiceProviderList = null;
+	private transient List<TrustServiceProvider> trustServiceProviderList = null;
 
 	/**
 	 * Attribute that represents the signature of the TSL.
 	 */
-	private SignatureType signature = null;
+	private transient SignatureType signature = null;
 
 	/**
 	 * Attribute that represents the full TSL.
@@ -125,16 +127,14 @@ public class TSLObject implements ITSLObject {
 	/**
 	 * Constructor method for the class TSLObject.java.
 	 * @param tslSpecificationParam TSL ETSI specification for this TSL Object.
-	 * @param tslSpecificationVersionParam TSL ETSI specification version for this TSL Object.
 	 * @throws TSLArgumentException In case of some of the input parameters are empty or null strings.
 	 */
-	public TSLObject(String tslSpecificationParam, String tslSpecificationVersionParam) throws TSLArgumentException {
+	public TSLObject(String tslSpecificationParam) throws TSLArgumentException {
 		this();
-		if (UtilsStringChar.isNullOrEmptyTrim(tslSpecificationParam) || UtilsStringChar.isNullOrEmptyTrim(tslSpecificationVersionParam)) {
+		if (UtilsStringChar.isNullOrEmptyTrim(tslSpecificationParam)) {
 			throw new TSLArgumentException(IValetException.COD_187, Language.getResCoreTsl(ICoreTslMessages.LOGMTSL021));
 		}
 		tslSpecification = tslSpecificationParam;
-		tslSpecificationVersion = tslSpecificationVersionParam;
 	}
 
 	/**
@@ -343,6 +343,12 @@ public class TSLObject implements ITSLObject {
 			// Comprobamos que los valores establecidos son los correctos.
 			if(schemeInformation != null){
 				LOGGER.info(Language.getResCoreTsl(ICoreTslMessages.LOGMTSL347));
+				// Añadimos la versión de la especificacion
+				if(schemeInformation.getTslVersionIdentifier() == NumberConstants.NUM5) {
+					tslSpecificationVersion = TSLSpecificationsVersions.VERSION_020101;
+				} else if(schemeInformation.getTslVersionIdentifier() == NumberConstants.NUM6) {
+					tslSpecificationVersion = TSLSpecificationsVersions.VERSION_020301;
+				}
 				signTsl = new AtomicReference<X509Certificate>();
 				getTSLChecker().checkTSLValues(checkSignature, fullTSLxml, signTsl);
 			}

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/10/2018.</p>
  * @author Gobierno de España.
- * @version 1.8, 10/07/2025.
+ * @version 1.9, 08/10/2025.
  */
 package es.gob.valet.persistence.configuration.model.repository;
 
@@ -40,7 +40,7 @@ import es.gob.valet.persistence.configuration.model.entity.TslData;
 /**
  * <p>Interface that provides CRUD functionality for the TslData entity.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.8, 10/07/2025.
+ * @version 1.9, 08/10/2025.
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -90,7 +90,7 @@ public interface TslDataRepository extends JpaRepository<TslData, Long> {
 	 *
 	 * @return a list of {@link TslDataDTO} containing selected fields from TSL and country/region entities
 	 */
-	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslDataDTO(tsl.idTslData, countryRegion.idTslCountryRegion, countryRegion.countryRegionName, tsl.sequenceNumber,tsl.issueDate,tsl.expirationDate, countryRegion.countryRegionCode)  FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion LEFT JOIN tsl.tslLotlData tslLotlData WHERE tslLotlData IS NULL")
+	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslDataDTO(tsl.idTslData, countryRegion.idTslCountryRegion, countryRegion.countryRegionName, tsl.sequenceNumber,tsl.issueDate,tsl.expirationDate, countryRegion.countryRegionCode, tsl.tslImpl.version)  FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion LEFT JOIN tsl.tslLotlData tslLotlData WHERE tslLotlData IS NULL")
 	List<TslDataDTO> findAllTslDataDTO();
 
 	/**
@@ -99,7 +99,7 @@ public interface TslDataRepository extends JpaRepository<TslData, Long> {
 	 *
 	 * @return A list of {@link TslDataDTO} containing filtered TSL data and country region information.
 	 */
-	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslDataDTO(tsl.idTslData, countryRegion.idTslCountryRegion, countryRegion.countryRegionName, tsl.sequenceNumber,tsl.issueDate,tsl.expirationDate, countryRegion.countryRegionCode)  FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion JOIN tsl.tslLotlData tslLotlData")
+	@Query("SELECT new es.gob.valet.persistence.configuration.model.dto.TslDataDTO(tsl.idTslData, countryRegion.idTslCountryRegion, countryRegion.countryRegionName, tsl.sequenceNumber,tsl.issueDate,tsl.expirationDate, countryRegion.countryRegionCode, tsl.tslImpl.version)  FROM TslData tsl JOIN tsl.tslCountryRegion countryRegion JOIN tsl.tslLotlData tslLotlData")
 	List<TslDataDTO> findAllTslLotlDataDTO();
 
 	/**

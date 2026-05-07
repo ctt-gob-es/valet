@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 2.5, 26/06/2025.
+ * @version 3.0, 11/11/2025.
  */
 package es.gob.valet.rest.controller;
 
@@ -70,12 +70,9 @@ import es.gob.valet.commons.utils.UtilsStringChar;
 import es.gob.valet.dto.MappingDTO;
 import es.gob.valet.exceptions.CommonUtilsException;
 import es.gob.valet.exceptions.IValetException;
-import es.gob.valet.exceptions.ValetException;
-import es.gob.valet.exceptions.ValetExceptionConstants;
 import es.gob.valet.form.MappingTslForm;
 import es.gob.valet.form.TslForm;
 import es.gob.valet.i18n.Language;
-import es.gob.valet.i18n.messages.ICoreTslMessages;
 import es.gob.valet.i18n.messages.IWebGeneralMessages;
 import es.gob.valet.persistence.ManagerPersistenceServices;
 import es.gob.valet.persistence.configuration.cache.modules.tsl.elements.TSLCountryRegionCacheObject;
@@ -92,6 +89,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.persistence.configuration.services.impl.TslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.impl.TslDataService;
 import es.gob.valet.service.ifaces.ISigningCertService;
+import es.gob.valet.service.ifaces.IValetCacheVersionService;
 import es.gob.valet.service.impl.SigningCertService;
 import es.gob.valet.tsl.access.TSLManager;
 import es.gob.valet.tsl.certValidation.impl.ts119612.v020101.TSLValidator;
@@ -99,11 +97,12 @@ import es.gob.valet.tsl.exceptions.TSLMalformedException;
 import es.gob.valet.tsl.exceptions.TSLManagingException;
 import es.gob.valet.tsl.parsing.ifaces.ITSLObject;
 import es.gob.valet.tsl.parsing.impl.common.TSLObject;
+import es.gob.valet.utils.TSLSpecificationsVersions;
 
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.5, 26/06/2025.
+ * @version 3.0, 11/11/2025.
  */
 @RestController
 public class TslRestController {
@@ -152,16 +151,6 @@ public class TslRestController {
 	 * Constant that represents the parameter 'fileDocument'.
 	 */
 	private static final String FIELD_FILE_DOC = "fileDocument";
-
-	/**
-	 * Constant that represents the parameter 'specification'.
-	 */
-	private static final String FIELD_SPECIFICATION = "specification";
-
-	/**
-	 * Constant that represents the parameter 'version'.
-	 */
-	private static final String FIELD_VERSION = "version";
 
 	/**
 	 * Constant that represents the extension PDF.
@@ -226,6 +215,14 @@ public class TslRestController {
 	@Autowired
 	private TslDataService tslDataService;
 	
+	/**
+	 * Injects the IValetCacheVersionService dependency.
+	 * <p>
+	 * This service handles operations related to valet cache versions.
+	 */
+	@Autowired
+	private IValetCacheVersionService iValetCacheVersionService;
+	
 	@RequestMapping(path = "/lotldatatable", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public List<TslDataDTO> loadLotlDataTable() {
@@ -248,7 +245,7 @@ public class TslRestController {
 	    List<TslDataDTO> listTslDataDTO = tslDataService.obtainAllTslDTO();
 	    return listTslDataDTO;
 	}
-	
+
 	/**
 	 * Method that obtains the list of available versions for the indicated specification.
 	 * @param specification Specification selected in the form.
@@ -269,14 +266,12 @@ public class TslRestController {
 	/**
 	 * Method that obtain a new TSL.
 	 * @param implTslFile Parameter that represents the file with the implementation of the TSL.
-	 * @param specificationTsl  Parameter that represents the ETSI TS number specification for TSL.
 	 * @param urlTsl Parameter that represents the URI where this TSL is officially located.
-	 * @param versionTsl Parameter that represents the ETSI TS specification version.
 	 * @return {@link DataTablesOutput<TslData>}
 	 * @throws IOException If the method fails.
 	 */
 	@RequestMapping(value = "/obtaintsl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody SigningCertificateDTO obtainTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_SPECIFICATION) String specificationTsl, @RequestParam(FIELD_URL) String urlTsl, @RequestParam(FIELD_VERSION) String versionTsl, @RequestParam("lotl") Boolean lotl, Model model, HttpSession httpSession) throws IOException {
+	public @ResponseBody SigningCertificateDTO obtainTsl(@RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_URL) String urlTsl, @RequestParam("lotl") Boolean lotl, Model model, HttpSession httpSession) throws IOException {
 
 		boolean error = false;
 		byte[ ] fileBytes = null;
@@ -294,23 +289,26 @@ public class TslRestController {
 				fileBytes = implTslFile.getBytes();
 			}
 
-			if (specificationTsl == null || specificationTsl.equals(String.valueOf(-1))) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
-				json.put(FIELD_SPECIFICATION + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_SPECIFICATION));
-				error = true;
-			}
-
-			if (UtilsStringChar.isNullOrEmpty(versionTsl) || versionTsl.equals(String.valueOf(-1))) {
-				LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VERSION));
-				json.put(FIELD_VERSION + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_NOT_BLANK_VERSION));
-				error = true;
-			}
-
 			if (!error) {
 				
 				// Obtenemos la TSL
-				ITSLObject tslObject = TSLManager.getInstance().obtainTslAndCertFromSign(urlTsl, specificationTsl, versionTsl, fileBytes);
+				ITSLObject tslObject = TSLManager.getInstance().obtainTslAndCertFromSign(urlTsl, TSLSpecificationsVersions.SPECIFICATION_119612, null, fileBytes);
 
+				if(!tslObject.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101) && 
+						!tslObject.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
+					json.put(KEY_JS_ERROR_OBTAIN_TSL, Language.getResWebGeneral(IWebGeneralMessages.ERROR_VERSION_TSL_NOT_VALID));
+					signingCertificateDTO.setError(json.toString());
+					return signingCertificateDTO;
+				}
+				
+				if(urlTsl.isEmpty()) {
+					urlTsl = tslObject.getSchemeInformation().getDistributionPoints().stream()
+						    .map(Object::toString)
+						    .filter(uri -> !uri.endsWith(".pdf") && !uri.endsWith(".PDF"))
+						    .findFirst()
+						    .orElse(null);
+				}
+				
 				// Obtenemos los datos del certificado incluido en la firma
 				Map<String, String> mapSigningCert = iSigningCertService.getCertificateDetailsMap(tslObject.getSignTsl().get());
 				signingCertificateDTO = new SigningCertificateDTO((Long) null, mapSigningCert.get(SigningCertService.ISSUER), mapSigningCert.get(SigningCertService.SUBJECT), mapSigningCert.get(SigningCertService.SERIAL_NUMBER), mapSigningCert.get(SigningCertService.DATE_EXPIRED), mapSigningCert.get(SigningCertService.CERTIFICATE_B64));
@@ -367,9 +365,12 @@ public class TslRestController {
 	    				
 	        TslData tslNew = TSLManager.getInstance().addNewTSLData(tslObject, urlTsl, tslXMLbytes, lotl);
 
+	        // Actualizamos la version de la cache despues de guardar la TSL en BD
+	        iValetCacheVersionService.updateCacheVersion();
+	        
 	        TslDataDTO tslDataDTO = new TslDataDTO(tslNew);
 	        tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getIssueDate()));
-	        tslDataDTO.setExpirationDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getExpirationDate()));
+	        tslDataDTO.setExpirationDate(null != tslNew.getExpirationDate() ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getExpirationDate()) : "");
 
 	        responseNode.set("data", objectMapper.valueToTree(tslDataDTO));
 
@@ -462,9 +463,11 @@ public class TslRestController {
 		try {
 			TslData tslData = tslDataService.getTslDataById(idTSL, false, false);
 			TslData tslDataUpdated = TSLManager.getInstance().updateTSLData(tslData, tslXMLbytes, urlTsl, legibleDocumentArrayByte);
+			// Actualizamos la version de la cache despues de guardar la TSL en BD
+	        iValetCacheVersionService.updateCacheVersion();
 			TslDataDTO tslDataDTO = new TslDataDTO(tslDataUpdated);
-		    tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getIssueDate()));
-		    tslDataDTO.setExpirationDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getExpirationDate()));
+		    	tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getIssueDate()));
+		    	tslDataDTO.setExpirationDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getExpirationDate()));
 			responseNode.set("data", objectMapper.valueToTree(tslDataDTO));
 
 		} catch (Exception e) {
@@ -545,8 +548,8 @@ public class TslRestController {
 	@JsonView(TslForm.View.class)
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/updateimplfile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public TslForm updateImplFile(@RequestParam(FIELD_ID_TSL) Long idTSL, @RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile, @RequestParam(FIELD_SPECIFICATION) String specificationTsl, @RequestParam(FIELD_VERSION) String versionTsl) throws IOException {
-
+	public TslForm updateImplFile(@RequestParam(FIELD_ID_TSL) Long idTSL, @RequestParam(FIELD_IMPL_TSL_FILE) MultipartFile implTslFile) throws IOException {
+		
 		TslForm tslForm = new TslForm();
 		byte[ ] tslXMLbytes = null;
 		JSONObject json = new JSONObject();
@@ -565,8 +568,16 @@ public class TslRestController {
 			ByteArrayInputStream bais = new ByteArrayInputStream(tslXMLbytes);
 			ITSLObject tslObject = null;
 			try {
-				tslObject = new TSLObject(specificationTsl, versionTsl);
+				tslObject = new TSLObject(TSLSpecificationsVersions.SPECIFICATION_119612);
 				tslObject.buildTSLFromXMLcheckValues(bais);
+				
+				if(!tslObject.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101) && 
+						!tslObject.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
+					error = true;
+					LOGGER.error(Language.getResWebGeneral(IWebGeneralMessages.ERROR_VERSION_TSL_NOT_VALID));
+					json.put(FIELD_IMPL_TSL_FILE + "_span", Language.getResWebGeneral(IWebGeneralMessages.ERROR_VERSION_TSL_NOT_VALID));
+				}
+				
 				// se obtiene el código del país de la TSL que se está editando
 				String ccr = TSLManager.getInstance().getTSLCountryRegionByIdTslData(idTSL).getCode();
 				// se comprueba que sea del mismo país
@@ -754,6 +765,9 @@ public class TslRestController {
 				listTslCountryRegionMapping.add(mapping);
 				dtOutput.setData(listTslCountryRegionMapping);
 
+				// Actualizamos la version de la cache despues de guardar un mapping de TSL en BD
+		        iValetCacheVersionService.updateCacheVersion();
+		        
 			} else {
 				List<MappingDTO> listMappingOld = getListMappingDTOByCountryRegion(codeCountryRegion);
 				listTslCountryRegionMapping = StreamSupport.stream(listMappingOld.spliterator(), false).collect(Collectors.toList());
@@ -880,6 +894,9 @@ public class TslRestController {
 				// se actualiza la lista de mapeo
 				listTslCountryRegionMapping = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
 				dtOutput.setData(listTslCountryRegionMapping);
+				
+				// Actualizamos la version de la cache despues de editar un mapping de TSL en BD
+		        iValetCacheVersionService.updateCacheVersion();
 
 			} else {
 				List<MappingDTO> listTslCountryRegionMappingOld = getListMappingDTOByCountryRegion(mappingTslForm.getCodeCountryRegion());
@@ -911,6 +928,9 @@ public class TslRestController {
 
 		try {
 			TSLManager.getInstance().removeTSLCountryRegionMapping(codeCountryRegion, idTslCountryRegionMapping);
+			
+			// Actualizamos la version de la cache despues de eliminar un mapping de TSL en BD
+	        iValetCacheVersionService.updateCacheVersion();
 		} catch (Exception e) {
 			index = "-1";
 		}
@@ -929,6 +949,8 @@ public class TslRestController {
 		String index = indexParam;
 		try {
 			TSLManager.getInstance().removeTSLData(null, idTslData);
+			// Actualizamos la version de la cache despues de eliminar la TSL en BD
+			iValetCacheVersionService.updateCacheVersion();
 		} catch (TSLManagingException e) {
 			LOGGER.error(Language.getFormatResWebGeneral(IWebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));
 			index = "-1";

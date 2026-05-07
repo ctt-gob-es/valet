@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>19/03/2025.</p>
  * @author Gobierno de España.
- * @version 2.2, 21/05/2025.
+ * @version 2.3, 07/10/2025.
  */
 package es.gob.valet.service.ifaces;
 
@@ -42,7 +42,7 @@ import es.gob.valet.sign.cades.SignatureException;
  * <p>Interface that provides communication with the operations of the persistence layer
  * in relation of the ExportService.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.2, 21/05/2025.
+ * @version 2.3, 07/10/2025.
  */
 public interface IExportService {
 
@@ -51,11 +51,12 @@ public interface IExportService {
 	 * The hashes are added to the provided properties object.
 	 *
 	 * @param filesHashProperties the properties object to store file hashes
+	 * @param valetVersion the version identifier of the VALET or TSL data set being exported
 	 * @param tslDataFolder the folder where TSL JSON files will be saved
 	 * @throws IOException if there is an error writing the files
 	 * @throws NoSuchAlgorithmException if the SHA-256 algorithm is not available
 	 */
-	void exportTslData(Properties filesHashProperties, File externalAccessFolder) throws IOException, NoSuchAlgorithmException;
+	void exportTslData(Properties filesHashProperties, File externalAccessFolder, String valetVersion) throws IOException, NoSuchAlgorithmException;
 
 	/**
 	 * Exports TSL country-region mappings to JSON files and calculates SHA-256 hashes for each file.
@@ -63,10 +64,11 @@ public interface IExportService {
 	 *
 	 * @param filesHashProperties the properties object to store file hashes
 	 * @param tslCountryRegionMappingFolder the folder where TSL country-region mapping JSON files will be saved
+	 * @param valetVersion the version identifier of the VALET or TSL data set being exported
 	 * @throws IOException if there is an error writing the files
 	 * @throws NoSuchAlgorithmException if the SHA-256 algorithm is not available
 	 */
-	void exportMappingToTsls(Properties filesHashProperties, File tslCountryRegionMappingFolder) throws IOException, NoSuchAlgorithmException;
+	void exportMappingToTsls(Properties filesHashProperties, File tslCountryRegionMappingFolder, String valetVersion) throws IOException, NoSuchAlgorithmException;
 
 	/**
 	 * Exports certificate mappings to JSON files and calculates SHA-256 hashes for each file.
@@ -74,11 +76,12 @@ public interface IExportService {
 	 *
 	 * @param filesHashProperties the properties object to store file hashes
 	 * @param tslMappingFolder the folder where TSL certificate mapping JSON files will be saved
+	 * @param valetVersion the version identifier of the VALET or TSL data set being exported
 	 * @throws IOException if there is an error writing the files
 	 * @throws NoSuchAlgorithmException if the SHA-256 algorithm is not available
 	 * @throws CommonUtilsException if there is a general utility error
 	 */
-	void exportMappingToService(Properties filesHashProperties, File tslMappingFolder) throws CommonUtilsException, IOException, NoSuchAlgorithmException;
+	void exportMappingToService(Properties filesHashProperties, File tslMappingFolder, String valetVersion) throws CommonUtilsException, IOException, NoSuchAlgorithmException;
 
 	/**
 	 * Adds a `files_hash.properties` file with the hash of the created files to the META-INF folder.

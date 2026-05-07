@@ -116,6 +116,12 @@ public interface IWebGeneralMessages {
 	String ERROR_COUNTRY_INVALID = "errorCountryInvalid";
 
 	/**
+	 * Constant attribute that represents the name of the property <code>errorVersionTSLNotValid</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String ERROR_VERSION_TSL_NOT_VALID = "errorVersionTSLNotValid";
+
+	/**
 	 * Constant attribute that represents the name of the property <code>errorSaveTsl</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
@@ -424,7 +430,12 @@ public interface IWebGeneralMessages {
 	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG026</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
 	 */
-	String TASK_FIND_NEW_TSL_REV_LOG_026 = "task.findNewTslRev.LOG026";
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_026 = "task.findNewTslRev.LOG026";
+	/**
+	 * Constant attribute that represents the name of the property <code>task.findNewTslRev.LOG027</code> belonging to the
+	 * file messages/valet-web/general_xx_YY.properties.
+	 */
+	public static final String TASK_FIND_NEW_TSL_REV_LOG_027 = "task.findNewTslRev.LOG027";
 	/**
 	 * Constant attribute that represents the name of the property <code>errorUpdateTask</code> belonging to the
 	 * file messages/valet-web/general_xx_YY.properties.
