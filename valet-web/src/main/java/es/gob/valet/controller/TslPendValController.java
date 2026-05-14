@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>24/06/2025.</p>
  * @author Gobierno de España.
- * @version 1.0, 24/06/2025.
+ * @version 1.1, 11/05/2026.
  */
 package es.gob.valet.controller;
 
@@ -39,7 +39,7 @@ import es.gob.valet.service.ifaces.ITslPendValService;
 /**
  * <p> Class that manages the requests related to the TSL Pending Validation administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.0, 24/06/2025.
+ * @version 1.1, 11/05/2026.
  */
 @Controller
 public class TslPendValController {
@@ -71,7 +71,10 @@ public class TslPendValController {
 	@RequestMapping(value = "viewinfotsl", method = RequestMethod.POST)
 	public String viewInfoTsl(@RequestParam("idTslPendVal") Long idTslPendVal, Model model) {
 	    List<TslPendValDTO> listTslPendValDTO = iTslPendValService.obtainAllTslPendVal();
-	    TslPendValDTO tslPendValDTO = listTslPendValDTO.stream().filter(p -> p.getIdTslPendVal() == idTslPendVal).findAny().orElse(null);
+	    TslPendValDTO tslPendValDTO = listTslPendValDTO.stream()
+	            .filter(p -> p.getIdTslPendVal().equals(idTslPendVal))
+	            .findAny()
+	            .orElse(null);
 	    model.addAttribute("tslPendValDTO", tslPendValDTO);
 	    return "modal/tslPendVal/infoTslPendVal";
 	}
