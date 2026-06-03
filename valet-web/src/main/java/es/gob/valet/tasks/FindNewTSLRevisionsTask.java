@@ -377,22 +377,51 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @throws TSLMalformedException If the TSL structure is malformed.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	private void treatmentUpdateAllTsls(int idModeReg, String schemeTerritory, String tslLocation, byte[ ] fullTSLxml, ITSLObject iTSLObjectTslDownload, AtomicInteger numTslUpdated) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
-		// si existe la TSL para el país que estamos tratando evaluaremos si existe una versión nueva.
-		if (iTslCountryRegionService.existsTslForThisCountry(schemeTerritory)) {
-			// Obtenemos la TSL de este pais a partir BD
-			TslCountryRegion tslCountryRegion = iTslCountryRegionService.getTslCountryRegionWithTslData(schemeTerritory);
-			TslData tslDataBD = tslCountryRegion.getTslData();
-			// Comprobamos si la versión de la TSL descargada es superior a la que ya tenemos en BD
-			if (iTSLObjectTslDownload.getSchemeInformation().getTslSequenceNumber() > tslDataBD.getSequenceNumber()) {
-				LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_017, new Object[ ] { tslCountryRegion.getCountryRegionName()}));
-				updatesTSLforLoggingMode(idModeReg, tslDataBD, tslLocation, fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
-			}
-		} else {
-			// si no existe el pais
-			LOGGER.info(Language.getFormatResWebGeneral(IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_023, new Object[ ] { UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory)}));
-			updatesTSLforLoggingMode(idModeReg, null, tslLocation, fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
-		}
+	private void treatmentUpdateAllTsls(int idModeReg, String schemeTerritory,
+	        String tslLocation, byte[] fullTSLxml,
+	        ITSLObject iTSLObjectTslDownload,
+	        AtomicInteger numTslUpdated)
+	        throws TSLManagingException, CommonUtilsException,
+	        CertificateEncodingException, TSLArgumentException,
+	        TSLParsingException, TSLMalformedException, IOException {
+
+	    TslData tslDataBD = null;
+	    TslCountryRegion tslCountryRegion = null;
+
+	    // si existe la TSL para el país que estamos tratando evaluaremos si existe una versión nueva.
+	    if (iTslCountryRegionService.existsTslForThisCountry(schemeTerritory)) {
+
+	        // Obtenemos la TSL de este pais a partir BD
+	        tslCountryRegion = iTslCountryRegionService.getTslCountryRegionWithTslData(schemeTerritory);
+	        tslDataBD = tslCountryRegion.getTslData();
+	    }
+
+	    // si no existe el pais o no tiene una TSL asociada
+	    if (tslDataBD == null) {
+
+	        LOGGER.info(Language.getFormatResWebGeneral(
+	                IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_023,
+	                new Object[] {
+	                        UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory)
+	                }));
+
+	        updatesTSLforLoggingMode(idModeReg, null, tslLocation,
+	                fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
+
+	        return;
+	    }
+
+	    // Comprobamos si la versión de la TSL descargada es superior a la que ya tenemos en BD
+	    if (iTSLObjectTslDownload.getSchemeInformation().getTslSequenceNumber()
+	            > tslDataBD.getSequenceNumber()) {
+
+	        LOGGER.info(Language.getFormatResWebGeneral(
+	                IWebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_017,
+	                new Object[] { tslCountryRegion.getCountryRegionName() }));
+
+	        updatesTSLforLoggingMode(idModeReg, tslDataBD, tslLocation,
+	                fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
+	    }
 	}
 	
 	/**
