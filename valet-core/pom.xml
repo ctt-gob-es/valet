@@ -10,7 +10,7 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>valet-core</artifactId>
-	<version>${valet.version.core}</version>
+	<version>1.0.0_001</version>
 	<name>valet-core</name>
 	<description>valET core module.</description>
 	<packaging>jar</packaging>

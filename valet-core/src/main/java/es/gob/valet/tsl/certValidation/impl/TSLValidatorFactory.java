@@ -59,7 +59,9 @@ public final class TSLValidatorFactory {
 
 			if (ITSLSpecificationsVersions.SPECIFICATION_119612.equals(tslObject.getSpecification())) {
 
-				if (ITSLSpecificationsVersions.VERSION_020101.equals(tslObject.getSpecificationVersion())) {
+				  if (ITSLSpecificationsVersions.VERSION_020101.equals(tslObject.getSpecificationVersion())
+				            || ITSLSpecificationsVersions.VERSION_020301.equals(tslObject.getSpecificationVersion())
+				            || ITSLSpecificationsVersions.VERSION_020401.equals(tslObject.getSpecificationVersion())) {
 					result = new es.gob.valet.tsl.certValidation.impl.ts119612.v020101.TSLValidator(tslObject);
 				}
 

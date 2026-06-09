@@ -10,7 +10,7 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>valet-rest</artifactId>
-	<version>${valet.version.rest}</version>
+	<version>1.0.0_001</version>
 	<name>valet-rest</name>
 	<description>valET rest module.</description>
 	<packaging>war</packaging>

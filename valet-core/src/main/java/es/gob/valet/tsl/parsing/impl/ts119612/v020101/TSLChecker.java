@@ -21,7 +21,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>06/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.4, 21/08/2019.
+ * @version 1.5, 08/06/2026.
  */
 package es.gob.valet.tsl.parsing.impl.ts119612.v020101;
 
@@ -101,7 +101,7 @@ import es.gob.valet.tsl.parsing.impl.common.TSPInformation;
  * <p>Class that represents a TSL Data Checker of TSL implementation as the
  * ETSI TS 119612 2.1.1 specification.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.4, 21/08/2019.
+ * @version 1.5, 08/06/2026.
  */
 public class TSLChecker extends ATSLChecker {
 
@@ -165,7 +165,7 @@ public class TSLChecker extends ATSLChecker {
 	@Override
 	protected void checkSchemeInformationTSLVersionIdentifierValue() throws TSLMalformedException {
 
-		if (getTSLObject().getSchemeInformation().getTslVersionIdentifier() != NumberConstants.NUM5) {
+		if (getTSLObject().getSchemeInformation().getTslVersionIdentifier() != NumberConstants.NUM5 && getTSLObject().getSchemeInformation().getTslVersionIdentifier()!= NumberConstants.NUM6) {
 			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSL_VERSION_IDENTIFIER }));
 		}
 

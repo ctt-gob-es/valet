@@ -33,7 +33,7 @@
 		<valet.version.commons-util-i18n>1.0.0</valet.version.commons-util-i18n>
 		<valet.version.i18n>1.0.0</valet.version.i18n>
 		<valet.version.persistence>1.0.0</valet.version.persistence>
-		<valet.version.core>1.0.0</valet.version.core>
+		<valet.version.core>1.0.0_001</valet.version.core>
 		<valet.version.web>1.0.0</valet.version.web>
 		<valet.version.rest>1.0.0</valet.version.rest>
 		<valet.version.rest-client>1.0.0</valet.version.rest-client>
