@@ -165,11 +165,10 @@ public class TSLChecker extends ATSLChecker {
 	@Override
 	protected void checkSchemeInformationTSLVersionIdentifierValue() throws TSLMalformedException {
 
-		if (getTSLObject().getSchemeInformation().getTslVersionIdentifier() != NumberConstants.NUM5 && getTSLObject().getSchemeInformation().getTslVersionIdentifier()!= NumberConstants.NUM6) {
+		  
 			throw new TSLMalformedException(IValetException.COD_187, Language.getFormatResCoreTsl(ICoreTslMessages.LOGMTSL020, new Object[ ] { ITSLElementsAndAttributes.ELEMENT_TSL_VERSION_IDENTIFIER }));
 		}
 
-	}
 
 	/**
 	 * {@inheritDoc}

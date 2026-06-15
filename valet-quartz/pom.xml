@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>es.gob.valet</groupId>
 		<artifactId>valet-parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.0_001</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>valet-quartz</artifactId>
@@ -43,7 +43,7 @@
 							<Built-Time>${timestamp}</Built-Time>
 							<Vendor>${project.organization.name}</Vendor>
 							<Project-Name>${valet.project.name}</Project-Name>
-							<Valet-Version>${valet.version}</Valet-Version>
+							<Valet-Version>1.0.0_001</Valet-Version>
 							<Artifact-Name>${project.artifactId}</Artifact-Name>
 							<Artifact-Version>${project.version}</Artifact-Version>
 						</manifestEntries>
