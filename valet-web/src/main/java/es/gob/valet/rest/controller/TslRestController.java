@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>17/07/2018.</p>
  * @author Gobierno de España.
- * @version 3.0, 11/11/2025.
+ * @version 3.1, 01/07/2026.
  */
 package es.gob.valet.rest.controller;
 
@@ -63,6 +63,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import es.gob.valet.commons.utils.UtilsCountryLanguage;
 import es.gob.valet.commons.utils.UtilsDate;
 import es.gob.valet.commons.utils.UtilsMappings;
 import es.gob.valet.commons.utils.UtilsResources;
@@ -82,6 +83,7 @@ import es.gob.valet.persistence.configuration.model.dto.TslDataDTO;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegion;
 import es.gob.valet.persistence.configuration.model.entity.TslCountryRegionMapping;
 import es.gob.valet.persistence.configuration.model.entity.TslData;
+import es.gob.valet.persistence.configuration.model.entity.TslPendVal;
 import es.gob.valet.persistence.configuration.model.utils.AssociationTypeIdConstants;
 import es.gob.valet.persistence.configuration.services.ifaces.ICTslImplService;
 import es.gob.valet.persistence.configuration.services.ifaces.ITslCountryRegionMappingService;
@@ -89,6 +91,7 @@ import es.gob.valet.persistence.configuration.services.ifaces.ITslDataService;
 import es.gob.valet.persistence.configuration.services.impl.TslCountryRegionService;
 import es.gob.valet.persistence.configuration.services.impl.TslDataService;
 import es.gob.valet.service.ifaces.ISigningCertService;
+import es.gob.valet.service.ifaces.ITslPendValService;
 import es.gob.valet.service.ifaces.IValetCacheVersionService;
 import es.gob.valet.service.impl.SigningCertService;
 import es.gob.valet.tsl.access.TSLManager;
@@ -103,7 +106,7 @@ import es.gob.valet.utils.TSLSpecificationsVersions;
 /**
  * <p>Class that manages the REST request related to the TSLs administration.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 3.0, 11/11/2025.
+ * @version 3.1, 01/07/2026.
  */
 @RestController
 public class TslRestController {
@@ -215,6 +218,12 @@ public class TslRestController {
 	 */
 	@Autowired
 	private TslDataService tslDataService;
+
+	/**
+	 * Service interface for managing pending TSL validations.
+	 */
+	@Autowired
+	private ITslPendValService iTslPendValService;
 	
 	/**
 	 * Injects the IValetCacheVersionService dependency.
@@ -374,6 +383,12 @@ public class TslRestController {
 	        tslDataDTO.setExpirationDate(null != tslNew.getExpirationDate() ? UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslNew.getExpirationDate()) : "");
 
 	        responseNode.set("data", objectMapper.valueToTree(tslDataDTO));
+	        //se comprueba si la TSL se encontraba en la lista de TSLs pendientes de confirmar
+			String country = UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(tslDataDTO.getTslCountryRegionDTO().getCountryRegionCode());
+			TslPendVal tslPendVal = iTslPendValService.obtainTslPendVal(country);
+			if (tslPendVal != null) {
+			    iTslPendValService.declineTslPendVal(tslPendVal);
+			}
 
 	    } catch (TSLManagingException e) {
 	        LOGGER.error(e);
@@ -470,6 +485,13 @@ public class TslRestController {
 		    	tslDataDTO.setIssueDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getIssueDate()));
 		    	tslDataDTO.setExpirationDate(UtilsDate.toString(UtilsDate.FORMAT_DATE_TIME_MINUTES2, tslDataUpdated.getExpirationDate()));
 			responseNode.set("data", objectMapper.valueToTree(tslDataDTO));
+			 //se comprueba si la TSL se encontraba en la lista de TSLs pendientes de confirmar
+			String country = UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(tslDataDTO.getTslCountryRegionDTO().getCountryRegionCode());
+			TslPendVal tslPendVal = iTslPendValService.obtainTslPendVal(country);
+			if (tslPendVal != null) {
+			    iTslPendValService.declineTslPendVal(tslPendVal);
+			}
+
 
 		} catch (Exception e) {
 			LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.ERROR_SAVE_TSL, new Object[ ] { e.getMessage() }));

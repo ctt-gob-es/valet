@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>18/09/2018.</p>
  * @author Gobierno de España.
- * @version 2.4, 07/11/2025.
+ * @version 2.5, 01/06/2026.
  */
 package es.gob.valet.tasks;
 
@@ -84,7 +84,7 @@ import es.gob.valet.utils.UtilsHTTP;
 /**
  * <p>Class that checks the new versions of TSLs.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 2.4, 07/11/2025.
+ * @version 2.5, 01/06/2026.
  */
 public class FindNewTSLRevisionsTask extends Task {
 
@@ -92,7 +92,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * Attribute that represents the object that manages the log of the class.
 	 */
 	private static final Logger LOGGER = LogManager.getLogger(FindNewTSLRevisionsTask.class);
-	
+
 	/**
 	 * Service for managing TSL registration configurations.
 	 */
@@ -112,7 +112,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * Service for managing country and region data related to TSLs.
 	 */
 	private ITslCountryRegionService iTslCountryRegionService = ApplicationContextProvider.getApplicationContext().getBean(ITslCountryRegionService.class);
-	
+
 	/**
 	 * Attribute that will save the moment the task starts.
 	 */
@@ -135,23 +135,25 @@ public class FindNewTSLRevisionsTask extends Task {
 	@Override
 	protected final void doActionOfTheTask() throws Exception {
 		setStartOperationTime(Calendar.getInstance().getTimeInMillis());
-		
+
 		// Obtenemos la configuración sobre el registro de TSLs
 		ConfTslRegDTO confTslRegDTO = iConfTslRegService.obtainConfTslReg();
-		
-		if(!confTslRegDTO.getTslRegEnabled()) {
+
+		if (!confTslRegDTO.getTslRegEnabled()) {
 			try {
 				// Obtenemos la lista de códigos de los países/regiones de TSL.
 				List<String> tslsCountryRegionCodes = TSLManager.getInstance().getAllTSLCountriesRegionsCodes();
 				// Si la lista no es vacía...
 				if (tslsCountryRegionCodes != null) {
 					LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_005, new Object[ ] { tslsCountryRegionCodes.size() }));
-					// Obtenemos la que es reconocida como última especificación en
+					// Obtenemos la que es reconocida como última especificación
+					// en
 					// base de datos.
 					List<CTslImpl> tslImplList = ManagerPersistenceServices.getInstance().getManagerPersistenceConfigurationServices().getCTslImplService().getAllCTSLImpl();
 					if (tslImplList != null && !tslImplList.isEmpty()) {
 
-						CTslImpl lastTslImpl = tslImplList.get(tslImplList.size() - 1);
+						CTslImpl lastTslImpl = tslImplList.get(tslImplList.size()
+								- 1);
 
 						// La recorremos...
 						for (String tslCountryRegion: tslsCountryRegionCodes) {
@@ -162,11 +164,14 @@ public class FindNewTSLRevisionsTask extends Task {
 							if (tsldco != null) {
 								LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_006, new Object[ ] { tslCountryRegion }));
 								// se comprueba, si no existe fecha de nueva
-								// actualización, como ocurre con la TSL de Reino
-								// Unido al no publicarse más, no se tiene en cuenta
+								// actualización, como ocurre con la TSL de
+								// Reino
+								// Unido al no publicarse más, no se tiene en
+								// cuenta
 								// en la tarea.
 								if (tsldco.getNextUpdateDate() != null) {
-									// Comprobamos si existe alguna actualización.
+									// Comprobamos si existe alguna
+									// actualización.
 									checkIfExistsNewVersionForTSL(tsldco, tslCountryRegion, lastTslImpl);
 								} else {
 									LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_004, new Object[ ] { tslCountryRegion }));
@@ -177,16 +182,17 @@ public class FindNewTSLRevisionsTask extends Task {
 				}
 			} catch (TSLManagingException e) {
 				LOGGER.error(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_013, new Object[ ] { e.getMessage() }));
-				//e.printStackTrace();
-			}			
+				// e.printStackTrace();
+			}
 		} else {
 			try {
-				// Actualizaremos todas las listas de listas a la versión mas reciente si está disponible
+				// Actualizaremos todas las listas de listas a la versión mas
+				// reciente si está disponible
 				updatedLotlWithCurrentVersion(confTslRegDTO);
 			} catch (Exception e) {
 				LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_014), e);
 			}
-			
+
 		}
 	}
 
@@ -208,65 +214,77 @@ public class FindNewTSLRevisionsTask extends Task {
 		int idModeReg = confTslRegDTO.getIdModeReg();
 		int idTypeFilterReg = confTslRegDTO.getIdTypeFilterReg();
 		AtomicInteger numTslUpdated = new AtomicInteger(0);
-		
+
 		List<TslData> listTslData = iTslDataService.obtainAllTslDataWithTslLotlData();
-		if(listTslData.size() > NumberConstants.NUM0) {
+		if (listTslData.size() > NumberConstants.NUM0) {
 			String url = null;
 			// Recorremos todas las lista de listas
 			for (TslData tslDataLotlBD: listTslData) {
 				try {
 					// Obtenemos la url de descarga
- 					url = tslDataLotlBD.getUriTslLocation();
+					url = tslDataLotlBD.getUriTslLocation();
 					// Intentamos descargarnos la TSL...
 					byte[ ] fullTSLxml = this.downloadTslFromUrl(url);
 					ITSLObject iTSLObjectLotlDownload = obtainTSLObject(fullTSLxml);
-					// Evaluamos si la versión de la LOTL es soportada por el sistema
-					if(!iTSLObjectLotlDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101) && 
-							!iTSLObjectLotlDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
+					// Evaluamos si la versión de la LOTL es soportada por el
+					// sistema
+					if (!iTSLObjectLotlDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101)
+							&& !iTSLObjectLotlDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
 						LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_025, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionCode() }));
 						AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM002_EVENT_004, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName() }));
-						break; // finalizamos la ejecución de la actualización de lotl y tsls
+						break; // finalizamos la ejecución de la actualización
+							   // de lotl y tsls
 					}
-					// Comprobamos si la versión de la lista de listas descargada es superior a la que ya tenemos en BD
-					if(iTSLObjectLotlDownload.getSchemeInformation().getTslSequenceNumber() > tslDataLotlBD.getSequenceNumber()) {
-						LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_015, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName()}));
+					// Comprobamos si la versión de la lista de listas
+					// descargada es superior a la que ya tenemos en BD
+					if (iTSLObjectLotlDownload.getSchemeInformation().getTslSequenceNumber() > tslDataLotlBD.getSequenceNumber()) {
+						LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_015, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName() }));
 						updatesTSLforLoggingMode(idModeReg, tslDataLotlBD, url, fullTSLxml, iTSLObjectLotlDownload, true, numTslUpdated);
 					}
-					// Actualizaremos las TSLs de nuestro sistema con las TSLs descargadas a partir de la lista de listas
+					// Actualizaremos las TSLs de nuestro sistema con las TSLs
+					// descargadas a partir de la lista de listas
 					this.updatedTSLCurrentVersionWithTSLLocationFromLotl(iTSLObjectLotlDownload, idTypeFilterReg, idModeReg, numTslUpdated);
-				} catch (CertificateEncodingException | TSLManagingException e) {
-					// Si se produce algun fallo en la actualizacion de BD imprimimos el fallo
+				} catch (CertificateEncodingException
+						| TSLManagingException e) {
+					// Si se produce algun fallo en la actualizacion de BD
+					// imprimimos el fallo
 					LOGGER.error(e);
-				} catch (TSLArgumentException | TSLParsingException | TSLMalformedException | IOException e) {
-					// Si se produce algun fallo en la construccion de la TSL imprimimos el fallo
+				} catch (TSLArgumentException | TSLParsingException
+						| TSLMalformedException | IOException e) {
+					// Si se produce algun fallo en la construccion de la TSL
+					// imprimimos el fallo
 					LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_022), e);
 				} catch (CommonUtilsException e) {
-					// Si se produce algun fallo en la descarga de la TSL lanzamos la alarma
+					// Si se produce algun fallo en la descarga de la TSL
+					// lanzamos la alarma
 					LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_010, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName() }));
 					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM002_EVENT_002, new Object[ ] { tslDataLotlBD.getTslCountryRegion().getCountryRegionName() }));
-					break; // finalizamos la ejecución de la actualización de lotl y tsls
+					break; // finalizamos la ejecución de la actualización de
+						   // lotl y tsls
 				} catch (Exception e) {
 					String messageError = Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_027, new Object[ ] { url });
 					LOGGER.error(messageError, e);
 				}
 			}
-			
-			// Si se ha actualizado alguna TSL según su modo de registro cambiamos la version de la cache
-			if(numTslUpdated.get() > NumberConstants.NUM0) {
+
+			// Si se ha actualizado alguna TSL según su modo de registro
+			// cambiamos la version de la cache
+			if (numTslUpdated.get() > NumberConstants.NUM0) {
 				ApplicationContextProvider.getApplicationContext().getBean(ValetCacheVersionService.class).updateCacheVersion();
 			}
-			
-			// Si se han establecido TSLs pendientes de validar, avisaremos enviando una alarma
-			if(iTslPendValService.exitsTslPendVal()) {
+
+			// Si se han establecido TSLs pendientes de validar, avisaremos
+			// enviando una alarma
+			if (iTslPendValService.exitsTslPendVal()) {
 				LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_020));
-				String countriesPendVal = iTslPendValService.obtainAllTslPendVal().stream().map(TslPendValDTO::getCountryRegionName).filter(Objects::nonNull).distinct().collect(Collectors.joining(", ")); 
+				String countriesPendVal = iTslPendValService.obtainAllTslPendVal().stream().map(TslPendValDTO::getCountryRegionName).filter(Objects::nonNull).distinct().collect(Collectors.joining(", "));
 				AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM012_EXISTING_TSL_PEND_VAL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM012_EVENT_001, new Object[ ] { countriesPendVal }));
 			}
 		} else {
 			LOGGER.info(Language.getResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_024));
 		}
 	}
-	
+
 	/**
 	 * Updates the current TSLs listed in the downloaded LOTL if newer versions are available.
 	 *
@@ -291,31 +309,39 @@ public class FindNewTSLRevisionsTask extends Task {
 			// Solo realizaremos tratamiento para los TSLLocation que sean XML
 			if (!tSLPointer.getMimeType().contains("application/pdf")) {
 				try {
-					// Intentamos descargarnos la TSL y ademas la obtenemos con java para tratarla
+					// Intentamos descargarnos la TSL y ademas la obtenemos con
+					// java para tratarla
 					byte[ ] fullTSLxml = this.downloadTslFromUrl(tslLocation);
 					ITSLObject iTSLObjectTslDownload = obtainTSLObject(fullTSLxml);
-					// Evaluamos si la versión de la TSL descargada es soportada por el sistema
-					if(!iTSLObjectTslDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101) && 
-							!iTSLObjectTslDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
+					// Evaluamos si la versión de la TSL descargada es soportada
+					// por el sistema
+					if (!iTSLObjectTslDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020101)
+							&& !iTSLObjectTslDownload.getSpecificationVersion().equals(TSLSpecificationsVersions.VERSION_020301)) {
 						LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_025, new Object[ ] { schemeTerritory }));
 						AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM002_EVENT_004, new Object[ ] { schemeTerritory }));
 					} else {
 						// Comprobamos si se registran todas las TSLs
-	    				if (idTypeFilterReg == NumberConstants.NUM1) {
-	    					treatmentUpdateAllTsls(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload, numTslUpdated);
-	    				// Comprobamos si solo tratamos TSLs registradas en el sistema
-	    				} else if (idTypeFilterReg == NumberConstants.NUM2) {
-	    					treatmentUpdateTslRegisteredInSystem(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload, numTslUpdated);
-	    				}
+						if (idTypeFilterReg == NumberConstants.NUM1) {
+							treatmentUpdateAllTsls(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload, numTslUpdated);
+							// Comprobamos si solo tratamos TSLs registradas en
+							// el sistema
+						} else if (idTypeFilterReg == NumberConstants.NUM2) {
+							treatmentUpdateTslRegisteredInSystem(idModeReg, schemeTerritory, tslLocation, fullTSLxml, iTSLObjectTslDownload, numTslUpdated);
+						}
 					}
-				} catch (CertificateEncodingException | TSLManagingException e) {
-					// Si se produce algun fallo en la actualizacion de BD imprimimos el fallo
+				} catch (CertificateEncodingException
+						| TSLManagingException e) {
+					// Si se produce algun fallo en la actualizacion de BD
+					// imprimimos el fallo
 					LOGGER.error(e);
-				} catch (TSLArgumentException | TSLParsingException | TSLMalformedException | IOException e) {
-					// Si se produce algun fallo en la construccion de la TSL imprimimos el fallo
+				} catch (TSLArgumentException | TSLParsingException
+						| TSLMalformedException | IOException e) {
+					// Si se produce algun fallo en la construccion de la TSL
+					// imprimimos el fallo
 					LOGGER.error(Language.getResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_022), e);
 				} catch (CommonUtilsException e) {
-					// Si se produce algun fallo en la descarga de la TSL lanzamos la alarma
+					// Si se produce algun fallo en la descarga de la TSL
+					// lanzamos la alarma
 					LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_010, new Object[ ] { UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory) }));
 					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM002_EVENT_002, new Object[ ] { UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory) }));
 				} catch (Exception e) {
@@ -344,14 +370,16 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	private void treatmentUpdateTslRegisteredInSystem(int idModeReg, String schemeTerritory, String tslLocation, byte[ ] fullTSLxml, ITSLObject iTSLObjectTslDownload, AtomicInteger numTslUpdated) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
-		// si existe la TSL para el país que estamos tratando evaluaremos si existe una versión nueva.
+		// si existe la TSL para el país que estamos tratando evaluaremos si
+		// existe una versión nueva.
 		if (iTslCountryRegionService.existsTslForThisCountry(schemeTerritory)) {
 			// Obtenemos la TSL de este pais a partir BD
 			TslCountryRegion tslCountryRegion = iTslCountryRegionService.getTslCountryRegionWithTslData(schemeTerritory);
 			TslData tslDataBD = tslCountryRegion.getTslData();
-			// Comprobamos si la versión de la TSL descargada es superior a la que ya tenemos en BD
+			// Comprobamos si la versión de la TSL descargada es superior a la
+			// que ya tenemos en BD
 			if (iTSLObjectTslDownload.getSchemeInformation().getTslSequenceNumber() > tslDataBD.getSequenceNumber()) {
-				LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_017, new Object[ ] { tslCountryRegion.getCountryRegionName()}));
+				LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_017, new Object[ ] { tslCountryRegion.getCountryRegionName() }));
 				updatesTSLforLoggingMode(idModeReg, tslDataBD, tslLocation, fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
 			}
 		}
@@ -376,23 +404,31 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	private void treatmentUpdateAllTsls(int idModeReg, String schemeTerritory, String tslLocation, byte[ ] fullTSLxml, ITSLObject iTSLObjectTslDownload, AtomicInteger numTslUpdated) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
-		// si existe la TSL para el país que estamos tratando evaluaremos si existe una versión nueva.
+		TslData tslDataBD = null;
+		TslCountryRegion tslCountryRegion = null;
+		// si existe la TSL para el país que estamos tratando evaluaremos si
+		// existe una versión nueva.
 		if (iTslCountryRegionService.existsTslForThisCountry(schemeTerritory)) {
 			// Obtenemos la TSL de este pais a partir BD
-			TslCountryRegion tslCountryRegion = iTslCountryRegionService.getTslCountryRegionWithTslData(schemeTerritory);
-			TslData tslDataBD = tslCountryRegion.getTslData();
-			// Comprobamos si la versión de la TSL descargada es superior a la que ya tenemos en BD
-			if (iTSLObjectTslDownload.getSchemeInformation().getTslSequenceNumber() > tslDataBD.getSequenceNumber()) {
-				LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_017, new Object[ ] { tslCountryRegion.getCountryRegionName()}));
-				updatesTSLforLoggingMode(idModeReg, tslDataBD, tslLocation, fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
-			}
-		} else {
-			// si no existe el pais
-			LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_023, new Object[ ] { UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory)}));
-			updatesTSLforLoggingMode(idModeReg, null, tslLocation, fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
+			tslCountryRegion = iTslCountryRegionService.getTslCountryRegionWithTslData(schemeTerritory);
+			tslDataBD = tslCountryRegion.getTslData();
 		}
+		// si no existe el país o no tiene una TSL asociada
+		if (tslDataBD == null) {
+			LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_023, new Object[ ] { UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(schemeTerritory) }));
+			updatesTSLforLoggingMode(idModeReg, null, tslLocation, fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
+			return;
+
+		}
+		// Comprobamos si la versión de la TSL descargada es superior a la
+		// que ya tenemos en BD
+		if (iTSLObjectTslDownload.getSchemeInformation().getTslSequenceNumber() > tslDataBD.getSequenceNumber()) {
+			LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_017, new Object[ ] { tslCountryRegion.getCountryRegionName() }));
+			updatesTSLforLoggingMode(idModeReg, tslDataBD, tslLocation, fullTSLxml, iTSLObjectTslDownload, false, numTslUpdated);
+		}
+
 	}
-	
+
 	/**
 	 * Updates a TSL based on the selected registration mode.
 	 *
@@ -425,39 +461,41 @@ public class FindNewTSLRevisionsTask extends Task {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	private void updatesTSLforLoggingMode(int idModeReg, TslData tslDataLotlBD, String url, byte[ ] fullTSLxml, ITSLObject iTSLObjectLotlDownload, Boolean lotl, AtomicInteger numTslUpdated) throws TSLManagingException, CommonUtilsException, CertificateEncodingException, TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
-		if(idModeReg == NumberConstants.NUM1) {
-			if(!this.isNewTslData(tslDataLotlBD)) {
+		if (idModeReg == NumberConstants.NUM1) {
+			if (!this.isNewTslData(tslDataLotlBD)) {
 				TSLManager.getInstance().updateTSLData(tslDataLotlBD, fullTSLxml, url, tslDataLotlBD.getLegibleDocument());
 			} else {
 				TSLManager.getInstance().addNewTSLData(iTSLObjectLotlDownload, url, fullTSLxml, lotl);
 			}
-			
+
 			numTslUpdated.incrementAndGet();
-			
-			// Dado que siempre registramos TSLs, si ya existe para este pais alguna pendiente de validar la eliminaremos
+
+			// Dado que siempre registramos TSLs, si ya existe para este pais
+			// alguna pendiente de validar la eliminaremos
 			String country = UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(iTSLObjectLotlDownload.getSchemeInformation().getSchemeTerritory());
-			if(iTslPendValService.exitsTslPendVal(country)) {
+			if (iTslPendValService.exitsTslPendVal(country)) {
 				TslPendVal tslPendVal = iTslPendValService.obtainTslPendVal(country);
 				iTslPendValService.declineTslPendVal(tslPendVal);
 			}
-		} else if(idModeReg == NumberConstants.NUM2) {
-			if(!this.isNewTslData(tslDataLotlBD)) {
+		} else if (idModeReg == NumberConstants.NUM2) {
+			if (!this.isNewTslData(tslDataLotlBD)) {
 				X509Certificate x509CertSignFromTslDownload = iTSLObjectLotlDownload.getSignTsl().get();
 				X509Certificate x509CertSignFromTslBD = this.obtainTSLObject(tslDataLotlBD.getXmlDocument()).getSignTsl().get();
 				// Si es el mismo firmante actualizamos las TSLs
-				if(Arrays.equals(x509CertSignFromTslDownload.getEncoded(), x509CertSignFromTslBD.getEncoded())) {
-					
+				if (Arrays.equals(x509CertSignFromTslDownload.getEncoded(), x509CertSignFromTslBD.getEncoded())) {
+
 					TSLManager.getInstance().updateTSLData(tslDataLotlBD, fullTSLxml, url, tslDataLotlBD.getLegibleDocument());
 					numTslUpdated.incrementAndGet();
-					
+
 				} else {
-					// Si no es el mismo firmante lo añadimos a las TSLs pendientes de registrar
+					// Si no es el mismo firmante lo añadimos a las TSLs
+					// pendientes de registrar
 					insertNewTslPendVal(fullTSLxml, iTSLObjectLotlDownload);
 				}
 			} else {
 				insertNewTslPendVal(fullTSLxml, iTSLObjectLotlDownload);
 			}
-		} else if(idModeReg == NumberConstants.NUM3) {
+		} else if (idModeReg == NumberConstants.NUM3) {
 			insertNewTslPendVal(fullTSLxml, iTSLObjectLotlDownload);
 		}
 	}
@@ -470,7 +508,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	 *         {@code false} if it already exists in the system.
 	 */
 	private boolean isNewTslData(TslData tslDataLotlBD) {
-		if(tslDataLotlBD != null) {
+		if (tslDataLotlBD != null) {
 			return false;
 		} else {
 			return true;
@@ -488,17 +526,17 @@ public class FindNewTSLRevisionsTask extends Task {
 	 */
 	private void insertNewTslPendVal(byte[ ] fullTSLxml, ITSLObject iTSLObjectLotlDownload) {
 		String country = UtilsCountryLanguage.getFirstLocaleCountryNameOfCountryCode(iTSLObjectLotlDownload.getSchemeInformation().getSchemeTerritory());
-		if(!iTslPendValService.exitsTslPendVal(country)) {
-			LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_018, new Object[ ] {country}));
+		if (!iTslPendValService.exitsTslPendVal(country)) {
+			LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_018, new Object[ ] { country }));
 			TslPendVal tslPendVal = new TslPendVal();
 			tslPendVal.setXmlDocument(fullTSLxml);
 			tslPendVal.setCountry(country);
 			iTslPendValService.addTslPendVal(tslPendVal);
 		} else {
-			LOGGER.warn(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_019, new Object[ ] {country}));
+			LOGGER.warn(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_019, new Object[ ] { country }));
 		}
 	}
-	
+
 	/**
 	 * Parses a TSL object from the given XML byte array.
 	 *
@@ -512,7 +550,7 @@ public class FindNewTSLRevisionsTask extends Task {
 	private ITSLObject obtainTSLObject(byte[ ] fullTSLxml) throws TSLArgumentException, TSLParsingException, TSLMalformedException, IOException {
 		ITSLObject iTSLObjectLotlDownload;
 		// Abrimos un InputStream para el array de bytes.
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(fullTSLxml)){
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(fullTSLxml)) {
 			iTSLObjectLotlDownload = new TSLObject(TSLSpecificationsVersions.SPECIFICATION_119612);
 			iTSLObjectLotlDownload.buildTSLFromXMLcheckValues(bais);
 		}
@@ -536,7 +574,8 @@ public class FindNewTSLRevisionsTask extends Task {
 	 */
 	@Override
 	protected final void endMessage() {
-		LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_END_MSG, new Object[ ] { Calendar.getInstance().getTimeInMillis() - startOperationTime }));
+		LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_END_MSG, new Object[ ] { Calendar.getInstance().getTimeInMillis()
+				- startOperationTime }));
 	}
 
 	/**
@@ -588,14 +627,15 @@ public class FindNewTSLRevisionsTask extends Task {
 
 		try {
 			HttpGet method = new HttpGet(distributionPoint);
-			if (distributionPoint == null || method.getURI().getHost() == null) {
-					// se lanza una alarma indicando que no se puede comprobar
-					// si
-					// existe una nueva versión al no disponer de la url de
-					// descarga.
-					LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_010, new Object[ ] { tslCountryRegion }));
-					AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM002_EVENT_002, new Object[ ] { tslCountryRegion }));
-			
+			if (distributionPoint == null
+					|| method.getURI().getHost() == null) {
+				// se lanza una alarma indicando que no se puede comprobar
+				// si
+				// existe una nueva versión al no disponer de la url de
+				// descarga.
+				LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_010, new Object[ ] { tslCountryRegion }));
+				AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM002_ERROR_GETTING_PARSING_TSL, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM002_EVENT_002, new Object[ ] { tslCountryRegion }));
+
 			} else {
 				// Si la TSL no está marcada ya como disponible, la
 				// analizamos...
@@ -607,11 +647,11 @@ public class FindNewTSLRevisionsTask extends Task {
 
 					// Obtenemos la TSL...
 					byte[ ] fullTSLxml = UtilsHTTP.getDataFromURI(distributionPoint, NumberConstants.NUM10000, NumberConstants.NUM10000, null, null, httpHeadersMap);
-					
+
 					// Creamos un objeto que representará la TSL descargada.
 					ITSLObject tslObject = new TSLObject(actualTslImpl.getSpecification());
 					// Abrimos un InputStream para el array de bytes.
-					try (ByteArrayInputStream bais = new ByteArrayInputStream(fullTSLxml)){
+					try (ByteArrayInputStream bais = new ByteArrayInputStream(fullTSLxml)) {
 						tslObject.buildTSLFromXMLcheckValues(bais, false, false);
 					} catch (Exception e1) {
 
@@ -620,10 +660,11 @@ public class FindNewTSLRevisionsTask extends Task {
 						// última
 						// especificación disponible (siempre que no fuera esta
 						// ya)...
-						if (lastTslImpl != null && !actualTslImpl.getIdTSLImpl().equals(lastTslImpl.getIdTSLImpl())) {
+						if (lastTslImpl != null
+								&& !actualTslImpl.getIdTSLImpl().equals(lastTslImpl.getIdTSLImpl())) {
 							LOGGER.warn(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_000, new Object[ ] { actualTslImpl.getSpecification(), actualTslImpl.getVersion(), lastTslImpl.getSpecification(), lastTslImpl.getVersion() }));
 							tslObject = new TSLObject(lastTslImpl.getSpecification());
-							try (ByteArrayInputStream bais = new ByteArrayInputStream(fullTSLxml)){
+							try (ByteArrayInputStream bais = new ByteArrayInputStream(fullTSLxml)) {
 								tslObject.buildTSLFromXMLcheckValues(bais, false, false);
 							} catch (Exception e2) {
 								throw e2;
@@ -687,21 +728,20 @@ public class FindNewTSLRevisionsTask extends Task {
 	 */
 	private void checkAndUpdateLastAlarm(TSLDataCacheObject tsldco, String tslCountryRegion) throws TSLManagingException {
 		Integer daysReminder = NumberConstants.NUM7;
-		if(!UtilsStringChar.isNullOrEmpty(StaticValetConfig.getProperty(StaticValetConfig.DAYS_REMINDER_ALARM))){
+		if (!UtilsStringChar.isNullOrEmpty(StaticValetConfig.getProperty(StaticValetConfig.DAYS_REMINDER_ALARM))) {
 			daysReminder = Integer.valueOf(StaticValetConfig.getProperty(StaticValetConfig.DAYS_REMINDER_ALARM));
 		}
 		Date dateToCheck = UtilsDate.getDateAddingDays(tsldco.getLastNewTSLAvailableFind(), daysReminder);
 		Date actualDate = Calendar.getInstance().getTime();
 		LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_008, new Object[ ] { tsldco.getLastNewTSLAvailableFind(), tslCountryRegion }));
 		if (dateToCheck.before(actualDate)) {
-			LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_009, new Object[] {daysReminder.toString()}));
+			LOGGER.info(Language.getFormatResWebGeneral(WebGeneralMessages.TASK_FIND_NEW_TSL_REV_LOG_009, new Object[ ] { daysReminder.toString() }));
 			AlarmsManager.getInstance().registerAlarmEvent(AlarmIdConstants.ALM005_NEW_TSL_DETECTED, Language.getFormatResCoreGeneral(CoreGeneralMessages.ALM005_EVENT_002, new Object[ ] { tslCountryRegion, tsldco.getSequenceNumber() }));
 			// se actualiza la nueva fecha de notificación
 			TSLManager.getInstance().updateLastNewAvaliableTSLFindData(tsldco.getTslDataId(), actualDate);
 		}
 	}
 
-	
 	/**
 	 * Sets the value of the attribute {@link #startOperationTime}.
 	 * @param startOperationTime The value for the attribute {@link #startOperationTime}.
@@ -710,5 +750,4 @@ public class FindNewTSLRevisionsTask extends Task {
 		FindNewTSLRevisionsTask.startOperationTime = startOperationTime;
 	}
 
-	
 }

@@ -20,7 +20,7 @@
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
  * <b>Date:</b><p>25/11/2018.</p>
  * @author Gobierno de España.
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 01/06/2026.
  */
 package es.gob.valet.commons.utils;
 
@@ -48,7 +48,7 @@ import es.gob.valet.exceptions.ValetExceptionConstants;
 /**
  * <p>Utilities class that provides functionality to manage and work with OCSP request and responses.</p>
  * <b>Project:</b><p>Platform for detection and validation of certificates recognized in European TSL.</p>
- * @version 1.1, 19/09/2023.
+ * @version 1.2, 01/06/2026.
  */
 public final class UtilsOCSP {
 
@@ -100,31 +100,55 @@ public final class UtilsOCSP {
 	 * @throws CommonUtilsException If the method fails.
 	 */
 	public static boolean isOCSPCertResponse(X509Certificate cert, SingleResp singleResp, Date date) throws CommonUtilsException {
-		boolean result = false;
-		if (date != null && date.before(singleResp.getThisUpdate())) {
-			result = false;
-		} else if (date != null && singleResp.getNextUpdate() != null && date.after(singleResp.getNextUpdate())) {
-			result = false;
-		} else if (singleResp.getCertID() != null) {
+		 boolean result = false;
 
-			try {
-				CertificateID certificateId = singleResp.getCertID();
-				if (certificateId.getSerialNumber().equals(cert.getSerialNumber())) {
-					DigestCalculatorProvider bcDigestProvider = new BcDigestCalculatorProvider();
-					DigestCalculator dc = bcDigestProvider.get(CertificateID.HASH_SHA1);
-					X500Name issuerSubjectX500Name = UtilsCertificate.getBouncyCastleCertificate(cert).getIssuer();
-					OutputStream dcOs = dc.getOutputStream();
-					dcOs.write(issuerSubjectX500Name.getEncoded(ASN1Encoding.DER));
-					dcOs.close();
-					ASN1OctetString issuerNameHash = new DEROctetString(dc.getDigest());
-					result = Arrays.equals(issuerNameHash.getOctets(), certificateId.getIssuerNameHash());
-				}
-			} catch (OperatorCreationException | IOException e) {
-				throw new CommonUtilsException(ValetExceptionConstants.COD_200, e.getMessage(), e);
-			}
+		    Date thisUpdate = singleResp.getThisUpdate();
+		    // La respuesta OCSP debe haberse emitido después (o en el mismo instante)
+		    // de la fecha de validación del certificado.
+		    if (date != null && thisUpdate != null && thisUpdate.before(date)) {
+		        return false;
+		    }
 
+		    // La respuesta OCSP debe haberse emitido antes (o en el mismo instante)
+		    // de la caducidad del certificado.
+		    if (thisUpdate != null && thisUpdate.after(cert.getNotAfter())) {
+		        return false;
+		    }
+
+		    if (singleResp.getCertID() != null) {
+
+		        try {
+
+		            CertificateID certificateId = singleResp.getCertID();
+
+		            // Comprobamos que la respuesta OCSP corresponde al certificado.
+		            if (certificateId.getSerialNumber().equals(cert.getSerialNumber())) {
+
+		                DigestCalculatorProvider bcDigestProvider = new BcDigestCalculatorProvider();
+		                DigestCalculator dc = bcDigestProvider.get(CertificateID.HASH_SHA1);
+
+		                X500Name issuerSubjectX500Name =
+		                        UtilsCertificate.getBouncyCastleCertificate(cert).getIssuer();
+
+		                OutputStream dcOs = dc.getOutputStream();
+		                dcOs.write(issuerSubjectX500Name.getEncoded(ASN1Encoding.DER));
+		                dcOs.close();
+
+		                ASN1OctetString issuerNameHash = new DEROctetString(dc.getDigest());
+
+		                result = Arrays.equals(
+		                        issuerNameHash.getOctets(),
+		                        certificateId.getIssuerNameHash());
+
+		            }
+
+		        } catch (OperatorCreationException | IOException e) {
+		            throw new CommonUtilsException(ValetExceptionConstants.COD_200, e.getMessage(), e);
+		        }
+
+		    }
+
+		    return result;
 		}
-		return result;
-	}
 
 }
